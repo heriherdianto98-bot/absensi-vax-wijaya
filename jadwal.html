@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Kerja - Vax Wijaya</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            display:flex;
+            background:#0d1117;
+            color:#f5f5f5;
+        }
+
+        .sidebar{
+            width:250px;
+            min-height:100vh;
+            background:#15191f;
+            padding:20px;
+            border-right:1px solid #7a5a12;
+            flex-shrink:0;
+        }
+
+        .sidebar h2{
+            color:#f4b942;
+            margin-bottom:30px;
+        }
+
+        .sidebar a{
+            display:block;
+            color:#f5f5f5;
+            text-decoration:none;
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:10px;
+            border-left:3px solid transparent;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active{
+            background:linear-gradient(90deg,#3a2c0d,#1c1c1c);
+            color:#f4b942;
+            border-left:3px solid #f4b942;
+        }
+
+        #logout{
+            width:100%;
+            margin-top:20px;
+            padding:12px;
+            background:#d93636;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        .content{
+            flex:1;
+            min-height:100vh;
+            padding:30px;
+        }
+
+        h1{
+            color:#f4b942;
+            margin-bottom:22px;
+        }
+
+        .card{
+            background:#141920;
+            border:1px solid #6b4f12;
+            border-radius:12px;
+            padding:22px;
+            margin-bottom:22px;
+        }
+
+        .form-grid{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:16px;
+        }
+
+        .form-group{
+            margin-bottom:4px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:7px;
+            color:#e5e7eb;
+            font-weight:bold;
+        }
+
+        input,
+        select{
+            width:100%;
+            padding:11px;
+            background:#0d1117;
+            color:white;
+            border:1px solid #555;
+            border-radius:8px;
+        }
+
+        input:focus,
+        select:focus{
+            outline:none;
+            border-color:#f4b942;
+        }
+
+        .aksi-form{
+            margin-top:18px;
+            display:flex;
+            gap:10px;
+        }
+
+        button{
+            padding:10px 16px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        #btnSimpan{
+            background:#f4b942;
+            color:#111;
+        }
+
+        #btnBatal{
+            background:#666;
+            color:white;
+            display:none;
+        }
+
+        table{
+            width:100%;
+            border-collapse:separate;
+            border-spacing:0;
+            background:#141920;
+            border:1px solid #6b4f12;
+            border-radius:12px;
+            overflow:hidden;
+        }
+
+        th{
+            background:#211b0f;
+            color:#f4b942;
+            padding:12px;
+            text-align:center;
+        }
+
+        td{
+            padding:11px 12px;
+            border-top:1px solid #303844;
+            text-align:center;
+        }
+
+        th:not(:last-child),
+        td:not(:last-child){
+            border-right:1px solid #4c3a12;
+        }
+
+        .btn-edit{
+            background:#f4b942;
+            color:#111;
+            margin-right:6px;
+        }
+
+        .btn-hapus{
+            background:#d93636;
+            color:white;
+        }
+
+        @media(max-width:800px){
+            .sidebar{
+                width:210px;
+            }
+
+            .form-grid{
+                grid-template-columns:1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>VAX WIJAYA</h2>
+
+        <a href="dashboard.html">🏠 Dashboard</a>
+        <a href="karyawan.html">👤 Karyawan</a>
+        <a href="cabang.html">🏢 Cabang</a>
+        <a href="jadwal.html" class="active">🗓 Jadwal</a>
+        <a href="pengaturan.html">⚙ Pengaturan</a>
+        <a href="laporan.html">📊 Laporan</a>
+
+        <button id="logout">Logout</button>
+    </div>
+
+    <div class="content">
+        <h1>Jadwal Kerja</h1>
+
+        <div class="card">
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="tanggal">
+                </div>
+
+                <div class="form-group">
+                    <label>Karyawan</label>
+                    <select id="karyawan">
+                        <option value="">Memuat data...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="status">
+                        <option value="MASUK">MASUK</option>
+                        <option value="LIBUR">LIBUR</option>
+                        <option value="IZIN">IZIN</option>
+                        <option value="SAKIT">SAKIT</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Jam Masuk Khusus</label>
+                    <input type="time" id="jamMasukKhusus">
+                </div>
+
+                <div class="form-group" style="grid-column:1 / -1;">
+                    <label>Keterangan</label>
+                    <input
+                        type="text"
+                        id="keterangan"
+                        placeholder="Contoh: Libur, acara keluarga, masuk siang"
+                    >
+                </div>
+
+            </div>
+
+            <div class="aksi-form">
+                <button id="btnSimpan">Simpan Jadwal</button>
+                <button id="btnBatal">Batal Edit</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="color:#f4b942;margin-bottom:16px;">
+                Daftar Jadwal
+            </h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Nama</th>
+                        <th>Cabang</th>
+                        <th>Status</th>
+                        <th>Jam Khusus</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody id="dataJadwal"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+<script src="auth-guard.js"></script>
+    <script src="jadwal.js"></script>
+</body>
+</html>

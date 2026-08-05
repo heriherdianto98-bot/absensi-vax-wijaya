@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabang - Vax Wijaya</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            display:flex;
+            background:#0d1117;
+            color:#f5f5f5;
+        }
+
+        .sidebar{
+            width:250px;
+            min-height:100vh;
+            background:#15191f;
+            padding:20px;
+            border-right:1px solid #7a5a12;
+            flex-shrink:0;
+        }
+
+        .sidebar h2{
+            color:#f4b942;
+            margin-bottom:30px;
+        }
+
+        .sidebar a{
+            display:block;
+            color:#f5f5f5;
+            text-decoration:none;
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:10px;
+            border-left:3px solid transparent;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active{
+            background:linear-gradient(90deg,#3a2c0d,#1c1c1c);
+            color:#f4b942;
+            border-left:3px solid #f4b942;
+        }
+
+        #logout{
+            width:100%;
+            margin-top:20px;
+            padding:12px;
+            background:#d93636;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        .content{
+            flex:1;
+            min-height:100vh;
+            padding:30px;
+        }
+
+        h1{
+            color:#f4b942;
+            margin-bottom:22px;
+        }
+
+        .card{
+            background:#141920;
+            border:1px solid #6b4f12;
+            border-radius:12px;
+            padding:20px;
+        }
+
+        .toolbar{
+            display:flex;
+            justify-content:space-between;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-bottom:18px;
+        }
+
+        button{
+            background:#f4b942;
+            color:#111;
+            border:none;
+            border-radius:8px;
+            padding:10px 16px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        input,
+        select{
+            width:100%;
+            padding:10px;
+            background:#0d1117;
+            color:white;
+            border:1px solid #555;
+            border-radius:8px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:separate;
+            border-spacing:0;
+            border:1px solid #6b4f12;
+            border-radius:10px;
+            overflow:hidden;
+        }
+
+        th{
+            background:#211b0f;
+            color:#f4b942;
+            padding:12px;
+            text-align:left;
+        }
+
+        td{
+            padding:10px 12px;
+            border-top:1px solid #303844;
+        }
+
+        th:not(:last-child),
+        td:not(:last-child){
+            border-right:1px solid #4c3a12;
+        }
+
+        .modal{
+            display:none;
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.7);
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+        }
+
+        .modal-box{
+            width:430px;
+            max-width:100%;
+            background:#171c23;
+            border:1px solid #6b4f12;
+            border-radius:12px;
+            padding:24px;
+        }
+
+        .modal-box h2{
+            color:#f4b942;
+            margin-bottom:18px;
+        }
+
+        .form-group{
+            margin-bottom:14px;
+        }
+
+        .form-group label{
+            display:block;
+            margin-bottom:6px;
+        }
+
+        .aksi{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:nowrap;
+}
+
+.aksi button{
+    padding:8px 12px;
+    white-space:nowrap;
+}
+
+        .btn-hapus{
+            background:#d93636;
+            color:white;
+        }
+
+        .btn-batal{
+            background:#666;
+            color:white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>VAX WIJAYA</h2>
+
+        <a href="dashboard.html">🏠 Dashboard</a>
+        <a href="karyawan.html">👤 Karyawan</a>
+        <a href="cabang.html" class="active">🏢 Cabang</a>
+        <a href="pengaturan.html">⚙ Pengaturan</a>
+        <a href="laporan.html">📊 Laporan</a>
+
+        <button id="logout">Logout</button>
+    </div>
+
+    <div class="content">
+        <h1>Cabang</h1>
+
+        <div class="card">
+            <div class="toolbar">
+                <button id="btnTambahCabang">+ Tambah Cabang</button>
+
+                <input
+                    type="text"
+                    id="cariCabang"
+                    placeholder="Cari nama cabang..."
+                    style="max-width:280px;"
+                >
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Cabang</th>
+                        <th>Alamat</th>
+                        <th>Radius</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbodyCabang"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modalCabang" class="modal">
+        <div class="modal-box">
+            <h2 id="judulModal">Tambah Cabang</h2>
+
+            <div class="form-group">
+                <label>Nama Cabang</label>
+                <input id="namaCabang">
+            </div>
+
+            <div class="form-group">
+                <label>Alamat</label>
+                <input id="alamatCabang">
+            </div>
+
+            <div class="form-group">
+                <label>Latitude</label>
+                <input id="latitudeCabang" type="number" step="any">
+            </div>
+
+            <div class="form-group">
+                <label>Longitude</label>
+                <input id="longitudeCabang" type="number" step="any">
+            </div>
+
+            <div class="form-group">
+                <label>Radius Meter</label>
+                <input id="radiusCabang" type="number" value="100">
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="statusCabang">
+                    <option value="true">Aktif</option>
+                    <option value="false">Nonaktif</option>
+                </select>
+            </div>
+
+            <div class="aksi">
+                <button id="simpanCabang">Simpan</button>
+                <button id="batalCabang" class="btn-batal">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+<script src="auth-guard.js"></script>
+    <script src="cabang.js"></script>
+</body>
+</html>

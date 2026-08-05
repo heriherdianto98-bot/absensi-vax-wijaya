@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Data Karyawan - VAX ERP</title>
+
+    <link rel="stylesheet" href="karyawan-ERP.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h1>VAX ERP</h1>
+            <p>Enterprise Management System</p>
+        </div>
+
+        <nav>
+
+            <a href="DASHBOARD ERP VAX.html">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
+
+            <div class="menu-title">
+                MASTER DATA
+            </div>
+
+            <a href="cabang-ERP.html">
+                <i class="fa-solid fa-building"></i>
+                Cabang
+            </a>
+
+            <a href="karyawan-ERP.html" class="active">
+                <i class="fa-solid fa-users"></i>
+                Karyawan
+            </a>
+
+            <div class="menu-title">
+                BUSINESS CENTER
+            </div>
+
+            <a href="#">
+                <i class="fa-solid fa-chart-line"></i>
+                Daily Recap
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-calendar-days"></i>
+                Monthly Recap
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-ranking-star"></i>
+                Ranking
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-chart-pie"></i>
+                Analytics
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-rotate"></i>
+                Integrasi Minutes
+            </a>
+
+            <div class="menu-title">
+                SYSTEM
+            </div>
+
+            <a href="DASHBOARD ERP VAX.html">
+                <i class="fa-solid fa-arrow-left"></i>
+                Kembali
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="page-header">
+
+            <div>
+                <h1>Data Karyawan</h1>
+                <p>Data karyawan dibaca dari Dashboard Owner.</p>
+            </div>
+
+            <a href="karyawan.html" class="btn-owner">
+                <i class="fa-solid fa-user-plus"></i>
+                Kelola di Dashboard Owner
+            </a>
+
+        </div>
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <span>Total Karyawan</span>
+                <h2 id="totalKaryawan">0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Karyawan Aktif</span>
+                <h2 id="totalAktif">0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Karyawan Nonaktif</span>
+                <h2 id="totalNonaktif">0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Total Cabang</span>
+                <h2 id="totalCabang">0</h2>
+            </div>
+
+        </section>
+
+        <section class="content-card">
+
+            <div class="toolbar">
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        id="inputCari"
+                        placeholder="Cari nama karyawan..."
+                    >
+                </div>
+
+                <select id="filterCabang">
+                    <option value="semua">
+                        Semua Cabang
+                    </option>
+                </select>
+
+                <select id="filterJabatan">
+                    <option value="semua">
+                        Semua Jabatan
+                    </option>
+                </select>
+
+                <select id="filterStatus">
+                    <option value="semua">
+                        Semua Status
+                    </option>
+
+                    <option value="aktif">
+                        Aktif
+                    </option>
+
+                    <option value="nonaktif">
+                        Nonaktif
+                    </option>
+                </select>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Cabang</th>
+                            <th>Jabatan</th>
+                            <th>No. HP</th>
+                            <th>Tanggal Masuk</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabelKaryawan">
+
+                        <tr>
+                            <td colspan="7" class="loading">
+                                Memuat data karyawan...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="modalDetail" class="modal">
+
+        <div class="modal-box">
+
+            <div class="modal-header">
+
+                <h2>Detail Karyawan</h2>
+
+                <button
+                    type="button"
+                    id="btnTutupModal"
+                    class="btn-close"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+            <div id="isiDetail" class="detail-grid">
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    id="btnTutupDetail"
+                    class="btn-secondary"
+                >
+                    Tutup
+                </button>
+
+                <a
+                    href="karyawan.html"
+                    class="btn-primary"
+                >
+                    Edit di Dashboard Owner
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="karyawan-ERP.js"></script>
+
+</body>
+
+</html>

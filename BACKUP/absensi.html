@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Absensi Vax Wijaya</title>
+
+<link rel="stylesheet" href="absensi.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <i class="fas fa-chevron-left"></i>
+
+    <div class="logo">
+
+        <span>ABSENSI</span>
+
+        <small>VAX WIJAYA</small>
+
+    </div>
+
+    <i class="far fa-bell"></i>
+
+</header>
+
+
+
+<!-- ================= PROFILE ================= -->
+
+<section class="card profile">
+
+    <img
+        id="fotoKaryawan"
+        src="img/default-profile.png"
+        alt="Foto Karyawan">
+
+    <div class="profile-info">
+
+        <h2 id="namaKaryawan">
+            Rian Sobirin
+        </h2>
+
+        <p>
+
+            <span id="jabatan">
+            
+            Capster
+            
+            </span>
+            
+            •
+            
+            <span id="kodeCabang">
+            
+            Mekarwangi
+            
+            </span>
+            
+            </p>
+
+        <label id="statusKaryawan">
+            Karyawan Aktif
+        </label>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= GREETING ================= -->
+
+<section class="card greeting">
+
+    <div class="greet-left">
+
+        <div class="emoji" id="emojiGreeting">
+
+            ☀️
+            
+            </div>
+
+    </div>
+
+    <div class="greet-right">
+
+        <h3 id="greetingTitle">
+
+            Selamat Pagi
+
+        </h3>
+
+        <p id="greetingMessage">
+
+            Semoga hari ini penuh semangat.
+
+        </p>
+
+        <small id="greetingQuote">
+
+            "Disiplin adalah awal dari kesuksesan."
+
+        </small>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= CABANG ================= -->
+
+<section class="card cabang">
+
+    <div class="left">
+
+        <p>Cabang</p>
+
+        <h3 id="namaCabang">
+            VAX WIJAYA MEKARWANGI
+        </h3>
+
+        <p>Jam Masuk</p>
+
+        <h4 id="jamMasuk">
+            10:00 WIB
+        </h4>
+
+    </div>
+
+</section>
+
+<!-- ================= JAM ================= -->
+
+<section class="card card-jam">
+
+    <small>WAKTU SEKARANG</small>
+
+    <h1 id="jam"></h1>
+
+    <span id="tanggal"></span>
+
+</section>
+
+
+
+<!-- ================= LOKASI ================= -->
+
+<section class="card lokasi">
+
+    <div class="lokasi-left">
+
+        <small>Lokasi Anda</small>
+
+        <p class="green" id="statusLokasi">
+
+            Mendeteksi lokasi...
+
+        </p>
+
+        <small>Jarak ke Cabang</small>
+
+        <h2 id="jarak">
+
+            -
+
+        </h2>
+
+        <small>
+
+            Radius maksimal 100 meter
+
+        </small>
+
+    </div>
+
+    <div class="lokasi-right">
+
+        <div class="radar">
+
+            <div class="wave wave1"></div>
+            <div class="wave wave2"></div>
+            <div class="wave wave3"></div>
+
+            <div class="center-dot">
+
+                <i class="fas fa-location-dot"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= BULAN INI ================= -->
+
+<section class="card statistik">
+
+    <h3>
+
+        Ringkasan Bulan Ini
+
+    </h3>
+
+    <div class="grid-stat">
+
+        <div class="item">
+
+            <h2 id="hadir">
+                0
+            </h2>
+
+            <span>Masuk</span>
+
+        </div>
+
+        <div class="item">
+
+            <h2 id="libur">
+                0
+            </h2>
+
+            <span>Libur</span>
+
+        </div>
+
+        <div class="item">
+
+            <h2 id="terlambat">
+                0
+            </h2>
+
+            <span>Terlambat</span>
+
+        </div>
+
+        <div class="item">
+
+            <h2 id="denda">
+
+                Rp0
+
+            </h2>
+
+            <span>Denda</span>
+
+        </div>
+
+    </div>
+
+</section>
+
+    <!-- INFO -->
+
+    <section class="card info">
+
+        <p id="infoAbsen">
+    
+            Pastikan Anda berada dalam area cabang untuk melakukan absensi.
+    
+        </p>
+    
+    </section>
+
+
+
+    <!-- SLIDE -->
+
+    <div class="slider" id="slider">
+
+        <div class="thumb" id="thumb">
+            <i class="fas fa-fingerprint"></i>
+        </div>
+    
+        <span class="slider-text">
+            Geser untuk Absen Masuk
+        </span>
+    
+    </div>
+
+
+    <div class="footer-text" id="footerInfo">
+
+        Absensi hanya dapat dilakukan 1x masuk dan 1x pulang setiap hari.
+
+    </div>
+
+
+
+   <!-- ================= MENU ================= -->
+
+<nav id="bottomNav">
+
+    <a href="dashboard.html">
+
+        <i class="fas fa-house"></i>
+
+        <span>Dashboard</span>
+
+    </a>
+
+    <a href="absensi.html" class="active">
+
+        <i class="fas fa-fingerprint"></i>
+
+        <span>Absensi</span>
+
+    </a>
+
+    <a href="riwayat.html">
+
+        <i class="fas fa-clock-rotate-left"></i>
+
+        <span>Riwayat</span>
+
+    </a>
+
+    <a href="profil.html">
+
+        <i class="fas fa-user"></i>
+
+        <span>Profil</span>
+
+    </a>
+
+</nav>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="absensi.js"></script>
+
+</body>
+</html>

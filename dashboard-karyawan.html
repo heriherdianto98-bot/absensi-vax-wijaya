@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard Karyawan</title>
+
+<link rel="stylesheet" href="dashboard-karyawan.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div>
+
+        <small>Selamat Datang</small>
+
+        <h2 id="namaKaryawan">
+
+            Loading...
+
+        </h2>
+        <p id="jabatanKaryawan"></p>
+        <p id="cabangKaryawan"></p>
+    </div>
+
+    <img
+        id="fotoKaryawan"
+        src="img/default-profile.png"
+        alt="Foto">
+
+</header>
+
+
+
+<!-- ================= GREETING ================= -->
+
+<section class="card greeting">
+
+    <h2 id="greetingTitle">
+
+        Selamat Pagi ☀️
+
+    </h2>
+
+    <p id="greetingMessage">
+
+        Semoga hari ini penuh semangat.
+
+    </p>
+
+</section>
+
+
+
+<!-- ================= STATUS ================= -->
+
+<section class="card">
+
+    <small>Status Hari Ini</small>
+
+    <h2 id="statusAbsen">
+
+        BELUM ABSEN
+
+    </h2>
+
+    <p>
+
+        Jam Kerja :
+        <span id="jamKerja">
+
+            10:00 - 22:00
+
+        </span>
+
+    </p>
+
+    <button id="btnAbsen">
+
+        ABSEN SEKARANG
+
+    </button>
+
+</section>
+
+
+
+<!-- ================= RINGKASAN ================= -->
+
+<section class="card">
+
+<!-- ================= RINGKASAN ================= -->
+
+<section class="card">
+
+    <h3>Ringkasan Bulan Ini</h3>
+
+    <div class="grid">
+
+        <div class="item">
+            <h2 id="totalMasuk">0</h2>
+            <span>Masuk</span>
+        </div>
+
+        <div class="item">
+            <h2 id="totalLibur">0</h2>
+            <span>Libur</span>
+        </div>
+
+        <div class="item">
+            <h2 id="totalTerlambat">0</h2>
+            <span>Terlambat</span>
+        </div>
+
+        <div class="item">
+            <h2 id="totalDenda">Rp0</h2>
+            <span>Denda</span>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= MENU CEPAT ================= -->
+
+<section class="card">
+
+<h3>Menu Cepat</h3>
+
+<div class="menu-grid">
+
+<a href="absensi.html">
+
+<i class="fas fa-fingerprint"></i>
+
+<span>Absensi</span>
+
+</a>
+
+<a href="riwayat.html">
+
+<i class="fas fa-clock-rotate-left"></i>
+
+<span>Riwayat</span>
+
+</a>
+
+<a href="profil.html">
+
+<i class="fas fa-user"></i>
+
+<span>Profil</span>
+
+</a>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= PENGUMUMAN ================= -->
+
+<section class="card">
+
+<h3>Pengumuman</h3>
+
+<p id="pengumuman">
+
+Belum ada pengumuman.
+
+</p>
+
+</section>
+
+
+
+<!-- ================= BOTTOM MENU ================= -->
+
+<nav id="bottomNav">
+
+<a class="active">
+
+<i class="fas fa-house"></i>
+
+<span>Dashboard</span>
+
+</a>
+
+<a href="absensi.html">
+
+<i class="fas fa-fingerprint"></i>
+
+<span>Absensi</span>
+
+</a>
+
+<a href="riwayat.html">
+
+<i class="fas fa-clock-rotate-left"></i>
+
+<span>Riwayat</span>
+
+</a>
+
+<a href="profil.html">
+
+<i class="fas fa-user"></i>
+
+<span>Profil</span>
+
+</a>
+
+</nav>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script src="config.js"></script>
+
+<script src="dashboard-karyawan.js"></script>
+
+</body>
+</html>

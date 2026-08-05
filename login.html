@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login Vax Wijaya</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(244,185,66,.08),
+                    transparent 35%
+                ),
+                #0b0e12;
+
+            color:#f5f5f5;
+        }
+
+        .login-card{
+            width:100%;
+            max-width:430px;
+
+            background:linear-gradient(
+                145deg,
+                #191d24,
+                #11151b
+            );
+
+            border:1px solid rgba(244,185,66,.35);
+            border-radius:18px;
+
+            padding:38px 34px 30px;
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,.55),
+                0 0 30px rgba(244,185,66,.05);
+
+            animation:loginMasuk .45s ease;
+        }
+        #btnLogin{
+    width:100%;
+    padding:16px;
+    margin-top:15px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    font-size:27px;
+    font-weight:bold;
+    color:#111;
+    background:linear-gradient(90deg,#ffd34d,#f4b942);
+    transition:.25s ease;
+        }
+    #btnLogin.loading{
+    font-size:18px !important;
+    font-weight:600;
+    letter-spacing:1px;
+}
+        
+#btnLogin:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 18px rgba(244,185,66,.45);
+}
+
+#btnLogin:active{
+    transform:scale(.98);
+}
+
+#btnLogin:disabled{
+    opacity:.75;
+    cursor:not-allowed;
+}
+        @keyframes loginMasuk{
+            from{
+                opacity:0;
+                transform:translateY(18px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+        .brand{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .brand-title{
+            font-size:38px;
+            font-weight:900;
+            letter-spacing:1px;
+
+            background:linear-gradient(
+                180deg,
+                #ffd86a,
+                #e6a72d
+            );
+
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+        }
+
+        .brand-subtitle{
+            margin-top:7px;
+            color:#89919d;
+            font-size:11px;
+            font-weight:bold;
+            letter-spacing:3px;
+            text-transform:uppercase;
+        }
+
+        .brand-line{
+            width:90px;
+            height:2px;
+            margin:18px auto 0;
+
+            background:linear-gradient(
+                90deg,
+                transparent,
+                #f4b942,
+                transparent
+            );
+        }
+
+        .login-text{
+            text-align:center;
+            color:#b8bec7;
+            font-size:14px;
+            margin-bottom:26px;
+        }
+
+        .form-group{
+            margin-bottom:18px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:8px;
+
+            color:#e7e7e7;
+            font-size:14px;
+            font-weight:bold;
+        }
+
+        .input-wrapper{
+            position:relative;
+        }
+
+        .input-icon{
+            position:absolute;
+            left:15px;
+            top:50%;
+            transform:translateY(-50%);
+
+            font-size:17px;
+            pointer-events:none;
+        }
+
+        input{
+            width:100%;
+            height:52px;
+
+            padding:0 48px 0 45px;
+
+            background:#0c1117;
+            color:#ffffff;
+
+            border:1px solid #3b424c;
+            border-radius:10px;
+
+            font-size:15px;
+            transition:.2s;
+        }
+
+        input::placeholder{
+            color:#69717d;
+        }
+
+        input:focus{
+            outline:none;
+            border-color:#f4b942;
+
+            box-shadow:
+                0 0 0 3px rgba(244,185,66,.10);
+                #btnLogin.loading{
+    font-size:24px;
+    letter-spacing:1px;
+}
+        }
+
+        .toggle-password{
+            position:absolute;
+            right:14px;
+            top:50%;
+            transform:translateY(-50%);
+
+            border:none;
+            background:transparent;
+            color:#9ca3af;
+
+            padding:5px;
+            font-size:17px;
+            cursor:pointer;
+        }
+
+        .toggle-password:hover{
+            color:#f4b942;
+        }
+
+        .login-button{
+            width:100%;
+            height:52px;
+            margin-top:7px;
+
+            border:none;
+            border-radius:10px;
+
+            background:linear-gradient(
+                135deg,
+                #ffd044,
+                #f4ad28
+            );
+
+            color:#111;
+            font-size:16px;
+            font-weight:900;
+            letter-spacing:.5px;
+
+            cursor:pointer;
+            transition:.2s;
+        }
+
+        .login-button:hover{
+            transform:translateY(-2px);
+
+            box-shadow:
+                0 10px 22px rgba(244,185,66,.22);
+        }
+
+        .login-button:active{
+            transform:translateY(0);
+        }
+
+        .login-button:disabled{
+            opacity:.6;
+            cursor:not-allowed;
+            transform:none;
+        }
+
+        #loginMessage{
+            min-height:18px;
+            margin-top:14px;
+
+            text-align:center;
+            color:#ff6b6b;
+            font-size:13px;
+        }
+
+        .login-footer{
+            margin-top:28px;
+            padding-top:20px;
+
+            border-top:1px solid #323842;
+            text-align:center;
+        }
+
+        .developer-label{
+            color:#777f89;
+            font-size:10px;
+        }
+
+        .developer-name{
+            margin-top:4px;
+            color:#f2f2f2;
+            font-size:12px;
+            font-weight:bold;
+        }
+
+        .app-version{
+            margin-top:10px;
+            color:#555e69;
+            font-size:9px;
+            letter-spacing:.5px;
+        }
+
+        @media(max-width:500px){
+            .login-card{
+                padding:32px 22px 26px;
+            }
+
+            .brand-title{
+                font-size:32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+
+        <div class="brand">
+            <div class="brand-title">
+                VAX WIJAYA
+            </div>
+
+            <div class="brand-subtitle">
+                Management System
+            </div>
+
+            <div class="brand-line"></div>
+        </div>
+
+        <div class="login-text">
+            Silakan login untuk melanjutkan
+        </div>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label for="username">Email</label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">📧</span>
+
+                    <input
+                        type="email"
+                        id="username"
+                        autocomplete="username"
+                        placeholder="Masukkan email"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+
+                    <input
+                        type="password"
+                        id="password"
+                        autocomplete="current-password"
+                        placeholder="Masukkan password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        id="togglePassword"
+                        aria-label="Lihat password"
+                    >
+                        👁
+                    </button>
+                </div>
+            </div>
+
+            <button
+                type="submit"
+                class="login-button"
+                id="btnLogin"
+            >
+                LOGIN
+            </button>
+
+            <div id="loginMessage"></div>
+
+        </form>
+
+        <div class="login-footer">
+
+            <div class="developer-label">
+                © Developed by
+            </div>
+
+            <div class="developer-name">
+                Heri Herdianto
+            </div>
+
+            <div class="app-version">
+                Dashboard Vax Wijaya v1.0
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+    <script src="login.js"></script>
+
+    <script>
+        const togglePassword =
+            document.getElementById("togglePassword");
+
+        const inputPassword =
+            document.getElementById("password");
+
+        togglePassword.addEventListener("click", () => {
+            const sedangTersembunyi =
+                inputPassword.type === "password";
+
+            inputPassword.type =
+                sedangTersembunyi ? "text" : "password";
+
+            togglePassword.textContent =
+                sedangTersembunyi ? "🙈" : "👁";
+        });
+    </script>
+
+</body>
+</html>
+

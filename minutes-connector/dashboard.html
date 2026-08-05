@@ -1,0 +1,2584 @@
+
+
+    <header id="header">
+        <div id="logo-group">
+            <span id="logo"> <img src="https://minutesapps.com/dashboard216a/webroot/cms/img/minutes-dashboard-logo.png" alt="SmartAdmin"> </span>
+
+                            <!-- <span id="activity" class="activity-dropdown"> <i class="fa fa-user"></i> <b class="badge"> <span class="total-all">0</span> </b> </span>
+
+                <div class="ajax-dropdown">
+                    <div class="btn-group btn-group-justified" data-toggle="buttons">
+                        <label class="btn btn-default" id="notification-btn">
+                            <input type="radio" name="activity" id="https://minutesapps.com/dashboard216a/welcome/notify?type=booking">booking (<span class='total-booking'></span>)
+                        </label>
+                        <label class="btn btn-default" id="notification-btn">
+                            <input type="radio" name="activity" id="https://minutesapps.com/dashboard216a/welcome/notify?type=cancel">cancel (<span class='total-cancel'></span>)
+                        </label>
+                    </div>
+
+                    <div class="ajax-notifications custom-scroll">
+                        <div class="alert alert-transparent">
+                            <h4>Click a button to show messages here</h4>
+                            This blank page message helps protect your privacy, or you can show the first message here
+                            automatically.
+                        </div>
+                        <i class="fa fa-lock fa-4x fa-border"></i>
+                    </div>
+
+                    <span> Last updated on: <span class="lastupdate"></span>
+                        <button type="button" id="refreshnotif"
+                                data-loading-text="<i class='fa fa-refresh fa-spin'></i> Loading..."
+                                class="btn btn-xs btn-default pull-right">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </span>
+
+                </div> -->
+                    </div>
+
+        <div class="pull-right">
+            <div id="hide-menu" class="btn-header pull-right">
+                <span> <a href="javascript:void(0);" title="Collapse Menu" data-action="toggleMenu"><i class="fa fa-reorder"></i></a> </span>
+            </div>
+
+            <ul id="mobile-profile-img" class="hidden-xs padding-5">
+                <li class="">
+                    <a href="#" class="dropdown-toggle no-margin">
+                                                <!-- img src="https://minutesapps.com/?w=50&h=50&type=bg" onerror="this.onerror=null;this.src='https://minutesapps.com/dashboard216a/webroot/cms/img/avatars/male.png';"   alt="" class="online" / -->
+                    </a>
+                </li>
+            </ul>
+
+            <div id="logout" class="btn-header transparent pull-right">
+                <span>
+                    <a href="https://minutesapps.com/dashboard216a/user/logout" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-sign-out"></i></a>
+                </span>
+            </div>
+
+                                <div id="switch-merchant" class="pull-right">
+                                                <div class="pull-right" style="width:250px;">
+                            <form action="https://minutesapps.com/dashboard216a/welcome/switchMerchant" method="post">
+                                <select class="select2 select2-offscreen select2-hidden-accessible" name="merchant" onchange="this.form.submit()" tabindex="-1" aria-hidden="true">
+                                    
+                                                                                                                    <option value="274" selected="selected">Vax Wijaya </option>
+                                                                            
+                                                                    </select><span class="select2 select2-container select2-container--default" dir="ltr" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-merchant-jv-container"><span class="select2-selection__rendered" id="select2-merchant-jv-container" title="Vax Wijaya "><span class="select2-selection__clear">×</span>Vax Wijaya </span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                            </form>
+                        </div>
+                         
+
+                        
+                                                <div class="pull-right" style="width:200px; margin-right: 30px;">
+                            <div class="row">
+                                <form action="https://minutesapps.com/dashboard216a/welcome/switchrole" method="post">
+                                    <select class="select2 select2-offscreen select2-hidden-accessible" name="switchrole" onchange="this.form.submit()" tabindex="-1" aria-hidden="true">
+                                                                                                                        <option value="2" selected="selected">Group</option>
+                                                                                <option value="3">Merchant</option>
+                                    </select><span class="select2 select2-container select2-container--default" dir="ltr" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-switchrole-6f-container"><span class="select2-selection__rendered" id="select2-switchrole-6f-container" title="Group"><span class="select2-selection__clear">×</span>Group</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                                </form>  
+                            </div>
+                        </div>
+                                            </div>
+                        </div>
+    </header>
+<!-- Left panel : Navigation area -->
+<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+<aside id="left-panel">
+
+	<!-- User info -->
+	<div class="login-info">
+				<span> <!-- User image size is adjusted inside CSS, it should stay as is --> 
+					
+					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
+												<img src="https://minutesapps.com/upload/user/default.png?w=50&amp;h=50&amp;type=bg" alt="" class="online">
+						<span style="line-height: 25px;">
+							Heri / Merchant Group						</span>
+						
+					</a> 
+					
+				</span>
+	</div>
+	<!-- end user info -->
+
+	<!-- NAVIGATION : This navigation is also responsive
+
+	To make this navigation dynamic please make sure to link the node
+	(the reference to the nav > ul) after page load. Or the navigation
+	will not initialize.
+-->
+	<nav>
+		<!-- NOTE: Notice the gaps after each icon usage <i></i>..
+		Please note that these links work a bit different than
+		traditional hre="" links. See documentation for details.
+	-->
+		<ul style=""><li class="active"><a href="https://minutesapps.com/dashboard216a" title="Dashboard">
+					<i class="fa fa-lg fa-fw fa-home"></i>
+					<span class="menu-item-parent">Dashboard </span>
+					
+				</a></li><li><a href="javascript:void(0)" title="Performance Report">
+					<i class="fa fa-lg fa-fw fa-laptop"></i>
+					<span class="menu-item-parent">Performance Report </span>
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/kpi" title="KPI">
+					
+					KPI 
+					
+				</a></li><li><a href="javascript:void(0)" title="Feedback">
+					
+					Feedback 
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/report/feedback/merchant" title="Merchant Feedback">
+					
+					Merchant Feedback 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/report/feedback/provider" title="Provider Feedback">
+					
+					Provider Feedback 
+					
+				</a></li></ul></li></ul></li><li><a href="javascript:void(0)" title="Users">
+					<i class="fa fa-lg fa-fw fa-user"></i>
+					<span class="menu-item-parent">Users </span>
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/user/data" title="User">
+					
+					User 
+					
+				</a></li></ul></li><li><a href="javascript:void(0)" title="Service">
+					<i class="fa fa-lg fa-fw fa-tasks"></i>
+					<span class="menu-item-parent">Service </span>
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/package/mapping" title="Mapping Package">
+					
+					Mapping Package 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/packagesubsription/mapping" title="Mapping Subscription">
+					
+					Mapping Subscription 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/service/mapping" title="Mapping Service">
+					
+					Mapping Service 
+					
+				</a></li></ul></li><li><a href="javascript:void(0)" title="Products">
+					<i class="fa fa-lg fa-fw fa-folder"></i>
+					<span class="menu-item-parent">Products </span>
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/product/data" title="Product">
+					
+					Product 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/producttype/data" title="Product Type">
+					
+					Product Type 
+					
+				</a></li></ul></li><li><a href="javascript:void(0)" title="Product Inventory">
+					<i class="fa fa-lg fa-fw fa-cubes"></i>
+					<span class="menu-item-parent">Product Inventory </span>
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/productopname/data" title="Stock Control">
+					
+					Stock Control 
+					
+				</a></li><li><a href="javascript:void(0)" title="Stock In">
+					
+					Stock In 
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/productstock/incoming" title="Incoming Product">
+					
+					Incoming Product 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/productstock/data" title="Purchase Order">
+					
+					Purchase Order 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/productstock/request/?source=stock-in" title="Request for Product">
+					
+					Request for Product 
+					
+				</a></li></ul></li><li><a href="javascript:void(0)" title="Stock Out">
+					
+					Stock Out 
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/productstock/request/?source=stock-out" title="Requested Product">
+					
+					Requested Product 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/productstock/send" title="Send Product">
+					
+					Send Product 
+					
+				</a></li></ul></li></ul></li><li><a href="javascript:void(0)" title="Sales Report">
+					<i class="fa fa-lg fa-fw fa-bar-chart"></i>
+					<span class="menu-item-parent">Sales Report </span>
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/report/salessummary" title="General Report">
+					
+					General Report 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/reports/groups/product" title="Product Report">
+					
+					Product Report 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/reports/groups/service" title="Service Report">
+					
+					Service Report 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/emailedreport/data" title="Push Email">
+					
+					Push Email 
+					
+				</a></li></ul></li><li><a href="javascript:void(0)" title="Settings">
+					<i class="fa fa-lg fa-fw fa-gear"></i>
+					<span class="menu-item-parent">Settings </span>
+					
+				<b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a><ul><li><a href="https://minutesapps.com/dashboard216a/paymenttype/data" title="Payment Type">
+					
+					Payment Type 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/brand/data" title="Brand">
+					
+					Brand 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/discount/data" title="Discount">
+					
+					Discount 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/expensecategory/data" title="Expense Category">
+					
+					Expense Category 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/membership/data" title="Membership">
+					
+					Membership 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/merchant_group/data" title="Merchant Group">
+					
+					Merchant Group 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/merchant/data" title="Merchant Setting">
+					
+					Merchant Setting 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/paymentpool/data" title="Payment Pool">
+					
+					Payment Pool 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/suplier/data" title="Suplier">
+					
+					Suplier 
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/tax/data" title="Tax">
+					
+					Tax 
+					
+				</a></li></ul></li><li><a href="https://minutesapps.com/dashboard216a/changepassword" title="Change Password">
+					<i class="fa fa-lg fa-fw fa-lock"></i>
+					<span class="menu-item-parent">Change Password </span>
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/tutorial" title="Tutorial Video">
+					<i class="fa fa-lg fa-fw fa-camera"></i>
+					<span class="menu-item-parent">Tutorial Video </span>
+					
+				</a></li><li><a href="https://minutesapps.com/dashboard216a/logout" title="Logout">
+					<i class="fa fa-lg fa-fw fa-sign-out"></i>
+					<span class="menu-item-parent">Logout </span>
+					
+				</a></li></ul>
+	</nav>
+	<span class="minifyme" data-action="minifyMenu"> <i class="fa fa-arrow-circle-left hit"></i> </span>
+
+</aside>
+<!-- END NAVIGATION --><div id="main" role="main">	
+		<!-- RIBBON -->
+	<div id="ribbon">
+
+		<span class="ribbon-button-alignment"> 
+			<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh" rel="tooltip" data-placement="bottom" data-original-title="&lt;i class='text-warning fa fa-warning'&gt;&lt;/i&gt; Warning! This will reset all your widget settings." data-html="true"><i class="fa fa-refresh"></i></span> 
+		</span>
+
+		<!-- breadcrumb -->
+		<ol class="breadcrumb">
+			<li><a href="https://minutesapps.com/dashboard216a/">Home</a></li>
+			<li>Dashboard</li><li></li>		</ol>
+		<!-- end breadcrumb -->
+
+		<!-- You can also add more buttons to the
+		ribbon for further usability
+
+		Example below:
+
+		<span class="ribbon-button-alignment pull-right">
+		<span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa-grid"></i> Change Grid</span>
+		<span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
+		<span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
+		</span> -->
+
+	</div>
+	<!-- END RIBBON -->	<style type="text/css">
+	.control-label{
+		font-weight: bold;
+		padding-top: 9px;
+		font-size: 12px;
+	}
+	.form-group{
+		margin-bottom: 10px;
+	}
+	#sparks {
+		text-align: left;
+		margin: 10px 0px;
+	}
+	#sparks .fa {
+		float: left;
+		height: 18px;x
+		line-height: 18px;
+		margin-right: 5px;
+	}
+	#reportrange-frame {
+		width : 225px;
+	}
+	#reportrange {
+		text-align: center;
+	}
+	@media (max-width:400px){
+		#sparks li:first-child {
+			padding-left: 10px !important;
+		}
+	}
+</style>
+<!-- MAIN CONTENT -->
+<!-- 0.1915 -->
+<div id="content">
+	<div class="row">
+		<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+			<h1 class="page-title txt-color-blueDark">
+				<i class="fa fa-bar-chart-o fa-fw "></i>
+				Dashboard
+				<span>&gt; 
+					My Dashboard
+				</span>
+			</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12 sortable-grid ui-sortable" style="margin-bottom: 30px;">
+			<!--
+			<div id="reportrange-frame" class="input-group pull-right">
+				<span class="input-group-addon" id="report-range"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+				<input type="text" id="reportrange" class="form-control" aria-describedby="report-range" />
+			</div>
+			-->
+			<div class="btn-group btn-group-sm btn-group-justified" data-toggle="buttons" style="width: 300px;">
+					            <label class="btn btn-default active btn-new-booking" onclick="window.location='https://minutesapps.com/dashboard216a/?filter=day&amp;&amp;'">
+	                <input type="radio" name="iconselect" id="icon-1" value="fa-info" checked="">
+	                Day
+	            </label>
+	            <label class="btn btn-default  btn-new-booking" onclick="window.location='https://minutesapps.com/dashboard216a/?filter=week&amp;&amp;'">
+	                <input type="radio" name="iconselect" id="icon-1" value="fa-info">
+	                Week
+	            </label>
+	            <label class="btn btn-default  btn-new-booking" onclick="window.location='https://minutesapps.com/dashboard216a/?filter=month&amp;&amp;'">
+	                <input type="radio" name="iconselect" id="icon-1" value="fa-info">
+	                Month
+	            </label>
+	        </div>
+		</div>
+	</div>
+
+		<div class="row">
+		<div class="col-xs-12">
+			<ul id="sparks" class="">
+				<li class="sparks-info">
+					<h5>
+						Total Income
+						<span class="txt-color-blue">IDR 0</span>
+					</h5>
+				</li>
+									<li class="sparks-info">
+						<h5>
+							Service Income
+							<span class="txt-color-purple">IDR 0</span>
+						</h5>
+					</li>
+					<li class="sparks-info">
+						<h5>
+							Product Sales
+							<span class="txt-color-greenDark">IDR 0</span>
+						</h5>
+					</li>
+					<li class="sparks-info">
+						<h5>
+							Product Membership
+							<span class="txt-color-greenDark">IDR 0</span>
+						</h5>
+					</li>
+					<li class="sparks-info">
+						<h5>
+							Product Subscription
+							<span class="txt-color-greenDark">IDR 0</span>
+						</h5>
+					</li>
+					<!--li class="sparks-info">
+						<h5>
+							Addon Sales Income
+							<span class="txt-color-greenDark">IDR 0</span>
+						</h5>
+					</li-->
+								<li class="sparks-info">
+					<h5>
+						Total Transaction
+						<span class="txt-color-purple"><i class="fa fa-group"></i> 0</span>
+					</h5>
+				</li>
+                <li class="sparks-info">
+                    <h5>
+                        Total Visitor
+                        <span class="txt-color-purple"><i class="fa fa-group"></i> 0</span>
+                    </h5>
+                </li>
+                <li class="sparks-info">
+                    <h5>
+                        Total Guest
+                        <span class="txt-color-purple"><i class="fa fa-group"></i> 0</span>
+                    </h5>
+                </li>
+				<li class="sparks-info">
+					<h5>
+						Apps Transaction
+						<span class="txt-color-yellow"><i class="fa fa-mobile-phone"></i> 0</span>
+					</h5>
+				</li>
+									<li class="sparks-info">
+						<h5>
+							Total Product
+							<span class="txt-color-green"><i class="fa fa-shopping-cart"></i> 0</span>
+						</h5>
+					</li>
+							</ul>
+		</div>
+	</div>
+		
+	
+	<div class="row" style="margin-bottom: 15px;">
+		<form action="" method="get">
+			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+								<select multiple="" style="width:100%" class="select2 select2 select2-offscreen select2-hidden-accessible" name="merchant[]" placeholder="Filter Merchant" tabindex="-1" aria-hidden="true">
+												<option value="672ccf54958cfd298d3eb35e28e1cfc1">Vax wijaya subang</option>
+												<option value="f9641d997f59994ae120a23d13113927">Barsel Barbershop</option>
+												<option value="06bd95bb33e32029bb8fd4efef6fcc84">Vax wijaya kalijati</option>
+												<option value="602f57757c8cd35cce9c64ac0cfd383c">V&amp;B barbershop</option>
+												<option value="0829ab301c3b7a274d5a2dd9b1e3f041">Vax Wijaya Palabuan</option>
+												<option value="1955e56afd8f063bb5beb8bab149c910">Vax Wijaya Rawa Badak</option>
+												<option value="54e7f2e54f650ab78aba73af6006a48c">Vax Wijaya AR Hakim</option>
+												<option value="4184281d8eff344b54ad35c467e9babd">Vax Wijaya Plaza Pagaden</option>
+												<option value="c035c33a2ffadc2ae4517a5f8a132a2f">Vax Wijaya SPBU Pagaden</option>
+												<option value="488f61ffb3b8d0cd2349e12f75672e8a">Vax Wijaya AR Hakim 2</option>
+												<option value="baf49e72c5455948d419e57d1fcba7fe">VAX Wijaya PMK</option>
+												<option value="9483b88850c86feb15d918c51f1199e8">Vax Wijaya Mekarwangi</option>
+												<option value="3884e5f1bd4528e8d642e930ed996d27">Vax Wijaya Parahyangan</option>
+												<option value="2a7ce9c60f208e02834b29886f8ef67c">Vax Wijaya Cinangsi</option>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="" style="width: 0.75em;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+			</div>
+			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+				<button type="submit" class="btn btn-labeled btn-primary" style="width: 100%;position: relative;line-height: 30px;">
+		            <span class="btn-label" style="width: 30px;left: 0px;position: absolute;padding: 0px;height: 30px;">
+		                <i class="glyphicon glyphicon-filter" style="height: 30px;"></i>
+		            </span>Show Data
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+					<h2>Customer Report</h2>
+					<ul class="nav nav-tabs pull-right in" id="myTab">
+						<li class="active">
+							<a data-toggle="tab" href="#s1" title="Apps Booking"><i class="fa fa-dollar"></i> <span class="hidden-mobile hidden-tablet">Apps Booking</span></a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#s2" title="Total Visitor"><i class="fa fa-group"></i> <span class="hidden-mobile hidden-tablet">Total Visitor</span></a>
+						</li>
+					</ul>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body no-padding">
+						<div id="myTabContent" class="tab-content">
+							<div class="tab-pane fade in active padding-10 no-padding-bottom" id="s1">
+								<div id="chart-apps" class="chart has-legend" style="width: 100%; padding: 0px; position: relative;"><canvas class="flot-base" width="1216" height="220" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 1216px; height: 220px;"></canvas><div class="flot-text" style="position: absolute; inset: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; inset: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 50px; text-align: center;">07 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 130px; text-align: center;">09 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 211px; text-align: center;">11 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 291px; text-align: center;">13 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 372px; text-align: center;">15 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 453px; text-align: center;">17 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 533px; text-align: center;">19 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 614px; text-align: center;">21 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 694px; text-align: center;">23 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 775px; text-align: center;">25 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 855px; text-align: center;">27 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 936px; text-align: center;">29 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 1016px; text-align: center;">31 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 1094px; text-align: center;">02 Aug</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 76px; top: 205px; left: 1175px; text-align: center;">04 Aug</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; inset: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 188px; left: 0px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 3px; left: 0px; text-align: right;">1</div></div></div><canvas class="flot-overlay" width="1216" height="220" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 1216px; height: 220px;"></canvas><div class="legend"><div style="position: absolute; width: 94px; height: 15px; top: -22px; right: 19px; opacity: 1;"> </div><table style="position:absolute;top:-22px;right:19px;;font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style=""><div style="border:2px solid rgb(226,73,19);overflow:hidden"></div></div></td><td class="legendLabel"><span>Apps Booking</span></td></tr></tbody></table></div></div>
+							</div>
+							<div class="tab-pane fade padding-10 no-padding-bottom" id="s2">
+								<div id="chart-customer" class="chart has-legend" style="width: 100%; padding: 0px; position: relative;"><canvas class="flot-base" width="100" height="220" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 100px; height: 220px;"></canvas><div class="flot-text" style="position: absolute; inset: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; inset: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 25px; top: 220px; left: 35px; text-align: center;">15 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 25px; top: 220px; left: 62px; text-align: center;">25 Jul</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 25px; top: 220px; left: 90px; text-align: center;">04 Aug</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; inset: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 210px; left: 0px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 177px; left: 0px; text-align: right;">50</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 143px; left: 0px; text-align: right;">100</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 110px; left: 0px; text-align: right;">150</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 77px; left: 0px; text-align: right;">200</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 43px; left: 0px; text-align: right;">250</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 10px; left: 0px; text-align: right;">300</div></div></div><canvas class="flot-overlay" width="100" height="220" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 100px; height: 220px;"></canvas><div class="legend"><div style="position: absolute; width: 0px; height: 0px; top: -22px; right: 5px; opacity: 1;"> </div><table style="position:absolute;top:-22px;right:5px;;font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style=""><div style="border:2px solid rgb(226,73,19);overflow:hidden"></div></div></td><td class="legendLabel"><span>Customer Booking</span></td></tr></tbody></table></div></div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div id="widget-grid">
+		<div class="row">
+			<div class="col-sm-12 col-md-12 col-lg-12">
+				<div class="jarviswidget jarviswidget-color-darken" data-widget-sortable="false" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" role="widget">
+					<header role="heading"><div class="jarviswidget-ctrls" role="menu">   <a href="javascript:void(0);" class="button-icon jarviswidget-toggle-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Collapse"><i class="fa fa-minus "></i></a>  </div>
+						<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+						<h2> Merchant Incomes </h2>
+					<span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+					<div role="content" style="padding: 0px;">
+						<div class="jarviswidget-editbox"></div>
+						<script type="text/javascript">
+						/*
+							 $(document).ready(function() {
+							     $('#tableIncomes').DataTable( {
+							 		"paging"	: false,
+							 		"ordering"	: true,
+							 		"info"		: false,
+							 		"searching"	: false,
+								    "order"    : [ [ 0, "desc" ] ]
+							     } );
+							 } );
+						*/
+						</script>
+						<style type="text/css">
+							.dt_basic_2 {
+								margin: 0px !important;
+								border-bottom: 0px;
+							}
+							#tableIncomes_wrapper .dt-toolbar-footer {
+								border-top: 0px;
+								padding: 0px;
+								margin: 0px;
+							}
+							#tableIncomes_wrapper .dt-toolbar {
+								border-bottom: 0px;
+								padding: 0px;
+							}
+						</style>
+						<table id="tableIncomes" class="dt_basic_2 table table-striped table-bordered table-hover" width="100%">
+							<thead>
+							<tr>
+								<td>Date</td>
+								<td>Total Transactions</td>
+								<td>Walk-in Transactions</td>
+								<td>App Transactions</td>
+								<td>App User</td>
+								<td>Guest</td>
+								<td>Customer</td>
+                                <td>Total Visitor</td>
+                                									<td>Service Income</td>
+									<td>Product Income</td>
+									<td>Membership Income</td>
+									<td>Subscription Income</td>
+									<!--td>Addon Sales Income</td-->
+																<td>Total Income</td>
+							</tr>
+							</thead>
+							<tbody>
+																<tr>
+										<td>
+											04 Aug										</td>
+										<td>
+											0										</td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											0										</td>
+										<td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        										<td>0</td>
+										<td>0</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 0										</td>
+									</tr>
+																	<tr>
+										<td>
+											03 Aug										</td>
+										<td>
+											96										</td>
+                                        <td>
+                                            96                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											3										</td>
+										<td>
+                                            93                                        </td>
+                                        <td>
+											96										</td>
+                                        										<td>7,333,000</td>
+										<td>105,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 7,438,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											02 Aug										</td>
+										<td>
+											232										</td>
+                                        <td>
+                                            232                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											33										</td>
+										<td>
+                                            194                                        </td>
+                                        <td>
+											227										</td>
+                                        										<td>16,145,000</td>
+										<td>505,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 16,650,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											01 Aug										</td>
+										<td>
+											195										</td>
+                                        <td>
+                                            195                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											19										</td>
+										<td>
+                                            175                                        </td>
+                                        <td>
+											194										</td>
+                                        										<td>13,187,000</td>
+										<td>730,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 13,917,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											31 Jul										</td>
+										<td>
+											145										</td>
+                                        <td>
+                                            145                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											11										</td>
+										<td>
+                                            131                                        </td>
+                                        <td>
+											142										</td>
+                                        										<td>9,460,000</td>
+										<td>340,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 9,800,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											30 Jul										</td>
+										<td>
+											110										</td>
+                                        <td>
+                                            110                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											12										</td>
+										<td>
+                                            98                                        </td>
+                                        <td>
+											110										</td>
+                                        										<td>7,073,000</td>
+										<td>320,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 7,393,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											29 Jul										</td>
+										<td>
+											101										</td>
+                                        <td>
+                                            101                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											11										</td>
+										<td>
+                                            89                                        </td>
+                                        <td>
+											100										</td>
+                                        										<td>7,496,000</td>
+										<td>215,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 7,711,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											28 Jul										</td>
+										<td>
+											103										</td>
+                                        <td>
+                                            103                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											10										</td>
+										<td>
+                                            93                                        </td>
+                                        <td>
+											103										</td>
+                                        										<td>7,363,000</td>
+										<td>125,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 7,488,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											27 Jul										</td>
+										<td>
+											139										</td>
+                                        <td>
+                                            139                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											8										</td>
+										<td>
+                                            129                                        </td>
+                                        <td>
+											137										</td>
+                                        										<td>7,060,000</td>
+										<td>150,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 7,210,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											26 Jul										</td>
+										<td>
+											193										</td>
+                                        <td>
+                                            193                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											22										</td>
+										<td>
+                                            171                                        </td>
+                                        <td>
+											193										</td>
+                                        										<td>11,065,000</td>
+										<td>195,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 11,260,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											25 Jul										</td>
+										<td>
+											148										</td>
+                                        <td>
+                                            148                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											15										</td>
+										<td>
+                                            132                                        </td>
+                                        <td>
+											147										</td>
+                                        										<td>8,935,000</td>
+										<td>375,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 9,310,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											24 Jul										</td>
+										<td>
+											130										</td>
+                                        <td>
+                                            130                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											10										</td>
+										<td>
+                                            119                                        </td>
+                                        <td>
+											129										</td>
+                                        										<td>7,320,000</td>
+										<td>65,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 7,385,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											23 Jul										</td>
+										<td>
+											86										</td>
+                                        <td>
+                                            86                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											10										</td>
+										<td>
+                                            76                                        </td>
+                                        <td>
+											86										</td>
+                                        										<td>5,180,000</td>
+										<td>125,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 5,305,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											22 Jul										</td>
+										<td>
+											90										</td>
+                                        <td>
+                                            90                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											12										</td>
+										<td>
+                                            77                                        </td>
+                                        <td>
+											89										</td>
+                                        										<td>6,110,000</td>
+										<td>55,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,165,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											21 Jul										</td>
+										<td>
+											85										</td>
+                                        <td>
+                                            85                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											10										</td>
+										<td>
+                                            75                                        </td>
+                                        <td>
+											85										</td>
+                                        										<td>5,975,000</td>
+										<td>155,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,130,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											20 Jul										</td>
+										<td>
+											98										</td>
+                                        <td>
+                                            98                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											10										</td>
+										<td>
+                                            87                                        </td>
+                                        <td>
+											97										</td>
+                                        										<td>6,715,000</td>
+										<td>115,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,830,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											19 Jul										</td>
+										<td>
+											168										</td>
+                                        <td>
+                                            168                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											16										</td>
+										<td>
+                                            150                                        </td>
+                                        <td>
+											166										</td>
+                                        										<td>12,060,000</td>
+										<td>365,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 12,425,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											18 Jul										</td>
+										<td>
+											144										</td>
+                                        <td>
+                                            144                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											16										</td>
+										<td>
+                                            128                                        </td>
+                                        <td>
+											144										</td>
+                                        										<td>9,745,000</td>
+										<td>165,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 9,910,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											17 Jul										</td>
+										<td>
+											91										</td>
+                                        <td>
+                                            91                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											9										</td>
+										<td>
+                                            82                                        </td>
+                                        <td>
+											91										</td>
+                                        										<td>6,375,000</td>
+										<td>130,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,505,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											16 Jul										</td>
+										<td>
+											98										</td>
+                                        <td>
+                                            98                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											8										</td>
+										<td>
+                                            87                                        </td>
+                                        <td>
+											95										</td>
+                                        										<td>6,320,000</td>
+										<td>140,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,460,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											15 Jul										</td>
+										<td>
+											92										</td>
+                                        <td>
+                                            92                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											9										</td>
+										<td>
+                                            83                                        </td>
+                                        <td>
+											92										</td>
+                                        										<td>6,430,000</td>
+										<td>270,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,700,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											14 Jul										</td>
+										<td>
+											134										</td>
+                                        <td>
+                                            134                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											24										</td>
+										<td>
+                                            105                                        </td>
+                                        <td>
+											129										</td>
+                                        										<td>9,235,000</td>
+										<td>245,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 9,480,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											13 Jul										</td>
+										<td>
+											158										</td>
+                                        <td>
+                                            158                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											29										</td>
+										<td>
+                                            129                                        </td>
+                                        <td>
+											158										</td>
+                                        										<td>9,805,000</td>
+										<td>549,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 10,354,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											12 Jul										</td>
+										<td>
+											256										</td>
+                                        <td>
+                                            256                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											29										</td>
+										<td>
+                                            227                                        </td>
+                                        <td>
+											256										</td>
+                                        										<td>17,845,000</td>
+										<td>295,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 18,140,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											11 Jul										</td>
+										<td>
+											74										</td>
+                                        <td>
+                                            74                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											11										</td>
+										<td>
+                                            62                                        </td>
+                                        <td>
+											73										</td>
+                                        										<td>6,150,000</td>
+										<td>10,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,160,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											10 Jul										</td>
+										<td>
+											91										</td>
+                                        <td>
+                                            91                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											11										</td>
+										<td>
+                                            79                                        </td>
+                                        <td>
+											90										</td>
+                                        										<td>6,465,000</td>
+										<td>50,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,515,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											09 Jul										</td>
+										<td>
+											125										</td>
+                                        <td>
+                                            125                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											13										</td>
+										<td>
+                                            110                                        </td>
+                                        <td>
+											123										</td>
+                                        										<td>8,605,000</td>
+										<td>215,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 8,820,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											08 Jul										</td>
+										<td>
+											116										</td>
+                                        <td>
+                                            116                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											15										</td>
+										<td>
+                                            101                                        </td>
+                                        <td>
+											116										</td>
+                                        										<td>8,110,000</td>
+										<td>195,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 8,305,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											07 Jul										</td>
+										<td>
+											93										</td>
+                                        <td>
+                                            93                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											6										</td>
+										<td>
+                                            85                                        </td>
+                                        <td>
+											91										</td>
+                                        										<td>7,075,000</td>
+										<td>125,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 7,200,000										</td>
+									</tr>
+																	<tr>
+										<td>
+											06 Jul										</td>
+										<td>
+											90										</td>
+                                        <td>
+                                            90                                        </td>
+                                        <td>
+                                            0                                        </td>
+                                        <td>
+											0										</td>
+                                        <td>
+											15										</td>
+										<td>
+                                            73                                        </td>
+                                        <td>
+											88										</td>
+                                        										<td>5,995,000</td>
+										<td>245,000</td>
+										<td>0</td>
+										<td>0</td>
+										<!--td>0</td-->
+																			<td>
+											IDR 6,240,000										</td>
+									</tr>
+															</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12 col-md-12 col-lg-12">
+				<div class="jarviswidget jarviswidget-color-darken" data-widget-sortable="false" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" role="widget">
+					<header role="heading"><div class="jarviswidget-ctrls" role="menu">   <a href="javascript:void(0);" class="button-icon jarviswidget-toggle-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Collapse"><i class="fa fa-minus "></i></a>  </div>
+						<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+						<h2> Merchants Detail </h2>
+					<span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+					<div role="content" style="padding: 0px;">
+						<div class="jarviswidget-editbox"></div>
+						<script type="text/javascript">
+							 $(document).ready(function() {
+							     $('#tableMerchantDetail').DataTable( {
+							 		"paging"	: false,
+							 		"ordering"	: true,
+							 		"info"		: false,
+							 		"searching"	: false,
+								     "order"    : [ [ 0, "asc" ] ]
+							     } );
+							 } );
+						</script>
+						<style type="text/css">
+							.dt_basic_2 {
+								margin: 0px !important;
+								border-bottom: 0px;
+							}
+							#tableMerchantDetail_wrapper .dt-toolbar-footer {
+								border-top: 0px;
+								padding: 0px;
+								margin: 0px;
+							}
+							#tableMerchantDetail_wrapper .dt-toolbar {
+								border-bottom: 0px;
+								padding: 0px;
+							}
+							.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+								padding : 8px 0 8px 10px;
+							}
+						</style>
+						<div id="tableMerchantDetail_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="dt-toolbar"><div class="col-xs-12 col-sm-6"></div><div class="col-xs-12 col-sm-6"></div></div><table id="tableMerchantDetail" class="dt_basic_2 table table-striped table-bordered table-hover dataTable no-footer" width="100%" role="grid" style="width: 100%;">
+							<thead>
+							<tr role="row"><td class="sorting_asc" tabindex="0" aria-controls="tableMerchantDetail" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Merchant Name: activate to sort column descending" style="width: 264.333px;">Merchant Name</td><td class="sorting" tabindex="0" aria-controls="tableMerchantDetail" rowspan="1" colspan="1" aria-label="Total Transactions: activate to sort column ascending" style="width: 165.333px;">Total Transactions</td><td class="sorting" tabindex="0" aria-controls="tableMerchantDetail" rowspan="1" colspan="1" aria-label="Walk-in Transactions: activate to sort column ascending" style="width: 188.333px;">Walk-in Transactions</td><td class="sorting" tabindex="0" aria-controls="tableMerchantDetail" rowspan="1" colspan="1" aria-label="App Transactions: activate to sort column ascending" style="width: 158.333px;">App Transactions</td><td class="sorting" tabindex="0" aria-controls="tableMerchantDetail" rowspan="1" colspan="1" aria-label="Guest Transactions: activate to sort column ascending" style="width: 175.333px;">Guest Transactions</td><td class="sorting" tabindex="0" aria-controls="tableMerchantDetail" rowspan="1" colspan="1" aria-label="Total Visitor: activate to sort column ascending" style="width: 108.333px;">Total Visitor</td><td class="sorting" tabindex="0" aria-controls="tableMerchantDetail" rowspan="1" colspan="1" aria-label="Total Income: activate to sort column ascending" style="width: 118.167px;">Total Income</td></tr>
+							</thead>
+							<tbody>
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+															<tr role="row" class="odd">
+										<td class="sorting_1">
+											Barsel Barbershop										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="even">
+										<td class="sorting_1">
+											Vax Wijaya AR Hakim										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="odd">
+										<td class="sorting_1">
+											Vax Wijaya Cinangsi										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="even">
+										<td class="sorting_1">
+											Vax wijaya kalijati										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="odd">
+										<td class="sorting_1">
+											Vax Wijaya Mekarwangi										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="even">
+										<td class="sorting_1">
+											Vax Wijaya Palabuan										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="odd">
+										<td class="sorting_1">
+											Vax Wijaya Parahyangan										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="even">
+										<td class="sorting_1">
+											VAX Wijaya PMK										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="odd">
+										<td class="sorting_1">
+											Vax Wijaya Rawa Badak										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr><tr role="row" class="even">
+										<td class="sorting_1">
+											Vax Wijaya SPBU Pagaden										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td>
+											0										</td>
+										<td data-order="0">
+											IDR 0										</td>
+									</tr></tbody>
+						</table><div class="dt-toolbar-footer"><div class="col-xs-12 col-sm-6"></div><div class="col-xs-12 col-sm-6"></div></div></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	
+</div>
+
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/flot/jquery.flot.cust.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/flot/jquery.flot.resize.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/flot/jquery.flot.fillbetween.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/flot/jquery.flot.orderBar.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/flot/jquery.flot.pie.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/flot/jquery.flot.time.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/flot/jquery.flot.tooltip.min.js"></script>
+
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/3.2.2/js/dataTables.fixedColumns.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.3.1/js/buttons.flash.min.js"></script>
+<script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script> -->
+<script type="text/javascript" language="javascript" src="https://minutesapps.com/dashboard216a/webroot/cms/js//datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://minutesapps.com/dashboard216a/webroot/cms/js//datatables/dataTables.buttons.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://minutesapps.com/dashboard216a/webroot/cms/js//datatables/buttons.flash.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://minutesapps.com/dashboard216a/webroot/cms/js//datatables/jszip.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://minutesapps.com/dashboard216a/webroot/cms/js/pdfmake/0.1.35/pdfmake.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://minutesapps.com/dashboard216a/webroot/cms/js/pdfmake/0.1.35/vfs_fonts.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script> -->
+<script type="text/javascript" language="javascript" src="https://minutesapps.com/dashboard216a/webroot/cms/js//datatables/buttons.html5.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://minutesapps.com/dashboard216a/webroot/cms/js//datatables/buttons.print.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<style type="text/css">
+	.dataTables_wrapper{
+		padding-top: 10px;
+	}
+	.dataTables_filter{
+		width:50%;
+		float: left;
+	}
+	.dataTables_filter label{
+		float: left !important;
+		padding-left: 10px;
+	}
+	.dataTables_filter input{
+		display: block;
+	    width: 100%;
+	    height: 32px;
+	    padding: 6px 12px;
+	    padding-left: 40px;
+	    font-size: 13px;
+	    line-height: 1.42857143;
+	    color: #555;
+	    background-color: #fff;
+	    background-image: none;
+	    border: 1px solid #ccc;
+	    border-radius: 0;
+	    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	}
+	.dataTables_filter:before{
+		content: " ";
+	    display: block;
+	    padding: 6px 12px;
+	    font-size: 13px;
+	    font-weight: 400;
+	    line-height: 1;
+	    color: #555;
+	    text-align: center;
+	    background-color: #eee;
+	    border: 1px solid #ccc;
+	    border-radius: 2px;
+	    position: absolute;
+	    height: 32px;
+	    margin-left: 10px;
+	    width: 35px;
+	}
+	.dataTables_filter:after{
+		content: "\f002";
+	    font-family: FontAwesome;
+	    font-size: 14px;
+	    display: inline-block;
+	    position: absolute;
+	    left: 20px;
+	    color: #555;
+	    top: 5px;
+	}
+	.dataTables_filter{
+		position: relative
+	}
+	.dt-buttons{
+		width: 50%;
+		float: right;		
+		padding-right: 10px
+	}
+	.dt-buttons a{
+		background-color: #fff;
+	    border-color: #ccc;
+	    float: right;
+	    border: solid 1px;
+	    display: inline-block;
+	    margin-bottom: 0;
+	    font-weight: 400;
+	    text-align: center;
+	    vertical-align: middle;
+	    touch-action: manipulation;
+	    cursor: pointer;
+	    background-image: none;
+	    border: 1px solid #ccc;
+	    white-space: nowrap;
+	    padding: 6px 12px;
+	    font-size: 13px;
+	    line-height: 1.42857143;
+	    border-radius: 2px;
+	    -webkit-user-select: none;
+	    -moz-user-select: none;
+	    -ms-user-select: none;
+	    user-select: none;
+	    border-left: none;
+	}
+	.dt-buttons a:last-child{
+		border-left: solid 1px #ccc;
+	}
+	div.dataTables_info{
+		float: left;
+	    padding: 10px;
+	    height: 52px;
+	    line-height: 40px;
+	    cursor: pointer;
+	}
+	.dataTables_paginate{
+		float: right;
+	    display: inline-block;
+	    padding: 10px;
+	    z-index: 1;
+	    position: relative;
+	}
+	#testdatatab_paginate a{
+		position: relative;
+	    float: left;
+	    padding: 6px 12px;
+	    line-height: 1.42857143;
+	    text-decoration: none;
+	    color: #3276b1;
+	    background-color: #fff;
+	    border: 1px solid #ddd;
+	    color: #999;
+	    background-color: #fff;
+	    border-color: #ddd;
+	    cursor: pointer;
+	}
+	#testdatatab_paginate a.disabled{
+		cursor: not-allowed;
+	}
+	#testdatatab_paginate a.current{
+	    background-color: #3276b1;
+	    border-color: #3276b1;
+	    color: white
+	}
+	.has-showhide-column.dataTables_filter {
+		margin-left: 30px !important;
+		width: calc(50% - 30px);
+		position: relative;
+	}
+	.has-showhide-column .showhide-column {
+		border: 1px solid #ccc;
+	    position: absolute;
+	    width: 32px;
+	    height: 32px;
+	    text-align: center;
+	    line-height: 32px;
+	    top: 0;
+	    left: -25px;
+	    cursor: pointer;
+	}
+	.has-showhide-column .showhide-column-options {
+		position: absolute;
+	    background: #FFF;
+	    left: -25px;
+	    padding: 10px;
+	    z-index: 10;
+	    min-width: 240px;
+	    border: 1px solid #CCC;
+	}
+	.has-showhide-column .showhide-column-options .opt-item {
+		height: 25px;
+	    line-height: 20px;
+	    border-bottom: 1px solid #CCC;
+	    margin-bottom: 5px;
+	}
+	.has-showhide-column .showhide-column-options .opt-item input {
+		float: left;
+	    width: 18px;
+	    padding: 0;
+	    margin: 0 !important;
+	    margin-right: 10px !important;
+	    height: 18px;
+	}
+	.has-showhide-column .showhide-column-options .apply-showhide-column {
+		height: 32px !important;
+		width: 60px !important;
+    	padding: 0 !important;
+		line-height: 28px !important;
+	}
+</style>
+<script type="text/javascript">
+	function show_hide_column (ini)
+	{
+		        var showhideid = '1fd10f9c330328172455bee6d127f811';
+        var showhidecache = JSON.parse(localStorage.getItem(showhideid));
+        var container = $(ini).parent();
+        if(container.hasClass('datatables-scroll')){
+        	container = container.parent();
+        }
+        
+        container.find(".dataTables_filter")
+            .addClass('has-showhide-column')
+            .append('<div class="showhide-column"><i class="fa fa-eye"></i></div><div class="showhide-column-options hide"><p><b>Show/Hide Columns</b></p></div>');
+
+        ini.api().columns().every(function()
+        {
+            var column  = this;
+            var index   = column.index();
+            var text    = ($(column.header()).text()).trim();
+            var checked = (showhidecache == null || (typeof showhidecache[index] != "undefined" && showhidecache[index])) ? 'checked' : '';
+
+            container.find(".showhide-column-options").append(`
+                <div class="opt-item">
+                    <input type="checkbox" value="${index}" ${checked} />
+                    ${text}
+                </div>
+            `);
+        });
+
+        container.find(".showhide-column-options").append(`<div class="btn btn-primary pull-right apply-showhide-column">Apply</div>`);
+
+        container.find('.showhide-column').on('click', function(e) 
+        {
+            e.preventDefault();
+            var shco = container.find(".showhide-column-options");
+            shco.hasClass('hide') ? shco.removeClass("hide") : shco.addClass("hide");
+        })
+
+        container.find('.apply-showhide-column').on('click', function(e) 
+        {
+            e.preventDefault();
+
+            if(showhidecache == null){
+                showhidecache = {};
+            }
+
+            container.find(".showhide-column-options input[type='checkbox']").each(function()
+            {
+                showhidecache[this.value] = this.checked;
+                ini.api().table().column(this.value).visible(this.checked);
+            });
+
+            localStorage.setItem(showhideid, JSON.stringify(showhidecache));
+            container.find(".showhide-column-options").addClass("hide");
+        });
+        $('.apply-showhide-column').trigger("click");
+    	}
+
+	function generate_dtconfig (title, override_configs, instance)
+	{
+		var _title_ = (typeof title != "undefined" && title.trim() != '') ? title : ($('#table-service-sales h2').length ? $('#table-service-sales h2').html() : document.title);
+
+		var dtconfigs = {
+	        dom: 'Bfrtip',  
+	        ordering: 'true',  
+	        order: [[0, "desc"]],
+	        iDisplayLength: 10,
+	        buttons: [             
+	            {
+	            	extend: 'pdf',
+	            	exportOptions: {
+	                    columns: ':visible'
+	                },
+	            	customize : function(doc)
+	            	{
+	            		var colCount = new Array();
+			            $(instance).find('tbody tr:first-child td').each(function(){
+			                if($(this).attr('colspan')){
+			                    for(var i=1;i<=$(this).attr('colspan');$i++){
+			                        colCount.push('*');
+			                    }
+			                }else{ colCount.push('*'); }
+			            });
+			            doc.content[1].table.widths = colCount;
+			        },
+			        orientation : '',
+                	pageSize : 'LEGAL',
+	            },
+	            {
+	            	extend: 'excel',
+	            	exportOptions: {
+	                    columns: ':visible'
+	                },
+	            	header:true,
+	            	title: _title_,
+	            	messageTop: _title_,
+	            	customize: function (xlsx) 
+	            	{
+				        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+				        var downrows = 1;
+				        var clRow = $('row', sheet);
+				        //update Row
+				        clRow.each(function () 
+				        {
+				            var attr = $(this).attr('r');
+				            var ind = parseInt(attr);
+				            ind = ind + downrows;
+				            $(this).attr("r",ind);
+				        });
+				 
+				        // Update  row > c
+				        $('row c ', sheet).each(function () 
+				        {
+				            var attr = $(this).attr('r');
+				            var pre = attr.substring(0, 1);
+				            var ind = parseInt(attr.substring(1, attr.length));
+				            ind = ind + downrows;
+				            $(this).attr("r", pre + ind);
+				        });
+				 
+				        function Addrow(index,data) 
+				        {
+				            msg='<row r="'+index+'">'
+				            for(i=0;i<data.length;i++){
+				                var key=data[i].k;
+				                var value=data[i].v;
+				                msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
+				                msg += '<is>';
+				                msg += '<t>'+value+'</t>';
+				                msg += '</is>';
+				                msg += '</c>';
+				            }
+				            msg += '</row>';
+				            return msg;
+				        }
+				 
+				        //insert
+				        var r1 = Addrow(1, [{ k: 'A', v: _title_ }, { k: 'B', v: '' }, { k: 'C', v: '' }]);
+				        sheet.childNodes[0].childNodes[1].innerHTML = r1 + sheet.childNodes[0].childNodes[1].innerHTML;
+				    }
+	            },
+	            {
+	            	extend: 'print',
+	            	exportOptions: {
+	                    columns: ':visible'
+	                },
+	            	customize: function (win) 
+	            	{		            
+		                var w = $(win.document.body);
+	 
+					    w.find('td:nth-child(2)').css('text-align','right');
+					    w.find('td:nth-child(3)').css('text-align','right');
+					    w.find('h1').html(_title_);
+			        }
+	            },
+	        ],
+	        language: { search: "" },
+	        preDrawCallback: function() {
+	            let el = $('div.dataTables_filter label');
+	            if(!el.parent('form').length) {
+	                el.wrapAll('<form action="javascript:void(0);"></form>').parent()
+	                .attr('autocomplete', false)
+	                .attr('autofill', false);
+	            }
+	        },
+	        initComplete: function() 
+	        {
+	        	var ini = this;
+		        //$(ini.api().table().container()).find('input[type="search"]').parent().wrap('<form>').parent().attr('autocomplete','off').css('overflow','hidden').css('margin','auto');
+		    
+		        show_hide_column(ini);
+		    }       
+	    }
+
+	    // override
+	    var objconfigs = {};
+
+	    if(typeof override_configs != "undefined"){
+	    	objconfigs = {...objconfigs, ...override_configs}
+	    }
+
+	    if(typeof override_dt_config != "undefined"){
+	    	objconfigs = {...objconfigs, ...override_dt_config}
+	    }
+    	
+    	for (const [key, value] of Object.entries(objconfigs)) {
+		  	dtconfigs[key] = value;
+		}
+
+	    return dtconfigs;
+	}
+</script>
+<script>
+$(document).ready(function()
+{
+	var responsiveHelper_datatable_tabletools = undefined;
+	var breakpointDefinition = {
+		tablet : 1024,
+		phone : 480
+	}
+
+	$('.datatable_tabletools').each(function()
+	{
+		if(typeof $(this).data("dt-title") != "undefined"){
+			$(this).DataTable(generate_dtconfig($(this).data("dt-title"), undefined, this));
+		}
+		else {
+			$(this).DataTable(generate_dtconfig($(this).closest(".jarviswidget").find("h2").text().trim(), undefined, this));
+		}
+	});
+});
+</script>
+<script type="text/javascript">
+    /* chart colors default */
+    var $chrt_border_color = "#efefef";
+    var $chrt_grid_color = "#DDD"
+    var $chrt_main = "#E24913";
+    /* red       */
+    var $chrt_second = "#6595b4";
+    /* blue      */
+    var $chrt_third = "#FF9F01";
+    /* orange    */
+    var $chrt_fourth = "#7e9d3a";
+    /* green     */
+    var $chrt_fifth = "#BD362F";
+    /* dark red  */
+    var $chrt_mono = "#000";
+
+	$(document).ready(function() {
+        var xLabel = ["06 Jul","07 Jul","08 Jul","09 Jul","10 Jul","11 Jul","12 Jul","13 Jul","14 Jul","15 Jul","16 Jul","17 Jul","18 Jul","19 Jul","20 Jul","21 Jul","22 Jul","23 Jul","24 Jul","25 Jul","26 Jul","27 Jul","28 Jul","29 Jul","30 Jul","31 Jul","01 Aug","02 Aug","03 Aug","04 Aug"];
+
+		if ($("#chart-apps").length) {
+			// var dataCustomer       = ;
+			var dataCustomer       = [[1,"88"],[2,"91"],[3,"116"],[4,"123"],[5,"90"],[6,"73"],[7,"256"],[8,"158"],[9,"129"],[10,"92"],[11,"95"],[12,"91"],[13,"144"],[14,"166"],[15,"97"],[16,"85"],[17,"89"],[18,"86"],[19,"129"],[20,"147"],[21,"193"],[22,"137"],[23,"103"],[24,"100"],[25,"110"],[26,"142"],[27,"194"],[28,"227"],[29,"96"],[30,"0"]];
+			var dataApps           = [[1,"0"],[2,"0"],[3,"0"],[4,"0"],[5,"0"],[6,"0"],[7,"0"],[8,"0"],[9,"0"],[10,"0"],[11,"0"],[12,"0"],[13,"0"],[14,"0"],[15,"0"],[16,"0"],[17,"0"],[18,"0"],[19,"0"],[20,"0"],[21,"0"],[22,"0"],[23,"0"],[24,"0"],[25,"0"],[26,"0"],[27,"0"],[28,"0"],[29,"0"],[30,"0"]];
+
+			var chartCustomer = $.plot($("#chart-customer"), [{
+						data	: dataCustomer,
+						label	: "Customer Booking"
+					}], {
+						series : {
+							lines : {
+								show		: true,
+								lineWidth	: 1,
+								fill		: true,
+								fillColor	: {
+									colors : [{
+										opacity : 0.1
+									}, {
+										opacity : 0.15
+									}]
+								}
+							},
+							points : {
+								show: true
+							},
+							shadowSize	: 0
+						},
+						grid : {
+							hoverable	: true,
+							clickable	: true,
+							tickColor	: $chrt_border_color,
+							borderWidth	: 0,
+							borderColor	: $chrt_border_color,
+						},
+						tooltip		: true,
+						tooltipOpts	: {
+							content	: function(label, xval, yval, flotItem){
+								return xLabel[xval-1] + " = " + yval + " Customer"
+							},
+							defaultTheme: false
+						},
+						colors	: [$chrt_main, $chrt_second],
+						yaxis	: {
+							min			: 0,
+							tickDecimals: 0
+						},
+						xaxis	: {
+							tickFormatter: function (v, axis) {
+								return xLabel[v-1];
+							},
+							tickDecimals: 0
+						}
+					}
+			);
+
+			var chartApps = $.plot($("#chart-apps"), [{
+						data	: dataApps,
+						label	: "Apps Booking"
+					}], {
+						series : {
+							lines : {
+								show		: true,
+								lineWidth	: 1,
+								fill		: true,
+								fillColor	: {
+									colors : [{
+										opacity : 0.1
+									}, {
+										opacity : 0.15
+									}]
+								}
+							},
+							points : {
+								show: true
+							},
+							shadowSize	: 0
+						},
+						grid : {
+							hoverable	: true,
+							clickable	: true,
+							tickColor	: $chrt_border_color,
+							borderWidth	: 0,
+							borderColor	: $chrt_border_color,
+						},
+						tooltip		: true,
+						tooltipOpts	: {
+							content	: function(label, xval, yval, flotItem){
+								return xLabel[xval-1] + " = " + yval + " Booking"
+							},
+							defaultTheme: false
+						},
+						colors	: [$chrt_main, $chrt_second],
+						yaxis	: {
+							min			: 0,
+							tickDecimals: 0
+						},
+						xaxis	: {
+							tickFormatter: function (v, axis) {
+								return xLabel[v-1];
+							},
+							tickDecimals: 0
+						}
+					}
+			);
+		}
+	});
+
+    $(function() {
+	    function cb(start, end) {
+		    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+	    }
+	    cb(moment().subtract(29, 'days'), moment());
+
+	    
+	    $('#reportrange').daterangepicker({
+		    "startDate": "07/04/2026",		    "endDate": "08/04/2026",		    ranges: {
+			    'Today': [moment(), moment()],
+			    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+			    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+			    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+			    'This Month': [moment().startOf('month'), moment().endOf('month')],
+			    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+		    }
+	    }, cb);
+
+	    $("#reportrange").on("apply.daterangepicker", function() {
+
+		    window.location = "" + "" + "" + "?" + "range=" + $("#reportrange").val();
+	    });
+    });
+</script>
+</div>
+<!-- PAGE FOOTER -->
+<div class="page-footer">
+	<div class="row">
+		<div class="col-xs-12 col-sm-6">
+			<span class="txt-color-white">Ver. 2.0.8 -- MinutesApps © 2015</span>
+		</div>
+
+		<div class="col-xs-6 col-sm-6 text-right hidden-xs">
+			<!--div class="txt-color-white inline-block">
+				<i class="txt-color-blueLight hidden-mobile">Last account activity <i class="fa fa-clock-o"></i> <strong>52 mins ago &nbsp;</strong> </i>				
+			</div-->
+
+            <span class="txt-color-white"></span>
+		</div>
+	</div>
+</div>
+<!-- END PAGE FOOTER -->
+
+<div class="modal fade" id="globalmodalcontainer" role="dialog" aria-hidden="true" style="z-index: 9999999;">
+    <div class="modal-dialog" style="width: 500px;">
+        <div class="modal-content">
+            <div class="modal-wrapper">
+                <div class="modal-header">
+                	<a href="#" data-dismiss="modal" style="position: absolute; right: 15px;"><i class="fa fa-close"></i></a>
+                    <h5 class="title" style="margin: 0; padding: 0;"></h5>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$('#globalmodalcontainer').on('hidden.bs.modal', function () 
+{
+	$('#globalmodalcontainer')
+		.find(".modal-header .title").html("").end()
+		.find(".modal-body").html("").end()
+});
+</script>
+<script>
+	window.intercomSettings = {
+		app_id: "ebimf7zd",
+		name: "Heri - Vax Wijaya ", // Full name
+		email: "Heriherdianto98@gmail.com", // Email address
+		created_at: 1535529751, // Signup date as a Unix timestamp
+		user_hash: "66211580039d159addc918b25879bab94114561d17022c5aee8f6b3d7606da8b"
+
+	};
+</script>
+<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/ebimf7zd';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
+<script async="" data-cfasync="false" src="https://d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9NDcxJmhvc3ROYW1lPW1pbnV0ZXNhcHBzLnN1cHBvcnRoZXJvLmlv"></script>
+
+<!-- script type="text/javascript">
+    rg4js('apiKey', '6bC4nrsF8p9bTHlriNdJtw==');
+    rg4js('enableCrashReporting', true);
+    rg4js('enablePulse', true);
+
+    rg4js('setUser', {
+        identifier: '66211580039d159addc918b25879bab94114561d17022c5aee8f6b3d7606da8b',
+        isAnonymous: false,
+        email: 'Heriherdianto98@gmail.com',
+        fullName: 'Heri - Vax Wijaya '
+    });
+</script --><!--================================================== -->
+
+<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
+<!--script data-pace-options='{ "restartOnRequestAfter": true }' src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/pace/pace.min.js"></script>
+
+<!-- IMPORTANT: APP CONFIG -->
+<script type="text/javascript">
+	var base_url = 'https://minutesapps.com/dashboard216a/';
+</script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/app.config.js"></script>
+
+<!-- JS TOUCH : include this plugin for mobile drag / drop touch events-->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> 
+
+<!-- BOOTSTRAP JS -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/bootstrap/bootstrap.min.js"></script>
+
+<!-- CUSTOM NOTIFICATION -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/notification/SmartNotification.min.js"></script>
+
+<!-- JARVIS WIDGETS -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/smartwidgets/jarvis.widget.min.js"></script>
+
+<!-- EASY PIE CHARTS -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+
+<!-- SPARKLINES -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/sparkline/jquery.sparkline.min.js"></script>
+
+<!-- JQUERY VALIDATE -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/jquery-validate/jquery.validate.min.js"></script>
+
+<!-- JQUERY MASKED INPUT -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/masked-input/jquery.maskedinput.min.js"></script>
+
+<!-- JQUERY SELECT2 INPUT -->
+<!-- <script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/select2/select2.min.js"></script> -->
+<!--link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script-->
+<link href="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/select2/select2.min.css" rel="stylesheet">
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/select2/select2.min.js"></script>
+
+<!-- JQUERY UI + Bootstrap Slider -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
+
+<!-- browser msie issue fix -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/msie-fix/jquery.mb.browser.min.js"></script>
+
+<!-- FastClick: For mobile devices -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/fastclick/fastclick.min.js"></script>
+
+<!-- Date Range Picker -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/daterangepicker/moment.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/plugin/daterangepicker/daterangepicker.js"></script>
+
+
+
+<!-- MAIN APP JS FILE -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/app.min.js"></script>		
+
+
+<!-- SmartChat UI : plugin -->
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/smart-chat-ui/smart.chat.ui.min.js"></script>
+<script src="https://minutesapps.com/dashboard216a/webroot/cms/js/smart-chat-ui/smart.chat.manager.min.js"></script>
+
+<script type="text/javascript">
+	// DO NOT REMOVE : GLOBAL FUNCTIONS!
+	$(document).ready(function() {
+		pageSetUp();
+	})
+</script>
+<script type="text/javascript">
+	$(function(){		
+		$("#activity").click(function(){
+			$("#notification-btn").trigger("click");
+		});
+	});
+</script>
+<!--script for notification-->
+<script>
+	$(function(){
+		setInterval(function(){ 
+			getnotify();
+		}, 
+		10000);
+	});
+	$(window).bind("load",function(){
+		getnotify();
+	});
+	$("#refreshnotif").on("click",function(){
+		getnotify();
+	});
+	function getnotify(){
+		// $.ajax({                
+  //           url: "https://minutesapps.com/dashboard216a/welcome/notify?type=total"                
+  //       }).done(function (msg) {            	
+  //       	_total = JSON.parse(msg);        	
+  //       	$(".total-all").html(_total.all);
+  //       	if(_total.all >= 1){
+  //       		$(".total-all").parent().attr("class","badge bg-color-red bounceIn animated");
+  //       	}
+  //       	$(".total-booking").html(_total.booking);
+  //       	$(".total-cancel").html(_total.cancel);
+  //       	$(".lastupdate").html(_total.lastupdate);
+  //       });
+	}
+</script>
+
+<script type="text/javascript">
+    function reInitDatepicker ()
+    {
+        $(".datepicker").each(function(){
+            if(typeof $(this).data('datepicker-format') != "undefined"){
+                $(this).datepicker({ dateFormat: $(this).data('datepicker-format') });
+            }
+        });    
+    }
+
+    function rightalert ($type, $title, $message, $timeout)
+    {
+        $.smallBox({
+            title    : $title,
+            content  : $message,
+            color    : $type == 'success' ? "#3498db" : "#c0392b",
+            iconSmall: "fa fa-bell shake animated",
+            timeout  : $timeout || 1500
+        });
+        $("#divSmallBoxes").css("z-index", 99999999);
+    }
+
+    function showOverlay (){
+        $('body').append(`<div id='global-overlay' style='position: fixed; z-index: 9; top: 0; background: #000; width: 100vw; height: 100vh; opacity: 0.5;'></div>`);
+    }
+
+    function removeOverlay (){
+        $('#global-overlay').remove();
+    }
+
+    function myFormData (formId)
+    {
+        var data = new FormData(document.getElementById(formId));
+        const value = Object.fromEntries(data.entries());
+        
+        return JSON.stringify(value);
+    }
+
+    $(document).ready(function(){
+        reInitDatepicker();
+
+        setTimeout(() => $('[autocomplete]').attr('autocomplete', 'nope'), 250);
+    });
+</script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;b443ad4f675d42989c661dc9f42d6efa&quot;,&quot;r&quot;:1}" crossorigin="anonymous"></script>
+<div class="flotTip" style="display: none; position: absolute;"></div><div id="divSmallBoxes"></div><div id="divMiniIcons"></div><div id="divbigBoxes"></div><div id="supporthero-button" class="supporthero-button" style="display: none;"></div><div id="supporthero-container" style="position: fixed; border: 1px solid rgb(238, 238, 238); opacity: 0; top: 0px; right: 0px; z-index: 100000; overflow: hidden; background: rgb(255, 255, 255); display: none;"><iframe id="supporthero-iframe" data-src="https://minutesapps.supporthero.io/widget/index?widgetLoader=true" frameborder="0" scrolling="yes" width="400" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></div><iframe id="intercom-frame" style="position: absolute !important; opacity: 0 !important; width: 1px !important; height: 1px !important; top: 0 !important; left: 0 !important; border: none !important; display: block !important; z-index: -1 !important; pointer-events: none;" aria-hidden="true" tabindex="-1" title="Intercom"></iframe><a href="#" id="supporthero-hide" class="supporthero-button" style="display: none; position: fixed; top: 0px; right: 0px; text-decoration: none; z-index: 100001; width: 12px; height: 12px; opacity: 1;"><svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path fill="#676767" d="M21.7 18.2c.2.2.3.4.3.6s-.1.4-.3.6l-2.3 2.3c-.2.2-.4.3-.6.3s-.4-.1-.6-.3L11 14.5l-7.2 7.2c-.2.2-.4.3-.7.3s-.4-.1-.6-.3L.2 19.4c-.1-.1-.2-.3-.2-.5s.1-.4.3-.6L7.5 11 .3 3.8c-.2-.2-.3-.4-.3-.7 0-.2.1-.4.3-.6L2.6.2c.1-.1.3-.2.5-.2s.4.1.6.3L11 7.5 18.2.3c.2-.2.4-.3.7-.3s.4.1.6.3l2.3 2.3c.1.1.2.3.2.5s-.1.4-.3.6L14.5 11l7.2 7.2z"></path></svg></a><div class="intercom-lightweight-app"><style id="intercom-lightweight-app-style" type="text/css">
+  @keyframes intercom-lightweight-app-launcher {
+    from {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes intercom-lightweight-app-gradient {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes intercom-lightweight-app-messenger {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    40% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .intercom-lightweight-app {
+    position: fixed;
+    z-index: 2147483001;
+    width: 0;
+    height: 0;
+    font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+
+  .intercom-lightweight-app-gradient {
+    position: fixed;
+    z-index: 2147483002;
+    width: 500px;
+    height: 500px;
+    bottom: 0;
+    right: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at bottom right,
+      rgba(29, 39, 54, 0.16) 0%,
+      rgba(29, 39, 54, 0) 72%);
+    animation: intercom-lightweight-app-gradient 200ms ease-out;
+  }
+
+  .intercom-lightweight-app-launcher {
+    position: fixed;
+    z-index: 2147483003;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none;
+    bottom: 20px;
+    right: 20px;
+    max-width: 48px;
+    width: 48px;
+    max-height: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: undefined;
+    cursor: pointer;
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.06), 0 2px 32px 0 rgba(0, 0, 0, 0.16);
+    transition: transform 167ms cubic-bezier(0.33, 0.00, 0.00, 1.00);
+    box-sizing: content-box;
+  }
+
+
+  .intercom-lightweight-app-launcher:hover {
+    transition: transform 250ms cubic-bezier(0.33, 0.00, 0.00, 1.00);
+    transform: scale(1.1)
+  }
+
+  .intercom-lightweight-app-launcher:active {
+    transform: scale(0.85);
+    transition: transform 134ms cubic-bezier(0.45, 0, 0.2, 1);
+  }
+
+
+  .intercom-lightweight-app-launcher:focus {
+    outline: none;
+
+    
+  }
+
+  .intercom-lightweight-app-launcher-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 48px;
+    height: 48px;
+    transition: transform 100ms linear, opacity 80ms linear;
+  }
+
+  .intercom-lightweight-app-launcher-icon-open {
+    
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+      
+  }
+
+  .intercom-lightweight-app-launcher-icon-open svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .intercom-lightweight-app-launcher-icon-open svg path {
+    fill: undefined;
+  }
+
+  .intercom-lightweight-app-launcher-icon-self-serve {
+    
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+      
+  }
+
+  .intercom-lightweight-app-launcher-icon-self-serve svg {
+    height: 44px;
+  }
+
+  .intercom-lightweight-app-launcher-icon-self-serve svg path {
+    fill: undefined;
+  }
+
+  .intercom-lightweight-app-launcher-custom-icon-open {
+    max-height: 24px;
+    max-width: 24px;
+
+    
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+      
+  }
+
+  .intercom-lightweight-app-launcher-icon-minimize {
+    
+        opacity: 0;
+        transform: rotate(-60deg) scale(0);
+      
+  }
+
+  .intercom-lightweight-app-launcher-icon-minimize svg path {
+    fill: undefined;
+  }
+
+  /* Extended launcher styles */
+  .intercom-lightweight-app-launcher.intercom-launcher-extended {
+    width: calc(180px - 30px);
+    max-width: calc(180px - 30px);
+    height: calc(45px - 26px);
+    max-height: calc(45px - 26px);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 16px 12px 12px !important;
+    gap: 6px;
+    /* Use theme background instead of hardcoded gradient */
+    background: undefined;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0px -2px 50px rgba(0, 0, 0, 0.1);
+    
+  }
+
+  .intercom-lightweight-app-launcher.intercom-launcher-extended .intercom-lightweight-app-launcher-icon {
+    position: relative;
+    width: 24px;
+    height: 24px;
+  }
+
+  .intercom-lightweight-app-launcher-text {
+    /* Match text color with launcher icon */
+    color: undefined;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+    opacity: 1;
+    transition: opacity 80ms linear;
+  }
+
+  .intercom-lightweight-app-messenger {
+    position: fixed;
+    z-index: 2147483003;
+    overflow: hidden;
+    background-color: #ffffff;
+    animation: intercom-lightweight-app-messenger 250ms cubic-bezier(0, 1, 1, 1);
+    transform-origin: bottom right;
+
+    
+        width: 400px;
+        height: calc(100% - 40px);
+        max-height: 704px;
+        min-height: 250px;
+        right: 20px;
+        bottom: 20px;
+        box-shadow: 0 5px 40px rgba(0,0,0,0.16);
+      
+
+    border-radius: 24px;
+  }
+
+  .intercom-lightweight-app-messenger-header {
+    height: 64px;
+    border-bottom: none;
+    background: #ffffff;
+  }
+
+  .intercom-lightweight-app-messenger-footer{
+    position:absolute;
+    bottom:0;
+    width: 100%;
+    height: 80px;
+    background: #ffffff;
+    font-size: 14px;
+    line-height: 21px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.05);
+  }
+
+  @media print {
+    .intercom-lightweight-app {
+      display: none;
+    }
+  }
+</style></div>

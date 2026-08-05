@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riwayat Absensi</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0d0d0d,#1d1d1d);
+    color:#fff;
+    padding:20px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    color:#d4af37;
+    margin-bottom:25px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#222;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+th{
+    background:#d4af37;
+    color:#111;
+    padding:14px;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #333;
+    text-align:center;
+}
+
+tr:hover{
+    background:#2f2f2f;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    background:#d4af37;
+    color:#111;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+.filter-bar{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.filter-bar input{
+    flex:1;
+    min-width:220px;
+    padding:11px;
+    background:#111;
+    color:white;
+    border:1px solid #6b5200;
+    border-radius:8px;
+}
+.filter-bar input[type="date"]{
+    cursor:pointer;
+    color-scheme:dark;
+}
+
+.filter-bar input[type="date"]::-webkit-calendar-picker-indicator{
+    cursor:pointer;
+    opacity:1;
+    filter:invert(1);
+}
+.filter-bar button{
+    width:auto;
+    margin-top:0;
+    padding:11px 18px;
+    border-radius:8px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>RIWAYAT ABSENSI</h1>
+<div class="filter-bar">
+    <input type="date" id="filterTanggal" style="cursor:pointer;">
+
+    <input
+        type="text"
+        id="cariNama"
+        placeholder="Cari nama karyawan..."
+    >
+
+    <button id="resetFilter">Reset</button>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>Tanggal</th>
+        <th>Karyawan</th>
+        <th>Cabang</th>
+        <th>Masuk</th>
+        <th>Status</th>
+        <th>Terlambat</th>
+        <th>Denda</th>
+    </tr>
+</thead>
+
+<tbody id="tbodyRiwayat">
+
+</tbody>
+
+</table>
+
+<button onclick="location.href='dashboard.html'">
+    KEMBALI
+    </button>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+
+<script>
+
+const db = supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+async function loadRiwayat(){
+
+const { data, error } = await db
+.from("absensi")
+.select(`
+    tanggal,
+    jam_masuk,
+    jam_pulang,
+    status,
+    terlambat_menit,
+    denda,
+    karyawan(nama_karyawan),
+    cabang(nama_cabang)
+`)
+.order("tanggal",{ascending:false})
+.order("jam_masuk",{ascending:false});
+
+if(error){
+    console.log(error);
+    return;
+}
+
+semuaRiwayat = data || [];
+renderRiwayat(semuaRiwayat);
+
+}
+let semuaRiwayat = [];
+
+function renderRiwayat(data){
+
+const tbody = document.getElementById("tbodyRiwayat");
+tbody.innerHTML = "";
+
+if(!data || data.length===0){
+    tbody.innerHTML = `
+    <tr>
+        <td colspan="7">Tidak ada data</td>
+    </tr>`;
+    return;
+}
+
+data.forEach(item=>{
+
+    tbody.innerHTML += `
+    <tr>
+        <td>${item.tanggal}</td>
+        <td>${item.karyawan?.nama_karyawan ?? "-"}</td>
+        <td>${item.cabang?.nama_cabang ?? "-"}</td>
+        <td>${item.jam_masuk ?? "-"}</td>
+        <td>${item.status ?? "-"}</td>
+        <td>${item.terlambat_menit ?? 0} menit</td>
+        <td>Rp ${(item.denda ?? 0).toLocaleString("id-ID")}</td>
+    </tr>`;
+
+});
+
+}
+
+function jalankanFilter(){
+    const tanggal = document.getElementById("filterTanggal").value;
+
+    const nama = document
+        .getElementById("cariNama")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const hasil = semuaRiwayat.filter(item=>{
+        const cocokTanggal =
+            !tanggal || item.tanggal === tanggal;
+
+        const cocokNama =
+            (item.karyawan?.nama_karyawan ?? "")
+                .toLowerCase()
+                .includes(nama);
+
+        return cocokTanggal && cocokNama;
+    });
+
+    renderRiwayat(hasil);
+}
+
+document
+    .getElementById("filterTanggal")
+    .addEventListener("change", jalankanFilter);
+
+document
+    .getElementById("cariNama")
+    .addEventListener("input", jalankanFilter);
+
+document
+    .getElementById("resetFilter")
+    .addEventListener("click", ()=>{
+        document.getElementById("filterTanggal").value = "";
+        document.getElementById("cariNama").value = "";
+        renderRiwayat(semuaRiwayat);
+    });
+    const inputTanggal = document.getElementById("filterTanggal");
+
+inputTanggal.addEventListener("click", () => {
+    if (inputTanggal.showPicker) {
+        inputTanggal.showPicker();
+    }
+});
+loadRiwayat();
+</script>
+
+</body>
+</html>

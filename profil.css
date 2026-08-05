@@ -1,0 +1,95 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#0d0d0d;
+    color:#fff;
+}
+
+.container{
+    max-width:430px;
+    margin:auto;
+    padding:30px 20px;
+    text-align:center;
+}
+
+/* =========================
+   FOTO PROFIL
+========================= */
+
+#fotoProfil{
+    width:170px;
+    height:170px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid #d8a617;
+    box-shadow:0 0 25px rgba(216,166,23,.35);
+    margin:0 auto 25px;
+    display:block;
+}
+
+#uploadFoto{
+    width:100%;
+    margin-bottom:20px;
+    color:#fff;
+    text-align:center;
+}
+
+/* =========================
+   TOMBOL
+========================= */
+
+#btnUpload,
+#btnHapusFoto,
+#btnLogout{
+    width:320px;
+    height:55px;
+    margin:12px auto;
+    display:block;
+
+    border:none;
+    border-radius:14px;
+
+    font-size:20px;
+    font-weight:600;
+
+    cursor:pointer;
+    transition:.25s;
+}
+
+/* Upload */
+
+#btnUpload{
+    background:linear-gradient(90deg,#d8a617,#ffd54f);
+    color:#111;
+}
+
+/* Hapus */
+
+#btnHapusFoto{
+    background:linear-gradient(90deg,#ff4d4d,#b30000);
+    color:#fff;
+}
+
+/* Logout */
+
+#btnLogout{
+    background:#3b3b3b;
+    color:#fff;
+}
+
+/* Hover */
+
+#btnUpload:hover,
+#btnHapusFoto:hover,
+#btnLogout:hover{
+    transform:translateY(-2px);
+}
+
+#btnLogout:hover{
+    background:#d61f1f;
+}

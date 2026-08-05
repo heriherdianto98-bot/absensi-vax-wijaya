@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    
+    <title>Laporan absensi - Vax Wijaya</title>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+        
+        body{
+            display:flex;
+            background:#111;
+            color:white;
+        }
+        
+        .sidebar{
+            width:250px;
+            height:100vh;
+            background:#1b1b1b;
+            padding:20px;
+        }
+        
+        .sidebar h2{
+            color:gold;
+            margin-bottom:30px;
+        }
+        
+        .sidebar a{
+            display:block;
+            color:white;
+            text-decoration:none;
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:10px;
+        }
+        
+        .sidebar a:hover{
+            background:gold;
+            color:black;
+        }
+        
+        .content{
+    flex:1;
+    padding:30px;
+    display:grid;
+    grid-template-columns:430px 1fr;
+    gap:30px;
+    align-items:start;
+    overflow:auto;
+}
+        
+        h1{
+            color:gold;
+        }
+        .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-top:30px;
+}
+
+.card{
+    background:#1b1b1b;
+    border:1px solid #333;
+    border-radius:14px;
+    padding:24px;
+    width:100%;
+    position:relative;
+    z-index:1;
+}
+.card h3{
+    color:#ccc;
+    margin-bottom:15px;
+    font-size:16px;
+}
+
+.card h2{
+    color:gold;
+    font-size:32px;
+
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid #333;
+}
+
+th{
+    color:gold;
+}
+
+td{
+    color:white;
+    white-space:nowrap;
+    vertical-align:middle;
+}
+input[type="date"],
+select{
+    width:100%;
+    height:52px;
+    padding:0 14px;
+    background:#111;
+    color:#fff;
+    border:1px solid #555;
+    border-radius:8px;
+    font-size:15px;
+    margin-top:6px;
+}
+input[type="date"]:focus,
+select:focus{
+    outline:none;
+    border:1px solid gold;
+    box-shadow:0 0 8px rgba(255,215,0,.3);
+}
+
+option{
+    background:#1b1b1b;
+    color:#fff;
+}
+
+button{
+    background:gold;
+    color:#000;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    opacity:.9;
+}
+.button-group{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.button-group button{
+    flex:1;
+    min-width:120px;
+}
+.content{
+    align-items:flex-start;
+}
+
+.card{
+    margin-top:0;
+}
+input[type="date"]{
+    cursor:pointer;
+    position:relative;
+    z-index:999;
+}
+
+::-webkit-calendar-picker-indicator{
+    cursor:pointer;
+    filter:invert(1);
+}
+        </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>VAX WIJAYA</h2>
+    
+        <a href="dashboard.html">🏠 Dashboard</a>
+        <a href="karyawan.html">👤 Karyawan</a>
+        <a href="cabang.html">🏢 Cabang</a>
+        <a href="pengaturan.html">⚙ Pengaturan</a>
+        <a href="laporan.html">📊 Laporan</a>
+    </div>
+    
+    <div class="content">
+
+        <div class="card" style="margin-top:0;margin-bottom:20px;">
+            
+
+            <label>Bulan</label><br>
+            <select id="bulan">
+                <option value="01">Januari</option>
+                <option value="02">Februari</option>
+                <option value="03">Maret</option>
+                <option value="04">April</option>
+                <option value="05">Mei</option>
+                <option value="06">Juni</option>
+                <option value="07">Juli</option>
+                <option value="08">Agustus</option>
+                <option value="09">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Desember</option>
+            </select>
+            
+            <br><br>
+            
+            <label>Tahun</label><br>
+            <select id="tahun"></select>
+            <br><br>
+        
+            <label>Cabang</label><br>
+            <select id="cabang">
+                <option value="">Semua Cabang</option>
+            </select>
+        
+            <br><br>
+        
+            <label>Karyawan</label><br>
+            <select id="karyawan">
+                <option value="">Semua Karyawan</option>
+            </select>
+        
+            <br><br>
+        
+            <label>Status</label><br>
+            <select id="status">
+                <option value="">Semua Status</option>
+                <option value="Hadir">Hadir</option>
+                <option value="Terlambat">Terlambat</option>
+                <option value="Izin">Izin</option>
+                <option value="Sakit">Sakit</option>
+                <option value="Libur">Libur</option>
+            </select>
+        
+            <br><br>
+        
+            <div class="button-group">
+
+                <button id="btnCari">
+                    🔍 Cari
+                </button>
+            
+                <button
+                    id="exportExcel"
+                    style="background:#28a745;color:white;"
+                >
+                    📗 Excel
+                </button>
+            
+                <button
+    id="exportPDF"
+    style="background:#dc3545;color:white;"
+>
+    📄 PDF
+</button>            
+            </div>
+        
+        </div>
+
+        <div class="card">
+
+            <table width="100%" id="tabelLaporan">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Karyawan</th>
+                        <th>Cabang</th>
+                        <th>Status</th>
+                        <th>Denda</th>
+                    </tr>
+                </thead>
+        
+                <tbody>
+        
+                </tbody>
+            </table>
+            <div id="ringkasanLaporan" style="
+            margin-top:20px;
+            border-top:1px solid #444;
+            padding-top:15px;
+            line-height:30px;
+            color:white;
+        ">
+        </div>
+        
+<div id="ringkasanLaporan"></div>
+<div id="rankingDenda" style="margin-top:25px;"></div>
+<div id="rekapKaryawan" style="margin-top:25px;"></div>
+</div>
+    </div>
+    
+        
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+    <script src="auth-guard.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <script src="laporan.js"></script>
+
+
+</body>
+</html>

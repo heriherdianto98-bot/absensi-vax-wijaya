@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Master Cabang - VAX ERP</title>
+
+    <link rel="stylesheet" href="cabang-ERP.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h1>VAX ERP</h1>
+            <p>Enterprise Management System</p>
+        </div>
+
+        <nav>
+
+            <a href="DASHBOARD ERP VAX.html">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
+
+            <div class="menu-title">
+                MASTER DATA
+            </div>
+
+            <a href="cabang-ERP.html" class="active">
+                <i class="fa-solid fa-building"></i>
+                Cabang
+            </a>
+
+            <a href="karyawan.html">
+                <i class="fa-solid fa-users"></i>
+                Karyawan
+            </a>
+
+            <div class="menu-title">
+                BUSINESS CENTER
+            </div>
+
+            <a href="#">
+                <i class="fa-solid fa-chart-line"></i>
+                Daily Recap
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-calendar-days"></i>
+                Monthly Recap
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-ranking-star"></i>
+                Ranking
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-chart-pie"></i>
+                Analytics
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-rotate"></i>
+                Integrasi Minutes
+            </a>
+
+            <div class="menu-title">
+                SYSTEM
+            </div>
+
+            <a href="dashboard_OWNER.html">
+                <i class="fa-solid fa-arrow-left"></i>
+                Kembali
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="page-header">
+
+            <div>
+                <h1>Master Cabang</h1>
+                <p>Kelola seluruh cabang Vax Wijaya.</p>
+            </div>
+
+            <button id="btnTambahCabang">
+                <i class="fa-solid fa-plus"></i>
+                Tambah Cabang
+            </button>
+
+        </div>
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <span>Total Cabang</span>
+                <h2 id="totalCabang">0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Cabang Aktif</span>
+                <h2 id="totalAktif">0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Cabang Nonaktif</span>
+                <h2 id="totalNonaktif">0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Terhubung Minutes</span>
+                <h2 id="totalMinutes">0</h2>
+            </div>
+
+        </section>
+
+        <section class="content-card">
+
+            <div class="toolbar">
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        id="inputCari"
+                        placeholder="Cari nama cabang..."
+                    >
+                </div>
+
+                <select id="filterStatus">
+                    <option value="semua">
+                        Semua Status
+                    </option>
+
+                    <option value="aktif">
+                        Aktif
+                    </option>
+
+                    <option value="nonaktif">
+                        Nonaktif
+                    </option>
+                </select>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Urutan</th>
+                            <th>Kode</th>
+                            <th>Nama Cabang</th>
+                            <th>Nama Minutes</th>
+                            <th>Manager</th>
+                            <th>No. HP</th>
+                            <th>Target Harian</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tabelCabang">
+
+                        <tr>
+                            <td colspan="9" class="loading">
+                                Memuat data cabang...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="modalCabang" class="modal">
+
+        <div class="modal-box">
+
+            <div class="modal-header">
+
+                <h2 id="judulModal">
+                    Tambah Cabang
+                </h2>
+
+                <button
+                    type="button"
+                    id="btnTutupModal"
+                    class="btn-close"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+            <form id="formCabang">
+
+                <input
+                    type="hidden"
+                    id="cabangId"
+                >
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Kode Cabang</label>
+
+                        <input
+                            type="text"
+                            id="kodeCabang"
+                            placeholder="Contoh: KLJ"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Urutan</label>
+
+                        <input
+                            type="number"
+                            id="urutan"
+                            min="1"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label>Nama Cabang ERP</label>
+
+                        <input
+                            type="text"
+                            id="namaCabang"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label>Nama Cabang di Minutes</label>
+
+                        <input
+                            type="text"
+                            id="namaMinutes"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label>Alamat</label>
+
+                        <textarea
+                            id="alamat"
+                            rows="3"
+                        ></textarea>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Latitude</label>
+
+                        <input
+                            type="number"
+                            id="latitude"
+                            step="any"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Longitude</label>
+
+                        <input
+                            type="number"
+                            id="longitude"
+                            step="any"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Radius Absensi</label>
+
+                        <input
+                            type="number"
+                            id="radiusMeter"
+                            value="100"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Manager</label>
+
+                        <input
+                            type="text"
+                            id="manager"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>No. HP</label>
+
+                        <input
+                            type="text"
+                            id="noHp"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Target Harian</label>
+
+                        <input
+                            type="number"
+                            id="targetHarian"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Target Bulanan</label>
+
+                        <input
+                            type="number"
+                            id="targetBulanan"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Status</label>
+
+                        <select id="aktif">
+
+                            <option value="true">
+                                Aktif
+                            </option>
+
+                            <option value="false">
+                                Nonaktif
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        id="btnBatal"
+                        class="btn-secondary"
+                    >
+                        Batal
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn-primary"
+                    >
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Simpan
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script src="cabang-ERP.js"></script>
+
+</body>
+
+</html>
