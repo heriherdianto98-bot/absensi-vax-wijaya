@@ -1,0 +1,143 @@
+.ai-card{
+
+    margin:25px;
+
+    background:#1b1b1b;
+
+    border:1px solid rgba(212,175,55,.15);
+
+    border-radius:18px;
+
+    padding:24px;
+
+    color:#fff;
+
+}
+
+.ai-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.ai-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+.ai-icon{
+
+    width:50px;
+
+    height:50px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#272727;
+
+    font-size:24px;
+
+}
+
+.ai-title h3{
+
+    margin:0;
+
+    font-size:22px;
+
+}
+
+.ai-title small{
+
+    color:#999;
+
+}
+
+.ai-status{
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+.ai-status.good{
+
+    background:#22c55e20;
+
+    color:#22c55e;
+
+}
+
+.ai-summary{
+
+    background:#222;
+
+    padding:18px;
+
+    border-radius:12px;
+
+    line-height:1.7;
+
+    margin-bottom:20px;
+
+}
+
+.ai-summary strong{
+
+    color:#d4af37;
+
+}
+
+.ai-section{
+
+    margin-top:18px;
+
+}
+
+.ai-section h4{
+
+    color:#d4af37;
+
+    margin-bottom:10px;
+
+}
+
+.ai-section ul{
+
+    margin-left:20px;
+
+    color:#ddd;
+
+    line-height:1.9;
+
+}
+
+.ai-section p{
+
+    color:#ddd;
+
+    line-height:1.8;
+
+}

@@ -1,0 +1,140 @@
+/* =========================================
+   VAX ERP - Toolbar Premium
+========================================= */
+
+.toolbar-wrapper{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+
+    background:#1b1b1b;
+
+    border:1px solid #262626;
+    border-radius:18px;
+
+    padding:18px 22px;
+
+    margin:26px 0;
+}
+
+.toolbar-left,
+.toolbar-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.toolbar-left{
+    flex:1;
+}
+
+.toolbar-left select{
+    height:46px;
+    min-width:180px;
+
+    background:#262626;
+    color:#fff;
+
+    border:1px solid #303030;
+    border-radius:12px;
+
+    padding:0 16px;
+
+    font-size:14px;
+
+    transition:.25s;
+}
+
+.toolbar-left select:hover{
+    border-color:#d4af37;
+}
+
+.toolbar-left select:focus{
+    outline:none;
+    border-color:#d4af37;
+    box-shadow:0 0 0 3px rgba(212,175,55,.15);
+}
+
+.toolbar-right button{
+
+    height:46px;
+
+    padding:0 22px;
+
+    border:none;
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-weight:600;
+    font-size:14px;
+
+    transition:.25s;
+}
+
+#btnRefresh{
+
+    background:#d4af37;
+    color:#111;
+
+}
+
+#btnRefresh:hover{
+
+    background:#e7c34d;
+    transform:translateY(-2px);
+
+}
+
+#btnSync{
+
+    background:#262626;
+    color:white;
+
+    border:1px solid #3a3a3a;
+
+}
+
+#btnSync:hover{
+
+    background:#313131;
+    border-color:#d4af37;
+
+}
+
+@media(max-width:1100px){
+
+.toolbar-wrapper{
+
+    flex-direction:column;
+    align-items:stretch;
+
+}
+
+.toolbar-left,
+.toolbar-right{
+
+    width:100%;
+
+}
+
+.toolbar-left{
+
+    flex-wrap:wrap;
+
+}
+
+.toolbar-left select{
+
+    flex:1;
+
+}
+
+.toolbar-right button{
+
+    flex:1;
+
+}
+
+}

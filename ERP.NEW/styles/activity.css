@@ -1,0 +1,93 @@
+.activity-card{
+
+    background:#1b1b1b;
+    
+    border-radius:18px;
+    
+    padding:22px;
+    
+    border:1px solid rgba(212,175,55,.15);
+    
+    }
+    
+    .activity-header{
+    
+    display:flex;
+    
+    justify-content:space-between;
+    
+    align-items:center;
+    
+    margin-bottom:20px;
+    
+    }
+    
+    .activity-header h3{
+    
+    color:white;
+    
+    }
+    
+    .live-dot{
+    
+    width:10px;
+    
+    height:10px;
+    
+    border-radius:50%;
+    
+    background:#22c55e;
+    
+    animation:pulse 1.5s infinite;
+    
+    }
+    
+    .activity-item{
+    
+    display:flex;
+    
+    gap:15px;
+    
+    padding:15px 0;
+    
+    border-bottom:1px solid #2d2d2d;
+    
+    }
+    
+    .activity-time{
+    
+    width:55px;
+    
+    color:#999;
+    
+    font-size:13px;
+    
+    }
+    
+    .activity-content strong{
+    
+    display:block;
+    
+    color:#fff;
+    
+    margin-bottom:5px;
+    
+    }
+    
+    .activity-content p{
+    
+    color:#aaa;
+    
+    font-size:13px;
+    
+    }
+    
+    @keyframes pulse{
+    
+    0%{opacity:1;}
+    
+    50%{opacity:.3;}
+    
+    100%{opacity:1;}
+    
+    }

@@ -1,0 +1,147 @@
+.erp-header{
+    height:70px;
+    background:#161616;
+    border-bottom:1px solid rgba(255,215,0,.15);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 28px;
+
+    position:sticky;
+    top:0;
+    z-index:99;
+}
+
+.header-left h1{
+    color:#fff;
+    font-size:24px;
+    margin:0;
+}
+
+.header-left span{
+    display:block;
+    margin-top:4px;
+    color:#999;
+    font-size:13px;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+    margin-left:auto;
+}
+
+.header-btn{
+    width:42px;
+    height:42px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#232323;
+    color:#fff;
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.header-btn:hover{
+    background:#d4af37;
+    color:#111;
+}
+
+.header-user{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.header-user img{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#fff;
+}
+
+.header-user strong{
+    display:block;
+    color:#fff;
+    font-size:14px;
+}
+
+.header-user small{
+    color:#999;
+    font-size:12px;
+}
+
+.top-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:24px 30px;
+}
+
+.header-left{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.header-left h1{
+    font-size:32px;
+    color:#fff;
+    margin:0;
+}
+
+.header-left span{
+    color:#9d9d9d;
+    font-size:16px;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:10px;
+}
+
+.header-status{
+    padding:10px 18px;
+    background:#202020;
+    border:1px solid rgba(212,175,55,.12);
+    border-radius:12px;
+    color:#d7d7d7;
+    font-size:14px;
+    white-space:nowrap;
+}
+
+.header-status strong{
+    color:#fff;
+}
+
+.success{
+    color:#36d86d;
+}
+
+.icon-btn{
+    width:44px;
+    height:44px;
+    border:none;
+    border-radius:12px;
+    background:#202020;
+    color:#fff;
+    cursor:pointer;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+}
+

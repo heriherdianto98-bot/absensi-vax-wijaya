@@ -1,0 +1,292 @@
+/*
+=========================================================
+ERP VAX WIJAYA
+sidebar.css
+Version 1.0.0
+=========================================================
+*/
+
+:root{
+
+    --sidebar-width:260px;
+    --sidebar-collapse:80px;
+
+    --gold:#D4AF37;
+    --bg:#111111;
+    --card:#1B1B1B;
+    --border:#2A2A2A;
+
+    --white:#ffffff;
+    --text:#bdbdbd;
+
+}
+
+.sidebar{
+
+    position:fixed;
+
+    left:0;
+    top:0;
+    bottom:0;
+
+    width:var(--sidebar-width);
+
+    background:var(--bg);
+
+    border-right:1px solid var(--border);
+
+    display:flex;
+
+    flex-direction:column;
+
+    z-index:999;
+
+    transition:.30s;
+
+}
+
+.sidebar.collapsed{
+
+    width:var(--sidebar-collapse);
+
+}
+
+.sidebar-logo{
+
+    padding:25px 20px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+.logo-icon img{
+
+    width:48px;
+
+    height:48px;
+
+}
+
+.logo-text h2{
+
+    color:white;
+
+    font-size:20px;
+
+}
+
+.logo-text small{
+
+    color:#888;
+
+}
+
+.sidebar.collapsed .logo-text{
+
+    display:none;
+
+}
+
+.sidebar-toggle{
+
+    margin:15px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--card);
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.sidebar-toggle:hover{
+
+    background:var(--gold);
+
+    color:#111;
+
+}
+
+.sidebar-menu{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:0 12px 20px;
+
+}
+
+.menu-title{
+
+    display:block;
+
+    color:#666;
+
+    font-size:11px;
+
+    margin:22px 10px 10px;
+
+    letter-spacing:1px;
+
+}
+
+.menu-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:13px 14px;
+
+    border-radius:12px;
+
+    text-decoration:none;
+
+    color:#ddd;
+
+    transition:.25s;
+
+    margin-bottom:4px;
+
+}
+
+.menu-item:hover{
+
+    background:#232323;
+
+}
+
+.menu-item.active{
+
+    background:var(--gold);
+
+    color:#111;
+
+    font-weight:bold;
+
+}
+
+.menu-item .icon{
+
+    width:24px;
+
+    text-align:center;
+
+    font-size:18px;
+
+}
+
+.sidebar.collapsed .text{
+
+    display:none;
+
+}
+
+.sidebar.collapsed .menu-title{
+
+    display:none;
+
+}
+
+.sidebar-footer{
+
+    border-top:1px solid var(--border);
+
+    padding:18px;
+
+}
+
+.system-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:10px;
+
+    color:#ccc;
+
+    font-size:13px;
+
+}
+
+.status-dot{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:#35d04d;
+
+}
+
+.version{
+
+    font-size:12px;
+
+    color:#777;
+
+    margin-bottom:18px;
+
+}
+
+.logout-btn{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#262626;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.logout-btn:hover{
+
+    background:#b91c1c;
+
+}
+
+.sidebar.collapsed .logout-btn{
+
+    font-size:0;
+
+}
+
+.sidebar.collapsed .logout-btn::before{
+
+    content:"🚪";
+
+    font-size:18px;
+
+}
