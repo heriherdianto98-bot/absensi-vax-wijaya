@@ -1,0 +1,68 @@
+name: Fix Arus Kas Empty State
+
+on:
+  push:
+    branches:
+      - fix/arus-kas-clean
+    paths:
+      - .github/workflows/fix-arus-kas-empty-state.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/arus-kas-clean
+          fetch-depth: 0
+
+      - name: Patch empty state only
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('ERP.NEW/js/modules/arus-kas.js')
+          s = p.read_text(encoding='utf-8')
+          old_empty = '''            if(empty){
+                          empty.hidden = false;
+                          empty.textContent = "Tidak ada baris ledger pada filter aktif.";
+                      }'''.replace('                        ', '')
+          # Exact source block with normal indentation
+          old_empty = '''            if(empty){
+                empty.hidden = false;
+                empty.textContent = "Tidak ada baris ledger pada filter aktif.";
+            }'''
+          new_empty = '''            if(empty){
+                empty.hidden = false;
+                empty.style.removeProperty("display");
+                empty.textContent = "Tidak ada baris ledger pada filter aktif.";
+            }'''
+          old_data = '''        if(empty) empty.hidden = true;
+          if(table) table.hidden = false;'''.replace('          if(table)', '        if(table)')
+          new_data = '''        if(empty){
+            empty.hidden = true;
+            empty.style.setProperty("display", "none", "important");
+        }
+        if(table) table.hidden = false;'''
+          if old_empty not in s:
+              raise SystemExit('Expected empty-state block not found; aborting safely.')
+          if old_data not in s:
+              raise SystemExit('Expected data-state block not found; aborting safely.')
+          s = s.replace(old_empty, new_empty, 1)
+          s = s.replace(old_data, new_data, 1)
+          p.write_text(s, encoding='utf-8', newline='\n')
+
+      - name: Syntax check
+        run: node --check ERP.NEW/js/modules/arus-kas.js
+
+      - name: Remove temporary workflow and commit
+        shell: bash
+        run: |
+          rm .github/workflows/fix-arus-kas-empty-state.yml
+          git config user.name "vax-erp-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add ERP.NEW/js/modules/arus-kas.js .github/workflows/fix-arus-kas-empty-state.yml
+          git commit -m "fix: hide arus kas empty state when ledger has data"
+          git push origin HEAD:fix/arus-kas-clean
