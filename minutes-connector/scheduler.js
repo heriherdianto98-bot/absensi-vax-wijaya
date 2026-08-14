@@ -30,6 +30,43 @@ function formatWaktu() {
   }).format(new Date());
 }
 
+function jalankanFile(fileName, label, selesai) {
+  const filePath = path.join(__dirname, fileName);
+
+  console.log(`[${formatWaktu()}] Menjalankan ${label}...`);
+
+  const proses = spawn(
+    process.execPath,
+    [filePath],
+    {
+      cwd: __dirname,
+      stdio: "inherit"
+    }
+  );
+
+  proses.on("error", error => {
+    console.error(
+      `[${formatWaktu()}] ${label} gagal dijalankan: ${error.message}`
+    );
+
+    selesai(1);
+  });
+
+  proses.on("close", kode => {
+    if (kode === 0) {
+      console.log(
+        `[${formatWaktu()}] ${label} selesai.`
+      );
+    } else {
+      console.error(
+        `[${formatWaktu()}] ${label} berhenti dengan kode ${kode}.`
+      );
+    }
+
+    selesai(kode ?? 1);
+  });
+}
+
 function jalankanSync() {
   if (sedangBerjalan) {
     console.log(
@@ -52,38 +89,27 @@ function jalankanSync() {
   console.log(`[${formatWaktu()}] MEMULAI SYNC`);
   console.log("========================================");
 
-  const fileSync = path.join(__dirname, "sync.js");
+  jalankanFile(
+    "sync.js",
+    "Minutes Daily Recap",
+    kodeDaily => {
+      if (kodeDaily !== 0) {
+        sedangBerjalan = false;
+        return;
+      }
 
-  const proses = spawn(
-    process.execPath,
-    [fileSync],
-    {
-      cwd: __dirname,
-      stdio: "inherit"
+      jalankanFile(
+        "provider-sales-sync.js",
+        "Minutes Provider Sales Daily",
+        () => {
+          sedangBerjalan = false;
+          console.log(
+            `[${formatWaktu()}] Siklus sync selesai.`
+          );
+        }
+      );
     }
   );
-
-  proses.on("error", error => {
-    console.error(
-      `[${formatWaktu()}] Gagal menjalankan sync: ${error.message}`
-    );
-
-    sedangBerjalan = false;
-  });
-
-  proses.on("close", kode => {
-    sedangBerjalan = false;
-
-    if (kode === 0) {
-      console.log(
-        `[${formatWaktu()}] Sync selesai.`
-      );
-    } else {
-      console.error(
-        `[${formatWaktu()}] Sync berhenti dengan kode ${kode}.`
-      );
-    }
-  });
 }
 
 jalankanSync();
@@ -96,5 +122,6 @@ setInterval(
 console.log("");
 console.log("Scheduler aktif.");
 console.log("Jadwal: setiap 10 menit.");
+console.log("Urutan: Daily Recap -> Provider Sales Daily.");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
