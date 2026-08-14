@@ -1,0 +1,111 @@
+<section class="finance-ledger-guide" aria-labelledby="financeLedgerGuideTitle">
+  <div class="finance-ledger-guide__header">
+    <div>
+      <p class="finance-ledger-guide__eyebrow">PANDUAN LEDGER KEUANGAN</p>
+      <h3 id="financeLedgerGuideTitle">Arti Angka Keuangan</h3>
+      <p class="finance-ledger-guide__subtitle">Panduan singkat agar setiap angka di ledger mudah dipahami dan tidak tertukar.</p>
+    </div>
+    <span class="finance-ledger-guide__badge">SOURCE OF TRUTH</span>
+  </div>
+
+  <div class="finance-ledger-guide__grid">
+    <article class="finance-ledger-term finance-ledger-term--product">
+      <div class="finance-ledger-term__icon">P</div>
+      <div class="finance-ledger-term__body">
+        <div class="finance-ledger-term__title-row">
+          <h4>Product Fund</h4>
+          <span>Dana Produk</span>
+        </div>
+        <p><strong>Uang bersih penjualan produk setelah Share Produk dipotong.</strong> Dana ini dipisahkan khusus untuk stok/restock produk dan bukan uang bebas Kas Owner.</p>
+        <small>Patokan ERP: Product Fund = NET PRODUK setelah Share Produk.</small>
+      </div>
+    </article>
+
+    <article class="finance-ledger-term finance-ledger-term--setoran">
+      <div class="finance-ledger-term__icon">S</div>
+      <div class="finance-ledger-term__body">
+        <div class="finance-ledger-term__title-row">
+          <h4>Setoran DONE</h4>
+          <span>Kas Masuk Owner</span>
+        </div>
+        <p><strong>Uang tunai cabang yang sudah menjadi bagian Kas Owner setelah Dana Produk dipisahkan.</strong> Status DONE berarti setoran periode tersebut sudah dianggap selesai/tercatat.</p>
+        <small>Patokan ERP: Setoran = maksimum dari (Cash tersedia - Product Fund), tidak boleh minus.</small>
+      </div>
+    </article>
+
+    <article class="finance-ledger-term finance-ledger-term--shortage">
+      <div class="finance-ledger-term__icon">!</div>
+      <div class="finance-ledger-term__body">
+        <div class="finance-ledger-term__title-row">
+          <h4>Shortage</h4>
+          <span>Kekurangan Kas</span>
+        </div>
+        <p><strong>Kekurangan kas cabang ketika uang tunai yang tersedia tidak cukup untuk memenuhi Dana Produk yang harus dipisahkan.</strong> Ini bukan uang masuk dan bukan otomatis uang hilang.</p>
+        <small>Patokan ERP: Shortage = maksimum dari (Product Fund - Cash tersedia), lalu diperlakukan sebagai kebutuhan pendanaan/koreksi.</small>
+      </div>
+    </article>
+
+    <article class="finance-ledger-term finance-ledger-term--qris">
+      <div class="finance-ledger-term__icon">Q</div>
+      <div class="finance-ledger-term__body">
+        <div class="finance-ledger-term__title-row">
+          <h4>QRIS</h4>
+          <span>Non Tunai</span>
+        </div>
+        <p><strong>Uang penjualan non-tunai yang benar-benar tercatat pada BRI Merchant.</strong> Angka ini merupakan penerimaan usaha non-cash dan masuk perhitungan Kas Owner.</p>
+        <small>Patokan ERP historical: BRI Merchant Transaksi dengan status Pencairan Berhasil.</small>
+      </div>
+    </article>
+
+    <article class="finance-ledger-term finance-ledger-term--owner">
+      <div class="finance-ledger-term__icon">O</div>
+      <div class="finance-ledger-term__body">
+        <div class="finance-ledger-term__title-row">
+          <h4>Kas Owner</h4>
+          <span>Saldo Kendali Owner</span>
+        </div>
+        <p><strong>Total dana usaha yang berada dalam kendali Owner setelah seluruh arus masuk dan keluar yang sah dihitung.</strong> Ini adalah angka utama untuk melihat posisi kas pusat.</p>
+        <small>Patokan historical: Setoran DONE + QRIS - Shortage/Funding - Owner Expense.</small>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+.finance-ledger-guide{
+  margin:18px 0 22px;
+  padding:18px;
+  border:1px solid rgba(212,175,55,.28);
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(28,28,28,.96),rgba(14,14,14,.98));
+  box-shadow:0 14px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.025);
+  color:#f5f5f5;
+}
+.finance-ledger-guide__header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.finance-ledger-guide__eyebrow{margin:0 0 4px;color:#d6b85a;font-size:11px;font-weight:800;letter-spacing:.14em}
+.finance-ledger-guide__header h3{margin:0;font-size:20px;line-height:1.2;color:#fff}
+.finance-ledger-guide__subtitle{margin:6px 0 0;color:#aaa;font-size:13px;line-height:1.5}
+.finance-ledger-guide__badge{flex:0 0 auto;border:1px solid rgba(212,175,55,.34);background:rgba(212,175,55,.08);color:#e7c866;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:800;letter-spacing:.08em}
+.finance-ledger-guide__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.finance-ledger-term{display:flex;gap:12px;padding:14px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:rgba(255,255,255,.025)}
+.finance-ledger-term:last-child{grid-column:1/-1}
+.finance-ledger-term__icon{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:10px;font-weight:900;font-size:14px;background:#1e1e1e;border:1px solid rgba(255,255,255,.08)}
+.finance-ledger-term__body{min-width:0}
+.finance-ledger-term__title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.finance-ledger-term__title-row h4{margin:0;font-size:15px;color:#fff}
+.finance-ledger-term__title-row span{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#9d9d9d;border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:3px 7px}
+.finance-ledger-term p{margin:0;color:#c7c7c7;font-size:12.5px;line-height:1.55}
+.finance-ledger-term p strong{color:#f3f3f3;font-weight:700}
+.finance-ledger-term small{display:block;margin-top:7px;color:#8f8f8f;font-size:11px;line-height:1.45}
+.finance-ledger-term--product{border-left:3px solid #d4af37}
+.finance-ledger-term--setoran{border-left:3px solid #4caf73}
+.finance-ledger-term--shortage{border-left:3px solid #d77b52}
+.finance-ledger-term--qris{border-left:3px solid #6e9ac8}
+.finance-ledger-term--owner{border-left:3px solid #e4c463}
+.finance-ledger-term--product .finance-ledger-term__icon{color:#e4c463;background:rgba(212,175,55,.08)}
+.finance-ledger-term--setoran .finance-ledger-term__icon{color:#78c99a;background:rgba(76,175,115,.09)}
+.finance-ledger-term--shortage .finance-ledger-term__icon{color:#e09a78;background:rgba(215,123,82,.09)}
+.finance-ledger-term--qris .finance-ledger-term__icon{color:#8cb6df;background:rgba(110,154,200,.09)}
+.finance-ledger-term--owner .finance-ledger-term__icon{color:#f0d477;background:rgba(228,196,99,.09)}
+@media (max-width:900px){.finance-ledger-guide__grid{grid-template-columns:1fr}.finance-ledger-term:last-child{grid-column:auto}.finance-ledger-guide__header{flex-direction:column}.finance-ledger-guide__badge{align-self:flex-start}}
+</style>
