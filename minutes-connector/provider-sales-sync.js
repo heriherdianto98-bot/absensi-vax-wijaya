@@ -19,6 +19,21 @@ function normalisasi(teks = "") {
 }
 
 function tanggalWIB() {
+  const tanggalArg = process.argv[2]?.trim();
+
+  if (tanggalArg) {
+    const match = tanggalArg.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) {
+      throw new Error("Format tanggal harus YYYY-MM-DD. Contoh: 2026-08-13");
+    }
+
+    const [, year, month, day] = match;
+    return {
+      db: tanggalArg,
+      minutesRange: `${month}/${day}/${year} - ${month}/${day}/${year}`
+    };
+  }
+
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Jakarta",
     year: "numeric",
@@ -280,7 +295,7 @@ try {
 
       if (!providers.length) {
         hasil.push({ cabang: cabang.nama_cabang, status: "NO_DATA", providers: 0 });
-        console.log(`ℹ️ ${cabang.nama_cabang}: tidak ada Provider Sales hari ini`);
+        console.log(`ℹ️ ${cabang.nama_cabang}: tidak ada Provider Sales ${activityDate}`);
         continue;
       }
 
