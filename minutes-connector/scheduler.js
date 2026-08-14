@@ -30,7 +30,7 @@ function formatWaktu() {
   }).format(new Date());
 }
 
-function jalankanFile(fileName, label, selesai) {
+function jalankanNodeFile(fileName, label, selesai) {
   const filePath = path.join(__dirname, fileName);
 
   console.log(`[${formatWaktu()}] Menjalankan ${label}...`);
@@ -48,21 +48,50 @@ function jalankanFile(fileName, label, selesai) {
     console.error(
       `[${formatWaktu()}] ${label} gagal dijalankan: ${error.message}`
     );
-
     selesai(1);
   });
 
   proses.on("close", kode => {
     if (kode === 0) {
-      console.log(
-        `[${formatWaktu()}] ${label} selesai.`
-      );
+      console.log(`[${formatWaktu()}] ${label} selesai.`);
     } else {
       console.error(
         `[${formatWaktu()}] ${label} berhenti dengan kode ${kode}.`
       );
     }
+    selesai(kode ?? 1);
+  });
+}
 
+function jalankanDailyRecap(selesai) {
+  const filePath = path.join(__dirname, "sync.js");
+
+  console.log(`[${formatWaktu()}] Menjalankan Minutes Daily Recap via xvfb-run...`);
+
+  const proses = spawn(
+    "/usr/bin/xvfb-run",
+    ["-a", process.execPath, filePath],
+    {
+      cwd: __dirname,
+      stdio: "inherit"
+    }
+  );
+
+  proses.on("error", error => {
+    console.error(
+      `[${formatWaktu()}] Minutes Daily Recap gagal dijalankan: ${error.message}`
+    );
+    selesai(1);
+  });
+
+  proses.on("close", kode => {
+    if (kode === 0) {
+      console.log(`[${formatWaktu()}] Minutes Daily Recap selesai.`);
+    } else {
+      console.error(
+        `[${formatWaktu()}] Minutes Daily Recap berhenti dengan kode ${kode}.`
+      );
+    }
     selesai(kode ?? 1);
   });
 }
@@ -89,27 +118,21 @@ function jalankanSync() {
   console.log(`[${formatWaktu()}] MEMULAI SYNC`);
   console.log("========================================");
 
-  jalankanFile(
-    "sync.js",
-    "Minutes Daily Recap",
-    kodeDaily => {
-      if (kodeDaily !== 0) {
-        sedangBerjalan = false;
-        return;
-      }
-
-      jalankanFile(
-        "provider-sales-sync.js",
-        "Minutes Provider Sales Daily",
-        () => {
-          sedangBerjalan = false;
-          console.log(
-            `[${formatWaktu()}] Siklus sync selesai.`
-          );
-        }
-      );
+  jalankanDailyRecap(kodeDaily => {
+    if (kodeDaily !== 0) {
+      sedangBerjalan = false;
+      return;
     }
-  );
+
+    jalankanNodeFile(
+      "provider-sales-sync.js",
+      "Minutes Provider Sales Daily",
+      () => {
+        sedangBerjalan = false;
+        console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+      }
+    );
+  });
 }
 
 jalankanSync();
@@ -122,6 +145,6 @@ setInterval(
 console.log("");
 console.log("Scheduler aktif.");
 console.log("Jadwal: setiap 10 menit.");
-console.log("Urutan: Daily Recap -> Provider Sales Daily.");
+console.log("Urutan: Daily Recap (xvfb) -> Provider Sales Daily.");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
