@@ -139,12 +139,12 @@ jalankanSync();
 
 setInterval(
   jalankanSync,
-  10 * 60 * 1000
+  1 * 60 * 1000
 );
 
 console.log("");
 console.log("Scheduler aktif.");
-console.log("Jadwal: setiap 10 menit.");
+console.log("Jadwal: setiap 1 menit.");
 console.log("Urutan: Daily Recap (xvfb) -> Provider Sales Daily.");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
