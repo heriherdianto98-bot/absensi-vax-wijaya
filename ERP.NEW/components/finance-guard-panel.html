@@ -1,0 +1,43 @@
+<section class="finance-guard-panel" id="financeGuardPanel" aria-live="polite">
+  <div class="finance-guard-panel__top">
+    <div>
+      <p class="finance-guard-panel__eyebrow">FINANCE GUARD</p>
+      <h3>Validasi Otomatis Keuangan</h3>
+      <p class="finance-guard-panel__subtitle">Sistem memeriksa angka per cabang dan total 10 cabang. Selisih Rp1 langsung dianggap MISMATCH.</p>
+    </div>
+    <div class="finance-guard-panel__status finance-guard-panel__status--loading" id="financeGuardStatus">MEMERIKSA...</div>
+  </div>
+
+  <div class="finance-guard-panel__summary" id="financeGuardSummary">
+    <div class="finance-guard-metric"><span>Product Fund</span><strong id="fgProductFund">Rp0</strong></div>
+    <div class="finance-guard-metric"><span>Setoran DONE</span><strong id="fgSetoran">Rp0</strong></div>
+    <div class="finance-guard-metric"><span>Shortage</span><strong id="fgShortage">Rp0</strong></div>
+    <div class="finance-guard-metric"><span>QRIS</span><strong id="fgQris">Rp0</strong></div>
+    <div class="finance-guard-metric finance-guard-metric--owner"><span>Kas Owner</span><strong id="fgKasOwner">Rp0</strong></div>
+  </div>
+
+  <div class="finance-guard-panel__message" id="financeGuardMessage">Menunggu pemeriksaan data...</div>
+  <div class="finance-guard-panel__branches" id="financeGuardBranches"></div>
+</section>
+
+<style>
+.finance-guard-panel{margin:18px 0;padding:18px;border:1px solid rgba(212,175,55,.24);border-radius:18px;background:linear-gradient(180deg,rgba(25,25,25,.97),rgba(12,12,12,.98));box-shadow:0 16px 38px rgba(0,0,0,.28);color:#f7f7f7}
+.finance-guard-panel__top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.finance-guard-panel__eyebrow{margin:0 0 4px;color:#d8b85d;font-size:11px;font-weight:900;letter-spacing:.14em}
+.finance-guard-panel h3{margin:0;font-size:20px}.finance-guard-panel__subtitle{margin:6px 0 0;color:#9f9f9f;font-size:12.5px;line-height:1.5}
+.finance-guard-panel__status{flex:0 0 auto;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:900;letter-spacing:.05em;border:1px solid rgba(255,255,255,.08)}
+.finance-guard-panel__status--loading{color:#d8c27a;background:rgba(216,194,122,.08)}
+.finance-guard-panel__status--valid{color:#7fd39c;background:rgba(70,177,108,.11);border-color:rgba(70,177,108,.3)}
+.finance-guard-panel__status--mismatch{color:#ef9a76;background:rgba(221,106,62,.11);border-color:rgba(221,106,62,.32)}
+.finance-guard-panel__status--waiting{color:#8cb8df;background:rgba(82,139,190,.11);border-color:rgba(82,139,190,.3)}
+.finance-guard-panel__status--error{color:#ef7777;background:rgba(200,60,60,.11);border-color:rgba(200,60,60,.32)}
+.finance-guard-panel__summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px}
+.finance-guard-metric{padding:12px;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:rgba(255,255,255,.025)}
+.finance-guard-metric span{display:block;color:#999;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}.finance-guard-metric strong{display:block;margin-top:5px;font-size:16px;color:#f4f4f4}.finance-guard-metric--owner{border-color:rgba(212,175,55,.24);background:rgba(212,175,55,.05)}.finance-guard-metric--owner strong{color:#e8ca6e}
+.finance-guard-panel__message{margin-top:12px;padding:11px 12px;border-radius:11px;background:rgba(255,255,255,.025);color:#bdbdbd;font-size:12.5px;line-height:1.5}
+.finance-guard-panel__branches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.finance-guard-branch{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 11px;border:1px solid rgba(255,255,255,.06);border-radius:11px;background:rgba(255,255,255,.02)}
+.finance-guard-branch__name{font-size:12px;color:#d1d1d1}.finance-guard-branch__state{font-size:10px;font-weight:900;border-radius:999px;padding:4px 7px}.finance-guard-branch__state--valid{color:#79c997;background:rgba(70,177,108,.09)}.finance-guard-branch__state--mismatch{color:#e89873;background:rgba(221,106,62,.09)}.finance-guard-branch__state--waiting{color:#86add0;background:rgba(82,139,190,.09)}
+.finance-guard-branch__detail{grid-column:1/-1;color:#ef9a76;font-size:11px;margin-top:2px}
+@media(max-width:1000px){.finance-guard-panel__summary{grid-template-columns:repeat(2,minmax(0,1fr))}.finance-guard-panel__branches{grid-template-columns:1fr}.finance-guard-panel__top{flex-direction:column}.finance-guard-panel__status{align-self:flex-start}}
+</style>
