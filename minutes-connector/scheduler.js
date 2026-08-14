@@ -125,15 +125,26 @@ function jalankanSync() {
     }
 
     jalankanNodeFile(
-      "sync-status-interval-fix.js",
-      "Sync Status Interval 1 Menit",
-      () => {
+      "daily-recap-money-bridge.js",
+      "ERP Money Bridge Rp0 Guard",
+      kodeBridge => {
+        if (kodeBridge !== 0) {
+          sedangBerjalan = false;
+          return;
+        }
+
         jalankanNodeFile(
-          "provider-sales-sync.js",
-          "Minutes Provider Sales Daily",
+          "sync-status-interval-fix.js",
+          "Sync Status Interval 1 Menit",
           () => {
-            sedangBerjalan = false;
-            console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+            jalankanNodeFile(
+              "provider-sales-sync.js",
+              "Minutes Provider Sales Daily",
+              () => {
+                sedangBerjalan = false;
+                console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+              }
+            );
           }
         );
       }
@@ -151,6 +162,6 @@ setInterval(
 console.log("");
 console.log("Scheduler aktif.");
 console.log("Jadwal: setiap 1 menit.");
-console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily.");
+console.log("Urutan: Daily Recap (xvfb) -> Money Bridge Rp0 Guard -> Sync Status 1 Menit -> Provider Sales Daily.");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
