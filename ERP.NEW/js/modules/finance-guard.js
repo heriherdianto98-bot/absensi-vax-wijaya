@@ -22,6 +22,7 @@ WAITING_DATA states at branch and global level.
 
     const ACTIVE_BRANCH_IDS = Object.freeze([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     const HISTORICAL_LOCK_END = "2026-08-12";
+    const LIVE_START = "2026-08-13";
     const ZERO_TOLERANCE = 0;
 
     const STATUS = Object.freeze({
@@ -342,6 +343,7 @@ WAITING_DATA states at branch and global level.
             totals: {
                 productFund,
                 setoranDone: setoran,
+                shortage: 0,
                 qrisNonTunai: qris,
                 minutesCash,
                 minutesNonCash,
@@ -394,9 +396,10 @@ WAITING_DATA states at branch and global level.
         const totals = branchResults.reduce((acc, item) => {
             acc.productFund += n(item.totals.productFund);
             acc.setoranDone += n(item.totals.setoranDone);
+            acc.shortage += n(item.totals.shortage);
             acc.qrisNonTunai += n(item.totals.qrisNonTunai);
             return acc;
-        }, { productFund: 0, setoranDone: 0, qrisNonTunai: 0 });
+        }, { productFund: 0, setoranDone: 0, shortage: 0, qrisNonTunai: 0 });
 
         Object.keys(totals).forEach((key) => { totals[key] = roundRupiah(totals[key]); });
 
@@ -411,6 +414,81 @@ WAITING_DATA states at branch and global level.
         };
     }
 
+    function scopedChecks(checks, scopeLabel) {
+        return (checks || []).map((check) => ({
+            ...check,
+            code: `${scopeLabel}_${check.code}`,
+            label: `${scopeLabel === "HIST" ? "Historical" : "Live"} — ${check.label}`
+        }));
+    }
+
+    function combineBranchResults(historical, live) {
+        if (!historical) return live;
+        if (!live) return historical;
+
+        const checks = [
+            ...scopedChecks(historical.checks, "HIST"),
+            ...scopedChecks(live.checks, "LIVE")
+        ];
+
+        return {
+            branchId: historical.branchId,
+            branchName: historical.branchName,
+            mode: "MIXED",
+            status: summarizeChecks(checks),
+            totals: {
+                manualCash: roundRupiah(n(historical.totals.manualCash) + n(live.totals.manualCash)),
+                productFund: roundRupiah(n(historical.totals.productFund) + n(live.totals.productFund)),
+                setoranDone: roundRupiah(n(historical.totals.setoranDone) + n(live.totals.setoranDone)),
+                shortage: roundRupiah(n(historical.totals.shortage) + n(live.totals.shortage)),
+                qrisNonTunai: roundRupiah(n(historical.totals.qrisNonTunai) + n(live.totals.qrisNonTunai)),
+                minutesCash: roundRupiah(n(live.totals.minutesCash)),
+                minutesNonCash: roundRupiah(n(live.totals.minutesNonCash)),
+                minutesCashOut: roundRupiah(n(live.totals.minutesCashOut)),
+                nettRevenuePlusProductCost: roundRupiah(n(live.totals.nettRevenuePlusProductCost))
+            },
+            checks
+        };
+    }
+
+    function globalMixedGuard(branchResults, ownerRows) {
+        const totals = branchResults.reduce((acc, item) => {
+            acc.productFund += n(item.totals.productFund);
+            acc.setoranDone += n(item.totals.setoranDone);
+            acc.shortage += n(item.totals.shortage);
+            acc.qrisNonTunai += n(item.totals.qrisNonTunai);
+            return acc;
+        }, { productFund: 0, setoranDone: 0, shortage: 0, qrisNonTunai: 0 });
+
+        Object.keys(totals).forEach((key) => { totals[key] = roundRupiah(totals[key]); });
+
+        const expenseNet = ownerExpenseNet(ownerRows);
+        const ledgerNet = ownerLedgerNet(ownerRows);
+        const expectedOwnerCashLedger = roundRupiah(totals.setoranDone - totals.shortage - expenseNet);
+        const expectedKasOwner = roundRupiah(expectedOwnerCashLedger + totals.qrisNonTunai);
+        const checks = [
+            makeCheck(
+                "OWNER_CASH_LEDGER",
+                "Kas Owner cash ledger",
+                ledgerNet,
+                expectedOwnerCashLedger,
+                "Historical + live canonical Setoran DONE - Shortage - Owner Expense harus sama dengan net ledger Kas Owner cash."
+            )
+        ];
+
+        return {
+            status: summarizeChecks(checks.concat(branchResults.flatMap((item) => item.checks))),
+            totals: {
+                ...totals,
+                ownerExpenseNet: expenseNet,
+                ownerCashLedgerNet: ledgerNet,
+                ownerLedgerNet: ledgerNet,
+                kasOwnerExpected: expectedKasOwner
+            },
+            checks
+        };
+    }
+
     async function run(options = {}) {
         if (typeof db === "undefined" || !db) {
             return {
@@ -422,49 +500,85 @@ WAITING_DATA states at branch and global level.
         try {
             const { start, end } = ensureDateRange(options.startDate, options.endDate);
             const branches = wantedBranches(options.branchId);
-            const historicalMode = end <= HISTORICAL_LOCK_END;
+            const hasHistorical = start <= HISTORICAL_LOCK_END;
+            const hasLive = end >= LIVE_START;
+            const historicalStart = hasHistorical ? start : null;
+            const historicalEnd = hasHistorical ? (end < HISTORICAL_LOCK_END ? end : HISTORICAL_LOCK_END) : null;
+            const liveStart = hasLive ? (start > LIVE_START ? start : LIVE_START) : null;
+            const liveEnd = hasLive ? end : null;
 
-            const [branchRows, qrisRows, pfRows, ownerRows] = await Promise.all([
+            const [branchRows, ownerRows] = await Promise.all([
                 queryBranches(),
-                queryQris(start, end, branches),
-                queryProductFundLedger(start, end, branches),
                 queryOwnerLedger(start, end)
             ]);
-
             const names = branchNameMap(branchRows);
-            let branchResults = [];
-            let global = null;
 
-            if (historicalMode) {
-                const histRows = await queryHistorical(start, end, branches);
-                branchResults = branches.map((branchId) => historicalBranchGuard(
+            let historicalResults = null;
+            let liveResults = null;
+
+            if (hasHistorical) {
+                const [histRows, histQrisRows, histPfRows] = await Promise.all([
+                    queryHistorical(historicalStart, historicalEnd, branches),
+                    queryQris(historicalStart, historicalEnd, branches),
+                    queryProductFundLedger(historicalStart, historicalEnd, branches)
+                ]);
+
+                historicalResults = branches.map((branchId) => historicalBranchGuard(
                     branchId,
                     names.get(branchId) || `Cabang ${branchId}`,
                     byBranch(histRows, branchId),
-                    byBranch(qrisRows, branchId),
-                    byBranch(pfRows, branchId)
+                    byBranch(histQrisRows, branchId),
+                    byBranch(histPfRows, branchId)
                 ));
-                global = globalHistoricalGuard(branchResults, ownerRows);
-            } else {
-                const [liveRows, minutesRows] = await Promise.all([
-                    querySetoranLive(start, end, branches),
-                    queryMinutesDaily(start, end, branches)
+            }
+
+            if (hasLive) {
+                const [liveRows, liveQrisRows, livePfRows, minutesRows] = await Promise.all([
+                    querySetoranLive(liveStart, liveEnd, branches),
+                    queryQris(liveStart, liveEnd, branches),
+                    queryProductFundLedger(liveStart, liveEnd, branches),
+                    queryMinutesDaily(liveStart, liveEnd, branches)
                 ]);
-                branchResults = branches.map((branchId) => liveBranchGuard(
+
+                liveResults = branches.map((branchId) => liveBranchGuard(
                     branchId,
                     names.get(branchId) || `Cabang ${branchId}`,
                     byBranch(liveRows, branchId),
-                    byBranch(qrisRows, branchId),
-                    byBranch(pfRows, branchId),
+                    byBranch(liveQrisRows, branchId),
+                    byBranch(livePfRows, branchId),
                     byBranch(minutesRows, branchId)
                 ));
+            }
+
+            let branchResults = [];
+            let global = null;
+            let mode = null;
+
+            if (hasHistorical && hasLive) {
+                branchResults = branches.map((branchId, index) => combineBranchResults(
+                    historicalResults[index],
+                    liveResults[index]
+                ));
+                global = globalMixedGuard(branchResults, ownerRows);
+                mode = "MIXED";
+            } else if (hasHistorical) {
+                branchResults = historicalResults;
+                global = globalHistoricalGuard(branchResults, ownerRows);
+                mode = "HISTORICAL_LOCKED";
+            } else {
+                branchResults = liveResults;
                 global = globalLiveGuard(branchResults, ownerRows);
+                mode = "LIVE";
             }
 
             return {
                 status: global.status,
-                mode: historicalMode ? "HISTORICAL_LOCKED" : "LIVE",
+                mode,
                 period: { start, end },
+                splitPeriod: {
+                    historical: hasHistorical ? { start: historicalStart, end: historicalEnd } : null,
+                    live: hasLive ? { start: liveStart, end: liveEnd } : null
+                },
                 zeroToleranceRupiah: ZERO_TOLERANCE,
                 branches: branchResults,
                 global,
@@ -484,6 +598,7 @@ WAITING_DATA states at branch and global level.
         STATUS,
         ACTIVE_BRANCH_IDS,
         HISTORICAL_LOCK_END,
+        LIVE_START,
         run
     });
 })();
