@@ -293,3 +293,134 @@
     loadSession();
 
 })();
+
+/* =====================================
+   CUSTOM DROPDOWN — KEYBOARD ACCESSIBLE
+   Arrow Up/Down, Home/End, Enter/Space, Esc
+===================================== */
+(function(){
+    const select = document.getElementById("jenisIzin");
+    const custom = document.getElementById("jenisCustom");
+    const trigger = document.getElementById("jenisTrigger");
+    const menu = document.getElementById("jenisMenu");
+    const options = Array.from(document.querySelectorAll(".jenis-option"));
+
+    if(!select || !custom || !trigger || !menu || !options.length) return;
+
+    function isOpen(){
+        return menu.hidden === false;
+    }
+
+    function openMenu(focusMode = "selected"){
+        custom.classList.add("open");
+        menu.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+
+        let target = options.find((btn) => btn.dataset.value === select.value) || options[0];
+        if(focusMode === "first") target = options[0];
+        if(focusMode === "last") target = options[options.length - 1];
+
+        requestAnimationFrame(() => target.focus());
+    }
+
+    function closeMenu(returnFocus = false){
+        custom.classList.remove("open");
+        menu.hidden = true;
+        trigger.setAttribute("aria-expanded", "false");
+        if(returnFocus) requestAnimationFrame(() => trigger.focus());
+    }
+
+    function moveFocus(delta){
+        const activeIndex = options.indexOf(document.activeElement);
+        const current = activeIndex >= 0 ? activeIndex : 0;
+        const next = (current + delta + options.length) % options.length;
+        options[next].focus();
+    }
+
+    trigger.addEventListener("keydown", function(event){
+        if(event.key === "ArrowDown"){
+            event.preventDefault();
+            if(!isOpen()) openMenu("selected");
+            else moveFocus(1);
+            return;
+        }
+
+        if(event.key === "ArrowUp"){
+            event.preventDefault();
+            if(!isOpen()) openMenu("selected");
+            else moveFocus(-1);
+            return;
+        }
+
+        if(event.key === "Home"){
+            event.preventDefault();
+            openMenu("first");
+            return;
+        }
+
+        if(event.key === "End"){
+            event.preventDefault();
+            openMenu("last");
+            return;
+        }
+
+        if(event.key === "Enter" || event.key === " "){
+            event.preventDefault();
+            if(!isOpen()) openMenu("selected");
+            else closeMenu(true);
+            return;
+        }
+
+        if(event.key === "Escape" && isOpen()){
+            event.preventDefault();
+            closeMenu(true);
+        }
+    });
+
+    options.forEach((btn, index) => {
+        btn.setAttribute("tabindex", "-1");
+
+        btn.addEventListener("keydown", function(event){
+            if(event.key === "ArrowDown"){
+                event.preventDefault();
+                options[(index + 1) % options.length].focus();
+                return;
+            }
+
+            if(event.key === "ArrowUp"){
+                event.preventDefault();
+                options[(index - 1 + options.length) % options.length].focus();
+                return;
+            }
+
+            if(event.key === "Home"){
+                event.preventDefault();
+                options[0].focus();
+                return;
+            }
+
+            if(event.key === "End"){
+                event.preventDefault();
+                options[options.length - 1].focus();
+                return;
+            }
+
+            if(event.key === "Enter" || event.key === " "){
+                event.preventDefault();
+                btn.click();
+                requestAnimationFrame(() => trigger.focus());
+                return;
+            }
+
+            if(event.key === "Escape"){
+                event.preventDefault();
+                closeMenu(true);
+                return;
+            }
+
+            if(event.key === "Tab"){
+                closeMenu(false);
+            }
+        });
+    });
+})();
