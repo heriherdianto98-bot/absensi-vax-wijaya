@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | VAX WIJAYA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/login.css">
+<script src="https://cdn.jsdelivr.net/npm/@Supabase/supabase-js@2"></script> 
+</head> 
+<body class="login-page"> 
+ 
+<header class="login-meta"> 
+    <span>Powered by Heri Herdianto</span> 
+</header> 
+ 
+<div class="login-version">Versi ERP.001</div> 
+ 
+<div class="login-bg" aria-hidden="true"> 
+    <svg class="login-ribbon" viewBox="0 0 1440 900" preserveAspectRatio="xMinYMin slice"> 
+        <path d="M-80,-40 C260,20 40,260 360,300 C700,350 480,40 1180,-30" fill="none" stroke="#151E2C" stroke-width="86" stroke-linecap="round"/> 
+        <path d="M-40,70 C300,120 80,340 400,370 C740,410 540,90 1240,20" fill="none" stroke="#0C121A" stroke-width="52" stroke-linecap="round"/> 
+        <path d="M-20,40 C280,90 70,300 380,330 C720,370 520,70 1220,10" fill="none" stroke="#C9A227" stroke-width="1.25" stroke-linecap="round"/> 
+    </svg> 
+</div> 
+ 
+<main class="login-stage"> 
+    <section class="login-card" id="ownerLoginCard"> 
+        <div class="login-brand"> 
+            <img class="login-logo" src="../assets/brand/erp-vax-wijaya.png" alt="VAX Wijaya" width="200" height="164" decoding="async"> 
+            <h1>VAX WIJAYA</h1> 
+            <p>ENTERPRISE MANAGEMENT SYSTEM</p> 
+        </div> 
+ 
+        <p class="login-greet" id="ownerLoginGreet" role="status"> 
+            Selamat datang. Sistem siap digunakan. 
+        </p> 
+ 
+        <form id="ownerLoginForm" class="login-form" autocomplete="on"> 
+            <label> 
+                Email 
+                <span class="login-field"> 
+                    <svg class="login-field-icon" viewBox="0 0 24 24" aria-hidden="true"> 
+                        <rect x="3" y="5" width="18" height="14" rx="2"/> 
+                        <path d="M3 7l9 7 9-7"/> 
+                    </svg> 
+                    <input id="ownerEmail" type="text" name="email" required placeholder="email@domain.com" autocomplete="username" inputmode="email" spellcheck="false"> 
+                </span> 
+            </label> 
+ 
+            <label> 
+                Password 
+                <span class="login-field login-field-password"> 
+                    <svg class="login-field-icon" viewBox="0 0 24 24" aria-hidden="true"> 
+                        <rect x="5" y="11" width="14" height="10" rx="2"/> 
+                        <path d="M8 11V8a4 4 0 0 1 8 0v3"/> 
+                    </svg> 
+                    <input id="ownerPassword" type="password" name="password" required placeholder="••••••••" autocomplete="current-password"> 
+                    <button class="login-password-toggle" id="btnTogglePassword" type="button" aria-label="Tampilkan password" aria-pressed="false"> 
+                        <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true"> 
+                            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/> 
+                            <circle cx="12" cy="12" r="2.8"/> 
+                        </svg> 
+                        <svg class="icon-eye icon-eye-closed" viewBox="0 0 24 24" aria-hidden="true"> 
+                            <path d="M3 3l18 18"/> 
+                            <path d="M10.6 6.2A9.7 9.7 0 0 1 12 6c6 0 9.5 6 9.5 6a15.5 15.5 0 0 1-2.4 3.1"/> 
+                            <path d="M6.5 6.5C4 8.3 2.5 12 2.5 12s3.5 6 9.5 6a9.8 9.8 0 0 0 4-.8"/> 
+                            <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/> 
+                        </svg> 
+                    </button> 
+                </span> 
+            </label> 
+ 
+            <div class="login-feedback" id="ownerLoginFeedback"> 
+                <p id="ownerLoginStatus" class="login-status" hidden></p> 
+                <p id="ownerLoginError" class="login-error" hidden></p> 
+            </div> 
+ 
+            <button id="btnOwnerLogin" class="login-submit" type="submit"> 
+                <span class="login-submit-label">Masuk</span> 
+                <span class="login-submit-spin" aria-hidden="true"></span> 
+                <span class="login-submit-check" aria-hidden="true"> 
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"> 
+                        <path d="M5 12.5l4.2 4.2L19 7.5"/> 
+                    </svg> 
+                </span> 
+            </button> 
+        </form> 
+ 
+        <small class="login-note"> 
+            Pintu masuk Owner, SPV, dan Karyawan. Hak akses mengikuti peran akun. 
+        </small> 
+    </section> 
+</main> 
+ 
+<script src="../js/modules/connector.js"></script> 
+<script src="../js/modules/owner-auth.js"></script> 
+<script> 
+document.addEventListener("DOMContentLoaded", () => { 
+    const form = document.getElementById("ownerLoginForm"); 
+    const card = document.getElementById("ownerLoginCard"); 
+    const greetEl = document.getElementById("ownerLoginGreet"); 
+    const errEl = document.getElementById("ownerLoginError"); 
+    const statusEl = document.getElementById("ownerLoginStatus"); 
+    const btn = document.getElementById("btnOwnerLogin"); 
+    const btnLabel = btn?.querySelector(".login-submit-label"); 
+    const passwordInput = document.getElementById("ownerPassword"); 
+    const passwordToggle = document.getElementById("btnTogglePassword"); 
+ 
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); 
+ 
+    passwordToggle?.addEventListener("click", () => { 
+        const isVisible = passwordInput?.type === "text"; 
+        if (passwordInput) { 
+            passwordInput.type = isVisible ? "password" : "text"; 
+            passwordInput.focus({ preventScroll: true }); 
+        } 
+        passwordToggle.classList.toggle("is-visible", !isVisible); 
+        passwordToggle.setAttribute("aria-pressed", String(!isVisible)); 
+        passwordToggle.setAttribute("aria-label", isVisible ? "Tampilkan password" : "Sembunyikan password"); 
+    }); 
+ 
+    const setGreetTone = (tone) => { 
+        if (!greetEl) return; 
+        greetEl.classList.remove("is-success", "is-error"); 
+        if (tone) greetEl.classList.add(tone); 
+    }; 
+ 
+    const clearFeedback = () => { 
+        if (errEl) { errEl.hidden = true; errEl.textContent = ""; } 
+        if (statusEl) { statusEl.hidden = true; statusEl.textContent = ""; } 
+        card?.classList.remove("is-error", "is-shake", "is-success", "is-loading"); 
+        btn?.classList.remove("is-loading", "is-success"); 
+        form?.classList.remove("is-error"); 
+        setGreetTone(); 
+    }; 
+ 
+    const setLoading = () => { 
+        card?.classList.add("is-loading"); 
+        card?.classList.remove("is-error", "is-shake", "is-success"); 
+        btn?.classList.add("is-loading"); 
+        btn?.classList.remove("is-success"); 
+        if (btn) btn.disabled = true; 
+        if (btnLabel) btnLabel.textContent = "Memeriksa…"; 
+        if (statusEl) { statusEl.hidden = false; statusEl.textContent = "Memverifikasi akses…"; } 
+        if (errEl) { errEl.hidden = true; errEl.textContent = ""; } 
+        setGreetTone(); 
+    }; 
+ 
+    const setSuccess = () => { 
+        card?.classList.remove("is-loading", "is-error", "is-shake"); 
+        card?.classList.add("is-success"); 
+        btn?.classList.remove("is-loading"); 
+        btn?.classList.add("is-success"); 
+        if (btn) btn.disabled = true; 
+        if (btnLabel) btnLabel.textContent = "Berhasil"; 
+        if (statusEl) { statusEl.hidden = false; statusEl.textContent = "Login berhasil. Membuka dashboard…"; } 
+        setGreetTone("is-success"); 
+    }; 
+ 
+    const setError = (message) => { 
+        card?.classList.remove("is-loading", "is-success"); 
+        card?.classList.add("is-error", "is-shake"); 
+        form?.classList.add("is-error"); 
+        btn?.classList.remove("is-loading", "is-success"); 
+        if (btn) btn.disabled = false; 
+        if (btnLabel) btnLabel.textContent = "Masuk"; 
+        if (statusEl) { statusEl.hidden = true; statusEl.textContent = ""; } 
+        if (errEl) { errEl.hidden = false; errEl.textContent = message; } 
+        setGreetTone("is-error"); 
+        window.setTimeout(() => card?.classList.remove("is-shake"), 520); 
+    }; 
+ 
+    form?.addEventListener("submit", async (e) => { 
+        e.preventDefault(); 
+        clearFeedback(); 
+ 
+        const email = document.getElementById("ownerEmail")?.value || ""; 
+        const password = document.getElementById("ownerPassword")?.value || ""; 
+ 
+        setLoading(); 
+ 
+        try { 
+            await OwnerAuth.loginOwner(email, password); 
+            setSuccess(); 
+            await wait(760); 
+            OwnerAuth.redirectAfterLogin(); 
+        } catch (err) { 
+            console.error("Login ERP gagal:", err); 
+            const message = (typeof OwnerAuth.friendlyLoginError === "function") 
+                ? OwnerAuth.friendlyLoginError(err) 
+                : (err?.message || "Login gagal."); 
+            setError(message); 
+        } 
+    }); 
+}); 
+</script> 
+</body> 
+</html>
