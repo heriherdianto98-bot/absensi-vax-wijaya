@@ -1,30 +1,84 @@
 /*======================================
- VAX WIJAYA — Pengajuan Izin Karyawan
- UI ONLY — database belum diaktifkan
+ VAX WIJAYA — Pengajuan Izin / Libur Karyawan
+ SUBMIT REAL → Supabase
+ Status awal: MENUNGGU_SPV
 ======================================*/
 
 (function(){
 
     const form = document.getElementById("izinForm");
     const tanggal = document.getElementById("tanggalIzin");
+    const jenis = document.getElementById("jenisIzin");
     const alasan = document.getElementById("alasanIzin");
     const counter = document.getElementById("alasanCounter");
     const bukti = document.getElementById("buktiIzin");
     const preview = document.getElementById("previewBukti");
     const uploadEmpty = document.getElementById("uploadEmpty");
+    const buktiHint = document.getElementById("buktiHint");
     const btnHapusFoto = document.getElementById("btnHapusFoto");
     const message = document.getElementById("formMessage");
+    const btnSubmit = document.getElementById("btnKirimIzin");
 
-    function todayLocal(){
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = String(now.getMonth()+1).padStart(2,"0");
-        const d = String(now.getDate()).padStart(2,"0");
-        return `${y}-${m}-${d}`;
+    let karyawanAktif = null;
+    let submitBusy = false;
+
+    function todayWib(){
+        const parts = new Intl.DateTimeFormat("en-CA", {
+            timeZone:"Asia/Jakarta",
+            year:"numeric",
+            month:"2-digit",
+            day:"2-digit"
+        }).formatToParts(new Date());
+
+        const get = (type) => parts.find((p) => p.type === type)?.value || "";
+        return `${get("year")}-${get("month")}-${get("day")}`;
+    }
+
+    function setMessage(text, type=""){
+        if(!message) return;
+        message.textContent = text || "";
+        message.className = `form-message${type ? " " + type : ""}`;
+    }
+
+    function setBusy(value){
+        submitBusy = value === true;
+        if(!btnSubmit) return;
+
+        btnSubmit.disabled = submitBusy;
+        btnSubmit.style.opacity = submitBusy ? ".65" : "1";
+        btnSubmit.style.pointerEvents = submitBusy ? "none" : "auto";
+
+        const span = btnSubmit.querySelector("span");
+        if(span){
+            span.textContent = submitBusy ? "Mengirim..." : "Kirim Pengajuan";
+        }
+    }
+
+    function jenisAktif(){
+        return String(jenis?.value || "IZIN").toUpperCase();
+    }
+
+    function buktiWajib(){
+        return jenisAktif() === "IZIN";
+    }
+
+    function syncJenisUi(){
+        if(buktiHint){
+            buktiHint.textContent = buktiWajib()
+                ? "Foto bukti wajib untuk pengajuan Izin"
+                : "Foto bukti opsional untuk pengajuan Libur";
+        }
+        setMessage("");
     }
 
     if(tanggal){
-        tanggal.value = todayLocal();
+        tanggal.value = todayWib();
+        tanggal.min = todayWib();
+    }
+
+    if(jenis){
+        jenis.addEventListener("change", syncJenisUi);
+        syncJenisUi();
     }
 
     if(alasan && counter){
@@ -52,12 +106,17 @@
                 return;
             }
 
-            if(!file.type.startsWith("image/")){
+            const allowed = ["image/jpeg","image/png","image/webp"];
+
+            if(!allowed.includes(file.type)){
                 clearPreview();
-                if(message){
-                    message.textContent = "Bukti harus berupa foto/gambar.";
-                    message.className = "form-message error";
-                }
+                setMessage("Bukti harus berupa JPG, PNG, atau WEBP.", "error");
+                return;
+            }
+
+            if(file.size > 5 * 1024 * 1024){
+                clearPreview();
+                setMessage("Ukuran foto maksimal 5 MB.", "error");
                 return;
             }
 
@@ -69,10 +128,7 @@
                 }
                 if(uploadEmpty) uploadEmpty.hidden = true;
                 if(btnHapusFoto) btnHapusFoto.hidden = false;
-                if(message){
-                    message.textContent = "";
-                    message.className = "form-message";
-                }
+                setMessage("");
             };
             reader.readAsDataURL(file);
         });
@@ -82,37 +138,158 @@
         btnHapusFoto.addEventListener("click", clearPreview);
     }
 
+    function safeExt(file){
+        const map = {
+            "image/jpeg":"jpg",
+            "image/png":"png",
+            "image/webp":"webp"
+        };
+        return map[file?.type] || "jpg";
+    }
+
+    function buildProofPath(file){
+        const kid = Number(karyawanAktif?.id);
+        const ymd = String(tanggal?.value || todayWib()).replace(/[^0-9-]/g,"");
+        return `${kid}/${ymd}/${Date.now()}.${safeExt(file)}`;
+    }
+
+    async function loadSession(){
+        try{
+            if(typeof KaryawanSession === "undefined" || typeof KaryawanSession.requirePage !== "function"){
+                setMessage("Session karyawan belum tersedia. Silakan login ulang.", "error");
+                return false;
+            }
+
+            const data = await KaryawanSession.requirePage();
+            if(!data){
+                setMessage("Session karyawan tidak ditemukan. Silakan login ulang.", "error");
+                return false;
+            }
+
+            karyawanAktif = data;
+            return true;
+        }catch(error){
+            console.error("Request session error:", error);
+            setMessage("Gagal memuat session karyawan.", "error");
+            return false;
+        }
+    }
+
+    async function uploadProof(file){
+        if(!file) return null;
+
+        const path = buildProofPath(file);
+        const { error } = await db.storage
+            .from("izin-proofs")
+            .upload(path, file, {
+                cacheControl:"3600",
+                upsert:false,
+                contentType:file.type
+            });
+
+        if(error) throw error;
+        return path;
+    }
+
+    async function submitPengajuan(){
+        if(submitBusy) return;
+
+        if(!karyawanAktif){
+            const ok = await loadSession();
+            if(!ok) return;
+        }
+
+        if(!tanggal?.value){
+            setMessage("Tanggal pengajuan wajib dipilih.", "error");
+            return;
+        }
+
+        const alasanValue = String(alasan?.value || "").trim();
+        if(alasanValue.length < 3){
+            setMessage("Alasan wajib diisi minimal 3 karakter.", "error");
+            alasan?.focus();
+            return;
+        }
+
+        const file = bukti?.files?.[0] || null;
+        if(buktiWajib() && !file){
+            setMessage("Bukti/foto wajib untuk pengajuan Izin.", "error");
+            return;
+        }
+
+        if(file){
+            const allowed = ["image/jpeg","image/png","image/webp"];
+            if(!allowed.includes(file.type) || file.size > 5 * 1024 * 1024){
+                setMessage("Foto harus JPG/PNG/WEBP dan maksimal 5 MB.", "error");
+                return;
+            }
+        }
+
+        if(typeof db === "undefined"){
+            setMessage("Koneksi database belum tersedia.", "error");
+            return;
+        }
+
+        setBusy(true);
+
+        try{
+            let buktiPath = null;
+
+            if(file){
+                setMessage("Mengunggah bukti...");
+                buktiPath = await uploadProof(file);
+            }
+
+            setMessage("Menyimpan pengajuan...");
+
+            const payload = {
+                karyawan_id:Number(karyawanAktif.id),
+                cabang_id:karyawanAktif.cabang_id != null ? Number(karyawanAktif.cabang_id) : null,
+                tanggal:tanggal.value,
+                jenis:jenisAktif(),
+                alasan:alasanValue,
+                bukti_path:buktiPath,
+                status:"MENUNGGU_SPV"
+            };
+
+            const { error: insertError } = await db
+                .from("pengajuan_izin")
+                .insert(payload);
+
+            if(insertError) throw insertError;
+
+            const jenisSukses = jenisAktif() === "LIBUR" ? "Libur" : "Izin";
+
+            form.reset();
+            if(tanggal){
+                tanggal.value = todayWib();
+                tanggal.min = todayWib();
+            }
+            if(jenis) jenis.value = "IZIN";
+            if(counter) counter.textContent = "0/300";
+            clearPreview();
+            syncJenisUi();
+
+            setMessage(
+                `Pengajuan ${jenisSukses} berhasil dikirim. Status: MENUNGGU SPV.`,
+                "success"
+            );
+
+        }catch(error){
+            console.error("Gagal kirim pengajuan:", error);
+            setMessage(error?.message || "Pengajuan gagal dikirim.", "error");
+        }finally{
+            setBusy(false);
+        }
+    }
+
     if(form){
         form.addEventListener("submit", function(event){
             event.preventDefault();
-
-            if(message){
-                message.textContent = "";
-                message.className = "form-message";
-            }
-
-            if(!tanggal?.value){
-                message.textContent = "Tanggal izin wajib dipilih.";
-                message.className = "form-message error";
-                return;
-            }
-
-            if(!alasan?.value.trim()){
-                message.textContent = "Alasan izin wajib diisi.";
-                message.className = "form-message error";
-                alasan?.focus();
-                return;
-            }
-
-            if(!bukti?.files?.length){
-                message.textContent = "Bukti/foto izin wajib dilampirkan.";
-                message.className = "form-message error";
-                return;
-            }
-
-            message.textContent = "Form UI sudah siap. Penyimpanan database belum diaktifkan.";
-            message.className = "form-message success";
+            submitPengajuan();
         });
     }
+
+    loadSession();
 
 })();
