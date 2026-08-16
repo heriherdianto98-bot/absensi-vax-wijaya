@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Pengajuan Izin / Libur Karyawan</title>
-<link rel="stylesheet" href="izin.css">
+<link rel="stylesheet" href="izin.css?v=20260816-1344">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <style>
 .jenis-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
@@ -22,213 +22,39 @@
 </style>
 </head>
 <body>
-
 <div class="app">
-
 <header class="topbar">
-    <a href="dashboard-karyawan.html" class="back-btn" aria-label="Kembali">
-        <i class="fas fa-chevron-left"></i>
-    </a>
-    <div class="topbar-title">
-        <strong>PENGAJUAN IZIN / LIBUR</strong>
-        <small>VAX WIJAYA</small>
-    </div>
+    <a href="dashboard-karyawan.html" class="back-btn" aria-label="Kembali"><i class="fas fa-chevron-left"></i></a>
+    <div class="topbar-title"><strong>PENGAJUAN IZIN / LIBUR</strong><small>VAX WIJAYA</small></div>
     <span class="topbar-spacer"></span>
 </header>
-
 <main class="izin-body">
-
-    <section class="intro-card">
-        <div class="intro-icon">
-            <i class="fas fa-file-signature"></i>
-        </div>
-        <div>
-            <h1>Ajukan Izin / Libur</h1>
-            <p>Pengajuan akan diperiksa SPV terlebih dahulu sebelum diteruskan ke Owner.</p>
-        </div>
-    </section>
-
-    <section class="status-flow" aria-label="Alur persetujuan">
-        <div class="flow-step active">
-            <span>1</span>
-            <small>Karyawan</small>
-        </div>
-        <div class="flow-line"></div>
-        <div class="flow-step">
-            <span>2</span>
-            <small>SPV</small>
-        </div>
-        <div class="flow-line"></div>
-        <div class="flow-step">
-            <span>3</span>
-            <small>Owner</small>
-        </div>
-    </section>
-
-    <form id="izinForm" class="form-card" novalidate>
-
-        <div class="field">
-            <label for="tanggalIzin">Tanggal Pengajuan</label>
-            <div class="input-wrap">
-                <i class="fas fa-calendar-day"></i>
-                <input id="tanggalIzin" name="tanggalIzin" type="date" required>
-            </div>
-        </div>
-
-        <div class="field">
-            <label for="jenisIzin">Jenis Pengajuan</label>
-            <div class="input-wrap">
-                <i class="fas fa-circle-info"></i>
-                <select id="jenisIzin" name="jenisIzin" class="jenis-native" required>
-                    <option value="IZIN">Izin</option>
-                    <option value="LIBUR">Libur</option>
-                </select>
-                <div class="jenis-custom" id="jenisCustom">
-                    <button type="button" class="jenis-trigger" id="jenisTrigger" aria-haspopup="listbox" aria-expanded="false">
-                        <span class="jenis-value" id="jenisValue">Izin</span>
-                        <i class="fas fa-chevron-down jenis-chevron" aria-hidden="true"></i>
-                    </button>
-                    <div class="jenis-menu" id="jenisMenu" role="listbox" hidden>
-                        <button type="button" class="jenis-option is-selected" data-value="IZIN" role="option" aria-selected="true"><i class="fas fa-user-clock"></i><span>Izin</span></button>
-                        <button type="button" class="jenis-option" data-value="LIBUR" role="option" aria-selected="false"><i class="fas fa-calendar-check"></i><span>Libur</span></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="field">
-            <label for="alasanIzin">Alasan</label>
-            <textarea
-                id="alasanIzin"
-                name="alasanIzin"
-                rows="4"
-                maxlength="300"
-                placeholder="Tulis alasan secara jelas..."
-                required
-            ></textarea>
-            <div class="field-meta">
-                <span>Wajib diisi</span>
-                <span id="alasanCounter">0/300</span>
-            </div>
-        </div>
-
-        <div class="field">
-            <label id="buktiLabel">Bukti / Foto</label>
-            <label class="upload-box" for="buktiIzin">
-                <input
-                    id="buktiIzin"
-                    name="buktiIzin"
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                >
-                <div id="uploadEmpty" class="upload-empty">
-                    <span class="upload-icon"><i class="fas fa-camera"></i></span>
-                    <strong>Ambil / Pilih Foto</strong>
-                    <small id="buktiHint">Foto bukti wajib untuk pengajuan Izin</small>
-                </div>
-                <img id="previewBukti" alt="Preview bukti pengajuan" hidden>
-            </label>
-            <button id="btnHapusFoto" class="remove-photo" type="button" hidden>
-                <i class="fas fa-trash"></i>
-                Hapus Foto
-            </button>
-        </div>
-
-        <section class="info-box">
-            <i class="fas fa-shield-halved"></i>
-            <p>
-                Status belum dianggap final sebelum disetujui Owner.
-                Pengajuan pertama akan masuk sebagai <b>Menunggu SPV</b>.
-            </p>
-        </section>
-
-        <button id="btnKirimIzin" class="submit-btn" type="submit">
-            <i class="fas fa-paper-plane"></i>
-            <span>Kirim Pengajuan</span>
-        </button>
-
-        <p id="formMessage" class="form-message" aria-live="polite"></p>
-
-    </form>
-
+<section class="intro-card"><div class="intro-icon"><i class="fas fa-file-signature"></i></div><div><h1>Ajukan Izin / Libur</h1><p>Pengajuan akan diperiksa SPV terlebih dahulu sebelum diteruskan ke Owner.</p></div></section>
+<section class="status-flow" aria-label="Alur persetujuan"><div class="flow-step active"><span>1</span><small>Karyawan</small></div><div class="flow-line"></div><div class="flow-step"><span>2</span><small>SPV</small></div><div class="flow-line"></div><div class="flow-step"><span>3</span><small>Owner</small></div></section>
+<form id="izinForm" class="form-card" novalidate>
+<div class="field"><label for="tanggalIzin">Tanggal Pengajuan</label><div class="input-wrap"><i class="fas fa-calendar-day"></i><input id="tanggalIzin" name="tanggalIzin" type="date" required></div></div>
+<div class="field"><label for="jenisIzin">Jenis Pengajuan</label><div class="input-wrap"><i class="fas fa-circle-info"></i><select id="jenisIzin" name="jenisIzin" class="jenis-native" required><option value="IZIN">Izin</option><option value="LIBUR">Libur</option></select><div class="jenis-custom" id="jenisCustom"><button type="button" class="jenis-trigger" id="jenisTrigger" aria-haspopup="listbox" aria-expanded="false"><span class="jenis-value" id="jenisValue">Izin</span><i class="fas fa-chevron-down jenis-chevron" aria-hidden="true"></i></button><div class="jenis-menu" id="jenisMenu" role="listbox" hidden><button type="button" class="jenis-option is-selected" data-value="IZIN" role="option" aria-selected="true"><i class="fas fa-user-clock"></i><span>Izin</span></button><button type="button" class="jenis-option" data-value="LIBUR" role="option" aria-selected="false"><i class="fas fa-calendar-check"></i><span>Libur</span></button></div></div></div></div>
+<div class="field"><label for="alasanIzin">Alasan</label><textarea id="alasanIzin" name="alasanIzin" rows="4" maxlength="300" placeholder="Tulis alasan secara jelas..." required></textarea><div class="field-meta"><span>Wajib diisi</span><span id="alasanCounter">0/300</span></div></div>
+<div class="field"><label id="buktiLabel">Bukti / Foto</label><label class="upload-box" for="buktiIzin"><input id="buktiIzin" name="buktiIzin" type="file" accept="image/*" capture="environment"><div id="uploadEmpty" class="upload-empty"><span class="upload-icon"><i class="fas fa-camera"></i></span><strong>Ambil / Pilih Foto</strong><small id="buktiHint">Foto bukti wajib untuk pengajuan Izin</small></div><img id="previewBukti" alt="Preview bukti pengajuan" hidden></label><button id="btnHapusFoto" class="remove-photo" type="button" hidden><i class="fas fa-trash"></i> Hapus Foto</button></div>
+<section class="info-box"><i class="fas fa-shield-halved"></i><p>Status belum dianggap final sebelum disetujui Owner. Pengajuan pertama akan masuk sebagai <b>Menunggu SPV</b>.</p></section>
+<button id="btnKirimIzin" class="submit-btn" type="submit"><i class="fas fa-paper-plane"></i><span>Kirim Pengajuan</span></button><p id="formMessage" class="form-message" aria-live="polite"></p>
+</form>
 </main>
-
-<nav id="bottomNav" aria-label="Navigasi utama">
-    <a href="dashboard-karyawan.html">
-        <i class="fas fa-house"></i>
-        <span>Dashboard</span>
-    </a>
-    <a href="absensi.html">
-        <i class="fas fa-clock"></i>
-        <span>Absensi</span>
-    </a>
-    <a href="riwayat.html">
-        <i class="fas fa-list"></i>
-        <span>Riwayat</span>
-    </a>
-    <a href="profil.html">
-        <i class="fas fa-user"></i>
-        <span>Profil</span>
-    </a>
-</nav>
-
+<nav id="bottomNav" aria-label="Navigasi utama"><a href="dashboard-karyawan.html"><i class="fas fa-house"></i><span>Dashboard</span></a><a href="absensi.html"><i class="fas fa-clock"></i><span>Absensi</span></a><a href="riwayat.html"><i class="fas fa-list"></i><span>Riwayat</span></a><a href="profil.html"><i class="fas fa-user"></i><span>Profil</span></a></nav>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
-<script src="izin.js"></script>
+<script src="izin.js?v=20260816-1344"></script>
 <script>
 (function(){
-    const select = document.getElementById('jenisIzin');
-    const custom = document.getElementById('jenisCustom');
-    const trigger = document.getElementById('jenisTrigger');
-    const menu = document.getElementById('jenisMenu');
-    const value = document.getElementById('jenisValue');
-    const options = Array.from(document.querySelectorAll('.jenis-option'));
-    if(!select || !custom || !trigger || !menu) return;
-
-    function closeMenu(){
-        custom.classList.remove('open');
-        menu.hidden = true;
-        trigger.setAttribute('aria-expanded','false');
-    }
-
-    function openMenu(){
-        custom.classList.add('open');
-        menu.hidden = false;
-        trigger.setAttribute('aria-expanded','true');
-    }
-
-    function syncFromSelect(){
-        const current = String(select.value || 'IZIN').toUpperCase();
-        value.textContent = current === 'LIBUR' ? 'Libur' : 'Izin';
-        options.forEach((btn)=>{
-            const selected = btn.dataset.value === current;
-            btn.classList.toggle('is-selected', selected);
-            btn.setAttribute('aria-selected', selected ? 'true' : 'false');
-        });
-    }
-
-    trigger.addEventListener('click', function(){
-        menu.hidden ? openMenu() : closeMenu();
-    });
-
-    options.forEach((btn)=>{
-        btn.addEventListener('click', function(){
-            select.value = btn.dataset.value;
-            select.dispatchEvent(new Event('change', {bubbles:true}));
-            syncFromSelect();
-            closeMenu();
-        });
-    });
-
-    select.addEventListener('change', syncFromSelect);
-    document.addEventListener('click', function(e){
-        if(!custom.contains(e.target)) closeMenu();
-    });
-    syncFromSelect();
+    const select=document.getElementById('jenisIzin');const custom=document.getElementById('jenisCustom');const trigger=document.getElementById('jenisTrigger');const menu=document.getElementById('jenisMenu');const value=document.getElementById('jenisValue');const options=Array.from(document.querySelectorAll('.jenis-option'));if(!select||!custom||!trigger||!menu)return;
+    function closeMenu(){custom.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
+    function openMenu(){custom.classList.add('open');menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
+    function syncFromSelect(){const current=String(select.value||'IZIN').toUpperCase();value.textContent=current==='LIBUR'?'Libur':'Izin';options.forEach((btn)=>{const selected=btn.dataset.value===current;btn.classList.toggle('is-selected',selected);btn.setAttribute('aria-selected',selected?'true':'false');});}
+    trigger.addEventListener('click',function(){menu.hidden?openMenu():closeMenu();});
+    options.forEach((btn)=>{btn.addEventListener('click',function(){select.value=btn.dataset.value;select.dispatchEvent(new Event('change',{bubbles:true}));syncFromSelect();closeMenu();});});
+    select.addEventListener('change',syncFromSelect);document.addEventListener('click',function(e){if(!custom.contains(e.target))closeMenu();});syncFromSelect();
 })();
 </script>
 </body>
