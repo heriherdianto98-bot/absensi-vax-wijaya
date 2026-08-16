@@ -7,19 +7,18 @@
 <link rel="stylesheet" href="izin.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <style>
-#jenisIzin{
-    color-scheme:dark;
-    background:#050505;
-    color:#fff;
-}
-#jenisIzin option{
-    background:#0b0b0b;
-    color:#fff;
-}
-#jenisIzin option:checked{
-    background:#2a2108;
-    color:#ffe066;
-}
+.jenis-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
+.jenis-custom{position:relative;width:100%;}
+.jenis-trigger{width:100%;height:46px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0;border:0;background:transparent;color:#fff;font-size:14px;cursor:pointer;text-align:left;}
+.jenis-trigger .jenis-value{flex:1;color:#fff;font-weight:600;}
+.jenis-trigger .jenis-chevron{color:#ffe066;font-size:12px;transition:transform .18s ease;}
+.jenis-custom.open .jenis-chevron{transform:rotate(180deg);}
+.jenis-menu{position:absolute;left:-12px;right:-12px;top:calc(100% + 8px);z-index:60;padding:6px;background:#090909;border:1px solid rgba(255,224,102,.72);border-radius:14px;box-shadow:0 16px 34px rgba(0,0,0,.72),0 0 18px rgba(255,224,102,.12);}
+.jenis-option{width:100%;min-height:42px;display:flex;align-items:center;gap:10px;padding:0 12px;border:0;border-radius:10px;background:#090909;color:#eee;font-size:14px;text-align:left;cursor:pointer;}
+.jenis-option + .jenis-option{margin-top:4px;}
+.jenis-option:hover,.jenis-option:focus{background:#15120a;color:#ffe066;outline:none;}
+.jenis-option.is-selected{background:linear-gradient(90deg,rgba(255,224,102,.18),rgba(255,224,102,.06));color:#ffe066;border:1px solid rgba(255,224,102,.32);}
+.jenis-option i{width:18px;text-align:center;color:#ffe066;}
 </style>
 </head>
 <body>
@@ -80,10 +79,20 @@
             <label for="jenisIzin">Jenis Pengajuan</label>
             <div class="input-wrap">
                 <i class="fas fa-circle-info"></i>
-                <select id="jenisIzin" name="jenisIzin" required>
+                <select id="jenisIzin" name="jenisIzin" class="jenis-native" required>
                     <option value="IZIN">Izin</option>
                     <option value="LIBUR">Libur</option>
                 </select>
+                <div class="jenis-custom" id="jenisCustom">
+                    <button type="button" class="jenis-trigger" id="jenisTrigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="jenis-value" id="jenisValue">Izin</span>
+                        <i class="fas fa-chevron-down jenis-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="jenis-menu" id="jenisMenu" role="listbox" hidden>
+                        <button type="button" class="jenis-option is-selected" data-value="IZIN" role="option" aria-selected="true"><i class="fas fa-user-clock"></i><span>Izin</span></button>
+                        <button type="button" class="jenis-option" data-value="LIBUR" role="option" aria-selected="false"><i class="fas fa-calendar-check"></i><span>Libur</span></button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -170,5 +179,57 @@
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
 <script src="izin.js"></script>
+<script>
+(function(){
+    const select = document.getElementById('jenisIzin');
+    const custom = document.getElementById('jenisCustom');
+    const trigger = document.getElementById('jenisTrigger');
+    const menu = document.getElementById('jenisMenu');
+    const value = document.getElementById('jenisValue');
+    const options = Array.from(document.querySelectorAll('.jenis-option'));
+    if(!select || !custom || !trigger || !menu) return;
+
+    function closeMenu(){
+        custom.classList.remove('open');
+        menu.hidden = true;
+        trigger.setAttribute('aria-expanded','false');
+    }
+
+    function openMenu(){
+        custom.classList.add('open');
+        menu.hidden = false;
+        trigger.setAttribute('aria-expanded','true');
+    }
+
+    function syncFromSelect(){
+        const current = String(select.value || 'IZIN').toUpperCase();
+        value.textContent = current === 'LIBUR' ? 'Libur' : 'Izin';
+        options.forEach((btn)=>{
+            const selected = btn.dataset.value === current;
+            btn.classList.toggle('is-selected', selected);
+            btn.setAttribute('aria-selected', selected ? 'true' : 'false');
+        });
+    }
+
+    trigger.addEventListener('click', function(){
+        menu.hidden ? openMenu() : closeMenu();
+    });
+
+    options.forEach((btn)=>{
+        btn.addEventListener('click', function(){
+            select.value = btn.dataset.value;
+            select.dispatchEvent(new Event('change', {bubbles:true}));
+            syncFromSelect();
+            closeMenu();
+        });
+    });
+
+    select.addEventListener('change', syncFromSelect);
+    document.addEventListener('click', function(e){
+        if(!custom.contains(e.target)) closeMenu();
+    });
+    syncFromSelect();
+})();
+</script>
 </body>
 </html>
