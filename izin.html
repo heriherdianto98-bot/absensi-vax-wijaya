@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Pengajuan Izin / Libur Karyawan</title>
-<link rel="stylesheet" href="izin.css?v=20260816-1346">
+<link rel="stylesheet" href="izin.css?v=20260816-1441">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <style>
 .jenis-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
@@ -20,53 +20,53 @@
 .jenis-option.is-selected{background:linear-gradient(90deg,rgba(255,224,102,.18),rgba(255,224,102,.06));color:#ffe066;border:1px solid rgba(255,224,102,.32);}
 .jenis-option i{width:18px;text-align:center;color:#ffe066;}
 
-/* MOBILE SIZE = BASELINE ABSENSI KARYAWAN LOCK */
+/* MOBILE FINAL FIT — isi layar lebih penuh, tetap 1 viewport */
 @media(max-width:600px){
   html,body{height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;}
   @supports(height:100svh){html,body{height:100svh!important;max-height:100svh!important;}}
   body{display:flex!important;justify-content:center!important;}
-  .app{width:100%!important;max-width:430px!important;height:100%!important;max-height:100%!important;min-height:0!important;overflow:hidden!important;padding:6px 14px calc(56px + env(safe-area-inset-bottom,0px) + 10px)!important;display:flex!important;flex-direction:column!important;}
-  .topbar{min-height:40px!important;height:40px!important;margin-bottom:5px!important;flex:0 0 40px!important;}
-  .back-btn{width:32px!important;height:32px!important;}
-  .topbar-title strong{font-size:13px!important;}
+  .app{width:100%!important;max-width:430px!important;height:100%!important;max-height:100%!important;min-height:0!important;overflow:hidden!important;padding:6px 14px calc(58px + env(safe-area-inset-bottom,0px) + 8px)!important;display:flex!important;flex-direction:column!important;}
+  .topbar{min-height:42px!important;height:42px!important;margin-bottom:5px!important;flex:0 0 42px!important;}
+  .back-btn{width:34px!important;height:34px!important;}
+  .topbar-title strong{font-size:14px!important;}
   .topbar-title small{font-size:8px!important;}
   .izin-body{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;display:grid!important;grid-template-rows:auto auto minmax(0,1fr)!important;gap:6px!important;}
-  .intro-card{padding:8px 10px!important;gap:9px!important;border-radius:16px!important;min-height:58px!important;}
-  .intro-icon{width:38px!important;height:38px!important;flex-basis:38px!important;border-radius:11px!important;font-size:16px!important;}
-  .intro-card h1{font-size:16px!important;margin:0!important;line-height:1.05!important;}
-  .intro-card p{font-size:9px!important;line-height:1.2!important;margin-top:2px!important;}
-  .status-flow{padding:2px 10px!important;min-height:40px!important;}
-  .flow-step{gap:2px!important;min-width:48px!important;}
-  .flow-step span{width:22px!important;height:22px!important;font-size:9px!important;}
-  .flow-step small{font-size:8px!important;}
-  .flow-line{margin-top:11px!important;}
-  .form-card{height:100%!important;min-height:0!important;overflow:hidden!important;padding:9px 10px!important;border-radius:16px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;gap:5px!important;}
+  .intro-card{padding:10px 11px!important;gap:10px!important;border-radius:17px!important;min-height:66px!important;}
+  .intro-icon{width:42px!important;height:42px!important;flex-basis:42px!important;border-radius:12px!important;font-size:18px!important;}
+  .intro-card h1{font-size:18px!important;margin:0!important;line-height:1.08!important;}
+  .intro-card p{font-size:10px!important;line-height:1.25!important;margin-top:3px!important;}
+  .status-flow{padding:3px 10px!important;min-height:44px!important;}
+  .flow-step{gap:2px!important;min-width:50px!important;}
+  .flow-step span{width:24px!important;height:24px!important;font-size:10px!important;}
+  .flow-step small{font-size:9px!important;}
+  .flow-line{margin-top:12px!important;}
+  .form-card{height:100%!important;min-height:0!important;overflow:hidden!important;padding:10px 11px!important;border-radius:17px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;gap:5px!important;}
   .field{margin:0!important;}
-  .field > label{margin-bottom:3px!important;font-size:10px!important;line-height:1!important;}
-  .input-wrap{height:38px!important;min-height:38px!important;padding:0 10px!important;border-radius:11px!important;gap:8px!important;}
-  .input-wrap input,.input-wrap select{height:36px!important;font-size:12px!important;}
-  .input-wrap i{width:15px!important;font-size:12px!important;}
-  .jenis-trigger{height:36px!important;font-size:12px!important;}
-  .jenis-menu{top:calc(100% + 5px)!important;left:-10px!important;right:-10px!important;}
-  .jenis-option{min-height:36px!important;font-size:12px!important;}
-  textarea{height:58px!important;min-height:58px!important;padding:8px 10px!important;border-radius:11px!important;font-size:12px!important;line-height:1.2!important;}
-  .field-meta{margin-top:2px!important;font-size:8px!important;}
-  .upload-box{height:82px!important;min-height:82px!important;border-radius:12px!important;}
-  .upload-empty{gap:2px!important;}
-  .upload-icon{width:30px!important;height:30px!important;font-size:12px!important;}
-  .upload-empty strong{font-size:10px!important;}
-  .upload-empty small{font-size:8px!important;}
-  #previewBukti{height:80px!important;max-height:80px!important;object-fit:cover!important;}
-  .remove-photo{margin-top:3px!important;padding:4px 7px!important;font-size:8px!important;}
-  .info-box{margin:0!important;padding:6px 8px!important;gap:6px!important;border-radius:10px!important;}
-  .info-box i{font-size:10px!important;}
-  .info-box p{font-size:8px!important;line-height:1.2!important;}
-  .submit-btn{height:42px!important;min-height:42px!important;border-radius:22px!important;font-size:12px!important;}
-  .form-message{min-height:10px!important;margin:0!important;font-size:8px!important;line-height:1.1!important;}
-  #bottomNav{height:50px!important;bottom:calc(5px + env(safe-area-inset-bottom,0px))!important;border-radius:18px!important;}
-  #bottomNav a{min-height:34px!important;gap:1px!important;}
-  #bottomNav i{font-size:14px!important;}
-  #bottomNav span{font-size:8px!important;}
+  .field > label{margin-bottom:4px!important;font-size:11px!important;line-height:1.05!important;}
+  .input-wrap{height:41px!important;min-height:41px!important;padding:0 11px!important;border-radius:12px!important;gap:8px!important;}
+  .input-wrap input,.input-wrap select{height:39px!important;font-size:13px!important;}
+  .input-wrap i{width:16px!important;font-size:13px!important;}
+  .jenis-trigger{height:39px!important;font-size:13px!important;}
+  .jenis-menu{top:calc(100% + 5px)!important;left:-11px!important;right:-11px!important;}
+  .jenis-option{min-height:38px!important;font-size:13px!important;}
+  textarea{height:66px!important;min-height:66px!important;padding:9px 11px!important;border-radius:12px!important;font-size:13px!important;line-height:1.25!important;}
+  .field-meta{margin-top:2px!important;font-size:9px!important;}
+  .upload-box{height:92px!important;min-height:92px!important;border-radius:13px!important;}
+  .upload-empty{gap:3px!important;}
+  .upload-icon{width:34px!important;height:34px!important;font-size:13px!important;}
+  .upload-empty strong{font-size:12px!important;}
+  .upload-empty small{font-size:9px!important;}
+  #previewBukti{height:90px!important;max-height:90px!important;object-fit:cover!important;}
+  .remove-photo{margin-top:3px!important;padding:4px 7px!important;font-size:9px!important;}
+  .info-box{margin:0!important;padding:7px 9px!important;gap:7px!important;border-radius:11px!important;}
+  .info-box i{font-size:11px!important;}
+  .info-box p{font-size:10px!important;line-height:1.25!important;}
+  .submit-btn{height:46px!important;min-height:46px!important;border-radius:24px!important;font-size:13px!important;}
+  .form-message{min-height:11px!important;margin:0!important;font-size:9px!important;line-height:1.1!important;}
+  #bottomNav{height:52px!important;bottom:calc(5px + env(safe-area-inset-bottom,0px))!important;border-radius:19px!important;}
+  #bottomNav a{min-height:36px!important;gap:1px!important;}
+  #bottomNav i{font-size:15px!important;}
+  #bottomNav span{font-size:9px!important;}
 }
 </style>
 </head>
@@ -94,16 +94,36 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
-<script src="izin.js?v=20260816-1346"></script>
+<script src="izin.js?v=20260816-1441"></script>
 <script>
 (function(){
-    const select=document.getElementById('jenisIzin');const custom=document.getElementById('jenisCustom');const trigger=document.getElementById('jenisTrigger');const menu=document.getElementById('jenisMenu');const value=document.getElementById('jenisValue');const options=Array.from(document.querySelectorAll('.jenis-option'));if(!select||!custom||!trigger||!menu)return;
-    function closeMenu(){custom.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
-    function openMenu(){custom.classList.add('open');menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
-    function syncFromSelect(){const current=String(select.value||'IZIN').toUpperCase();value.textContent=current==='LIBUR'?'Libur':'Izin';options.forEach((btn)=>{const selected=btn.dataset.value===current;btn.classList.toggle('is-selected',selected);btn.setAttribute('aria-selected',selected?'true':'false');});}
-    trigger.addEventListener('click',function(){menu.hidden?openMenu():closeMenu();});
-    options.forEach((btn)=>{btn.addEventListener('click',function(){select.value=btn.dataset.value;select.dispatchEvent(new Event('change',{bubbles:true}));syncFromSelect();closeMenu();});});
-    select.addEventListener('change',syncFromSelect);document.addEventListener('click',function(e){if(!custom.contains(e.target))closeMenu();});syncFromSelect();
+    const select=document.getElementById('jenisIzin');
+    const custom=document.getElementById('jenisCustom');
+    const trigger=document.getElementById('jenisTrigger');
+    const menu=document.getElementById('jenisMenu');
+    const value=document.getElementById('jenisValue');
+    const options=Array.from(document.querySelectorAll('.jenis-option'));
+    if(select&&custom&&trigger&&menu){
+        function closeMenu(){custom.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
+        function openMenu(){custom.classList.add('open');menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
+        function syncFromSelect(){const current=String(select.value||'IZIN').toUpperCase();value.textContent=current==='LIBUR'?'Libur':'Izin';options.forEach((btn)=>{const selected=btn.dataset.value===current;btn.classList.toggle('is-selected',selected);btn.setAttribute('aria-selected',selected?'true':'false');});}
+        trigger.addEventListener('click',function(){menu.hidden?openMenu():closeMenu();});
+        options.forEach((btn)=>{btn.addEventListener('click',function(){select.value=btn.dataset.value;select.dispatchEvent(new Event('change',{bubbles:true}));syncFromSelect();closeMenu();});});
+        select.addEventListener('change',syncFromSelect);
+        document.addEventListener('click',function(e){if(!custom.contains(e.target))closeMenu();});
+        syncFromSelect();
+    }
+
+    /* HAPTIC — Android/Chrome: getar ringan tiap sentuh kontrol */
+    function vibrate(ms){
+        try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
+    }
+    const hapticTargets='button,a,input,textarea,.upload-box,.jenis-option';
+    document.addEventListener('touchstart',function(e){
+        const target=e.target.closest(hapticTargets);
+        if(!target) return;
+        vibrate(target.id==='btnKirimIzin' ? 22 : 10);
+    },{passive:true});
 })();
 </script>
 </body>
