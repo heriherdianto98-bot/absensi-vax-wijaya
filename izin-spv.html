@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Review Izin / Libur SPV</title>
+<link rel="stylesheet" href="izin-spv.css?v=20260816-1530">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+    <div>
+        <p class="eyebrow">VAX WIJAYA</p>
+        <h1>Review Izin / Libur</h1>
+        <p class="sub">SPV Review → Owner Approval</p>
+    </div>
+    <button id="btnRefresh" class="icon-btn" type="button" aria-label="Refresh"><i class="fas fa-rotate"></i></button>
+</header>
+
+<section class="summary-grid">
+    <article class="summary-card waiting"><small>Menunggu SPV</small><strong id="countWaiting">0</strong></article>
+    <article class="summary-card forwarded"><small>Diteruskan Owner</small><strong id="countForwarded">0</strong></article>
+    <article class="summary-card rejected"><small>Ditolak SPV</small><strong id="countRejected">0</strong></article>
+</section>
+
+<section class="toolbar">
+    <div class="search-wrap"><i class="fas fa-magnifying-glass"></i><input id="searchInput" type="search" placeholder="Cari nama / cabang / alasan..."></div>
+    <select id="filterJenis" aria-label="Filter jenis"><option value="ALL">Semua</option><option value="IZIN">Izin</option><option value="LIBUR">Libur</option></select>
+</section>
+
+<main>
+    <div id="loadingState" class="state-card"><i class="fas fa-spinner fa-spin"></i><span>Memuat pengajuan...</span></div>
+    <div id="emptyState" class="state-card" hidden><i class="fas fa-inbox"></i><span>Tidak ada pengajuan menunggu SPV.</span></div>
+    <div id="requestList" class="request-list"></div>
+</main>
+
+<div id="reviewModal" class="modal" hidden>
+    <div class="modal-backdrop" data-close="1"></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button class="modal-close" type="button" data-close="1" aria-label="Tutup"><i class="fas fa-xmark"></i></button>
+        <p class="eyebrow">REVIEW SPV</p>
+        <h2 id="modalTitle">Proses Pengajuan</h2>
+        <p id="modalMeta" class="modal-meta"></p>
+        <label for="spvNote">Catatan SPV <b>*</b></label>
+        <textarea id="spvNote" maxlength="300" placeholder="Tulis hasil pemeriksaan / alasan keputusan..."></textarea>
+        <div class="note-meta"><span>Wajib minimal 3 karakter</span><span id="noteCount">0/300</span></div>
+        <div class="modal-actions">
+            <button id="btnReject" class="btn danger" type="button"><i class="fas fa-xmark"></i> Tolak</button>
+            <button id="btnForward" class="btn primary" type="button"><i class="fas fa-arrow-right"></i> Teruskan ke Owner</button>
+        </div>
+        <p id="modalMessage" class="modal-message"></p>
+    </section>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="izin-spv.js?v=20260816-1530"></script>
+</body>
+</html>
