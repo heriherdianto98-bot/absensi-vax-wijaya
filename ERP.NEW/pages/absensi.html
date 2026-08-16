@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Absensi | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/toolbar.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/absensi-owner.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/light-contrast.css">
+<link rel="stylesheet" href="../styles/absensi-laporan-bulanan.css?v=20260814p1">
+<link rel="stylesheet" href="../styles/izin-spv-embed.css?v=20260816p1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+    <div id="header"></div>
+    <div class="erp-content">
+        <div class="absensi-page" id="absensiRoot">
+
+            <div id="absensiDailyView">
+
+            <section class="absensi-page-head" aria-label="Judul Absensi">
+                <div class="absensi-page-head-text">
+                    <h2 class="absensi-page-title">ABSENSI</h2>
+                    <p class="absensi-page-sub">Monitoring kehadiran seluruh cabang</p>
+                </div>
+                <div class="absensi-karyawan-badge" title="Jumlah karyawan pada scope filter aktif">
+                    <strong id="totalKaryawan">0</strong>
+                    <span>KARYAWAN AKTIF</span>
+                </div>
+            </section>
+
+            <section class="toolbar-wrapper absensi-toolbar" aria-label="Filter Absensi">
+                <div class="toolbar-left">
+                    <div class="toolbar-field">
+                        <span class="toolbar-field-label">Mode</span>
+                        <div class="absensi-mode-switch" role="group" aria-label="Mode ringkasan">
+                            <button type="button" class="absensi-mode-btn is-active" data-absensi-mode="hari">Hari Ini</button>
+                            <button type="button" class="absensi-mode-btn" data-absensi-mode="bulan">Bulan Ini</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-field">
+                        <span class="toolbar-field-label">Cabang</span>
+                        <select id="absensiFilterCabang">
+                            <option value="">Semua Cabang</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-field">
+                        <span class="toolbar-field-label">Tanggal</span>
+                        <button type="button" id="absensiDateBtn" class="absensi-date-btn" aria-haspopup="dialog">
+                            <span id="absensiDateLabel">—</span>
+                        </button>
+                        <input type="hidden" id="absensiFilterTanggal" value="">
+                    </div>
+                    <div class="toolbar-field">
+                        <span class="toolbar-field-label">Status</span>
+                        <select id="absensiFilterStatus" class="absensi-cselect" data-erp-cselect>
+                            <option value="">Semua Status</option>
+                            <option value="MASUK">Masuk</option>
+                            <option value="TERLAMBAT">Terlambat</option>
+                            <option value="BELUM ABSEN">Belum Absen</option>
+                            <option value="LIBUR">Libur</option>
+                            <option value="IZIN">Izin</option>
+                            <option value="SAKIT">Sakit</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-field toolbar-field-search">
+                        <span class="toolbar-field-label">Cari Karyawan</span>
+                        <div class="absensi-search-wrap">
+                            <input type="search" id="cariNama" class="absensi-toolbar-input" placeholder="Ketik nama → pilih / Enter ke detail…" autocomplete="off">
+                            <div id="absensiSearchSuggest" class="absensi-suggest" hidden role="listbox"></div>
+                            <p id="absensiSearchMsg" class="absensi-search-msg" hidden></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <button type="button" class="absensi-btn-ghost" id="btnResetAbsensiFilter">Reset / Tampilkan Semua</button>
+                </div>
+            </section>
+
+            <section class="absensi-kpi-grid" aria-label="KPI Absensi">
+                <button type="button" class="absensi-kpi kpi-masuk" data-absensi-filter="MASUK"><span>Masuk Hari Ini</span><strong id="hadirHariIni">0</strong></button>
+                <button type="button" class="absensi-kpi kpi-terlambat" data-absensi-filter="TERLAMBAT"><span>Terlambat</span><strong id="terlambat">0</strong></button>
+                <button type="button" class="absensi-kpi kpi-belum" data-absensi-filter="BELUM ABSEN"><span>Belum Absen</span><strong id="totalBelumAbsen">0</strong></button>
+                <button type="button" class="absensi-kpi kpi-libur" data-absensi-filter="LIBUR"><span>Libur</span><strong id="totalLiburHariIni">0</strong></button>
+                <button type="button" class="absensi-kpi kpi-izin" data-absensi-filter="IZIN"><span>Izin</span><strong id="totalIzinHariIni">0</strong></button>
+                <button type="button" class="absensi-kpi kpi-sakit" data-absensi-filter="SAKIT"><span>Sakit</span><strong id="totalSakitHariIni">0</strong></button>
+                <button type="button" class="absensi-kpi kpi-denda" data-absensi-filter="DENDA"><span>Denda Hari Ini</span><strong id="totalDendaHariIni">Rp0</strong></button>
+                <button type="button" class="absensi-kpi kpi-denda" data-absensi-filter="DENDA_BULAN"><span>Denda Bulan Ini</span><strong id="totalDendaBulanan">Rp0</strong></button>
+            </section>
+
+            <section id="izinSpvEmbed" class="izin-spv-embed" hidden aria-label="Review Pengajuan Izin dan Libur">
+                <div class="izin-spv-head">
+                    <div>
+                        <span class="izin-spv-kicker">PERSETUJUAN SPV</span>
+                        <h2>Review Izin / Libur</h2>
+                        <p>Periksa pengajuan karyawan sebelum diteruskan ke Owner.</p>
+                    </div>
+                    <button type="button" id="izinSpvRefresh" class="izin-spv-refresh" title="Refresh pengajuan" aria-label="Refresh pengajuan">↻</button>
+                </div>
+                <div class="izin-spv-summary">
+                    <article class="izin-spv-summary-card is-waiting"><span>Menunggu SPV</span><strong id="izinSpvCountWaiting">0</strong></article>
+                    <article class="izin-spv-summary-card is-forwarded"><span>Diteruskan Owner</span><strong id="izinSpvCountForwarded">0</strong></article>
+                    <article class="izin-spv-summary-card is-rejected"><span>Ditolak SPV</span><strong id="izinSpvCountRejected">0</strong></article>
+                </div>
+                <div class="izin-spv-toolbar">
+                    <div class="izin-spv-search"><span>⌕</span><input id="izinSpvSearch" type="search" placeholder="Cari nama / cabang / alasan..." autocomplete="off"></div>
+                    <select id="izinSpvFilterJenis" aria-label="Filter jenis pengajuan"><option value="ALL">Semua Jenis</option><option value="IZIN">Izin</option><option value="LIBUR">Libur</option></select>
+                </div>
+                <div id="izinSpvLoading" class="izin-spv-state">Memuat pengajuan…</div>
+                <div id="izinSpvEmpty" class="izin-spv-state" hidden>Tidak ada pengajuan menunggu SPV.</div>
+                <div id="izinSpvList" class="izin-spv-list"></div>
+            </section>
+
+            <section class="absensi-main-grid">
+                <div class="absensi-panel absensi-status-panel" id="statusBox">
+                    <div class="absensi-panel-head"><h2>Status Karyawan Hari Ini</h2></div>
+                    <div class="absensi-table-wrap">
+                        <table class="absensi-table"><thead><tr><th>Nama</th><th>Cabang</th><th>Status</th></tr></thead><tbody id="statusKaryawan"></tbody></table>
+                    </div>
+                </div>
+                <div class="absensi-panel">
+                    <div class="absensi-panel-head"><h2>Aktivitas Absensi</h2></div>
+                    <div id="aktivitasTerbaru" class="absensi-activity"><p class="absensi-muted">Memuat aktivitas…</p></div>
+                </div>
+            </section>
+            </div>
+            <div id="absensiMonthlyHost" hidden></div>
+        </div>
+    </div>
+</div>
+
+<div id="absensiCalModal" class="custom-cal-modal" hidden aria-hidden="true">
+    <div class="custom-cal-backdrop" data-absensi-cal-close></div>
+    <div class="custom-cal-panel" role="dialog" aria-modal="true" aria-labelledby="absensiCalTitle">
+        <div class="custom-cal-header"><h3 id="absensiCalTitle">Pilih Tanggal</h3><button type="button" class="custom-cal-x" data-absensi-cal-close aria-label="Tutup">×</button></div>
+        <div class="custom-cal-nav"><button type="button" id="absensiCalPrev" aria-label="Bulan sebelumnya">‹</button><strong id="absensiCalMonthLabel">—</strong><button type="button" id="absensiCalNext" aria-label="Bulan berikutnya">›</button></div>
+        <div class="custom-cal-weekdays" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+        <div id="absensiCalDays" class="custom-cal-days"></div>
+        <div class="custom-cal-actions"><button type="button" id="absensiCalToday" class="toolbar-btn-cancel">Hari Ini</button><button type="button" class="toolbar-btn-cancel" data-absensi-cal-close>Tutup</button></div>
+    </div>
+</div>
+
+<div id="izinSpvModal" class="izin-spv-modal" hidden>
+    <div class="izin-spv-modal-backdrop" data-izin-spv-close></div>
+    <section class="izin-spv-modal-card" role="dialog" aria-modal="true" aria-labelledby="izinSpvModalTitle">
+        <button type="button" class="izin-spv-modal-close" data-izin-spv-close aria-label="Tutup">×</button>
+        <span class="izin-spv-kicker">REVIEW SPV</span>
+        <h2 id="izinSpvModalTitle">Proses Pengajuan</h2>
+        <p id="izinSpvModalMeta" class="izin-spv-modal-meta"></p>
+        <label for="izinSpvNote">Catatan SPV <b>*</b></label>
+        <textarea id="izinSpvNote" maxlength="300" placeholder="Tulis hasil pemeriksaan / alasan keputusan..."></textarea>
+        <div class="izin-spv-note-meta"><span>Wajib minimal 3 karakter</span><span id="izinSpvNoteCount">0/300</span></div>
+        <div class="izin-spv-modal-actions"><button type="button" id="izinSpvReject" class="izin-spv-btn is-danger">Tolak</button><button type="button" id="izinSpvForward" class="izin-spv-btn is-primary">Teruskan ke Owner</button></div>
+        <p id="izinSpvModalMessage" class="izin-spv-modal-message"></p>
+    </section>
+</div>
+
+<nav class="erp-bottom-nav" aria-label="Navigasi bawah">
+    <a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a>
+    <a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a>
+    <a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a>
+    <a href="./finance.html?menu=qris"><span class="bn-icon">◈</span>QRIS</a>
+    <a href="./login.html"><span class="bn-icon">👤</span>Akun</a>
+</nav>
+
+<script src="../config/minutes.js"></script>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/modules/erp-toast.js"></script>
+<script src="../js/modules/erp-custom-select.js?v=20260814p1"></script>
+<script src="../js/modules/erp-header-sync.js"></script>
+<script src="../js/modules/absensi-owner.js"></script>
+<script src="../js/modules/izin-spv-embed.js?v=20260816p1"></script>
+<script src="../js/modules/absensi-laporan-bulanan.js?v=20260814p1"></script>
+<script src="../js/loader.js"></script>
+<script>
+document.addEventListener("erp:finance-ready", async () => {
+    ErpToast.installAlertBridge();
+    const sidebar = document.getElementById("sidebar");
+    const header = document.getElementById("header");
+    if(sidebar){
+        sidebar.innerHTML = await (await fetch("../components/sidebar.html")).text();
+        if(typeof initSidebar === "function") initSidebar();
+        if(typeof markActiveSidebarLink === "function") markActiveSidebarLink();
+        document.querySelectorAll(".menu-item").forEach((a) => { a.classList.toggle("active", a.dataset.erpNav === "absensi"); });
+    }
+    if(header){
+        header.innerHTML = await (await fetch("../components/header.html")).text();
+        OwnerAuth.bindUi();
+        OwnerAuth.syncHeader();
+        OwnerAuth.applyAccessControl();
+        const title = document.getElementById("erpHeaderTitle");
+        const sub = document.getElementById("erpHeaderSub");
+        if(title) title.textContent = "DASHBOARD ABSENSI";
+        if(sub) sub.textContent = "Kehadiran & status karyawan";
+        if(typeof initErpShellChrome === "function") initErpShellChrome();
+        if(typeof syncSidebarRoleMeta === "function") syncSidebarRoleMeta();
+        if(typeof ErpHeaderSync !== "undefined") await ErpHeaderSync.refresh();
+    }
+    document.body.classList.add("has-bottom-nav");
+    ErpCustomSelect.bindOutsideClose();
+    ErpCustomSelect.enhanceAll(document.getElementById("absensiDailyView") || document.getElementById("absensiRoot"));
+    await AbsensiOwner.boot();
+    if(typeof IzinSpvEmbed !== "undefined") await IzinSpvEmbed.boot();
+    if(typeof AbsensiLaporanBulanan !== "undefined") await AbsensiLaporanBulanan.boot({ embed: true });
+});
+</script>
+</body>
+</html>
