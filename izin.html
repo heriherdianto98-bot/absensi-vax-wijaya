@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Pengajuan Izin Karyawan</title>
+<title>Pengajuan Izin / Libur Karyawan</title>
 <link rel="stylesheet" href="izin.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 </head>
@@ -16,7 +16,7 @@
         <i class="fas fa-chevron-left"></i>
     </a>
     <div class="topbar-title">
-        <strong>PENGAJUAN IZIN</strong>
+        <strong>PENGAJUAN IZIN / LIBUR</strong>
         <small>VAX WIJAYA</small>
     </div>
     <span class="topbar-spacer"></span>
@@ -29,7 +29,7 @@
             <i class="fas fa-file-signature"></i>
         </div>
         <div>
-            <h1>Ajukan Izin</h1>
+            <h1>Ajukan Izin / Libur</h1>
             <p>Pengajuan akan diperiksa SPV terlebih dahulu sebelum diteruskan ke Owner.</p>
         </div>
     </section>
@@ -54,7 +54,7 @@
     <form id="izinForm" class="form-card" novalidate>
 
         <div class="field">
-            <label for="tanggalIzin">Tanggal Izin</label>
+            <label for="tanggalIzin">Tanggal Pengajuan</label>
             <div class="input-wrap">
                 <i class="fas fa-calendar-day"></i>
                 <input id="tanggalIzin" name="tanggalIzin" type="date" required>
@@ -67,6 +67,7 @@
                 <i class="fas fa-circle-info"></i>
                 <select id="jenisIzin" name="jenisIzin" required>
                     <option value="IZIN">Izin</option>
+                    <option value="LIBUR">Libur</option>
                 </select>
             </div>
         </div>
@@ -78,7 +79,7 @@
                 name="alasanIzin"
                 rows="4"
                 maxlength="300"
-                placeholder="Tulis alasan izin secara jelas..."
+                placeholder="Tulis alasan secara jelas..."
                 required
             ></textarea>
             <div class="field-meta">
@@ -88,7 +89,7 @@
         </div>
 
         <div class="field">
-            <label>Bukti / Foto</label>
+            <label id="buktiLabel">Bukti / Foto</label>
             <label class="upload-box" for="buktiIzin">
                 <input
                     id="buktiIzin"
@@ -96,14 +97,13 @@
                     type="file"
                     accept="image/*"
                     capture="environment"
-                    required
                 >
                 <div id="uploadEmpty" class="upload-empty">
                     <span class="upload-icon"><i class="fas fa-camera"></i></span>
                     <strong>Ambil / Pilih Foto</strong>
-                    <small>Foto bukti wajib dilampirkan</small>
+                    <small id="buktiHint">Foto bukti wajib untuk pengajuan Izin</small>
                 </div>
-                <img id="previewBukti" alt="Preview bukti izin" hidden>
+                <img id="previewBukti" alt="Preview bukti pengajuan" hidden>
             </label>
             <button id="btnHapusFoto" class="remove-photo" type="button" hidden>
                 <i class="fas fa-trash"></i>
@@ -114,14 +114,14 @@
         <section class="info-box">
             <i class="fas fa-shield-halved"></i>
             <p>
-                Status izin belum dianggap final sebelum disetujui Owner.
+                Status belum dianggap final sebelum disetujui Owner.
                 Pengajuan pertama akan masuk sebagai <b>Menunggu SPV</b>.
             </p>
         </section>
 
         <button id="btnKirimIzin" class="submit-btn" type="submit">
             <i class="fas fa-paper-plane"></i>
-            <span>Kirim Pengajuan Izin</span>
+            <span>Kirim Pengajuan</span>
         </button>
 
         <p id="formMessage" class="form-message" aria-live="polite"></p>
