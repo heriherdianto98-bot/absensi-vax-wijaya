@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pengajuan Izin Karyawan</title>
+<link rel="stylesheet" href="izin.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app">
+
+<header class="topbar">
+    <a href="dashboard-karyawan.html" class="back-btn" aria-label="Kembali">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+    <div class="topbar-title">
+        <strong>PENGAJUAN IZIN</strong>
+        <small>VAX WIJAYA</small>
+    </div>
+    <span class="topbar-spacer"></span>
+</header>
+
+<main class="izin-body">
+
+    <section class="intro-card">
+        <div class="intro-icon">
+            <i class="fas fa-file-signature"></i>
+        </div>
+        <div>
+            <h1>Ajukan Izin</h1>
+            <p>Pengajuan akan diperiksa SPV terlebih dahulu sebelum diteruskan ke Owner.</p>
+        </div>
+    </section>
+
+    <section class="status-flow" aria-label="Alur persetujuan">
+        <div class="flow-step active">
+            <span>1</span>
+            <small>Karyawan</small>
+        </div>
+        <div class="flow-line"></div>
+        <div class="flow-step">
+            <span>2</span>
+            <small>SPV</small>
+        </div>
+        <div class="flow-line"></div>
+        <div class="flow-step">
+            <span>3</span>
+            <small>Owner</small>
+        </div>
+    </section>
+
+    <form id="izinForm" class="form-card" novalidate>
+
+        <div class="field">
+            <label for="tanggalIzin">Tanggal Izin</label>
+            <div class="input-wrap">
+                <i class="fas fa-calendar-day"></i>
+                <input id="tanggalIzin" name="tanggalIzin" type="date" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="jenisIzin">Jenis Pengajuan</label>
+            <div class="input-wrap">
+                <i class="fas fa-circle-info"></i>
+                <select id="jenisIzin" name="jenisIzin" required>
+                    <option value="IZIN">Izin</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="alasanIzin">Alasan</label>
+            <textarea
+                id="alasanIzin"
+                name="alasanIzin"
+                rows="4"
+                maxlength="300"
+                placeholder="Tulis alasan izin secara jelas..."
+                required
+            ></textarea>
+            <div class="field-meta">
+                <span>Wajib diisi</span>
+                <span id="alasanCounter">0/300</span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Bukti / Foto</label>
+            <label class="upload-box" for="buktiIzin">
+                <input
+                    id="buktiIzin"
+                    name="buktiIzin"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    required
+                >
+                <div id="uploadEmpty" class="upload-empty">
+                    <span class="upload-icon"><i class="fas fa-camera"></i></span>
+                    <strong>Ambil / Pilih Foto</strong>
+                    <small>Foto bukti wajib dilampirkan</small>
+                </div>
+                <img id="previewBukti" alt="Preview bukti izin" hidden>
+            </label>
+            <button id="btnHapusFoto" class="remove-photo" type="button" hidden>
+                <i class="fas fa-trash"></i>
+                Hapus Foto
+            </button>
+        </div>
+
+        <section class="info-box">
+            <i class="fas fa-shield-halved"></i>
+            <p>
+                Status izin belum dianggap final sebelum disetujui Owner.
+                Pengajuan pertama akan masuk sebagai <b>Menunggu SPV</b>.
+            </p>
+        </section>
+
+        <button id="btnKirimIzin" class="submit-btn" type="submit">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pengajuan Izin</span>
+        </button>
+
+        <p id="formMessage" class="form-message" aria-live="polite"></p>
+
+    </form>
+
+</main>
+
+<nav id="bottomNav" aria-label="Navigasi utama">
+    <a href="dashboard-karyawan.html">
+        <i class="fas fa-house"></i>
+        <span>Dashboard</span>
+    </a>
+    <a href="absensi.html">
+        <i class="fas fa-clock"></i>
+        <span>Absensi</span>
+    </a>
+    <a href="riwayat.html">
+        <i class="fas fa-list"></i>
+        <span>Riwayat</span>
+    </a>
+    <a href="profil.html">
+        <i class="fas fa-user"></i>
+        <span>Profil</span>
+    </a>
+</nav>
+
+</div>
+
+<script src="izin.js"></script>
+</body>
+</html>
