@@ -73,6 +73,57 @@ Files below are the verified Cash Out baseline reference and MUST NOT be modifie
 - ERP.NEW/components/cash-out-detail.html
 - minutes-connector/sync.js
 
+## HARD LOCK — TABEL HARIAN
+
+Status: FULL PASS / HARD LOCK
+
+Verified period:
+- 2026-08-01 through 2026-08-18
+
+Validation:
+- 10 branches × 18 days = 180/180 daily rows.
+- Exact match against Supabase for 8 core metrics:
+  - Omzet
+  - Nett
+  - Non Tunai
+  - Cash Out
+  - Cash Bersih
+  - Customer
+  - Transaksi
+  - Services
+- No missing date×branch rows, no duplicate tanggal+cabang_id rows, and no null on mapped core fields in the verified snapshot.
+
+Official branch:
+- locked/tabel-harian-2026-08-19
+
+Official commit:
+- 00008ad7d0f831ca14c4bbe57810f5fc97336707
+
+Tabel Harian source / calculation path:
+- daily_recap_source
+- ERP.NEW/js/modules/dashboard-engine.js
+- ERP.NEW/js/modules/setoran-money-engine.js
+- ERP.NEW/js/modules/tabel-harian-cabang.js
+- ERP.NEW/pages/tabel-harian-cabang.html
+
+Business role:
+- Tabel Harian is a critical operational data layer used as reference for downstream dashboard, owner analysis/decision support, setoran 3-harian, and monthly recap.
+- Do not introduce separate formulas in downstream modules that silently diverge from this verified baseline.
+
+Recovery rule:
+- If a daily metric differs, identify exact branch/date/field first.
+- Compare source/Supabase with ERP output.
+- If source is correct but ERP regresses, compare affected files against this HARD LOCK baseline.
+- Restore targeted behavior; do not redesign the module from zero.
+
+## LOCKED FILES FOR TABEL HARIAN
+
+Files below are the verified Tabel Harian baseline reference and MUST NOT be modified in the stable baseline unless owner explicitly unlocks the task:
+- ERP.NEW/pages/tabel-harian-cabang.html
+- ERP.NEW/js/modules/tabel-harian-cabang.js
+- ERP.NEW/js/modules/dashboard-engine.js
+- ERP.NEW/js/modules/setoran-money-engine.js
+
 ## CHANGE POLICY
 
 - Stable baseline is reference-only.
