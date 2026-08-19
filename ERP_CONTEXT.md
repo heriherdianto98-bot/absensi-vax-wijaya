@@ -85,6 +85,33 @@ Business role:
 - Tabel Harian is a critical operational reference layer for the main dashboard, AI-assisted owner analysis/decision support, Setoran 3 Harian, and monthly recap.
 - Downstream modules must not introduce silently divergent formulas from this verified baseline.
 
+### Setoran 3 Harian
+Status: **HARD LOCK OFFICIAL**
+
+Branch: `locked/setoran-3-harian-2026-08-19`  
+Commit: `47e6148cef8c78aeff1d46798c61dd375c96e72d`
+
+Official locked files:
+- `ERP.NEW/pages/setoran-3-harian.html`
+- `ERP.NEW/components/setoran-3-harian-table.html`
+- `ERP.NEW/js/modules/setoran-3-harian.js`
+- `ERP.NEW/js/modules/setoran-money-engine.js`
+- `ERP.NEW/styles/setoran-3-harian.css`
+
+Verified business rules:
+- Setoran may be taken by Owner at any time; maximum holding period is 3 days.
+- CLEAR before `period_end` is valid.
+- Nett = `nett_revenue + product_cost`.
+- Cash Referensi = Nett - Non Tunai.
+- Cash Out is display/context only and is not subtracted again.
+- `setoran_cash_actual` represents the amount taken/saved at Owner action.
+- If live Cash Referensi changes after Owner already took the money, UI must show that change as informational `Perubahan setelah pengambilan`, not automatically as shortage.
+- Existing CLEAR / DONE / receipt / proof workflow remains unchanged.
+
+Current UI note:
+- Logic/business flow is locked and PASS.
+- Setoran 3 Harian UI can be simplified later as a presentation-only redesign, while preserving this locked logic.
+
 ## 4. Sync / Freshness Locked Context
 - Production sync uses systemd.
 - Scheduler tick is one minute.
@@ -123,6 +150,7 @@ Owner only needs to report the visible business mismatch, for example:
 - `Cash Out Palabuan beda`
 - `KPI Pamanukan beda`
 - `Tabel Harian Kalijati beda`
+- `Setoran 3 Harian beda`
 
 Technical process:
 - compare source data,
@@ -138,8 +166,11 @@ Technical process:
 - Cash Out 01–18 Aug 2026 = **10/10 branch exact match**
 - Tabel Harian Semua Cabang = **HARD LOCK OFFICIAL**
 - Tabel Harian 01–18 Aug 2026 = **180/180 rows; 8 core metrics exact match across 10/10 branches**
-- Next planned financial priority: **Setoran 3 Harian** as the primary financial engine, followed by **Arus Kas** as the secondary/control financial module.
-- Sync/runtime audit remains a critical infrastructure task because it is the data path feeding ERP from Minutes.
+- Setoran 3 Harian = **HARD LOCK OFFICIAL**
+- Setoran 3 Harian formula/business flow = **PASS**; later UI redesign must be presentation-only.
+- Next planned financial priority: **Arus Kas** as the secondary/control financial module.
+- After financial module validation, audit **Sync/Runtime configuration** as the critical infrastructure path feeding ERP from Minutes.
+- Future UI direction: main ERP Dashboard becomes the visual master shell/design language for all modules; visual unification must not merge or alter locked business logic.
 
 ## 9. Important Safety Rules
 - No manual hardcoded totals.
