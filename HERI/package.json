@@ -1,0 +1,24 @@
+{
+  "name": "heri-finance",
+  "version": "1.0.0-phase2",
+  "private": true,
+  "description": "HERI — Personal Finance & AI Assistant (Phase 1)",
+  "scripts": {
+    "web": "npx --yes serve web -p 5173",
+    "server": "node server/index.js",
+    "test:phase1": "node tests/phase1-smoke.mjs",
+    "test:phase2": "node tests/phase2-smoke.mjs",
+    "cap:sync": "npx cap sync android",
+    "build:apk": "npx cap sync android && cd android && gradlew.bat assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/preferences": "^8.0.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
