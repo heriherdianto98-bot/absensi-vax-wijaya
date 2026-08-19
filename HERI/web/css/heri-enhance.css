@@ -1,0 +1,67 @@
+/* HERI Phase 1 enhancements — keeps V3 dark+gold character */
+.brand h1{color:var(--gold2);letter-spacing:.08em}
+.brand .heri-sub{margin:4px 0 0;color:var(--gold);font-size:11px;font-weight:700;letter-spacing:.04em}
+.brand p{margin-top:3px}
+
+.cat-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.cat-chip{
+  border:1.5px solid #3a3a42;background:#141417;color:#b8b8c0;
+  border-radius:14px;padding:11px 12px;font-size:11px;font-weight:800;
+  min-height:44px;min-width:88px;letter-spacing:.02em;
+  transition:border-color .18s,box-shadow .18s,transform .12s,background .18s,color .18s;
+}
+.cat-chip:active{transform:scale(.96)}
+.cat-chip.active{
+  border-color:var(--gold);color:#fff4cc;background:linear-gradient(180deg,#2c2412,#1a160c);
+  box-shadow:0 0 0 1px rgba(224,180,74,.35),0 0 18px rgba(224,180,74,.28);
+}
+
+#amountDisplay{font-variant-numeric:tabular-nums;font-weight:800;color:var(--gold2)}
+.amount-wrap{position:relative}
+.amount-hint{font-size:10px;color:var(--muted);margin-top:4px}
+
+.voice-confirm{
+  display:none;margin-top:10px;border:1px solid #5a4522;background:#21180c;
+  border-radius:14px;padding:12px;color:#f3d890;font-size:12px;
+}
+.voice-confirm.show{display:block}
+.voice-confirm .vc-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.voice-confirm .vc-actions button{flex:1;min-height:42px}
+
+.ai-box textarea{min-height:72px}
+.ai-answer{
+  margin-top:10px;border:1px solid var(--line);background:#101012;
+  border-radius:14px;padding:12px;font-size:12px;line-height:1.55;white-space:pre-wrap;
+}
+.ai-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ai-actions button{min-height:42px}
+
+.memory-table{width:100%;border-collapse:collapse;font-size:11px}
+.memory-table th,.memory-table td{border-bottom:1px solid #27272c;padding:8px;text-align:left}
+.memory-table input,.memory-table select{width:100%;background:#0f0f11;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:8px}
+
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pay-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#141417}
+.pay-card h3{margin:0 0 6px;font-size:13px;color:var(--gold2)}
+.pay-card p{margin:0;font-size:11px;color:var(--muted);line-height:1.45}
+.pay-badge{
+  display:inline-block;margin-top:10px;font-size:10px;font-weight:800;
+  border:1px solid #5a4522;color:#f3d890;background:#21180c;
+  border-radius:999px;padding:5px 8px;letter-spacing:.04em;
+}
+.privacy-row{display:grid;grid-template-columns:1fr 1.2fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #242429;font-size:11px}
+.privacy-level{display:grid;gap:6px;margin-top:10px}
+.privacy-level label{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:#d5d5db;line-height:1.4}
+
+.settings-tabs{display:flex;gap:7px;overflow:auto;margin-bottom:12px}
+.settings-tabs .chip{min-height:38px}
+.panel-block{display:none}.panel-block.active{display:block}
+
+.nfc-status{font-size:12px;color:var(--muted);margin-top:8px}
+.nfc-status.ok{color:var(--good)}.nfc-status.no{color:var(--bad)}
+
+@media(max-width:800px){
+  .pay-grid{grid-template-columns:1fr}
+  .privacy-row{grid-template-columns:1fr}
+  .bottom-inner{grid-template-columns:repeat(5,1fr)}
+}

@@ -1,0 +1,14 @@
+# Ignore local secrets & build caches for HERI
+.tools/
+node_modules/
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+server/.env
+.env
+*.apk
+*.aab
+*.jks
+*.keystore
+!docs/
