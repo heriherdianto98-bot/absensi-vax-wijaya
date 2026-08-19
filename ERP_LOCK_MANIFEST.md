@@ -124,6 +124,40 @@ Files below are the verified Tabel Harian baseline reference and MUST NOT be mod
 - ERP.NEW/js/modules/dashboard-engine.js
 - ERP.NEW/js/modules/setoran-money-engine.js
 
+## HARD LOCK — SETORAN 3 HARIAN
+
+Status: FULL PASS / HARD LOCK
+
+Validation:
+- Formula/business flow verified against the same money basis used by Tabel Harian.
+- Nett = nett_revenue + product_cost.
+- Cash Referensi = Nett - Non Tunai.
+- Cash Out is display/context only and is NOT subtracted again.
+- Owner may take setoran at any time, with maximum holding period 3 days.
+- CLEAR before period_end is valid business behavior.
+- Existing CLEAR / DONE / receipt / proof workflow remains unchanged.
+- UI context distinguishes money already taken by Owner from later live data changes.
+
+Official branch:
+- locked/setoran-3-harian-2026-08-19
+
+Official commit:
+- 47e6148cef8c78aeff1d46798c61dd375c96e72d
+
+Owner-taken interpretation:
+- `setoran_cash_actual` is the amount taken/saved at Owner action.
+- Current live Cash Referensi may later change if new transactions/data arrive.
+- Such post-take change must be shown as informational `Perubahan setelah pengambilan`, not automatically as shortage.
+
+## LOCKED FILES FOR SETORAN 3 HARIAN
+
+Files below are the verified Setoran 3 Harian baseline reference and MUST NOT be modified in the stable baseline unless owner explicitly unlocks the task:
+- ERP.NEW/pages/setoran-3-harian.html
+- ERP.NEW/components/setoran-3-harian-table.html
+- ERP.NEW/js/modules/setoran-3-harian.js
+- ERP.NEW/js/modules/setoran-money-engine.js
+- ERP.NEW/styles/setoran-3-harian.css
+
 ## CHANGE POLICY
 
 - Stable baseline is reference-only.
