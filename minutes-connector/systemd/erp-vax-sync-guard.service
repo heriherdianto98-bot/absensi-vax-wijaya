@@ -1,0 +1,7 @@
+[Unit]
+Description=ERP VAX Sync Self-Healing Guard
+After=erp-vax-minutes-sync.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /var/www/absensi-vax-wijaya/minutes-connector/vps-sync-guard.sh

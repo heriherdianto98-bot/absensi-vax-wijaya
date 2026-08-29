@@ -1,0 +1,16 @@
+[Unit]
+Description=ERP VAX Minutes Sync Scheduler
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/absensi-vax-wijaya/minutes-connector
+ExecStart=/usr/bin/node /var/www/absensi-vax-wijaya/minutes-connector/scheduler.js
+Restart=always
+RestartSec=5
+KillMode=control-group
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
