@@ -1,0 +1,296 @@
+/*
+=========================================================
+ERP VAX WIJAYA
+responsive.css — Light Hybrid
+=========================================================
+*/
+
+html, body{
+    max-width:100%;
+    overflow-x:hidden;
+}
+
+.erp-section-badge,
+.setoran3-eyebrow{
+    max-width:100%;
+    white-space:normal;
+}
+
+img, svg, video, canvas{
+    max-width:100%;
+    height:auto;
+}
+
+.erp-table-wrap,
+.qris-reco-table-wrap,
+.setoran3-table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    max-width:100%;
+}
+
+@media (max-width:900px){
+    body.erp-drawer-open{
+        overflow:hidden;
+    }
+
+    body.erp-drawer-open .erp-sidebar-backdrop{
+        display:block;
+    }
+
+    .kpi-grid{
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .toolbar-wrapper{
+        flex-direction:column;
+        align-items:stretch;
+        gap:10px;
+    }
+
+    .toolbar-left,
+    .toolbar-right{
+        width:100%;
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+    }
+
+    .toolbar-left select,
+    .toolbar-right button{
+        min-height:44px;
+        flex:1;
+    }
+}
+
+@media (max-width:560px){
+    .kpi-grid{
+        grid-template-columns:1fr !important;
+    }
+}
+
+/* Modal: never let sticky page chrome cover modal */
+body.setoran3-modal-open .setoran3-sticky{
+    z-index:20;
+}
+
+body.setoran3-modal-open .top-header,
+body.setoran3-modal-open .erp-header{
+    z-index:20;
+}
+
+.qris-reco-modal{
+    z-index:1200;
+}
+
+/* Soft light surface for remaining dashboard modules
+   NOTE: #widget-section (VAX AI Insight) intentionally excluded —
+   styled by ai.css Dark Premium (was forced white here). */
+.erp-wrapper #chart-section > section,
+.erp-wrapper #chart-section > div,
+.erp-wrapper #ranking-section > section,
+.erp-wrapper #ranking-section > div,
+.erp-wrapper #activity-section > section,
+.erp-wrapper #activity-section > div,
+.erp-wrapper #payment-section > section,
+.erp-wrapper #payment-section > div{
+    background:#FFFFFF;
+    border:1px solid #DDDFE3;
+    border-radius:12px;
+    color:#151515;
+    box-shadow:0 1px 2px rgba(16,24,40,.04);
+}
+
+.erp-wrapper #chart-section h3,
+.erp-wrapper #ranking-section h3,
+.erp-wrapper #activity-section h3,
+.erp-wrapper #payment-section h3,
+.erp-wrapper #chart-section strong,
+.erp-wrapper #ranking-section strong,
+.erp-wrapper #activity-section strong,
+.erp-wrapper #payment-section strong{
+    color:#151515;
+}
+
+.erp-wrapper #chart-section small,
+.erp-wrapper #ranking-section small,
+.erp-wrapper #activity-section small,
+.erp-wrapper #payment-section small,
+.erp-wrapper #chart-section p,
+.erp-wrapper #ranking-section p,
+.erp-wrapper #activity-section li,
+.erp-wrapper #payment-section span{
+    color:#5F6368;
+}
+
+/* =========================================================
+   DESKTOP DENSITY — browser zoom 100% is the official baseline
+   Adaptive chrome/content for 1366–1920. No zoom/scale hacks.
+   Mobile (≤900) keeps existing tap targets / drawer behavior.
+   ========================================================= */
+@media (min-width:901px){
+    .erp-wrapper,
+    .erp-content{
+        min-width:0;
+        max-width:100%;
+    }
+
+    .erp-wrapper .erp-card,
+    .erp-wrapper .card{
+        padding:var(--space-card, 11px);
+    }
+
+    .erp-wrapper .toolbar-wrapper{
+        padding:8px 12px;
+        gap:var(--chrome-gap, 8px) 12px;
+    }
+
+    .erp-wrapper .toolbar-left select,
+    .erp-wrapper .toolbar-right button,
+    .erp-wrapper .absensi-toolbar-input,
+    .erp-wrapper .absensi-date-btn{
+        height:var(--ctrl-h, 32px);
+        min-height:var(--ctrl-h, 32px);
+        font-size:13px;
+    }
+
+    .erp-wrapper .kpi-grid{
+        gap:var(--chrome-gap, 8px);
+        margin:10px 0;
+    }
+
+    .erp-wrapper .kpi-card,
+    .erp-wrapper .kpi-card:has(.kpi-status.positive),
+    .erp-wrapper .kpi-card:has(.kpi-status.negative),
+    .erp-wrapper .kpi-card:has(.kpi-status.neutral){
+        padding:var(--space-card, 11px) !important;
+    }
+
+    .erp-wrapper .kpi-label{
+        font-size:clamp(11px, 0.85vw, 12px);
+    }
+
+    html body .erp-wrapper .kpi-card .kpi-value,
+    html body .erp-wrapper .kpi-value{
+        margin-top:6px !important;
+        font-size:clamp(18px, 1.3vw, 22px) !important;
+    }
+
+    html body .erp-wrapper .kpi-card .kpi-status.positive,
+    html body .erp-wrapper .kpi-card .kpi-status.negative,
+    html body .erp-wrapper .kpi-card .kpi-status.neutral{
+        min-width:4.6rem !important;
+        min-height:1.7rem !important;
+        font-size:clamp(14px, 1.05vw, 16px) !important;
+        padding:3px 8px !important;
+    }
+
+    .erp-wrapper .kpi-card:has(.kpi-status.positive) .kpi-top,
+    .erp-wrapper .kpi-card:has(.kpi-status.negative) .kpi-top,
+    .erp-wrapper .kpi-card:has(.kpi-status.neutral) .kpi-top{
+        padding-right:88px;
+        min-height:26px;
+    }
+
+    .erp-wrapper .kpi-card:has(.kpi-status.positive) .kpi-status.positive,
+    .erp-wrapper .kpi-card:has(.kpi-status.negative) .kpi-status.negative,
+    .erp-wrapper .kpi-card:has(.kpi-status.neutral) .kpi-status.neutral{
+        top:8px;
+        right:8px;
+    }
+
+    .erp-wrapper .kpi-bottom{
+        margin-top:8px;
+        min-height:0;
+    }
+
+    .erp-wrapper .executive-summary{
+        gap:14px !important;
+        padding:4px 2px 2px !important;
+        min-height:0 !important;
+        margin-bottom:14px !important;
+        background:transparent !important;
+        border:0 !important;
+        box-shadow:none !important;
+    }
+
+    .erp-wrapper .exec-ai-title{
+        font-size:10px !important;
+    }
+
+    .erp-wrapper .exec-ai-summary{
+        font-size:13px !important;
+    }
+
+    html body .erp-wrapper #executive-summary #todayRevenue,
+    html body .erp-wrapper .executive-summary #todayRevenue,
+    html body .erp-wrapper #executive-summary .executive-left h1{
+        margin-top:2px !important;
+        margin-bottom:0 !important;
+        font-size:clamp(34px, 3.05vw, 46px) !important;
+    }
+
+    html body .erp-wrapper #executive-summary .executive-box strong,
+    html body .erp-wrapper .executive-summary .executive-box strong{
+        margin:6px 0 !important;
+        font-size:clamp(18px, 1.4vw, 22px) !important;
+    }
+
+    html body .erp-wrapper #executive-summary .executive-item strong,
+    html body .erp-wrapper .executive-summary .executive-item strong{
+        font-size:clamp(16px, 1.2vw, 20px) !important;
+    }
+
+    .erp-wrapper .executive-item{
+        padding:var(--space-card, 11px) !important;
+    }
+
+    .erp-wrapper .executive-stats{
+        gap:var(--chrome-gap, 8px);
+        margin-top:12px;
+    }
+
+    .erp-wrapper .summary-info{
+        gap:12px;
+        margin-top:6px;
+        font-size:clamp(12px, 0.9vw, 13px);
+    }
+
+    .erp-wrapper .erp-page-title,
+    .erp-wrapper .page-title,
+    .erp-wrapper .absensi-page-title,
+    .erp-wrapper .aruskas-page-title,
+    .erp-wrapper .abl-page-title{
+        font-size:var(--fs-page, 18px) !important;
+    }
+
+    .erp-wrapper .erp-content-head,
+    .erp-wrapper .erp-section-head,
+    .erp-wrapper .setoran3-sticky-top,
+    .erp-wrapper .setoran3-summary-head,
+    .erp-wrapper .setoran3-progress-head,
+    .erp-wrapper .finance-hub-card > h2{
+        padding:10px 12px !important;
+    }
+
+    .erp-wrapper .erp-table thead th,
+    .erp-wrapper .qris-reco-table thead th,
+    .erp-wrapper .erp-table tbody td,
+    .erp-wrapper .qris-reco-table tbody td{
+        padding:7px 8px;
+    }
+}
+
+@media (min-width:901px) and (max-width:1366px){
+    .erp-wrapper .header-chip{
+        max-width:220px;
+        min-width:118px;
+    }
+
+    .erp-wrapper .header-minutes-status strong{
+        max-width:110px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+}

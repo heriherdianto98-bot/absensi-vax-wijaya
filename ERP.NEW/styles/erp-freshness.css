@@ -1,0 +1,268 @@
+/* VAX ERP — freshness status (presentation only, compact) */
+
+.erp-freshness{
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start;
+    gap:8px 12px;
+    min-width:0;
+    max-width:100%;
+    height:auto;
+    max-height:36px;
+    overflow:visible;
+}
+
+.erp-freshness-item{
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    gap:0;
+    min-width:0;
+    padding:0 8px 0 0;
+    border-right:1px solid rgba(255,255,255,.08);
+}
+
+.erp-freshness-item:last-child{
+    border-right:0;
+    padding-right:0;
+}
+
+.erp-freshness-kicker{
+    font-size:7px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#94A3B8;
+    line-height:1;
+}
+
+.erp-freshness-row{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    min-width:0;
+    white-space:nowrap;
+}
+
+.erp-freshness-dot,
+.erp-freshness-ico{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    flex:0 0 auto;
+    background:#64748B;
+    box-shadow:0 0 0 2px rgba(100,116,139,.28);
+}
+
+.erp-freshness-ico.is-live{
+    background:#4ADE80;
+    box-shadow:0 0 0 2px rgba(74,222,128,.28);
+}
+
+.erp-freshness-sync{
+    width:9px;
+    height:9px;
+    flex:0 0 auto;
+    border:1.5px solid #67E8F9;
+    border-right-color:transparent;
+    border-radius:50%;
+}
+
+.erp-freshness-wait{
+    display:inline-flex;
+    font-size:10px;
+    line-height:1;
+    flex:0 0 auto;
+}
+
+.erp-freshness-item strong{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0;
+    color:#E2E8F0;
+    line-height:1.1;
+}
+
+.erp-freshness-time,
+.erp-freshness-eta{
+    display:block;
+    font-size:8px;
+    font-weight:600;
+    line-height:1.05;
+    color:#94A3B8;
+    white-space:nowrap;
+}
+
+.erp-freshness-item.tone-green .erp-freshness-dot{
+    background:#4ADE80;
+    box-shadow:0 0 0 2px rgba(74,222,128,.28);
+}
+.erp-freshness-item.tone-green strong{ color:#4ADE80; }
+
+.erp-freshness-item.tone-cyan .erp-freshness-dot{
+    background:#22D3EE;
+    box-shadow:0 0 0 2px rgba(34,211,238,.28);
+}
+.erp-freshness-item.tone-cyan strong{ color:#7DD3FC; }
+
+.erp-freshness-item.tone-gold .erp-freshness-dot{
+    background:#F2C230;
+    box-shadow:0 0 0 2px rgba(242,194,48,.28);
+}
+.erp-freshness-item.tone-gold strong{ color:#F2C230; }
+
+.erp-freshness-item.tone-amber .erp-freshness-dot{
+    background:#FBBF24;
+    box-shadow:0 0 0 2px rgba(251,191,36,.28);
+}
+.erp-freshness-item.tone-amber strong{ color:#FBBF24; }
+
+.erp-freshness-item.tone-red .erp-freshness-dot{
+    background:#F87171;
+    box-shadow:0 0 0 2px rgba(248,113,113,.3);
+}
+.erp-freshness-item.tone-red strong{ color:#FCA5A5; }
+
+.erp-freshness-item.is-running.tone-cyan{
+    box-shadow:0 0 10px rgba(34,211,238,.16);
+}
+
+.erp-freshness-sync.is-running{
+    animation:erp-fresh-spin 1.6s linear infinite;
+}
+
+.erp-freshness-wait.is-running{
+    animation:erp-fresh-pulse 1.6s ease-in-out infinite;
+}
+
+.erp-freshness-item.is-running.tone-cyan strong{
+    animation:erp-fresh-glow 1.8s ease-in-out infinite;
+}
+
+@keyframes erp-fresh-spin{
+    to{ transform:rotate(360deg); }
+}
+
+@keyframes erp-fresh-pulse{
+    0%,100%{ opacity:.55; transform:scale(.96); }
+    50%{ opacity:1; transform:scale(1); }
+}
+
+@keyframes erp-fresh-glow{
+    0%,100%{ color:#7DD3FC; }
+    50%{ color:#A5F3FC; }
+}
+
+.header-minutes-status.is-syncing .header-minutes-icon{
+    animation:none;
+}
+
+.header-minutes-status.is-syncing.is-runtime .header-minutes-icon{
+    animation:erp-fresh-spin 1.6s linear infinite;
+}
+
+.header-minutes-status.is-syncing.is-runtime{
+    box-shadow:0 0 0 1px rgba(56,189,248,.16), 0 0 16px rgba(34,211,238,.18), 0 2px 8px rgba(0,0,0,.22);
+}
+
+.header-minutes-status.is-success .header-minutes-icon,
+.header-minutes-status.is-error .header-minutes-icon,
+.header-minutes-status.is-waiting .header-minutes-icon,
+.header-minutes-status.is-warn .header-minutes-icon{
+    animation:none;
+}
+
+#erpFreshnessInvestor{
+    display:inline-flex;
+    align-items:center;
+    margin-left:4px;
+    padding:2px 7px;
+    border-radius:999px;
+    border:1px solid rgba(34,211,238,.28);
+    background:rgba(34,211,238,.08);
+    color:#7DD3FC;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    white-space:nowrap;
+}
+
+#erpFreshnessInvestor.is-final{
+    border-color:rgba(242,194,48,.35);
+    background:rgba(242,194,48,.1);
+    color:#F2C230;
+}
+
+.header-minutes-status.is-night,
+.header-minutes-status.is-final{
+    border-color:rgba(212,175,55,.5);
+    box-shadow:0 0 0 1px rgba(212,175,55,.14), 0 0 14px rgba(242,194,48,.14), 0 2px 8px rgba(0,0,0,.22);
+}
+.header-minutes-status.is-night .header-minutes-icon-wrap,
+.header-minutes-status.is-final .header-minutes-icon-wrap{ color:#F2C230; }
+.header-minutes-status.is-night .header-minutes-dot,
+.header-minutes-status.is-final .header-minutes-dot{
+    background:#F2C230;
+    box-shadow:0 0 0 2px rgba(242,194,48,.28);
+}
+.header-minutes-status.is-night strong,
+.header-minutes-status.is-final strong{ color:#F2C230; }
+.header-minutes-status.is-night .header-minutes-sub,
+.header-minutes-status.is-final .header-minutes-sub{
+    display:block;
+    color:#CBD5E1;
+}
+
+.ai-freshness-note{
+    margin:0 10px 6px;
+    padding:5px 8px;
+    border-radius:8px;
+    border:1px solid rgba(34,211,238,.18);
+    background:rgba(15,23,32,.45);
+    color:#CBD5E1;
+    font-size:11px;
+    line-height:1.35;
+}
+
+.ai-freshness-note[data-tone="gold"]{
+    border-color:rgba(242,194,48,.28);
+    color:#F2C230;
+}
+.ai-freshness-note[data-tone="green"]{
+    border-color:rgba(74,222,128,.22);
+    color:#86EFAC;
+}
+.ai-freshness-note[data-tone="amber"]{
+    border-color:rgba(251,191,36,.28);
+    color:#FDE68A;
+}
+
+html body.page-erp-dashboard .erp-wrapper #erpFreshness.erp-freshness{
+    height:auto !important;
+    max-height:36px !important;
+    overflow:visible !important;
+    align-items:flex-start !important;
+}
+
+@media (max-width:900px){
+    .erp-freshness{
+        width:100%;
+        max-height:none;
+        height:auto;
+        flex-wrap:wrap;
+        overflow:visible;
+    }
+    #erpFreshnessInvestor{
+        display:none;
+    }
+}
+
+@media (prefers-reduced-motion:reduce){
+    .erp-freshness-sync.is-running,
+    .erp-freshness-wait.is-running,
+    .erp-freshness-item.is-running.tone-cyan strong,
+    .header-minutes-status.is-syncing.is-runtime .header-minutes-icon{
+        animation:none;
+    }
+}

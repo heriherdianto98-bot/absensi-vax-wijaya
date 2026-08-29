@@ -1,0 +1,503 @@
+/* =========================================================
+   Universal KPI Branch Breakdown Modal — VAX premium
+   Agent 2: enlarge readability ONLY (CSS). No logic/selectors change.
+   ========================================================= */
+
+.kpi-branch-modal[hidden]{
+    display: none !important;
+}
+
+.kpi-branch-modal{
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.kpi-branch-modal-backdrop{
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(2px);
+}
+
+.kpi-branch-modal-panel{
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: min(680px, calc(100vw - 40px));
+    max-width: calc(100vw - 40px);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #1c1c1c 0%, #141414 100%);
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 16px;
+    padding: 22px 22px 16px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+}
+
+.kpi-branch-modal-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding-bottom: 2px;
+}
+
+.kpi-branch-modal-heading{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.kpi-branch-back{
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-top: 1px;
+    background: #222;
+    border: 1px solid #3a3a3a;
+    color: #eee;
+    border-radius: 10px;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.kpi-branch-back:hover{
+    border-color: #D4AF37;
+    color: #D4AF37;
+    background: rgba(212, 175, 55, 0.08);
+}
+
+.kpi-branch-back[hidden]{
+    display: none !important;
+}
+
+.kpi-branch-modal-heading h4{
+    margin: 0;
+    color: #fff;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+}
+
+.kpi-branch-modal-heading small{
+    display: block;
+    margin-top: 6px;
+    color: #D4AF37;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.35;
+    opacity: 1;
+}
+
+.kpi-branch-modal-close{
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    color: #c4c4c4;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 10px;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.kpi-branch-modal-close:hover{
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.kpi-branch-modal-close:focus-visible{
+    outline: 2px solid rgba(212, 175, 55, 0.55);
+    outline-offset: 2px;
+}
+
+.kpi-branch-modal-total{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.kpi-branch-modal-total span{
+    color: #d1d5db;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.kpi-branch-modal-total strong{
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.kpi-branch-list{
+    overflow: auto;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 2px 6px 4px 0;
+    min-height: 80px;
+    max-height: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212, 175, 55, 0.55) rgba(255, 255, 255, 0.08);
+}
+
+.kpi-branch-list::-webkit-scrollbar{
+    width: 10px;
+}
+
+.kpi-branch-list::-webkit-scrollbar-track{
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+    margin: 4px 0;
+}
+
+.kpi-branch-list::-webkit-scrollbar-thumb{
+    background: rgba(212, 175, 55, 0.45);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.kpi-branch-list::-webkit-scrollbar-thumb:hover{
+    background: rgba(212, 175, 55, 0.7);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+}
+
+.kpi-branch-row{
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 62px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    transition: background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.kpi-branch-row:hover,
+.kpi-branch-row:focus-visible{
+    outline: none;
+    background: rgba(255, 255, 255, 0.075);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 18px rgba(212, 175, 55, 0.12);
+}
+
+.kpi-branch-row-main{
+    min-width: 0;
+}
+
+.kpi-branch-row-name{
+    display: block;
+    color: #f9fafb;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kpi-branch-row-bar{
+    margin-top: 8px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.kpi-branch-row-bar > i{
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: currentColor;
+    opacity: 0.9;
+}
+
+.kpi-branch-row-value{
+    color: #fff;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.kpi-branch-row-chevron{
+    color: #9ca3af;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.kpi-branch-row:hover .kpi-branch-row-chevron{
+    color: #D4AF37;
+}
+
+.kpi-branch-row.is-static{
+    cursor: default;
+}
+
+.kpi-branch-row.is-static:hover,
+.kpi-branch-row.is-static:focus-visible{
+    background: rgba(255, 255, 255, 0.03);
+    border-color: transparent;
+    box-shadow: none;
+}
+
+/* NETT detail — final result row (visual only) */
+.kpi-branch-row.is-static.is-nett-revenue-final{
+    min-height: 72px;
+    padding: 14px 16px;
+    margin-top: 4px;
+    background:
+        linear-gradient(90deg, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0.08) 42%, rgba(212, 175, 55, 0.06) 100%);
+    border: 1px solid rgba(52, 211, 153, 0.42);
+    border-left: 4px solid #34D399;
+    box-shadow:
+        0 0 0 1px rgba(212, 175, 55, 0.12),
+        0 0 22px rgba(16, 185, 129, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.kpi-branch-row.is-static.is-nett-revenue-final:hover,
+.kpi-branch-row.is-static.is-nett-revenue-final:focus-visible{
+    background:
+        linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.1) 42%, rgba(212, 175, 55, 0.08) 100%);
+    border-color: rgba(52, 211, 153, 0.55);
+    border-left-color: #6EE7B7;
+    box-shadow:
+        0 0 0 1px rgba(212, 175, 55, 0.18),
+        0 0 26px rgba(16, 185, 129, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.kpi-branch-row.is-nett-revenue-final .kpi-branch-row-name{
+    color: #ECFDF5;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.kpi-branch-row.is-nett-revenue-final .kpi-branch-row-value{
+    color: #6EE7B7;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    text-shadow: 0 0 18px rgba(52, 211, 153, 0.28);
+}
+
+@media (max-width: 600px){
+    .kpi-branch-row.is-static.is-nett-revenue-final{
+        min-height: 66px;
+        padding: 12px 14px;
+    }
+
+    .kpi-branch-row.is-nett-revenue-final .kpi-branch-row-value{
+        font-size: 16px;
+    }
+}
+
+.kpi-branch-row-sub{
+    display: block;
+    margin-top: 3px;
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.kpi-branch-empty{
+    padding: 28px 14px;
+    text-align: center;
+    color: #d1d5db;
+    font-size: 14px;
+}
+
+.kpi-branch-footnote{
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    color: #fbbf24;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+/* Semantic accents */
+.kpi-branch-modal[data-kpi-tone="gold"] .kpi-branch-modal-heading small,
+.kpi-branch-modal[data-kpi-tone="gold"] .kpi-branch-modal-total strong,
+.kpi-branch-modal[data-kpi-tone="gold"] .kpi-branch-row-bar > i{
+    color: #D4AF37;
+}
+.kpi-branch-modal[data-kpi-tone="gold"] .kpi-branch-row:hover{
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.16);
+}
+
+.kpi-branch-modal[data-kpi-tone="amber"] .kpi-branch-modal-heading small,
+.kpi-branch-modal[data-kpi-tone="amber"] .kpi-branch-modal-total strong,
+.kpi-branch-modal[data-kpi-tone="amber"] .kpi-branch-row-bar > i{
+    color: #F59E0B;
+}
+
+.kpi-branch-modal[data-kpi-tone="cyan"] .kpi-branch-modal-heading small,
+.kpi-branch-modal[data-kpi-tone="cyan"] .kpi-branch-modal-total strong,
+.kpi-branch-modal[data-kpi-tone="cyan"] .kpi-branch-row-bar > i{
+    color: #22D3EE;
+}
+.kpi-branch-modal[data-kpi-tone="cyan"] .kpi-branch-row:hover{
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.22), 0 0 20px rgba(34, 211, 238, 0.14);
+}
+
+.kpi-branch-modal[data-kpi-tone="blue"] .kpi-branch-modal-heading small,
+.kpi-branch-modal[data-kpi-tone="blue"] .kpi-branch-modal-total strong,
+.kpi-branch-modal[data-kpi-tone="blue"] .kpi-branch-row-bar > i{
+    color: #38BDF8;
+}
+
+.kpi-branch-modal[data-kpi-tone="red"] .kpi-branch-modal-heading small,
+.kpi-branch-modal[data-kpi-tone="red"] .kpi-branch-modal-total strong,
+.kpi-branch-modal[data-kpi-tone="red"] .kpi-branch-row-bar > i{
+    color: #EF4444;
+}
+.kpi-branch-modal[data-kpi-tone="red"] .kpi-branch-row:hover{
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.22), 0 0 20px rgba(239, 68, 68, 0.14);
+}
+
+.kpi-branch-modal[data-kpi-tone="green"] .kpi-branch-modal-heading small,
+.kpi-branch-modal[data-kpi-tone="green"] .kpi-branch-modal-total strong,
+.kpi-branch-modal[data-kpi-tone="green"] .kpi-branch-row-bar > i{
+    color: #22C55E;
+}
+
+.kpi-branch-modal[data-kpi-tone="purple"] .kpi-branch-modal-heading small,
+.kpi-branch-modal[data-kpi-tone="purple"] .kpi-branch-modal-total strong,
+.kpi-branch-modal[data-kpi-tone="purple"] .kpi-branch-row-bar > i{
+    color: #A78BFA;
+}
+
+.kpi-branch-modal[data-kpi-tone="orange"] .kpi-branch-modal-heading small,
+.kpi-branch-modal[data-kpi-tone="orange"] .kpi-branch-modal-total strong,
+.kpi-branch-modal[data-kpi-tone="orange"] .kpi-branch-row-bar > i{
+    color: #FB923C;
+}
+
+/* Clickable affordance on dashboard targets */
+#todayRevenue,
+.executive-item[data-kpi-metric],
+.kpi-card[data-kpi-metric],
+.payment-row[data-kpi-metric]{
+    cursor: pointer;
+}
+
+#todayRevenue{
+    transition: text-shadow 0.16s ease, color 0.16s ease;
+}
+
+#todayRevenue:hover{
+    text-shadow: 0 0 18px rgba(212, 175, 55, 0.35);
+}
+
+body.kpi-branch-modal-open{
+    overflow: hidden;
+}
+
+/* Tablet */
+@media (max-width: 900px){
+    .kpi-branch-modal-panel{
+        width: min(680px, 92vw);
+        max-width: 92vw;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px){
+    .kpi-branch-modal{
+        padding: 10px;
+        align-items: flex-end;
+    }
+
+    .kpi-branch-modal-panel{
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        max-height: 88vh;
+        border-radius: 16px 16px 12px 12px;
+        padding: 18px 16px 14px;
+    }
+
+    .kpi-branch-modal-heading h4{
+        font-size: 18px;
+    }
+
+    .kpi-branch-modal-heading small{
+        font-size: 13px;
+    }
+
+    .kpi-branch-modal-total{
+        padding: 12px 14px;
+    }
+
+    .kpi-branch-modal-total span{
+        font-size: 12px;
+    }
+
+    .kpi-branch-modal-total strong{
+        font-size: 20px;
+    }
+
+    .kpi-branch-row{
+        min-height: 58px;
+        padding: 11px 12px;
+        gap: 10px;
+    }
+
+    .kpi-branch-row-name,
+    .kpi-branch-row-value{
+        font-size: 14px;
+    }
+
+    .kpi-branch-row-chevron{
+        font-size: 16px;
+    }
+
+    .kpi-branch-row-bar{
+        height: 6px;
+    }
+}

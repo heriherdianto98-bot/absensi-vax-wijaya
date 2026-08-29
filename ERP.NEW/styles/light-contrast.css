@@ -1,0 +1,704 @@
+/*
+=========================================================
+ERP VAX WIJAYA — DARK PREMIUM CONTRAST LOCK
+Source of truth for readable dark surfaces.
+Load after component CSS, before/with ui-06.
+Visual only — no workflow / data changes.
+=========================================================
+*/
+
+:root{
+    --lc-bg:#0B0E12;
+    --lc-card:#11151B;
+    --lc-inset:#171C23;
+    --lc-elev:#1C222B;
+    --lc-text:#F8FAFC;
+    --lc-secondary:#E2E8F0;
+    --lc-muted:#CBD5E1;
+    --lc-border:#2A3340;
+    --lc-border-strong:#3A4556;
+    --lc-table-head:#0F1318;
+    --lc-gold:#F2C230;
+    --lc-gold-soft:#D4AF37;
+    --lc-charcoal:#11151B;
+    --lc-pos:#22C55E;
+    --lc-neg:#EF4444;
+    --lc-warn:#F59E0B;
+    --lc-neutral:#94A3B8;
+    --lc-money-gold:#F2C230;
+    --lc-blue:#38BDF8;
+    --lc-cyan:#22D3EE;
+}
+
+/* —— Page shell —— */
+html body,
+body .erp-wrapper,
+body .erp-content{
+    background:var(--lc-bg) !important;
+    color:var(--lc-text) !important;
+}
+
+/* —— Primary values —— */
+.erp-wrapper .kpi-value,
+.erp-wrapper .kpi-card strong,
+.erp-wrapper .dash-kpi-card strong,
+.erp-wrapper .executive-item strong,
+.erp-wrapper .executive-box strong,
+.erp-wrapper #todayRevenue,
+.erp-wrapper .amount,
+.erp-wrapper .branch,
+.erp-wrapper .card-title,
+.erp-wrapper .ranking-header,
+.erp-wrapper .activity-content strong,
+.erp-wrapper .payment-row,
+.erp-wrapper .payment-title h3,
+.erp-wrapper .setoran3-summary-card strong,
+.erp-wrapper .setoran3-active-cabang,
+.erp-wrapper .setoran3-ai-status,
+.erp-wrapper .setoran3-table td,
+.erp-wrapper .qris-reco-table td,
+.erp-wrapper .qris-reco-form-meta strong,
+.erp-wrapper .erp-table td{
+    color:var(--lc-text) !important;
+    opacity:1 !important;
+}
+
+/* —— Secondary labels —— */
+.erp-wrapper .kpi-label,
+.erp-wrapper .dash-kpi-card > span,
+.erp-wrapper .kpi-desc,
+.erp-wrapper .kpi-status:not(.positive):not(.negative):not(.warning),
+.erp-wrapper .summary-label,
+.erp-wrapper .summary-info,
+.erp-wrapper .executive-item span,
+.erp-wrapper .executive-box span,
+.erp-wrapper .activity-content p,
+.erp-wrapper .activity-time,
+.erp-wrapper .payment-title small,
+.erp-wrapper .card-title small,
+.erp-wrapper .setoran3-form-lead,
+.erp-wrapper .setoran3-all-hint,
+.erp-wrapper .setoran3-summary-card span,
+.erp-wrapper .dash-kpi-card small{
+    color:var(--lc-secondary) !important;
+    opacity:1 !important;
+}
+
+/* Trends — JANGAN cat hijau generik ke span:first-child (itu override .negative) */
+.erp-wrapper .positive,
+.erp-wrapper .kpi-status.positive,
+.erp-wrapper .summary-info .positive,
+.erp-wrapper .summary-info .exec-trend-badge.positive,
+.erp-wrapper .summary-info .exec-trend-sub.positive,
+.erp-wrapper .summary-info span:first-child.positive{
+    color:var(--lc-pos) !important;
+    font-weight:800 !important;
+}
+
+/* Negative trend = exact Logout red */
+.erp-wrapper .negative,
+.erp-wrapper .kpi-status.negative,
+.erp-wrapper .summary-info .negative,
+.erp-wrapper .summary-info .exec-trend-badge.negative,
+.erp-wrapper .summary-info .exec-trend-sub.negative,
+.erp-wrapper .summary-info span:first-child.negative{
+    color:#DC2626 !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .warning,
+.erp-wrapper .kpi-status.warning{
+    color:#FDE68A !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper #execCashout,
+.erp-wrapper .setoran3-summary-card.is-cashout strong{
+    color:#FCA5A5 !important;
+}
+
+.erp-wrapper .setoran3-summary-card.is-actual strong,
+.erp-wrapper .amount{
+    color:var(--lc-money-gold) !important;
+}
+
+.erp-wrapper .kpi-card .kpi-value{
+    color:var(--lc-text) !important;
+}
+
+/* —— Surfaces —— */
+.erp-wrapper .card,
+.erp-wrapper .kpi-card,
+.erp-wrapper .dash-kpi-card,
+.erp-wrapper .chart-card,
+.erp-wrapper .activity-card,
+.erp-wrapper .payment-card,
+.erp-wrapper .setoran-section-card,
+.erp-wrapper .toolbar-wrapper,
+.erp-wrapper .dash-setoran-band,
+.erp-wrapper .dash-status-segment,
+.erp-wrapper .dash-latest-card,
+.erp-wrapper .setoran3-sticky,
+.erp-wrapper .setoran3-form-card,
+.erp-wrapper .setoran3-ai,
+.erp-wrapper .qris-reco-card,
+.erp-wrapper .finance-hub-card,
+.erp-wrapper .finance-hub-item,
+.erp-wrapper .ranking-card{
+    background:var(--lc-card) !important;
+    border:1px solid var(--lc-border) !important;
+    box-shadow:0 8px 28px rgba(0,0,0,.35) !important;
+    color:var(--lc-text) !important;
+}
+
+.erp-wrapper .executive-item,
+.erp-wrapper .executive-box,
+.erp-wrapper .setoran3-summary-card,
+.erp-wrapper .setoran3-active-cabang,
+.erp-wrapper .qris-reco-note-box,
+.erp-wrapper .setoran3-perf-grid > *,
+.erp-wrapper .setoran3-perf-card{
+    background:var(--lc-inset) !important;
+    border:1px solid var(--lc-border) !important;
+    color:var(--lc-text) !important;
+}
+
+/* Semantic KPI accents */
+.erp-wrapper .kpi-card.gold,
+.erp-wrapper .dash-kpi-card:nth-child(1){ border-left:4px solid var(--lc-gold-soft) !important; }
+.erp-wrapper .kpi-card.emerald,
+.erp-wrapper .kpi-card.green,
+.erp-wrapper .dash-kpi-card:nth-child(3){ border-left:4px solid var(--lc-pos) !important; }
+.erp-wrapper .kpi-card.blue,
+.erp-wrapper .dash-kpi-card:nth-child(5){ border-left:4px solid var(--lc-blue) !important; }
+.erp-wrapper .kpi-card.orange,
+.erp-wrapper .dash-kpi-card:nth-child(4){ border-left:4px solid var(--lc-warn) !important; }
+.erp-wrapper .dash-kpi-card:nth-child(2){ border-left:4px solid #64748B !important; }
+.erp-wrapper .kpi-card.cyan{ border-left:4px solid var(--lc-cyan) !important; }
+.erp-wrapper .kpi-card.purple{ border-left:4px solid #A78BFA !important; }
+.erp-wrapper .kpi-card.yellow{ border-left:4px solid var(--lc-gold) !important; }
+
+.erp-wrapper .dash-status-segment{
+    background:var(--lc-inset) !important;
+}
+
+/* —— Forms —— */
+.erp-wrapper input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+.erp-wrapper select,
+.erp-wrapper textarea,
+.erp-wrapper .qris-reco-form input,
+.erp-wrapper .qris-reco-form select,
+.erp-wrapper .qris-reco-form textarea,
+.erp-wrapper .qris-reco-filters input,
+.erp-wrapper .qris-reco-filters select,
+.setoran-page input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+.setoran-page select,
+.setoran-page textarea,
+.setoran-page .setoran3-period-btn,
+.setoran-page .setoran3-today-btn,
+.setoran-page .setoran3-nav-btn{
+    background:var(--lc-elev) !important;
+    color:var(--lc-text) !important;
+    border:1px solid var(--lc-border-strong) !important;
+    caret-color:var(--lc-text);
+}
+
+.erp-wrapper input::placeholder,
+.erp-wrapper textarea::placeholder,
+.setoran-page input::placeholder,
+.setoran-page textarea::placeholder{
+    color:var(--lc-muted) !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper input:focus,
+.erp-wrapper select:focus,
+.erp-wrapper textarea:focus,
+.setoran-page input:focus,
+.setoran-page select:focus,
+.setoran-page textarea:focus{
+    outline:none !important;
+    border-color:var(--lc-gold) !important;
+    box-shadow:0 0 0 3px rgba(242,194,48,.28) !important;
+}
+
+/* —— Tables —— */
+.erp-wrapper .qris-reco-table thead th,
+.erp-wrapper .setoran3-table thead th,
+.erp-wrapper .erp-table thead th,
+.erp-wrapper .dash-latest-card thead th{
+    background:var(--lc-table-head) !important;
+    color:var(--lc-gold) !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .qris-reco-table tbody td,
+.erp-wrapper .setoran3-table tbody td,
+.erp-wrapper .erp-table tbody td,
+.erp-wrapper .dash-latest-card tbody td{
+    background:var(--lc-card) !important;
+    color:var(--lc-text) !important;
+    border-bottom:1px solid var(--lc-border) !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .qris-reco-table tbody tr:nth-child(even) td,
+.erp-wrapper .setoran3-table tbody tr:nth-child(even) td{
+    background:var(--lc-inset) !important;
+}
+
+.erp-wrapper .qris-reco-table tbody tr:hover td,
+.erp-wrapper .setoran3-table tbody tr:hover td,
+.erp-wrapper .dash-latest-card tbody tr:hover td{
+    background:var(--lc-elev) !important;
+}
+
+.erp-wrapper .setoran3-summary-card small,
+.setoran-page .setoran3-summary-card small,
+.setoran-page .setoran3-perf-grid small,
+.erp-wrapper .qris-reco-note{
+    color:var(--lc-secondary) !important;
+    font-weight:600 !important;
+    opacity:1 !important;
+}
+
+/* Toolbar — dark premium lock (filter + sync status) */
+.erp-wrapper .toolbar-wrapper,
+.erp-wrapper .dash-toolbar-host .toolbar-wrapper{
+    background:linear-gradient(180deg,#171C23 0%,#11151B 100%) !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #D4AF37 !important;
+    color:#F8FAFC !important;
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+}
+.erp-wrapper .toolbar-field-label{ color:#F2C230 !important; opacity:1 !important; }
+.erp-wrapper .toolbar-left select{
+    background:#1C222B !important;
+    color:#F8FAFC !important;
+    border:1px solid rgba(212,175,55,.45) !important;
+}
+.erp-wrapper .toolbar-meta{
+    background:#0F1318 !important;
+    border:1px solid #2B3440 !important;
+    color:#E2E8F0 !important;
+}
+.erp-wrapper .toolbar-last-sync{ color:#94A3B8 !important; }
+.erp-wrapper .toolbar-last-sync strong,
+.erp-wrapper #toolbarLastSync{ color:#F8FAFC !important; opacity:1 !important; }
+.erp-wrapper #btnRefresh{
+    background:linear-gradient(180deg,#FFD34D,#D4AF37) !important;
+    color:#111827 !important;
+    font-weight:800 !important;
+}
+.erp-wrapper #btnSync{
+    background:#1C222B !important;
+    color:#F8FAFC !important;
+    border:1px solid rgba(212,175,55,.45) !important;
+}
+
+.erp-wrapper .qris-reco-filters label,
+.erp-wrapper .qris-reco-manual-hint,
+.erp-wrapper .qris-reco-draft-hint{
+    color:var(--lc-secondary) !important;
+}
+.erp-wrapper .qris-reco-bri,
+.erp-wrapper .qris-reco-diff{ color:var(--lc-text) !important; }
+.erp-wrapper .qris-reco-diff.positive{ color:#FDE68A !important; }
+.erp-wrapper .qris-reco-diff.negative{ color:#FCA5A5 !important; }
+.erp-wrapper .qris-reco-diff.zero{ color:#86EFAC !important; }
+
+/* Buttons */
+.erp-wrapper .qris-reco-btn-primary,
+.erp-wrapper .setoran3-proof-btn-primary{
+    background:linear-gradient(180deg,#FFD34D,#D4AF37) !important;
+    color:#111827 !important;
+    border:1px solid #F6D76B !important;
+    font-weight:800 !important;
+}
+.erp-wrapper .qris-reco-btn-ghost,
+.erp-wrapper .setoran3-proof-btn-ghost{
+    background:var(--lc-elev) !important;
+    color:var(--lc-text) !important;
+    border:1px solid var(--lc-border-strong) !important;
+}
+.erp-wrapper .qris-reco-btn-action{
+    background:rgba(56,189,248,.16) !important;
+    color:#E0F2FE !important;
+    border:1px solid rgba(56,189,248,.45) !important;
+}
+.erp-wrapper .setoran3-proof-btn-danger{
+    background:rgba(239,68,68,.18) !important;
+    color:#FECACA !important;
+    border:1px solid rgba(239,68,68,.5) !important;
+}
+
+/* Modals —— full dark */
+.kpi-branch-modal-panel{
+    background:linear-gradient(180deg,#171C23 0%,#11151B 100%) !important;
+    color:var(--lc-text) !important;
+    border:1px solid var(--lc-border-strong) !important;
+}
+.kpi-branch-modal-heading h4{ color:#FFFFFF !important; }
+.kpi-branch-modal-heading small{ color:var(--lc-secondary) !important; }
+.kpi-branch-modal-close{
+    background:var(--lc-elev) !important;
+    color:#FFFFFF !important;
+    border:1px solid var(--lc-border) !important;
+    border-radius:8px;
+}
+.kpi-branch-modal-total{
+    background:#0F1318 !important;
+    border:1px solid var(--lc-border) !important;
+}
+.kpi-branch-modal-total span{ color:var(--lc-secondary) !important; }
+.kpi-branch-modal-total strong{ color:#FFFFFF !important; }
+.kpi-branch-row{
+    background:rgba(255,255,255,.03) !important;
+}
+.kpi-branch-row-name{ color:#F3F4F6 !important; }
+.kpi-branch-row-value{ color:#FFFFFF !important; }
+
+.qris-reco-modal-panel{
+    background:linear-gradient(180deg,#171C23 0%,#11151B 100%) !important;
+    color:var(--lc-text) !important;
+    border:1px solid var(--lc-border-strong) !important;
+}
+.qris-reco-modal-header{
+    background:#0F1318 !important;
+    border-bottom:1px solid var(--lc-border) !important;
+}
+.qris-reco-modal-header h4{ color:#FFFFFF !important; }
+.qris-reco-modal-header small{ color:var(--lc-secondary) !important; }
+.qris-reco-modal-close{
+    background:var(--lc-elev) !important;
+    color:#FFFFFF !important;
+    border:1px solid var(--lc-border) !important;
+}
+.qris-reco-form-meta{
+    background:#0F1318 !important;
+    border:1px solid var(--lc-border) !important;
+    border-radius:12px !important;
+}
+.qris-reco-form-meta span{
+    color:var(--lc-secondary) !important;
+    font-weight:600 !important;
+    opacity:1 !important;
+}
+.qris-reco-form-meta strong{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+/* —— Dark section headers —— */
+.erp-wrapper .erp-dark-head,
+.erp-wrapper .erp-content-head,
+.erp-wrapper .erp-section-head,
+.erp-wrapper .setoran3-sticky-top,
+.erp-wrapper .setoran3-summary-head,
+.erp-wrapper .setoran3-progress-head,
+.erp-wrapper #sectionSetoran3Table.setoran3-section-c .qris-reco-header,
+.erp-wrapper .setoran3-qris-divider,
+.erp-wrapper #sectionApproval .qris-reco-header,
+.erp-wrapper .setoran3-qris-surface-title,
+.erp-wrapper #sectionProgress > h3,
+.erp-wrapper #sectionSelisih > h3{
+    background:linear-gradient(180deg,#171C23 0%,#11151B 100%) !important;
+    border:1px solid var(--lc-border) !important;
+    border-left:4px solid var(--lc-gold) !important;
+    border-radius:12px !important;
+    padding:14px 16px !important;
+    margin-bottom:14px !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.35) !important;
+    color:#FFFFFF !important;
+}
+
+.erp-wrapper .erp-section-badge,
+.erp-wrapper .setoran3-eyebrow{
+    color:var(--lc-gold) !important;
+    background:transparent !important;
+    border:none !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .erp-content-head .erp-page-title,
+.erp-wrapper .erp-section-head .erp-section-title,
+.erp-wrapper .setoran3-sticky-top h2,
+.erp-wrapper .setoran3-summary-head h3,
+.erp-wrapper .setoran3-progress-head h3,
+.erp-wrapper #sectionSetoran3Table.setoran3-section-c .qris-reco-header h3,
+.erp-wrapper .setoran3-qris-divider h3,
+.erp-wrapper .erp-section-title,
+.erp-wrapper .finance-hub-card > h2{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .erp-content-head .erp-page-sub,
+.erp-wrapper .erp-section-head .erp-caption,
+.erp-wrapper .setoran3-sticky-sub,
+.erp-wrapper .setoran3-summary-head p,
+.erp-wrapper .setoran3-qris-divider p,
+.erp-wrapper #setoran3DetailHint,
+.erp-wrapper .qris-reco-header small{
+    color:var(--lc-secondary) !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .setoran3-summary-head strong,
+.erp-wrapper .setoran3-progress-head strong{
+    color:#FFFFFF !important;
+}
+
+.erp-wrapper .setoran3-sticky{
+    background:var(--lc-card) !important;
+}
+
+.erp-wrapper .dash-latest-head .btn-lihat{
+    background:linear-gradient(180deg,#FFD34D,#D4AF37) !important;
+    color:#111827 !important;
+    border:1px solid #F6D76B !important;
+    font-weight:800 !important;
+}
+
+/* Mini headers */
+.erp-wrapper .setoran3-form-card > h4,
+.erp-wrapper .setoran3-proof-title,
+.erp-wrapper .setoran3-ai > h4{
+    display:block !important;
+    background:#0F1318 !important;
+    color:#FFFFFF !important;
+    border-left:3px solid var(--lc-gold) !important;
+    border-radius:8px !important;
+    padding:10px 12px !important;
+    margin:0 0 12px !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .setoran3-form-card,
+.erp-wrapper .setoran3-proof-panel,
+.erp-wrapper .setoran3-ai,
+.erp-wrapper .setoran3-proof-card,
+.erp-wrapper .setoran3-proof-view{
+    background:var(--lc-card) !important;
+    color:var(--lc-text) !important;
+    border-color:var(--lc-border) !important;
+}
+
+/* Warning / proof alert — dark semantic */
+.erp-wrapper .setoran3-cashout-warn,
+.erp-wrapper #setoran3ActionBanner,
+.erp-wrapper .setoran3-proof-owner-note{
+    background:rgba(245,158,11,.16) !important;
+    color:#FDE68A !important;
+    border:1px solid rgba(245,158,11,.5) !important;
+    border-left:4px solid var(--lc-warn) !important;
+    font-weight:700 !important;
+}
+.erp-wrapper .setoran3-proof-alert{
+    background:rgba(239,68,68,.18) !important;
+    color:#FECACA !important;
+    border:1px solid rgba(239,68,68,.55) !important;
+    border-left:4px solid var(--lc-neg) !important;
+    font-weight:800 !important;
+}
+.erp-wrapper .setoran3-proof-owner-note strong{
+    color:#FFF7ED !important;
+}
+
+/* Status badges semantic */
+.erp-wrapper .qris-reco-badge.sesuai{
+    background:#16A34A !important;
+    color:#FFFFFF !important;
+}
+.erp-wrapper .qris-reco-badge.wait-owner{
+    background:#0284C7 !important;
+    color:#FFFFFF !important;
+}
+.erp-wrapper .qris-reco-badge.bermasalah{
+    background:#DC2626 !important;
+    color:#FFFFFF !important;
+}
+.erp-wrapper .qris-reco-badge.belum-ada-data,
+.erp-wrapper .qris-reco-badge.belum-dicek{
+    background:#475569 !important;
+    color:#FFFFFF !important;
+}
+
+/* Executive hero */
+.erp-wrapper .executive-summary #todayRevenue,
+.erp-wrapper #todayRevenue{
+    color:#FFFFFF !important;
+}
+.erp-wrapper .executive-left h1{
+    color:var(--lc-gold) !important;
+}
+.erp-wrapper .summary-progress{
+    background:#2A3340 !important;
+}
+
+/* Hover */
+.erp-wrapper .kpi-card:hover,
+.erp-wrapper .dash-kpi-card:hover,
+.erp-wrapper .setoran3-summary-card:hover,
+.erp-wrapper .finance-hub-item:hover{
+    transform:translateY(-2px);
+    border-color:rgba(242,194,48,.45) !important;
+    box-shadow:0 0 0 1px rgba(242,194,48,.2), 0 12px 28px rgba(0,0,0,.4) !important;
+}
+
+/* Bottom nav */
+.erp-bottom-nav{
+    background:#101418 !important;
+    border-top:1px solid var(--lc-border) !important;
+}
+.erp-bottom-nav a{ color:var(--lc-muted) !important; }
+.erp-bottom-nav a.is-active{ color:var(--lc-gold) !important; }
+
+/* Preserve logout red */
+.top-header .btn-owner-logout,
+.sidebar .logout-btn{
+    background:#DC2626 !important;
+    color:#FFFFFF !important;
+}
+
+/* =========================================================
+   DASHBOARD CONTRAST LOCK — small text under cards
+   ========================================================= */
+.erp-wrapper .kpi-label,
+.erp-wrapper .kpi-status,
+.erp-wrapper .kpi-desc,
+.erp-wrapper .kpi-card small,
+.erp-wrapper .dash-kpi-card > span,
+.erp-wrapper .dash-kpi-card small,
+.erp-wrapper .summary-label,
+.erp-wrapper .summary-info,
+.erp-wrapper .summary-info span,
+.erp-wrapper .executive-box span,
+.erp-wrapper .executive-item span,
+.erp-wrapper .dash-segment-legend span,
+.erp-wrapper .card-title small,
+.erp-wrapper .chart-card small,
+.erp-wrapper .chart-card p,
+.erp-wrapper .chart-card .empty,
+.erp-wrapper .ranking-card small,
+.erp-wrapper .ranking-card p,
+.erp-wrapper .ranking-meta,
+.erp-wrapper .ranking-sub,
+.erp-wrapper .activity-content p,
+.erp-wrapper .activity-time,
+.erp-wrapper .activity-card small,
+.erp-wrapper .activity-card .empty,
+.erp-wrapper .ai-card small,
+.erp-wrapper .ai-card p,
+.erp-wrapper .ai-insight small,
+.erp-wrapper .ai-insight p,
+.erp-wrapper .ai-sub,
+.erp-wrapper .ai-meta,
+.erp-wrapper .payment-title small,
+.erp-wrapper .empty-state,
+.erp-wrapper .empty,
+.erp-wrapper td.muted,
+.erp-wrapper .muted,
+.erp-wrapper .helper,
+.erp-wrapper .caption,
+.erp-wrapper .erp-caption{
+    color:#E2E8F0 !important;
+    opacity:1 !important;
+    font-weight:700 !important;
+}
+
+.erp-wrapper .kpi-value,
+.erp-wrapper .dash-kpi-card strong,
+.erp-wrapper .executive-box strong,
+.erp-wrapper .executive-item strong,
+.erp-wrapper #todayRevenue{
+    color:#FFFFFF !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .positive,
+.erp-wrapper .kpi-status.positive,
+.erp-wrapper .summary-info .exec-trend-badge.positive,
+.erp-wrapper .summary-info .exec-trend-sub.positive,
+.erp-wrapper .summary-info span:first-child.positive,
+.erp-wrapper .executive-box small{
+    color:#4ADE80 !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .negative,
+.erp-wrapper .kpi-status.negative,
+.erp-wrapper .summary-info .negative,
+.erp-wrapper .summary-info .exec-trend-badge.negative,
+.erp-wrapper .summary-info .exec-trend-sub.negative,
+.erp-wrapper .summary-info span:first-child.negative{
+    color:#DC2626 !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .warning,
+.erp-wrapper .kpi-status.warning{
+    color:#FBBF24 !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .kpi-status.neutral,
+.erp-wrapper .summary-info .exec-trend-badge.neutral,
+.erp-wrapper .summary-info .exec-trend-sub.neutral,
+.erp-wrapper .summary-info span:first-child.neutral{
+    color:#94A3B8 !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+/* Desktop density cascade — sizing only, beats later !important padding/type.
+   Colors / borders / identity stay LOCK. Mobile ≤900 untouched. */
+@media (min-width:901px){
+    .erp-wrapper .erp-content-head,
+    .erp-wrapper .erp-section-head,
+    .erp-wrapper .setoran3-sticky-top,
+    .erp-wrapper .setoran3-summary-head,
+    .erp-wrapper .setoran3-progress-head,
+    .erp-wrapper #sectionSetoran3Table.setoran3-section-c .qris-reco-header,
+    .erp-wrapper .setoran3-qris-divider,
+    .erp-wrapper #sectionApproval .qris-reco-header,
+    .erp-wrapper #sectionProgress > h3,
+    .erp-wrapper #sectionSelisih > h3,
+    .erp-wrapper .finance-hub-card > h2,
+    .erp-wrapper .executive-summary .summary-label{
+        padding:0 !important;
+        background:transparent !important;
+        border:0 !important;
+    }
+
+    html body .erp-wrapper .kpi-card .kpi-value,
+    html body .erp-wrapper .kpi-value{
+        margin-top:6px !important;
+        font-size:clamp(18px, 1.3vw, 22px) !important;
+    }
+
+    html body .erp-wrapper .kpi-card .kpi-status.positive,
+    html body .erp-wrapper .kpi-card .kpi-status.negative,
+    html body .erp-wrapper .kpi-card .kpi-status.neutral{
+        min-width:4.6rem !important;
+        min-height:1.7rem !important;
+        font-size:clamp(14px, 1.05vw, 16px) !important;
+        padding:3px 8px !important;
+    }
+
+    html body .erp-wrapper #executive-summary #todayRevenue,
+    html body .erp-wrapper .executive-summary #todayRevenue,
+    html body .erp-wrapper #executive-summary .executive-left h1{
+        font-size:clamp(34px, 3.05vw, 46px) !important;
+        margin-top:2px !important;
+        margin-bottom:0 !important;
+    }
+}

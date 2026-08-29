@@ -1,0 +1,845 @@
+/*
+  OWNER DASHBOARD — single-view density lock
+  Loaded last. Layout / spacing only. No JS / binding changes.
+*/
+
+html body.page-erp-dashboard{
+    --erp-top-header-h:42px;
+}
+html body.page-erp-dashboard .erp-wrapper{
+    padding-top:42px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .erp-content{
+    overflow-x:hidden;
+    padding-top:2px !important;
+    padding-bottom:8px !important;
+}
+
+/* —— TOPBAR —— */
+html body.page-erp-dashboard .erp-wrapper .top-header,
+html body.page-erp-dashboard .erp-wrapper .erp-header,
+html body.page-erp-dashboard .od-command-bar{
+    height:42px !important;
+    min-height:42px !important;
+    max-height:42px !important;
+    padding:0 12px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .top-header .header-chip,
+html body.page-erp-dashboard .od-chip{
+    min-height:28px !important;
+    padding:0 12px !important;
+    gap:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper .top-header .header-chip label{
+    font-size:8px !important;
+    line-height:1.1 !important;
+}
+html body.page-erp-dashboard .erp-wrapper .top-header .header-chip strong,
+html body.page-erp-dashboard .erp-wrapper .top-header #erpHeaderCabang,
+html body.page-erp-dashboard .erp-wrapper .top-header #erpHeaderPeriode{
+    font-size:12px !important;
+    line-height:1.15 !important;
+}
+html body.page-erp-dashboard .header-minutes-status{
+    min-height:28px !important;
+    padding:0 6px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .top-header .header-icon-btn{
+    width:28px !important;
+    height:28px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .top-header .btn-owner-logout{
+    height:28px !important;
+    min-height:28px !important;
+    padding:0 10px !important;
+}
+
+/* —— FILTER —— */
+html body.page-erp-dashboard .dash-toolbar-host{
+    margin:0 0 2px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .toolbar-wrapper,
+html body.page-erp-dashboard .od-filterbar{
+    height:40px !important;
+    min-height:40px !important;
+    max-height:40px !important;
+    padding:0 2px 4px !important;
+    gap:8px 10px !important;
+    align-items:flex-end !important;
+}
+html body.page-erp-dashboard .toolbar-field{
+    gap:1px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .toolbar-field-label{
+    font-size:8px !important;
+    line-height:1.1 !important;
+}
+html body.page-erp-dashboard .erp-wrapper .erp-freshness{
+    height:auto !important;
+    max-height:36px !important;
+    overflow:visible !important;
+}
+html body.page-erp-dashboard .erp-wrapper .toolbar-left select,
+html body.page-erp-dashboard .erp-wrapper #btnRefresh,
+html body.page-erp-dashboard .erp-wrapper #btnSync,
+html body.page-erp-dashboard .od-btn-primary,
+html body.page-erp-dashboard .od-btn-secondary{
+    height:28px !important;
+    min-height:28px !important;
+}
+
+/* —— HERO: 3D beveled panel · value on top · 1-line footer —— */
+html body.page-erp-dashboard .erp-wrapper #executive-summary{
+    margin:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-summary{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:6px !important;
+    background:none !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 2px !important;
+    margin:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-left,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero{
+    --hero-accent: rgba(242,194,48,.22);
+    --hero-accent-soft: rgba(242,194,48,.10);
+    --hero-beam: rgba(242,194,48,.20);
+    --hero-wash: rgba(242,194,48,.07);
+    position:relative !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) !important;
+    grid-template-rows:auto auto !important;
+    align-items:center !important;
+    column-gap:12px !important;
+    row-gap:2px !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-height:84px !important;
+    margin:0 auto !important;
+    padding:8px 16px 8px !important;
+    overflow:hidden !important;
+    text-align:center !important;
+    border-radius:16px !important;
+    border:1px solid rgba(255,255,255,.08) !important;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.1) 0%, rgba(255,255,255,.02) 20%, transparent 46%),
+        radial-gradient(88% 70% at 50% 12%, var(--hero-accent-soft) 0%, transparent 58%),
+        radial-gradient(70% 55% at 6% 100%, var(--hero-wash) 0%, transparent 52%),
+        radial-gradient(70% 55% at 94% 100%, var(--hero-accent-soft) 0%, transparent 54%),
+        linear-gradient(180deg, #181E2A 0%, #10151C 56%, #0B0F15 100%) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.16),
+        inset 0 -3px 14px rgba(0,0,0,.44),
+        inset 0 0 42px rgba(0,0,0,.16),
+        0 1px 0 rgba(255,255,255,.04),
+        0 12px 26px rgba(0,0,0,.3) !important;
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero:has(.exec-trend-badge.positive),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-left:has(.exec-trend-badge.positive){
+    --hero-accent: rgba(74,222,128,.28);
+    --hero-accent-soft: rgba(74,222,128,.13);
+    --hero-beam: rgba(74,222,128,.26);
+    --hero-wash: rgba(242,194,48,.06);
+    border-color: rgba(74,222,128,.22) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero:has(.exec-trend-badge.negative),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-left:has(.exec-trend-badge.negative){
+    --hero-accent: rgba(239,68,68,.28);
+    --hero-accent-soft: rgba(239,68,68,.13);
+    --hero-beam: rgba(239,68,68,.24);
+    --hero-wash: rgba(242,194,48,.05);
+    border-color: rgba(239,68,68,.22) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero::before,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero::after{
+    content:"" !important;
+    grid-column:1 / -1 !important;
+    grid-row:1 !important;
+    justify-self:stretch !important;
+    align-self:center !important;
+    pointer-events:none !important;
+    z-index:0 !important;
+    border:0 !important;
+    border-radius:0 !important;
+    margin:0 !important;
+    width:auto !important;
+    filter:none !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero::before{
+    height:52px !important;
+    background:linear-gradient(90deg, transparent 4%, var(--hero-beam) 50%, transparent 96%) !important;
+    opacity:.85 !important;
+    filter:blur(14px) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero::after{
+    height:64px !important;
+    background:radial-gradient(ellipse 48% 90% at 50% 50%, var(--hero-accent) 0%, var(--hero-accent-soft) 42%, transparent 74%) !important;
+    filter:blur(6px) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero-metric,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .summary-info{
+    display:contents !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary #todayRevenue,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-left h1{
+    grid-column:1 / -1 !important;
+    grid-row:1 !important;
+    z-index:1 !important;
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    margin:0 auto !important;
+    padding:2px 0 4px !important;
+    text-align:center !important;
+    font-size:clamp(42px, 4.6vw, 60px) !important;
+    line-height:1 !important;
+    letter-spacing:-.035em !important;
+    text-shadow:0 1px 0 rgba(0,0,0,.45), 0 0 26px var(--hero-accent) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .summary-label{
+    grid-column:1 !important;
+    grid-row:2 !important;
+    z-index:1 !important;
+    justify-self:start !important;
+    align-self:center !important;
+    display:block !important;
+    width:auto !important;
+    max-width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    text-align:left !important;
+    font-size:10px !important;
+    letter-spacing:.14em !important;
+    color:#8B939E !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .summary-info .exec-trend-badge,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .summary-info span:first-child:not(.exec-trend-sub){
+    grid-column:2 !important;
+    grid-row:2 !important;
+    z-index:1 !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    justify-self:center !important;
+    align-self:center !important;
+    width:auto !important;
+    margin:0 !important;
+    padding:2px 9px !important;
+    text-align:center !important;
+    font-size:12px !important;
+    white-space:nowrap !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .summary-info .exec-trend-sub{
+    grid-column:3 !important;
+    grid-row:2 !important;
+    z-index:1 !important;
+    justify-self:end !important;
+    align-self:center !important;
+    display:block !important;
+    width:auto !important;
+    max-width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    text-align:right !important;
+    font-size:11px !important;
+    line-height:1.2 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    background:transparent !important;
+    border:0 !important;
+}
+
+/* —— AI C1 strip —— */
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-ai-panel,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-strip{
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    gap:8px 12px !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-height:0 !important;
+    height:auto !important;
+    padding:5px 12px !important;
+    border-radius:14px !important;
+    box-shadow:0 6px 14px rgba(0,0,0,.2) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-head{
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    gap:6px !important;
+    max-width:none !important;
+    flex:0 0 auto !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-status{
+    padding:2px 7px !important;
+    font-size:9px !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-summary{
+    display:block !important;
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    margin:0 !important;
+    font-size:12px !important;
+    line-height:1.2 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    -webkit-line-clamp:unset !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-section-label{
+    display:none !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-actions-block{
+    flex:0 1 200px !important;
+    min-width:0 !important;
+    padding-left:10px !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-primary-action{
+    font-size:11px !important;
+    line-height:1.2 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-detail-btn{
+    flex:0 0 auto !important;
+    height:26px !important;
+    min-height:26px !important;
+    padding:0 10px !important;
+    font-size:11px !important;
+    white-space:nowrap !important;
+}
+
+/* —— SUMMARY KPI: one short row —— */
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-stats{
+    display:grid !important;
+    grid-template-columns:repeat(6, minmax(0, 1fr)) !important;
+    gap:6px !important;
+    margin:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item{
+    padding:5px 8px 4px !important;
+    min-height:0 !important;
+    border-radius:12px !important;
+    background:#141A22 !important;
+    border:1px solid rgba(255,255,255,.08) !important;
+    box-shadow:none !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item::before{ display:none !important; }
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item span{
+    font-size:9px !important;
+    margin-bottom:0 !important;
+    line-height:1.2 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item strong{
+    font-size:14px !important;
+    margin-top:1px !important;
+    line-height:1.2 !important;
+    text-shadow:none !important;
+}
+
+/* —— KPI OPERASIONAL: compact dense cards —— */
+html body.page-erp-dashboard .erp-wrapper #kpi-section{
+    margin:2px 0 4px !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops{
+    gap:3px !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-kicker{
+    padding:0 !important;
+    font-size:9px !important;
+    letter-spacing:.12em !important;
+    line-height:1.15 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-stack{ gap:5px !important; }
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-row,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-row--primary,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-row--volume,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-grid{
+    display:grid !important;
+    grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
+    gap:5px !important;
+    align-items:stretch !important;
+    margin:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card.gold,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card.cyan,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-row--volume .kpi-card,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive),
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative),
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.neutral){
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:flex-start !important;
+    padding:4px 8px 5px !important;
+    min-height:0 !important;
+    height:auto !important;
+    border-radius:12px !important;
+    box-shadow:0 4px 12px rgba(0,0,0,.16) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card::before{ display:none !important; }
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-icon,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-hint,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive) .kpi-icon,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative) .kpi-icon,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.neutral) .kpi-icon{
+    display:none !important;
+    width:0 !important;
+    height:0 !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-top,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive) .kpi-top,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative) .kpi-top,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.neutral) .kpi-top{
+    min-height:0 !important;
+    height:auto !important;
+    padding-right:58px !important;
+    margin:0 !important;
+    gap:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-label{ font-size:9px !important; line-height:1.15 !important; }
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card .kpi-value,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-value,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-row--volume .kpi-value{
+    margin-top:1px !important;
+    margin-bottom:0 !important;
+    font-size:15px !important;
+    line-height:1.12 !important;
+    text-shadow:none !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-bottom,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive) .kpi-bottom,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative) .kpi-bottom,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.neutral) .kpi-bottom,
+html body.page-erp-dashboard .erp-wrapper #kpi-section #kpiBarberCard .kpi-bottom{
+    margin-top:2px !important;
+    padding-top:0 !important;
+    min-height:0 !important;
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    gap:0 8px !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section #kpiBarberSecondary,
+html body.page-erp-dashboard .erp-wrapper #kpi-section #kpiBarberTop,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-desc,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive) .kpi-desc,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative) .kpi-desc,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.neutral) .kpi-desc{
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    max-width:100%;
+    font-size:10px !important;
+    line-height:1.15 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-status:not(.positive):not(.negative):not(.neutral){
+    font-size:10px !important;
+    line-height:1.15 !important;
+    min-height:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .target-progress{
+    height:2px !important;
+    margin-top:3px !important;
+    margin-bottom:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card--target .kpi-bottom{
+    margin-top:2px !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card .kpi-status.positive,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card .kpi-status.negative,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card .kpi-status.neutral,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive) .kpi-status.positive,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative) .kpi-status.negative,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.neutral) .kpi-status.neutral{
+    top:3px !important;
+    right:6px !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    padding:1px 5px !important;
+    font-size:9px !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:hover{
+    transform:none !important;
+}
+
+/* —— KPI integrated 3D surface (no objects / orbs) —— */
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card.gold,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card.cyan,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive),
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative),
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.neutral){
+    position:relative !important;
+    overflow:hidden !important;
+    isolation:isolate;
+    border:1px solid rgba(255,255,255,.08) !important;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.014) 26%, transparent 52%),
+        radial-gradient(130% 90% at 100% 0%, rgba(255,255,255,.04) 0%, transparent 52%),
+        linear-gradient(180deg, #181E28 0%, #11161D 100%) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        inset 1px 0 0 rgba(255,255,255,.04),
+        inset 0 -2px 10px rgba(0,0,0,.38),
+        inset 0 0 22px rgba(0,0,0,.12),
+        0 4px 12px rgba(0,0,0,.18) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item::before,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card::before,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card::after{
+    content:"" !important;
+    position:absolute !important;
+    inset:0 !important;
+    top:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+    width:auto !important;
+    height:auto !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:inherit !important;
+    transform:none !important;
+    clip-path:none !important;
+    pointer-events:none !important;
+    z-index:0 !important;
+    display:block !important;
+    box-shadow:none !important;
+    filter:none !important;
+    opacity:1 !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item::before,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card::before{
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.08) 0%, transparent 34%),
+        linear-gradient(118deg, transparent 0 40%, rgba(255,255,255,.04) 48%, transparent 56%) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card::after{
+    background:radial-gradient(80% 60% at 90% 8%, rgba(255,255,255,.05) 0%, transparent 62%) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item > *,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card > *{
+    position:relative;
+    z-index:1;
+}
+
+/* Gold surface — NETT / CASH / TARGET / GROSS */
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execNett),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execNett):hover,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCash),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCash):hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card--target,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="grossService"]{
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.075) 0%, rgba(255,255,255,.014) 24%, transparent 50%),
+        radial-gradient(120% 90% at 100% 0%, rgba(242,194,48,.12) 0%, transparent 50%),
+        linear-gradient(180deg, #1A2010 0%, #12171D 100%) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execNett)::after,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCash)::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card--target::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="grossService"]::after{
+    background:radial-gradient(80% 60% at 90% 8%, rgba(242,194,48,.13) 0%, transparent 62%) !important;
+}
+
+/* Gold-dark blend — SERVICE / AVG TICKET / PRODUK */
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execService),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execService):hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="avgTicket"],
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="product"]{
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.012) 26%, transparent 52%),
+        radial-gradient(120% 90% at 100% 0%, rgba(201,162,39,.1) 0%, transparent 52%),
+        linear-gradient(180deg, #171910 0%, #12161C 100%) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execService)::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="avgTicket"]::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="product"]::after{
+    background:radial-gradient(80% 60% at 90% 8%, rgba(201,162,39,.11) 0%, transparent 62%) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execService)::before,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="avgTicket"]::before,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="product"]::before{
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.07) 0%, transparent 34%),
+        linear-gradient(118deg, transparent 0 38%, rgba(242,194,48,.07) 48%, transparent 58%) !important;
+}
+
+/* Cyan surface */
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCustomer),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCustomer):hover,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execQris),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execQris):hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section #kpiBarberCard,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card--barber{
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.012) 24%, transparent 50%),
+        radial-gradient(120% 90% at 100% 0%, rgba(34,211,238,.1) 0%, transparent 50%),
+        linear-gradient(180deg, #141C24 0%, #11161D 100%) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCustomer)::after,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execQris)::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section #kpiBarberCard::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card--barber::after{
+    background:radial-gradient(80% 60% at 90% 8%, rgba(34,211,238,.12) 0%, transparent 62%) !important;
+}
+
+/* Cash Out — deep red surface */
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCashout),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCashout):hover{
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.06) 0%, transparent 42%),
+        radial-gradient(120% 90% at 100% 0%, rgba(239,68,68,.1) 0%, transparent 52%),
+        linear-gradient(180deg, #1A1416 0%, #121117 100%) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCashout)::after{
+    background:radial-gradient(80% 60% at 90% 8%, rgba(239,68,68,.1) 0%, transparent 62%) !important;
+}
+
+/* Neutral 3D — growth / transaksi / rating */
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="growth"],
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="transaction"],
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card--rating{
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.012) 26%, transparent 52%),
+        radial-gradient(120% 90% at 100% 0%, rgba(255,255,255,.04) 0%, transparent 50%),
+        linear-gradient(180deg, #171C25 0%, #11161D 100%) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="growth"]::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card[data-kpi-metric="transaction"]::after,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card--rating::after{
+    background:radial-gradient(80% 60% at 90% 8%, rgba(255,255,255,.05) 0%, transparent 62%) !important;
+}
+
+/* —— ANALYTICS: 72 / 28, starts in the same view —— */
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics{
+    display:grid !important;
+    grid-template-columns:minmax(0, 2.57fr) minmax(240px, 1fr) !important;
+    grid-template-rows:minmax(280px, 32vh) !important;
+    gap:12px !important;
+    align-items:stretch !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    margin:6px 0 10px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics > #chart-section,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics > .dash-analytics-left{
+    grid-column:1 !important;
+    grid-row:1 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    min-width:0 !important;
+    margin:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics > #ranking-section,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics > .dash-analytics-right{
+    grid-column:2 !important;
+    grid-row:1 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    min-width:0 !important;
+    margin:0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .chart-card,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .ranking-card,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics #chart-section > div,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics #ranking-section > section{
+    display:flex !important;
+    flex-direction:column !important;
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    height:100% !important;
+    margin:0 !important;
+    padding:10px 12px !important;
+    border-radius:14px !important;
+    background:#141A22 !important;
+    color:#F8FAFC !important;
+    border:1px solid rgba(255,255,255,.08) !important;
+    box-shadow:0 8px 18px rgba(0,0,0,.2) !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .card-title,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .ranking-card h2{
+    flex:0 0 auto;
+    margin:0 0 6px !important;
+    color:#E2E8F0 !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .card-title small{
+    color:#8B939E !important;
+    text-transform:none;
+    letter-spacing:0;
+    font-size:10px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .chart-body{
+    position:relative !important;
+    flex:1 1 auto !important;
+    min-height:220px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .chart-body canvas{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics #rankingList{
+    flex:1 1 auto !important;
+    min-height:0 !important;
+    overflow:auto !important;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:4px !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics #rankingList .ranking-item{
+    padding:4px 0 !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics #rankingList .ranking-item span{
+    color:#F2C230 !important;
+}
+
+html body.page-erp-dashboard .erp-wrapper #activity-section,
+html body.page-erp-dashboard .erp-wrapper #payment-section{
+    margin-top:10px;
+}
+
+@media (max-width:899px){
+    html body.page-erp-dashboard .erp-wrapper{
+        padding-top:var(--erp-top-header-h, 42px) !important;
+    }
+    html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-stats{
+        grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+    }
+    html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-row,
+    html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-row--primary,
+    html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-ops-row--volume,
+    html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-grid{
+        grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+    }
+    html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-ai-panel,
+    html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-strip{
+        flex-wrap:wrap !important;
+    }
+    html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics{
+        grid-template-columns:minmax(0,1fr) !important;
+        grid-template-rows:auto !important;
+    }
+    html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics > #chart-section,
+    html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics > #ranking-section,
+    html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics > .dash-analytics-left,
+    html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics > .dash-analytics-right{
+        grid-column:1 !important;
+        grid-row:auto !important;
+    }
+}
+
+/* —— FINAL POLISH: hover glow + ranking scrollbar + analytics surface —— */
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .chart-card,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .ranking-card,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-ai-panel,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-strip{
+    --card-glow: rgba(242,194,48,.22);
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCustomer),
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execQris),
+html body.page-erp-dashboard .erp-wrapper #kpi-section #kpiBarberCard,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card--barber,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card.cyan{
+    --card-glow: rgba(34,211,238,.24);
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:has(#execCashout){
+    --card-glow: rgba(239,68,68,.24);
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive){
+    --card-glow: rgba(74,222,128,.24);
+}
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative){
+    --card-glow: rgba(239,68,68,.24);
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-item:hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card.gold:hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card.cyan:hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.positive):hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.negative):hover,
+html body.page-erp-dashboard .erp-wrapper #kpi-section .kpi-card:has(.kpi-status.neutral):hover,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .chart-card:hover,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .ranking-card:hover{
+    transform:translateY(-2px) !important;
+    border-color: color-mix(in srgb, var(--card-glow) 70%, rgba(255,255,255,.12)) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.16),
+        inset 0 -2px 10px rgba(0,0,0,.32),
+        0 0 0 1px color-mix(in srgb, var(--card-glow) 55%, transparent),
+        0 10px 22px rgba(0,0,0,.28),
+        0 0 22px color-mix(in srgb, var(--card-glow) 45%, transparent) !important;
+    z-index:2;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-hero:hover,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-left.exec-hero:hover{
+    transform:translateY(-1px) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.18),
+        inset 0 -3px 14px rgba(0,0,0,.42),
+        inset 0 0 42px rgba(0,0,0,.14),
+        0 0 0 1px color-mix(in srgb, var(--hero-accent) 40%, transparent),
+        0 14px 28px rgba(0,0,0,.32),
+        0 0 24px color-mix(in srgb, var(--hero-accent) 28%, transparent) !important;
+}
+html body.page-erp-dashboard .erp-wrapper #executive-summary .executive-ai-panel:hover,
+html body.page-erp-dashboard .erp-wrapper #executive-summary .exec-ai-strip:hover{
+    transform:translateY(-1px) !important;
+    border-color: rgba(201,168,76,.38) !important;
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.24),
+        0 0 16px rgba(201,168,76,.1) !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .chart-card,
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics .ranking-card{
+    overflow:hidden !important;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.06) 0%, transparent 38%),
+        radial-gradient(90% 60% at 100% 0%, rgba(242,194,48,.06) 0%, transparent 52%),
+        linear-gradient(180deg, #171D26 0%, #141A22 100%) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.1),
+        inset 0 -2px 10px rgba(0,0,0,.28),
+        0 8px 18px rgba(0,0,0,.2) !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics #rankingList{
+    scrollbar-width:none !important;
+    -ms-overflow-style:none !important;
+}
+html body.page-erp-dashboard .erp-wrapper .dashboard-main-analytics #rankingList::-webkit-scrollbar{
+    display:none !important;
+    width:0 !important;
+    height:0 !important;
+}

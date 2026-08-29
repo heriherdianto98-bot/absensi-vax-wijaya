@@ -1,0 +1,3390 @@
+﻿/*
+=========================================================
+UI-06 — VAX ERP DARK PREMIUM SYSTEM
+Load AFTER light-contrast.css
+Visual only — no workflow / data changes
+=========================================================
+*/
+
+:root{
+    --ui06-bg:#0B0E12;
+    --ui06-card:#11151B;
+    --ui06-inset:#171C23;
+    --ui06-dark:#11151B;
+    --ui06-dark-2:#171C23;
+    --ui06-mini:#1C222B;
+    --ui06-text:#F8FAFC;
+    --ui06-secondary:#E2E8F0;
+    --ui06-muted:#CBD5E1;
+    --ui06-on-dark:#F8FAFC;
+    --ui06-on-dark-soft:#CBD5E1;
+    --ui06-gold:#D4AF37;
+    --ui06-gold-bright:#F2C230;
+    --ui06-gold-hot:#FFD34D;
+    --ui06-gold-deep:#C89B22;
+    --ui06-border:#2A3340;
+    --ui06-border-strong:#3A4556;
+    --ui06-pos:#22C55E;
+    --ui06-neg:#EF4444;
+    --ui06-warn:#F59E0B;
+    --ui06-blue:#38BDF8;
+    --ui06-cyan:#22D3EE;
+
+    /* Interactions — cool/gold glow on dark */
+    --ui10-ring:rgba(242,194,48,.18);
+    --ui10-glow:rgba(242,194,48,.12);
+    --ui10-shadow:rgba(0,0,0,.45);
+    --ui10-ring-strong:rgba(242,194,48,.28);
+    --ui10-glow-strong:rgba(0,0,0,.55);
+    --ui10-ease:180ms ease;
+}
+
+/* —— Base page —— */
+html body,
+.erp-wrapper,
+.erp-content{
+    background:var(--ui06-bg) !important;
+    color:var(--ui06-text) !important;
+}
+
+/* —— Field labels: tegas, bukan gold pucat —— */
+.erp-wrapper .setoran3-period-label,
+.erp-wrapper label,
+.erp-wrapper .qris-reco-filters label,
+.setoran-page .setoran3-period-label,
+.setoran-page .setoran3-date-tap{
+    color:#CBD5E1 !important;
+    font-weight:700 !important;
+    font-size:12px !important;
+    letter-spacing:.04em !important;
+    text-transform:uppercase !important;
+}
+
+/* —— Dark section headers (all important sections) —— */
+.erp-wrapper .erp-content-head,
+.erp-wrapper .erp-section-head,
+.erp-wrapper .setoran3-sticky-top,
+.erp-wrapper .setoran3-summary-head,
+.erp-wrapper .setoran3-progress-head,
+.erp-wrapper #sectionSetoran3Table.setoran3-section-c .qris-reco-header,
+.erp-wrapper .setoran3-qris-divider,
+.erp-wrapper #sectionApproval .qris-reco-header,
+.erp-wrapper #sectionProgress > h3,
+.erp-wrapper #sectionSelisih > h3,
+.erp-wrapper .finance-hub-card > h2{
+    background:var(--ui06-dark) !important;
+    border:1px solid #2A2E34 !important;
+    border-left:4px solid var(--ui06-gold) !important;
+    border-radius:12px !important;
+    padding:14px 18px !important;
+    color:#fff !important;
+}
+
+.erp-wrapper #sectionProgress > h3,
+.erp-wrapper #sectionSelisih > h3{
+    display:block;
+    font-size:18px !important;
+    font-weight:800 !important;
+    margin:0 0 14px !important;
+}
+
+.erp-wrapper #sectionApproval .qris-reco-header{
+    display:flex !important;
+    justify-content:space-between !important;
+    align-items:flex-start !important;
+    gap:16px !important;
+    flex-wrap:wrap !important;
+    margin-bottom:12px !important;
+}
+
+.erp-wrapper #sectionApproval .qris-reco-header h3{
+    color:#FFFFFF !important;
+    font-size:20px !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper #sectionApproval .qris-reco-header small{
+    color:var(--ui06-on-dark) !important;
+    font-size:14px !important;
+    font-weight:600 !important;
+    line-height:1.45 !important;
+}
+
+.erp-wrapper #sectionApproval .setoran3-eyebrow{
+    color:var(--ui06-gold) !important;
+}
+
+/* Hint di bawah header (light surface) — kontras kuat */
+.erp-wrapper #qrisApproveHint{
+    background:rgba(242,194,48,.12) !important;
+    border:1px solid rgba(212,175,55,.45) !important;
+    border-radius:10px !important;
+    padding:12px 14px !important;
+    color:#6B5210 !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+}
+
+/* Dark header typography */
+.erp-wrapper .erp-section-badge,
+.erp-wrapper .setoran3-eyebrow,
+.erp-wrapper .finance-hub-card > h2{
+    color:var(--ui06-gold) !important;
+    font-weight:800 !important;
+    letter-spacing:.5px !important;
+    text-transform:uppercase !important;
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+.erp-wrapper .erp-page-title,
+.erp-wrapper .erp-section-title,
+.erp-wrapper .setoran3-sticky-top h2,
+.erp-wrapper .setoran3-summary-head h3,
+.erp-wrapper .setoran3-progress-head h3,
+.erp-wrapper #sectionSetoran3Table.setoran3-section-c .qris-reco-header h3,
+.erp-wrapper .setoran3-qris-divider h3{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .erp-page-sub,
+.erp-wrapper .erp-caption,
+.erp-wrapper .setoran3-sticky-sub,
+.erp-wrapper .setoran3-summary-head p,
+.erp-wrapper .setoran3-qris-divider p,
+.erp-wrapper #sectionSetoran3Table.setoran3-section-c #setoran3DetailHint,
+.erp-wrapper #sectionSetoran3Table.setoran3-section-c .qris-reco-header small,
+.erp-wrapper .finance-hub-card > p{
+    color:var(--ui06-on-dark) !important;
+    font-size:14px !important;
+    font-weight:600 !important;
+}
+
+.erp-wrapper .setoran3-summary-head strong,
+.erp-wrapper .setoran3-progress-head strong,
+.erp-wrapper #setoranProgressText{
+    color:#FFFFFF !important;
+}
+
+/* —— Status badges: besar & penting —— */
+.erp-wrapper .qris-reco-badge,
+.setoran-page .qris-reco-badge{
+    min-height:32px !important;
+    padding:7px 14px !important;
+    font-size:13px !important;
+    font-weight:800 !important;
+    border-radius:999px !important;
+    border-width:1.5px !important;
+    letter-spacing:.03em !important;
+    line-height:1.2 !important;
+}
+
+.erp-wrapper .qris-reco-badge.sesuai,
+.erp-wrapper .qris-reco-badge.terjelaskan{
+    background:#DCFCE7 !important;
+    color:#15803D !important;
+    border-color:#86EFAC !important;
+    box-shadow:0 0 0 1px rgba(21,128,61,.08);
+}
+
+.erp-wrapper .qris-reco-badge.wait-owner{
+    background:#DBEAFE !important;
+    color:#1D4ED8 !important;
+    border-color:#93C5FD !important;
+}
+
+.erp-wrapper .qris-reco-badge.belum-dicek,
+.setoran-page .setoran3-summary-section .qris-reco-badge.bermasalah,
+.setoran-page .setoran3-table .qris-reco-badge.bermasalah,
+.setoran-page .setoran3-progress-list .qris-reco-badge.bermasalah{
+    background:#C2410C !important;
+    color:#FFFFFF !important;
+    border-color:#FDBA74 !important;
+}
+
+.erp-wrapper .qris-reco-badge.belum-ada-data{
+    background:#475569 !important;
+    color:#FFFFFF !important;
+    border-color:#C9CDD3 !important;
+}
+
+.erp-wrapper .qris-reco-badge.bermasalah{
+    background:rgba(239,68,68,.16) !important;
+    color:#DC2626 !important;
+    border-color:#FCA5A5 !important;
+}
+
+/* —— Legend —— */
+.erp-wrapper .dash-segment-legend{
+    gap:14px 22px !important;
+    margin-top:14px !important;
+}
+
+.erp-wrapper .dash-segment-legend span{
+    font-size:14px !important;
+    font-weight:700 !important;
+    color:#E2E8F0 !important;
+    opacity:1 !important;
+}
+
+.erp-wrapper .dash-segment-legend i{
+    width:10px !important;
+    height:10px !important;
+    opacity:1 !important;
+}
+
+/* —— KPI / summary cards + semantic accents —— */
+.erp-wrapper .kpi-card,
+.erp-wrapper .dash-kpi-card,
+.erp-wrapper .setoran3-summary-card,
+.erp-wrapper .executive-item,
+.erp-wrapper .chart-card,
+.erp-wrapper .activity-card,
+.erp-wrapper .payment-card,
+.erp-wrapper .setoran-section-card,
+.erp-wrapper .finance-hub-item{
+    background:var(--ui06-card) !important;
+    border:1px solid var(--ui06-border-strong) !important;
+    border-radius:12px !important;
+    box-shadow:0 1px 2px rgba(17,19,24,.05), 0 6px 16px rgba(17,19,24,.06) !important;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease !important;
+}
+
+.erp-wrapper .kpi-value,
+.erp-wrapper .dash-kpi-card strong,
+.erp-wrapper .setoran3-summary-card strong,
+.erp-wrapper .executive-item strong{
+    color:var(--ui06-text) !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .kpi-label,
+.erp-wrapper .dash-kpi-card > span,
+.erp-wrapper .setoran3-summary-card span{
+    color:var(--ui06-secondary) !important;
+    font-weight:800 !important;
+}
+
+/* Semantic accents — dashboard KPI types */
+.erp-wrapper .kpi-card.gold{ border-left:4px solid var(--ui06-gold) !important; }
+.erp-wrapper .kpi-card.emerald,
+.erp-wrapper .kpi-card.green{ border-left:4px solid var(--ui06-pos) !important; }
+.erp-wrapper .kpi-card.blue{ border-left:4px solid var(--ui06-blue) !important; }
+.erp-wrapper .kpi-card.orange{ border-left:4px solid var(--ui06-warn) !important; }
+.erp-wrapper .kpi-card.cyan{ border-left:4px solid var(--ui06-cyan) !important; }
+
+/* Setoran summary cards order: Nett, Cash Minutes, QRIS, Cash Out, Aktual */
+.erp-wrapper .setoran3-summary-card:nth-child(1){ border-left:4px solid var(--ui06-gold) !important; }
+.erp-wrapper .setoran3-summary-card:nth-child(2){ border-left:4px solid #8B7355 !important; }
+.erp-wrapper .setoran3-summary-card:nth-child(3){ border-left:4px solid var(--ui06-cyan) !important; }
+.erp-wrapper .setoran3-summary-card.is-cashout{
+    border-left:4px solid var(--ui06-neg) !important;
+}
+.erp-wrapper .setoran3-summary-card.is-cashout strong{ color:var(--ui06-neg) !important; }
+.erp-wrapper .setoran3-summary-card.is-actual{
+    border-left:4px solid var(--ui06-gold-bright) !important;
+}
+.erp-wrapper .setoran3-summary-card.is-actual strong{ color:var(--ui06-gold-bright) !important; }
+
+.erp-wrapper .dash-kpi-card:nth-child(1){ border-left:4px solid var(--ui06-gold) !important; }
+.erp-wrapper .dash-kpi-card:nth-child(2){ border-left:4px solid #6B7280 !important; }
+.erp-wrapper .dash-kpi-card:nth-child(3){ border-left:4px solid var(--ui06-pos) !important; }
+.erp-wrapper .dash-kpi-card:nth-child(4){ border-left:4px solid var(--ui06-warn) !important; }
+.erp-wrapper .dash-kpi-card:nth-child(5){ border-left:4px solid var(--ui06-blue) !important; }
+
+/* —— KPI hover / click — strengthened in UI-10 block below —— */
+@keyframes ui06-pulse-gold{
+    0%{ box-shadow:0 0 0 0 rgba(242,194,48,.45), 0 0 16px rgba(212,175,55,.35); }
+    100%{ box-shadow:0 0 0 12px rgba(242,194,48,0), 0 0 0 rgba(212,175,55,0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .erp-wrapper .kpi-card,
+    .erp-wrapper .dash-kpi-card,
+    .erp-wrapper .setoran3-summary-card,
+    .erp-wrapper .executive-item,
+    .erp-wrapper .finance-hub-item,
+    .erp-wrapper .qris-reco-btn-primary,
+    .erp-wrapper .qris-reco-btn-ghost,
+    .erp-wrapper .qris-reco-btn-action,
+    .erp-wrapper .qris-reco-table tbody tr{
+        transition:none !important;
+        animation:none !important;
+    }
+    .erp-wrapper .kpi-card:hover,
+    .erp-wrapper .dash-kpi-card:hover,
+    .erp-wrapper .setoran3-summary-card:hover{
+        transform:none;
+    }
+}
+
+/* —— Trends —— */
+/* JANGAN pakai span:first-child generik (override .negative jadi hijau)
+   JANGAN pakai font-size:13px pada .kpi-status.positive (badge jomplang vs .negative) */
+.erp-wrapper .positive,
+.erp-wrapper .kpi-status.positive,
+.erp-wrapper .summary-info .positive,
+.erp-wrapper .summary-info span:first-child.positive{
+    color:var(--ui06-pos) !important;
+    font-weight:800 !important;
+}
+
+/* Negative trend = exact Logout red (#DC2626), bukan sekadar --ui06-neg */
+.erp-wrapper .negative,
+.erp-wrapper .kpi-status.negative,
+.erp-wrapper .summary-info .negative,
+.erp-wrapper .summary-info .exec-trend-badge.negative,
+.erp-wrapper .summary-info .exec-trend-sub.negative,
+.erp-wrapper .summary-info span:first-child.negative{
+    color:#DC2626 !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .kpi-status:not(.positive):not(.negative),
+.erp-wrapper .kpi-desc,
+.erp-wrapper .dash-kpi-card small,
+.erp-wrapper .kpi-card small{
+    color:#E2E8F0 !important;
+    font-weight:700 !important;
+    opacity:1 !important;
+}
+
+/* —— APPROVE SETORAN primary —— */
+.erp-wrapper #qrisApproveSetoranBtn.qris-reco-btn-primary:not(:disabled),
+.erp-wrapper #qrisApproveSetoranBtn:not(:disabled){
+    background:var(--ui06-gold-bright) !important;
+    color:#111111 !important;
+    font-weight:800 !important;
+    border:1px solid var(--ui06-gold-deep) !important;
+    min-height:48px !important;
+    padding:12px 20px !important;
+    box-shadow:0 0 0 1px rgba(242,194,48,.25), 0 6px 16px rgba(242,194,48,.35) !important;
+    transition:transform .18s ease, background .18s ease, box-shadow .18s ease !important;
+}
+
+.erp-wrapper #qrisApproveSetoranBtn:not(:disabled):hover{
+    background:var(--ui06-gold-hot) !important;
+    transform:translateY(-1px);
+}
+
+.erp-wrapper #qrisApproveSetoranBtn:not(:disabled):active{
+    animation:ui06-pulse-gold .35s ease;
+}
+
+.erp-wrapper #qrisApproveSetoranBtn:disabled,
+.erp-wrapper #qrisApproveSetoranBtn.qris-reco-btn-primary:disabled{
+    background:#E8E2C8 !important;
+    color:#6B7280 !important;
+    border:1px solid #D1D5DB !important;
+    box-shadow:none !important;
+    opacity:.72 !important;
+    cursor:not-allowed !important;
+    transform:none !important;
+}
+
+/* —— Button hierarchy —— */
+.erp-wrapper .qris-reco-btn-primary,
+.erp-wrapper .setoran3-proof-btn-primary,
+.erp-wrapper #setoran3BtnSaveDraft,
+.erp-wrapper .btn-lihat{
+    background:var(--ui06-gold-bright) !important;
+    color:#111111 !important;
+    font-weight:800 !important;
+    border:1px solid var(--ui06-gold-deep) !important;
+    min-height:42px !important;
+    border-radius:10px !important;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease !important;
+}
+
+.erp-wrapper .qris-reco-btn-primary:hover,
+.erp-wrapper .setoran3-proof-btn-primary:hover,
+.erp-wrapper .btn-lihat:hover{
+    background:var(--ui06-gold-hot) !important;
+    transform:translateY(-1px);
+}
+
+.erp-wrapper .qris-reco-btn-action,
+.erp-wrapper #setoran3BtnSubmit,
+.erp-wrapper #setoran3BtnSubmitUlang{
+    background:#DBEAFE !important;
+    color:#1D4ED8 !important;
+    border:1px solid #93C5FD !important;
+    font-weight:800 !important;
+    min-height:42px !important;
+}
+
+.erp-wrapper .qris-reco-btn-ghost,
+.erp-wrapper .setoran3-proof-btn-ghost{
+    background:#11151B !important;
+    color:var(--ui06-text) !important;
+    border:1.5px solid var(--ui06-border-strong) !important;
+    font-weight:700 !important;
+    min-height:42px !important;
+}
+
+.erp-wrapper .qris-reco-btn-ghost:hover,
+.erp-wrapper .setoran3-proof-btn-ghost:hover{
+    border-color:var(--ui06-gold) !important;
+    color:#6B5210 !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.12);
+}
+
+.erp-wrapper .setoran3-proof-btn-danger{
+    background:rgba(239,68,68,.16) !important;
+    color:var(--ui06-neg) !important;
+    border:1px solid #FCA5A5 !important;
+    font-weight:800 !important;
+}
+
+/* Table action buttons — exclude DETAIL / RETURN / REOPEN (styled below) */
+.erp-wrapper .qris-reco-table button:not([data-s3-action="detail"]):not([data-s3-action="return"]):not([data-s3-action="reopen"]):not([data-qris-action="detail"]):not([data-qris-action="return"]):not([data-qris-action="reopen"]),
+.erp-wrapper .setoran3-table button:not([data-s3-action="detail"]):not([data-s3-action="return"]):not([data-s3-action="reopen"]):not([data-qris-action="detail"]):not([data-qris-action="return"]):not([data-qris-action="reopen"]),
+.erp-wrapper [data-action-cell] button:not([data-s3-action="detail"]):not([data-s3-action="return"]):not([data-s3-action="reopen"]):not([data-qris-action="detail"]):not([data-qris-action="return"]):not([data-qris-action="reopen"]){
+    min-height:36px !important;
+    padding:8px 12px !important;
+    font-weight:800 !important;
+    border-radius:8px !important;
+    border:1.5px solid var(--ui06-border-strong) !important;
+    background:#11151B !important;
+    color:var(--ui06-text) !important;
+}
+
+.erp-wrapper .qris-reco-table button:not([data-s3-action="detail"]):not([data-s3-action="return"]):not([data-s3-action="reopen"]):not([data-qris-action="detail"]):not([data-qris-action="return"]):not([data-qris-action="reopen"]):hover,
+.erp-wrapper .setoran3-table button:not([data-s3-action="detail"]):not([data-s3-action="return"]):not([data-s3-action="reopen"]):not([data-qris-action="detail"]):not([data-qris-action="return"]):not([data-qris-action="reopen"]):hover{
+    border-color:var(--ui06-gold) !important;
+    color:#6B5210 !important;
+    background:rgba(242,194,48,.12) !important;
+}
+
+/* —— QRIS / tables depth —— */
+.erp-wrapper .qris-reco-table-wrap,
+.erp-wrapper .setoran3-table-wrap{
+    border:1px solid var(--ui06-border-strong) !important;
+    border-radius:12px !important;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(17,19,24,.05);
+    background:#11151B !important;
+}
+
+.erp-wrapper .qris-reco-table thead th,
+.erp-wrapper .setoran3-table thead th,
+.erp-wrapper .dash-latest-card thead th{
+    background:#0F1318 !important;
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    font-size:12px !important;
+    padding:14px 12px !important;
+}
+
+.erp-wrapper .qris-reco-table tbody td,
+.erp-wrapper .setoran3-table tbody td{
+    background:#11151B !important;
+    color:var(--ui06-text) !important;
+    border-bottom:1px solid #2B3440 !important;
+    font-weight:600 !important;
+    transition:background .15s ease;
+}
+
+.erp-wrapper .qris-reco-table tbody tr:hover td,
+.erp-wrapper .setoran3-table tbody tr:hover td{
+    background:#171C23 !important;
+    box-shadow:inset 3px 0 0 var(--ui06-gold);
+}
+
+.erp-wrapper .qris-reco-diff.zero{ color:var(--ui06-pos) !important; font-weight:800 !important; }
+.erp-wrapper .qris-reco-diff.positive{ color:var(--ui06-warn) !important; font-weight:800 !important; }
+.erp-wrapper .qris-reco-diff.negative{ color:var(--ui06-neg) !important; font-weight:800 !important; }
+
+/* —— Forms —— */
+.erp-wrapper input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+.erp-wrapper select,
+.erp-wrapper textarea,
+.setoran-page .setoran3-period-btn,
+.setoran-page .setoran3-today-btn,
+.setoran-page .setoran3-nav-btn{
+    background:#11151B !important;
+    color:#F8FAFC !important;
+    border:1.5px solid var(--ui06-border-strong) !important;
+}
+
+.erp-wrapper input::placeholder,
+.erp-wrapper textarea::placeholder{
+    color:#737B85 !important;
+}
+
+.erp-wrapper input:focus,
+.erp-wrapper select:focus,
+.erp-wrapper textarea:focus{
+    border-color:var(--ui06-gold) !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.18) !important;
+}
+
+/* Calendar / cabang nav clarity */
+.setoran-page .setoran3-period-btn,
+.setoran-page .setoran3-today-btn,
+.setoran-page .setoran3-nav-btn{
+    border-color:#C8CDD3 !important;
+    font-weight:700 !important;
+}
+
+.setoran-page .setoran3-period-btn{
+    opacity:1 !important;
+}
+
+/* —— Finance hub dark premium —— */
+.erp-wrapper .finance-hub-card{
+    background:var(--ui06-dark) !important;
+    border:1px solid #2A2E34 !important;
+    border-left:4px solid var(--ui06-gold) !important;
+    border-radius:12px !important;
+    padding:22px !important;
+    color:#fff !important;
+}
+
+.erp-wrapper .finance-hub-card > h2{
+    color:var(--ui06-gold-bright) !important;
+    font-size:22px !important;
+    margin:0 0 8px !important;
+}
+
+.erp-wrapper .finance-hub-card > p{
+    color:var(--ui06-on-dark) !important;
+    margin:0 0 18px !important;
+}
+
+.erp-wrapper .finance-hub-item{
+    display:block;
+    text-decoration:none;
+    padding:16px 18px !important;
+    background:var(--ui06-mini) !important;
+    border:1px solid #343841 !important;
+    border-left:4px solid var(--ui06-gold) !important;
+}
+
+.erp-wrapper .finance-hub-item strong{
+    display:block;
+    color:var(--ui06-gold-bright) !important;
+    font-size:17px !important;
+    font-weight:800 !important;
+    margin-bottom:6px;
+}
+
+.erp-wrapper .finance-hub-item span{
+    display:block;
+    color:var(--ui06-on-dark-soft) !important;
+    font-size:14px !important;
+    font-weight:500 !important;
+    line-height:1.45;
+}
+
+/* —— Section C mini headers —— */
+.erp-wrapper .setoran3-form-card > h4,
+.erp-wrapper .setoran3-proof-title,
+.erp-wrapper .setoran3-ai > h4{
+    background:var(--ui06-mini) !important;
+    color:#FFFFFF !important;
+    border-left:3px solid var(--ui06-gold) !important;
+    border-radius:8px !important;
+    padding:10px 12px !important;
+}
+
+/* Executive summary — hero + C1 strip live in executive-summary.css */
+.erp-wrapper .executive-summary .summary-label{
+    display:block !important;
+    margin-bottom:2px !important;
+    background:transparent !important;
+    border:0 !important;
+    padding:0 !important;
+}
+
+.erp-wrapper .executive-summary{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+@media (max-width:900px){
+    .erp-wrapper #sectionApproval .qris-reco-header{
+        flex-direction:column;
+    }
+    .erp-wrapper #qrisApproveSetoranBtn{
+        width:100%;
+    }
+    .erp-wrapper .qris-reco-badge{
+        font-size:12px !important;
+    }
+}
+
+/* =========================================================
+   UI-08 — STICKY TOP HEADER + PREMIUM INTERACTION locks
+   ========================================================= */
+.erp-wrapper #header,
+body #header{
+    position:fixed !important;
+    top:0 !important;
+    left:var(--sidebar-width, 210px) !important;
+    right:0 !important;
+    z-index:220 !important;
+    background:#15171A !important;
+    box-shadow:0 4px 14px rgba(0,0,0,.22) !important;
+}
+
+body.sidebar-collapsed #header,
+.sidebar.collapsed ~ .erp-wrapper #header{
+    left:var(--sidebar-collapse, 72px) !important;
+}
+
+@media (max-width:900px){
+    .erp-wrapper #header,
+    body #header{
+        left:0 !important;
+    }
+}
+
+.erp-wrapper{
+    padding-top:var(--erp-top-header-h, 84px) !important;
+}
+
+.erp-wrapper .top-header,
+.erp-wrapper .erp-header{
+    position:relative !important;
+    top:auto !important;
+    z-index:1 !important;
+    background:#15171A !important;
+    border-bottom:1px solid rgba(212,175,55,.28) !important;
+    box-shadow:none !important;
+    color:#FFFFFF !important;
+}
+
+.erp-wrapper #header.is-scrolled,
+.erp-wrapper #header:has(.top-header.is-scrolled),
+.erp-wrapper #header:has(.erp-header.is-scrolled){
+    box-shadow:0 8px 22px rgba(0,0,0,.36) !important;
+}
+
+.erp-wrapper .top-header #erpHeaderTitle,
+.erp-wrapper .top-header .header-center h1,
+.erp-wrapper .top-header h1,
+.erp-wrapper .erp-header h1{
+    color:#FFFFFF !important;
+    font-weight:900 !important;
+}
+
+.erp-wrapper .top-header #erpHeaderSub,
+.erp-wrapper .top-header .header-center #erpHeaderSub,
+.erp-wrapper .top-header .header-left span:not(.header-chip label),
+.erp-wrapper .erp-header .header-left span:not(.header-chip label){
+    color:#D1D5DB !important;
+    font-weight:600 !important;
+}
+
+.erp-wrapper .top-header .header-chip,
+.erp-wrapper .erp-header .header-chip{
+    background:#22252A !important;
+    border:1px solid rgba(212,175,55,.45) !important;
+    color:#FFFFFF !important;
+    box-shadow:0 2px 8px rgba(0,0,0,.22) !important;
+}
+
+.erp-wrapper .top-header .header-chip:hover{
+    border-color:rgba(242,194,48,.72) !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.14), 0 4px 12px rgba(0,0,0,.28) !important;
+}
+
+.erp-wrapper .top-header .header-chip label{
+    color:#F2C230 !important;
+    font-weight:700 !important;
+}
+
+.erp-wrapper .top-header .header-chip strong,
+.erp-wrapper .top-header #erpHeaderCabang,
+.erp-wrapper .top-header #erpHeaderPeriode{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .top-header .header-icon-btn{
+    background:#22252A !important;
+    border:1px solid rgba(212,175,55,.32) !important;
+    color:#F3F4F6 !important;
+}
+
+.erp-wrapper .top-header .header-icon-btn:hover{
+    border-color:#D4AF37 !important;
+    color:#F2C230 !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.16), 0 4px 10px rgba(0,0,0,.24) !important;
+}
+
+.erp-wrapper .top-header .header-user-block{
+    background:#22252A !important;
+    border:1px solid rgba(212,175,55,.35) !important;
+    box-shadow:0 2px 8px rgba(0,0,0,.2) !important;
+}
+
+.erp-wrapper .top-header .header-user-block:hover{
+    border-color:rgba(242,194,48,.65) !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.12), 0 4px 12px rgba(0,0,0,.26) !important;
+}
+
+.erp-wrapper .top-header #ownerAuthName,
+.erp-wrapper .top-header .header-auth-meta strong{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .top-header #ownerAuthRole,
+.erp-wrapper .top-header .header-auth-meta span{
+    color:#F2C230 !important;
+}
+
+.erp-wrapper .top-header .btn-owner-logout{
+    background:#DC2626 !important;
+    border:1px solid #FF5A5F !important;
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+    box-shadow:
+        0 0 0 1px rgba(220,38,38,.20),
+        0 4px 12px rgba(220,38,38,.25) !important;
+}
+
+.erp-wrapper .top-header .btn-owner-logout:hover{
+    background:#EF4444 !important;
+    border-color:#FF7A7E !important;
+    color:#FFFFFF !important;
+    box-shadow:
+        0 0 0 3px rgba(239,68,68,.28),
+        0 6px 16px rgba(220,38,38,.35) !important;
+}
+
+.erp-wrapper .top-header .btn-owner-logout:active{
+    transform:scale(0.98);
+}
+
+/* Sidebar logout — solid red, contrast vs dark rail */
+.sidebar .logout-btn,
+.erp-wrapper ~ .sidebar .logout-btn,
+body .sidebar .logout-btn{
+    background:#DC2626 !important;
+    border:1px solid #FF5A5F !important;
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+    box-shadow:
+        0 0 0 1px rgba(220,38,38,.20),
+        0 4px 12px rgba(220,38,38,.25) !important;
+}
+
+.sidebar .logout-btn:hover,
+body .sidebar .logout-btn:hover{
+    background:#EF4444 !important;
+    border-color:#FF7A7E !important;
+    color:#FFFFFF !important;
+    box-shadow:
+        0 0 0 3px rgba(239,68,68,.28),
+        0 6px 16px rgba(220,38,38,.35) !important;
+    transform:translateY(-1px);
+}
+
+.sidebar .logout-btn:active,
+body .sidebar .logout-btn:active{
+    transform:scale(0.98);
+    animation:ui08-longbar-pulse-red .2s ease;
+}
+
+@keyframes ui08-longbar-pulse-red{
+    0%{ box-shadow:0 0 0 0 rgba(239,68,68,.45); }
+    100%{ box-shadow:0 0 0 8px rgba(239,68,68,0); }
+}
+
+.erp-wrapper .top-header .erp-menu-fab{
+    background:#22252A !important;
+    border:1px solid rgba(212,175,55,.35) !important;
+    color:#F2C230 !important;
+}
+
+/* =========================================================
+   UI-08 — LONG BAR / FULL-WIDTH INTERACTION (reusable)
+   Expand/collapse · nav · proof history · action bars
+   ========================================================= */
+@keyframes ui08-longbar-pulse{
+    0%{ box-shadow:0 0 0 0 rgba(212,175,55,.38); }
+    100%{ box-shadow:0 0 0 8px rgba(212,175,55,0); }
+}
+
+.erp-wrapper .erp-long-bar,
+.erp-wrapper .setoran3-progress-toggle,
+.erp-wrapper .setoran3-proof-history-toggle,
+.erp-wrapper .setoran3-ai-detail-toggle,
+.erp-wrapper .setoran3-finance-link,
+.erp-wrapper .setoran3-nav-btn,
+.erp-wrapper .setoran3-period-btn,
+.erp-wrapper .setoran3-today-btn,
+.erp-wrapper .finance-hub-item,
+.erp-wrapper #setoran3ActionBanner,
+.erp-wrapper .qris-reco-import-banner,
+.erp-wrapper .qris-reco-access-banner,
+.erp-wrapper .setoran3-form-actions > button,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-primary,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-action,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-ghost,
+.erp-wrapper #setoran3OwnerActionBtns > button,
+.erp-wrapper .setoran3-proof-btn,
+.erp-wrapper .erp-section-head,
+.erp-wrapper .erp-content-head{
+    position:relative;
+    border-radius:10px !important;
+    box-shadow:0 2px 8px rgba(16,24,40,.06) !important;
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease,
+        background 180ms ease,
+        color 180ms ease !important;
+}
+
+/* Light-area long bars (content hybrid) */
+.erp-wrapper .setoran3-progress-toggle,
+.erp-wrapper .setoran3-proof-history-toggle,
+.erp-wrapper .setoran3-ai-detail-toggle,
+.erp-wrapper .setoran3-finance-link,
+.erp-wrapper .setoran3-nav-btn,
+.erp-wrapper .setoran3-period-btn,
+.erp-wrapper .setoran3-today-btn,
+.erp-wrapper .erp-long-bar{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:46px !important;
+    padding:12px 14px !important;
+    background:#171C23 !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #D4AF37 !important;
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    letter-spacing:.02em;
+    cursor:pointer;
+    text-decoration:none;
+    box-shadow:0 2px 8px rgba(16,24,40,.07) !important;
+}
+
+.erp-wrapper .setoran3-finance-link{
+    width:auto;
+    min-width:140px;
+}
+
+.erp-wrapper .setoran3-nav-btn{
+    width:auto;
+    flex:1 1 0;
+    min-width:0;
+}
+
+.erp-wrapper .setoran3-period-btn{
+    width:auto;
+    flex:1 1 180px;
+    justify-content:flex-start !important;
+    text-align:left;
+}
+
+.erp-wrapper .setoran3-today-btn{
+    width:auto;
+    flex:0 0 auto;
+}
+
+/* Active cabang center chip — same long-bar family */
+.erp-wrapper .setoran3-active-cabang{
+    background:#171C23 !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #D4AF37 !important;
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    box-shadow:0 2px 8px rgba(16,24,40,.07) !important;
+}
+
+.erp-wrapper .setoran3-progress-toggle:hover,
+.erp-wrapper .setoran3-proof-history-toggle:hover,
+.erp-wrapper .setoran3-ai-detail-toggle:hover,
+.erp-wrapper .setoran3-finance-link:hover,
+.erp-wrapper .setoran3-nav-btn:hover,
+.erp-wrapper .setoran3-period-btn:hover,
+.erp-wrapper .setoran3-today-btn:hover,
+.erp-wrapper .erp-long-bar:hover{
+    border-color:rgba(212,175,55,.75) !important;
+    border-left-color:#F2C230 !important;
+    background:rgba(242,194,48,.12) !important;
+    color:#F8FAFC !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.14), 0 4px 12px rgba(16,24,40,.1) !important;
+    transform:translateY(-1px);
+}
+
+.erp-wrapper .setoran3-progress-toggle:active,
+.erp-wrapper .setoran3-proof-history-toggle:active,
+.erp-wrapper .setoran3-ai-detail-toggle:active,
+.erp-wrapper .setoran3-finance-link:active,
+.erp-wrapper .setoran3-nav-btn:active,
+.erp-wrapper .setoran3-period-btn:active,
+.erp-wrapper .setoran3-today-btn:active,
+.erp-wrapper .erp-long-bar:active,
+.erp-wrapper .setoran3-form-actions > button:active,
+.erp-wrapper #setoran3OwnerActionBtns > button:active,
+.erp-wrapper .setoran3-proof-btn:active{
+    transform:scale(0.995);
+    animation:ui08-longbar-pulse .2s ease;
+}
+
+/* Expanded / open state — clear vs collapsed */
+.erp-wrapper .setoran3-progress-toggle[aria-expanded="true"],
+.erp-wrapper .setoran3-proof-history-toggle[aria-expanded="true"],
+.erp-wrapper .setoran3-ai-detail-toggle[aria-expanded="true"],
+.erp-wrapper .erp-long-bar[aria-expanded="true"],
+.erp-wrapper .erp-long-bar.is-expanded{
+    background:rgba(242,194,48,.14) !important;
+    border:1px solid rgba(212,175,55,.72) !important;
+    border-left:5px solid #F2C230 !important;
+    color:#F8FAFC !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.12), 0 4px 14px rgba(16,24,40,.1) !important;
+}
+
+/* Collapsed remains outlined — never a bare line */
+.erp-wrapper .setoran3-progress-toggle[aria-expanded="false"],
+.erp-wrapper .setoran3-proof-history-toggle[aria-expanded="false"],
+.erp-wrapper .setoran3-ai-detail-toggle[aria-expanded="false"]{
+    opacity:1;
+    visibility:visible;
+}
+
+/* Full-width action / proof buttons — depth + left accent */
+.erp-wrapper .setoran3-form-actions > button,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-primary,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-action,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-ghost,
+.erp-wrapper #setoran3OwnerActionBtns > button,
+.erp-wrapper .setoran3-proof-btn{
+    border-left-width:4px !important;
+    border-left-style:solid !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-primary,
+.erp-wrapper .setoran3-proof-btn-primary{
+    border-left-color:#D4AF37 !important;
+}
+
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-action{
+    border-left-color:#2563EB !important;
+}
+
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-ghost,
+.erp-wrapper .setoran3-proof-btn-ghost{
+    background:#171C23 !important;
+    border-color:#C9CED5 !important;
+    border-left-color:#D4AF37 !important;
+    color:#F8FAFC !important;
+}
+
+.erp-wrapper .setoran3-proof-btn-danger{
+    border-left-color:#DC2626 !important;
+}
+
+.erp-wrapper .setoran3-form-actions > button:hover,
+.erp-wrapper #setoran3OwnerActionBtns > button:hover,
+.erp-wrapper .setoran3-proof-btn:hover{
+    box-shadow:0 0 0 3px rgba(212,175,55,.12), 0 4px 12px rgba(16,24,40,.1) !important;
+    transform:translateY(-1px);
+}
+
+/* Banners / info long bars */
+.erp-wrapper #setoran3ActionBanner,
+.erp-wrapper .qris-reco-import-banner,
+.erp-wrapper .qris-reco-access-banner{
+    background:#171C23 !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #D4AF37 !important;
+    color:#F8FAFC !important;
+    font-weight:700 !important;
+    padding:12px 14px !important;
+}
+
+.erp-wrapper .qris-reco-import-banner.qris-reco-import-error,
+.erp-wrapper #setoran3ActionBanner.qris-reco-import-error{
+    border-left-color:#DC2626 !important;
+    background:rgba(239,68,68,.16) !important;
+}
+
+/* Finance hub (DARK AREA) — charcoal long surfaces */
+.erp-wrapper .finance-hub-item{
+    background:#202329 !important;
+    border:1px solid rgba(212,175,55,.40) !important;
+    border-left:4px solid #F2C230 !important;
+    color:#F3F4F6 !important;
+    box-shadow:0 2px 10px rgba(0,0,0,.22) !important;
+}
+
+.erp-wrapper .finance-hub-item:hover{
+    border-color:rgba(242,194,48,.72) !important;
+    border-left-color:#F2C230 !important;
+    background:#262A31 !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.16), 0 6px 16px rgba(0,0,0,.28) !important;
+    transform:translateY(-1px);
+}
+
+.erp-wrapper .finance-hub-item:active{
+    transform:scale(0.995);
+    animation:ui08-longbar-pulse .2s ease;
+}
+
+.erp-wrapper .finance-hub-item strong{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+}
+
+.erp-wrapper .finance-hub-item span{
+    color:#D1D5DB !important;
+    font-weight:600 !important;
+}
+
+/* Utility: dark long bar for future ERP pages */
+.erp-wrapper .erp-long-bar.is-dark,
+.erp-wrapper .erp-long-bar-dark{
+    background:#202329 !important;
+    border:1px solid rgba(212,175,55,.40) !important;
+    border-left:4px solid #F2C230 !important;
+    color:#F3F4F6 !important;
+    box-shadow:0 2px 10px rgba(0,0,0,.22) !important;
+}
+
+.erp-wrapper .erp-long-bar.is-dark:hover,
+.erp-wrapper .erp-long-bar-dark:hover{
+    background:#262A31 !important;
+    border-color:rgba(242,194,48,.72) !important;
+    color:#FFFFFF !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,.16), 0 6px 16px rgba(0,0,0,.28) !important;
+    transform:translateY(-1px);
+}
+
+/* Dark-area long bars: bottom nav + dark shells */
+.erp-bottom-nav{
+    background:#15171A !important;
+    border-top:1px solid rgba(212,175,55,.35) !important;
+    box-shadow:0 -4px 18px rgba(0,0,0,.28) !important;
+}
+
+.erp-bottom-nav a{
+    color:#F3F4F6 !important;
+    font-weight:700 !important;
+    border-radius:10px;
+    transition:
+        color 180ms ease,
+        background 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+.erp-bottom-nav a:hover,
+.erp-bottom-nav a.is-active{
+    color:#F2C230 !important;
+    background:#202329 !important;
+    box-shadow:0 0 0 1px rgba(212,175,55,.35) inset;
+    transform:translateY(-1px);
+}
+
+.erp-bottom-nav a:active{
+    transform:scale(0.995);
+    animation:ui08-longbar-pulse .2s ease;
+}
+
+/* Dark charcoal section heads stay premium bars */
+.erp-wrapper .erp-section-head,
+.erp-wrapper .erp-content-head,
+.erp-wrapper .setoran3-sticky-top,
+.erp-wrapper .setoran3-summary-head,
+.erp-wrapper .setoran3-progress-head,
+.erp-wrapper #sectionSetoran3Table.setoran3-section-c .qris-reco-header,
+.erp-wrapper #sectionApproval .qris-reco-header{
+    border:1px solid rgba(212,175,55,.28) !important;
+    box-shadow:0 2px 10px rgba(0,0,0,.12) !important;
+}
+
+@media (prefers-reduced-motion:reduce){
+    .erp-wrapper .setoran3-progress-toggle,
+    .erp-wrapper .setoran3-proof-history-toggle,
+    .erp-wrapper .setoran3-ai-detail-toggle,
+    .erp-wrapper .setoran3-finance-link,
+    .erp-wrapper .setoran3-nav-btn,
+    .erp-wrapper .setoran3-period-btn,
+    .erp-wrapper .setoran3-today-btn,
+    .erp-wrapper .finance-hub-item,
+    .erp-wrapper .setoran3-form-actions > button,
+    .erp-wrapper .setoran3-proof-btn,
+    .erp-wrapper .erp-long-bar,
+    .erp-bottom-nav a{
+        transition:none !important;
+        animation:none !important;
+    }
+
+    .erp-wrapper .setoran3-progress-toggle:hover,
+    .erp-wrapper .setoran3-proof-history-toggle:hover,
+    .erp-wrapper .setoran3-ai-detail-toggle:hover,
+    .erp-wrapper .setoran3-nav-btn:hover,
+    .erp-wrapper .finance-hub-item:hover,
+    .erp-bottom-nav a:hover{
+        transform:none !important;
+    }
+}
+
+/* =========================================================
+   UI-10 — STRONG GLOW FOR LIGHT CARDS / LONG BARS
+   Multi-layer ring + outer glow — visible on white surfaces
+   ========================================================= */
+@keyframes ui10-pulse-accent{
+    0%{
+        box-shadow:
+            0 0 0 3px rgba(59,130,246,.18),
+            0 0 18px rgba(15,23,42,.14),
+            0 8px 22px rgba(15,23,42,.10);
+    }
+    100%{
+        box-shadow:
+            0 0 0 0 rgba(59,130,246,0),
+            0 0 0 rgba(15,23,42,0),
+            0 4px 12px rgba(15,23,42,.08);
+    }
+}
+
+/* Default: cleaner border + soft depth on white cards */
+.erp-wrapper .kpi-card,
+.erp-wrapper .dash-kpi-card,
+.erp-wrapper .setoran3-summary-card,
+.erp-wrapper .executive-item,
+.erp-wrapper .executive-box,
+.erp-wrapper .chart-card,
+.erp-wrapper .activity-card,
+.erp-wrapper .payment-card,
+.erp-wrapper .setoran-section-card,
+.erp-wrapper .ranking-card,
+.erp-wrapper .dash-latest-card,
+.erp-wrapper .dash-setoran-band,
+.erp-wrapper .qris-reco-card,
+.erp-wrapper .setoran3-form-card,
+.erp-wrapper .setoran3-proof-panel,
+.erp-wrapper .setoran3-ai,
+.erp-wrapper .toolbar-wrapper{
+    border:1px solid #2B3440 !important;
+    box-shadow:
+        0 1px 2px rgba(17,19,24,.04),
+        0 6px 16px rgba(17,19,24,.07) !important;
+    transition:
+        transform var(--ui10-ease),
+        box-shadow var(--ui10-ease),
+        border-color var(--ui10-ease),
+        background var(--ui10-ease) !important;
+}
+
+/* Shared strong hover (gold family) */
+.erp-wrapper .kpi-card:hover,
+.erp-wrapper .dash-kpi-card:hover,
+.erp-wrapper .setoran3-summary-card:hover,
+.erp-wrapper .executive-item:hover,
+.erp-wrapper .executive-box:hover,
+.erp-wrapper .chart-card:hover,
+.erp-wrapper .activity-card:hover,
+.erp-wrapper .payment-card:hover,
+.erp-wrapper .ranking-card:hover,
+.erp-wrapper .dash-latest-card:hover,
+.erp-wrapper .qris-reco-card:hover,
+.erp-wrapper .setoran3-form-card:hover,
+.erp-wrapper .setoran3-proof-panel:hover,
+.erp-wrapper .setoran3-ai:hover{
+    transform:translateY(-2px);
+    border-color:rgba(212,175,55,.85) !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-gold),
+        0 0 16px var(--ui10-glow-gold),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(242,194,48,.18) !important;
+}
+
+/* Per-accent hover for Setoran summary KPI */
+.erp-wrapper .setoran3-summary-card:nth-child(1):hover{
+    border-color:#D4AF37 !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-gold),
+        0 0 16px var(--ui10-glow-gold),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(242,194,48,.22) !important;
+}
+.erp-wrapper .setoran3-summary-card:nth-child(2):hover{
+    border-color:#8B7355 !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-bronze),
+        0 0 16px var(--ui10-glow-bronze),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(139,115,85,.22) !important;
+}
+.erp-wrapper .setoran3-summary-card:nth-child(3):hover{
+    border-color:#0891B2 !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-cyan),
+        0 0 16px var(--ui10-glow-cyan),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(8,145,178,.20) !important;
+}
+.erp-wrapper .setoran3-summary-card.is-cashout:hover{
+    border-color:#DC2626 !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-red),
+        0 0 16px var(--ui10-glow-red),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(220,38,38,.18) !important;
+}
+.erp-wrapper .setoran3-summary-card.is-actual:hover{
+    border-color:#F2C230 !important;
+    box-shadow:
+        0 0 0 2px rgba(242,194,48,.50),
+        0 0 18px rgba(242,194,48,.42),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(242,194,48,.28) !important;
+}
+
+/* Dashboard KPI accent hover */
+.erp-wrapper .kpi-card.gold:hover,
+.erp-wrapper .dash-kpi-card:nth-child(1):hover{
+    border-color:#D4AF37 !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-gold),
+        0 0 16px var(--ui10-glow-gold),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(242,194,48,.22) !important;
+}
+.erp-wrapper .kpi-card.emerald:hover,
+.erp-wrapper .kpi-card.green:hover,
+.erp-wrapper .dash-kpi-card:nth-child(3):hover{
+    border-color:#15803D !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-green),
+        0 0 16px var(--ui10-glow-green),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(21,128,61,.18) !important;
+}
+.erp-wrapper .kpi-card.cyan:hover{
+    border-color:#0891B2 !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-cyan),
+        0 0 16px var(--ui10-glow-cyan),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(8,145,178,.18) !important;
+}
+.erp-wrapper .kpi-card.blue:hover,
+.erp-wrapper .dash-kpi-card:nth-child(5):hover{
+    border-color:#2563EB !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-blue),
+        0 0 16px var(--ui10-glow-blue),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(37,99,235,.18) !important;
+}
+.erp-wrapper .kpi-card.orange:hover,
+.erp-wrapper .dash-kpi-card:nth-child(4):hover{
+    border-color:#FFFFFF !important;
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-warn),
+        0 0 16px var(--ui10-glow-warn),
+        0 8px 24px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(192,90,0,.18) !important;
+}
+
+/* Click / active pulse */
+.erp-wrapper .kpi-card:active,
+.erp-wrapper .dash-kpi-card:active,
+.erp-wrapper .setoran3-summary-card:active,
+.erp-wrapper .executive-item:active,
+.erp-wrapper .chart-card:active,
+.erp-wrapper .ranking-card:active,
+.erp-wrapper .qris-reco-card:active{
+    transform:scale(0.985);
+    animation:ui10-pulse-accent .28s ease;
+}
+
+/* —— Long white bars: stronger default + hover glow —— */
+.erp-wrapper .setoran3-progress-toggle,
+.erp-wrapper .setoran3-proof-history-toggle,
+.erp-wrapper .setoran3-ai-detail-toggle,
+.erp-wrapper .setoran3-finance-link,
+.erp-wrapper .setoran3-nav-btn,
+.erp-wrapper .setoran3-period-btn,
+.erp-wrapper .setoran3-today-btn,
+.erp-wrapper .setoran3-active-cabang,
+.erp-wrapper .erp-long-bar{
+    border:1px solid #B8BFC8 !important;
+    border-left:4px solid #D4AF37 !important;
+    box-shadow:
+        0 1px 2px rgba(17,19,24,.05),
+        0 4px 12px rgba(17,19,24,.08) !important;
+}
+
+.erp-wrapper .setoran3-progress-toggle:hover,
+.erp-wrapper .setoran3-proof-history-toggle:hover,
+.erp-wrapper .setoran3-ai-detail-toggle:hover,
+.erp-wrapper .setoran3-finance-link:hover,
+.erp-wrapper .setoran3-nav-btn:hover,
+.erp-wrapper .setoran3-period-btn:hover,
+.erp-wrapper .setoran3-today-btn:hover,
+.erp-wrapper .erp-long-bar:hover,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-ghost:hover,
+.erp-wrapper .setoran3-proof-btn-ghost:hover{
+    border-color:#D4AF37 !important;
+    border-left-color:#F2C230 !important;
+    background:rgba(242,194,48,.12) !important;
+    color:#F8FAFC !important;
+    transform:translateY(-2px);
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-gold),
+        0 0 14px var(--ui10-glow-gold),
+        0 8px 22px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(242,194,48,.20) !important;
+}
+
+.erp-wrapper .setoran3-active-cabang{
+    box-shadow:
+        0 0 0 2px rgba(212,175,55,.28),
+        0 0 12px rgba(212,175,55,.22),
+        0 4px 12px rgba(17,19,24,.08) !important;
+    background:rgba(242,194,48,.12) !important;
+    border-color:rgba(212,175,55,.65) !important;
+    border-left:4px solid #F2C230 !important;
+}
+
+.erp-wrapper .setoran3-progress-toggle:active,
+.erp-wrapper .setoran3-proof-history-toggle:active,
+.erp-wrapper .setoran3-ai-detail-toggle:active,
+.erp-wrapper .setoran3-finance-link:active,
+.erp-wrapper .setoran3-nav-btn:active,
+.erp-wrapper .setoran3-period-btn:active,
+.erp-wrapper .setoran3-today-btn:active,
+.erp-wrapper .erp-long-bar:active,
+.erp-wrapper .setoran3-form-actions > button:active,
+.erp-wrapper #setoran3OwnerActionBtns > button:active,
+.erp-wrapper .setoran3-proof-btn:active{
+    transform:scale(0.99);
+    animation:ui10-pulse-accent .26s ease;
+}
+
+/* Expanded / selected — stronger than hover */
+.erp-wrapper .setoran3-progress-toggle[aria-expanded="true"],
+.erp-wrapper .setoran3-proof-history-toggle[aria-expanded="true"],
+.erp-wrapper .setoran3-ai-detail-toggle[aria-expanded="true"],
+.erp-wrapper .erp-long-bar[aria-expanded="true"],
+.erp-wrapper .erp-long-bar.is-expanded,
+.erp-wrapper .erp-long-bar.is-active,
+.erp-wrapper .setoran3-nav-btn.is-active,
+.erp-wrapper .setoran3-period-btn.is-active{
+    background:rgba(242,194,48,.14) !important;
+    border:1px solid #D4AF37 !important;
+    border-left:5px solid #F2C230 !important;
+    color:#F8FAFC !important;
+    box-shadow:
+        0 0 0 2px rgba(212,175,55,.36),
+        0 0 16px rgba(212,175,55,.30),
+        0 6px 18px rgba(0,0,0,.10),
+        inset 0 0 0 1px rgba(242,194,48,.28) !important;
+}
+
+/* Table row hover — accent ring feel without crushing text */
+.erp-wrapper .qris-reco-table tbody tr:hover td,
+.erp-wrapper .setoran3-table tbody tr:hover td{
+    background:rgba(242,194,48,.12) !important;
+    box-shadow:inset 4px 0 0 #D4AF37 !important;
+}
+
+.erp-wrapper .qris-reco-btn-primary:hover,
+.erp-wrapper .setoran3-proof-btn-primary:hover,
+.erp-wrapper .btn-lihat:hover,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-primary:hover{
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-gold),
+        0 0 14px var(--ui10-glow-gold),
+        0 8px 20px rgba(212,175,55,.28) !important;
+    transform:translateY(-2px);
+}
+
+.erp-wrapper .qris-reco-btn-action:hover,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-action:hover{
+    box-shadow:
+        0 0 0 2px var(--ui10-ring-blue),
+        0 0 14px var(--ui10-glow-blue),
+        0 8px 20px rgba(37,99,235,.20) !important;
+    transform:translateY(-2px);
+}
+
+@media (prefers-reduced-motion:reduce){
+    .erp-wrapper .kpi-card,
+    .erp-wrapper .dash-kpi-card,
+    .erp-wrapper .setoran3-summary-card,
+    .erp-wrapper .setoran3-progress-toggle,
+    .erp-wrapper .setoran3-proof-history-toggle,
+    .erp-wrapper .setoran3-ai-detail-toggle,
+    .erp-wrapper .setoran3-nav-btn,
+    .erp-wrapper .setoran3-period-btn,
+    .erp-wrapper .setoran3-today-btn,
+    .erp-wrapper .erp-long-bar{
+        transition:none !important;
+        animation:none !important;
+    }
+    .erp-wrapper .kpi-card:hover,
+    .erp-wrapper .dash-kpi-card:hover,
+    .erp-wrapper .setoran3-summary-card:hover,
+    .erp-wrapper .setoran3-progress-toggle:hover,
+    .erp-wrapper .setoran3-nav-btn:hover{
+        transform:none !important;
+    }
+}
+
+/* =========================================================
+   UI-09 FINAL POLISH
+   Cool light glow · DETAIL/RETURN buttons · sticky lock
+   ========================================================= */
+@keyframes ui09-cool-pulse{
+    0%{
+        box-shadow:
+            0 0 0 3px rgba(59,130,246,.18),
+            0 0 16px rgba(15,23,42,.14),
+            0 8px 20px rgba(15,23,42,.10);
+    }
+    100%{
+        box-shadow:
+            0 0 0 0 rgba(59,130,246,0),
+            0 0 0 rgba(15,23,42,0),
+            0 4px 12px rgba(15,23,42,.08);
+    }
+}
+
+/* Light surfaces: remove gold glow → cool blue-gray */
+.erp-wrapper .kpi-card:hover,
+.erp-wrapper .dash-kpi-card:hover,
+.erp-wrapper .setoran3-summary-card:hover,
+.erp-wrapper .setoran3-summary-card:nth-child(1):hover,
+.erp-wrapper .setoran3-summary-card:nth-child(2):hover,
+.erp-wrapper .setoran3-summary-card:nth-child(3):hover,
+.erp-wrapper .setoran3-summary-card.is-cashout:hover,
+.erp-wrapper .setoran3-summary-card.is-actual:hover,
+.erp-wrapper .kpi-card.gold:hover,
+.erp-wrapper .kpi-card.emerald:hover,
+.erp-wrapper .kpi-card.green:hover,
+.erp-wrapper .kpi-card.cyan:hover,
+.erp-wrapper .kpi-card.blue:hover,
+.erp-wrapper .kpi-card.orange:hover,
+.erp-wrapper .dash-kpi-card:nth-child(1):hover,
+.erp-wrapper .dash-kpi-card:nth-child(3):hover,
+.erp-wrapper .dash-kpi-card:nth-child(4):hover,
+.erp-wrapper .dash-kpi-card:nth-child(5):hover,
+.erp-wrapper .executive-item:hover,
+.erp-wrapper .executive-box:hover,
+.erp-wrapper .chart-card:hover,
+.erp-wrapper .activity-card:hover,
+.erp-wrapper .payment-card:hover,
+.erp-wrapper .ranking-card:hover,
+.erp-wrapper .dash-latest-card:hover,
+.erp-wrapper .qris-reco-card:hover,
+.erp-wrapper .setoran3-form-card:hover,
+.erp-wrapper .setoran3-proof-panel:hover,
+.erp-wrapper .setoran3-ai:hover{
+    transform:translateY(-2px);
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.12),
+        0 0 14px rgba(59,130,246,.10),
+        0 8px 24px rgba(15,23,42,.12),
+        inset 0 0 0 1px rgba(15,23,42,.04) !important;
+}
+
+/* Keep accent borders; no gold outer glow */
+.erp-wrapper .setoran3-summary-card:nth-child(1):hover,
+.erp-wrapper .kpi-card.gold:hover,
+.erp-wrapper .dash-kpi-card:nth-child(1):hover{ border-color:#D4AF37 !important; }
+.erp-wrapper .setoran3-summary-card:nth-child(2):hover{ border-color:#8B7355 !important; }
+.erp-wrapper .setoran3-summary-card:nth-child(3):hover,
+.erp-wrapper .kpi-card.cyan:hover{ border-color:#0891B2 !important; }
+.erp-wrapper .setoran3-summary-card.is-cashout:hover{ border-color:#DC2626 !important; }
+.erp-wrapper .setoran3-summary-card.is-actual:hover{ border-color:#F2C230 !important; }
+.erp-wrapper .kpi-card.emerald:hover,
+.erp-wrapper .kpi-card.green:hover,
+.erp-wrapper .dash-kpi-card:nth-child(3):hover{ border-color:#15803D !important; }
+.erp-wrapper .kpi-card.blue:hover,
+.erp-wrapper .dash-kpi-card:nth-child(5):hover{ border-color:#2563EB !important; }
+.erp-wrapper .kpi-card.orange:hover,
+.erp-wrapper .dash-kpi-card:nth-child(4):hover{ border-color:#FFFFFF !important; }
+
+.erp-wrapper .kpi-card:active,
+.erp-wrapper .dash-kpi-card:active,
+.erp-wrapper .setoran3-summary-card:active,
+.erp-wrapper .executive-item:active,
+.erp-wrapper .chart-card:active,
+.erp-wrapper .ranking-card:active,
+.erp-wrapper .qris-reco-card:active{
+    transform:scale(0.985);
+    animation:ui09-cool-pulse .28s ease;
+}
+
+/* Long bars / nav — cool glow, gold left accent only */
+.erp-wrapper .setoran3-progress-toggle:hover,
+.erp-wrapper .setoran3-proof-history-toggle:hover,
+.erp-wrapper .setoran3-ai-detail-toggle:hover,
+.erp-wrapper .setoran3-finance-link:hover,
+.erp-wrapper .setoran3-nav-btn:hover,
+.erp-wrapper .setoran3-period-btn:hover,
+.erp-wrapper .setoran3-today-btn:hover,
+.erp-wrapper .erp-long-bar:hover,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-ghost:hover,
+.erp-wrapper .setoran3-proof-btn-ghost:hover,
+.erp-wrapper .qris-reco-btn-ghost:hover{
+    background:#1C222B !important;
+    border-color:#94A3B8 !important;
+    border-left-color:#D4AF37 !important;
+    color:#F8FAFC !important;
+    transform:translateY(-2px);
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.12),
+        0 0 14px rgba(59,130,246,.10),
+        0 8px 22px rgba(15,23,42,.12) !important;
+}
+
+.erp-wrapper .setoran3-progress-toggle:active,
+.erp-wrapper .setoran3-proof-history-toggle:active,
+.erp-wrapper .setoran3-ai-detail-toggle:active,
+.erp-wrapper .setoran3-nav-btn:active,
+.erp-wrapper .setoran3-period-btn:active,
+.erp-wrapper .setoran3-today-btn:active,
+.erp-wrapper .erp-long-bar:active,
+.erp-wrapper .setoran3-form-actions > button:active,
+.erp-wrapper .setoran3-proof-btn:active{
+    transform:scale(0.99);
+    animation:ui09-cool-pulse .26s ease;
+}
+
+.erp-wrapper .setoran3-progress-toggle[aria-expanded="true"],
+.erp-wrapper .setoran3-proof-history-toggle[aria-expanded="true"],
+.erp-wrapper .setoran3-ai-detail-toggle[aria-expanded="true"],
+.erp-wrapper .erp-long-bar[aria-expanded="true"],
+.erp-wrapper .erp-long-bar.is-expanded,
+.erp-wrapper .erp-long-bar.is-active{
+    background:#1C222B !important;
+    border:1px solid #94A3B8 !important;
+    border-left:5px solid #D4AF37 !important;
+    color:#F8FAFC !important;
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.14),
+        0 0 14px rgba(15,23,42,.12),
+        0 6px 18px rgba(15,23,42,.10),
+        inset 0 0 0 1px rgba(15,23,42,.04) !important;
+}
+
+.erp-wrapper .setoran3-active-cabang{
+    background:#1C222B !important;
+    border:1px solid #94A3B8 !important;
+    border-left:4px solid #D4AF37 !important;
+    color:#F8FAFC !important;
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.10),
+        0 4px 14px rgba(15,23,42,.10) !important;
+}
+
+.erp-wrapper .qris-reco-table tbody tr:hover td,
+.erp-wrapper .setoran3-table tbody tr:hover td{
+    background:#1C222B !important;
+    box-shadow:inset 4px 0 0 #D4AF37 !important;
+}
+
+.erp-wrapper .qris-reco-btn-primary:hover,
+.erp-wrapper .setoran3-proof-btn-primary:hover,
+.erp-wrapper .btn-lihat:hover,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-primary:hover{
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.12),
+        0 8px 20px rgba(15,23,42,.14) !important;
+    transform:translateY(-2px);
+}
+
+.erp-wrapper .qris-reco-btn-action:hover,
+.erp-wrapper .setoran3-form-actions > .qris-reco-btn-action:hover{
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.14),
+        0 8px 20px rgba(15,23,42,.12) !important;
+    transform:translateY(-2px);
+}
+
+/* DETAIL — charcoal dark, white text */
+.erp-wrapper button[data-s3-action="detail"],
+.erp-wrapper button[data-qris-action="detail"],
+.erp-wrapper .qris-reco-table button[data-s3-action="detail"],
+.erp-wrapper .qris-reco-table button[data-qris-action="detail"],
+.erp-wrapper .setoran3-table button[data-s3-action="detail"],
+.erp-wrapper .setoran3-table button[data-qris-action="detail"],
+.erp-wrapper [data-action-cell] button[data-s3-action="detail"],
+.erp-wrapper [data-action-cell] button[data-qris-action="detail"]{
+    background:#15171A !important;
+    color:#FFFFFF !important;
+    border:1px solid #2A2F36 !important;
+    border-left:3px solid #D4AF37 !important;
+    font-weight:800 !important;
+    box-shadow:0 2px 8px rgba(15,23,42,.18) !important;
+}
+
+.erp-wrapper button[data-s3-action="detail"]:hover,
+.erp-wrapper button[data-qris-action="detail"]:hover,
+.erp-wrapper .qris-reco-table button[data-s3-action="detail"]:hover,
+.erp-wrapper .qris-reco-table button[data-qris-action="detail"]:hover,
+.erp-wrapper .setoran3-table button[data-s3-action="detail"]:hover,
+.erp-wrapper [data-action-cell] button[data-s3-action="detail"]:hover,
+.erp-wrapper [data-action-cell] button[data-qris-action="detail"]:hover{
+    background:#22262C !important;
+    color:#FFFFFF !important;
+    border-color:#3B424C !important;
+    transform:translateY(-1px);
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.12),
+        0 8px 18px rgba(15,23,42,.22) !important;
+}
+
+/* KEMBALIKAN KE SPV — premium gold */
+.erp-wrapper button[data-s3-action="return"],
+.erp-wrapper button[data-qris-action="return"],
+.erp-wrapper .qris-reco-table button[data-s3-action="return"],
+.erp-wrapper .qris-reco-table button[data-qris-action="return"],
+.erp-wrapper .setoran3-table button[data-s3-action="return"],
+.erp-wrapper .setoran3-table button[data-qris-action="return"],
+.erp-wrapper [data-action-cell] button[data-s3-action="return"],
+.erp-wrapper [data-action-cell] button[data-qris-action="return"]{
+    background:linear-gradient(180deg, #F2C230 0%, #D4AF37 100%) !important;
+    color:#111827 !important;
+    border:1px solid #C89B22 !important;
+    font-weight:800 !important;
+    box-shadow:
+        0 0 0 1px rgba(212,175,55,.25),
+        0 4px 12px rgba(212,175,55,.28) !important;
+}
+
+.erp-wrapper button[data-s3-action="return"]:hover,
+.erp-wrapper button[data-qris-action="return"]:hover,
+.erp-wrapper .qris-reco-table button[data-s3-action="return"]:hover,
+.erp-wrapper .qris-reco-table button[data-qris-action="return"]:hover,
+.erp-wrapper .setoran3-table button[data-s3-action="return"]:hover,
+.erp-wrapper [data-action-cell] button[data-s3-action="return"]:hover,
+.erp-wrapper [data-action-cell] button[data-qris-action="return"]:hover{
+    background:linear-gradient(180deg, #FFD34D 0%, #E2B93A 100%) !important;
+    color:#111827 !important;
+    border-color:#B8860B !important;
+    transform:translateY(-1px);
+    box-shadow:
+        0 0 0 2px rgba(212,175,55,.28),
+        0 8px 18px rgba(212,175,55,.35) !important;
+}
+
+.erp-wrapper button[data-s3-action="detail"]:active,
+.erp-wrapper button[data-qris-action="detail"]:active,
+.erp-wrapper button[data-s3-action="return"]:active,
+.erp-wrapper button[data-qris-action="return"]:active{
+    transform:scale(0.98);
+}
+
+body.setoran3-modal-open .erp-wrapper #header,
+body.setoran3-modal-open #header{
+    z-index:20 !important;
+}
+
+/* Section chrome scrolls with page — only #header is locked */
+.erp-wrapper .setoran3-sticky{
+    position:relative !important;
+    top:auto !important;
+    z-index:1 !important;
+}
+
+html,
+body{
+    height:auto !important;
+    min-height:100% !important;
+    max-height:none !important;
+}
+
+body{
+    display:block !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+}
+
+.erp-wrapper,
+.erp-wrapper .erp-content,
+.erp-wrapper .setoran-page{
+    overflow:visible !important;
+    max-height:none !important;
+    height:auto !important;
+    contain:none !important;
+    transform:none !important;
+}
+
+/* =========================================================
+   VAX ERP UI MASTER FINAL — one-pass polish locks
+   ========================================================= */
+
+/* Trends on light cards */
+.erp-wrapper .positive,
+.erp-wrapper .kpi-status.positive,
+.erp-wrapper .summary-info .positive,
+.erp-wrapper .dash-kpi-card small.positive,
+.erp-wrapper .kpi-card .positive{
+    color:#15803D !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+.erp-wrapper .negative,
+.erp-wrapper .kpi-status.negative,
+.erp-wrapper .summary-info .negative,
+.erp-wrapper .summary-info .exec-trend-badge.negative,
+.erp-wrapper .summary-info .exec-trend-sub.negative{
+    color:#DC2626 !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+.erp-wrapper .warning,
+.erp-wrapper .kpi-status.warning{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+.erp-wrapper .kpi-status:not(.positive):not(.negative):not(.warning),
+.erp-wrapper .dash-kpi-card small:not(.positive):not(.negative),
+.erp-wrapper .kpi-card small:not(.positive):not(.negative),
+.erp-wrapper .kpi-desc{
+    color:#E2E8F0 !important;
+    font-weight:700 !important;
+    opacity:1 !important;
+}
+
+/* Status badges — large semantic */
+.erp-wrapper .qris-reco-badge,
+.setoran-page .qris-reco-badge{
+    min-height:34px !important;
+    padding:8px 16px !important;
+    font-size:13px !important;
+    font-weight:800 !important;
+}
+.erp-wrapper .qris-reco-badge.clear,
+.erp-wrapper .qris-reco-badge.sesuai,
+.erp-wrapper .qris-reco-badge.terjelaskan{
+    background:#BBF7D0 !important;
+    color:#166534 !important;
+    border-color:#4ADE80 !important;
+}
+.erp-wrapper .qris-reco-badge.wait-owner,
+.erp-wrapper .qris-reco-badge.menunggu{
+    background:rgba(245,158,11,.16) !important;
+    color:#FDE68A !important;
+    border-color:#F59E0B !important;
+}
+
+/* Progress legend / chips */
+.erp-wrapper .setoran3-stat-chip,
+.erp-wrapper .setoran3-progress-stats,
+.erp-wrapper .dash-segment-legend span{
+    color:#CBD5E1 !important;
+    font-weight:700 !important;
+    font-size:13px !important;
+}
+.erp-wrapper .setoran3-stat-chip{
+    background:#F3F4F6 !important;
+    border:1px solid #2B3440 !important;
+    padding:8px 12px !important;
+}
+.erp-wrapper .dash-segment-legend i{
+    opacity:1 !important;
+}
+
+/* Labels / filters */
+.erp-wrapper .setoran3-period-label,
+.erp-wrapper label,
+.erp-wrapper .qris-reco-filters label,
+.setoran-page .setoran3-period-label{
+    color:#F8FAFC !important;
+    font-weight:700 !important;
+}
+
+/* APPROVE SETORAN — bright gold */
+.erp-wrapper #qrisApproveSetoranBtn:not(:disabled),
+.erp-wrapper #qrisApproveSetoranBtn.qris-reco-btn-primary:not(:disabled){
+    background:linear-gradient(180deg, #FFD34D 0%, #D4AF37 100%) !important;
+    color:#111827 !important;
+    border:1px solid #C89B22 !important;
+    font-weight:800 !important;
+    box-shadow:
+        0 0 0 1px rgba(212,175,55,.28),
+        0 6px 16px rgba(212,175,55,.32) !important;
+}
+.erp-wrapper #qrisApproveSetoranBtn:not(:disabled):hover{
+    background:linear-gradient(180deg, #FFE06A 0%, #E2B93A 100%) !important;
+    transform:translateY(-2px);
+    box-shadow:
+        0 0 0 2px rgba(212,175,55,.30),
+        0 10px 22px rgba(212,175,55,.38) !important;
+}
+.erp-wrapper #qrisApproveSetoranBtn:disabled{
+    background:#E5E7EB !important;
+    color:#9CA3AF !important;
+    border-color:#D1D5DB !important;
+    box-shadow:none !important;
+    opacity:1 !important;
+    cursor:not-allowed !important;
+}
+
+/* Primary hierarchy */
+.erp-wrapper .qris-reco-btn-primary,
+.erp-wrapper .setoran3-proof-btn-primary,
+.erp-wrapper #setoran3BtnSaveDraft,
+.erp-wrapper .btn-lihat{
+    background:linear-gradient(180deg, #F2C230 0%, #D4AF37 100%) !important;
+    color:#111827 !important;
+    border:1px solid #C89B22 !important;
+    font-weight:800 !important;
+}
+
+/* DETAIL charcoal */
+.erp-wrapper button[data-s3-action="detail"],
+.erp-wrapper button[data-qris-action="detail"],
+.erp-wrapper .qris-reco-table button[data-s3-action="detail"],
+.erp-wrapper .qris-reco-table button[data-qris-action="detail"],
+.erp-wrapper .setoran3-table button[data-s3-action="detail"],
+.erp-wrapper [data-action-cell] button[data-s3-action="detail"],
+.erp-wrapper [data-action-cell] button[data-qris-action="detail"]{
+    background:#15171A !important;
+    color:#FFFFFF !important;
+    border:1px solid #2A2F36 !important;
+    border-left:3px solid #D4AF37 !important;
+    font-weight:800 !important;
+}
+
+/* RETURN gold */
+.erp-wrapper button[data-s3-action="return"],
+.erp-wrapper button[data-qris-action="return"],
+.erp-wrapper .qris-reco-table button[data-s3-action="return"],
+.erp-wrapper .qris-reco-table button[data-qris-action="return"],
+.erp-wrapper .setoran3-table button[data-s3-action="return"],
+.erp-wrapper [data-action-cell] button[data-s3-action="return"],
+.erp-wrapper [data-action-cell] button[data-qris-action="return"]{
+    background:linear-gradient(180deg, #F2C230 0%, #D4AF37 100%) !important;
+    color:#111827 !important;
+    border:1px solid #C89B22 !important;
+    font-weight:800 !important;
+}
+
+/* Logout red locks */
+.erp-wrapper .top-header .btn-owner-logout,
+body .sidebar .logout-btn{
+    background:#DC2626 !important;
+    border:1px solid #FF5A5F !important;
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+}
+
+/* QRIS / Setoran tables premium */
+.erp-wrapper .qris-reco-table-wrap,
+.erp-wrapper .setoran3-table-wrap{
+    border:1px solid #2B3440 !important;
+    border-radius:12px !important;
+    box-shadow:0 2px 10px rgba(15,23,42,.08) !important;
+    overflow:hidden;
+    background:#11151B !important;
+}
+.erp-wrapper .qris-reco-table thead th,
+.erp-wrapper .setoran3-table thead th{
+    background:#0F1318 !important;
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    font-size:12px !important;
+    padding:14px 12px !important;
+    border-bottom:1px solid #2B3440 !important;
+}
+.erp-wrapper .qris-reco-table tbody td,
+.erp-wrapper .setoran3-table tbody td{
+    background:#11151B !important;
+    color:#CBD5E1 !important;
+    font-weight:600 !important;
+    border-bottom:1px solid #2B3440 !important;
+    padding:12px !important;
+}
+.erp-wrapper .qris-reco-table tbody tr:hover td,
+.erp-wrapper .setoran3-table tbody tr:hover td{
+    background:#1C222B !important;
+    box-shadow:inset 4px 0 0 #D4AF37 !important;
+}
+
+/* Proof / catatan grouping */
+.erp-wrapper .setoran3-proof-panel,
+.erp-wrapper .setoran3-proof-view,
+.erp-wrapper .setoran3-form-card,
+.erp-wrapper .setoran3-ai{
+    background:#11151B !important;
+    border:1px solid #2B3440 !important;
+    border-radius:12px !important;
+    box-shadow:0 2px 10px rgba(15,23,42,.07) !important;
+    padding:14px 16px !important;
+    margin-top:14px !important;
+}
+.erp-wrapper .setoran3-proof-alert,
+.erp-wrapper .setoran3-proof-owner-note{
+    background:rgba(245,158,11,.16) !important;
+    border:1px solid #F59E0B !important;
+    border-left:4px solid #D97706 !important;
+    border-radius:10px !important;
+    color:#FDE68A !important;
+    font-weight:700 !important;
+    padding:12px 14px !important;
+    margin-bottom:12px !important;
+}
+.erp-wrapper .setoran3-proof-title,
+.erp-wrapper .setoran3-form-card > h4,
+.erp-wrapper .setoran3-ai > h4{
+    background:#1B1D21 !important;
+    color:#FFFFFF !important;
+    border-left:3px solid #D4AF37 !important;
+    border-radius:8px !important;
+    padding:10px 12px !important;
+    font-weight:800 !important;
+    margin:0 0 12px !important;
+}
+.erp-wrapper .setoran3-proof-history{
+    background:#171C23 !important;
+    border:1px solid #2B3440 !important;
+    border-radius:10px !important;
+    padding:12px !important;
+    margin-top:12px !important;
+}
+.erp-wrapper .setoran3-proof-history-group h6{
+    color:#FDE68A !important;
+    font-weight:800 !important;
+}
+
+/* Dark section headers — readable */
+.erp-wrapper .setoran3-summary-head,
+.erp-wrapper .setoran3-progress-head,
+.erp-wrapper .setoran3-sticky-top,
+.erp-wrapper #sectionSetoran3Table.setoran3-section-c .qris-reco-header,
+.erp-wrapper #sectionApproval .qris-reco-header,
+.erp-wrapper .setoran3-qris-divider,
+.erp-wrapper .erp-section-head,
+.erp-wrapper .erp-content-head{
+    background:#17191D !important;
+    border:1px solid rgba(212,175,55,.28) !important;
+    border-left:4px solid #D4AF37 !important;
+    border-radius:12px !important;
+    box-shadow:0 2px 10px rgba(0,0,0,.14) !important;
+    color:#FFFFFF !important;
+}
+.erp-wrapper .setoran3-summary-head h3,
+.erp-wrapper .setoran3-progress-head h3,
+.erp-wrapper .setoran3-sticky-top h2,
+.erp-wrapper .setoran3-qris-divider h3,
+.erp-wrapper #sectionApproval .qris-reco-header h3,
+.erp-wrapper .erp-page-title,
+.erp-wrapper .erp-section-title{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+}
+.erp-wrapper .setoran3-summary-head p,
+.erp-wrapper .setoran3-sticky-sub,
+.erp-wrapper .setoran3-qris-divider p,
+.erp-wrapper #sectionApproval .qris-reco-header small,
+.erp-wrapper .erp-page-sub,
+.erp-wrapper .erp-caption{
+    color:#D1D5DB !important;
+    font-weight:600 !important;
+}
+
+/* Finance readability */
+.erp-wrapper .finance-hub-card > h2{
+    color:#F2C230 !important;
+    font-weight:800 !important;
+}
+.erp-wrapper .finance-hub-card > p,
+.erp-wrapper .finance-hub-item span{
+    color:#D1D5DB !important;
+    font-weight:600 !important;
+}
+.erp-wrapper .finance-hub-item strong{
+    color:#F2C230 !important;
+    font-weight:800 !important;
+}
+
+/* Cool light glow (no gold outer glow) */
+.erp-wrapper .kpi-card:hover,
+.erp-wrapper .dash-kpi-card:hover,
+.erp-wrapper .setoran3-summary-card:hover,
+.erp-wrapper .setoran3-progress-toggle:hover,
+.erp-wrapper .setoran3-proof-history-toggle:hover,
+.erp-wrapper .setoran3-ai-detail-toggle:hover,
+.erp-wrapper .setoran3-nav-btn:hover,
+.erp-wrapper .setoran3-period-btn:hover,
+.erp-wrapper .setoran3-today-btn:hover{
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.12),
+        0 0 14px rgba(59,130,246,.10),
+        0 8px 24px rgba(15,23,42,.12) !important;
+    transform:translateY(-2px);
+}
+
+/* Photo modal preserved */
+.qris-reco-modal,
+.setoran3-scroll-modal{
+    z-index:1200 !important;
+}
+.qris-reco-modal-header{
+    position:sticky !important;
+    top:0 !important;
+    z-index:2 !important;
+    background:#11151B !important;
+}
+
+/* =========================================================
+   UI ACTION BUTTON FINAL — CLEAR / DETAIL / RETURN
+   Highest specificity — beats table/ghost white locks
+   ========================================================= */
+@keyframes ui-action-green-pulse{
+    0%{ box-shadow:0 0 0 0 rgba(34,197,94,.45), 0 4px 14px rgba(34,197,94,.25); }
+    100%{ box-shadow:0 0 0 8px rgba(34,197,94,0), 0 2px 8px rgba(34,197,94,.15); }
+}
+@keyframes ui-action-gold-pulse{
+    0%{ box-shadow:0 0 0 0 rgba(242,194,48,.45), 0 4px 14px rgba(212,175,55,.28); }
+    100%{ box-shadow:0 0 0 8px rgba(242,194,48,0), 0 2px 8px rgba(212,175,55,.15); }
+}
+@keyframes ui-action-dark-pulse{
+    0%{ box-shadow:0 0 0 0 rgba(59,130,246,.25), 0 4px 12px rgba(15,23,42,.28); }
+    100%{ box-shadow:0 0 0 8px rgba(59,130,246,0), 0 2px 8px rgba(15,23,42,.18); }
+}
+
+/* CLEAR — bright green (logout-red equivalent) */
+body .erp-wrapper .qris-reco-badge.sesuai,
+body .erp-wrapper .qris-reco-badge.terjelaskan,
+body .erp-wrapper .qris-reco-badge.clear,
+body.setoran-page .qris-reco-badge.sesuai,
+body.setoran-page .qris-reco-badge.terjelaskan,
+body .erp-wrapper .setoran3-summary-head .qris-reco-badge.sesuai,
+body .erp-wrapper .setoran3-table .qris-reco-badge.sesuai,
+body .erp-wrapper .setoran3-progress-list .qris-reco-badge.sesuai,
+body .erp-wrapper .qris-reco-table .qris-reco-badge.sesuai{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    min-height:34px !important;
+    padding:8px 16px !important;
+    background:#16A34A !important;
+    color:#FFFFFF !important;
+    font-size:13px !important;
+    font-weight:800 !important;
+    letter-spacing:.03em !important;
+    border:1px solid #4ADE80 !important;
+    border-radius:10px !important;
+    box-shadow:
+        0 0 0 1px rgba(34,197,94,.20),
+        0 4px 14px rgba(34,197,94,.25) !important;
+    opacity:1 !important;
+}
+
+body .erp-wrapper .qris-reco-badge.sesuai:hover,
+body .erp-wrapper .qris-reco-badge.terjelaskan:hover,
+body .erp-wrapper .qris-reco-badge.clear:hover,
+body.setoran-page .qris-reco-badge.sesuai:hover{
+    background:#22C55E !important;
+    color:#FFFFFF !important;
+    border-color:#86EFAC !important;
+    box-shadow:
+        0 0 0 3px rgba(34,197,94,.28),
+        0 6px 16px rgba(34,197,94,.35) !important;
+    transform:translateY(-1px);
+}
+
+body .erp-wrapper .qris-reco-badge.sesuai:active,
+body .erp-wrapper .qris-reco-badge.terjelaskan:active,
+body .erp-wrapper .qris-reco-badge.clear:active{
+    transform:scale(.98);
+    animation:ui-action-green-pulse .22s ease;
+}
+
+/* DETAIL — charcoal + gold accent (beats ghost/white table locks) */
+body .erp-wrapper button.qris-reco-btn-ghost[data-s3-action="detail"],
+body .erp-wrapper button.qris-reco-btn-ghost[data-qris-action="detail"],
+body .erp-wrapper button[data-s3-action="detail"],
+body .erp-wrapper button[data-qris-action="detail"],
+body .erp-wrapper .qris-reco-table button[data-s3-action="detail"],
+body .erp-wrapper .qris-reco-table button[data-qris-action="detail"],
+body .erp-wrapper .setoran3-table button[data-s3-action="detail"],
+body .erp-wrapper .setoran3-table button[data-qris-action="detail"],
+body .erp-wrapper [data-action-cell] button[data-s3-action="detail"],
+body .erp-wrapper [data-action-cell] button[data-qris-action="detail"],
+body .erp-wrapper #setoran3OwnerActionBtns button[data-s3-action="detail"],
+body.setoran-page button[data-s3-action="detail"]{
+    background:#17191D !important;
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+    border:1px solid #D4AF37 !important;
+    border-left:4px solid #F2C230 !important;
+    border-radius:10px !important;
+    min-height:36px !important;
+    padding:8px 14px !important;
+    box-shadow:0 2px 10px rgba(15,23,42,.22) !important;
+    opacity:1 !important;
+}
+
+body .erp-wrapper button.qris-reco-btn-ghost[data-s3-action="detail"]:hover,
+body .erp-wrapper button.qris-reco-btn-ghost[data-qris-action="detail"]:hover,
+body .erp-wrapper button[data-s3-action="detail"]:hover,
+body .erp-wrapper button[data-qris-action="detail"]:hover,
+body .erp-wrapper .qris-reco-table button[data-s3-action="detail"]:hover,
+body .erp-wrapper .qris-reco-table button[data-qris-action="detail"]:hover,
+body .erp-wrapper .setoran3-table button[data-s3-action="detail"]:hover,
+body .erp-wrapper [data-action-cell] button[data-s3-action="detail"]:hover,
+body .erp-wrapper [data-action-cell] button[data-qris-action="detail"]:hover,
+body.setoran-page button[data-s3-action="detail"]:hover{
+    background:#22262C !important;
+    color:#FFFFFF !important;
+    border-color:#F2C230 !important;
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.12),
+        0 8px 18px rgba(15,23,42,.28) !important;
+    transform:translateY(-1px);
+}
+
+body .erp-wrapper button[data-s3-action="detail"]:active,
+body .erp-wrapper button[data-qris-action="detail"]:active,
+body.setoran-page button[data-s3-action="detail"]:active{
+    transform:scale(.98);
+    animation:ui-action-dark-pulse .22s ease;
+}
+
+/* KEMBALIKAN KE SPV — bright gold */
+body .erp-wrapper button.qris-reco-btn-ghost[data-s3-action="return"],
+body .erp-wrapper button.qris-reco-btn-ghost[data-qris-action="return"],
+body .erp-wrapper button.qris-reco-btn-action[data-s3-action="return"],
+body .erp-wrapper button.qris-reco-btn-action[data-qris-action="return"],
+body .erp-wrapper button.qris-reco-btn-action[data-s3-action="reopen"],
+body .erp-wrapper button.qris-reco-btn-action[data-qris-action="reopen"],
+body .erp-wrapper button[data-s3-action="return"],
+body .erp-wrapper button[data-qris-action="return"],
+body .erp-wrapper .qris-reco-table button[data-s3-action="return"],
+body .erp-wrapper .qris-reco-table button[data-qris-action="return"],
+body .erp-wrapper .setoran3-table button[data-s3-action="return"],
+body .erp-wrapper .setoran3-table button[data-qris-action="return"],
+body .erp-wrapper [data-action-cell] button[data-s3-action="return"],
+body .erp-wrapper [data-action-cell] button[data-qris-action="return"],
+body .erp-wrapper #setoran3OwnerActionBtns button[data-s3-action="return"],
+body.setoran-page button[data-s3-action="return"]{
+    background:linear-gradient(180deg, #FFD34D 0%, #F2C230 100%) !important;
+    color:#111827 !important;
+    font-weight:800 !important;
+    border:1px solid #C89B22 !important;
+    border-radius:10px !important;
+    min-height:36px !important;
+    padding:8px 14px !important;
+    box-shadow:
+        0 0 0 1px rgba(212,175,55,.28),
+        0 4px 14px rgba(212,175,55,.32) !important;
+    opacity:1 !important;
+}
+
+body .erp-wrapper button.qris-reco-btn-ghost[data-s3-action="return"]:hover,
+body .erp-wrapper button.qris-reco-btn-ghost[data-qris-action="return"]:hover,
+body .erp-wrapper button[data-s3-action="return"]:hover,
+body .erp-wrapper button[data-qris-action="return"]:hover,
+body .erp-wrapper .qris-reco-table button[data-s3-action="return"]:hover,
+body .erp-wrapper .qris-reco-table button[data-qris-action="return"]:hover,
+body .erp-wrapper .setoran3-table button[data-s3-action="return"]:hover,
+body .erp-wrapper [data-action-cell] button[data-s3-action="return"]:hover,
+body .erp-wrapper [data-action-cell] button[data-qris-action="return"]:hover,
+body .erp-wrapper button[data-s3-action="reopen"]:hover,
+body .erp-wrapper button[data-qris-action="reopen"]:hover,
+body.setoran-page button[data-s3-action="return"]:hover{
+    background:linear-gradient(180deg, #FFE06A 0%, #FFD34D 100%) !important;
+    color:#F8FAFC !important;
+    border-color:#B8860B !important;
+    box-shadow:
+        0 0 0 2px rgba(242,194,48,.35),
+        0 8px 18px rgba(212,175,55,.40) !important;
+    transform:translateY(-1px);
+}
+
+body .erp-wrapper button[data-s3-action="return"]:active,
+body .erp-wrapper button[data-qris-action="return"]:active,
+body .erp-wrapper button[data-s3-action="reopen"]:active,
+body .erp-wrapper button[data-qris-action="reopen"]:active,
+body.setoran-page button[data-s3-action="return"]:active{
+    transform:scale(.98);
+    animation:ui-action-gold-pulse .22s ease;
+}
+
+/* Action cell / row spacing */
+body .erp-wrapper .qris-reco-actions,
+body .erp-wrapper [data-action-cell],
+body .erp-wrapper #setoran3OwnerActionBtns,
+body .erp-wrapper .setoran3-form-actions{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:8px !important;
+    align-items:center !important;
+}
+
+body .erp-wrapper .qris-reco-actions button,
+body .erp-wrapper [data-action-cell] button{
+    flex:0 0 auto !important;
+}
+
+@media (prefers-reduced-motion:reduce){
+    body .erp-wrapper .qris-reco-badge.sesuai,
+    body .erp-wrapper button[data-s3-action="detail"],
+    body .erp-wrapper button[data-s3-action="return"]{
+        transition:none !important;
+        animation:none !important;
+    }
+}
+
+/* =========================================================
+   SETORAN 3 HARIAN — ONE PASS VISUAL CLEANUP FINAL
+   Dark text readability · gold contrast · proof · AI · chips
+   ========================================================= */
+
+/* 1) Dark panels / boxes — ALWAYS light readable text */
+body .erp-wrapper .setoran3-co-rincian,
+body .erp-wrapper .setoran3-co-item,
+body .erp-wrapper .setoran3-co-total,
+body .erp-wrapper .setoran3-co-raw,
+body .erp-wrapper .setoran3-proof-card,
+body .erp-wrapper .setoran3-proof-owner-note,
+body .erp-wrapper .setoran3-proof-thumb-fallback,
+body .erp-wrapper .qris-reco-modal-panel .qris-reco-note-box,
+body .erp-wrapper #setoran3OwnerModal .qris-reco-note-box,
+body .erp-wrapper #setoran3OwnerNoteBox,
+body.setoran-page .setoran3-co-rincian,
+body.setoran-page .setoran3-proof-card{
+    color:#F3F4F6 !important;
+}
+
+body .erp-wrapper .setoran3-co-rincian h5,
+body .erp-wrapper .setoran3-co-item-name,
+body .erp-wrapper .setoran3-co-meta strong,
+body .erp-wrapper .setoran3-co-total strong,
+body .erp-wrapper .setoran3-co-raw strong,
+body .erp-wrapper .setoran3-proof-owner-note strong,
+body .erp-wrapper .setoran3-form-card > h4,
+body .erp-wrapper .setoran3-proof-title,
+body .erp-wrapper .setoran3-ai > h4,
+body .erp-wrapper .setoran3-sticky-top h2,
+body .erp-wrapper .setoran3-summary-head h3,
+body .erp-wrapper .setoran3-progress-head h3,
+body .erp-wrapper .setoran3-qris-divider h3,
+body .erp-wrapper #sectionApproval .qris-reco-header h3{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+body .erp-wrapper .setoran3-co-meta,
+body .erp-wrapper .setoran3-co-item-kasir,
+body .erp-wrapper .setoran3-co-total,
+body .erp-wrapper .setoran3-co-raw p,
+body .erp-wrapper .setoran3-proof-owner-note,
+body .erp-wrapper .setoran3-proof-hint,
+body .erp-wrapper .setoran3-summary-head p,
+body .erp-wrapper .setoran3-sticky-sub,
+body .erp-wrapper .setoran3-qris-divider p,
+body .erp-wrapper #sectionApproval .qris-reco-header small{
+    color:#D1D5DB !important;
+    opacity:1 !important;
+    font-weight:600 !important;
+}
+
+/* Dark mini-headers stay white-on-charcoal */
+body .erp-wrapper .setoran3-form-card > h4,
+body .erp-wrapper .setoran3-proof-title,
+body .erp-wrapper .setoran3-ai > h4,
+body .erp-wrapper .setoran3-proof-head .setoran3-proof-title{
+    background:#17191D !important;
+    color:#FFFFFF !important;
+    border-left:3px solid #F2C230 !important;
+}
+
+/* 2) Gold / yellow numbers & labels — brighter */
+body .erp-wrapper .setoran3-ai-num,
+body .erp-wrapper .setoran3-co-item-nominal,
+body .erp-wrapper .setoran3-proof-count,
+body .erp-wrapper .setoran3-proof-card-label,
+body .erp-wrapper .setoran3-form-total strong,
+body .erp-wrapper .setoran3-summary-card.is-actual strong,
+body .erp-wrapper .setoran3-co-rincian h5,
+body .erp-wrapper .setoran3-stat-chip strong,
+body .erp-wrapper .setoran3-active-cabang,
+body.setoran-page .setoran3-ai-num,
+body.setoran-page .setoran3-proof-count{
+    color:#F2C230 !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+    text-shadow:0 0 0 transparent;
+}
+
+body .erp-wrapper .setoran3-co-item-nominal{
+    color:#FFD34D !important;
+    font-size:16px !important;
+}
+
+/* 3) DETAIL + EDIT/KEMBALIKAN (reopen) — force premium buttons */
+body .erp-wrapper button.qris-reco-btn-action[data-s3-action="reopen"],
+body .erp-wrapper button.qris-reco-btn-action[data-qris-action="reopen"],
+body .erp-wrapper .qris-reco-table button[data-s3-action="reopen"],
+body .erp-wrapper .setoran3-table button[data-s3-action="reopen"],
+body .erp-wrapper [data-action-cell] button[data-s3-action="reopen"],
+body .erp-wrapper #setoran3OwnerActionBtns button[data-s3-action="reopen"],
+body.setoran-page button[data-s3-action="reopen"]{
+    background:linear-gradient(180deg, #FFD34D 0%, #F2C230 100%) !important;
+    color:#111827 !important;
+    font-weight:800 !important;
+    border:1px solid #C89B22 !important;
+    border-radius:10px !important;
+    min-height:38px !important;
+    padding:8px 14px !important;
+    box-shadow:
+        0 0 0 1px rgba(212,175,55,.28),
+        0 4px 14px rgba(212,175,55,.32) !important;
+}
+
+body .erp-wrapper button[data-s3-action="reopen"]:hover,
+body .erp-wrapper [data-action-cell] button[data-s3-action="reopen"]:hover{
+    background:linear-gradient(180deg, #FFE06A 0%, #FFD34D 100%) !important;
+    color:#F8FAFC !important;
+    transform:translateY(-1px);
+    box-shadow:
+        0 0 0 2px rgba(242,194,48,.35),
+        0 8px 18px rgba(212,175,55,.40) !important;
+}
+
+body .erp-wrapper button.qris-reco-btn-ghost[data-s3-action="detail"],
+body .erp-wrapper .qris-reco-table button[data-s3-action="detail"],
+body .erp-wrapper .setoran3-table button[data-s3-action="detail"],
+body .erp-wrapper [data-action-cell] button[data-s3-action="detail"]{
+    background:#17191D !important;
+    color:#FFFFFF !important;
+    border:1px solid #D4AF37 !important;
+    border-left:4px solid #F2C230 !important;
+    font-weight:800 !important;
+    min-height:38px !important;
+    box-shadow:0 2px 10px rgba(15,23,42,.22) !important;
+}
+
+/* 4) Status chips / progress chips — stronger */
+body .erp-wrapper .setoran3-stat-chip{
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:6px !important;
+    min-height:34px !important;
+    padding:8px 12px !important;
+    background:#11151B !important;
+    border:1.5px solid #C0C6CE !important;
+    border-radius:10px !important;
+    color:#F8FAFC !important;
+    font-size:13px !important;
+    font-weight:700 !important;
+    box-shadow:0 2px 8px rgba(15,23,42,.08) !important;
+}
+body .erp-wrapper .setoran3-stat-chip strong{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    font-size:14px !important;
+}
+body .erp-wrapper .setoran3-progress-stats{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:8px !important;
+}
+
+body .erp-wrapper .qris-reco-badge.wait-owner{
+    background:#F59E0B !important;
+    color:#F8FAFC !important;
+    border:1px solid #FBBF24 !important;
+    font-weight:800 !important;
+    min-height:34px !important;
+    box-shadow:0 0 0 1px rgba(245,158,11,.2), 0 4px 12px rgba(245,158,11,.28) !important;
+}
+body .erp-wrapper .qris-reco-badge.bermasalah{
+    background:#DC2626 !important;
+    color:#FFFFFF !important;
+    border:1px solid #F87171 !important;
+    font-weight:800 !important;
+    min-height:34px !important;
+    box-shadow:0 0 0 1px rgba(220,38,38,.2), 0 4px 12px rgba(220,38,38,.25) !important;
+}
+body .erp-wrapper .qris-reco-badge.belum-ada-data,
+body .erp-wrapper .qris-reco-badge.belum-dicek{
+    background:#4B5563 !important;
+    color:#FFFFFF !important;
+    border:1px solid #9CA3AF !important;
+    font-weight:800 !important;
+    min-height:34px !important;
+}
+
+/* 5) Flat white areas — light premium accent */
+body .erp-wrapper .setoran-section-card,
+body .erp-wrapper .setoran3-form-card,
+body .erp-wrapper .setoran3-proof-panel,
+body .erp-wrapper .setoran3-ai,
+body .erp-wrapper .setoran3-proof-view,
+body .erp-wrapper .qris-reco-card{
+    background:#11151B !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #D4AF37 !important;
+    border-radius:12px !important;
+    box-shadow:0 2px 10px rgba(15,23,42,.07) !important;
+}
+
+body .erp-wrapper .setoran3-summary-card,
+body .erp-wrapper .setoran3-perf-grid > *{
+    border:1px solid #2B3440 !important;
+    box-shadow:0 2px 8px rgba(15,23,42,.06) !important;
+}
+
+/* 6) Photo labels / count */
+body .erp-wrapper .setoran3-proof-card-label{
+    display:block !important;
+    color:#F2C230 !important;
+    font-size:13px !important;
+    font-weight:800 !important;
+    letter-spacing:.04em !important;
+    margin-bottom:8px !important;
+}
+body .erp-wrapper .setoran3-proof-count{
+    color:#FFD34D !important;
+    font-size:14px !important;
+    font-weight:800 !important;
+}
+body .erp-wrapper .setoran3-proof-card{
+    background:#17191D !important;
+    border:1px solid rgba(212,175,55,.35) !important;
+    border-radius:12px !important;
+    box-shadow:0 2px 10px rgba(0,0,0,.2) !important;
+}
+body .erp-wrapper .setoran3-proof-btn-primary,
+body .erp-wrapper button[data-s3-proof-action="view"]{
+    background:linear-gradient(180deg, #FFD34D 0%, #D4AF37 100%) !important;
+    color:#111827 !important;
+    font-weight:800 !important;
+    border:1px solid #C89B22 !important;
+    min-height:44px !important;
+}
+
+/* 7) BUKTI FOTO DIMINTA OWNER — red emphasis */
+body .erp-wrapper .setoran3-proof-alert,
+body .erp-wrapper #setoran3ProofAlert,
+body.setoran-page .setoran3-proof-alert{
+    display:block !important;
+    margin:0 0 12px !important;
+    padding:12px 14px !important;
+    background:rgba(239,68,68,.16) !important;
+    color:#B91C1C !important;
+    border:1px solid #F87171 !important;
+    border-left:5px solid #DC2626 !important;
+    border-radius:10px !important;
+    font-size:15px !important;
+    font-weight:800 !important;
+    letter-spacing:.02em !important;
+    box-shadow:0 0 0 1px rgba(220,38,38,.12), 0 4px 12px rgba(220,38,38,.18) !important;
+}
+
+/* 8) AI Insight readability */
+body .erp-wrapper .setoran3-ai{
+    color:#F8FAFC !important;
+}
+body .erp-wrapper .setoran3-ai-body,
+body .erp-wrapper .setoran3-ai-line .setoran3-ai-text,
+body .erp-wrapper .setoran3-ai-block,
+body .erp-wrapper .setoran3-ai-block p,
+body .erp-wrapper .setoran3-ai-block li{
+    color:#F8FAFC !important;
+    font-weight:600 !important;
+    opacity:1 !important;
+}
+body .erp-wrapper .setoran3-ai-status{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    font-size:22px !important;
+}
+body .erp-wrapper .setoran3-ai-status.up{ color:#15803D !important; }
+body .erp-wrapper .setoran3-ai-status.down{ color:#DC2626 !important; }
+body .erp-wrapper .setoran3-ai-status.flat{ color:#FFFFFF !important; }
+
+body .erp-wrapper .setoran3-ai-line{
+    background:#171C23 !important;
+    border:1px solid #2B3440 !important;
+}
+body .erp-wrapper .setoran3-ai-line .setoran3-ai-label{
+    color:#E2E8F0 !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+body .erp-wrapper .setoran3-ai-line.is-warn{
+    background:rgba(239,68,68,.16) !important;
+    border:1px solid #FCA5A5 !important;
+    border-left:4px solid #DC2626 !important;
+}
+body .erp-wrapper .setoran3-ai-line.is-warn .setoran3-ai-label,
+body .erp-wrapper .setoran3-ai-line.is-warn .setoran3-ai-text{
+    color:#B91C1C !important;
+    font-weight:800 !important;
+}
+body .erp-wrapper .setoran3-ai-line.is-saran{
+    background:rgba(242,194,48,.12) !important;
+    border:1px solid rgba(212,175,55,.55) !important;
+    border-left:4px solid #D4AF37 !important;
+}
+body .erp-wrapper .setoran3-ai-line.is-saran .setoran3-ai-label,
+body .erp-wrapper .setoran3-ai-line.is-saran .setoran3-ai-text{
+    color:#7A6514 !important;
+    font-weight:700 !important;
+}
+body .erp-wrapper .setoran3-ai-loading{
+    color:#FFFFFF !important;
+    font-weight:600 !important;
+}
+
+/* Cash-out dark cards inside AI — force bright text/gold */
+body .erp-wrapper .setoran3-co-rincian{
+    background:#17191D !important;
+    border:1px solid rgba(212,175,55,.40) !important;
+    border-radius:12px !important;
+    color:#F3F4F6 !important;
+}
+body .erp-wrapper .setoran3-co-rincian.is-warn{
+    border-color:#F87171 !important;
+    background:linear-gradient(180deg, #2A1515 0%, #17191D 100%) !important;
+}
+body .erp-wrapper .setoran3-co-item{
+    background:#22262C !important;
+    border:1px solid #3B424C !important;
+}
+body .erp-wrapper .setoran3-co-status.ok{ color:#4ADE80 !important; font-weight:800 !important; }
+body .erp-wrapper .setoran3-co-status.warn{ color:#FCA5A5 !important; font-weight:800 !important; }
+body .erp-wrapper .setoran3-co-status.muted{ color:#D1D5DB !important; font-weight:700 !important; }
+body .erp-wrapper .setoran3-ai-block h5{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    font-size:14px !important;
+}
+
+/* 9) Modal / detail note boxes */
+body .erp-wrapper #setoran3OwnerModal .qris-reco-modal-panel,
+body .erp-wrapper #setoran3OwnerModal .qris-reco-form,
+body .erp-wrapper #setoran3OwnerModal label{
+    color:#F8FAFC !important;
+}
+body .erp-wrapper #setoran3OwnerNoteBox,
+body .erp-wrapper #setoran3OwnerModal .qris-reco-note-box,
+body.setoran-page .qris-reco-note-box{
+    background:#17191D !important;
+    color:#F3F4F6 !important;
+    border:1px solid rgba(212,175,55,.35) !important;
+    border-radius:10px !important;
+    padding:12px 14px !important;
+    font-weight:600 !important;
+}
+body .erp-wrapper #setoran3OwnerNoteBox strong,
+body .erp-wrapper #setoran3OwnerModal .qris-reco-note-box strong{
+    color:#FFD34D !important;
+    font-weight:800 !important;
+}
+body .erp-wrapper #setoran3OwnerModal .qris-reco-modal-header h4{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+}
+body .erp-wrapper #setoran3OwnerModal .qris-reco-modal-header small{
+    color:#FFFFFF !important;
+    font-weight:600 !important;
+}
+
+/* Proof owner note (light panel context) */
+body .erp-wrapper .setoran3-proof-owner-note{
+    background:rgba(245,158,11,.16) !important;
+    color:#FDE68A !important;
+    border:1px solid #F59E0B !important;
+    border-left:4px solid #D97706 !important;
+}
+body .erp-wrapper .setoran3-proof-owner-note strong{
+    color:#FDE68A !important;
+}
+
+/* =========================================================
+   SETORAN FINAL VISUAL REFINEMENT — light boxes + AI warning
+   ========================================================= */
+
+/* 1) White / light box text — max contrast */
+body.setoran-page .erp-wrapper .setoran3-summary-card,
+body.setoran-page .erp-wrapper .setoran3-perf-card,
+body.setoran-page .erp-wrapper .setoran3-stat-chip,
+body.setoran-page .erp-wrapper .setoran3-form-card,
+body.setoran-page .erp-wrapper .setoran3-ai:not(.is-dark),
+body .erp-wrapper .setoran3-summary-card,
+body .erp-wrapper .setoran3-perf-card,
+body .erp-wrapper .setoran3-stat-chip,
+body .erp-wrapper .setoran3-form-card,
+body .erp-wrapper .setoran3-ai{
+    color:#F8FAFC !important;
+}
+
+body .erp-wrapper .setoran3-summary-card span,
+body .erp-wrapper .setoran3-perf-card span,
+body .erp-wrapper .setoran3-form-card label,
+body .erp-wrapper .setoran3-form-lead,
+body .erp-wrapper .setoran3-form-total,
+body .erp-wrapper .setoran3-all-hint,
+body .erp-wrapper .setoran3-ai-loading,
+body .erp-wrapper .setoran3-proof-hint,
+body.setoran-page .setoran3-summary-card span,
+body.setoran-page .setoran3-perf-card span,
+body.setoran-page .setoran3-form-card label{
+    color:#CBD5E1 !important;
+    font-weight:700 !important;
+    opacity:1 !important;
+}
+
+body .erp-wrapper .setoran3-summary-card strong,
+body .erp-wrapper .setoran3-perf-card strong,
+body .erp-wrapper .setoran3-stat-chip,
+body .erp-wrapper .setoran3-stat-chip strong,
+body .erp-wrapper .setoran3-form-total strong,
+body.setoran-page .setoran3-summary-card strong,
+body.setoran-page .setoran3-perf-card strong{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    opacity:1 !important;
+}
+
+/* semantic value accents stay vivid on white */
+body .erp-wrapper .setoran3-summary-card.is-cashout strong{
+    color:#DC2626 !important;
+}
+body .erp-wrapper .setoran3-summary-card.is-actual strong,
+body .erp-wrapper .setoran3-form-total strong{
+    color:#FDE68A !important;
+}
+
+/* 2) Light boxes = KPI card system */
+body .erp-wrapper .setoran3-summary-card,
+body .erp-wrapper .setoran3-perf-card,
+body .erp-wrapper .setoran3-stat-chip,
+body .erp-wrapper .setoran3-form-card,
+body .erp-wrapper .setoran3-ai,
+body .erp-wrapper .setoran3-proof-panel,
+body .erp-wrapper .setoran3-proof-view,
+body .erp-wrapper .setoran-section-card{
+    background:#11151B !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #D4AF37 !important;
+    border-radius:12px !important;
+    box-shadow:
+        0 1px 2px rgba(15,23,42,.05),
+        0 6px 16px rgba(15,23,42,.07) !important;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease !important;
+}
+
+body .erp-wrapper .setoran3-summary-card:nth-child(1){ border-left-color:#D4AF37 !important; }
+body .erp-wrapper .setoran3-summary-card:nth-child(2){ border-left-color:#8B7355 !important; }
+body .erp-wrapper .setoran3-summary-card:nth-child(3){ border-left-color:#0891B2 !important; }
+body .erp-wrapper .setoran3-summary-card.is-cashout{ border-left-color:#DC2626 !important; }
+body .erp-wrapper .setoran3-summary-card.is-actual{ border-left-color:#F2C230 !important; }
+
+body .erp-wrapper .setoran3-summary-card:hover,
+body .erp-wrapper .setoran3-perf-card:hover,
+body .erp-wrapper .setoran3-stat-chip:hover,
+body .erp-wrapper .setoran3-form-card:hover,
+body .erp-wrapper .setoran3-ai:hover{
+    transform:translateY(-2px);
+    border-color:#94A3B8 !important;
+    box-shadow:
+        0 0 0 2px rgba(59,130,246,.12),
+        0 0 14px rgba(59,130,246,.10),
+        0 8px 22px rgba(15,23,42,.12) !important;
+}
+
+body .erp-wrapper .setoran3-summary-card:active,
+body .erp-wrapper .setoran3-perf-card:active,
+body .erp-wrapper .setoran3-stat-chip:active{
+    transform:scale(0.99);
+}
+
+body .erp-wrapper .setoran3-perf-card{
+    padding:12px 14px !important;
+    min-height:72px !important;
+}
+body .erp-wrapper .setoran3-perf-card span{
+    font-size:11px !important;
+    letter-spacing:.04em !important;
+    text-transform:uppercase !important;
+}
+body .erp-wrapper .setoran3-perf-card strong{
+    font-size:15px !important;
+    line-height:1.25 !important;
+}
+
+/* 3) Setoran Cash Aktual + Catatan fields */
+body .erp-wrapper #setoran3SpvFormCard,
+body .erp-wrapper #setoran3OwnerActionCard,
+body .erp-wrapper .setoran3-form-card{
+    background:#171C23 !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #D4AF37 !important;
+    padding:16px !important;
+}
+
+body .erp-wrapper .setoran3-form-card label{
+    color:#F8FAFC !important;
+    font-size:13px !important;
+    font-weight:800 !important;
+    gap:8px !important;
+}
+
+body .erp-wrapper #setoran3FormCash,
+body .erp-wrapper #setoran3FormNote,
+body .erp-wrapper .setoran3-form-card input,
+body .erp-wrapper .setoran3-form-card textarea,
+body .erp-wrapper #setoran3OwnerModal textarea,
+body .erp-wrapper #setoran3OwnerModal input:not([type="hidden"]){
+    background:#11151B !important;
+    color:#F8FAFC !important;
+    border:1.5px solid #94A3B8 !important;
+    border-radius:10px !important;
+    box-shadow:inset 0 1px 2px rgba(15,23,42,.04) !important;
+    font-weight:600 !important;
+}
+
+body .erp-wrapper #setoran3FormCash:hover,
+body .erp-wrapper #setoran3FormNote:hover,
+body .erp-wrapper .setoran3-form-card input:hover,
+body .erp-wrapper .setoran3-form-card textarea:hover{
+    border-color:#64748B !important;
+    background:#171C23 !important;
+}
+
+body .erp-wrapper #setoran3FormCash:focus,
+body .erp-wrapper #setoran3FormNote:focus,
+body .erp-wrapper .setoran3-form-card input:focus,
+body .erp-wrapper .setoran3-form-card textarea:focus,
+body .erp-wrapper #setoran3OwnerModal textarea:focus{
+    outline:none !important;
+    border-color:#D4AF37 !important;
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,.12),
+        0 0 0 1px rgba(212,175,55,.35) !important;
+    background:#11151B !important;
+    color:#F8FAFC !important;
+}
+
+body .erp-wrapper .setoran3-form-lead{
+    color:#334155 !important;
+    font-weight:600 !important;
+    font-size:13px !important;
+}
+
+body .erp-wrapper .setoran3-form-total{
+    background:rgba(242,194,48,.12) !important;
+    border:1px solid rgba(212,175,55,.45) !important;
+    border-radius:10px !important;
+    padding:10px 12px !important;
+    color:#CBD5E1 !important;
+    font-weight:700 !important;
+}
+
+/* 4) AI Insight — PERLU PERHATIAN top banner REMOVED (duplicate warning).
+   Cash Out is-warn remains red via setoran-dark-premium / line rules. */
+body .erp-wrapper .setoran3-ai-status.down,
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-status.down{
+    display:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    min-height:0 !important;
+    height:0 !important;
+    border:none !important;
+    box-shadow:none !important;
+    overflow:hidden !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down){
+    display:grid !important;
+    gap:10px !important;
+    padding:14px !important;
+    background:linear-gradient(180deg,#3A1518,#241012) !important;
+    border:1px solid #FECACA !important;
+    border-radius:12px !important;
+    box-shadow:0 2px 10px rgba(127,29,29,.06) !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-line{
+    background:#11151B !important;
+    border:1px solid #E5E7EB !important;
+    border-left:4px solid #94A3B8 !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-line.is-warn{
+    background:rgba(239,68,68,.16) !important;
+    border:1px solid #FCA5A5 !important;
+    border-left:4px solid #DC2626 !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-line.is-saran{
+    background:linear-gradient(180deg,#2A2312,#1C1910) !important;
+    border:1px solid #FCD34D !important;
+    border-left:4px solid #D4AF37 !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-label{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    font-size:12px !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-text{
+    color:#F8FAFC !important;
+    font-weight:700 !important;
+    font-size:14px !important;
+    line-height:1.45 !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-line.is-warn .setoran3-ai-label,
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-line.is-warn .setoran3-ai-text{
+    color:#991B1B !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down) .setoran3-ai-num{
+    color:#FDE68A !important;
+    font-weight:800 !important;
+}
+
+/* healthy / flat AI status chips stay clear */
+body .erp-wrapper .setoran3-ai-status.up{
+    display:inline-flex !important;
+    padding:10px 14px !important;
+    background:#DCFCE7 !important;
+    color:#166534 !important;
+    border:1px solid #4ADE80 !important;
+    border-radius:10px !important;
+    font-weight:800 !important;
+}
+body .erp-wrapper .setoran3-ai-status.flat{
+    display:inline-flex !important;
+    padding:10px 14px !important;
+    background:rgba(245,158,11,.16) !important;
+    color:#FDE68A !important;
+    border:1px solid #F59E0B !important;
+    border-radius:10px !important;
+    font-weight:800 !important;
+}
+
+@media (prefers-reduced-motion:reduce){
+    body .erp-wrapper .setoran3-summary-card,
+    body .erp-wrapper .setoran3-perf-card,
+    body .erp-wrapper .setoran3-stat-chip,
+    body .erp-wrapper .setoran3-form-card{
+        transition:none !important;
+    }
+    body .erp-wrapper .setoran3-summary-card:hover,
+    body .erp-wrapper .setoran3-perf-card:hover{
+        transform:none !important;
+    }
+}
+
+/* =========================================================
+   UI-12 FINAL VISUAL ACCEPTANCE SWEEP — Setoran 3 Harian
+   Beats light-contrast dark-text-on-dark-meta locks
+   ========================================================= */
+
+/* 1) Modal EDIT/KEMBALIKAN — dark summary readable */
+body #setoran3OwnerModal .qris-reco-form-meta,
+body .erp-wrapper #setoran3OwnerModal .qris-reco-form-meta{
+    background:#17191D !important;
+    border:1px solid rgba(212,175,55,.35) !important;
+    border-radius:12px !important;
+    padding:14px !important;
+    color:#F3F4F6 !important;
+}
+
+body #setoran3OwnerModal .qris-reco-form-meta span,
+body .erp-wrapper #setoran3OwnerModal .qris-reco-form-meta span{
+    color:#D1D5DB !important;
+    font-weight:600 !important;
+    font-size:11px !important;
+    opacity:1 !important;
+}
+
+body #setoran3OwnerModal .qris-reco-form-meta strong,
+body .erp-wrapper #setoran3OwnerModal .qris-reco-form-meta strong{
+    color:#FFFFFF !important;
+    font-weight:800 !important;
+    font-size:15px !important;
+    opacity:1 !important;
+}
+
+body #setoran3OwnerModal #setoran3OwnerMinutesCashOut,
+body .erp-wrapper #setoran3OwnerModal #setoran3OwnerMinutesCashOut{
+    color:#F87171 !important;
+}
+body #setoran3OwnerModal #setoran3OwnerMinutesNonCash,
+body .erp-wrapper #setoran3OwnerModal #setoran3OwnerMinutesNonCash{
+    color:#22D3EE !important;
+}
+body #setoran3OwnerModal #setoran3OwnerCashActual,
+body .erp-wrapper #setoran3OwnerModal #setoran3OwnerCashActual{
+    color:#F2C230 !important;
+}
+
+/* 2) Finance input cards — cash + catatan */
+body .erp-wrapper #setoran3SpvFormCard label:has(#setoran3FormCash),
+body .erp-wrapper .setoran3-form-card label:has(input[type="number"]){
+    background:linear-gradient(180deg,#2A2312,#1C1910) !important;
+    border:1px solid rgba(212,175,55,.45) !important;
+    border-left:4px solid #D4AF37 !important;
+    border-radius:12px !important;
+    padding:12px !important;
+    color:#F8FAFC !important;
+}
+
+body .erp-wrapper #setoran3SpvFormCard label:has(#setoran3FormNote),
+body .erp-wrapper .setoran3-form-card label:has(textarea){
+    background:#171C23 !important;
+    border:1px solid #94A3B8 !important;
+    border-left:4px solid #3B82F6 !important;
+    border-radius:12px !important;
+    padding:12px !important;
+    color:#F8FAFC !important;
+}
+
+body .erp-wrapper #setoran3FormCash,
+body .erp-wrapper #setoran3FormNote{
+    background:#11151B !important;
+    color:#F8FAFC !important;
+    border:1.5px solid #64748B !important;
+    border-radius:10px !important;
+    font-weight:700 !important;
+    box-shadow:0 1px 3px rgba(15,23,42,.06) !important;
+}
+
+body .erp-wrapper #setoran3FormCash:focus,
+body .erp-wrapper #setoran3FormNote:focus{
+    border-color:#D4AF37 !important;
+    box-shadow:0 0 0 3px rgba(59,130,246,.14) !important;
+}
+
+/* 3) Progress status chips — semantic (order fixed in JS) */
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:nth-child(1){
+    background:#16A34A !important;
+    color:#FFFFFF !important;
+    border:1px solid #4ADE80 !important;
+    box-shadow:0 0 0 1px rgba(34,197,94,.2), 0 4px 12px rgba(34,197,94,.25) !important;
+}
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:nth-child(1) strong{
+    color:#FFFFFF !important;
+}
+
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:nth-child(2){
+    background:#F59E0B !important;
+    color:#F8FAFC !important;
+    border:1px solid #FBBF24 !important;
+    box-shadow:0 0 0 1px rgba(245,158,11,.2), 0 4px 12px rgba(245,158,11,.25) !important;
+}
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:nth-child(2) strong{
+    color:#F8FAFC !important;
+}
+
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:nth-child(3){
+    background:#DC2626 !important;
+    color:#FFFFFF !important;
+    border:1px solid #F87171 !important;
+    box-shadow:0 0 0 1px rgba(220,38,38,.2), 0 4px 12px rgba(220,38,38,.25) !important;
+}
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:nth-child(3) strong{
+    color:#FFFFFF !important;
+}
+
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:nth-child(4){
+    background:#475569 !important;
+    color:#FFFFFF !important;
+    border:1px solid #94A3B8 !important;
+    box-shadow:0 0 0 1px rgba(71,85,105,.2), 0 4px 12px rgba(15,23,42,.18) !important;
+}
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:nth-child(4) strong{
+    color:#FFFFFF !important;
+}
+
+body .erp-wrapper #setoran3ProgressStats .setoran3-stat-chip:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.05);
+}
+
+/* 4) AI Insight redesign — no big pink bubble */
+body .erp-wrapper .setoran3-ai > h4{
+    background:#17191D !important;
+    color:#FFFFFF !important;
+    border-left:4px solid #F2C230 !important;
+    border-radius:10px !important;
+    padding:12px 14px !important;
+    margin:0 0 14px !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact:has(.setoran3-ai-status.down){
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    gap:10px !important;
+}
+
+body .erp-wrapper .setoran3-ai-status.down{
+    background:#1C1214 !important;
+    color:#FECACA !important;
+    border:1px solid #EF4444 !important;
+    border-left:5px solid #DC2626 !important;
+    border-radius:10px !important;
+    box-shadow:0 2px 10px rgba(127,29,29,.2) !important;
+    font-size:16px !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line{
+    background:#11151B !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #3B82F6 !important;
+    border-radius:10px !important;
+    box-shadow:0 2px 8px rgba(15,23,42,.06) !important;
+}
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line .setoran3-ai-label{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+}
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line .setoran3-ai-text{
+    color:#F8FAFC !important;
+    font-weight:700 !important;
+}
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line .setoran3-ai-num{
+    color:#15803D !important;
+    font-weight:800 !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line.is-warn{
+    background:rgba(239,68,68,.16) !important;
+    border:1px solid #FCA5A5 !important;
+    border-left:4px solid #DC2626 !important;
+}
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line.is-warn .setoran3-ai-label,
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line.is-warn .setoran3-ai-text{
+    color:#991B1B !important;
+}
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line.is-warn .setoran3-ai-num{
+    color:#DC2626 !important;
+}
+
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line.is-saran{
+    background:linear-gradient(180deg,#2A2312,#1C1910) !important;
+    border:1px solid #FCD34D !important;
+    border-left:4px solid #D4AF37 !important;
+}
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line.is-saran .setoran3-ai-label,
+body .erp-wrapper .setoran3-ai-compact .setoran3-ai-line.is-saran .setoran3-ai-text{
+    color:#78350F !important;
+}
+
+/* 5) LIHAT DETAIL ANALISIS toggle */
+body .erp-wrapper .setoran3-ai-detail-toggle,
+body .erp-wrapper #setoran3AiDetailToggle{
+    background:#17191D !important;
+    color:#FFFFFF !important;
+    border:1px solid rgba(212,175,55,.45) !important;
+    border-left:4px solid #F2C230 !important;
+    border-radius:10px !important;
+    font-weight:800 !important;
+    min-height:46px !important;
+    box-shadow:0 2px 10px rgba(15,23,42,.16) !important;
+}
+body .erp-wrapper .setoran3-ai-detail-toggle:hover,
+body .erp-wrapper #setoran3AiDetailToggle:hover{
+    background:#22262C !important;
+    border-color:#F2C230 !important;
+    color:#FFFFFF !important;
+    transform:translateY(-1px);
+    box-shadow:0 0 0 2px rgba(59,130,246,.12), 0 8px 16px rgba(15,23,42,.2) !important;
+}
+body .erp-wrapper .setoran3-ai-detail-toggle[aria-expanded="true"],
+body .erp-wrapper #setoran3AiDetailToggle[aria-expanded="true"]{
+    background:#1C1810 !important;
+    border-color:#F2C230 !important;
+    box-shadow:0 0 0 2px rgba(212,175,55,.18), 0 6px 14px rgba(15,23,42,.2) !important;
+}
+
+/* 6) Cash Out rincian hierarchy */
+body .erp-wrapper .setoran3-co-rincian h5{
+    color:#F2C230 !important;
+    font-size:14px !important;
+    letter-spacing:.05em !important;
+}
+body .erp-wrapper .setoran3-co-meta,
+body .erp-wrapper .setoran3-co-meta span{
+    color:#E5E7EB !important;
+}
+body .erp-wrapper .setoran3-co-item-name{ color:#FFFFFF !important; }
+body .erp-wrapper .setoran3-co-item-nominal{ color:#FFD34D !important; }
+body .erp-wrapper .setoran3-co-item-kasir{ color:#D1D5DB !important; }
+body .erp-wrapper .setoran3-co-total{
+    background:#1C1810 !important;
+    border:1px solid #D4AF37 !important;
+    box-shadow:0 0 0 1px rgba(212,175,55,.2) !important;
+}
+body .erp-wrapper .setoran3-co-total,
+body .erp-wrapper .setoran3-co-total span{ color:#F3F4F6 !important; }
+body .erp-wrapper .setoran3-co-total strong{
+    color:#FFD34D !important;
+    font-size:18px !important;
+}
+body .erp-wrapper .setoran3-co-status.ok{
+    display:inline-flex !important;
+    margin-top:8px !important;
+    padding:6px 10px !important;
+    background:rgba(22,163,74,.18) !important;
+    border:1px solid #4ADE80 !important;
+    border-radius:8px !important;
+    color:#4ADE80 !important;
+    font-weight:800 !important;
+}
+
+/* 7) PERBANDINGAN LENGKAP — first AI block = audit cards */
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:first-of-type{
+    background:#171C23 !important;
+    border:1px solid #2B3440 !important;
+    border-radius:12px !important;
+    padding:14px !important;
+    margin-top:12px !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:first-of-type h5{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    font-size:14px !important;
+    margin:0 0 12px !important;
+    padding-bottom:8px !important;
+    border-bottom:1px solid #E2E8F0 !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:first-of-type ul{
+    list-style:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:grid !important;
+    gap:8px !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:first-of-type li{
+    background:#11151B !important;
+    border:1px solid #D1D5DB !important;
+    border-left:3px solid #D4AF37 !important;
+    border-radius:10px !important;
+    padding:10px 12px !important;
+    color:#F8FAFC !important;
+    font-weight:600 !important;
+    font-size:13px !important;
+    line-height:1.45 !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:first-of-type li:nth-child(even){
+    background:#171C23 !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:first-of-type li strong{
+    display:block !important;
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    margin-bottom:4px !important;
+}
+
+/* 8) KONTEKS card — subsequent AI blocks */
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:not(:first-of-type){
+    background:#171C23 !important;
+    border:1px solid #94A3B8 !important;
+    border-left:4px solid #64748B !important;
+    border-radius:12px !important;
+    padding:14px !important;
+    margin-top:12px !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:not(:first-of-type) h5{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+    margin:0 0 10px !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:not(:first-of-type) ul{
+    list-style:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:grid !important;
+    gap:8px !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-block:not(:first-of-type) li{
+    background:#11151B !important;
+    border:1px solid #CBD5E1 !important;
+    border-radius:8px !important;
+    padding:10px 12px !important;
+    color:#CBD5E1 !important;
+    font-weight:600 !important;
+    font-size:13px !important;
+    line-height:1.45 !important;
+}
+body .erp-wrapper .setoran3-ai-detail > .setoran3-ai-loading{
+    display:block !important;
+    margin-top:12px !important;
+    padding:10px 12px !important;
+    background:rgba(56,189,248,.14) !important;
+    border:1px solid #A5B4FC !important;
+    border-radius:8px !important;
+    color:#BAE6FD !important;
+    font-weight:700 !important;
+    font-size:12px !important;
+}
+
+/* 9) QRIS Progress — light surface + readable rows */
+body .erp-wrapper .setoran3-qris-surface,
+body .erp-wrapper #sectionProgress,
+body .erp-wrapper #sectionSelisih{
+    background:#171C23 !important;
+    border:1px solid #2B3440 !important;
+    border-left:4px solid #D4AF37 !important;
+}
+
+body .erp-wrapper .setoran3-qris-surface-title,
+body .erp-wrapper #sectionProgress > h3,
+body .erp-wrapper #sectionSelisih > h3{
+    background:#17191D !important;
+    color:#FFFFFF !important;
+    border-left:4px solid #F2C230 !important;
+    border-radius:10px !important;
+    padding:12px 14px !important;
+    margin:0 0 14px !important;
+    font-weight:800 !important;
+}
+
+body .erp-wrapper #sectionProgress .setoran-progress-row strong,
+body .erp-wrapper #setoranProgressText{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+}
+
+body .erp-wrapper #sectionProgress .setoran-progress-bar{
+    background:#1C222B !important;
+    border:1px solid #94A3B8 !important;
+    height:12px !important;
+}
+body .erp-wrapper #sectionProgress .setoran-progress-bar span{
+    background:linear-gradient(90deg,#0891B2,#22D3EE) !important;
+}
+
+body .erp-wrapper #sectionProgress .setoran-rekap-item,
+body .erp-wrapper #setoranProgressList .setoran-rekap-item{
+    background:#11151B !important;
+    border:1px solid #2B3440 !important;
+    border-left:3px solid #D4AF37 !important;
+    color:#F8FAFC !important;
+    box-shadow:0 1px 4px rgba(15,23,42,.06) !important;
+}
+body .erp-wrapper #sectionProgress .setoran-rekap-item strong,
+body .erp-wrapper #setoranProgressList .setoran-rekap-item strong{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+}
+
+body .erp-wrapper #sectionProgress .qris-reco-badge.belum-dicek,
+body .erp-wrapper #setoranProgressList .qris-reco-badge.belum-dicek,
+body .erp-wrapper .qris-reco-badge.belum-dicek{
+    background:#475569 !important;
+    color:#FFFFFF !important;
+    border:1px solid #94A3B8 !important;
+    font-weight:800 !important;
+    min-height:30px !important;
+    opacity:1 !important;
+}
+
+/* 10) Selisih empty state */
+body .erp-wrapper #sectionSelisih .setoran-board-empty,
+body .erp-wrapper #setoranSelisihList .setoran-board-empty{
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+    min-height:64px !important;
+    padding:14px 16px !important;
+    background:rgba(34,197,94,.14) !important;
+    border:1px solid #6EE7B7 !important;
+    border-left:4px solid #16A34A !important;
+    border-radius:12px !important;
+    color:#BBF7D0 !important;
+    font-weight:700 !important;
+    font-size:14px !important;
+    box-shadow:0 2px 8px rgba(6,95,70,.08) !important;
+}
+
+body .erp-wrapper #sectionSelisih .setoran-rekap-item{
+    background:#11151B !important;
+    border:1px solid #2B3440 !important;
+    color:#F8FAFC !important;
+}
+body .erp-wrapper #sectionSelisih .setoran-rekap-item strong{
+    color:#F8FAFC !important;
+}
+
+/* 11) Approval hint + QRIS table */
+body .erp-wrapper #qrisApproveHint,
+body .erp-wrapper .qris-reco-manual-hint{
+    background:rgba(245,158,11,.16) !important;
+    color:#FDE68A !important;
+    border:1px solid #F59E0B !important;
+    border-left:4px solid #D97706 !important;
+    border-radius:10px !important;
+    padding:10px 12px !important;
+    font-weight:700 !important;
+    opacity:1 !important;
+}
+
+body .erp-wrapper .qris-reco-table thead th{
+    background:#1C222B !important;
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+}
+body .erp-wrapper .qris-reco-table tbody td{
+    color:#F8FAFC !important;
+    font-weight:600 !important;
+    background:#11151B !important;
+}
+
+/* 12) Global light surface readability lock */
+body.setoran-page .erp-wrapper .setoran3-summary-card,
+body.setoran-page .erp-wrapper .setoran3-perf-card,
+body.setoran-page .erp-wrapper .setoran3-form-card,
+body.setoran-page .erp-wrapper .setoran3-ai,
+body.setoran-page .erp-wrapper .setoran3-ai-line,
+body.setoran-page .erp-wrapper .setoran3-ai-block,
+body.setoran-page .erp-wrapper .setoran3-qris-surface{
+    color:#F8FAFC !important;
+}
+body.setoran-page .erp-wrapper .setoran3-summary-card span,
+body.setoran-page .erp-wrapper .setoran3-perf-card span,
+body.setoran-page .erp-wrapper .setoran3-form-card label,
+body.setoran-page .erp-wrapper .setoran3-ai-text,
+body.setoran-page .erp-wrapper .setoran3-ai-label{
+    color:#CBD5E1 !important;
+    opacity:1 !important;
+}
+body.setoran-page .erp-wrapper .setoran3-summary-card strong,
+body.setoran-page .erp-wrapper .setoran3-perf-card strong{
+    color:#F8FAFC !important;
+    font-weight:800 !important;
+}
+
+/* Preserve locked actions — do not regress */
+body .erp-wrapper .top-header .btn-owner-logout,
+body .sidebar .logout-btn{
+    background:#DC2626 !important;
+    color:#FFFFFF !important;
+}
+body .erp-wrapper .qris-reco-badge.sesuai{
+    background:#16A34A !important;
+    color:#FFFFFF !important;
+}

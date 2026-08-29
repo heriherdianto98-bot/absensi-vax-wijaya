@@ -1,0 +1,523 @@
+/* =========================================================
+   VAX ERP — Owner Auth
+   ========================================================= */
+
+/* SPV: sembunyikan menu/aksi Owner-only pada dashboard yang sama */
+body.erp-role-spv [data-owner-only],
+body[data-erp-role="spv"] [data-owner-only]{
+    display:none !important;
+}
+
+body.erp-role-spv .erp-action-disabled,
+body[data-erp-role="spv"] .erp-action-disabled{
+    opacity:.45;
+    pointer-events:none;
+    cursor:not-allowed;
+}
+
+.owner-auth-pending .erp-content{
+    opacity:.35;
+    pointer-events:none;
+}
+
+/* —— Login page: match Owner reference —— */
+html:has(.owner-login-body),
+body.owner-login-body{
+    background:#05070b !important;
+}
+
+.owner-login-body{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:84px 24px 40px;
+    overflow:hidden;
+    color:#F8FAFC;
+}
+
+.owner-login-meta{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:22px 28px;
+    pointer-events:none;
+}
+
+.owner-login-meta span{
+    display:inline-flex;
+    align-items:center;
+    padding:9px 15px;
+    border-radius:999px;
+    border:1px solid rgba(242,194,48,.28);
+    background:#12161d;
+    color:#F1F5F9;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.02em;
+    line-height:1.2;
+    white-space:nowrap;
+}
+
+.owner-login-ambience{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+    background:
+        radial-gradient(920px 480px at 50% -8%, rgba(212,175,55,.07), transparent 58%),
+        radial-gradient(780px 560px at 50% 118%, rgba(18,32,54,.38), transparent 60%),
+        #05070b;
+}
+
+.owner-login-ribbon{
+    position:absolute;
+    top:-6%;
+    left:-8%;
+    width:78vw;
+    height:62vh;
+    min-width:720px;
+    opacity:.95;
+}
+
+.owner-login-stage{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:560px;
+}
+
+.owner-login-halo{
+    position:absolute;
+    z-index:0;
+    left:50%;
+    top:48%;
+    width:90%;
+    height:58%;
+    transform:translate(-50%, -50%);
+    background:radial-gradient(circle, rgba(242,194,48,.10) 0%, transparent 70%);
+    pointer-events:none;
+}
+
+.owner-login-card{
+    position:relative;
+    z-index:1;
+    width:100%;
+    padding:48px 46px 34px;
+    border-radius:28px;
+    background:#141922;
+    border:1px solid #F2C230;
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.55),
+        0 0 36px rgba(242,194,48,.12);
+    animation:ownerLoginCardIn .72s cubic-bezier(.22,.8,.28,1) both;
+}
+
+.owner-login-card.is-loading{
+    box-shadow:
+        0 1px 0 rgba(255,255,255,.07) inset,
+        0 22px 48px rgba(0,0,0,.55),
+        0 0 0 1px rgba(242,194,48,.32),
+        0 0 42px rgba(242,194,48,.18);
+}
+
+.owner-login-card.is-success{
+    border-color:rgba(34,197,94,.42);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,.08) inset,
+        0 22px 48px rgba(0,0,0,.55),
+        0 0 0 1px rgba(34,197,94,.22),
+        0 0 42px rgba(34,197,94,.16);
+}
+
+.owner-login-card.is-error{
+    border-color:rgba(245,158,11,.48);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,.06) inset,
+        0 22px 48px rgba(0,0,0,.55),
+        0 0 0 1px rgba(239,68,68,.18),
+        0 0 36px rgba(239,68,68,.12);
+}
+
+.owner-login-card.is-shake{
+    animation:ownerLoginShake .46s cubic-bezier(.36,.07,.19,.97);
+}
+
+.owner-login-brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    margin-bottom:22px;
+    animation:ownerLoginBrandIn .8s cubic-bezier(.22,.8,.28,1) .08s both;
+}
+
+.owner-login-logo{
+    display:block;
+    width:176px;
+    height:auto;
+    margin:0 auto 14px;
+    background:transparent;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    object-fit:contain;
+    mix-blend-mode:lighten;
+}
+
+.owner-login-brand h1{
+    margin:0;
+    color:#F2C230;
+    font-family:"Cinzel", "Times New Roman", serif;
+    font-size:46px;
+    font-weight:700;
+    letter-spacing:.16em;
+    line-height:1.12;
+    text-transform:uppercase;
+}
+
+.owner-login-brand p{
+    margin:10px 0 0;
+    color:#E8EEF5;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+}
+
+.owner-login-greet{
+    margin:0 0 24px;
+    padding:14px 18px;
+    border-radius:14px;
+    background:#0d1118;
+    border:1px solid rgba(242,194,48,.28);
+    color:#F1F5F9;
+    font-size:14px;
+    font-weight:600;
+    line-height:1.5;
+    text-align:center;
+    animation:ownerLoginGreetIn .7s ease .18s both;
+}
+
+.owner-login-greet.is-success{
+    border-color:rgba(34,197,94,.28);
+    color:#B7E4C7;
+}
+
+.owner-login-greet.is-error{
+    border-color:rgba(245,158,11,.28);
+}
+
+.owner-login-form{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.owner-login-form label{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    color:#CBD5E1;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.03em;
+}
+
+.owner-login-field{
+    position:relative;
+    display:block;
+}
+
+.owner-login-field-icon{
+    position:absolute;
+    left:16px;
+    top:50%;
+    width:20px;
+    height:20px;
+    transform:translateY(-50%);
+    color:#F2C230;
+    pointer-events:none;
+}
+
+.owner-login-form input{
+    width:100%;
+    min-height:56px;
+    background:#0d1118;
+    border:1px solid #C9A227;
+    border-radius:16px;
+    color:#F8FAFC;
+    padding:16px 16px 16px 48px;
+    font-size:16px;
+    font-family:inherit;
+    transition:border-color .18s ease, box-shadow .18s ease;
+}
+
+.owner-login-form input::placeholder{
+    color:#94A3B8;
+}
+
+.owner-login-form input:hover{
+    border-color:#F2C230;
+}
+
+.owner-login-form input:focus{
+    outline:none;
+    border-color:#F2C230;
+    box-shadow:0 0 0 3px rgba(242,194,48,.18);
+}
+
+.owner-login-field:focus-within .owner-login-field-icon{
+    color:#F2C230;
+}
+
+.owner-login-form.is-error input{
+    border-color:rgba(245,158,11,.55);
+}
+
+.owner-login-feedback{
+    min-height:0;
+}
+
+.owner-login-status,
+.owner-login-error{
+    margin:0;
+    font-size:13px;
+    font-weight:600;
+    line-height:1.4;
+    border-radius:10px;
+    padding:10px 12px;
+}
+
+.owner-login-status{
+    color:#F8FAFC;
+    background:rgba(242,194,48,.08);
+    border:1px solid rgba(242,194,48,.22);
+}
+
+.owner-login-card.is-success .owner-login-status{
+    color:#BBF7D0;
+    background:rgba(34,197,94,.10);
+    border-color:rgba(34,197,94,.28);
+}
+
+.owner-login-error{
+    color:#FECACA;
+    background:rgba(239,68,68,.10);
+    border:1px solid rgba(239,68,68,.28);
+}
+
+.owner-login-submit{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-top:6px;
+    width:100%;
+    min-height:58px;
+    border:0;
+    border-radius:16px;
+    background:linear-gradient(180deg, #F6D56A 0%, #F2C230 46%, #C9A227 100%);
+    color:#11151B;
+    font-weight:800;
+    font-size:17px;
+    letter-spacing:.06em;
+    cursor:pointer;
+    box-shadow:
+        0 1px 0 rgba(255,255,255,.38) inset,
+        0 -2px 0 rgba(120,84,12,.28) inset,
+        0 12px 24px rgba(242,194,48,.28),
+        0 2px 0 rgba(0,0,0,.28);
+    transition:transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+.owner-login-submit:hover{
+    filter:brightness(1.04);
+    transform:translateY(-1px);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,.44) inset,
+        0 -2px 0 rgba(120,84,12,.28) inset,
+        0 16px 28px rgba(242,194,48,.32),
+        0 2px 0 rgba(0,0,0,.28);
+}
+
+.owner-login-submit:active{
+    transform:translateY(1px) scale(.99);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,.28) inset,
+        0 4px 10px rgba(0,0,0,.28);
+}
+
+.owner-login-submit:disabled{
+    cursor:wait;
+}
+
+.owner-login-submit-spin,
+.owner-login-submit-check{
+    display:none;
+}
+
+.owner-login-submit.is-loading .owner-login-submit-spin,
+.owner-login-submit.is-success .owner-login-submit-check{
+    display:block;
+}
+
+.owner-login-submit-spin{
+    width:16px;
+    height:16px;
+    border:2px solid rgba(17,21,27,.22);
+    border-top-color:#11151B;
+    border-radius:50%;
+    animation:ownerLoginSpin .7s linear infinite;
+}
+
+.owner-login-submit.is-success{
+    background:linear-gradient(180deg, #3BB56F 0%, #1F9A55 54%, #178247 100%);
+    color:#052E16;
+    box-shadow:
+        0 1px 0 rgba(255,255,255,.28) inset,
+        0 8px 18px rgba(31,154,85,.22);
+}
+
+.owner-login-note{
+    display:block;
+    margin-top:18px;
+    color:#94A3B8;
+    font-size:12.5px;
+    line-height:1.55;
+    text-align:center;
+}
+
+.owner-login-note code{
+    color:#d4af37;
+}
+
+@keyframes ownerLoginCardIn{
+    from{ opacity:0; transform:translateY(18px) scale(.985); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+}
+
+@keyframes ownerLoginBrandIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes ownerLoginGreetIn{
+    from{ opacity:0; transform:translateY(8px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes ownerLoginShake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-7px); }
+    40%{ transform:translateX(6px); }
+    60%{ transform:translateX(-4px); }
+    80%{ transform:translateX(2px); }
+}
+
+@keyframes ownerLoginSpin{
+    to{ transform:rotate(360deg); }
+}
+
+@media (max-width:560px){
+    .owner-login-body{
+        padding:72px 14px 28px;
+    }
+    .owner-login-card{
+        padding:32px 20px 22px;
+        border-radius:22px;
+    }
+    .owner-login-brand h1{
+        font-size:32px;
+        letter-spacing:.12em;
+    }
+    .owner-login-logo{
+        width:132px;
+    }
+    .owner-login-meta{
+        padding:14px 12px;
+    }
+    .owner-login-meta span{
+        padding:7px 11px;
+        font-size:11px;
+    }
+}
+
+@media (prefers-reduced-motion:reduce){
+    .owner-login-card,
+    .owner-login-brand,
+    .owner-login-greet,
+    .owner-login-submit-spin{
+        animation:none !important;
+    }
+    .owner-login-submit,
+    .owner-login-form input{
+        transition:none;
+    }
+}
+
+.header-auth{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-left:auto;
+}
+
+.header-auth-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:2px;
+}
+
+.header-auth-meta strong{
+    color:#FFFFFF;
+    font-size:13px;
+    font-weight:700;
+}
+
+.header-auth-meta span{
+    color:#F2C230;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+}
+
+.btn-owner-logout{
+    border:1px solid #FF5A5F !important;
+    background:#DC2626 !important;
+    color:#FFFFFF !important;
+    border-radius:10px;
+    padding:10px 14px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:
+        0 0 0 1px rgba(220,38,38,.20),
+        0 4px 12px rgba(220,38,38,.25);
+    transition:background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.btn-owner-logout:hover{
+    background:#EF4444 !important;
+    border-color:#FF7A7E !important;
+    color:#FFFFFF !important;
+    box-shadow:
+        0 0 0 3px rgba(239,68,68,.28),
+        0 6px 16px rgba(220,38,38,.35);
+    transform:translateY(-1px);
+}
+
+.btn-owner-logout:active{
+    transform:scale(0.98);
+}
