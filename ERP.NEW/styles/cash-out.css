@@ -1,0 +1,1052 @@
+/* =========================================================
+   Cash Out Detail — VAX Finance
+   BLACK + GOLD + WHITE
+   ========================================================= */
+
+@keyframes cashout-soft-glow{
+    0%, 100%{ box-shadow: 0 0 0 1px rgba(201,162,39,.18), 0 4px 14px rgba(0,0,0,.18); }
+    50%{ box-shadow: 0 0 0 1px rgba(201,162,39,.32), 0 6px 18px rgba(201,162,39,.12); }
+}
+
+@keyframes cashout-total-glow{
+    0%, 100%{ box-shadow: 0 0 0 1px rgba(201,162,39,.28), 0 6px 18px rgba(220,38,38,.12); }
+    50%{ box-shadow: 0 0 0 1px rgba(201,162,39,.42), 0 8px 22px rgba(201,162,39,.16); }
+}
+
+.cashout-page{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 32px;
+}
+
+.cashout-sticky{
+    position: sticky;
+    top: var(--erp-top-header-h, 64px);
+    z-index: 20;
+    padding: 14px 16px 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(239, 68, 68, 0.28);
+    background: linear-gradient(180deg, #1c1414 0%, #141010 100%);
+    box-shadow: 0 10px 28px rgba(0,0,0,.28);
+}
+
+.cashout-sticky-top{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.cashout-eyebrow{
+    margin: 0 0 4px;
+    color: #F87171;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.cashout-sticky h2{
+    margin: 0;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.cashout-sub{
+    margin: 4px 0 0;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.cashout-back-link{
+    color: #D4AF37;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.cashout-filters{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.cashout-field{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 140px;
+}
+
+.cashout-field > span:first-child{
+    color: #D4AF37;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.cashout-field select{
+    min-height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: #0f0f0f;
+    color: #fff;
+    padding: 0 10px;
+    font-weight: 600;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.cashout-field select:hover{
+    border-color: rgba(201,162,39,.45);
+}
+
+.cashout-field select:focus{
+    outline: none;
+    border-color: #C9A227;
+    box-shadow: 0 0 0 3px rgba(201,162,39,.18);
+}
+
+/* —— Date range picker (satu popup kalender) —— */
+.cashout-field-range{
+    position: relative;
+    min-width: 240px;
+    flex: 1 1 240px;
+}
+
+.cashout-date-sr{
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.cashout-date-icon{
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid #C9A227;
+    border-radius: 3px;
+    box-shadow: inset 0 3px 0 0 #C9A227;
+    opacity: .95;
+    pointer-events: none;
+    position: relative;
+}
+
+.cashout-date-icon::after{
+    content: "";
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: 5px;
+    height: 1px;
+    background: rgba(201,162,39,.7);
+}
+
+.cashout-range-trigger{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(201,162,39,.4);
+    background: linear-gradient(180deg, #1A1710 0%, #12110D 100%);
+    color: #FFFFFF;
+    padding: 0 12px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .2s ease, box-shadow .22s ease, background .22s ease;
+}
+
+.cashout-range-trigger .cashout-date-icon{
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    flex: 0 0 14px;
+}
+
+.cashout-range-trigger:hover{
+    border-color: rgba(201,162,39,.7);
+    box-shadow: 0 0 0 1px rgba(201,162,39,.2), 0 4px 14px rgba(201,162,39,.14);
+}
+
+.cashout-range-trigger[aria-expanded="true"]{
+    border-color: #C9A227;
+    box-shadow: 0 0 0 3px rgba(201,162,39,.22), 0 0 16px rgba(201,162,39,.16);
+}
+
+#cashOutRangeLabel{
+    color: #FFFFFF;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cashout-range-popup{
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 80;
+    min-width: 300px;
+    width: min(320px, 92vw);
+    animation: cashout-range-in .18s ease-out;
+}
+
+@keyframes cashout-range-in{
+    from{ opacity: 0; transform: translateY(-6px) scale(.98); }
+    to{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cashout-range-popup-inner{
+    border-radius: 14px;
+    border: 1px solid rgba(201,162,39,.45);
+    background: linear-gradient(180deg, #16140F 0%, #0C0B09 100%);
+    box-shadow: 0 0 0 1px rgba(201,162,39,.12), 0 18px 40px rgba(0,0,0,.55), 0 0 24px rgba(201,162,39,.12);
+    padding: 12px;
+}
+
+.cashout-range-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.cashout-range-month{
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.cashout-range-nav{
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(201,162,39,.35);
+    background: #15130E;
+    color: #F5D76E;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.cashout-range-nav:hover{
+    border-color: #C9A227;
+    box-shadow: 0 0 10px rgba(201,162,39,.2);
+    background: #1E1A12;
+}
+
+.cashout-range-weekdays{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 4px;
+}
+
+.cashout-range-weekdays span{
+    text-align: center;
+    color: #C9A227;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 4px 0;
+}
+
+.cashout-range-grid{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.cashout-day{
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: #F3F4F6;
+    min-height: 34px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.cashout-day.is-empty{
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.cashout-day:hover{
+    background: rgba(201,162,39,.18);
+    color: #FFF;
+    box-shadow: inset 0 0 0 1px rgba(201,162,39,.35);
+}
+
+.cashout-day.is-today{
+    box-shadow: inset 0 0 0 1px rgba(201,162,39,.55);
+}
+
+.cashout-day.is-in-range{
+    background: rgba(201,162,39,.16);
+    color: #FFF8E7;
+    border-radius: 0;
+}
+
+.cashout-day.is-start,
+.cashout-day.is-end,
+.cashout-day.is-picking{
+    background: linear-gradient(180deg, #C9A227 0%, #A8841A 100%);
+    color: #14110A;
+    box-shadow: 0 0 12px rgba(201,162,39,.35);
+    border-radius: 8px;
+}
+
+.cashout-day.is-start.is-in-range,
+.cashout-day.is-end.is-in-range{
+    border-radius: 8px;
+}
+
+.cashout-range-meta{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(201,162,39,.22);
+}
+
+.cashout-range-meta span{
+    display: block;
+    color: #C9A227;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.cashout-range-meta strong{
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.cashout-range-hint{
+    margin: 8px 0 0;
+    color: #A8A29E;
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.cashout-range-actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.cashout-range-btn-ghost{
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: transparent;
+    color: #E5E7EB;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.cashout-range-btn-ghost:hover{
+    border-color: rgba(201,162,39,.5);
+    box-shadow: 0 0 0 1px rgba(201,162,39,.12);
+}
+
+@media (max-width: 640px){
+    .cashout-field-range{
+        min-width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .cashout-range-popup{
+        left: 0;
+        right: 0;
+        width: auto;
+        min-width: 0;
+    }
+}
+
+.cashout-filter-actions{
+    display: flex;
+    gap: 8px;
+}
+
+.cashout-btn-primary,
+.cashout-btn-ghost,
+.cashout-btn-pdf{
+    min-height: 40px;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: filter .2s ease, box-shadow .22s ease, border-color .2s ease, transform .18s ease;
+}
+
+.cashout-btn-primary{
+    border: 1px solid rgba(239,68,68,.45);
+    background: linear-gradient(180deg, #DC2626, #B91C1C);
+    color: #fff;
+}
+
+.cashout-btn-primary:hover{
+    filter: brightness(1.05);
+}
+
+.cashout-btn-ghost{
+    border: 1px solid rgba(255,255,255,.16);
+    background: transparent;
+    color: #e5e7eb;
+}
+
+.cashout-btn-ghost:hover{
+    border-color: rgba(201,162,39,.45);
+    box-shadow: 0 0 0 1px rgba(201,162,39,.12);
+}
+
+.cashout-btn-pdf{
+    border: 1px solid rgba(201, 162, 39, 0.75);
+    background: linear-gradient(180deg, #C9A227 0%, #A8841A 100%);
+    color: #14171A;
+    box-shadow: 0 2px 10px rgba(201,162,39,.18);
+}
+
+.cashout-btn-pdf:hover{
+    filter: brightness(1.06);
+    box-shadow: 0 0 0 1px rgba(212,175,55,.35), 0 6px 18px rgba(212,175,55,.32);
+    transform: translateY(-1px);
+}
+
+.cashout-btn-pdf:active{
+    transform: translateY(0);
+    filter: brightness(.98);
+}
+
+.cashout-banner{
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(245,158,11,.35);
+    background: rgba(245,158,11,.1);
+    color: #FBBF24;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.cashout-banner.is-error{
+    border-color: rgba(239,68,68,.4);
+    background: rgba(239,68,68,.12);
+    color: #FCA5A5;
+}
+
+/* —— Summary cards: lebih terang / hidup —— */
+.cashout-summary{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.cashout-summary-card{
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(201,162,39,.28);
+    background: linear-gradient(180deg, rgba(42,38,28,.95) 0%, rgba(28,26,20,.92) 100%);
+    box-shadow: 0 0 0 1px rgba(201,162,39,.12), 0 4px 14px rgba(0,0,0,.18);
+    transition: border-color .22s ease, box-shadow .25s ease, transform .2s ease;
+    animation: cashout-soft-glow 4.8s ease-in-out infinite;
+}
+
+.cashout-summary-card:hover{
+    border-color: rgba(201,162,39,.55);
+    box-shadow: 0 0 0 1px rgba(201,162,39,.28), 0 8px 20px rgba(201,162,39,.14);
+    transform: translateY(-1px);
+    animation: none;
+}
+
+.cashout-summary-card span{
+    display: block;
+    color: #E8D48A;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
+
+.cashout-summary-card strong{
+    display: block;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 800;
+    word-break: break-word;
+    line-height: 1.25;
+}
+
+.cashout-summary-card.is-total{
+    border-color: rgba(201,162,39,.45);
+    background: linear-gradient(180deg, rgba(72,28,28,.95) 0%, rgba(36,18,18,.96) 55%, rgba(24,16,16,.98) 100%);
+    animation: cashout-total-glow 4.2s ease-in-out infinite;
+}
+
+.cashout-summary-card.is-total span{
+    color: #F5D76E;
+}
+
+.cashout-summary-card.is-total strong{
+    color: #FF6B6B;
+    font-size: 20px;
+}
+
+.cashout-summary-card.is-total:hover{
+    border-color: rgba(201,162,39,.7);
+    box-shadow: 0 0 0 1px rgba(201,162,39,.35), 0 8px 22px rgba(220,38,38,.16);
+    animation: none;
+}
+
+.cashout-table-wrap{
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(0,0,0,.2);
+    overflow: auto;
+    max-height: min(70vh, 720px);
+}
+
+.cashout-state{
+    padding: 36px 16px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.cashout-table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 680px;
+}
+
+/* —— Header tabel: kontras dark-gold, sticky + offset —— */
+.cashout-table thead th{
+    text-align: left;
+    padding: 11px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    border-bottom: 2px solid #E2C15A;
+    background: linear-gradient(180deg, #3A2F14 0%, #1F180C 55%, #15110A 100%);
+    position: sticky;
+    top: 8px;
+    z-index: 3;
+    /* top fill agar gap offset tidak tembus isi tabel */
+    box-shadow:
+        0 -8px 0 0 #15110A,
+        0 1px 0 #E2C15A,
+        0 6px 16px rgba(201,162,39,.18);
+    transition: box-shadow .25s ease;
+}
+
+.cashout-table-wrap:hover .cashout-table thead th{
+    box-shadow:
+        0 -8px 0 0 #15110A,
+        0 1px 0 #F0D56A,
+        0 8px 20px rgba(201,162,39,.26);
+}
+
+.cashout-table td{
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+    color: #e5e7eb;
+    font-size: 13px;
+    vertical-align: top;
+    background: transparent;
+}
+
+.cashout-table tbody tr:nth-child(even) td{
+    background: rgba(255,255,255,.02);
+}
+
+.cashout-table tbody tr:hover td{
+    background: rgba(201,162,39,.06);
+}
+
+.cashout-table .cashout-nominal{
+    color: #EF4444;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.cashout-table .cashout-ket{
+    color: #f3f4f6;
+    font-weight: 600;
+    line-height: 1.4;
+    max-width: 360px;
+}
+
+.cashout-table .cashout-muted{
+    color: #6b7280;
+}
+
+.cashout-table td.cashout-ket.is-gold-user,
+.cashout-table td.is-gold-user,
+.cashout-table .is-gold-user{
+    color: #E2C15A;
+    font-weight: 700;
+}
+
+/* Grand TOTAL footer — visual only, tidak mengubah angka/formula */
+.cashout-table tfoot .cashout-foot-total td{
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    padding: 16px 14px;
+    min-height: 56px;
+    vertical-align: middle;
+    color: #fff;
+    border-top: 2px solid #C9A227;
+    border-bottom: none;
+    background: linear-gradient(180deg, #161616 0%, #0B0B0B 60%, #080808 100%);
+    box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.cashout-table tfoot .cashout-foot-label{
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+}
+
+.cashout-table tfoot .cashout-foot-nominal,
+.cashout-table tfoot #cashOutFootTotal{
+    font-size: 20px;
+    font-weight: 900;
+    color: #EF4444;
+    white-space: nowrap;
+}
+
+.cashout-table tfoot .cashout-foot-note,
+.cashout-table tfoot #cashOutFootNote{
+    font-size: 13px;
+    font-weight: 600;
+    color: #D1D5DB;
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+}
+
+.cashout-insight{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.cashout-insight[hidden]{
+    display: none !important;
+}
+
+.cashout-insight-card{
+    padding: 8px 12px 9px;
+    border-radius: 12px;
+    border: 1px solid rgba(201,162,39,.28);
+    background: linear-gradient(180deg, rgba(42,38,28,.95) 0%, rgba(28,26,20,.92) 100%);
+    min-width: 0;
+}
+
+.cashout-insight-lbl{
+    display: block;
+    color: #E8D48A;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.cashout-insight-name{
+    display: block;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cashout-insight-line{
+    margin: 2px 0 0;
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.cashout-insight-dot{
+    margin: 0 4px;
+    color: #6b7280;
+}
+
+.cashout-insight-amt{
+    margin: 2px 0 0;
+    color: #EF4444;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.cashout-sum-row{
+    cursor: pointer;
+}
+
+.cashout-sum-row td:first-child{
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.cashout-exp-caret{
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-right: 8px;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 6px solid #C9A227;
+    vertical-align: middle;
+    transform: translateY(-1px);
+    transition: transform .15s ease;
+}
+
+.cashout-sum-row.is-open .cashout-exp-caret{
+    transform: translateY(-1px) rotate(90deg);
+}
+
+.cashout-sum-row:hover td{
+    background: rgba(201,162,39,.08);
+}
+
+.cashout-single-day{
+    cursor: default;
+}
+
+.cashout-empty-day{
+    cursor: default;
+}
+
+.cashout-empty-day td{
+    color: #6b7280;
+}
+
+.cashout-empty-day .cashout-nominal,
+.cashout-table .cashout-nominal.is-zero{
+    color: #6b7280;
+    font-weight: 700;
+}
+
+.cashout-detail-row td{
+    background: rgba(255,255,255,.015);
+    font-size: 12.5px;
+}
+
+.cashout-detail-row .cashout-detail-pad{
+    padding-left: 36px;
+}
+
+.cashout-rangga-audit{
+    margin-top: 10px;
+    padding: 12px 14px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(201,162,39,.28);
+    background: linear-gradient(180deg, rgba(32,28,20,.96) 0%, rgba(18,16,12,.96) 100%);
+}
+
+.cashout-rangga-audit[hidden]{
+    display: none !important;
+}
+
+.cashout-rangga-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.cashout-rangga-head h3{
+    margin: 0;
+    color: #F5D76E;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.cashout-rangga-scope{
+    margin: 0;
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.cashout-rangga-kpis{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.cashout-rangga-kpi{
+    padding: 7px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(201,162,39,.2);
+    background: rgba(0,0,0,.22);
+}
+
+.cashout-rangga-kpi span{
+    display: block;
+    color: #E8D48A;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.cashout-rangga-kpi strong{
+    display: block;
+    margin-top: 2px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+#cashOutRanggaTotal{
+    color: #EF4444;
+}
+
+.cashout-rangga-rincian-lbl{
+    margin: 2px 0 6px;
+    color: #E8D48A;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.cashout-rangga-list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 220px;
+    overflow: auto;
+}
+
+/* Scrollbar tema ERP gold — tabel utama + audit Rangga (visual only) */
+.cashout-table-wrap,
+.cashout-rangga-list{
+    scrollbar-width: thin;
+    scrollbar-color: #8A7018 #14110C;
+}
+
+.cashout-table-wrap::-webkit-scrollbar,
+.cashout-rangga-list::-webkit-scrollbar{
+    width: 10px;
+    height: 10px;
+}
+
+.cashout-table-wrap::-webkit-scrollbar-track,
+.cashout-rangga-list::-webkit-scrollbar-track{
+    background: #14110C;
+    border-radius: 999px;
+}
+
+.cashout-table-wrap::-webkit-scrollbar-thumb,
+.cashout-rangga-list::-webkit-scrollbar-thumb{
+    background: linear-gradient(180deg, #A8841A 0%, #8A7018 55%, #6E5812 100%);
+    border-radius: 999px;
+    border: 2px solid #14110C;
+}
+
+.cashout-table-wrap::-webkit-scrollbar-thumb:hover,
+.cashout-rangga-list::-webkit-scrollbar-thumb:hover{
+    background: linear-gradient(180deg, #E2C15A 0%, #C9A227 55%, #A8841A 100%);
+}
+
+.cashout-table-wrap::-webkit-scrollbar-corner,
+.cashout-rangga-list::-webkit-scrollbar-corner{
+    background: #14110C;
+}
+
+.cashout-rangga-list li{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 8px 12px;
+    align-items: baseline;
+    padding: 6px 2px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    color: #e5e7eb;
+    font-size: 12.5px;
+}
+
+.cashout-rangga-item-ket{
+    font-weight: 700;
+    color: #E2C15A;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cashout-rangga-item-nom{
+    color: #EF4444;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.cashout-rangga-item-tgl{
+    color: #9ca3af;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.cashout-rangga-empty{
+    margin: 0;
+    padding: 8px 2px 4px;
+    color: #9ca3af;
+    font-size: 12.5px;
+}
+
+@media (prefers-reduced-motion: reduce){
+    .cashout-summary-card,
+    .cashout-summary-card.is-total{
+        animation: none;
+    }
+    .cashout-range-popup{
+        animation: none;
+    }
+    .cashout-btn-primary,
+    .cashout-btn-ghost,
+    .cashout-btn-pdf,
+    .cashout-date-shell,
+    .cashout-summary-card,
+    .cashout-table thead th,
+    .cashout-range-trigger,
+    .cashout-day{
+        transition: none;
+    }
+}
+
+@media (max-width: 900px){
+    .cashout-summary{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .cashout-insight{
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 640px){
+    .cashout-sticky{
+        top: calc(var(--erp-top-header-h, 64px) - 2px);
+        padding: 12px;
+    }
+
+    .cashout-sticky h2{ font-size: 18px; }
+
+    .cashout-field{ min-width: calc(50% - 6px); flex: 1 1 140px; }
+
+    .cashout-filter-actions{
+        width: 100%;
+    }
+
+    .cashout-btn-primary,
+    .cashout-btn-ghost,
+    .cashout-btn-pdf{
+        flex: 1;
+    }
+
+    .cashout-summary{
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .cashout-summary-card.is-total{
+        grid-column: 1 / -1;
+    }
+
+    .cashout-insight{
+        grid-template-columns: 1fr;
+    }
+
+    .cashout-rangga-kpis{
+        grid-template-columns: 1fr;
+    }
+
+    .cashout-rangga-head{
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .cashout-rangga-list li{
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .cashout-rangga-item-tgl{
+        grid-column: 1 / -1;
+        font-size: 11px;
+    }
+
+    .cashout-table-wrap{
+        max-height: min(62vh, 560px);
+    }
+
+    .cashout-table tfoot .cashout-foot-total td{
+        padding: 16px 12px;
+    }
+
+    .cashout-table tfoot .cashout-foot-label{
+        font-size: 15px;
+    }
+
+    .cashout-table tfoot .cashout-foot-nominal,
+    .cashout-table tfoot #cashOutFootTotal{
+        font-size: 18px;
+    }
+
+    .cashout-table tfoot .cashout-foot-note,
+    .cashout-table tfoot #cashOutFootNote{
+        font-size: 12px;
+    }
+}
