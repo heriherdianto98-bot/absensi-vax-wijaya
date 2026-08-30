@@ -1,0 +1,2241 @@
+/* =========================================================
+   Tabel Harian Semua Cabang — UI view layer (ERP shell lock)
+   Black / gold / white · mockup final · no engine changes
+   ========================================================= */
+
+body.setoran-dark .erp-content.setoran-page:has(.thc-page),
+.erp-content.setoran-page:has(.thc-page){
+    display: block;
+    align-items: stretch;
+    justify-content: flex-start;
+    place-items: unset;
+    place-content: unset;
+    max-width: 100%;
+}
+
+.thc-page{
+    --thc-col-tanggal-w: 118px;
+    --thc-col-cabang-w: 148px;
+    --thc-page-head-h: 92px;
+    --thc-pin-stack-h: 120px;
+    /* thead sticky terhadap PAGE scroll — di bawah ERP header + title + filter */
+    --thc-thead-top: calc(
+        var(--erp-top-header-h, 96px)
+        + var(--thc-page-head-h, 92px)
+        + 12px
+        + var(--thc-pin-stack-h, 120px)
+    );
+    --thc-z-page-head: 50;
+    --thc-z-pin-stack: 45;
+    --thc-z-corner: 40;
+    --thc-z-thead: 30;
+    --thc-z-sticky-body: 20;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 0 20px;
+    min-height: 0;
+    gap: 0;
+}
+
+/* Halaman ini: horizontal scroll di PAGE bila tabel lebar (jangan trap sticky di wrapper pendek) */
+html:has(.thc-page),
+body:has(.thc-page){
+    overflow-x: auto;
+}
+
+/* —— Page title: sticky di bawah ERP header —— */
+body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
+.erp-wrapper .thc-page .thc-page-head,
+.thc-page .thc-page-head{
+    position: sticky;
+    top: var(--erp-top-header-h, 96px);
+    z-index: var(--thc-z-page-head, 46);
+    align-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid #2A3340;
+    border-left: 4px solid #D4AF37;
+    background: linear-gradient(180deg, #171C23 0%, #11151B 100%);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 0 0 auto;
+}
+
+.thc-page .thc-page-eyebrow{
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #F2C230;
+    line-height: 1.2;
+}
+
+.thc-page .thc-page-title{
+    margin: 0;
+    font-size: clamp(20px, 2.1vw, 24px);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    color: #FFFFFF;
+}
+
+.thc-page .thc-page-sub{
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #94A3B8;
+}
+
+/* Legacy sticky class tidak dipakai di halaman ini */
+.thc-page .setoran3-sticky.thc-sticky,
+.thc-page .dash-toolbar-host{
+    display: none !important;
+}
+
+/* —— Table shell card —— */
+body.setoran-dark .erp-wrapper .thc-page .thc-table-section.setoran-section-card,
+.thc-page .thc-table-section{
+    --thc-head-h: 46px;
+    --thc-row-h: 42px;
+    --thc-cashout: #DC2626;
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0 !important;
+    overflow: visible;
+    border-radius: 14px !important;
+    border: 1px solid rgba(212, 175, 55, 0.32) !important;
+    border-left: 4px solid #D4AF37 !important;
+    background: #11151B !important;
+    box-shadow:
+        0 2px 4px rgba(16, 24, 40, 0.05),
+        0 8px 22px rgba(0, 0, 0, 0.35),
+        0 0 22px rgba(212, 175, 55, 0.12) !important;
+    height: auto;
+    max-height: none;
+}
+
+/* Filter pin — sticky tepat di bawah page-head; menempel ke thead (tanpa gap) */
+.thc-page .thc-pin-stack{
+    position: sticky;
+    top: calc(var(--erp-top-header-h, 96px) + var(--thc-page-head-h, 92px) + 12px);
+    z-index: var(--thc-z-pin-stack, 45);
+    flex: 0 0 auto;
+    margin: 0;
+    background: #11151B;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+}
+
+.thc-page .thc-pin-stack .thc-table-toolbar{
+    border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+    margin: 0;
+}
+
+.thc-page .thc-pin-stack .thc-incomplete-note{
+    margin: 0;
+    border-radius: 0;
+}
+
+/* —— D. Unified filter / action bar (nuansa Setoran 3 Harian + glow halus) —— */
+.thc-table-toolbar{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.28);
+    background: linear-gradient(180deg, #171C23 0%, #12161D 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(242, 194, 48, 0.08),
+        0 0 18px rgba(212, 175, 55, 0.1);
+    flex: 0 0 auto;
+}
+
+.thc-unified-toolbar{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 10px 12px;
+    width: 100%;
+}
+
+.thc-tb-field{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.thc-tb-label{
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #CBD5E1;
+    line-height: 1.2;
+}
+
+.thc-tb-field select{
+    height: 38px;
+    min-height: 38px;
+    width: 100%;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid #3A4556;
+    background: #1C222B;
+    color: #F8FAFC;
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+.thc-tb-field select:focus{
+    outline: none;
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.18);
+}
+
+.thc-tb-cabang{
+    flex: 0 1 220px;
+    max-width: 230px;
+}
+
+.thc-tb-periode{
+    flex: 0 1 210px;
+    max-width: 220px;
+}
+
+.thc-tb-jump{
+    flex: 0 1 178px;
+    max-width: 190px;
+    position: relative;
+}
+
+.thc-jump-trigger{
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    height: 38px;
+    min-height: 38px;
+    width: 100%;
+    padding: 0 10px 0 12px;
+    border-radius: 10px;
+    border: 1px solid #3A4556;
+    background: #1C222B;
+    color: #F8FAFC;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.thc-jump-trigger:hover:not(:disabled){
+    border-color: rgba(212, 175, 55, 0.55);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.12);
+}
+
+.thc-jump-trigger:disabled{
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.thc-jump-ico{
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.9;
+}
+
+.thc-jump-feedback{
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #FCD34D;
+}
+
+/* Lompat Tanggal — ERP dark/gold single-date calendar */
+.thc-jump-cal-modal{
+    position: fixed;
+    inset: 0;
+    z-index: 1450;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.thc-jump-cal-modal[hidden]{
+    display: none !important;
+}
+
+.thc-jump-cal-backdrop{
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.62);
+}
+
+.thc-jump-cal-panel{
+    position: relative;
+    z-index: 1;
+    width: min(360px, 100%);
+    padding: 16px 16px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    border-left: 4px solid #D4AF37;
+    background: linear-gradient(180deg, #171C23 0%, #11151B 100%);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55), 0 0 22px rgba(212, 175, 55, 0.12);
+    color: #F8FAFC;
+    animation: thcJumpCalIn 0.18s ease-out;
+}
+
+@keyframes thcJumpCalIn{
+    from{ opacity: 0; transform: translateY(8px) scale(0.98); }
+    to{ opacity: 1; transform: none; }
+}
+
+.thc-jump-cal-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.thc-jump-cal-header h3{
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: #F8FAFC;
+}
+
+.thc-jump-cal-x{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid #2B3440;
+    background: #1C222B;
+    color: #F8FAFC;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.thc-jump-cal-nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.thc-jump-cal-nav button{
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    background: #1C222B;
+    color: #F2C230;
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.thc-jump-cal-nav strong{
+    font-size: 14px;
+    font-weight: 800;
+    color: #F8FAFC;
+}
+
+.thc-jump-cal-weekdays,
+.thc-jump-cal-days{
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.thc-jump-cal-weekdays span{
+    text-align: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: #94A3B8;
+    padding: 4px 0;
+    text-transform: uppercase;
+}
+
+.thc-jump-day{
+    min-height: 38px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: #0F1318;
+    color: #E2E8F0;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+.thc-jump-day.is-empty{
+    background: transparent;
+    pointer-events: none;
+}
+
+.thc-jump-day.is-disabled,
+.thc-jump-day:disabled{
+    color: #64748B;
+    background: transparent;
+    border-color: transparent;
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.thc-jump-day.is-today:not(.is-disabled){
+    border-color: rgba(242, 194, 48, 0.75);
+    box-shadow: inset 0 0 0 1px rgba(242, 194, 48, 0.28);
+}
+
+.thc-jump-day.is-selected:not(.is-disabled){
+    background: linear-gradient(180deg, #F2C230, #D4AF37);
+    color: #111827;
+    border-color: #E8C547;
+    font-weight: 800;
+    box-shadow: 0 0 14px rgba(242, 194, 48, 0.28);
+}
+
+.thc-jump-day:hover:not(.is-empty):not(.is-disabled):not(:disabled):not(.is-selected){
+    border-color: #D4AF37;
+    background: rgba(212, 175, 55, 0.12);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.18);
+    transform: translateY(-1px);
+}
+
+.thc-jump-cal-hint{
+    margin: 12px 0 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-align: center;
+}
+
+body.thc-jump-cal-open{
+    overflow: hidden;
+}
+
+.thc-tb-lastsync{
+    flex: 0 1 160px;
+    max-width: 170px;
+}
+
+.thc-tb-lastsync-value{
+    display: flex;
+    align-items: center;
+    height: 38px;
+    min-height: 38px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    background: #0F1319;
+    color: #F8FAFC;
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.08);
+}
+
+.thc-tb-sep{
+    width: 1px;
+    height: 38px;
+    background: #2A3340;
+    flex: 0 0 auto;
+    align-self: flex-end;
+}
+
+.thc-tb-spacer{
+    flex: 1 1 24px;
+    min-width: 8px;
+}
+
+.thc-tb-actions{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+.thc-row-meta{
+    font-size: 12px;
+    color: #94A3B8;
+    margin: 0;
+    line-height: 1.25;
+    font-weight: 600;
+}
+
+.thc-incomplete-note{
+    margin: 0;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #FCD34D;
+    background: rgba(245, 158, 11, 0.1);
+    border-bottom: 1px solid rgba(245, 158, 11, 0.28);
+    flex: 0 0 auto;
+}
+
+.thc-action-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.thc-action-btn:hover{
+    transform: translateY(-1px);
+}
+
+.thc-action-btn:active{
+    transform: scale(0.98);
+}
+
+.thc-action-refresh{
+    background: linear-gradient(180deg, #C9A227 0%, #A8841A 100%);
+    color: #14171A;
+    border-color: rgba(168, 132, 26, 0.85);
+}
+
+.thc-action-refresh:hover{
+    filter: brightness(1.05);
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
+}
+
+.thc-action-sync{
+    background: #1C222B;
+    color: #F2C230;
+    border-color: rgba(212, 175, 55, 0.45);
+}
+
+.thc-action-sync:hover{
+    border-color: rgba(212, 175, 55, 0.7);
+    background: #241E12;
+}
+
+.thc-action-print{
+    background: #1C222B;
+    color: #F8FAFC;
+    border-color: #3A4556;
+}
+
+.thc-action-print:hover{
+    border-color: rgba(212, 175, 55, 0.55);
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.15);
+}
+
+/* Back to Arus Kas — gold accent, compact action (not a full-width bar) */
+a.thc-action-btn.thc-action-back-arus,
+.thc-action-back-arus{
+    background: linear-gradient(180deg, #F2C230 0%, #C9A227 100%);
+    color: #14171A;
+    border-color: rgba(201, 162, 39, 0.95);
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(242, 194, 48, 0.28);
+}
+
+a.thc-action-btn.thc-action-back-arus:hover,
+.thc-action-back-arus:hover{
+    filter: brightness(1.06);
+    box-shadow: 0 6px 18px rgba(242, 194, 48, 0.38);
+    color: #14171A;
+    text-decoration: none;
+}
+
+/* PDF — aksen merah tegas (mockup final) */
+.thc-action-pdf{
+    background: linear-gradient(180deg, #DC2626 0%, #B91C1C 100%);
+    color: #FFFFFF;
+    border-color: rgba(185, 28, 28, 0.9);
+}
+
+.thc-action-pdf:hover{
+    filter: brightness(1.06);
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.28);
+}
+
+.thc-action-excel{
+    background: rgba(34, 197, 94, 0.14);
+    color: #4ADE80;
+    border-color: rgba(34, 197, 94, 0.5);
+}
+
+.thc-action-excel:hover{
+    background: rgba(34, 197, 94, 0.22);
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.22);
+}
+
+@media (min-width: 1280px){
+    .thc-unified-toolbar{
+        flex-wrap: nowrap;
+    }
+}
+
+@media (max-width: 1279px){
+    .thc-tb-sep{
+        display: none;
+    }
+
+    .thc-tb-spacer{
+        display: none;
+    }
+
+    .thc-tb-actions{
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-start;
+    }
+}
+
+/* —— E. Data table — tinggi natural (1–31 rows); vertical = PAGE scroll —— */
+.thc-table-scroll{
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    /*
+      overflow visible di kedua sumbu agar thead sticky ke PAGE scroll.
+      Horizontal: body:has(.thc-page) { overflow-x: auto } (overflow-x:auto di sini
+      akan compute overflow-y:auto dan menjebak sticky di dalam wrapper).
+    */
+    overflow: visible;
+    background: #11151B;
+    border-top: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.thc-table.setoran3-table{
+    width: max-content;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+}
+
+.thc-table.setoran3-table tbody td{
+    height: var(--thc-row-h, 42px);
+    box-sizing: border-box;
+    padding: 9px 12px !important;
+    color: #E5E7EB;
+    font-size: 13.5px;
+    line-height: 1.3;
+    border-bottom: 1px solid rgba(42, 51, 64, 0.85);
+    white-space: nowrap;
+    vertical-align: middle;
+    background: #11151B;
+}
+
+.thc-table.setoran3-table tbody td:nth-child(1),
+.thc-table.setoran3-table tbody td:nth-child(2){
+    white-space: nowrap;
+}
+
+.thc-table.setoran3-table tbody tr:hover td{
+    background: #171C24;
+}
+
+.thc-table.setoran3-table tbody tr:hover td:nth-child(1),
+.thc-table.setoran3-table tbody tr:hover td:nth-child(2){
+    background: #1A2029;
+}
+
+.thc-state,
+.thc-error{
+    padding: 28px 16px;
+    text-align: center;
+    color: #94A3B8;
+    font-size: 14px;
+}
+
+.thc-error{
+    color: #FCA5A5;
+}
+
+/* Table header — sticky terhadap PAGE scroll, tepat di bawah filter pin */
+.thc-table thead{
+    position: sticky;
+    top: var(--thc-thead-top);
+    z-index: var(--thc-z-thead, 30);
+}
+
+.thc-table thead th{
+    position: sticky;
+    top: var(--thc-thead-top);
+    z-index: var(--thc-z-thead, 30);
+    height: var(--thc-head-h, 46px);
+    box-sizing: border-box;
+    background: #0F1319 !important;
+    box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.35), 0 2px 0 rgba(212, 175, 55, 0.45);
+    color: #F2C230 !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 11px 12px !important;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.thc-table thead th.thc-col-cashout,
+.thc-table thead th:nth-child(6){
+    color: var(--thc-cashout, #DC2626) !important;
+}
+
+.thc-table thead th:nth-child(n+3){
+    text-align: right;
+}
+
+/* Sticky horizontal — Tanggal / Cabang */
+.thc-table thead th.thc-sticky-tanggal,
+.thc-table thead th:nth-child(1),
+.thc-table tbody td:nth-child(1){
+    position: sticky;
+    left: 0;
+    width: var(--thc-col-tanggal-w, 118px);
+    min-width: var(--thc-col-tanggal-w, 118px);
+    max-width: var(--thc-col-tanggal-w, 118px);
+}
+
+.thc-table thead th.thc-sticky-cabang,
+.thc-table thead th:nth-child(2),
+.thc-table tbody td:nth-child(2){
+    position: sticky;
+    left: var(--thc-col-tanggal-w, 118px);
+    width: var(--thc-col-cabang-w, 148px);
+    min-width: var(--thc-col-cabang-w, 148px);
+    max-width: var(--thc-col-cabang-w, 148px);
+}
+
+.thc-table tbody td:nth-child(1),
+.thc-table tbody td:nth-child(2){
+    z-index: var(--thc-z-sticky-body, 20);
+    background: #12171F !important;
+    box-shadow: 2px 0 0 rgba(212, 175, 55, 0.22);
+}
+
+.thc-table tbody td:nth-child(2){
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.35);
+}
+
+/* Corner: freeze vertical (page) + sticky horizontal — z tertinggi di tabel */
+.thc-table thead th.thc-sticky-tanggal,
+.thc-table thead th.thc-sticky-cabang,
+.thc-table thead th:nth-child(1),
+.thc-table thead th:nth-child(2){
+    top: var(--thc-thead-top);
+    z-index: var(--thc-z-corner, 40);
+    background: #0F1319 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(212, 175, 55, 0.35),
+        0 2px 0 rgba(212, 175, 55, 0.45),
+        4px 0 12px rgba(0, 0, 0, 0.45);
+}
+
+.thc-table thead th:nth-child(1){
+    box-shadow:
+        inset 0 1px 0 rgba(212, 175, 55, 0.35),
+        0 2px 0 rgba(212, 175, 55, 0.45),
+        2px 0 0 rgba(212, 175, 55, 0.25);
+}
+
+.thc-table tbody tr[data-tanggal].thc-jump-flash td{
+    background: #1C2418;
+}
+
+.thc-table tbody tr[data-tanggal].thc-jump-flash td:nth-child(1),
+.thc-table tbody tr[data-tanggal].thc-jump-flash td:nth-child(2){
+    background: #222A1C !important;
+}
+
+.thc-num{
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.thc-table td:nth-child(3).thc-num,
+.thc-table td:nth-child(4).thc-num{
+    color: #FFFFFF;
+    font-weight: 800;
+}
+
+.thc-table td:nth-child(5).thc-num{
+    color: #67E8F9;
+}
+
+.thc-table td:nth-child(6).thc-num,
+.thc-table td:nth-child(6),
+.thc-table td.thc-cashout{
+    color: var(--thc-cashout, #DC2626) !important;
+    font-weight: 800;
+}
+
+.thc-highlight{
+    color: #F2C230 !important;
+    font-weight: 800;
+}
+
+.thc-int{
+    color: #E2E8F0;
+    font-weight: 600;
+}
+
+/* —— F. TOTAL PERIODE — accent cards + soft glow (UI only) —— */
+@keyframes thcTotBreath{
+    0%, 100%{ box-shadow: var(--thc-tot-glow-a); }
+    50%{ box-shadow: var(--thc-tot-glow-b); }
+}
+
+.thc-totals{
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 12px 14px 14px;
+    border-top: 1px solid rgba(212, 175, 55, 0.28);
+    background: #171C23;
+    overflow: visible;
+}
+
+.thc-totals-label{
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #F2C230;
+    line-height: 1.2;
+}
+
+.thc-totals-grid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    overflow: visible;
+}
+
+.thc-tot-item{
+    --thc-tot-accent: #D4AF37;
+    --thc-tot-glow-a: 0 0 0 1px rgba(212, 175, 55, 0.12), 0 0 10px rgba(212, 175, 55, 0.08);
+    --thc-tot-glow-b: 0 0 0 1px rgba(212, 175, 55, 0.2), 0 0 16px rgba(212, 175, 55, 0.14);
+    position: relative;
+    min-width: 0;
+    min-height: 72px;
+    padding: 10px 12px 11px 14px;
+    border: 1px solid rgba(42, 51, 64, 0.95);
+    border-radius: 11px;
+    background: linear-gradient(165deg, #151A22 0%, #10141B 100%);
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    animation: thcTotBreath 3.6s ease-in-out infinite;
+}
+
+.thc-tot-item::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 11px 0 0 11px;
+    background: var(--thc-tot-accent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--thc-tot-accent) 55%, transparent);
+}
+
+.thc-tot-item:hover{
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--thc-tot-accent) 45%, #2A3340);
+    animation-play-state: paused;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28), var(--thc-tot-glow-b);
+}
+
+.thc-tot-item span{
+    display: block;
+    margin: 0 0 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #CBD5E1;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.thc-tot-item strong{
+    display: block;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    word-break: break-word;
+}
+
+/* Omzet / Gross — gold */
+.thc-tot-item.is-omzet{
+    --thc-tot-accent: #D4AF37;
+    --thc-tot-glow-a: 0 0 0 1px rgba(212, 175, 55, 0.14), 0 0 12px rgba(212, 175, 55, 0.1);
+    --thc-tot-glow-b: 0 0 0 1px rgba(212, 175, 55, 0.24), 0 0 18px rgba(212, 175, 55, 0.16);
+}
+.thc-tot-item.is-omzet strong{ color: #F2C230; }
+
+/* Nett Revenue — cyan */
+.thc-tot-item.is-nett{
+    --thc-tot-accent: #22D3EE;
+    --thc-tot-glow-a: 0 0 0 1px rgba(34, 211, 238, 0.12), 0 0 12px rgba(34, 211, 238, 0.08);
+    --thc-tot-glow-b: 0 0 0 1px rgba(34, 211, 238, 0.22), 0 0 18px rgba(34, 211, 238, 0.14);
+}
+.thc-tot-item.is-nett strong{ color: #67E8F9; }
+
+/* Non Tunai — deep indigo/violet */
+.thc-tot-item.is-nontunai{
+    --thc-tot-accent: #818CF8;
+    --thc-tot-glow-a: 0 0 0 1px rgba(129, 140, 248, 0.14), 0 0 12px rgba(99, 102, 241, 0.1);
+    --thc-tot-glow-b: 0 0 0 1px rgba(129, 140, 248, 0.24), 0 0 18px rgba(99, 102, 241, 0.16);
+}
+.thc-tot-item.is-nontunai strong{ color: #A5B4FC; }
+
+/* Cash Out — logout red */
+.thc-tot-item.is-cashout{
+    --thc-tot-accent: #DC2626;
+    --thc-tot-glow-a: 0 0 0 1px rgba(220, 38, 38, 0.22), 0 0 14px rgba(220, 38, 38, 0.16);
+    --thc-tot-glow-b: 0 0 0 1px rgba(220, 38, 38, 0.34), 0 0 22px rgba(220, 38, 38, 0.24);
+    border-color: rgba(220, 38, 38, 0.42);
+    background: linear-gradient(165deg, #2A1212 0%, #141018 55%, #11151B 100%);
+}
+.thc-tot-item.is-cashout span,
+.thc-tot-item.is-cashout strong{
+    color: #DC2626 !important;
+}
+
+/* Cash Out card → modul Cash Out (filter existing, no redesign) */
+.thc-tot-item.is-cashout.is-link{
+    cursor: pointer;
+}
+.thc-tot-item.is-cashout.is-link:hover{
+    transform: translateY(-2px);
+    border-color: rgba(220, 38, 38, 0.62);
+}
+.thc-tot-item.is-cashout.is-link:focus-visible{
+    outline: 2px solid rgba(220, 38, 38, 0.7);
+    outline-offset: 2px;
+}
+.thc-tot-item .thc-tot-go{
+    display: none;
+}
+.thc-tot-item.is-cashout.is-link .thc-tot-go{
+    display: block;
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    margin: 0;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1;
+    color: #F87171;
+    opacity: 0.72;
+    letter-spacing: 0;
+}
+
+/* Setoran Cash Aktual — primary gold highlight */
+.thc-tot-item.is-actual{
+    --thc-tot-accent: #F2C230;
+    --thc-tot-glow-a: 0 0 0 1px rgba(242, 194, 48, 0.28), 0 0 16px rgba(242, 194, 48, 0.18);
+    --thc-tot-glow-b: 0 0 0 1px rgba(242, 194, 48, 0.42), 0 0 26px rgba(242, 194, 48, 0.28);
+    border-color: rgba(242, 194, 48, 0.4);
+    background: linear-gradient(165deg, #2A2210 0%, #171C23 55%, #11151B 100%);
+}
+.thc-tot-item.is-actual span{ color: #F2C230; }
+.thc-tot-item.is-actual strong{
+    color: #F2C230;
+    font-size: 16.5px;
+}
+
+/* Customer — light cyan */
+.thc-tot-item.is-customer{
+    --thc-tot-accent: #38BDF8;
+    --thc-tot-glow-a: 0 0 0 1px rgba(56, 189, 248, 0.12), 0 0 12px rgba(56, 189, 248, 0.08);
+    --thc-tot-glow-b: 0 0 0 1px rgba(56, 189, 248, 0.22), 0 0 18px rgba(56, 189, 248, 0.14);
+}
+.thc-tot-item.is-customer strong{ color: #7DD3FC; }
+
+/* Transaksi — elegant green */
+.thc-tot-item.is-transaksi{
+    --thc-tot-accent: #22C55E;
+    --thc-tot-glow-a: 0 0 0 1px rgba(34, 197, 94, 0.14), 0 0 12px rgba(34, 197, 94, 0.1);
+    --thc-tot-glow-b: 0 0 0 1px rgba(34, 197, 94, 0.24), 0 0 18px rgba(34, 197, 94, 0.16);
+}
+.thc-tot-item.is-transaksi strong{ color: #4ADE80; }
+
+/* Services — soft amber */
+.thc-tot-item.is-services{
+    --thc-tot-accent: #F59E0B;
+    --thc-tot-glow-a: 0 0 0 1px rgba(245, 158, 11, 0.14), 0 0 12px rgba(245, 158, 11, 0.1);
+    --thc-tot-glow-b: 0 0 0 1px rgba(245, 158, 11, 0.24), 0 0 18px rgba(245, 158, 11, 0.16);
+}
+.thc-tot-item.is-services strong{ color: #FBBF24; }
+
+@media (prefers-reduced-motion: reduce){
+    .thc-tot-item{
+        animation: none;
+    }
+    .thc-tot-item:hover{
+        transform: none;
+    }
+}
+
+@media (max-width: 1100px){
+    .thc-totals-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px){
+    .thc-page .thc-page-head{
+        padding: 12px 14px;
+    }
+
+    .thc-page .thc-page-title{
+        font-size: 18px;
+    }
+
+    .thc-page{
+        --thc-col-tanggal-w: 104px;
+        --thc-col-cabang-w: 128px;
+    }
+
+    .thc-table-section{
+        height: auto;
+        max-height: none;
+    }
+
+    .thc-table-scroll{
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .thc-totals{
+        padding: 10px 12px;
+    }
+
+    .thc-tot-item strong{
+        font-size: 14px;
+    }
+}
+
+/* —— Penjualan Produk — visual family KPI Ultimate (tampilan only) —— */
+.thc-page .thc-sales-panels{
+    align-items: stretch;
+}
+
+.thc-page .thc-sales-panels .thc-produk-slot{
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.thc-produk-section{
+    margin: 14px 0 0;
+    padding: 0;
+    border-radius: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.32);
+    border-left: 4px solid #F2C230;
+    background: #11151B;
+    box-shadow:
+        0 2px 4px rgba(16, 24, 40, 0.05),
+        0 8px 22px rgba(0, 0, 0, 0.35),
+        0 0 18px rgba(212, 175, 55, 0.1);
+    overflow: hidden;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    scroll-margin-top: calc(
+        var(--erp-top-header-h, 96px)
+        + var(--thc-page-head-h, 92px)
+        + 12px
+        + var(--thc-pin-stack-h, 120px)
+        + 8px
+    );
+    transition: box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.thc-page .thc-sales-panels .thc-produk-slot > .thc-produk-section{
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+}
+
+.thc-produk-section.is-focused{
+    border-color: rgba(242, 194, 48, 0.7);
+    box-shadow:
+        0 2px 4px rgba(16, 24, 40, 0.05),
+        0 8px 22px rgba(0, 0, 0, 0.35),
+        0 0 28px rgba(242, 194, 48, 0.28);
+}
+
+.thc-produk-summary{
+    flex: 0 0 auto;
+    padding: 18px 18px 16px;
+    background: linear-gradient(180deg, #171C23 0%, #12161D 100%);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.28);
+}
+
+.thc-produk-kicker{
+    display: block;
+    margin: 0 0 6px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #F2C230;
+    line-height: 1.2;
+}
+
+.thc-produk-title{
+    margin: 0 0 14px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #F8FAFC;
+    line-height: 1.25;
+}
+
+.thc-produk-hero{
+    padding: 14px 14px 13px;
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    background: #0F1319;
+}
+
+.thc-produk-hero-label{
+    display: block;
+    margin: 0 0 6px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #E2E8F0;
+}
+
+.thc-produk-val{
+    display: block;
+    margin: 0 0 6px;
+    font-size: clamp(28px, 3.2vw, 36px);
+    font-weight: 800;
+    line-height: 1.05;
+    color: #F2C230;
+    font-variant-numeric: tabular-nums;
+    word-break: break-word;
+}
+
+.thc-produk-meta{
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    font-style: normal;
+    color: #CBD5E1;
+    line-height: 1.4;
+}
+
+.thc-produk-detail{
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 14px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.thc-produk-detail-label{
+    flex: 0 0 auto;
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #E2E8F0;
+}
+
+.thc-produk-list-wrap{
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(42, 51, 64, 0.95);
+    background: #0F1319;
+    scrollbar-width: thin;
+    scrollbar-color: #2A3340 #0F1319;
+}
+
+.thc-produk-list-wrap::-webkit-scrollbar{
+    width: 8px;
+    height: 0;
+}
+
+.thc-produk-list-wrap::-webkit-scrollbar-thumb{
+    background: #2A3340;
+    border-radius: 999px;
+}
+
+.thc-produk-list-wrap::-webkit-scrollbar-track{
+    background: #0F1319;
+}
+
+.thc-produk-list{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px 12px 12px;
+}
+
+.thc-produk-day{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-areas:
+        "date date"
+        "items total";
+    column-gap: 12px;
+    align-items: start;
+    padding: 11px 12px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-left: 3px solid rgba(242, 194, 48, 0.88);
+    background: #1A2028;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    min-width: 0;
+}
+
+.thc-produk-day:hover{
+    background: #202733;
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.34);
+}
+
+.thc-produk-day-date{
+    grid-area: date;
+    margin: 0 0 10px;
+    padding: 0 0 8px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #F2C230;
+    line-height: 1.3;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.28);
+}
+
+.thc-produk-items{
+    grid-area: items;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+}
+
+.thc-produk-item{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 0;
+}
+
+.thc-produk-item-name{
+    font-size: 15px;
+    font-weight: 800;
+    color: #F8FAFC;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.thc-produk-item-sep{
+    display: none;
+}
+
+.thc-produk-item-meta{
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #F2C230;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.35;
+}
+
+.thc-produk-item.is-compact{
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0;
+    padding: 5px 0;
+}
+
+.thc-produk-item.is-compact .thc-produk-item-name{
+    font-size: 14.5px;
+}
+
+.thc-produk-item.is-compact .thc-produk-item-sep{
+    display: inline;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #94A3B8;
+}
+
+.thc-produk-item.is-compact .thc-produk-item-meta{
+    font-size: 14px;
+}
+
+.thc-produk-day-total{
+    grid-area: total;
+    align-self: center;
+    margin: 0 6px 0 0;
+    padding: 2px 4px 2px 14px;
+    min-width: 112px;
+    max-width: 46%;
+    border-top: 0;
+    border-left: 1px solid rgba(212, 175, 55, 0.3);
+    text-align: right;
+}
+
+.thc-produk-day-total-label{
+    display: block;
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #E2E8F0;
+    line-height: 1.2;
+}
+
+.thc-produk-day-total-qty{
+    display: block;
+    margin: 0 0 2px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #CBD5E1;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+}
+
+.thc-produk-day-total-val{
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    color: #F2C230;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.thc-produk-empty{
+    text-align: center;
+    color: #CBD5E1;
+    font-weight: 600;
+    white-space: normal;
+    padding: 18px 12px;
+    margin: 0;
+    font-size: 14px;
+}
+
+@media (max-width: 1100px){
+    .thc-page .thc-sales-panels .thc-produk-slot{
+        position: static;
+        height: auto;
+        min-height: 0;
+    }
+
+    .thc-page .thc-sales-panels .thc-produk-slot > .thc-produk-section{
+        position: static;
+        inset: auto;
+        height: auto;
+        max-height: none;
+    }
+
+    .thc-produk-list-wrap{
+        flex: 0 1 auto;
+        max-height: min(360px, 50vh);
+    }
+}
+
+@media (max-width: 640px){
+    .thc-produk-day{
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: none;
+        grid-template-areas: none;
+    }
+
+    .thc-produk-day-date,
+    .thc-produk-items,
+    .thc-produk-day-total{
+        grid-area: auto;
+    }
+
+    .thc-produk-day-total{
+        align-self: stretch;
+        max-width: none;
+        min-width: 0;
+        margin: 8px 0 0;
+        padding: 8px 0 0;
+        border-left: 0;
+        border-top: 1px solid rgba(212, 175, 55, 0.28);
+        text-align: right;
+    }
+}
+
+@media (max-width: 900px){
+    .thc-produk-summary{
+        padding: 16px 14px 14px;
+    }
+
+    .thc-produk-val{
+        font-size: 28px;
+    }
+
+    .thc-produk-list-wrap{
+        max-height: min(320px, 46vh);
+    }
+}
+
+/* Print-only identity — hidden on screen */
+.thc-print-only{
+    display: none !important;
+}
+
+/* Expand overflow before print dialog so semua row terukur */
+body.thc-printing .thc-table-scroll,
+body.thc-printing .thc-produk-table-wrap,
+body.thc-printing .thc-produk-list-wrap,
+body.thc-printing .thc-kpiu-table-wrap,
+body.thc-printing .thc-produk-detail,
+body.thc-printing .thc-kpiu-detail,
+body.thc-printing .thc-produk-section,
+body.thc-printing .thc-produk-slot,
+body.thc-printing .thc-kpiu-section,
+body.thc-printing .thc-table-section,
+body.thc-printing .thc-sales-panels{
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+    inset: auto !important;
+}
+
+/* =========================================================
+   CETAK — Laporan Kinerja Cabang lengkap (A4 portrait)
+   DOM existing: ringkasan + tabel + Product Sales + KPI Ultimate
+   ========================================================= */
+@media print{
+    @page{
+        size: A4 portrait;
+        margin: 14mm 12mm 12mm 12mm;
+    }
+
+    html, body{
+        width: auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        background: #fff !important;
+        color: #111 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    body,
+    body.has-bottom-nav{
+        padding: 0 !important;
+        padding-bottom: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+    }
+
+    body.setoran-dark,
+    body.setoran-dark .erp-wrapper,
+    body.setoran-dark .erp-content,
+    body.setoran-dark .erp-content.setoran-page,
+    body.setoran-dark .setoran-page,
+    body.setoran-dark .erp-wrapper .thc-table-section.setoran-section-card,
+    body.setoran-dark .erp-wrapper .thc-page,
+    body.setoran-dark .erp-wrapper .thc-sales-panels,
+    body.setoran-dark .erp-wrapper .thc-produk-section,
+    body.setoran-dark .erp-wrapper .thc-kpiu-section,
+    .erp-wrapper,
+    .erp-content,
+    .erp-content.setoran-page,
+    .thc-page,
+    .thc-table-section,
+    .thc-sales-panels{
+        background: #fff !important;
+        color: #111 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        border-color: #D6D3C4 !important;
+    }
+
+    #sidebar,
+    #header,
+    .erp-bottom-nav,
+    .thc-page-head,
+    .thc-pin-stack,
+    .thc-table-toolbar,
+    .thc-tb-actions,
+    .thc-action-btn,
+    #thcJumpCalModal,
+    #thcDashModalHost,
+    #customPeriodModal,
+    .thc-kpiu-edit,
+    #thcKpiuEditWrap,
+    .thc-incomplete-note,
+    .thc-row-meta{
+        display: none !important;
+    }
+
+    .thc-print-only,
+    .thc-print-identity{
+        display: block !important;
+    }
+
+    .thc-print-foot.thc-print-only{
+        display: grid !important;
+    }
+
+    .erp-wrapper{
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 0 !important;
+        height: auto !important;
+    }
+
+    .erp-content,
+    .erp-content.setoran-page,
+    body.has-bottom-nav .erp-content{
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        max-width: none !important;
+    }
+
+    .thc-page{
+        display: block !important;
+        gap: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+        position: static !important;
+    }
+
+    .thc-print-identity{
+        order: 0;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin: 0 0 10px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: #fff !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .thc-print-head{
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+
+    .thc-print-brand-wrap{
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        min-width: 0 !important;
+    }
+
+    .thc-print-logo{
+        width: 52px !important;
+        height: 52px !important;
+        object-fit: contain !important;
+        display: block !important;
+    }
+
+    .thc-print-copy h1{
+        margin: 0 !important;
+        font-size: 13.5pt !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.04em !important;
+        color: #111 !important;
+        text-transform: uppercase !important;
+        line-height: 1.2 !important;
+    }
+
+    .thc-print-doc{
+        margin: 2px 0 0 !important;
+        font-size: 9.5pt !important;
+        font-weight: 700 !important;
+        color: #1a1a1a !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+    }
+
+    .thc-print-sys{
+        margin: 1px 0 0 !important;
+        font-size: 7.5pt !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.1em !important;
+        color: #6b6520 !important;
+        text-transform: uppercase !important;
+    }
+
+    .thc-print-mark{
+        text-align: right !important;
+        font-size: 8pt !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.12em !important;
+        color: #111 !important;
+        text-transform: uppercase !important;
+        flex: 0 0 auto !important;
+    }
+
+    .thc-print-mark em{
+        display: block !important;
+        margin-top: 2px !important;
+        font-style: normal !important;
+        color: #C9A227 !important;
+    }
+
+    .thc-print-rule{
+        height: 2px !important;
+        margin: 8px 0 10px !important;
+        background: linear-gradient(90deg, #C9A227, #E7D7A4 55%, transparent) !important;
+    }
+
+    .thc-print-title-wrap{
+        margin: 0 0 10px !important;
+    }
+
+    .thc-print-t1{
+        margin: 0 !important;
+        font-size: 14pt !important;
+        line-height: 1.2 !important;
+        font-weight: 800 !important;
+        color: #111 !important;
+        letter-spacing: 0.04em !important;
+        text-transform: uppercase !important;
+    }
+
+    .thc-print-sub{
+        margin: 4px 0 0 !important;
+        font-size: 8.5pt !important;
+        color: #6b6520 !important;
+    }
+
+    .thc-print-meta-grid{
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 2px 24px !important;
+        padding: 8px 10px !important;
+        margin: 0 !important;
+        border: 1px solid #E5E0D0 !important;
+        border-left: 3px solid #C9A227 !important;
+        background: #FAFAF8 !important;
+    }
+
+    .thc-print-item{
+        padding: 3px 0 !important;
+    }
+
+    .thc-print-item .lbl{
+        display: block !important;
+        font-size: 7pt !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        color: #6b6520 !important;
+    }
+
+    .thc-print-item .val{
+        display: block !important;
+        margin-top: 1px !important;
+        font-size: 9.5pt !important;
+        font-weight: 700 !important;
+        color: #111 !important;
+    }
+
+    .thc-print-foot{
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 4px 12mm 0 !important;
+        border-top: 1.5px solid #C9A227 !important;
+        display: grid !important;
+        grid-template-columns: 1.1fr 1.2fr 1fr !important;
+        gap: 8px !important;
+        align-items: end !important;
+        font-size: 7pt !important;
+        color: #6b6520 !important;
+        background: #fff !important;
+        break-after: avoid !important;
+        page-break-after: avoid !important;
+    }
+
+    .thc-print-foot b{
+        display: block !important;
+        color: #111 !important;
+        font-size: 7.5pt !important;
+    }
+
+    .thc-print-foot .c{ text-align: center !important; }
+    .thc-print-foot .r{ text-align: right !important; }
+
+    .thc-tot-go{
+        display: none !important;
+    }
+
+    .thc-table-section{
+        order: 1;
+        display: flex !important;
+        flex-direction: column !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+        break-after: auto !important;
+        page-break-after: auto !important;
+    }
+
+    .thc-table-section > *{
+        flex: 0 0 auto !important;
+    }
+
+    .thc-totals{
+        order: -1;
+        display: block !important;
+        margin: 0 0 8px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: #fff !important;
+        overflow: visible !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .thc-totals-label{
+        margin: 0 0 6px !important;
+        font-size: 10px !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        color: #8A7010 !important;
+    }
+
+    .thc-totals-grid{
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        overflow: visible !important;
+    }
+
+    .thc-tot-item{
+        animation: none !important;
+        min-height: 0 !important;
+        padding: 6px 8px 6px 10px !important;
+        border: 1px solid #D6D3C4 !important;
+        border-radius: 4px !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        transform: none !important;
+    }
+
+    .thc-tot-item::before{
+        width: 3px !important;
+        border-radius: 4px 0 0 4px !important;
+        box-shadow: none !important;
+    }
+
+    .thc-tot-item span{
+        color: #444 !important;
+        font-size: 8px !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        white-space: nowrap !important;
+    }
+
+    .thc-tot-item strong{
+        color: #111 !important;
+        font-size: 11px !important;
+    }
+
+    .thc-tot-item.is-omzet{ order: 1; }
+    .thc-tot-item.is-nett{ order: 2; }
+    .thc-tot-item.is-customer{ order: 3; }
+    .thc-tot-item.is-transaksi{ order: 4; }
+    .thc-tot-item.is-services{ order: 5; }
+    .thc-tot-item.is-actual{ order: 6; }
+    .thc-tot-item.is-nontunai{ order: 7; }
+    .thc-tot-item.is-cashout{ order: 8; }
+
+    .thc-tot-item.is-omzet strong,
+    .thc-tot-item.is-actual span,
+    .thc-tot-item.is-actual strong{ color: #8A7010 !important; }
+    .thc-tot-item.is-nett strong{ color: #0E7490 !important; }
+    .thc-tot-item.is-cashout,
+    .thc-tot-item.is-cashout span,
+    .thc-tot-item.is-cashout strong{
+        color: #B91C1C !important;
+        background: #fff !important;
+        border-color: #F0C4C4 !important;
+    }
+
+    .thc-table-scroll{
+        order: 0;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        background: #fff !important;
+        border: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .thc-table-scroll::before{
+        content: "Tabel Harian";
+        display: block;
+        margin: 0 0 6px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #8A7010;
+    }
+
+    .thc-table.setoran3-table,
+    .thc-table{
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+        font-size: 8px !important;
+        background: #fff !important;
+    }
+
+    .thc-table thead{
+        display: table-header-group !important;
+    }
+
+    .thc-table tbody{
+        display: table-row-group !important;
+    }
+
+    .thc-table th,
+    .thc-table td,
+    .thc-table.setoran3-table tbody td,
+    .thc-table.setoran3-table thead th,
+    .thc-table tbody td:nth-child(1),
+    .thc-table tbody td:nth-child(2),
+    .thc-table thead th:nth-child(1),
+    .thc-table thead th:nth-child(2),
+    .thc-table thead th.thc-sticky-tanggal,
+    .thc-table thead th.thc-sticky-cabang{
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        z-index: auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 3px 4px !important;
+        font-size: 7.5px !important;
+        line-height: 1.25 !important;
+        white-space: nowrap !important;
+        background: #fff !important;
+        color: #111 !important;
+        border: 1px solid #C9C9C9 !important;
+        box-shadow: none !important;
+        vertical-align: middle !important;
+    }
+
+    .thc-table thead th,
+    .thc-table.setoran3-table thead th,
+    .thc-table thead th:nth-child(1),
+    .thc-table thead th:nth-child(2),
+    .thc-table thead th.thc-sticky-tanggal,
+    .thc-table thead th.thc-sticky-cabang,
+    .thc-table thead th.thc-col-cashout,
+    .thc-table thead th:nth-child(6){
+        background: #111 !important;
+        color: #fff !important;
+        font-size: 7px !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.02em !important;
+        text-transform: uppercase !important;
+        border-color: #111 !important;
+        border-bottom: 1.5px solid #C9A227 !important;
+    }
+
+    .thc-table tbody tr:nth-child(even) td,
+    .thc-table tbody tr:nth-child(even) td:nth-child(1),
+    .thc-table tbody tr:nth-child(even) td:nth-child(2){
+        background: #FAFAF8 !important;
+    }
+
+    .thc-table td.thc-num,
+    .thc-table th.thc-num{
+        text-align: right !important;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .thc-table td.thc-cashout,
+    .thc-table td:nth-child(6).thc-num{
+        color: #B91C1C !important;
+        font-weight: 800 !important;
+    }
+
+    .thc-table td.thc-highlight{
+        color: #8A7010 !important;
+        font-weight: 800 !important;
+    }
+
+    .thc-sticky-col,
+    .thc-sticky-tanggal,
+    .thc-sticky-cabang{
+        position: static !important;
+        left: auto !important;
+        box-shadow: none !important;
+    }
+
+    .thc-sales-panels{
+        order: 2;
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 10px 0 0 !important;
+        padding: 0 !important;
+        gap: 0 !important;
+        overflow: visible !important;
+        visibility: visible !important;
+        break-after: avoid !important;
+        page-break-after: avoid !important;
+    }
+
+    .thc-produk-slot{
+        position: static !important;
+        display: block !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .thc-page .thc-sales-panels .thc-produk-slot > .thc-produk-section{
+        position: static !important;
+        inset: auto !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .thc-produk-section,
+    .thc-kpiu-section{
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 10px 0 0 !important;
+        padding: 0 !important;
+        border: 1px solid #D6D3C4 !important;
+        border-left: 3px solid #C9A227 !important;
+        border-radius: 0 !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        break-inside: auto;
+        page-break-inside: auto;
+    }
+
+    .thc-produk-summary,
+    .thc-kpiu-summary{
+        background: #fff !important;
+        border-bottom: 1px solid #E5E0D0 !important;
+        padding: 8px 8px 7px !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .thc-produk-kicker,
+    .thc-kpiu-kicker{
+        color: #8A7010 !important;
+        font-size: 8px !important;
+    }
+
+    .thc-produk-title,
+    .thc-kpiu-title{
+        color: #111 !important;
+        font-size: 11px !important;
+        margin: 0 0 6px !important;
+    }
+
+    .thc-produk-hero,
+    .thc-kpiu-card,
+    .thc-kpiu-progress{
+        background: #fff !important;
+        border: 1px solid #E5E0D0 !important;
+        box-shadow: none !important;
+    }
+
+    .thc-produk-hero-label,
+    .thc-kpiu-card span,
+    .thc-kpiu-meta,
+    .thc-produk-meta,
+    .thc-produk-detail-label,
+    .thc-kpiu-detail-label,
+    .thc-kpiu-progress-kicker,
+    .thc-kpiu-progress-line,
+    .thc-kpiu-progress-vs{
+        color: #333 !important;
+    }
+
+    .thc-produk-val,
+    .thc-kpiu-card.is-realisasi strong,
+    .thc-kpiu-progress-pct,
+    .thc-kpiu-progress-sub,
+    .thc-produk-item-meta{
+        color: #8A7010 !important;
+    }
+
+    .thc-kpiu-card strong{
+        color: #111 !important;
+        font-size: 12px !important;
+    }
+
+    .thc-produk-val{
+        font-size: 16px !important;
+    }
+
+    .thc-produk-detail,
+    .thc-kpiu-detail{
+        overflow: visible !important;
+        padding: 8px !important;
+        background: #fff !important;
+    }
+
+    .thc-produk-table-wrap,
+    .thc-produk-list-wrap,
+    .thc-kpiu-table-wrap{
+        max-height: none !important;
+        height: auto !important;
+        overflow: visible !important;
+        border: 1px solid #C9C9C9 !important;
+        background: #fff !important;
+        border-radius: 0 !important;
+    }
+
+    .thc-produk-list{
+        padding: 4px 6px !important;
+    }
+
+    .thc-produk-day{
+        display: block !important;
+        grid-template-columns: none !important;
+        grid-template-areas: none !important;
+        border-bottom: 1px solid #E5E0D0 !important;
+        padding: 4px 0 !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .thc-produk-day-date{
+        color: #8A7010 !important;
+        font-size: 9px !important;
+        margin: 0 0 3px !important;
+    }
+
+    .thc-produk-day-total{
+        border-top: 1px solid #E5E0D0 !important;
+        border-left: 0 !important;
+        margin-top: 4px !important;
+        padding: 4px 0 0 !important;
+        max-width: none !important;
+        text-align: right !important;
+        display: block !important;
+    }
+
+    .thc-produk-day-total-label{
+        color: #333 !important;
+        font-size: 7px !important;
+    }
+
+    .thc-produk-day-total-qty{
+        color: #333 !important;
+        font-size: 8px !important;
+    }
+
+    .thc-produk-day-total-val{
+        color: #8A7010 !important;
+        font-size: 9px !important;
+    }
+
+    .thc-produk-item-name{
+        color: #111 !important;
+        font-size: 9px !important;
+    }
+
+    .thc-produk-item-meta,
+    .thc-produk-item-sep{
+        color: #333 !important;
+        font-size: 8px !important;
+    }
+
+    .thc-produk-empty{
+        color: #333 !important;
+        font-size: 8px !important;
+        padding: 8px !important;
+    }
+
+    .thc-produk-table,
+    .thc-kpiu-table{
+        width: 100% !important;
+        table-layout: auto !important;
+        background: #fff !important;
+    }
+
+    .thc-produk-table thead,
+    .thc-kpiu-table thead{
+        display: table-header-group !important;
+    }
+
+    .thc-produk-table th,
+    .thc-kpiu-table th,
+    .thc-produk-table td,
+    .thc-kpiu-table td{
+        position: static !important;
+        top: auto !important;
+        background: #fff !important;
+        color: #111 !important;
+        border: 1px solid #C9C9C9 !important;
+        padding: 3px 5px !important;
+        font-size: 8px !important;
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+
+    .thc-produk-table th,
+    .thc-kpiu-table th{
+        background: #111 !important;
+        color: #fff !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        font-size: 7px !important;
+        border-bottom: 1.5px solid #C9A227 !important;
+    }
+
+    .thc-kpiu-cards{
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+    }
+
+    .thc-kpiu-progress-pct{
+        font-size: 16px !important;
+    }
+
+    .thc-kpiu-bar{
+        background: #EDEDED !important;
+        overflow: hidden !important;
+    }
+
+    .thc-kpiu-pkg{
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .thc-kpiu-pkg-item{
+        background: #fff !important;
+        border: 1px solid #E5E0D0 !important;
+        overflow: visible !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .thc-kpiu-pkg-item b,
+    .thc-kpiu-pkg-item strong,
+    .thc-kpiu-pkg-item em{
+        color: #111 !important;
+    }
+
+    .thc-kpiu-pkg-contrib{
+        color: #8A7010 !important;
+    }
+
+    .thc-state,
+    .thc-error{
+        color: #111 !important;
+        background: #fff !important;
+    }
+}

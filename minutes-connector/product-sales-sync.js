@@ -216,6 +216,7 @@ try {
           cabang_minutes_name: cabang.nama_minutes,
           product_name: p.product_name,
           sku: "",
+          qty_sold: p.sold,
           product_price: p.sales,
           source: "MINUTES_PRODUCT_SALES_DAILY",
           synced_at: now,
