@@ -863,6 +863,36 @@ const TabelHarianCabang = {
     },
 
     /**
+     * Sisi bawah header kolom sticky (viewport Y).
+     * Diukur dari DOM aktual: topbar global + toolbar sticky + thead.
+     * Tidak membaca --thc-thead-top (calc() tidak bisa di-parseFloat).
+     */
+    measureJumpStickyBottom(){
+        if(typeof this.syncStickyOffsetVars === "function"){
+            this.syncStickyOffsetVars();
+        }
+        const header = document.getElementById("header");
+        const pin = document.getElementById("thcPinStack");
+        const th = document.querySelector("#thcTable thead th");
+
+        const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+        const pinH = pin ? pin.getBoundingClientRect().height : 0;
+        const theadH = th ? th.getBoundingClientRect().height : 0;
+
+        if(th){
+            const usedTop = Number.parseFloat(getComputedStyle(th).top);
+            if(Number.isFinite(usedTop) && usedTop > 0){
+                return usedTop + theadH;
+            }
+            const thRect = th.getBoundingClientRect();
+            if(thRect.top <= headerBottom + pinH + 2){
+                return thRect.bottom;
+            }
+        }
+        return headerBottom + pinH + theadH;
+    },
+
+    /**
      * NAVIGASI SAJA dalam current filtered dataset.
      * Vertical-only — horizontal scroll position tidak boleh berubah.
      * Tidak ubah Periode / Cabang / reload / query.
@@ -891,35 +921,31 @@ const TabelHarianCabang = {
         }
 
         const xSnaps = this.captureHorizontalScroll(row);
-        const page = document.getElementById("thcPage");
-        const theadTopCss = page
-            ? Number.parseFloat(getComputedStyle(page).getPropertyValue("--thc-thead-top"))
-            : NaN;
-        const topbarH = Number.parseFloat(
-            getComputedStyle(document.documentElement).getPropertyValue("--erp-top-header-h")
-        ) || 96;
-        const offset = (Number.isFinite(theadTopCss) && theadTopCss > 0)
-            ? theadTopCss + 8
-            : topbarH + 12;
+        const offset = this.measureJumpStickyBottom();
         const scroller = this.getNearestScroller(row);
         const isPageScroller =
             scroller === document.scrollingElement
             || scroller === document.documentElement
             || scroller === document.body;
 
-        if(isPageScroller){
-            const y = (window.scrollY || window.pageYOffset || 0)
-                + row.getBoundingClientRect().top
-                - offset;
-            const x = window.scrollX || window.pageXOffset || 0;
-            window.scrollTo({ top: Math.max(0, y), left: x, behavior: "smooth" });
-        }else{
-            const left = scroller.scrollLeft;
-            const scRect = scroller.getBoundingClientRect();
-            const rowRect = row.getBoundingClientRect();
-            const nextTop = scroller.scrollTop + (rowRect.top - scRect.top) - 8;
-            scroller.scrollTo({ top: Math.max(0, nextTop), left, behavior: "smooth" });
-        }
+        const applyY = (behavior) => {
+            const target = document.querySelector(`#thcTbody tr[data-tanggal="${tanggal}"]`) || row;
+            const scrollY = isPageScroller
+                ? (window.scrollY || window.pageYOffset || 0)
+                : scroller.scrollTop;
+            const top = Math.max(0, scrollY + target.getBoundingClientRect().top - offset);
+            if(isPageScroller){
+                window.scrollTo({
+                    top,
+                    left: window.scrollX || window.pageXOffset || 0,
+                    behavior
+                });
+            }else{
+                scroller.scrollTo({ top, left: scroller.scrollLeft, behavior });
+            }
+        };
+
+        applyY("smooth");
 
         // Jangan pakai scrollIntoView — default-nya bisa geser horizontal.
         // Kunci scrollLeft selama smooth scroll vertikal selesai.
@@ -930,8 +956,9 @@ const TabelHarianCabang = {
         const lockTimer = setInterval(lockX, 50);
         setTimeout(() => {
             clearInterval(lockTimer);
+            applyY("auto");
             lockX();
-        }, 500);
+        }, 450);
 
         document.querySelectorAll("#thcTbody tr.thc-jump-flash").forEach((tr) => {
             tr.classList.remove("thc-jump-flash");

@@ -17,19 +17,18 @@ body.setoran-dark .erp-content.setoran-page:has(.thc-page),
     --thc-col-tanggal-w: 118px;
     --thc-col-cabang-w: 148px;
     --thc-page-head-h: 92px;
-    --thc-pin-stack-h: 120px;
-    /* thead sticky terhadap PAGE scroll — di bawah ERP header + title + filter */
+    /* pad 14+12 + gap 6 + label/ctrl ~56 + meta ~15 */
+    --thc-pin-stack-h: 104px;
+    /* thead sticky — rapat di bawah toolbar (overlap 1px, tanpa celah tbody) */
     --thc-thead-top: calc(
-        var(--erp-top-header-h, 96px)
-        + var(--thc-page-head-h, 92px)
-        + 12px
-        + var(--thc-pin-stack-h, 120px)
+        var(--erp-top-header-h, 58px)
+        + var(--thc-pin-stack-h, 104px)
+        - 1px
     );
-    --thc-z-page-head: 50;
-    --thc-z-pin-stack: 45;
-    --thc-z-corner: 40;
-    --thc-z-thead: 30;
-    --thc-z-sticky-body: 20;
+    --thc-z-pin-stack: 40;
+    --thc-z-corner: 21;
+    --thc-z-thead: 20;
+    --thc-z-sticky-body: 1;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -38,21 +37,43 @@ body.setoran-dark .erp-content.setoran-page:has(.thc-page),
     padding: 0 0 20px;
     min-height: 0;
     gap: 0;
+    overflow: visible;
+    transform: none;
+    filter: none;
+    contain: none;
 }
 
-/* Halaman ini: horizontal scroll di PAGE bila tabel lebar (jangan trap sticky di wrapper pendek) */
-html:has(.thc-page),
-body:has(.thc-page){
+/*
+  Satu scrollport (html). Body HARUS overflow:visible — overflow-y:auto di body
+  + overflow-x di html membuat nested scroller dan mematikan position:sticky.
+  Horizontal: html overflow-x auto bila tabel lebih lebar dari viewport.
+*/
+html:has(.thc-page){
     overflow-x: auto;
+    overflow-y: auto;
+}
+html:has(.thc-page) body,
+html:has(.thc-page) body.setoran-dark{
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+}
+.erp-wrapper:has(.thc-page),
+.erp-wrapper:has(.thc-page) .erp-content,
+.erp-wrapper:has(.thc-page) .erp-content.setoran-page{
+    overflow: visible !important;
+    max-height: none !important;
+    contain: none !important;
+    transform: none !important;
 }
 
-/* —— Page title: sticky di bawah ERP header —— */
+/* —— Page title: ikut scroll (freeze = kontrol + thead saja) —— */
 body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
 .erp-wrapper .thc-page .thc-page-head,
 .thc-page .thc-page-head{
-    position: sticky;
-    top: var(--erp-top-header-h, 96px);
-    z-index: var(--thc-z-page-head, 46);
+    position: relative;
+    top: auto;
+    z-index: 1;
     align-self: stretch;
     width: 100%;
     max-width: 100%;
@@ -115,7 +136,9 @@ body.setoran-dark .erp-wrapper .thc-page .thc-table-section.setoran-section-card
     min-height: 0;
     margin: 0;
     padding: 0 !important;
-    overflow: visible;
+    overflow: visible !important;
+    transform: none;
+    contain: none;
     border-radius: 14px !important;
     border: 1px solid rgba(212, 175, 55, 0.32) !important;
     border-left: 4px solid #D4AF37 !important;
@@ -128,15 +151,18 @@ body.setoran-dark .erp-wrapper .thc-page .thc-table-section.setoran-section-card
     max-height: none;
 }
 
-/* Filter pin — sticky tepat di bawah page-head; menempel ke thead (tanpa gap) */
+/* Filter pin — sticky di bawah ERP header; thead menempel di bawahnya */
 .thc-page .thc-pin-stack{
-    position: sticky;
-    top: calc(var(--erp-top-header-h, 96px) + var(--thc-page-head-h, 92px) + 12px);
-    z-index: var(--thc-z-pin-stack, 45);
+    position: sticky !important;
+    top: var(--erp-top-header-h, 58px) !important;
+    z-index: var(--thc-z-pin-stack, 40);
+    isolation: isolate;
     flex: 0 0 auto;
+    align-self: stretch;
+    width: 100%;
     margin: 0;
     background: #11151B;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.55);
 }
 
 .thc-page .thc-pin-stack .thc-table-toolbar{
@@ -156,7 +182,7 @@ body.setoran-dark .erp-wrapper .thc-page .thc-table-section.setoran-section-card
     gap: 6px;
     padding: 14px 16px 12px;
     border-bottom: 1px solid rgba(212, 175, 55, 0.28);
-    background: linear-gradient(180deg, #171C23 0%, #12161D 100%);
+    background: #11151B;
     box-shadow:
         inset 0 1px 0 rgba(242, 194, 48, 0.08),
         0 0 18px rgba(212, 175, 55, 0.1);
@@ -491,7 +517,7 @@ body.thc-jump-cal-open{
     font-size: 12px;
     font-weight: 700;
     color: #FCD34D;
-    background: rgba(245, 158, 11, 0.1);
+    background: #1A1610;
     border-bottom: 1px solid rgba(245, 158, 11, 0.28);
     flex: 0 0 auto;
 }
@@ -621,17 +647,17 @@ a.thc-action-btn.thc-action-back-arus:hover,
 /* —— E. Data table — tinggi natural (1–31 rows); vertical = PAGE scroll —— */
 .thc-table-scroll{
     position: relative;
-    z-index: 1;
+    z-index: 0;
     flex: 0 0 auto;
     height: auto;
     min-height: 0;
     max-height: none;
     /*
       overflow visible di kedua sumbu agar thead sticky ke PAGE scroll.
-      Horizontal: body:has(.thc-page) { overflow-x: auto } (overflow-x:auto di sini
-      akan compute overflow-y:auto dan menjebak sticky di dalam wrapper).
+      overflow-x:auto di wrapper ini akan compute overflow-y:auto dan
+      menjebak sticky di dalam kotak (double scrollbar).
     */
-    overflow: visible;
+    overflow: visible !important;
     background: #11151B;
     border-top: 0;
     margin: 0;
@@ -685,21 +711,24 @@ a.thc-action-btn.thc-action-back-arus:hover,
     color: #FCA5A5;
 }
 
-/* Table header — sticky terhadap PAGE scroll, tepat di bawah filter pin */
+/* Table header — sticky th saja (sticky thead+th bersamaan bisa double-offset) */
 .thc-table thead{
-    position: sticky;
-    top: var(--thc-thead-top);
-    z-index: var(--thc-z-thead, 30);
+    z-index: var(--thc-z-thead, 20);
+    background: #0F1319;
 }
 
 .thc-table thead th{
-    position: sticky;
+    position: sticky !important;
     top: var(--thc-thead-top);
-    z-index: var(--thc-z-thead, 30);
+    z-index: var(--thc-z-thead, 20);
     height: var(--thc-head-h, 46px);
     box-sizing: border-box;
     background: #0F1319 !important;
-    box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.35), 0 2px 0 rgba(212, 175, 55, 0.45);
+    background-clip: padding-box;
+    box-shadow:
+        inset 0 1px 0 rgba(212, 175, 55, 0.35),
+        0 2px 0 rgba(212, 175, 55, 0.45),
+        0 8px 14px rgba(0, 0, 0, 0.45);
     color: #F2C230 !important;
     font-size: 12.5px !important;
     font-weight: 800 !important;
@@ -743,7 +772,8 @@ a.thc-action-btn.thc-action-back-arus:hover,
 
 .thc-table tbody td:nth-child(1),
 .thc-table tbody td:nth-child(2){
-    z-index: var(--thc-z-sticky-body, 20);
+    top: auto;
+    z-index: var(--thc-z-sticky-body, 1);
     background: #12171F !important;
     box-shadow: 2px 0 0 rgba(212, 175, 55, 0.22);
 }
@@ -758,11 +788,12 @@ a.thc-action-btn.thc-action-back-arus:hover,
 .thc-table thead th:nth-child(1),
 .thc-table thead th:nth-child(2){
     top: var(--thc-thead-top);
-    z-index: var(--thc-z-corner, 40);
+    z-index: var(--thc-z-corner, 21);
     background: #0F1319 !important;
     box-shadow:
         inset 0 1px 0 rgba(212, 175, 55, 0.35),
         0 2px 0 rgba(212, 175, 55, 0.45),
+        0 8px 14px rgba(0, 0, 0, 0.45),
         4px 0 12px rgba(0, 0, 0, 0.45);
 }
 
@@ -770,6 +801,8 @@ a.thc-action-btn.thc-action-back-arus:hover,
     box-shadow:
         inset 0 1px 0 rgba(212, 175, 55, 0.35),
         0 2px 0 rgba(212, 175, 55, 0.45),
+        0 8px 14px rgba(0, 0, 0, 0.45),
+        2px 0 0 rgba(212, 175, 55, 0.25);
         2px 0 0 rgba(212, 175, 55, 0.25);
 }
 
@@ -1049,7 +1082,7 @@ a.thc-action-btn.thc-action-back-arus:hover,
         height: auto;
         min-height: 0;
         max-height: none;
-        overflow: visible;
+        overflow: visible !important;
     }
 
     .thc-totals{
