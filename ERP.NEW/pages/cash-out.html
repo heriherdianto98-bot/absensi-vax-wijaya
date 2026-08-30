@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cash Out | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/cash-out.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/light-contrast.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+    <div id="header"></div>
+    <div class="erp-content">
+        <div id="cashOutRoot"></div>
+    </div>
+</div>
+
+<nav class="erp-bottom-nav" aria-label="Navigasi bawah">
+    <a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a>
+    <a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a>
+    <a href="./cash-out.html" class="is-active"><span class="bn-icon">↗</span>Cash Out</a>
+    <a href="./finance.html?menu=qris"><span class="bn-icon">◈</span>QRIS</a>
+    <a href="./login.html"><span class="bn-icon">👤</span>Akun</a>
+</nav>
+
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/modules/cash-out.js"></script>
+<script src="../js/loader.js"></script>
+<script>
+document.addEventListener("erp:finance-ready", async () => {
+    const sidebar = document.getElementById("sidebar");
+    const header = document.getElementById("header");
+
+    if(sidebar){
+        sidebar.innerHTML = await (await fetch("../components/sidebar.html")).text();
+        if(typeof initSidebar === "function") initSidebar();
+        document.querySelectorAll(".menu-item").forEach((a) => {
+            a.classList.toggle("active", a.dataset.erpNav === "cash-out");
+        });
+    }
+
+    if(header){
+        header.innerHTML = await (await fetch("../components/header.html")).text();
+        OwnerAuth.bindUi();
+        OwnerAuth.syncHeader();
+        OwnerAuth.applyAccessControl();
+        const title = document.getElementById("erpHeaderTitle");
+        const sub = document.getElementById("erpHeaderSub");
+        if(title) title.textContent = "Cash Out";
+        if(sub) sub.textContent = "Rincian pengeluaran Minutes";
+        if(typeof initErpShellChrome === "function") initErpShellChrome();
+    }
+
+    document.body.classList.add("has-bottom-nav");
+    await CashOutDetail.boot();
+});
+</script>
+
+</body>
+</html>
