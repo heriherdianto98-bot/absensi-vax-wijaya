@@ -132,8 +132,14 @@ function jalankanSync() {
           "provider-sales-sync.js",
           "Minutes Provider Sales Daily",
           () => {
-            sedangBerjalan = false;
-            console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+            jalankanNodeFile(
+              "product-sales-sync.js",
+              "Minutes Product Sales Daily",
+              () => {
+                sedangBerjalan = false;
+                console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+              }
+            );
           }
         );
       }
@@ -151,6 +157,6 @@ setInterval(
 console.log("");
 console.log("Scheduler aktif.");
 console.log("Jadwal: setiap 1 menit.");
-console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily.");
+console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily.");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
