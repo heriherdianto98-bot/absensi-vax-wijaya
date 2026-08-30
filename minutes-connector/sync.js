@@ -1144,6 +1144,7 @@ async function prosesCabang(
       cash_payment: Number(cashPayment || 0),
       non_cash: Number(nonCash || 0),
       cash_out: Number(cashOut || 0),
+      keterangan_cash_out: keteranganCashOut,
       product_cost: Number(productCost || 0),
       customer_minutes: customerMinutes,
       transaction_minutes: transactionMinutes,
