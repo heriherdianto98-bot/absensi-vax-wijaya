@@ -12,7 +12,7 @@ Uang cabang (Nett / Non Cash / Cash Bersih):
   BUKAN setoran_3_harian.setoran_cash_actual
 
 + Lompat tanggal (navigasi row)
-+ Print/PDF = popup dokumen resmi (struktur master Arus Kas, warna tema Harian)
++ Print/PDF = popup dokumen resmi (master visual = Cash Out PDF LOCK; presenter only)
 + Excel (SpreadsheetML, numeric)
 + Total dari current filtered dataset
 + TOTAL PERIODE derived cards (same filtered rows, no new source):
@@ -37,6 +37,7 @@ const TabelHarianCabang = {
     _fromArusKas: false,
     _focusProdukOnce: false,
     _produkSeq: 0,
+    _produkPrintSnapshot: null,
 
     boot(){
         if(typeof DashboardEngine === "undefined"){
@@ -622,7 +623,7 @@ const TabelHarianCabang = {
     },
 
     buildFilename(ext){
-        const cabang = this.fileSlug(this.cabangLabel());
+        const cabang = this.fileSlug(this.printCabangName());
         const start = DashboardEngine.lastRange?.start || "";
         const end = DashboardEngine.lastRange?.end || start;
         let periodePart = "Periode";
@@ -1139,6 +1140,10 @@ const TabelHarianCabang = {
     },
 
     paintProdukSection(total, days){
+        this._produkPrintSnapshot = {
+            total: Number(total) || 0,
+            days: Array.isArray(days) ? days : []
+        };
         const valEl = document.getElementById("thcProdukTotalVal");
         const metaEl = document.getElementById("thcProdukTotalMeta");
         const list = document.getElementById("thcProdukList");
@@ -1303,10 +1308,11 @@ const TabelHarianCabang = {
         return { now, dateLabel, timeLabel };
     },
 
-    async resolvePrintLogoSrc(){
+    async fetchPrintAssetDataUrl(relPaths){
         const candidates = [];
-        try{ candidates.push(new URL("../assets/brand/erp-vax-wijaya.png", window.location.href).href); }catch(_e){ /* ignore */ }
-        try{ candidates.push(new URL("../assets/logo/erp-vax-wijaya.png", window.location.href).href); }catch(_e){ /* ignore */ }
+        (relPaths || []).forEach((rel) => {
+            try{ candidates.push(new URL(rel, window.location.href).href); }catch(_e){ /* ignore */ }
+        });
         for(const url of candidates){
             try{
                 const res = await fetch(url, { cache: "force-cache" });
@@ -1324,6 +1330,19 @@ const TabelHarianCabang = {
             }catch(_e){ /* try next */ }
         }
         return "";
+    },
+
+    async resolvePrintLogoSrc(){
+        return this.fetchPrintAssetDataUrl([
+            "../assets/brand/erp-vax-wijaya.png",
+            "../assets/logo/erp-vax-wijaya.png"
+        ]);
+    },
+
+    async resolvePrintOwnerSignatureSrc(){
+        return this.fetchPrintAssetDataUrl([
+            "../assets/owner-signature.png"
+        ]);
     },
 
     getActivePeriodKey(){
@@ -1428,6 +1447,47 @@ const TabelHarianCabang = {
     },
 
     /**
+     * Official short name from cabangList — exact / SPBU suffix only.
+     * Presentation: filename + header must follow cabang aktif, bukan lastCabangId stale.
+     */
+    officialCabangName(hint){
+        const h = String(hint || "").trim().toLowerCase();
+        if(!h || /^semua\s+cabang$/i.test(h)) return "";
+        const list = (typeof DashboardEngine !== "undefined" && DashboardEngine.cabangList) || [];
+        let best = "";
+        let bestScore = 0;
+        list.forEach((c) => {
+            const short = this.shortCabangName(c.nama_cabang);
+            const sl = String(short || "").trim().toLowerCase();
+            const full = String(c.nama_cabang || "").trim().toLowerCase();
+            if(!sl) return;
+            let score = 0;
+            if(sl === h || full === h) score = 3;
+            else if(sl === `spbu ${h}` || sl.endsWith(` ${h}`)) score = 2;
+            if(score > bestScore){
+                bestScore = score;
+                best = short;
+            }
+        });
+        return best;
+    },
+
+    /** Cabang aktif untuk Print/PDF/filename: filter Semua Cabang, else row tampil → toolbar → engine. */
+    printCabangName(){
+        if(this.isPrintAllCabang()) return "Semua Cabang";
+        const unique = [...new Set(
+            (this.rows || [])
+                .map((r) => String(r.cabang_name || "").trim())
+                .filter(Boolean)
+        )];
+        const toolbar = String(document.getElementById("branchFilter")?.value || "").trim();
+        const engine = this.cabangLabel();
+        const hint = unique.length === 1 ? unique[0] : (toolbar || engine);
+        if(!hint || /^semua\s+cabang$/i.test(hint)) return "Semua Cabang";
+        return this.properCabangName(this.officialCabangName(hint) || hint);
+    },
+
+    /**
      * Anomaly flags for PDF display only — does not alter values.
      * Conservative: only clear negatives / activity-without-finance / cash-out > gross.
      */
@@ -1497,6 +1557,19 @@ const TabelHarianCabang = {
         return String(document.getElementById(id)?.textContent || "").trim();
     },
 
+    liveCard(id, fallback){
+        const live = this.textOf(id);
+        return live || fallback || "—";
+    },
+
+    snapshotListItems(id){
+        const el = document.getElementById(id);
+        if(!el) return [];
+        return [...el.querySelectorAll("li")]
+            .map((li) => String(li.textContent || "").trim())
+            .filter(Boolean);
+    },
+
     snapshotTbody(tbodyId, colspan, numIdx){
         const tbody = document.getElementById(tbodyId);
         const nums = new Set(numIdx || []);
@@ -1514,25 +1587,51 @@ const TabelHarianCabang = {
         }).join("");
     },
 
-    snapshotProdukPrintBody(){
+    snapshotProdukPrintBodies(){
+        const days = this._produkPrintSnapshot?.days;
+        if(Array.isArray(days) && days.length){
+            return days.map((d) => {
+                const itemRows = (d.items || []).map((p) =>
+                    `<tr class="is-aktif">` +
+                    `<td class="col-date">${this.escapeHtml(this.formatTanggal(d.tanggal))}</td>` +
+                    `<td>${this.escapeHtml(p.name)}</td>` +
+                    `<td class="num">${this.escapeHtml(this.formatProdukQty(p))}</td>` +
+                    `<td class="num">${this.escapeHtml(this.formatRupiahOrZero(p.total))}</td>` +
+                    `</tr>`
+                ).join("");
+                const foot =
+                    `<tr class="is-day-total">` +
+                    `<td class="col-date">${this.escapeHtml(this.formatTanggal(d.tanggal))}</td>` +
+                    `<td>TOTAL HARI INI</td>` +
+                    `<td class="num">${this.escapeHtml(this.formatProdukQty({
+                        qty: d.total_qty_harian,
+                        qtyKnown: d.qtyKnown
+                    }))}</td>` +
+                    `<td class="num">${this.escapeHtml(this.formatRupiahOrZero(d.total_nominal_harian))}</td>` +
+                    `</tr>`;
+                return `<tbody class="txn">${itemRows}${foot}</tbody>`;
+            }).join("");
+        }
+
         const list = document.getElementById("thcProdukList");
         if(!list){
-            return `<tr><td colspan="4" class="empty">—</td></tr>`;
+            return `<tbody><tr><td colspan="4" class="empty">—</td></tr></tbody>`;
         }
         const empty = list.querySelector(".thc-produk-empty");
         if(empty){
-            return `<tr><td colspan="4" class="empty">${this.escapeHtml(empty.textContent.trim())}</td></tr>`;
+            return `<tbody><tr><td colspan="4" class="empty">${this.escapeHtml(empty.textContent.trim())}</td></tr></tbody>`;
         }
-        const rows = [];
+        const bodies = [];
         list.querySelectorAll(".thc-produk-day").forEach((day) => {
             const tanggal = day.querySelector(".thc-produk-day-date")?.textContent.trim() || "—";
+            const rows = [];
             day.querySelectorAll(".thc-produk-item").forEach((item) => {
                 const name = item.querySelector(".thc-produk-item-name")?.textContent.trim() || "—";
                 const meta = item.querySelector(".thc-produk-item-meta")?.textContent.trim() || "";
                 const sold = (meta.match(/Terjual\s+([^\s•—]+)/i) || [])[1] || "—";
                 const nilai = (meta.match(/Rp[\d.\s]+/i) || [])[0] || meta || "—";
                 rows.push(
-                    `<tr class="is-aktif"><td>${this.escapeHtml(tanggal)}</td>` +
+                    `<tr class="is-aktif"><td class="col-date">${this.escapeHtml(tanggal)}</td>` +
                     `<td>${this.escapeHtml(name)}</td>` +
                     `<td class="num">${this.escapeHtml(sold)}</td>` +
                     `<td class="num">${this.escapeHtml(nilai)}</td></tr>`
@@ -1540,30 +1639,336 @@ const TabelHarianCabang = {
             });
             const footQty = day.querySelector(".thc-produk-day-total-qty")?.textContent.trim() || "";
             const footVal = day.querySelector(".thc-produk-day-total-val")?.textContent.trim() || "";
-            const foot = [footQty, footVal].filter(Boolean).join(" • ");
-            if(foot){
+            if(footQty || footVal){
                 rows.push(
-                    `<tr class="is-aktif"><td>${this.escapeHtml(tanggal)}</td>` +
-                    `<td>TOTAL HARI INI</td><td class="num" colspan="2">${this.escapeHtml(foot)}</td></tr>`
+                    `<tr class="is-day-total"><td class="col-date">${this.escapeHtml(tanggal)}</td>` +
+                    `<td>TOTAL HARI INI</td>` +
+                    `<td class="num">${this.escapeHtml(footQty || "—")}</td>` +
+                    `<td class="num">${this.escapeHtml(footVal || "—")}</td></tr>`
                 );
             }
+            if(rows.length) bodies.push(`<tbody class="txn">${rows.join("")}</tbody>`);
         });
-        if(!rows.length){
-            return `<tr><td colspan="4" class="empty">—</td></tr>`;
+        if(!bodies.length){
+            return `<tbody><tr><td colspan="4" class="empty">—</td></tr></tbody>`;
         }
-        return rows.join("");
+        return bodies.join("");
     },
 
-    buildHarianExtraPrintSections(isAll){
-        const produkTotal = this.textOf("thcProdukTotalVal") || "Rp0";
+    buildPrintPeriodCardsHtml(){
+        const t = this.computeTotals(this.rows);
+        const cards = [
+            { lbl: "Omzet / Gross", val: this.liveCard("thcTotOmzet", this.formatRupiah(t.omzet)) },
+            { lbl: "Gross Service", val: this.liveCard("thcTotGrossService", this.formatRupiah(t.gross_service)) },
+            { lbl: "Product Terjual", val: this.liveCard("thcTotProduk", this.formatRupiah(t.produk)) },
+            { lbl: "Nett Revenue", val: this.liveCard("thcTotNett", this.formatRupiah(t.nett)), cls: "is-main" },
+            { lbl: "Non Tunai", val: this.liveCard("thcTotNonTunai", this.formatRupiah(t.non_cash)) },
+            { lbl: "Cash", val: this.liveCard("thcTotCash", this.formatRupiah(t.cash)) },
+            { lbl: "Cash Out", val: this.liveCard("thcTotCashOut", this.formatRupiah(t.cash_out)), cls: "is-cashout" },
+            { lbl: "Cash Bersih", val: this.liveCard("thcTotSetoran", this.formatRupiah(t.setoran_cash_aktual)), cls: "is-main" },
+            { lbl: "Customer", val: this.liveCard("thcTotCustomer", this.formatInt(t.customer)) },
+            { lbl: "Transaksi", val: this.liveCard("thcTotTransaksi", this.formatInt(t.transaction)) },
+            { lbl: "Services", val: this.liveCard("thcTotServices", this.formatInt(t.services)) },
+            { lbl: "Avg Ticket", val: this.liveCard("thcTotAvgTicket", this.formatRupiah(t.avg_ticket)) }
+        ];
+        return `<section class="summary keep is-12">
+      ${cards.map((c) =>
+        `<div class="sum${c.cls ? ` ${c.cls}` : ""}"><span class="lbl">${c.lbl}</span><span class="val sm">${this.escapeHtml(c.val)}</span></div>`
+      ).join("")}
+    </section>`;
+    },
+
+    snapshotAiListHtml(id, emptyText){
+        const items = this.snapshotListItems(id);
+        const use = items.length ? items : [emptyText || "—"];
+        return `<ul>${use.map((t) => `<li>${this.escapeHtml(t)}</li>`).join("")}</ul>`;
+    },
+
+    snapshotAiPredictHtml(){
+        const el = document.getElementById("vaxAiPredict");
+        if(!el){
+            return `<p class="ai-empty">Prediksi belum tersedia.</p>`;
+        }
+        const empty = el.querySelector(".ai-predict-empty");
+        if(empty){
+            return `<p class="ai-empty">${this.escapeHtml(empty.textContent.trim())}</p>`;
+        }
+        const value = el.querySelector(".ai-predict-value")?.textContent.trim() || "—";
+        const trend = el.querySelector(".ai-predict-trend-badge")?.textContent.trim() || "—";
+        const dir = el.querySelector(".ai-predict-dir-label")?.textContent.trim() || "—";
+        const conf = el.querySelector(".ai-predict-conf")?.textContent.trim() || "—";
+        const basis = [...el.querySelectorAll(".ai-predict-basis-item")]
+            .map((s) => s.textContent.replace(/\s+/g, " ").trim())
+            .filter(Boolean);
+        const disc = el.querySelector(".ai-predict-disclaimer")?.textContent.trim()
+            || "Estimasi berbasis tren historis, bukan angka pasti.";
+        const basisHtml = basis.length
+            ? basis.map((b) => `<span class="ai-basis">${this.escapeHtml(b)}</span>`).join("")
+            : `<span class="ai-basis">7D —</span><span class="ai-basis">14D —</span><span class="ai-basis">30D —</span>`;
+        return `
+      <div class="ai-predict-print">
+        <div class="ai-predict-main">
+          <span class="lbl">Prediksi Periode Berikutnya</span>
+          <strong>${this.escapeHtml(value)}</strong>
+        </div>
+        <div class="ai-predict-side">
+          <span class="ai-chip">${this.escapeHtml(trend)}</span>
+          <span class="ai-chip">${this.escapeHtml(dir)}</span>
+          <span class="ai-chip">${this.escapeHtml(conf)}</span>
+        </div>
+      </div>
+      <div class="ai-predict-basis">${basisHtml}</div>
+      <p class="ai-disc">${this.escapeHtml(disc)}</p>`;
+    },
+
+    buildPrintAiInsightHtml(){
+        const context = this.textOf("vaxAiContext") || "Filter aktif";
+        const status = this.textOf("vaxAiStatus") || "Monitoring";
+        const omzet = this.textOf("vaxAiSumOmzet") || "—";
+        const growth = this.textOf("vaxAiSumGrowth") || "—";
+        const finding = this.textOf("vaxAiSumFinding") || "";
+        const freshnessEl = document.getElementById("vaxAiFreshness");
+        const freshness = freshnessEl && !freshnessEl.hidden
+            ? String(freshnessEl.textContent || "").trim()
+            : "";
+        return `
+    <div class="print-head">
+        <div class="title-wrap is-next">
+          <div class="t1">AI INSIGHT</div>
+          <p class="sub">${this.escapeHtml(context)} · ${this.escapeHtml(status)}</p>
+        </div>
+      </div>
+      ${freshness ? `<p class="ai-fresh keep">${this.escapeHtml(freshness)}</p>` : ""}
+      <div class="ai-sum keep">
+        <span>${this.escapeHtml(omzet)}</span>
+        <span>${this.escapeHtml(growth)}</span>
+        ${finding ? `<em>${this.escapeHtml(finding)}</em>` : ""}
+      </div>
+      <div class="ai-grid-print">
+        <article class="ai-card-print keep">
+          <h4>1. Kondisi</h4>
+          ${this.snapshotAiListHtml("vaxAiKondisi", "Kondisi belum tersedia.")}
+        </article>
+        <article class="ai-card-print keep">
+          <h4>2. Bukti Data</h4>
+          ${this.snapshotAiListHtml("vaxAiBukti", "Bukti data belum tersedia.")}
+        </article>
+        <article class="ai-card-print keep">
+          <h4>3. Apa Yang Belum Diketahui</h4>
+          ${this.snapshotAiListHtml("vaxAiUnknown", "Tidak ada item pada bagian ini.")}
+        </article>
+        <article class="ai-card-print keep">
+          <h4>4. Prioritas Owner</h4>
+          ${this.snapshotAiListHtml("vaxAiPriorities", "Belum ada prioritas tindakan.")}
+        </article>
+        <article class="ai-card-print keep">
+          <h4>5. Tindakan / Monitoring</h4>
+          ${this.snapshotAiListHtml("vaxAiTindakan", "Tidak ada tindakan pada analisis ini.")}
+        </article>
+        <article class="ai-card-print keep is-span">
+          <h4>6. Promo / Risiko</h4>
+          ${this.snapshotAiListHtml("vaxAiPromo", "Tidak ada catatan promo pada analisis ini.")}
+        </article>
+      </div>
+      <article class="ai-predict-block keep">
+        <div class="ai-predict-head">
+          <h4>7. Prediksi</h4>
+          <span class="ai-tag">Decision Forecast</span>
+        </div>
+        ${this.snapshotAiPredictHtml()}
+      </article>`;
+    },
+
+    getHarianStampSvg(){
+        return `<svg viewBox="0 0 340 196" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <filter id="thInk" x="-4%" y="-4%" width="108%" height="108%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="n"/>
+      <feColorMatrix in="n" type="luminanceToAlpha" result="a"/>
+      <feComponentTransfer in="a" result="s">
+        <feFuncA type="discrete" tableValues="0 0.18 0.08 0.22 0 0.12 0.2 0"/>
+      </feComponentTransfer>
+      <feComposite in="SourceGraphic" in2="s" operator="out"/>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#163E86" filter="url(#thInk)">
+    <rect x="7" y="7" width="326" height="182" rx="11" ry="11" stroke-width="3.2"/>
+    <rect x="16" y="16" width="308" height="164" rx="7" ry="7" stroke-width="1.6"/>
+    <line x1="36" y1="50" x2="304" y2="50" stroke-width="1.5"/>
+    <line x1="36" y1="104" x2="304" y2="104" stroke-width="1.5"/>
+    <line x1="36" y1="170" x2="152" y2="170" stroke-width="1.5"/>
+    <line x1="188" y1="170" x2="304" y2="170" stroke-width="1.5"/>
+  </g>
+  <g fill="#163E86" filter="url(#thInk)">
+    <polygon points="148,28 150.4,34.8 157.6,34.8 151.8,39 154.2,46 148,41.6 141.8,46 144.2,39 138.4,34.8 145.6,34.8"/>
+    <polygon points="170,28 172.4,34.8 179.6,34.8 173.8,39 176.2,46 170,41.6 163.8,46 166.2,39 160.4,34.8 167.6,34.8"/>
+    <polygon points="192,28 194.4,34.8 201.6,34.8 195.8,39 198.2,46 192,41.6 185.8,46 188.2,39 182.4,34.8 189.6,34.8"/>
+  </g>
+  <text x="170" y="88" text-anchor="middle" fill="#163E86" font-family="Georgia,'Times New Roman',serif" font-size="26" font-weight="700" letter-spacing="1.2">ERP VAX WIJAYA</text>
+  <text x="170" y="126" text-anchor="middle" fill="#163E86" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="800" letter-spacing="3.2">CONFIDENTIAL</text>
+  <text x="170" y="146" text-anchor="middle" fill="#163E86" font-family="Arial,Helvetica,sans-serif" font-size="8.6" font-weight="700" letter-spacing="1.5">ENTERPRISE RESOURCE PLANNING</text>
+  <g fill="none" stroke="#163E86" stroke-width="2.1" stroke-linecap="round" filter="url(#thInk)">
+    <line x1="162" y1="158" x2="178" y2="174"/>
+    <line x1="178" y1="158" x2="162" y2="174"/>
+  </g>
+</svg>`;
+    },
+
+    getOwnerSignatureFallbackSvg(){
+        return `<svg viewBox="0 0 280 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <text x="8" y="50" fill="#0E2A4A" font-family="Segoe Script, Brush Script MT, 'Apple Chancery', cursive" font-size="30" font-style="italic">Heri Herdianto</text>
+</svg>`;
+    },
+
+    buildPrintSignBlock(sigSrc){
+        const stamp = this.getHarianStampSvg();
+        const ttd = sigSrc
+            ? `<img src="${sigSrc}" alt="Tanda tangan Owner">`
+            : this.getOwnerSignatureFallbackSvg();
+        return `<section class="sign" aria-label="Otorisasi dokumen">
+      <div class="box">
+        <div class="who">Disiapkan oleh:</div>
+        <div class="role">System / ERP VAX</div>
+        <div class="stage is-empty"></div>
+        <div class="name">ERP VAX Wijaya</div>
+        <div class="line"></div>
+        <div class="job">System</div>
+      </div>
+      <div class="box is-owner">
+        <div class="who">Mengetahui:</div>
+        <div class="role">Owner</div>
+        <div class="stage">
+          <div class="stamp">${stamp}</div>
+          <div class="ttd">${ttd}</div>
+        </div>
+        <div class="name">Heri Herdianto</div>
+        <div class="line"></div>
+        <div class="job">OWNER</div>
+      </div>
+    </section>`;
+    },
+
+    getHarianPrintPagerScript(){
+        return `
+    function thPx(){ return 96 / 25.4; }
+    function thLimit(){
+      /* A4 landscape 210mm. Top 10mm, bottom 16mm footer band, 3mm safety vs overlap. */
+      return (210 - 10 - 16 - 3) * thPx();
+    }
+    function thBlockH(el){
+      if(!el) return 0;
+      var cs = window.getComputedStyle(el);
+      return el.offsetHeight
+        + (parseFloat(cs.marginTop) || 0)
+        + (parseFloat(cs.marginBottom) || 0);
+    }
+    function thNormalizeUnits(table){
+      if(table.querySelectorAll("tbody.txn").length) return;
+      var bodies = [].slice.call(table.querySelectorAll("tbody"));
+      var i, j, tb, rows, unit;
+      for(i = 0; i < bodies.length; i++){
+        tb = bodies[i];
+        rows = [].slice.call(tb.rows);
+        for(j = 0; j < rows.length; j++){
+          unit = document.createElement("tbody");
+          unit.className = "txn";
+          unit.appendChild(rows[j]);
+          table.insertBefore(unit, tb);
+        }
+        if(tb.parentNode) tb.parentNode.removeChild(tb);
+      }
+    }
+    function thMarkTable(table, used, limit){
+      thNormalizeUnits(table);
+      var thead = table.querySelector("thead");
+      var tfoot = table.querySelector("tfoot");
+      var units = [].slice.call(table.querySelectorAll("tbody.txn"));
+      var theadH = thead ? thead.offsetHeight : 0;
+      var firstH = units.length ? Math.max(units[0].offsetHeight, 1) : 0;
+      var i, tb, h, fh;
+      for(i = 0; i < units.length; i++) units[i].classList.remove("brk");
+      table.style.breakBefore = "";
+      table.style.pageBreakBefore = "";
+      if(tfoot){
+        tfoot.style.breakBefore = "";
+        tfoot.style.pageBreakBefore = "";
+      }
+      if(used > 8 && used + theadH + firstH > limit){
+        table.style.breakBefore = "page";
+        table.style.pageBreakBefore = "always";
+        used = 0;
+      }
+      used += theadH;
+      for(i = 0; i < units.length; i++){
+        tb = units[i];
+        h = Math.max(tb.offsetHeight, 1);
+        if(i > 0 && used + h > limit){
+          tb.classList.add("brk");
+          used = theadH + h;
+        }else{
+          used += h;
+        }
+      }
+      if(tfoot){
+        fh = Math.max(tfoot.offsetHeight, 1);
+        if(used + fh > limit){
+          tfoot.style.breakBefore = "page";
+          tfoot.style.pageBreakBefore = "always";
+          used = theadH + fh;
+        }else{
+          used += fh;
+        }
+      }
+      return used;
+    }
+    function thPaginateSheet(){
+      var sheet = document.querySelector(".sheet");
+      if(!sheet || sheet.getAttribute("data-th-paged") === "1") return;
+      var limit = thLimit();
+      var used = 0;
+      var kids = [].slice.call(sheet.children);
+      var i, child, h;
+      for(i = 0; i < kids.length; i++){
+        child = kids[i];
+        if(child.matches && child.matches("table.rpt")){
+          used = thMarkTable(child, used, limit);
+        }else if(child.classList.contains("sign")){
+          child.style.breakBefore = "";
+          child.style.pageBreakBefore = "";
+          used += thBlockH(child);
+        }else{
+          h = thBlockH(child);
+          if(used + h > limit) used = h;
+          else used += h;
+        }
+      }
+      sheet.setAttribute("data-th-paged", "1");
+    }
+    function thPreparePrint(){
+      var s = document.getElementById("th-print-measure");
+      if(!s){
+        s = document.createElement("style");
+        s.id = "th-print-measure";
+        s.textContent = "html,body{padding:0 !important;background:#fff !important;width:297mm !important;} .sheet{width:273mm !important;max-width:273mm !important;padding:0 !important;box-shadow:none !important;min-height:0 !important;} .no-print,.foot{display:none !important;}";
+        document.head.appendChild(s);
+      }
+      document.body.offsetHeight;
+      thPaginateSheet();
+    }`;
+    },
+
+    buildHarianExtraPrintSections(){
+        const produkTotal = this.textOf("thcProdukTotalVal")
+            || this.textOf("thcTotProduk")
+            || "Rp0";
         const produkMeta = this.textOf("thcProdukTotalMeta");
         const kpiMeta = this.textOf("thcKpiuMeta");
         const produkSummary = `<section class="summary keep">
       <div class="sum is-main"><span class="lbl">Total Penjualan Produk</span><span class="val sm">${this.escapeHtml(produkTotal)}</span></div>
     </section>`;
-        const produkTable = `<table class="rpt">
+        const produkTable = `<table class="rpt rpt-produk">
       <thead><tr><th class="col-date">Tanggal</th><th>Nama Produk</th><th class="num">Terjual</th><th class="num">Nilai</th></tr></thead>
-      <tbody>${this.snapshotProdukPrintBody()}</tbody>
+      ${this.snapshotProdukPrintBodies()}
     </table>`;
         const kpiSummary = `<section class="summary keep">
       <div class="sum"><span class="lbl">Target Bulanan</span><span class="val sm">${this.escapeHtml(this.textOf("thcKpiuTargetVal") || "Rp0")}</span></div>
@@ -1585,28 +1990,7 @@ const TabelHarianCabang = {
       <tbody>${this.snapshotTbody("thcKpiuKasirTbody", 6, [1, 2, 3, 4])}</tbody>
     </table>`;
 
-        if(!isAll){
-            return `
-    <section class="print-sec">
-    <div class="title-wrap is-next">
-      <div class="t1">PRODUCT SALES</div>
-      <p class="sub">${this.escapeHtml(produkMeta || "Penjualan produk pada filter aktif.")}</p>
-    </div>
-    ${produkSummary}
-    ${produkTable}
-    </section>
-    <section class="print-sec">
-    <div class="title-wrap is-next">
-      <div class="t1">KPI ULTIMATE</div>
-      <p class="sub">${this.escapeHtml(kpiMeta || "KPI Ultimate kasir pada filter aktif.")}</p>
-    </div>
-    ${kpiSummary}
-    ${kasirTable}
-    </section>`;
-        }
-
         return `
-    <section class="print-sec">
     <div class="print-head">
     <div class="title-wrap is-next">
       <div class="t1">PRODUCT SALES</div>
@@ -1615,8 +1999,6 @@ const TabelHarianCabang = {
     ${produkSummary}
     </div>
     ${produkTable}
-    </section>
-    <section class="print-sec">
     <div class="print-head">
     <div class="title-wrap is-next">
       <div class="t1">KPI ULTIMATE</div>
@@ -1624,33 +2006,31 @@ const TabelHarianCabang = {
     </div>
     ${kpiSummary}
     </div>
-    </section>
-    <section class="print-sec">
     <div class="title-wrap is-next">
       <div class="t1">PER KASIR</div>
       <p class="sub">Realisasi kasir pada filter aktif.</p>
     </div>
     ${kasirTable}
-    </section>`;
+    ${this.buildPrintAiInsightHtml()}`;
     },
 
     isPrintAllCabang(){
-        const cabangId = (typeof DashboardEngine !== "undefined" && DashboardEngine.resolveCabangId)
-            ? DashboardEngine.resolveCabangId(DashboardEngine.lastCabangId)
-            : null;
-        if(cabangId != null) return false;
         const branchVal = String(document.getElementById("branchFilter")?.value || "").trim();
         if(branchVal && !/^semua\s+cabang$/i.test(branchVal) && branchVal.toLowerCase() !== "all"){
             return false;
         }
+        const cabangId = (typeof DashboardEngine !== "undefined" && DashboardEngine.resolveCabangId)
+            ? DashboardEngine.resolveCabangId(DashboardEngine.lastCabangId)
+            : null;
+        if(cabangId != null) return false;
         return /^semua\s+cabang$/i.test(this.properCabangName(this.cabangLabel()));
     },
 
-    getHarianPrintBaseCss(isAll){
-        return isAll ? this.getHarianAllBranchesPrintCss() : this.getHarianSingleBranchPrintCss();
+    getHarianPrintBaseCss(_isAll){
+        return this.getHarianPrintCss();
     },
 
-    getHarianSingleBranchPrintCss(){
+    getHarianPrintCss(){
         return `
   :root{
     --ink:#1a1a1a; --muted:#6b6520; --line:#e5e0d0;
@@ -1658,7 +2038,7 @@ const TabelHarianCabang = {
     --head:#111111; --cashout:#b91c1c;
   }
   *{ box-sizing:border-box; }
-  @page{ size:A4 portrait; margin:14mm 12mm 12mm 12mm; }
+  @page{ size:A4 landscape; margin:10mm 12mm 16mm 12mm; }
   html,body{
     margin:0; padding:0; background:#fff; color:var(--ink);
     font-family:Arial,"Segoe UI",Helvetica,sans-serif;
@@ -1666,7 +2046,10 @@ const TabelHarianCabang = {
     height:auto; min-height:0;
   }
   body{ padding:0; }
-  .sheet{ width:100%; max-width:186mm; margin:0 auto; padding-bottom:0; }
+  .sheet{
+    width:100%; max-width:273mm; margin:0 auto; padding-bottom:0;
+    display:flex; flex-direction:column; min-height:0;
+  }
   .no-print{ margin-top:14px; }
   .no-print button{
     border:1px solid var(--gold); background:#f7f1de; color:var(--head);
@@ -1698,72 +2081,189 @@ const TabelHarianCabang = {
   .meta .lbl{ display:block; font-size:7pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
   .meta .val{ display:block; margin-top:1px; font-size:9.5pt; font-weight:700; color:var(--ink); }
   .summary{ display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin:0 0 10px; }
+  .summary.is-12{ grid-template-columns:repeat(4,1fr); }
   .sum{
     border:1px solid var(--line); background:#fff; padding:8px 10px;
     border-top:2px solid var(--gold-line);
   }
   .sum .lbl{ display:block; font-size:7pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
-  .sum .val{ display:block; font-size:11pt; font-weight:800; color:var(--head); white-space:nowrap; }
+  .sum .val{ display:block; font-size:12.5pt; font-weight:800; color:var(--head); white-space:nowrap; }
+  .sum .val.sm{ font-size:12pt; }
   .sum.is-main{ background:#fcfaf3; border-color:#e2d4a8; }
   .sum.is-main .val{ color:#8a7010; }
-  .sum .val.sm{ font-size:12pt; }
   .sum.is-cashout{ border-top-color:var(--cashout); }
   .sum.is-cashout .val{ color:var(--cashout); }
-  table.rpt .empty{ text-align:center; color:var(--muted); padding:14px; }
-  table.rpt{ width:100%; border-collapse:collapse; table-layout:auto; }
-  table.rpt thead{ display:table-header-group; }
-  table.rpt tfoot{ display:table-footer-group; }
+  table.rpt{
+    width:100%; table-layout:fixed; page-break-inside:auto;
+    border-collapse:separate; border-spacing:0;
+    border:1px solid #e5e0d0;
+  }
+  table.rpt thead{ display:table-header-group !important; }
+  table.rpt tfoot{ display:table-row-group; }
   table.rpt th{
     background:var(--head); color:#f8fafc; font-size:7.5pt; font-weight:800;
     letter-spacing:.04em; text-transform:uppercase; text-align:left;
-    padding:7px 5px; border:1px solid var(--head); border-bottom:2px solid var(--gold-line);
-    vertical-align:middle; line-height:1.25; white-space:normal;
+    padding:6px 5px; border:0; border-right:1px solid #2a2a2a;
+    border-bottom:2px solid var(--gold-line); vertical-align:middle;
   }
+  table.rpt th:last-child{ border-right:0; }
   table.rpt td{
-    padding:7px 5px; border:1px solid #e5e0d0; vertical-align:top;
-    font-size:9pt; color:var(--ink);
-    overflow-wrap:break-word; word-break:normal;
+    padding:6px 6px; border:0; border-right:1px solid #e5e0d0; border-bottom:1px solid #e5e0d0;
+    vertical-align:top; font-size:9pt; color:var(--ink);
+    overflow:visible; overflow-wrap:break-word; word-break:normal;
+    page-break-inside:avoid !important; break-inside:avoid !important;
   }
-  table.rpt th.num{ text-align:right; }
-  table.rpt td.num{ text-align:right; white-space:nowrap; font-size:8.5pt; font-weight:800; font-variant-numeric:tabular-nums; color:var(--head); }
+  table.rpt td:last-child{ border-right:0; }
+  table.rpt th.num, table.rpt td.num{ text-align:right; white-space:nowrap !important; }
+  table.rpt td.num{
+    font-size:9.5pt; font-weight:800; font-variant-numeric:tabular-nums;
+    color:var(--head); overflow:visible !important;
+  }
   table.rpt td.num.is-neg{ color:#8B1A1A; background:#FFF1F1; }
-  table.rpt .col-date{ width:22mm; white-space:nowrap; }
-  table.rpt .col-branch{ width:22mm; }
+  table.rpt.is-daily .col-date{ width:13%; white-space:nowrap; }
+  table.rpt.is-daily .col-branch{ width:10%; }
+  table.rpt.is-daily th.num, table.rpt.is-daily td.num{ width:auto; }
+  table.rpt.rpt-produk .col-date{ width:18%; white-space:nowrap; }
+  table.rpt tbody.txn:nth-of-type(even) td{ background:#fafaf8; }
   table.rpt tbody tr.is-aktif:nth-child(even) td{ background:#fafaf8; }
   table.rpt tbody tr.row-cek td{ background:#FFFBF0; }
-  table.rpt tfoot td{
+  table.rpt tr.is-day-total td{
+    font-weight:800; background:#fcfaf3; border-top:1px solid var(--gold-line);
+  }
+  table.rpt tbody.txn,
+  table.rpt tbody.txn tr,
+  table.rpt tr,
+  table.rpt tfoot,
+  table.rpt tfoot tr{
+    page-break-inside:avoid !important;
+    break-inside:avoid-page !important;
+  }
+  table.rpt tbody.txn.brk{
+    break-before:page !important;
+    page-break-before:always !important;
+  }
+    table.rpt tfoot td,
+    table.rpt tr.grand-total td{
     font-weight:800; background:#F7F1DE;
     border-top:2px solid var(--gold-line); border-bottom:2px solid var(--gold-line);
-    font-size:8.5pt; padding:7px 5px; color:var(--ink);
+    font-size:9pt; padding:7px 6px; color:var(--ink);
   }
-  .title-wrap.is-next{ margin-top:14px; break-after:avoid; page-break-after:avoid; }
+  table.rpt .empty{ text-align:center; color:var(--muted); padding:14px; }
+  .keep{ page-break-inside:avoid; break-inside:avoid; }
+  .title-wrap.is-next, .print-head{
+    break-after:avoid; page-break-after:avoid;
+    break-inside:avoid; page-break-inside:avoid;
+  }
   .print-sec{ break-inside:auto; page-break-inside:auto; }
+  .ai-grid-print{ break-inside:auto; page-break-inside:auto; }
+  .print-close{
+    margin-top:8px;
+    break-inside:avoid; page-break-inside:avoid;
+  }
   .badge-cek{
     display:inline-block; margin-left:3px; padding:0 3px;
     font-size:5.5pt; font-weight:800; letter-spacing:.04em;
     color:#7A5A00; background:#F5E6B8; border:1px solid var(--gold); vertical-align:middle; white-space:nowrap;
   }
   .badge-warn{ display:inline-block; margin-left:2px; color:#9A6B00; font-size:8px; vertical-align:middle; }
-  tr, .keep{ page-break-inside:avoid; break-inside:avoid; }
-  .audit-note{
-    margin:8px 0 10px; padding:7px 9px;
-    border:1px solid #e6ebf0; background:#fafbfc;
-    font-size:7.5pt; color:var(--muted); line-height:1.45;
+  .ai-fresh{ margin:0 0 8px; font-size:7.5pt; color:var(--muted); }
+  .ai-sum{
+    display:flex; flex-wrap:wrap; gap:8px 14px; align-items:baseline;
+    margin:0 0 8px; padding:7px 10px;
+    border:1px solid var(--line); border-left:3px solid var(--gold-line); background:var(--soft);
+    font-size:8.5pt; font-weight:700;
   }
-  .sign.keep{
-    margin:6px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:28px;
+  .ai-sum em{ font-style:normal; font-weight:600; color:var(--muted); }
+  .ai-grid-print{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin:0 0 8px;
+  }
+  .ai-card-print{
+    border:1px solid var(--line); border-top:2px solid var(--gold-line);
+    background:#fff; padding:7px 9px;
+  }
+  .ai-card-print.is-span{ grid-column:1 / -1; }
+  .ai-card-print h4{
+    margin:0 0 4px; font-size:7.5pt; font-weight:800; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .ai-card-print ul{ margin:0; padding:0 0 0 14px; }
+  .ai-card-print li{
+    font-size:8pt; color:var(--ink); margin:0 0 3px;
+    overflow:visible; max-height:none; white-space:normal;
+  }
+  .ai-predict-block{
+    border:1px solid var(--line); border-top:2px solid var(--gold-line);
+    background:#fff; padding:8px 10px; margin:0 0 8px;
+    break-after:avoid; page-break-after:avoid;
+  }
+  .ai-predict-head{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px; }
+  .ai-predict-head h4{
+    margin:0; font-size:7.5pt; font-weight:800; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .ai-tag{
+    font-size:7pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    color:#8a7010; border:1px solid #e2d4a8; background:#fcfaf3; padding:2px 6px;
+  }
+  .ai-predict-print{ display:flex; justify-content:space-between; gap:16px; align-items:flex-end; }
+  .ai-predict-main .lbl{ display:block; font-size:7pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+  .ai-predict-main strong{ display:block; margin-top:2px; font-size:14pt; color:var(--head); }
+  .ai-predict-side{ display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end; }
+  .ai-chip{
+    display:inline-block; padding:3px 7px; border:1px solid var(--line);
+    font-size:8pt; font-weight:800; background:#fcfaf3;
+  }
+  .ai-predict-basis{ display:flex; gap:16px; margin-top:8px; }
+  .ai-basis{ font-size:8pt; font-weight:700; color:var(--ink); }
+  .ai-disc{ margin:6px 0 0; font-size:7pt; color:var(--muted); }
+  .ai-empty{ margin:0; font-size:8pt; color:var(--muted); }
+  .audit-note{
+    margin:4px 0 2px; padding:0; border:0; background:transparent;
+    font-size:7pt; color:var(--muted); line-height:1.35;
+  }
+  .sign{
+    margin-top:4px; padding-top:2px; padding-bottom:2px;
+    display:grid; grid-template-columns:1fr 1.2fr; gap:12px 24px;
+    break-before:avoid !important; page-break-before:avoid !important;
+    break-inside:avoid; page-break-inside:avoid;
+    break-after:auto; page-break-after:auto;
   }
   .sign .box{ text-align:center; }
   .sign .who{ font-size:9pt; font-weight:700; color:var(--ink); }
-  .sign .role{ margin-top:2px; font-size:7.5pt; font-weight:800; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; }
-  .sign .space{ height:42px; }
+  .sign .role{ margin-top:2px; font-size:7pt; font-weight:800; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; }
+  .sign .stage{
+    position:relative; height:22mm; width:100%; max-width:52mm; margin:2px auto 4px;
+  }
+  .sign .stage.is-empty{ height:18mm; }
+  .sign .stamp{
+    position:absolute; left:38%; top:44%;
+    width:40mm; height:23mm;
+    transform:translate(-50%, -50%) rotate(-6deg);
+    opacity:.70; z-index:1; pointer-events:none;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .sign .stamp svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .sign .ttd{
+    position:absolute; left:58%; top:52%;
+    width:48mm; transform:translate(-38%, -50%);
+    z-index:2; pointer-events:none;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .sign .ttd img, .sign .ttd svg{
+    width:100%; height:auto; max-height:22mm;
+    object-fit:contain; object-position:center;
+    display:block;
+  }
   .sign .name{ font-size:9.5pt; font-weight:800; color:var(--head); }
   .sign .line{ margin:4px auto 0; width:68%; border-top:1px solid #8e9aab; }
+  .sign .job{ margin-top:3px; font-size:7.5pt; font-weight:800; letter-spacing:.14em; color:var(--muted); text-transform:uppercase; }
   .foot{
-    position:fixed; left:0; right:0; bottom:0; width:100%;
-    margin:0; padding:4px 12mm 0; border-top:1.5px solid var(--gold-line);
+    position:fixed; left:0; right:0; bottom:5mm; width:100%;
+    margin:0; padding:2px 12mm 0; border-top:1.5px solid var(--gold-line);
     display:grid; grid-template-columns:1.1fr 1.2fr 1fr; gap:8px; align-items:end;
-    font-size:7pt; color:var(--muted); background:#fff;
+    font-size:7pt; color:var(--muted); background:#fff; height:10mm;
+    z-index:20;
+    break-after:avoid; page-break-after:avoid;
   }
   .foot b{ display:block; color:var(--head); font-size:7.5pt; }
   .foot .c{ text-align:center; }
@@ -1772,163 +2272,19 @@ const TabelHarianCabang = {
     .no-print{ display:none !important; }
     html,body{ height:auto !important; min-height:0 !important; padding:0 !important; }
     body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .sheet{
+      display:block !important;
+      break-after:auto; page-break-after:auto; min-height:0;
+    }
+    thead{ display:table-header-group; }
+    table.rpt tbody.txn, table.rpt tr, table.rpt td{
+      page-break-inside:avoid !important;
+      break-inside:avoid-page !important;
+    }
   }
   @media screen{
     body{ padding:16px 16px 28px; background:#f3f1ea; }
-    .sheet{ background:#fff; padding:16px 16px 18px; box-shadow:0 8px 28px rgba(17,17,17,.12); }
-  }`;
-    },
-
-    getHarianAllBranchesPrintCss(){
-        return `
-  :root{
-    --ink:#1a1a1a; --muted:#6b6520; --line:#e5e0d0;
-    --gold:#c9a227; --gold-line:#d4af37; --soft:#fafaf8;
-    --head:#111111; --cashout:#b91c1c;
-  }
-  *{ box-sizing:border-box; }
-  @page{ size:A4 landscape; margin:10mm 10mm 12mm 10mm; }
-  html,body{
-    margin:0; padding:0; background:#fff; color:var(--ink);
-    font-family:Arial,"Segoe UI",Helvetica,sans-serif;
-    font-size:10pt; line-height:1.4;
-    height:auto; min-height:0;
-    width:auto; min-width:0;
-  }
-  body{ padding:0; }
-  .sheet{ width:100%; max-width:277mm; margin:0 auto; padding-bottom:0; }
-  .no-print{ margin-top:14px; }
-  .no-print button{
-    border:1px solid var(--gold); background:#f7f1de; color:var(--head);
-    font-weight:700; padding:9px 14px; border-radius:6px; cursor:pointer;
-  }
-  .head{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
-  .brand{ display:flex; align-items:center; gap:10px; min-width:0; }
-  .brand img{ width:52px; height:52px; object-fit:contain; display:block; }
-  .brand .copy h1{
-    margin:0; font-size:13.5pt; font-weight:800; letter-spacing:.04em;
-    color:var(--head); text-transform:uppercase;
-  }
-  .brand .copy .doc{ margin:2px 0 0; font-size:9.5pt; font-weight:700; color:var(--ink); letter-spacing:.08em; text-transform:uppercase; }
-  .brand .copy .sys{ margin:1px 0 0; font-size:7.5pt; font-weight:600; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; }
-  .head-right{ text-align:right; flex:0 0 auto; }
-  .head-right .mark{ font-size:8pt; font-weight:800; letter-spacing:.12em; color:var(--head); text-transform:uppercase; }
-  .head-right .mark em{ display:block; margin-top:2px; font-style:normal; color:var(--gold); }
-  .rule{ height:2px; margin:8px 0 10px; background:linear-gradient(90deg,var(--gold-line),#e7d7a4 55%,transparent); }
-  .title-wrap{ margin:0 0 10px; }
-  .title-wrap .t1{ margin:0; font-size:14pt; line-height:1.2; font-weight:800; color:var(--head); letter-spacing:.04em; }
-  .title-wrap .sub{ margin:4px 0 0; font-size:8.5pt; color:var(--muted); }
-  .meta{
-    display:grid; grid-template-columns:1fr 1fr; gap:2px 24px;
-    padding:8px 10px; margin:0 0 10px;
-    border:1px solid var(--line); border-left:3px solid var(--gold-line);
-    background:var(--soft);
-  }
-  .meta .item{ padding:3px 0; }
-  .meta .lbl{ display:block; font-size:7pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
-  .meta .val{ display:block; margin-top:1px; font-size:9.5pt; font-weight:700; color:var(--ink); }
-  .summary{ display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin:0 0 10px; }
-  .sum{
-    border:1px solid var(--line); background:#fff; padding:8px 10px;
-    border-top:2px solid var(--gold-line);
-  }
-  .sum .lbl{ display:block; font-size:7pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
-  .sum .val{ display:block; font-size:11pt; font-weight:800; color:var(--head); white-space:nowrap; }
-  .sum.is-main{ background:#fcfaf3; border-color:#e2d4a8; }
-  .sum.is-main .val{ color:#8a7010; }
-  .sum .val.sm{ font-size:12pt; }
-  .sum.is-cashout{ border-top-color:var(--cashout); }
-  .sum.is-cashout .val{ color:var(--cashout); }
-  table.rpt .empty{ text-align:center; color:var(--muted); padding:14px; }
-  table.rpt{ width:100%; border-collapse:collapse; table-layout:fixed; }
-  table.rpt thead{ display:table-header-group; }
-  table.rpt th{
-    background:var(--head); color:#f8fafc; font-size:7.5pt; font-weight:800;
-    letter-spacing:.05em; text-transform:uppercase; text-align:left;
-    padding:7px 6px; border:1px solid var(--head); border-bottom:2px solid var(--gold-line); vertical-align:middle;
-  }
-  table.rpt td{
-    padding:7px 6px; border:1px solid #e5e0d0; vertical-align:top;
-    font-size:9pt; color:var(--ink);
-    overflow-wrap:break-word; word-break:normal;
-  }
-  table.rpt th.num, table.rpt td.num{ text-align:right; white-space:nowrap !important; }
-  table.rpt td.num{ font-size:9.5pt; font-weight:800; font-variant-numeric:tabular-nums; color:var(--head); }
-  table.rpt.is-wide th{
-    font-size:8pt; padding:7px 6px; white-space:nowrap; line-height:1.25;
-  }
-  table.rpt.is-wide td{ font-size:8.5pt; padding:6px 6px; }
-  table.rpt.is-wide td.num{ font-size:8.5pt; }
-  table.rpt.is-wide .col-date{ width:10%; }
-  table.rpt.is-wide .col-branch{ width:11%; }
-  .title-wrap.is-next{
-    margin-top:14px;
-    break-after:avoid; page-break-after:avoid;
-  }
-  .print-sec{
-    break-before:auto; page-break-before:auto;
-    break-inside:auto; page-break-inside:auto;
-  }
-  .print-head{
-    break-inside:avoid; page-break-inside:avoid;
-    break-after:avoid; page-break-after:avoid;
-  }
-  .print-close{
-    margin-top:8px;
-    break-before:avoid; page-break-before:avoid;
-    break-inside:avoid; page-break-inside:avoid;
-  }
-  .print-close .audit-note{ margin:8px 0; }
-  table.rpt td.num.is-neg{ color:#8B1A1A; background:#FFF1F1; }
-  table.rpt .col-date{ width:12%; white-space:nowrap; }
-  table.rpt .col-branch{ width:11%; }
-  table.rpt tbody tr.is-aktif:nth-child(even) td{ background:#fafaf8; }
-  table.rpt tbody tr.row-cek td{ background:#FFFBF0; }
-  table.rpt tr.grand-total td{
-    font-weight:800; background:#F7F1DE;
-    border-top:2px solid var(--gold-line); border-bottom:2px solid var(--gold-line);
-    font-size:8.5pt; padding:7px 6px; color:var(--ink);
-  }
-  .badge-cek{
-    display:inline-block; margin-left:3px; padding:0 3px;
-    font-size:5.5pt; font-weight:800; letter-spacing:.04em;
-    color:#7A5A00; background:#F5E6B8; border:1px solid var(--gold); vertical-align:middle; white-space:nowrap;
-  }
-  .badge-warn{ display:inline-block; margin-left:2px; color:#9A6B00; font-size:8px; vertical-align:middle; }
-  tr, .keep{ page-break-inside:avoid; break-inside:avoid; }
-  .audit-note{
-    margin:8px 0 10px; padding:7px 9px;
-    border:1px solid #e6ebf0; background:#fafbfc;
-    font-size:7.5pt; color:var(--muted); line-height:1.45;
-  }
-  .sign.keep{
-    margin:6px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:28px;
-  }
-  .sign .box{ text-align:center; }
-  .sign .who{ font-size:9pt; font-weight:700; color:var(--ink); }
-  .sign .role{ margin-top:2px; font-size:7.5pt; font-weight:800; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; }
-  .sign .space{ height:42px; }
-  .sign .name{ font-size:9.5pt; font-weight:800; color:var(--head); }
-  .sign .line{ margin:4px auto 0; width:68%; border-top:1px solid #8e9aab; }
-  .foot{
-    position:fixed; left:0; right:0; bottom:0; width:100%;
-    margin:0; padding:4px 12mm 0; border-top:1.5px solid var(--gold-line);
-    display:grid; grid-template-columns:1.1fr 1.2fr 1fr; gap:8px; align-items:end;
-    font-size:7pt; color:var(--muted); background:#fff;
-  }
-  .foot b{ display:block; color:var(--head); font-size:7.5pt; }
-  .foot .c{ text-align:center; }
-  .foot .r{ text-align:right; }
-  @media print{
-    @page{ size:A4 landscape; margin:10mm 10mm 12mm 10mm; }
-    .no-print{ display:none !important; }
-    html,body{ height:auto !important; min-height:0 !important; padding:0 !important; width:auto !important; }
-    body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .sheet{ width:100%; max-width:none; }
-  }
-  @media screen{
-    body{ padding:16px 16px 28px; background:#f3f1ea; }
-    .sheet{ background:#fff; padding:16px 16px 18px; box-shadow:0 8px 28px rgba(17,17,17,.12); max-width:297mm; }
+    .sheet{ background:#fff; padding:16px 18px 18px; box-shadow:0 8px 28px rgba(17,17,17,.12); max-width:297mm; }
   }`;
     },
 
@@ -1940,28 +2296,18 @@ const TabelHarianCabang = {
 
         const clock = this.getPrintClock();
         const logoSrc = await this.resolvePrintLogoSrc();
-        const cabang = this.properCabangName(this.cabangLabel());
-        const isAll = this.isPrintAllCabang();
+        const sigSrc = await this.resolvePrintOwnerSignatureSrc();
+        const cabang = this.printCabangName();
         const periode = this.periodeRangeLabel();
         const totals = this.computeTotals(this.rows);
         const titleHint = mode === "pdf" ? "PDF" : "Print";
-        const mainBody = this.rows.map((r) => this.buildReportDataRow(r)).join("");
-        const grandRow = `<tr class="grand-total">
-          <td class="col-date">Grand Total</td>
-          <td></td>
-          <td class="num">${this.escapeHtml(this.formatRupiah(totals.omzet))}</td>
-          <td class="num">${this.escapeHtml(this.formatRupiah(totals.nett))}</td>
-          <td class="num">${this.escapeHtml(this.formatRupiah(totals.non_cash))}</td>
-          <td class="num">${this.escapeHtml(this.formatRupiah(totals.cash_out))}</td>
-          <td class="num">${this.escapeHtml(this.formatRupiah(totals.setoran_cash_aktual))}</td>
-          <td class="num">${this.escapeHtml(this.formatInt(totals.customer))}</td>
-          <td class="num">${this.escapeHtml(this.formatInt(totals.transaction))}</td>
-          <td class="num">${this.escapeHtml(this.formatInt(totals.services))}</td>
-        </tr>`;
-
-        const extra = this.buildHarianExtraPrintSections(isAll);
-        const dailyTable = isAll
-            ? `<table class="rpt is-wide">
+        const filename = this.buildFilename("pdf");
+        const mainBody = this.rows.map((r) =>
+            `<tbody class="txn">${this.buildReportDataRow(r)}</tbody>`
+        ).join("");
+        const extra = this.buildHarianExtraPrintSections();
+        const signHtml = this.buildPrintSignBlock(sigSrc);
+        const dailyTable = `<table class="rpt is-daily">
       <colgroup>
         <col class="col-date"><col class="col-branch">
         <col><col><col><col><col><col><col><col>
@@ -1980,26 +2326,9 @@ const TabelHarianCabang = {
           <th class="num">Services</th>
         </tr>
       </thead>
-      <tbody>${mainBody}${grandRow}</tbody>
-    </table>`
-            : `<table class="rpt">
-      <thead>
-        <tr>
-          <th class="col-date">Tanggal</th>
-          <th class="col-branch">Cabang</th>
-          <th class="num">Omzet / Gross</th>
-          <th class="num">Nett Revenue</th>
-          <th class="num">Non Tunai</th>
-          <th class="num">Cash Out</th>
-          <th class="num">Cash Bersih</th>
-          <th class="num">Customer</th>
-          <th class="num">Transaksi</th>
-          <th class="num">Services</th>
-        </tr>
-      </thead>
-      <tbody>${mainBody}</tbody>
+      ${mainBody}
       <tfoot>
-        <tr>
+        <tr class="grand-total">
           <td class="col-date">Grand Total</td>
           <td></td>
           <td class="num">${this.escapeHtml(this.formatRupiah(totals.omzet))}</td>
@@ -2013,79 +2342,9 @@ const TabelHarianCabang = {
         </tr>
       </tfoot>
     </table>`;
-        if(isAll){
-            const sheetHtml = `
-    <header class="head">
-      <div class="brand">
-        ${logoSrc ? `<img src="${logoSrc}" alt="ERP VAX WIJAYA" />` : ""}
-        <div class="copy">
-          <h1>ERP VAX WIJAYA</h1>
-          <div class="doc">HARIAN</div>
-          <div class="sys">Enterprise Management System</div>
-        </div>
-      </div>
-      <div class="head-right">
-        <div class="mark">Dokumen Operasional<em>Internal</em></div>
-      </div>
-    </header>
-    <div class="rule"></div>
-    <div class="title-wrap">
-      <div class="t1">TABEL HARIAN</div>
-      <p class="sub">Daily Recap · posisi sesuai filter aktif.</p>
-    </div>
-    <section class="meta">
-      <div>
-        <div class="item"><span class="lbl">Cabang</span><span class="val">${this.escapeHtml(cabang)}</span></div>
-        <div class="item"><span class="lbl">Periode</span><span class="val">${this.escapeHtml(periode)}</span></div>
-      </div>
-      <div>
-        <div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${this.escapeHtml(clock.dateLabel)}</span></div>
-        <div class="item"><span class="lbl">Waktu Cetak</span><span class="val">${this.escapeHtml(clock.timeLabel)}</span></div>
-      </div>
-    </section>
-    <section class="summary keep">
-      <div class="sum"><span class="lbl">Nett Revenue</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.nett))}</span></div>
-      <div class="sum"><span class="lbl">Customer</span><span class="val">${this.escapeHtml(this.formatInt(totals.customer))}</span></div>
-      <div class="sum"><span class="lbl">Services</span><span class="val">${this.escapeHtml(this.formatInt(totals.services))}</span></div>
-      <div class="sum is-main"><span class="lbl">Cash Bersih</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.setoran_cash_aktual))}</span></div>
-      <div class="sum"><span class="lbl">Omzet / Gross</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.omzet))}</span></div>
-      <div class="sum"><span class="lbl">Non Tunai</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.non_cash))}</span></div>
-      <div class="sum is-cashout"><span class="lbl">Cash Out</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.cash_out))}</span></div>
-      <div class="sum"><span class="lbl">Transaksi</span><span class="val">${this.escapeHtml(this.formatInt(totals.transaction))}</span></div>
-    </section>
-    ${dailyTable}
-    ${extra}
-    <div class="print-close">
-    <p class="audit-note keep">Cash Out pada laporan Harian adalah total periode. Angka memakai dataset filter aktif DashboardEngine — rumus dan sumber tidak diubah.</p>
-    <section class="sign keep">
-      <div class="box">
-        <div class="who">Disiapkan oleh,</div>
-        <div class="role">System / ERP VAX</div>
-        <div class="space"></div>
-        <div class="name">ERP VAX Wijaya</div>
-        <div class="line"></div>
-      </div>
-      <div class="box">
-        <div class="who">Mengetahui,</div>
-        <div class="role">Owner</div>
-        <div class="space"></div>
-        <div class="name">Heri Herdianto</div>
-        <div class="line"></div>
-      </div>
-    </section>
-    </div>`;
-            this.openAllBranchesPrintDocument({
-                filename: this.buildFilename("pdf").replace(/\.pdf$/i, ""),
-                titleHint,
-                sheetHtml,
-                footDate: clock.dateLabel,
-                footTime: clock.timeLabel
-            });
-            return;
-        }
 
-        const html = `<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Harian — ERP VAX WIJAYA</title>
-<style>${this.getHarianSingleBranchPrintCss()}</style></head><body class="single-branch-print is-one">
+        const html = `<!doctype html><html lang="id"><head><meta charset="utf-8"><title>${this.escapeHtml(filename)}</title>
+<style>${this.getHarianPrintCss()}</style></head><body class="harian-print">
   <footer class="foot" aria-hidden="true">
     <div><b>ERP VAX WIJAYA</b>HARIAN</div>
     <div class="c">INTERNAL / CONFIDENTIAL<br>Generated automatically</div>
@@ -2120,40 +2379,21 @@ const TabelHarianCabang = {
         <div class="item"><span class="lbl">Waktu Cetak</span><span class="val">${this.escapeHtml(clock.timeLabel)}</span></div>
       </div>
     </section>
-    <section class="summary keep">
-      <div class="sum"><span class="lbl">Nett Revenue</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.nett))}</span></div>
-      <div class="sum"><span class="lbl">Customer</span><span class="val">${this.escapeHtml(this.formatInt(totals.customer))}</span></div>
-      <div class="sum"><span class="lbl">Services</span><span class="val">${this.escapeHtml(this.formatInt(totals.services))}</span></div>
-      <div class="sum is-main"><span class="lbl">Cash Bersih</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.setoran_cash_aktual))}</span></div>
-      <div class="sum"><span class="lbl">Omzet / Gross</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.omzet))}</span></div>
-      <div class="sum"><span class="lbl">Non Tunai</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.non_cash))}</span></div>
-      <div class="sum is-cashout"><span class="lbl">Cash Out</span><span class="val">${this.escapeHtml(this.formatRupiah(totals.cash_out))}</span></div>
-      <div class="sum"><span class="lbl">Transaksi</span><span class="val">${this.escapeHtml(this.formatInt(totals.transaction))}</span></div>
-    </section>
+    ${this.buildPrintPeriodCardsHtml()}
     ${dailyTable}
     ${extra}
-    <p class="audit-note keep">Cash Out pada laporan Harian adalah total periode. Angka memakai dataset filter aktif DashboardEngine — rumus dan sumber tidak diubah.</p>
-    <section class="sign keep">
-      <div class="box">
-        <div class="who">Disiapkan oleh,</div>
-        <div class="role">System / ERP VAX</div>
-        <div class="space"></div>
-        <div class="name">ERP VAX Wijaya</div>
-        <div class="line"></div>
-      </div>
-      <div class="box">
-        <div class="who">Mengetahui,</div>
-        <div class="role">Owner</div>
-        <div class="space"></div>
-        <div class="name">Heri Herdianto</div>
-        <div class="line"></div>
-      </div>
-    </section>
+    ${signHtml}
+    <p class="audit-note">Angka memakai dataset filter aktif Tabel Harian. Print/PDF hanya presenter — rumus dan sumber tidak diubah.</p>
   </div>
   <p class="no-print"><button type="button" onclick="window.print()">Print / PDF</button></p>
   <script>
-    document.title = ${JSON.stringify(this.buildFilename(mode === "pdf" ? "pdf" : "print"))};
-    window.onload=function(){ setTimeout(function(){ window.print(); }, 220); };
+    document.title = ${JSON.stringify(filename)};
+    ${this.getHarianPrintPagerScript()}
+    window.addEventListener("beforeprint", thPreparePrint);
+    window.onload = function(){
+      thPreparePrint();
+      setTimeout(function(){ window.print(); }, 220);
+    };
   <\/script>
 </body></html>`;
 
