@@ -21,6 +21,8 @@
 <link rel="stylesheet" href="../styles/setoran-dark-premium.css">
 <link rel="stylesheet" href="../styles/tabel-harian-cabang.css">
 <link rel="stylesheet" href="../styles/kpi-ultimate.css">
+<link rel="stylesheet" href="../styles/ai.css?v=20260901-ai6">
+<link rel="stylesheet" href="../styles/erp-freshness.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="setoran-dark">
@@ -208,6 +210,9 @@
                 </div>
             </section>
 
+            <!-- Same VaxAiInsight presenter as Dashboard — consumer only -->
+            <section id="widget-section" class="thc-ai-host" aria-label="VAX AI Insight"></section>
+
             <div class="thc-sales-panels" id="thcSalesPanels">
             <div class="thc-produk-slot">
             <section class="thc-produk-section" id="thcProdukSection" aria-label="Penjualan Produk">
@@ -311,7 +316,9 @@
 <script src="../js/modules/setoran-money-engine.js"></script>
 <script src="../js/modules/nett-erp.js"></script>
 <script src="../js/modules/dashboard-engine.js"></script>
+<script src="../js/modules/erp-freshness.js?v=20260819-fresh4"></script>
 <script src="../js/modules/dashboard.js"></script>
+<script src="../js/modules/vax-ai-insight.js?v=20260818-ai4"></script>
 <script src="../js/modules/tabel-harian-cabang.js"></script>
 <script src="../js/modules/kpi-ultimate.js"></script>
 <script src="../js/loader.js"></script>
@@ -359,6 +366,12 @@ document.addEventListener("erp:finance-ready", async () => {
     }
 
     document.body.classList.add("has-bottom-nav");
+
+    const widget = document.getElementById("widget-section");
+    if(widget && !widget.querySelector("#vaxAiInsight")){
+        widget.innerHTML = await (await fetch("../components/ai-insight.html")).text();
+    }
+
     TabelHarianCabang.boot();
     if(typeof KpiUltimate !== "undefined") KpiUltimate.boot();
     document.dispatchEvent(new CustomEvent("erp:components-ready"));
