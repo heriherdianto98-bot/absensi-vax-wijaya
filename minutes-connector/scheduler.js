@@ -6,6 +6,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let sedangBerjalan = false;
+let lastCashOutReconcileAt = 0;
+const CASHOUT_RECONCILE_MS = 6 * 60 * 60 * 1000;
 
 function sekarangWIB() {
   return new Date(
@@ -151,6 +153,74 @@ function jalankanKpiUltimate(selesai) {
   });
 }
 
+function harusJalankanCashOutReconcile() {
+  if (!lastCashOutReconcileAt) return true;
+  return Date.now() - lastCashOutReconcileAt >= CASHOUT_RECONCILE_MS;
+}
+
+function jalankanCashOutMonthlyReconcile(selesai) {
+  if (!harusJalankanCashOutReconcile()) {
+    const sisaMenit = Math.max(
+      1,
+      Math.ceil(
+        (CASHOUT_RECONCILE_MS - (Date.now() - lastCashOutReconcileAt)) / 60000
+      )
+    );
+    console.log(
+      `[${formatWaktu()}] SKIP Cash Out Monthly Reconciliation (berikutnya ~${sisaMenit} menit).`
+    );
+    selesai(0);
+    return;
+  }
+
+  lastCashOutReconcileAt = Date.now();
+
+  const filePath = path.join(__dirname, "cashout-monthly-reconcile.js");
+
+  console.log(
+    `[${formatWaktu()}] STAGE: Cash Out Monthly Reconciliation (LIVE=true DRY_RUN=false HEADLESS=true, max 1×/6 jam)`
+  );
+
+  const proses = spawn(
+    "/usr/bin/xvfb-run",
+    ["-a", process.execPath, filePath],
+    {
+      cwd: __dirname,
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        LIVE: "true",
+        DRY_RUN: "false",
+        HEADLESS: "true",
+        CABANG: "",
+        DATE: "",
+        DATE_FROM: "",
+        DATE_TO: ""
+      }
+    }
+  );
+
+  proses.on("error", error => {
+    console.error(
+      `[${formatWaktu()}] Cash Out Monthly Reconciliation gagal dijalankan: ${error.message}`
+    );
+    selesai(1);
+  });
+
+  proses.on("close", kode => {
+    if (kode === 0) {
+      console.log(
+        `[${formatWaktu()}] Cash Out Monthly Reconciliation selesai.`
+      );
+    } else {
+      console.error(
+        `[${formatWaktu()}] Cash Out Monthly Reconciliation berhenti dengan kode ${kode}.`
+      );
+    }
+    selesai(kode ?? 1);
+  });
+}
+
 function jalankanSync() {
   if (sedangBerjalan) {
     console.log(
@@ -192,8 +262,10 @@ function jalankanSync() {
               "Minutes Product Sales Daily",
               () => {
                 jalankanKpiUltimate(() => {
-                  sedangBerjalan = false;
-                  console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+                  jalankanCashOutMonthlyReconcile(() => {
+                    sedangBerjalan = false;
+                    console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+                  });
                 });
               }
             );
@@ -214,6 +286,6 @@ setInterval(
 console.log("");
 console.log("Scheduler aktif.");
 console.log("Jadwal: setiap 1 menit.");
-console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily -> KPI Ultimate (DATE=hari ini WIB).");
+console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily -> KPI Ultimate (DATE=hari ini WIB) -> Cash Out Monthly Reconciliation (max 1×/6 jam).");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
