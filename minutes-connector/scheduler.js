@@ -30,6 +30,15 @@ function formatWaktu() {
   }).format(new Date());
 }
 
+function jakartaTodayISO() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(new Date());
+}
+
 function jalankanNodeFile(fileName, label, selesai) {
   const filePath = path.join(__dirname, fileName);
 
@@ -96,6 +105,52 @@ function jalankanDailyRecap(selesai) {
   });
 }
 
+function jalankanKpiUltimate(selesai) {
+  const filePath = path.join(__dirname, "kpi-ultimate-sync.js");
+  const today = jakartaTodayISO();
+
+  console.log(
+    `[${formatWaktu()}] STAGE: KPI Ultimate Service Sales Detail (DATE=${today} WIB, bukan MTD)`
+  );
+
+  const proses = spawn(
+    "/usr/bin/xvfb-run",
+    ["-a", process.execPath, filePath],
+    {
+      cwd: __dirname,
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        LIVE: "true",
+        DRY_RUN: "false",
+        DATE: today,
+        DATE_FROM: "",
+        DATE_TO: "",
+        CABANG: "",
+        HEADLESS: process.env.HEADLESS || "true"
+      }
+    }
+  );
+
+  proses.on("error", error => {
+    console.error(
+      `[${formatWaktu()}] KPI Ultimate gagal dijalankan: ${error.message}`
+    );
+    selesai(1);
+  });
+
+  proses.on("close", kode => {
+    if (kode === 0) {
+      console.log(`[${formatWaktu()}] KPI Ultimate source refresh selesai.`);
+    } else {
+      console.error(
+        `[${formatWaktu()}] KPI Ultimate source refresh berhenti dengan kode ${kode}.`
+      );
+    }
+    selesai(kode ?? 1);
+  });
+}
+
 function jalankanSync() {
   if (sedangBerjalan) {
     console.log(
@@ -136,8 +191,10 @@ function jalankanSync() {
               "product-sales-sync.js",
               "Minutes Product Sales Daily",
               () => {
-                sedangBerjalan = false;
-                console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+                jalankanKpiUltimate(() => {
+                  sedangBerjalan = false;
+                  console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+                });
               }
             );
           }
@@ -157,6 +214,6 @@ setInterval(
 console.log("");
 console.log("Scheduler aktif.");
 console.log("Jadwal: setiap 1 menit.");
-console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily.");
+console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily -> KPI Ultimate (DATE=hari ini WIB).");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
