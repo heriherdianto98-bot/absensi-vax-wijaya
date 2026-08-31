@@ -15,6 +15,11 @@ Uang cabang (Nett / Non Cash / Cash Bersih):
 + Print/PDF = popup dokumen resmi (struktur master Arus Kas, warna tema Harian)
 + Excel (SpreadsheetML, numeric)
 + Total dari current filtered dataset
++ TOTAL PERIODE derived cards (same filtered rows, no new source):
+  Cash = Omzet − Non Tunai
+  Gross Service = Omzet − Product Terjual
+  Product Terjual = SUM(produk)
+  Avg Ticket = Omzet / Transaksi (0 jika transaksi = 0; Math.round)
 + Panel produk: read-only SUM(product_price) dari product_sales_daily_source
 + Rincian produk: group activity_date + product_name (Terjual = SUM qty_sold; jangan COUNT row)
 =========================================================
@@ -468,16 +473,23 @@ const TabelHarianCabang = {
     computeTotals(rows){
         const list = Array.isArray(rows) ? rows : [];
         const sum = (k) => list.reduce((t, r) => t + Number(r[k] || 0), 0);
+        const omzet = sum("omzet");
+        const non_cash = sum("non_cash");
+        const produk = sum("produk");
+        const transaction = sum("transaction");
         return {
-            omzet: sum("omzet"),
+            omzet,
             nett: sum("nett"),
-            non_cash: sum("non_cash"),
+            non_cash,
             cash_out: sum("cash_out"),
             setoran_cash_aktual: sum("setoran_cash_aktual"),
             customer: sum("customer"),
-            transaction: sum("transaction"),
+            transaction,
             services: sum("services"),
-            produk: sum("produk")
+            produk,
+            cash: omzet - non_cash,
+            gross_service: omzet - produk,
+            avg_ticket: transaction > 0 ? Math.round(omzet / transaction) : 0
         };
     },
 
@@ -982,13 +994,17 @@ const TabelHarianCabang = {
             if(el) el.textContent = text;
         };
         set("thcTotOmzet", this.formatRupiah(t.omzet));
+        set("thcTotGrossService", this.formatRupiah(t.gross_service));
+        set("thcTotProduk", this.formatRupiah(t.produk));
         set("thcTotNett", this.formatRupiah(t.nett));
         set("thcTotNonTunai", this.formatRupiah(t.non_cash));
+        set("thcTotCash", this.formatRupiah(t.cash));
         set("thcTotCashOut", this.formatRupiah(t.cash_out));
         set("thcTotSetoran", this.formatRupiah(t.setoran_cash_aktual));
         set("thcTotCustomer", this.formatInt(t.customer));
         set("thcTotTransaksi", this.formatInt(t.transaction));
         set("thcTotServices", this.formatInt(t.services));
+        set("thcTotAvgTicket", this.formatRupiah(t.avg_ticket));
     },
 
     /**

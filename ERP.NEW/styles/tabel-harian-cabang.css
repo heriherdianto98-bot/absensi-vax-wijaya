@@ -947,6 +947,22 @@ a.thc-action-btn.thc-action-back-arus:hover,
 }
 .thc-tot-item.is-omzet strong{ color: #F2C230; }
 
+/* Gross Service — teal (Omzet − Product Terjual) */
+.thc-tot-item.is-gross-service{
+    --thc-tot-accent: #2DD4BF;
+    --thc-tot-glow-a: 0 0 0 1px rgba(45, 212, 191, 0.12), 0 0 12px rgba(45, 212, 191, 0.08);
+    --thc-tot-glow-b: 0 0 0 1px rgba(45, 212, 191, 0.22), 0 0 18px rgba(45, 212, 191, 0.14);
+}
+.thc-tot-item.is-gross-service strong{ color: #5EEAD4; }
+
+/* Product Terjual — rose */
+.thc-tot-item.is-produk{
+    --thc-tot-accent: #F472B6;
+    --thc-tot-glow-a: 0 0 0 1px rgba(244, 114, 182, 0.14), 0 0 12px rgba(244, 114, 182, 0.1);
+    --thc-tot-glow-b: 0 0 0 1px rgba(244, 114, 182, 0.24), 0 0 18px rgba(244, 114, 182, 0.16);
+}
+.thc-tot-item.is-produk strong{ color: #F9A8D4; }
+
 /* Nett Revenue — cyan */
 .thc-tot-item.is-nett{
     --thc-tot-accent: #22D3EE;
@@ -962,6 +978,14 @@ a.thc-action-btn.thc-action-back-arus:hover,
     --thc-tot-glow-b: 0 0 0 1px rgba(129, 140, 248, 0.24), 0 0 18px rgba(99, 102, 241, 0.16);
 }
 .thc-tot-item.is-nontunai strong{ color: #A5B4FC; }
+
+/* Cash — emerald (Omzet − Non Tunai) */
+.thc-tot-item.is-cash{
+    --thc-tot-accent: #34D399;
+    --thc-tot-glow-a: 0 0 0 1px rgba(52, 211, 153, 0.14), 0 0 12px rgba(52, 211, 153, 0.1);
+    --thc-tot-glow-b: 0 0 0 1px rgba(52, 211, 153, 0.24), 0 0 18px rgba(52, 211, 153, 0.16);
+}
+.thc-tot-item.is-cash strong{ color: #6EE7B7; }
 
 /* Cash Out — logout red */
 .thc-tot-item.is-cashout{
@@ -1043,6 +1067,14 @@ a.thc-action-btn.thc-action-back-arus:hover,
     --thc-tot-glow-b: 0 0 0 1px rgba(245, 158, 11, 0.24), 0 0 18px rgba(245, 158, 11, 0.16);
 }
 .thc-tot-item.is-services strong{ color: #FBBF24; }
+
+/* Avg Ticket — gold (Omzet / Transaksi) */
+.thc-tot-item.is-avgticket{
+    --thc-tot-accent: #EAB308;
+    --thc-tot-glow-a: 0 0 0 1px rgba(234, 179, 8, 0.14), 0 0 12px rgba(234, 179, 8, 0.1);
+    --thc-tot-glow-b: 0 0 0 1px rgba(234, 179, 8, 0.24), 0 0 18px rgba(234, 179, 8, 0.16);
+}
+.thc-tot-item.is-avgticket strong{ color: #FACC15; }
 
 @media (prefers-reduced-motion: reduce){
     .thc-tot-item{
@@ -1862,18 +1894,26 @@ body.thc-printing .thc-sales-panels{
     }
 
     .thc-tot-item.is-omzet{ order: 1; }
-    .thc-tot-item.is-nett{ order: 2; }
-    .thc-tot-item.is-customer{ order: 3; }
-    .thc-tot-item.is-transaksi{ order: 4; }
-    .thc-tot-item.is-services{ order: 5; }
-    .thc-tot-item.is-actual{ order: 6; }
-    .thc-tot-item.is-nontunai{ order: 7; }
-    .thc-tot-item.is-cashout{ order: 8; }
+    .thc-tot-item.is-gross-service{ order: 2; }
+    .thc-tot-item.is-produk{ order: 3; }
+    .thc-tot-item.is-nett{ order: 4; }
+    .thc-tot-item.is-nontunai{ order: 5; }
+    .thc-tot-item.is-cash{ order: 6; }
+    .thc-tot-item.is-cashout{ order: 7; }
+    .thc-tot-item.is-actual{ order: 8; }
+    .thc-tot-item.is-customer{ order: 9; }
+    .thc-tot-item.is-transaksi{ order: 10; }
+    .thc-tot-item.is-services{ order: 11; }
+    .thc-tot-item.is-avgticket{ order: 12; }
 
     .thc-tot-item.is-omzet strong,
     .thc-tot-item.is-actual span,
     .thc-tot-item.is-actual strong{ color: #8A7010 !important; }
     .thc-tot-item.is-nett strong{ color: #0E7490 !important; }
+    .thc-tot-item.is-gross-service strong{ color: #0F766E !important; }
+    .thc-tot-item.is-produk strong{ color: #9D174D !important; }
+    .thc-tot-item.is-cash strong{ color: #047857 !important; }
+    .thc-tot-item.is-avgticket strong{ color: #8A7010 !important; }
     .thc-tot-item.is-cashout,
     .thc-tot-item.is-cashout span,
     .thc-tot-item.is-cashout strong{
