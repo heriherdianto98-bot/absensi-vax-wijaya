@@ -1374,16 +1374,15 @@ const CashOutDetail = {
     },
 
     buildPrintTxnRow(r, prevRow){
-        const dateLabel = this.tanggalCellLabel(r, prevRow);
+        const dateLabel = this.formatTanggal(r.tanggal);
         const gold = this.isGoldKasirRow(r);
         const goldClass = gold ? " is-gold-user" : "";
-        return `<tr class="is-aktif">
-                <td class="col-date">${dateLabel ? this.escapeHtml(dateLabel) : ""}</td>
-                <td class="col-time">${r.waktu ? this.escapeHtml(r.waktu) : "—"}</td>
+        return `<tbody class="txn"><tr class="is-aktif">
+                <td class="col-date">${this.escapeHtml(dateLabel || "—")}</td>
                 <td class="num is-cashout">${r.nominal == null ? "—" : this.escapeHtml(this.formatRupiah(r.nominal))}</td>
                 <td class="col-note${goldClass}">${this.escapeHtml(r.keterangan || "—")}</td>
                 <td class="col-user${goldClass}">${r.kasir ? this.escapeHtml(r.kasir) : "—"}</td>
-            </tr>`;
+            </tr></tbody>`;
     },
 
     buildAllCabangPrintTables(){
@@ -1399,19 +1398,18 @@ const CashOutDetail = {
             }
             return `<table class="rpt co-group">
       <thead>
-        <tr class="grp-title"><th colspan="5">${this.escapeHtml(title)}</th></tr>
+        <tr class="grp-title"><th colspan="4">${this.escapeHtml(title)}</th></tr>
         <tr>
           <th class="col-date">Tanggal</th>
-          <th class="col-time">Waktu</th>
           <th class="num">Nominal</th>
           <th class="col-note">Keterangan Cash Out</th>
           <th class="col-user">Kasir / User</th>
         </tr>
       </thead>
-      <tbody>
         ${g.rows.map((r, i) => this.buildPrintTxnRow(r, i > 0 ? g.rows[i - 1] : null)).join("")}
+      <tbody class="sub">
         <tr class="subtotal">
-          <td colspan="2">SUBTOTAL ${this.escapeHtml(title)}</td>
+          <td>SUBTOTAL ${this.escapeHtml(title)}</td>
           <td class="num is-cashout">${this.escapeHtml(this.formatRupiah(g.subtotal))}</td>
           <td colspan="2"></td>
         </tr>
@@ -1446,10 +1444,11 @@ const CashOutDetail = {
         return { now, dateLabel, timeLabel };
     },
 
-    async resolvePrintLogoSrc(){
+    async fetchPrintAssetDataUrl(relPaths){
         const candidates = [];
-        try{ candidates.push(new URL("../assets/brand/erp-vax-wijaya.png", window.location.href).href); }catch(_e){ /* ignore */ }
-        try{ candidates.push(new URL("../assets/logo/erp-vax-wijaya.png", window.location.href).href); }catch(_e){ /* ignore */ }
+        (relPaths || []).forEach((rel) => {
+            try{ candidates.push(new URL(rel, window.location.href).href); }catch(_e){ /* ignore */ }
+        });
         for(const url of candidates){
             try{
                 const res = await fetch(url, { cache: "force-cache" });
@@ -1467,6 +1466,184 @@ const CashOutDetail = {
             }catch(_e){ /* try next */ }
         }
         return "";
+    },
+
+    async resolvePrintLogoSrc(){
+        return this.fetchPrintAssetDataUrl([
+            "../assets/brand/erp-vax-wijaya.png",
+            "../assets/logo/erp-vax-wijaya.png"
+        ]);
+    },
+
+    /* Hook aset TTD: ERP.NEW/assets/owner-signature.png (PNG transparan). */
+    async resolvePrintOwnerSignatureSrc(){
+        return this.fetchPrintAssetDataUrl([
+            "../assets/owner-signature.png"
+        ]);
+    },
+
+    getCashOutStampSvg(){
+        return `<svg viewBox="0 0 340 196" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <filter id="coInk" x="-4%" y="-4%" width="108%" height="108%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="n"/>
+      <feColorMatrix in="n" type="luminanceToAlpha" result="a"/>
+      <feComponentTransfer in="a" result="s">
+        <feFuncA type="discrete" tableValues="0 0.18 0.08 0.22 0 0.12 0.2 0"/>
+      </feComponentTransfer>
+      <feComposite in="SourceGraphic" in2="s" operator="out"/>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#163E86" filter="url(#coInk)">
+    <rect x="7" y="7" width="326" height="182" rx="11" ry="11" stroke-width="3.2"/>
+    <rect x="16" y="16" width="308" height="164" rx="7" ry="7" stroke-width="1.6"/>
+    <line x1="36" y1="50" x2="304" y2="50" stroke-width="1.5"/>
+    <line x1="36" y1="104" x2="304" y2="104" stroke-width="1.5"/>
+    <line x1="36" y1="170" x2="152" y2="170" stroke-width="1.5"/>
+    <line x1="188" y1="170" x2="304" y2="170" stroke-width="1.5"/>
+  </g>
+  <g fill="#163E86" filter="url(#coInk)">
+    <polygon points="148,28 150.4,34.8 157.6,34.8 151.8,39 154.2,46 148,41.6 141.8,46 144.2,39 138.4,34.8 145.6,34.8"/>
+    <polygon points="170,28 172.4,34.8 179.6,34.8 173.8,39 176.2,46 170,41.6 163.8,46 166.2,39 160.4,34.8 167.6,34.8"/>
+    <polygon points="192,28 194.4,34.8 201.6,34.8 195.8,39 198.2,46 192,41.6 185.8,46 188.2,39 182.4,34.8 189.6,34.8"/>
+  </g>
+  <text x="170" y="88" text-anchor="middle" fill="#163E86" font-family="Georgia,'Times New Roman',serif" font-size="26" font-weight="700" letter-spacing="1.2">ERP VAX WIJAYA</text>
+  <text x="170" y="126" text-anchor="middle" fill="#163E86" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="800" letter-spacing="3.2">CONFIDENTIAL</text>
+  <text x="170" y="146" text-anchor="middle" fill="#163E86" font-family="Arial,Helvetica,sans-serif" font-size="8.6" font-weight="700" letter-spacing="1.5">ENTERPRISE RESOURCE PLANNING</text>
+  <g fill="none" stroke="#163E86" stroke-width="2.1" stroke-linecap="round" filter="url(#coInk)">
+    <line x1="162" y1="158" x2="178" y2="174"/>
+    <line x1="178" y1="158" x2="162" y2="174"/>
+  </g>
+</svg>`;
+    },
+
+    getOwnerSignatureFallbackSvg(){
+        return `<svg viewBox="0 0 280 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <text x="8" y="50" fill="#0E2A4A" font-family="Segoe Script, Brush Script MT, 'Apple Chancery', cursive" font-size="30" font-style="italic">Heri Herdianto</text>
+</svg>`;
+    },
+
+    buildPrintInsightHtml(){
+        const { palingSering, terbesar } = this.buildCashOutInsights(this.rows);
+        if(!palingSering && !terbesar) return "";
+        const seringName = palingSering ? this.escapeHtml(palingSering.name) : "—";
+        const seringMeta = palingSering
+            ? `${palingSering.count} kali · ${this.escapeHtml(this.formatRupiah(palingSering.sum))}`
+            : "—";
+        const maxName = terbesar ? this.escapeHtml(String(terbesar.keterangan || "—").trim() || "—") : "—";
+        const maxSum = terbesar ? this.escapeHtml(this.formatRupiah(terbesar.nominal)) : "—";
+        const maxMeta = terbesar
+            ? `${this.escapeHtml(this.formatTanggal(terbesar.tanggal))} · ${this.escapeHtml(String(terbesar.kasir || "").trim() || "—")}`
+            : "—";
+        return `<section class="insight keep">
+      <article>
+        <span class="lbl">Paling Sering</span>
+        <strong>${seringName}</strong>
+        <p>${seringMeta}</p>
+      </article>
+      <article>
+        <span class="lbl">Cash Out Terbesar</span>
+        <strong>${maxName}</strong>
+        <p class="amt">${maxSum}</p>
+        <p>${maxMeta}</p>
+      </article>
+    </section>`;
+    },
+
+    buildPrintSignBlock(sigSrc){
+        const stamp = this.getCashOutStampSvg();
+        const ttd = sigSrc
+            ? `<img src="${sigSrc}" alt="Tanda tangan Owner">`
+            : "";
+        return `<section class="sign keep" aria-label="Otorisasi dokumen">
+      <div class="box">
+        <div class="who">Diperiksa oleh,</div>
+        <div class="role">Pemeriksa</div>
+        <div class="stage is-empty"></div>
+        <div class="name">&nbsp;</div>
+        <div class="line"></div>
+        <div class="job">Finance / Ops</div>
+      </div>
+      <div class="box is-owner">
+        <div class="who">Disetujui / Mengetahui,</div>
+        <div class="role">Otorisasi Owner</div>
+        <div class="stage">
+          <div class="stamp">${stamp}</div>
+          <div class="ttd">${ttd}</div>
+        </div>
+        <div class="name">Heri Herdianto</div>
+        <div class="line"></div>
+        <div class="job">OWNER</div>
+      </div>
+    </section>`;
+    },
+
+    getCashOutPrintPagerScript(){
+        return `
+    function coMarkTxnPageBreaks(){
+      var PX = 96 / 25.4;
+      var CONTENT = (297 - 12 - 22) * PX;
+      var SAFETY = 18 * PX;
+      var limit = CONTENT - SAFETY;
+      var sheet = document.querySelector(".sheet");
+      if(!sheet) return;
+      var used = 0;
+      var kids = sheet.children;
+      for(var i = 0; i < kids.length; i++){
+        var child = kids[i];
+        var cs = window.getComputedStyle(child);
+        if(child.matches && child.matches("table.rpt")){
+          var thead = child.querySelector("thead");
+          var theadH = thead ? thead.offsetHeight : 0;
+          var bodies = child.querySelectorAll("tbody.txn, tbody.sub");
+          var b;
+          for(b = 0; b < bodies.length; b++) bodies[b].classList.remove("brk");
+          if(used + theadH > limit) used = 0;
+          used += theadH;
+          for(b = 0; b < bodies.length; b++){
+            var tb = bodies[b];
+            var h = tb.offsetHeight;
+            if(used + h > limit){
+              tb.classList.add("brk");
+              used = theadH + h;
+            }else{
+              used += h;
+            }
+          }
+          var tfoot = child.querySelector("tfoot");
+          if(tfoot){
+            tfoot.style.breakBefore = "";
+            tfoot.style.pageBreakBefore = "";
+            var fh = tfoot.offsetHeight;
+            if(used + fh > limit){
+              tfoot.style.breakBefore = "page";
+              tfoot.style.pageBreakBefore = "always";
+              used = theadH + fh;
+            }else{
+              used += fh;
+            }
+          }
+        }else{
+          var blockH = child.offsetHeight + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+          if(used + blockH > limit){
+            used = blockH;
+          }else{
+            used += blockH;
+          }
+        }
+      }
+    }
+    function coPreparePrint(){
+      var s = document.getElementById("co-print-measure");
+      if(!s){
+        s = document.createElement("style");
+        s.id = "co-print-measure";
+        s.textContent = "body,html{padding:0 !important;background:#fff !important;} .sheet{padding:0 !important;box-shadow:none !important;} .no-print{display:none !important;}";
+        document.head.appendChild(s);
+      }
+      document.body.offsetHeight;
+      coMarkTxnPageBreaks();
+    }`;
     },
 
     getCashOutPrintBaseCss(isAll){
@@ -1510,7 +1687,7 @@ const CashOutDetail = {
     --head:#111111; --cashout:#b91c1c;
   }
   *{ box-sizing:border-box; }
-  @page{ size:A4 portrait; margin:14mm 12mm 12mm 12mm; }
+  @page{ size:A4 portrait; margin:12mm 14mm 22mm 14mm; }
   html,body{
     margin:0; padding:0; background:#fff; color:var(--ink);
     font-family:Arial,"Segoe UI",Helvetica,sans-serif;
@@ -1518,7 +1695,10 @@ const CashOutDetail = {
     height:auto; min-height:0;
   }
   body{ padding:0; }
-  .sheet{ width:100%; max-width:186mm; margin:0 auto; padding-bottom:0; }
+  .sheet{
+    width:100%; max-width:182mm; margin:0 auto; padding-bottom:0;
+    display:flex; flex-direction:column; min-height:236mm;
+  }
   .no-print{ margin-top:14px; }
   .no-print button{
     border:1px solid var(--gold); background:#f7f1de; color:var(--head);
@@ -1561,56 +1741,115 @@ const CashOutDetail = {
   .sum.is-main .val{ color:#8a7010; }
   .sum.is-cashout{ border-top-color:var(--cashout); }
   .sum.is-cashout .val{ color:var(--cashout); }
-  table.rpt{ width:100%; border-collapse:collapse; table-layout:fixed; }
-  table.rpt thead{ display:table-header-group; }
-  table.rpt tfoot{ display:table-footer-group; }
+  table.rpt{
+    width:100%; table-layout:fixed; page-break-inside:auto;
+    border-collapse:separate; border-spacing:0;
+    border:1px solid #e5e0d0;
+  }
+  table.rpt thead{ display:table-header-group !important; }
+  table.rpt tfoot{ display:table-row-group; }
   table.rpt th{
     background:var(--head); color:#f8fafc; font-size:7.5pt; font-weight:800;
     letter-spacing:.05em; text-transform:uppercase; text-align:left;
-    padding:7px 6px; border:1px solid var(--head); border-bottom:2px solid var(--gold-line); vertical-align:middle;
+    padding:7px 6px; border:0; border-right:1px solid #2a2a2a;
+    border-bottom:2px solid var(--gold-line); vertical-align:middle;
   }
+  table.rpt th:last-child{ border-right:0; }
   table.rpt td{
-    padding:7px 6px; border:1px solid #e5e0d0; vertical-align:top;
-    font-size:9pt; color:var(--ink);
+    padding:6px 6px; border:0; border-right:1px solid #e5e0d0; border-bottom:1px solid #e5e0d0;
+    vertical-align:top; font-size:9pt; color:var(--ink);
     overflow-wrap:break-word; word-break:normal;
+    page-break-inside:avoid !important; break-inside:avoid !important;
   }
+  table.rpt td:last-child{ border-right:0; }
   table.rpt th.num, table.rpt td.num{ text-align:right; white-space:nowrap !important; }
   table.rpt td.num{ font-size:9.5pt; font-weight:800; font-variant-numeric:tabular-nums; color:var(--head); }
   table.rpt td.num.is-cashout{ color:var(--cashout); }
-  table.rpt .col-date{ width:14%; white-space:nowrap; }
-  table.rpt .col-time{ width:10%; }
-  table.rpt .col-num{ width:16%; }
+  table.rpt .col-date{ width:22%; white-space:nowrap; }
+  table.rpt .col-num{ width:18%; }
   table.rpt .col-note{ width:40%; }
   table.rpt .col-user{ width:20%; }
   table.rpt td.is-gold-user{ color:#8a7010; font-weight:800; }
-  table.rpt tbody tr.is-aktif:nth-child(even) td{ background:#fafaf8; }
+  table.rpt tbody.txn:nth-of-type(even) td{ background:#fafaf8; }
+  table.rpt tbody.txn,
+  table.rpt tbody.sub,
+  table.rpt tbody.txn tr,
+  table.rpt tbody.sub tr,
+  table.rpt tfoot,
+  table.rpt tfoot tr{
+    page-break-inside:avoid !important;
+    break-inside:avoid-page !important;
+  }
+  table.rpt tbody.txn.brk,
+  table.rpt tbody.sub.brk{
+    break-before:page !important;
+    page-break-before:always !important;
+  }
   table.rpt tfoot td{
     font-weight:800; background:#F7F1DE;
     border-top:2px solid var(--gold-line); border-bottom:2px solid var(--gold-line);
     font-size:9pt; padding:7px 6px; color:var(--ink);
   }
   table.rpt .empty{ text-align:center; color:var(--muted); padding:14px; }
-  tr, .keep{ page-break-inside:avoid; break-inside:avoid; }
-  .audit-note{
-    margin:8px 0 10px; padding:7px 9px;
-    border:1px solid #e6ebf0; background:#fafbfc;
-    font-size:7.5pt; color:var(--muted); line-height:1.45;
+  .keep{ page-break-inside:avoid; break-inside:avoid; }
+  .insight{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0 4px;
   }
-  .sign.keep{
-    margin:6px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:28px;
+  .insight article{
+    border:1px solid var(--line); border-top:2px solid var(--gold-line);
+    background:#fff; padding:6px 9px;
+  }
+  .insight .lbl{
+    display:block; font-size:7pt; font-weight:800; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:2px;
+  }
+  .insight strong{ display:block; font-size:9.5pt; color:var(--head); line-height:1.25; }
+  .insight p{ margin:2px 0 0; font-size:8pt; color:var(--muted); font-weight:600; }
+  .insight .amt{ color:var(--cashout); font-weight:800; font-size:9pt; }
+  .audit-note{
+    margin:6px 0 4px; padding:0; border:0; background:transparent;
+    font-size:7pt; color:var(--muted); line-height:1.35;
+  }
+  .sign{
+    margin-top:auto; padding-top:10px; padding-bottom:8px;
+    display:grid; grid-template-columns:1fr 1.2fr; gap:18px 24px;
+    break-inside:avoid; page-break-inside:avoid;
     break-after:avoid; page-break-after:avoid;
   }
   .sign .box{ text-align:center; }
   .sign .who{ font-size:9pt; font-weight:700; color:var(--ink); }
-  .sign .role{ margin-top:2px; font-size:7.5pt; font-weight:800; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; }
-  .sign .space{ height:42px; }
+  .sign .role{ margin-top:2px; font-size:7pt; font-weight:800; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; }
+  .sign .stage{
+    position:relative; height:28mm; width:100%; max-width:52mm; margin:2px auto 6px;
+  }
+  .sign .stage.is-empty{ height:24mm; }
+  .sign .stamp{
+    position:absolute; left:38%; top:44%;
+    width:40mm; height:23mm;
+    transform:translate(-50%, -50%) rotate(-6deg);
+    opacity:.70; z-index:1; pointer-events:none;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .sign .stamp svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .sign .ttd{
+    position:absolute; left:58%; top:52%;
+    width:48mm; transform:translate(-38%, -50%);
+    z-index:2; pointer-events:none;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .sign .ttd img{
+    width:100%; height:auto; max-height:22mm;
+    object-fit:contain; object-position:center;
+    display:block;
+  }
   .sign .name{ font-size:9.5pt; font-weight:800; color:var(--head); }
   .sign .line{ margin:4px auto 0; width:68%; border-top:1px solid #8e9aab; }
+  .sign .job{ margin-top:3px; font-size:7.5pt; font-weight:800; letter-spacing:.14em; color:var(--muted); text-transform:uppercase; }
   .foot{
-    position:fixed; left:0; right:0; bottom:0; width:100%;
-    margin:0; padding:4px 12mm 0; border-top:1.5px solid var(--gold-line);
+    position:fixed; left:0; right:0; bottom:6mm; width:100%;
+    margin:0; padding:2px 14mm 0; border-top:1.5px solid var(--gold-line);
     display:grid; grid-template-columns:1.1fr 1.2fr 1fr; gap:8px; align-items:end;
-    font-size:7pt; color:var(--muted); background:#fff;
+    font-size:7pt; color:var(--muted); background:#fff; height:10mm;
     break-after:avoid; page-break-after:avoid;
   }
   .foot b{ display:block; color:var(--head); font-size:7.5pt; }
@@ -1620,11 +1859,12 @@ const CashOutDetail = {
     .no-print{ display:none !important; }
     html,body{ height:auto !important; min-height:0 !important; padding:0 !important; }
     body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .sheet{ break-after:avoid; page-break-after:avoid; }
+    .sheet{ break-after:auto; page-break-after:auto; }
+    thead{ display:table-header-group; }
   }
   @media screen{
     body{ padding:16px 16px 28px; background:#f3f1ea; }
-    .sheet{ background:#fff; padding:16px 16px 18px; box-shadow:0 8px 28px rgba(17,17,17,.12); }
+    .sheet{ background:#fff; padding:16px 18px 18px; box-shadow:0 8px 28px rgba(17,17,17,.12); }
   }
 ${allCss}`;
     },
@@ -1648,27 +1888,29 @@ ${allCss}`;
         const periode = this.printPeriodeLabel(filter);
         const clock = this.getPrintClock();
         const logoSrc = await this.resolvePrintLogoSrc();
+        const sigSrc = await this.resolvePrintOwnerSignatureSrc();
         const totalLabel = this.formatRupiah(this.totalCashOut);
         const countLabel = String(this.rows.filter((r) => r.nominal != null).length);
         const filename = `CashOut_${cabang.replace(/\s+/g, "_")}_${filter.start}_${filter.end}`;
 
         const oneBodyRows = this.rows.map((r, i) => this.buildPrintTxnRow(r, i > 0 ? this.rows[i - 1] : null)).join("");
+        const insightHtml = this.buildPrintInsightHtml();
+        const signHtml = this.buildPrintSignBlock(sigSrc);
         const tablesHtml = isAll
             ? this.buildAllCabangPrintTables()
             : `<table class="rpt">
       <thead>
         <tr>
           <th class="col-date">Tanggal</th>
-          <th class="col-time">Waktu</th>
           <th class="num">Nominal</th>
           <th class="col-note">Keterangan Cash Out</th>
           <th class="col-user">Kasir / User</th>
         </tr>
       </thead>
-      <tbody>${oneBodyRows}</tbody>
+      ${oneBodyRows}
       <tfoot>
         <tr>
-          <td colspan="2">Grand Total</td>
+          <td>Grand Total</td>
           <td class="num is-cashout">${this.escapeHtml(totalLabel)}</td>
           <td colspan="2"></td>
         </tr>
@@ -1718,28 +1960,19 @@ ${allCss}`;
       <div class="sum is-main"><span class="lbl">Periode</span><span class="val sm">${this.escapeHtml(periode)}</span></div>
     </section>
     ${tablesHtml}
+    ${insightHtml}
     <p class="audit-note keep">TOTAL memakai Σ cash_out Minutes (sumber KPI). Baris detail = keterangan Minutes yang sudah di-load. Rumus dan sumber tidak diubah.</p>
-    <section class="sign keep">
-      <div class="box">
-        <div class="who">Disiapkan oleh,</div>
-        <div class="role">System / ERP VAX</div>
-        <div class="space"></div>
-        <div class="name">ERP VAX Wijaya</div>
-        <div class="line"></div>
-      </div>
-      <div class="box">
-        <div class="who">Mengetahui,</div>
-        <div class="role">Owner</div>
-        <div class="space"></div>
-        <div class="name">Heri Herdianto</div>
-        <div class="line"></div>
-      </div>
-    </section>
+    ${signHtml}
   </div>
   <p class="no-print"><button type="button" onclick="window.print()">Print / PDF</button></p>
   <script>
     document.title = ${JSON.stringify(filename)};
-    window.onload=function(){ setTimeout(function(){ window.print(); }, 220); };
+    ${this.getCashOutPrintPagerScript()}
+    window.addEventListener("beforeprint", coPreparePrint);
+    window.onload = function(){
+      coPreparePrint();
+      setTimeout(function(){ window.print(); }, 220);
+    };
   <\/script>
 </body></html>`;
 
