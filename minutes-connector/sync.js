@@ -43,6 +43,9 @@ const MINUTES_DASHBOARD_URL =
 const MINUTES_DAILY_RECAP_URL =
   "https://minutesapps.com/dashboard216a/report/recap/";
 
+const MINUTES_SALES_SUMMARY_URL =
+  "https://minutesapps.com/dashboard216a/report/salessummary";
+
 const HEADLESS =
   String(process.env.HEADLESS || "false")
     .toLowerCase() === "true";
@@ -792,6 +795,168 @@ async function bacaExpenses(page) {
       );
     });
 }
+async function bacaTransactionSalesSummary(
+  page,
+  tanggalYmd,
+  tanggalMinutes
+) {
+  const [tahun, bulan, hari] =
+    String(tanggalYmd || "").split("-");
+
+  const range = `${bulan}/${hari}/${tahun}`;
+  const rangeLabel = `${range} - ${range}`;
+
+  const url =
+    `${MINUTES_SALES_SUMMARY_URL}` +
+    `?range=${encodeURIComponent(rangeLabel)}`;
+
+  try {
+    await page.goto(url, {
+      waitUntil: "domcontentloaded",
+      timeout: 30000
+    });
+
+    await page.waitForTimeout(3500);
+
+    const hasil = await page.evaluate(
+      ({ tanggalMinutes, rangeLabel }) => {
+        const clean = (teks = "") =>
+          String(teks)
+            .replace(/\u00a0/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        const normal = (teks = "") =>
+          clean(teks).toUpperCase();
+
+        const bodyText =
+          clean(document.body?.innerText || "");
+
+        const periodExact =
+          `(${tanggalMinutes} - ${tanggalMinutes})`;
+
+        const rangeNow = clean(
+          document.querySelector("#reportrange span")
+            ?.textContent ||
+          document.querySelector("#reportrange")
+            ?.value ||
+          ""
+        );
+
+        if (
+          !bodyText.includes(periodExact) &&
+          rangeNow !== rangeLabel &&
+          !rangeNow.includes(rangeLabel)
+        ) {
+          return {
+            ok: false,
+            reason: `periode tidak sesuai: ${rangeNow || "-"}`
+          };
+        }
+
+        const scope =
+          document.querySelector("ul#sparks");
+
+        if (!scope) {
+          return {
+            ok: false,
+            reason: "ul#sparks tidak ditemukan"
+          };
+        }
+
+        function parseCount(teks) {
+          const angka =
+            String(teks || "").replace(/[^\d]/g, "");
+
+          if (!/^\d{1,6}$/.test(angka)) {
+            return null;
+          }
+
+          return Number(angka);
+        }
+
+        function ambil(label) {
+          const target = normal(label);
+
+          for (
+            const item of
+            scope.querySelectorAll("li.sparks-info")
+          ) {
+            const h5 = item.querySelector("h5");
+
+            if (!h5) continue;
+
+            const clone = h5.cloneNode(true);
+
+            clone
+              .querySelectorAll("span")
+              .forEach((span) => span.remove());
+
+            if (
+              normal(clone.textContent) !== target
+            ) {
+              continue;
+            }
+
+            return parseCount(
+              h5.querySelector("span")
+                ?.textContent || ""
+            );
+          }
+
+          return null;
+        }
+
+        const customerTransactions =
+          ambil("CUSTOMER TRANSACTIONS");
+
+        const guestTransactions =
+          ambil("GUEST TRANSACTIONS");
+
+        if (
+          customerTransactions == null ||
+          guestTransactions == null
+        ) {
+          return {
+            ok: false,
+            reason:
+              "CUSTOMER/GUEST TRANSACTIONS tidak terbaca"
+          };
+        }
+
+        return {
+          ok: true,
+          customerTransactions,
+          guestTransactions,
+          transactionMinutes:
+            customerTransactions +
+            guestTransactions
+        };
+      },
+      {
+        tanggalMinutes,
+        rangeLabel
+      }
+    );
+
+    if (!hasil?.ok) {
+      console.warn(
+        `⚠️ Sales Summary TRX gagal: ${hasil?.reason || "unknown"}`
+      );
+
+      return null;
+    }
+
+    return hasil;
+
+  } catch (error) {
+    console.warn(
+      `⚠️ Sales Summary TRX gagal: ${error.message}`
+    );
+
+    return null;
+  }
+}
 // ================= PROSES SATU CABANG =================
 
 async function prosesCabang(
@@ -904,9 +1069,29 @@ async function prosesCabang(
   // bacaHeaderKpiDaily() tetap dipakai untuk NET SERVICES / NET PRODUCTS
   // dan sebagai diagnostic compare saja. Jangan override count KPI dengan
   // hasil scan #content/body karena halaman dapat memuat label serupa.
-  const transactionMinutes = Number(
+  const dailyRecapTransactionMinutes = Number(
     ringkasan.transaction || 0
   );
+
+  const salesSummaryTransaction =
+    await bacaTransactionSalesSummary(
+      page,
+      tanggalDatabase,
+      tanggalMinutes
+    );
+
+  const transactionMinutes =
+    salesSummaryTransaction?.transactionMinutes ?? null;
+
+  if (salesSummaryTransaction) {
+    console.log(
+      `TRX Sales Summary = ${salesSummaryTransaction.customerTransactions} + ${salesSummaryTransaction.guestTransactions} = ${transactionMinutes}`
+    );
+  } else {
+    console.warn(
+      "⚠️ Sales Summary gagal; transaction_minutes existing tidak dioverwrite."
+    );
+  }
   const customerMinutes = Number(
     ringkasan.customer || 0
   );
@@ -922,10 +1107,10 @@ async function prosesCabang(
 
   if (
     headerCountDiagnostic.transaction != null &&
-    Number(headerCountDiagnostic.transaction) !== transactionMinutes
+    Number(headerCountDiagnostic.transaction) !== dailyRecapTransactionMinutes
   ) {
     console.warn(
-      `⚠️ Diagnostic TRANSACTION berbeda: card=${transactionMinutes}, header=${headerCountDiagnostic.transaction}. Card Daily Recap dipakai.`
+      `⚠️ Diagnostic TRANSACTION berbeda: card=${dailyRecapTransactionMinutes}, header=${headerCountDiagnostic.transaction}. Card Daily Recap dipakai.`
     );
   }
 
@@ -1147,7 +1332,7 @@ async function prosesCabang(
       keterangan_cash_out: keteranganCashOut,
       product_cost: Number(productCost || 0),
       customer_minutes: customerMinutes,
-      transaction_minutes: transactionMinutes,
+      ...(transactionMinutes == null ? {} : { transaction_minutes: transactionMinutes }),
       services_minutes: servicesMinutes,
       synced_at: new Date().toISOString()
     };
