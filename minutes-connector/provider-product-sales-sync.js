@@ -20,12 +20,21 @@ function normalisasi(teks = "") {
 
 function resolveDate() {
   const arg = process.argv[2]?.trim();
-  if (arg) {
-    const m = arg.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const parse = value => {
+    const m = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (!m) throw new Error("Format tanggal harus YYYY-MM-DD");
     const [, y, mo, d] = m;
-    return { db: arg, range: `${mo}/${d}/${y} - ${mo}/${d}/${y}` };
-  }
+    const date = new Date(`${y}-${mo}-${d}T00:00:00+07:00`);
+    const label = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Jakarta",
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    }).format(date).replace(/ /g, " ");
+    return { db: value, recapDate: label };
+  };
+
+  if (arg) return parse(arg);
 
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Jakarta",
@@ -34,17 +43,10 @@ function resolveDate() {
     day: "2-digit"
   }).formatToParts(new Date());
   const get = t => parts.find(p => p.type === t)?.value;
-  const y = get("year");
-  const mo = get("month");
-  const d = get("day");
-  return { db: `${y}-${mo}-${d}`, range: `${mo}/${d}/${y} - ${mo}/${d}/${y}` };
+  return parse(`${get("year")}-${get("month")}-${get("day")}`);
 }
 
-function providerIdDariHref(href = "") {
-  return String(href).match(/providersalesdetail\/(\d+)/i)?.[1] || null;
-}
-
-const { db: activityDate, range: minutesRange } = resolveDate();
+const { db: activityDate, recapDate } = resolveDate();
 console.log(`Share Produk Daily sync: ${activityDate}`);
 
 const { data: cabangs, error: cabErr } = await sb
@@ -63,22 +65,7 @@ const { data: karyawan, error: karErr } = await sb
   .eq("aktif", true);
 if (karErr) throw karErr;
 
-const { data: providerMap, error: mapErr } = await sb
-  .from("provider_sales_source")
-  .select("provider_minutes_id,employee_id")
-  .not("provider_minutes_id", "is", null)
-  .not("employee_id", "is", null);
-if (mapErr) throw mapErr;
-
-const employeeByProviderId = new Map();
-for (const row of providerMap || []) {
-  employeeByProviderId.set(String(row.provider_minutes_id), row.employee_id);
-}
-
-function cariEmployee(providerMinutesId, providerName, cabangId) {
-  if (providerMinutesId && employeeByProviderId.has(String(providerMinutesId))) {
-    return employeeByProviderId.get(String(providerMinutesId));
-  }
+function cariEmployee(providerName, cabangId) {
   const nama = normalisasi(providerName);
   const branch = (karyawan || []).find(
     k => Number(k.cabang_id) === Number(cabangId) && normalisasi(k.nama_karyawan) === nama
@@ -88,39 +75,48 @@ function cariEmployee(providerMinutesId, providerName, cabangId) {
   return global.length === 1 ? global[0].id : null;
 }
 
-async function bacaProductShare(page) {
+async function bacaProviderProductRecap(page) {
   return page.evaluate(() => {
-    const parse = value => {
+    const parseMoney = value => {
       const raw = String(value || "").replace(/[^\d-]/g, "");
       return raw ? Number(raw) : 0;
     };
 
-    const hasil = [];
-    for (const table of document.querySelectorAll("table")) {
+    const headings = [...document.querySelectorAll("*")].filter(el =>
+      el.children.length === 0 && /provider\s+product\s+recap/i.test(el.textContent || "")
+    );
+
+    for (const heading of headings) {
+      let container = heading.parentElement;
+      let table = null;
+      for (let i = 0; i < 6 && container; i += 1, container = container.parentElement) {
+        table = container.querySelector("table");
+        if (table) break;
+      }
+      if (!table) continue;
+
       const headers = [...table.querySelectorAll("thead th")].map(h =>
         h.textContent.trim().toLowerCase()
       );
-      if (!headers.length) continue;
+      const iProvider = headers.findIndex(h => h.includes("provider"));
+      const iTotal = headers.findIndex(h => h === "total" || h.includes("total"));
+      const iShare = headers.findIndex(h => h === "share" || h.endsWith(" share"));
+      if (iProvider < 0 || iShare < 0) continue;
 
-      const idxContains = term => headers.findIndex(h => h.includes(term));
-      const iProduct = idxContains("product");
-      const iShare = idxContains("revenue share");
-      if (iProduct < 0 || iShare < 0) continue;
-
-      let iQty = idxContains("qty");
-      if (iQty < 0) iQty = idxContains("quantity");
-
+      const rows = [];
       for (const tr of table.querySelectorAll("tbody tr")) {
         const cells = [...tr.querySelectorAll("td")].map(td => td.textContent.trim());
-        if (!cells.length || cells.length <= Math.max(iProduct, iShare)) continue;
-        const productName = cells[iProduct] || "";
-        const revenueShare = parse(cells[iShare]);
-        const qty = iQty >= 0 && cells.length > iQty ? parse(cells[iQty]) : 0;
-        if (!productName || revenueShare <= 0) continue;
-        hasil.push({ productName, qty, revenueShare });
+        if (cells.length <= Math.max(iProvider, iShare)) continue;
+        const providerName = cells[iProvider] || "";
+        const qty = iTotal >= 0 && cells.length > iTotal ? parseMoney(cells[iTotal]) : 0;
+        const revenueShare = parseMoney(cells[iShare]);
+        if (!providerName || revenueShare <= 0) continue;
+        rows.push({ providerName, qty, revenueShare });
       }
+      return rows;
     }
-    return hasil;
+
+    return [];
   });
 }
 
@@ -174,59 +170,32 @@ try {
         }, merchant)
       ]);
 
-      const summaryUrl =
-        "https://minutesapps.com/dashboard216a/report/providersales/?" +
-        `range=${encodeURIComponent(minutesRange)}`;
-      await page.goto(summaryUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
-      await page.waitForTimeout(1500);
+      const recapUrl = `https://minutesapps.com/dashboard216a/report/recap/?date=${encodeURIComponent(recapDate)}`;
+      await page.goto(recapUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.waitForTimeout(1200);
 
-      const providers = await page.locator("table tbody tr").evaluateAll(rows => {
-        const out = [];
-        const seen = new Set();
-        for (const tr of rows) {
-          const a = tr.querySelector('a[href*="providersalesdetail"]');
-          if (!a) continue;
-          const cells = [...tr.querySelectorAll("td")];
-          const name = cells[0]?.textContent?.trim() || a.textContent?.trim() || "";
-          const href = a.getAttribute("href") || "";
-          const key = `${name}|${href}`;
-          if (!name || !href || seen.has(key)) continue;
-          seen.add(key);
-          out.push({ name, href });
-        }
-        return out;
+      const providerRows = await bacaProviderProductRecap(page);
+      const rowsToSave = providerRows.map(r => {
+        const employeeId = cariEmployee(r.providerName, cabang.id);
+        const now = new Date().toISOString();
+        return {
+          period_start: activityDate,
+          period_end: activityDate,
+          cabang_id: cabang.id,
+          cabang_minutes_name: cabang.nama_minutes,
+          product_name: "Provider Product Recap",
+          provider_name_raw: r.providerName,
+          provider_name_normalized: normalisasi(r.providerName),
+          provider_minutes_id: null,
+          employee_id: employeeId,
+          mapping_status: employeeId ? "MATCHED" : "UNMAPPED",
+          qty: r.qty,
+          revenue_share: r.revenueShare,
+          source: "MINUTES_PROVIDER_PRODUCT_RECAP_DAILY",
+          synced_at: now,
+          updated_at: now
+        };
       });
-
-      const rowsToSave = [];
-      for (const provider of providers) {
-        const providerMinutesId = providerIdDariHref(provider.href);
-        const detailUrl = new URL(provider.href, "https://minutesapps.com");
-        detailUrl.searchParams.set("range", minutesRange);
-        await page.goto(detailUrl.toString(), { waitUntil: "domcontentloaded", timeout: 30000 });
-        await page.waitForTimeout(900);
-
-        const products = await bacaProductShare(page);
-        const employeeId = cariEmployee(providerMinutesId, provider.name, cabang.id);
-        for (const p of products) {
-          rowsToSave.push({
-            period_start: activityDate,
-            period_end: activityDate,
-            cabang_id: cabang.id,
-            cabang_minutes_name: cabang.nama_minutes,
-            product_name: p.productName,
-            provider_name_raw: provider.name,
-            provider_name_normalized: normalisasi(provider.name),
-            provider_minutes_id: providerMinutesId,
-            employee_id: employeeId,
-            mapping_status: employeeId ? "MATCHED" : "UNMAPPED",
-            qty: p.qty,
-            revenue_share: p.revenueShare,
-            source: "MINUTES_PROVIDER_SALES_PRODUCT_DAILY",
-            synced_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-        }
-      }
 
       const totalShare = rowsToSave.reduce((sum, r) => sum + Number(r.revenue_share || 0), 0);
 
@@ -236,7 +205,7 @@ try {
         .eq("period_start", activityDate)
         .eq("period_end", activityDate)
         .eq("cabang_id", cabang.id)
-        .eq("source", "MINUTES_PROVIDER_SALES_PRODUCT_DAILY");
+        .eq("source", "MINUTES_PROVIDER_PRODUCT_RECAP_DAILY");
       if (delErr) throw delErr;
 
       if (rowsToSave.length) {
