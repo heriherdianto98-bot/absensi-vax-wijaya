@@ -68,7 +68,6 @@
                 <p class="thc-page-sub">1 baris = 1 tanggal + 1 cabang</p>
             </header>
 
-            <!-- Satu kartu audit: filter + header tabel menempel + body scroll -->
             <section class="setoran-section-card thc-table-section" id="thcTableSection">
                 <div class="thc-pin-stack" id="thcPinStack">
                     <div class="thc-table-toolbar" id="thcTableToolbar" aria-label="Filter dan aksi tabel">
@@ -139,10 +138,8 @@
                     <p class="thc-incomplete-note" id="thcIncompleteNote" hidden></p>
                 </div>
 
-                <!-- Host modal Custom Periode Dashboard (diisi dari toolbar.html, tanpa panel besar) -->
                 <div id="thcDashModalHost"></div>
 
-                <!-- Lompat Tanggal — single-date ERP calendar (dataset-only) -->
                 <div id="thcJumpCalModal" class="thc-jump-cal-modal" hidden aria-hidden="true">
                     <div class="thc-jump-cal-backdrop" data-thc-jump-close></div>
                     <div class="thc-jump-cal-panel" role="dialog" aria-modal="true" aria-labelledby="thcJumpCalTitle">
@@ -226,7 +223,6 @@
                 </div>
             </section>
 
-            <!-- Same VaxAiInsight presenter as Dashboard — consumer only -->
             <section id="widget-section" class="thc-ai-host" aria-label="VAX AI Insight"></section>
 
             <div class="thc-sales-panels" id="thcSalesPanels">
@@ -336,6 +332,7 @@
 <script src="../js/modules/dashboard.js"></script>
 <script src="../js/modules/vax-ai-insight.js?v=20260818-ai4"></script>
 <script src="../js/modules/tabel-harian-cabang.js"></script>
+<script src="../js/modules/tabel-harian-share-cards.js?v=20260902-sharecards1"></script>
 <script src="../js/modules/kpi-ultimate.js"></script>
 <script src="../js/loader.js"></script>
 <script>
@@ -368,14 +365,12 @@ document.addEventListener("erp:finance-ready", async () => {
         if(typeof syncSidebarRoleMeta === "function") syncSidebarRoleMeta();
     }
 
-    // Inject hanya modal Custom Periode Dashboard (tanpa panel control besar)
     if(modalHost && !document.getElementById("customPeriodModal")){
         const html = await (await fetch("../components/toolbar.html")).text();
         const doc = new DOMParser().parseFromString(html, "text/html");
         const modal = doc.getElementById("customPeriodModal");
         if(modal){
             modalHost.appendChild(modal);
-            // Prefer tab Rentang Tanggal untuk use-case filter 01–07
             const modeEl = document.getElementById("customPeriodMode");
             if(modeEl) modeEl.value = "range";
         }
@@ -388,6 +383,7 @@ document.addEventListener("erp:finance-ready", async () => {
         widget.innerHTML = await (await fetch("../components/ai-insight.html")).text();
     }
 
+    if(typeof TabelHarianShareCards !== "undefined") TabelHarianShareCards.boot();
     TabelHarianCabang.boot();
     if(typeof KpiUltimate !== "undefined") KpiUltimate.boot();
     document.dispatchEvent(new CustomEvent("erp:components-ready"));
