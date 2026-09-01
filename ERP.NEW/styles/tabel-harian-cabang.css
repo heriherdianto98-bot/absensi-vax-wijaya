@@ -880,6 +880,28 @@ a.thc-action-btn.thc-action-back-arus:hover,
     overflow: visible;
 }
 
+/* AI Insight — presenter Dashboard, di bawah 12 card totals */
+.thc-page .thc-ai-host,
+.thc-page #widget-section.thc-ai-host{
+    margin: 14px 0 0;
+    padding: 0;
+    min-width: 0;
+}
+
+.thc-page .thc-ai-host .ai-card{
+    margin: 0;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+}
+
+.thc-page .thc-ai-host .ai-grid .ai-section--promo,
+.thc-page .thc-ai-host .ai-grid .ai-section--promo ul{
+    height: auto;
+    max-height: none;
+    overflow: visible;
+}
+
 .thc-tot-item{
     --thc-tot-accent: #D4AF37;
     --thc-tot-glow-a: 0 0 0 1px rgba(212, 175, 55, 0.12), 0 0 10px rgba(212, 175, 55, 0.08);
@@ -1044,6 +1066,60 @@ a.thc-action-btn.thc-action-back-arus:hover,
     font-size: 16.5px;
 }
 
+/* 4 metric cards — larger type inside the existing 72px card box */
+.thc-tot-item.is-explained{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    height: 72px;
+    min-height: 72px;
+    max-height: 72px;
+    padding: 5px 10px 5px 13px;
+}
+
+.thc-tot-item.is-explained > span{
+    flex: 0 0 auto;
+    margin: 0 0 1px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+}
+
+.thc-tot-item.is-explained > strong{
+    flex: 0 0 auto;
+    margin: 0 0 2px;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.05;
+}
+
+.thc-tot-item.is-explained.is-actual > strong{
+    font-size: 19px;
+}
+
+.thc-tot-item.is-explained .thc-tot-desc{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+    text-transform: none;
+    white-space: normal;
+    color: #C5D0DC;
+}
+
 /* Customer — light cyan */
 .thc-tot-item.is-customer{
     --thc-tot-accent: #38BDF8;
@@ -1123,6 +1199,19 @@ a.thc-action-btn.thc-action-back-arus:hover,
 
     .thc-tot-item strong{
         font-size: 14px;
+    }
+
+    .thc-tot-item.is-explained > span{
+        font-size: 12px;
+    }
+
+    .thc-tot-item.is-explained > strong,
+    .thc-tot-item.is-explained.is-actual > strong{
+        font-size: 17px;
+    }
+
+    .thc-tot-item.is-explained .thc-tot-desc{
+        font-size: 10.5px;
     }
 }
 
@@ -1529,6 +1618,11 @@ body.thc-printing .thc-sales-panels{
     inset: auto !important;
 }
 
+body.thc-printing .thc-ai-host,
+body.thc-printing #widget-section.thc-ai-host{
+    display: none !important;
+}
+
 /* =========================================================
    CETAK — Laporan Kinerja Cabang lengkap (A4 portrait)
    DOM existing: ringkasan + tabel + Product Sales + KPI Ultimate
@@ -1595,7 +1689,9 @@ body.thc-printing .thc-sales-panels{
     .thc-kpiu-edit,
     #thcKpiuEditWrap,
     .thc-incomplete-note,
-    .thc-row-meta{
+    .thc-row-meta,
+    .thc-ai-host,
+    #widget-section.thc-ai-host{
         display: none !important;
     }
 
@@ -1865,6 +1961,8 @@ body.thc-printing .thc-sales-panels{
     .thc-tot-item{
         animation: none !important;
         min-height: 0 !important;
+        height: auto !important;
+        max-height: none !important;
         padding: 6px 8px 6px 10px !important;
         border: 1px solid #D6D3C4 !important;
         border-radius: 4px !important;
@@ -1872,6 +1970,17 @@ body.thc-printing .thc-sales-panels{
         box-shadow: none !important;
         overflow: visible !important;
         transform: none !important;
+    }
+
+    .thc-tot-item.is-explained{
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        padding: 6px 8px 6px 10px !important;
+    }
+
+    .thc-tot-item .thc-tot-desc{
+        display: none !important;
     }
 
     .thc-tot-item::before{
