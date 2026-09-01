@@ -24,14 +24,8 @@ function resolveDate() {
     const m = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (!m) throw new Error("Format tanggal harus YYYY-MM-DD");
     const [, y, mo, d] = m;
-    const date = new Date(`${y}-${mo}-${d}T00:00:00+07:00`);
-    const label = new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Asia/Jakarta",
-      day: "2-digit",
-      month: "short",
-      year: "numeric"
-    }).format(date).replace(/ /g, " ");
-    return { db: value, recapDate: label };
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return { db: value, recapDate: `${d} ${months[Number(mo) - 1]} ${y}` };
   };
 
   if (arg) return parse(arg);
@@ -82,34 +76,29 @@ async function bacaProviderProductRecap(page) {
       return raw ? Number(raw) : 0;
     };
 
-    const headings = [...document.querySelectorAll("*")].filter(el =>
-      el.children.length === 0 && /provider\s+product\s+recap/i.test(el.textContent || "")
-    );
-
-    for (const heading of headings) {
-      let container = heading.parentElement;
-      let table = null;
-      for (let i = 0; i < 6 && container; i += 1, container = container.parentElement) {
-        table = container.querySelector("table");
-        if (table) break;
-      }
-      if (!table) continue;
-
+    for (const table of document.querySelectorAll("table")) {
       const headers = [...table.querySelectorAll("thead th")].map(h =>
-        h.textContent.trim().toLowerCase()
+        h.textContent.trim().replace(/\s+/g, " ").toLowerCase()
       );
-      const iProvider = headers.findIndex(h => h.includes("provider"));
-      const iTotal = headers.findIndex(h => h === "total" || h.includes("total"));
-      const iShare = headers.findIndex(h => h === "share" || h.endsWith(" share"));
-      if (iProvider < 0 || iShare < 0) continue;
+
+      // Provider Product Recap di Minutes punya tepat 4 kolom:
+      // Provider Name | Total | Income | Share
+      if (headers.length !== 4) continue;
+      if (!headers[0]?.includes("provider")) continue;
+      if (!headers[1]?.includes("total")) continue;
+      if (!headers[2]?.includes("income")) continue;
+      if (!headers[3]?.includes("share")) continue;
 
       const rows = [];
       for (const tr of table.querySelectorAll("tbody tr")) {
-        const cells = [...tr.querySelectorAll("td")].map(td => td.textContent.trim());
-        if (cells.length <= Math.max(iProvider, iShare)) continue;
-        const providerName = cells[iProvider] || "";
-        const qty = iTotal >= 0 && cells.length > iTotal ? parseMoney(cells[iTotal]) : 0;
-        const revenueShare = parseMoney(cells[iShare]);
+        const cells = [...tr.querySelectorAll("td")].map(td =>
+          td.textContent.trim().replace(/\s+/g, " ")
+        );
+        if (cells.length < 4) continue;
+
+        const providerName = cells[0] || "";
+        const qty = parseMoney(cells[1]);
+        const revenueShare = parseMoney(cells[3]);
         if (!providerName || revenueShare <= 0) continue;
         rows.push({ providerName, qty, revenueShare });
       }
