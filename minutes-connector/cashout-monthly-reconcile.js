@@ -117,7 +117,7 @@ function resolveRange() {
   let to = DATE_TO_ENV ? assertISODate(DATE_TO_ENV, "DATE_TO") : today;
   if (to > today) to = today;
 
-  if (!DRY_RUN) {
+  if (!DRY_RUN && process.env.ALLOW_HISTORICAL_CASHOUT_REPAIR !== "true") {
     if (from < monthStart) {
       throw new Error(
         `LIVE write diblok: DATE_FROM ${from} di luar bulan aktif (mulai ${monthStart}). Historical month jangan disentuh.`
@@ -392,6 +392,64 @@ async function bukaDailyRecap(page, tanggalMinutes) {
   await page.waitForTimeout(1200);
 }
 
+function isoKeMinutesRange(tanggal) {
+  const [y, m, d] = String(tanggal).split("-");
+  return `${m}/${d}/${y}`;
+}
+
+async function bacaTotalExpenseBulanan(page, dates) {
+  const dari = isoKeMinutesRange(dates[0]);
+  const sampai = isoKeMinutesRange(dates[dates.length - 1]);
+
+  const base = MINUTES_DAILY_RECAP_URL.split("/report/recap/")[0];
+  const url = `${base}/expensemanagement/data?range=${dari}%20-%20${sampai}`;
+
+  await page.goto(url, {
+    waitUntil: "domcontentloaded",
+    timeout: 30000
+  });
+
+  await page.waitForTimeout(1500);
+
+  let total = 0;
+  let halaman = 0;
+
+  while (halaman < 100) {
+    halaman++;
+
+    const rows = page.locator("table tbody tr");
+    const jumlah = await rows.count();
+
+    for (let i = 0; i < jumlah; i++) {
+      const cells = rows.nth(i).locator("td");
+      if (await cells.count() < 4) continue;
+
+      const debitText = await cells.nth(3).innerText().catch(() => "");
+      const debit = Number(String(debitText).replace(/[^0-9.-]/g, "")) || 0;
+      total += debit;
+    }
+
+    const next = page.locator(
+      'a:has-text("Next"), li.next a, .paginate_button.next'
+    ).last();
+
+    if (!(await next.count())) break;
+
+    const cls = await next.getAttribute("class").catch(() => "");
+    const parentCls = await next.locator("..").getAttribute("class").catch(() => "");
+
+    if (
+      String(cls).includes("disabled") ||
+      String(parentCls).includes("disabled")
+    ) break;
+
+    await next.click();
+    await page.waitForTimeout(500);
+  }
+
+  return total;
+}
+
 async function patchMinutesDaily(supabase, namaMinutes, tanggal, payload) {
   const { data, error } = await supabase
     .from("minutes_daily")
@@ -473,6 +531,37 @@ async function prosesCabang({
   console.log(`[CASHOUT RECONCILE] merchant dipilih: ${dataMerchant.nama}`);
 
   const hasil = [];
+
+  const erpTotalBulanan = dates.reduce((sum, tanggal) => {
+    const recap = recapByKey.get(`${cabang.id}|${tanggal}`);
+    return sum + Number(recap?.cash_out || 0);
+  }, 0);
+
+  const minutesTotalBulanan = await bacaTotalExpenseBulanan(page, dates);
+  const deltaBulanan = minutesTotalBulanan - erpTotalBulanan;
+
+  console.log(
+    `[CASHOUT MONTHLY GATE] ${namaCabangERP} | ERP ${formatRupiah(erpTotalBulanan)} | Minutes ${formatRupiah(minutesTotalBulanan)} | delta ${formatRupiah(deltaBulanan)}`
+  );
+
+  if (moneyEq(erpTotalBulanan, minutesTotalBulanan)) {
+    console.log(
+      `[CASHOUT MONTHLY GATE] MATCH ${namaCabangERP} — skip scan harian`
+    );
+
+    return [{
+      cabang: namaCabangERP,
+      tanggal: null,
+      status: "MONTHLY_MATCH",
+      minutes: minutesTotalBulanan,
+      supabase: erpTotalBulanan,
+      delta: 0
+    }];
+  }
+
+  console.log(
+    `[CASHOUT MONTHLY GATE] MISMATCH ${namaCabangERP} — lanjut scan harian`
+  );
 
   for (const tanggal of dates) {
     const tanggalMinutes = toMinutesDate(tanggal);
