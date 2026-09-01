@@ -42,6 +42,7 @@ function nomorBulan(namaBulan) {
     Jul: "07",
     Aug: "08",
     Sep: "09",
+    Sept: "09",
     Oct: "10",
     Nov: "11",
     Dec: "12"
@@ -65,9 +66,11 @@ function ambilTanggalWIB() {
     (item) => item.type === "day"
   )?.value;
 
-  const bulan = bagianTanggal.find(
+  let bulan = bagianTanggal.find(
     (item) => item.type === "month"
   )?.value;
+
+  if (bulan === "Sept") bulan = "Sep";
 
   const tahun = bagianTanggal.find(
     (item) => item.type === "year"
