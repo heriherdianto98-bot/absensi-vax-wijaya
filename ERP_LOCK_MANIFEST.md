@@ -158,6 +158,59 @@ Files below are the verified Setoran 3 Harian baseline reference and MUST NOT be
 - ERP.NEW/js/modules/setoran-money-engine.js
 - ERP.NEW/styles/setoran-3-harian.css
 
+## HARD LOCK — SHARE PROVIDER SOURCE
+
+Status: FULL PASS / HARD LOCK
+
+Verified on:
+- 2026-09-02 WIB
+
+Verified historical coverage:
+- August 2026 = 31/31 days for all 10 operational branches in `provider_sales_daily_source`.
+
+Validation:
+- Source is Minutes Provider Sales per provider per day.
+- Backfill gap for 2026-08-10, 2026-08-11, and 2026-08-12 was completed using the existing `provider-sales-sync.js` historical date argument; no redesign of the sync engine was performed.
+- Rawabadak stale row `Fauzi` on 2026-08-31 with provider share Rp30.000 was removed after direct Minutes verification showed provider service share for that day only belonged to Wily Rp120.000 and Dori Rp137.000. The Fajar Rp35.000 value belongs to Provider Product Recap / Share Produk and must not be mixed into Share Provider.
+- Final Rawabadak August Provider Share = Rp11.891.000, exact match to Minutes.
+- September 1 automatic sync exists for 10/10 branches.
+- Kalijati 2026-09-01 cross-check: Minutes Provider Share = Rp724.000 and Supabase = Rp724.000, exact match.
+
+Verified August totals:
+- Kalijati = Rp19.362.000
+- Palabuan = Rp13.211.000
+- Soklat = Rp11.320.000
+- Rawabadak = Rp11.891.000
+- AR Hakim = Rp14.995.000
+- SPBU Pagaden = Rp6.783.000
+- Pamanukan = Rp10.801.000
+- Parahyangan = Rp13.627.000
+- Cinangsi = Rp13.665.000
+- Mekarwangi = Rp0
+
+Automatic update path:
+- `erp-vax-minutes-sync.service`
+- `minutes-connector/scheduler.js`
+- Daily Recap
+- `sync-status-interval-fix.js`
+- `provider-sales-sync.js`
+- `provider_sales_daily_source`
+
+Business role:
+- Share Provider is the verified source for future Tabel Harian Share Provider display, payroll/gaji calculations, and employee/mobile provider earnings history.
+- Downstream modules must read this verified source; do not create a parallel provider-share calculation.
+
+Recovery rule:
+- If totals differ, audit exact branch/date/provider first against Minutes Provider Service Recap / Provider Sales.
+- Correct only the proven stale/missing target row or re-run the existing historical-date backfill path.
+- Do not modify `sync.js`, scheduler cadence, anti-overlap behavior, or rebuild Provider Sales from scratch without explicit Owner unlock.
+
+## LOCKED FILES FOR SHARE PROVIDER SOURCE
+
+Files below are the verified Share Provider baseline and MUST NOT be modified unless Owner explicitly unlocks this task:
+- minutes-connector/provider-sales-sync.js
+- minutes-connector/scheduler.js
+
 ## CHANGE POLICY
 
 - Stable baseline is reference-only.
