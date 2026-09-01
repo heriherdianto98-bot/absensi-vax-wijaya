@@ -24,8 +24,14 @@ function resolveDate() {
     const m = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (!m) throw new Error("Format tanggal harus YYYY-MM-DD");
     const [, y, mo, d] = m;
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return { db: value, recapDate: `${d} ${months[Number(mo) - 1]} ${y}` };
+    const date = new Date(`${y}-${mo}-${d}T00:00:00+07:00`);
+    const label = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Jakarta",
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    }).format(date);
+    return { db: value, recapDate: label };
   };
 
   if (arg) return parse(arg);
@@ -71,41 +77,33 @@ function cariEmployee(providerName, cabangId) {
 
 async function bacaProviderProductRecap(page) {
   return page.evaluate(() => {
-    const parseMoney = value => {
+    const parseNumber = value => {
       const raw = String(value || "").replace(/[^\d-]/g, "");
       return raw ? Number(raw) : 0;
     };
 
-    for (const table of document.querySelectorAll("table")) {
-      const headers = [...table.querySelectorAll("thead th")].map(h =>
-        h.textContent.trim().replace(/\s+/g, " ").toLowerCase()
-      );
+    const hasil = [];
+    const anchors = [...document.querySelectorAll('a[href*="/providerreport/product/"]')];
 
-      // Provider Product Recap di Minutes punya tepat 4 kolom:
-      // Provider Name | Total | Income | Share
-      if (headers.length !== 4) continue;
-      if (!headers[0]?.includes("provider")) continue;
-      if (!headers[1]?.includes("total")) continue;
-      if (!headers[2]?.includes("income")) continue;
-      if (!headers[3]?.includes("share")) continue;
+    for (const a of anchors) {
+      const tr = a.closest("tr");
+      if (!tr) continue;
 
-      const rows = [];
-      for (const tr of table.querySelectorAll("tbody tr")) {
-        const cells = [...tr.querySelectorAll("td")].map(td =>
-          td.textContent.trim().replace(/\s+/g, " ")
-        );
-        if (cells.length < 4) continue;
+      const cells = [...tr.querySelectorAll("td")].map(td => td.textContent.trim());
+      if (cells.length < 4) continue;
 
-        const providerName = cells[0] || "";
-        const qty = parseMoney(cells[1]);
-        const revenueShare = parseMoney(cells[3]);
-        if (!providerName || revenueShare <= 0) continue;
-        rows.push({ providerName, qty, revenueShare });
-      }
-      return rows;
+      const href = a.getAttribute("href") || "";
+      const providerMinutesId = href.match(/\/providerreport\/product\/(\d+)\//i)?.[1] || null;
+      const providerName = (a.textContent || cells[0] || "").trim();
+      const qty = parseNumber(cells[1]);
+      const income = parseNumber(cells[2]);
+      const revenueShare = parseNumber(cells[3]);
+
+      if (!providerName || revenueShare <= 0) continue;
+      hasil.push({ providerName, providerMinutesId, qty, income, revenueShare, href });
     }
 
-    return [];
+    return hasil;
   });
 }
 
@@ -175,7 +173,7 @@ try {
           product_name: "Provider Product Recap",
           provider_name_raw: r.providerName,
           provider_name_normalized: normalisasi(r.providerName),
-          provider_minutes_id: null,
+          provider_minutes_id: r.providerMinutesId,
           employee_id: employeeId,
           mapping_status: employeeId ? "MATCHED" : "UNMAPPED",
           qty: r.qty,
