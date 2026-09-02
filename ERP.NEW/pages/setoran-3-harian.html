@@ -13,349 +13,120 @@
 <link rel="stylesheet" href="../styles/erp.css">
 <link rel="stylesheet" href="../styles/responsive.css">
 <link rel="stylesheet" href="../styles/owner-auth.css">
-<link rel="stylesheet" href="../styles/qris-reconciliation.css">
-<link rel="stylesheet" href="../styles/setoran-3-harian.css">
-<link rel="stylesheet" href="../styles/ui-06-premium.css">
-<link rel="stylesheet" href="../styles/light-contrast.css">
-<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/setoran-3-harian-direct-flow.css">
+<link rel="stylesheet" href="../styles/setoran-3-harian-v2-polish.css">
+<link rel="stylesheet" href="../styles/setoran-3-harian-erp-integration.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="setoran-dark">
-
+<body class="setoran-dark s3sheet-body s3sheet-erp-integrated">
 <div id="sidebar"></div>
 <div class="erp-wrapper">
-    <div id="header"></div>
-
-    <div class="erp-content setoran-page">
-
-        <!-- A. RINGKASAN SEMUA CABANG — utama, DEFAULT OPEN, compact -->
-        <section class="setoran3-all-summary" id="setoran3AllBranchesSection">
-            <div class="setoran3-all-summary-head">
-                <div>
-                    <p class="setoran3-all-summary-eyebrow">GLOBAL · EXECUTIVE SUMMARY</p>
-                    <h3>RINGKASAN SEMUA CABANG</h3>
-                    <p class="setoran3-all-summary-sub">Ringkasan seluruh cabang sebelum audit detail per cabang</p>
-                </div>
-                <div class="setoran3-all-period-compact">
-                    <span class="setoran3-period-label">Periode</span>
-                    <button type="button" id="setoran3AllBranchesPeriodBtn" class="setoran3-all-period-btn" aria-haspopup="dialog">
-                        📅 PILIH PERIODE
-                    </button>
-                </div>
-            </div>
-            <div class="setoran3-summary-cards setoran3-all-kpi" id="setoran3AllBranchesCards">
-                <div class="setoran3-summary-card is-hero-ref"><span>Total Cash Referensi</span><strong>—</strong></div>
-                <div class="setoran3-summary-card is-nontunai"><span>Total Non Tunai</span><strong>—</strong><em>Pembayaran non tunai seluruh cabang</em></div>
-                <div class="setoran3-summary-card is-actual"><span>Total Setoran Aktual</span><strong>—</strong></div>
-                <div class="setoran3-summary-card is-selisih"><span>Total Selisih</span><strong>—</strong></div>
-                <div class="setoran3-summary-card is-status"><span>Status Cabang</span><strong>—</strong></div>
-            </div>
-        </section>
-
-        <!-- Modal Periode Ringkasan Semua Cabang — custom dark/gold (pola Dashboard, lokal) -->
-        <div id="setoran3AllBranchesPeriodModal" class="s3-all-cal-modal" hidden aria-hidden="true">
-            <div class="s3-all-cal-backdrop" data-s3-all-cal-close></div>
-            <div class="s3-all-cal-panel" role="dialog" aria-modal="true" aria-labelledby="s3AllCalTitle">
-                <div class="s3-all-cal-header">
-                    <h3 id="s3AllCalTitle">Periode Ringkasan Semua Cabang</h3>
-                    <button type="button" class="s3-all-cal-x" data-s3-all-cal-close aria-label="Tutup">×</button>
-                </div>
-
-                <div class="s3-all-cal-mode-tabs" role="tablist" aria-label="Mode periode">
-                    <button type="button" class="s3-all-cal-mode-tab is-active" data-s3-all-cal-mode="month" role="tab" aria-selected="true">
-                        Pilih Bulan
-                    </button>
-                    <button type="button" class="s3-all-cal-mode-tab" data-s3-all-cal-mode="range" role="tab" aria-selected="false">
-                        Rentang Tanggal
-                    </button>
-                </div>
-
-                <div id="s3AllCalMonthPane" class="s3-all-cal-pane is-active">
-                    <div class="s3-all-cal-nav">
-                        <button type="button" id="s3AllCalMonthYearPrev" aria-label="Tahun sebelumnya">‹</button>
-                        <strong id="s3AllCalMonthYearLabel">—</strong>
-                        <button type="button" id="s3AllCalMonthYearNext" aria-label="Tahun berikutnya">›</button>
-                    </div>
-                    <div id="s3AllCalMonthGrid" class="s3-all-cal-month-grid" role="listbox" aria-label="Pilih bulan"></div>
-                </div>
-
-                <div id="s3AllCalRangePane" class="s3-all-cal-pane" hidden>
-                    <div class="s3-all-cal-nav">
-                        <button type="button" id="s3AllCalPrev" aria-label="Bulan sebelumnya">‹</button>
-                        <strong id="s3AllCalMonthLabel">—</strong>
-                        <button type="button" id="s3AllCalNext" aria-label="Bulan berikutnya">›</button>
-                    </div>
-                    <div class="s3-all-cal-weekdays" aria-hidden="true">
-                        <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span>
-                        <span>Jum</span><span>Sab</span><span>Min</span>
-                    </div>
-                    <div id="s3AllCalDays" class="s3-all-cal-days"></div>
-                </div>
-
-                <p id="s3AllCalPreview" class="s3-all-cal-preview">Pilih tanggal mulai, lalu tanggal akhir</p>
-                <p id="setoran3AllBranchesPeriodError" class="qris-reco-form-error" hidden></p>
-
-                <div class="s3-all-cal-actions">
-                    <button type="button" id="s3AllCalApply" class="s3-all-cal-btn-apply" disabled>Terapkan</button>
-                    <button type="button" id="s3AllCalCancel" class="s3-all-cal-btn-cancel" data-s3-all-cal-close>Batal</button>
-                </div>
-            </div>
+  <div id="header"></div>
+  <div class="erp-content setoran-page">
+    <main class="s3sheet-shell">
+      <header class="s3sheet-head">
+        <div>
+          <div class="s3sheet-eyebrow">LAPORAN • SETORAN</div>
+          <h1>SETORAN 3 HARIAN</h1>
+          <p>10 cabang · angka canonical maksimal 3 hari · SVP input BRI/biaya/keterangan/bukti</p>
         </div>
+        <div class="s3sheet-user"><span id="s3v2Role">—</span><strong id="s3v2User">—</strong></div>
+      </header>
 
-        <!-- A. HERO — judul + cabang + periode -->
-        <header class="setoran3-sticky setoran3-hero" id="setoran3Sticky">
-            <div class="setoran3-sticky-top">
-                <div>
-                    <h2>SETORAN 3 HARIAN</h2>
-                    <p class="setoran3-sticky-sub">Uang fisik cabang · Cash Referensi vs Aktual</p>
-                </div>
-                <a class="qris-reco-btn-ghost setoran3-finance-link" href="./finance.html">← Finance</a>
-            </div>
-
-            <div class="setoran3-sticky-controls">
-                <div class="setoran3-period-field">
-                    <span class="setoran3-period-label">Periode aktif</span>
-                    <div class="setoran3-period-row">
-                        <button type="button" id="setoran3PeriodBtn" class="setoran3-period-btn" aria-haspopup="dialog">
-                            📅 PILIH PERIODE
-                        </button>
-                        <button type="button" id="setoran3TodayBtn" class="setoran3-today-btn" title="Cek data 1 hari (hari ini)">
-                            HARI INI
-                        </button>
-                    </div>
-                    <!-- Internal state YYYY-MM-DD — shared QRIS periode (no native picker) -->
-                    <input type="hidden" id="qrisRecoStart" value="2026-08-05">
-                    <input type="hidden" id="qrisRecoEnd" value="2026-08-07">
-                </div>
-
-                <div class="setoran3-cabang-nav-field">
-                    <span class="setoran3-period-label">Cabang aktif</span>
-                    <div class="setoran3-cabang-nav" id="setoran3CabangNav">
-                        <button type="button" id="setoran3PrevCabang" class="setoran3-nav-btn">◀</button>
-                        <div class="setoran3-active-cabang" id="setoran3ActiveCabang" aria-live="polite">—</div>
-                        <button type="button" id="setoran3NextCabang" class="setoran3-nav-btn">▶</button>
-                    </div>
-                </div>
-
-                <!-- Sync tersembunyi untuk modul QRIS LOCK (satu cabang aktif) -->
-                <select id="qrisRecoCabang" hidden aria-hidden="true"></select>
-            </div>
-            <div id="qrisRecoAccessBanner" class="qris-reco-access-banner" hidden></div>
-        </header>
-
-        <!-- Modal Pilih Periode — custom VAX calendar (range, no native picker) -->
-        <div id="setoran3PeriodModal" class="s3-period-cal-modal" hidden aria-hidden="true">
-            <div class="s3-period-cal-backdrop" data-s3-period-close></div>
-            <div class="s3-period-cal-panel" role="dialog" aria-modal="true" aria-labelledby="setoran3PeriodTitle">
-                <div class="s3-period-cal-header">
-                    <div>
-                        <h3 id="setoran3PeriodTitle">Pilih Periode</h3>
-                        <small>Klik tanggal awal, lalu tanggal akhir</small>
-                    </div>
-                    <button type="button" class="s3-period-cal-x" data-s3-period-close aria-label="Tutup">×</button>
-                </div>
-
-                <div class="s3-period-cal-nav">
-                    <button type="button" id="s3PeriodCalPrev" aria-label="Bulan sebelumnya">‹</button>
-                    <strong id="s3PeriodCalMonthLabel">—</strong>
-                    <button type="button" id="s3PeriodCalNext" aria-label="Bulan berikutnya">›</button>
-                </div>
-
-                <div class="s3-period-cal-weekdays" aria-hidden="true">
-                    <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span>
-                    <span>Jum</span><span>Sab</span><span>Min</span>
-                </div>
-                <div id="s3PeriodCalDays" class="s3-period-cal-days" role="grid" aria-label="Kalender periode"></div>
-
-                <p id="s3PeriodCalPreview" class="s3-period-cal-preview">Pilih tanggal awal, lalu tanggal akhir</p>
-                <p id="setoran3PeriodError" class="qris-reco-form-error" hidden></p>
-
-                <div class="s3-period-cal-actions">
-                    <button type="button" id="s3PeriodCalToday" class="s3-period-cal-btn-today">Hari Ini</button>
-                    <button type="button" class="s3-period-cal-btn-cancel" data-s3-period-close>Batal</button>
-                    <button type="button" id="setoran3PeriodApply" class="s3-period-cal-btn-apply" disabled>Gunakan Periode</button>
-                </div>
-            </div>
+      <section class="s3sheet-toolbar">
+        <div class="s3sheet-period-copy">
+          <span class="s3sheet-label">PERIODE AKTIF</span>
+          <strong id="s3PeriodText">—</strong>
+          <small>Maksimal 3 hari</small>
         </div>
-
-        <!-- A. HERO KPI — 4 utama; Cash Referensi paling menonjol -->
-        <section class="setoran-section-card setoran3-summary-section setoran3-hero-kpi" id="setoran3SummarySection" hidden>
-            <div class="setoran3-summary-head setoran3-hero-kpi-head">
-                <div>
-                    <strong id="setoran3SummaryCabang">—</strong>
-                    <p id="setoran3SummaryPeriod">—</p>
-                </div>
-                <span id="setoran3SummaryStatus" class="qris-reco-badge belum-ada-data">BELUM DIISI</span>
-            </div>
-            <div id="setoran3OwnerTakenPanel" class="setoran3-taken-panel" hidden></div>
-            <div class="setoran3-summary-cards setoran3-hero-cards" id="setoran3SummaryCards"></div>
-        </section>
-
-        <!-- B. STATUS CABANG — compact -->
-        <section class="setoran3-status-compact" id="sectionSetoran3Progress">
-            <div class="setoran3-status-compact-row">
-                <strong id="setoran3ProgressText">0 / 0 Clear</strong>
-                <div class="setoran-progress-bar setoran3-progress-bar-slim"><span id="setoran3ProgressFill"></span></div>
-                <button type="button" id="setoran3ProgressToggle" class="setoran3-progress-toggle" aria-expanded="false" aria-controls="setoran3ProgressListWrap">
-                    LIHAT SEMUA CABANG ▼
-                </button>
-            </div>
-            <div id="setoran3ProgressStats" class="setoran3-progress-stats"></div>
-            <div id="setoran3ProgressListWrap" class="setoran3-progress-list-wrap" hidden>
-                <div id="setoran3ProgressList" class="setoran-rekap-list setoran3-progress-list"></div>
-            </div>
-        </section>
-
-        <section id="setoran-3-harian-section" class="setoran3-section-c-host"></section>
-
-        <!-- F. QRIS — sekunder, default tertutup -->
-        <details class="s3-acc s3-acc-page" id="s3AccQris">
-            <summary class="s3-acc-summary">
-                <span>Rekonsiliasi QRIS</span>
-                <small>BRI Merchant · periode sama · bukan fokus uang fisik</small>
-            </summary>
-            <div class="s3-acc-body">
-                <section class="setoran-section-card setoran3-qris-surface" id="sectionProgress">
-                    <h3 class="setoran3-qris-surface-title">Progress Pemeriksaan SPV (QRIS)</h3>
-                    <div class="setoran-progress-row">
-                        <strong id="setoranProgressText">0 / 0 Cabang Sudah Diperiksa</strong>
-                        <div class="setoran-progress-bar"><span id="setoranProgressFill"></span></div>
-                    </div>
-                    <div id="setoranProgressList" class="setoran-rekap-list"></div>
-                </section>
-
-                <section class="setoran-section-card setoran3-qris-surface" id="sectionSelisih">
-                    <h3 class="setoran3-qris-surface-title">Selisih yang Perlu Perhatian (QRIS)</h3>
-                    <div id="setoranSelisihList" class="setoran-rekap-list"></div>
-                </section>
-
-                <section class="setoran-section-card" id="sectionApproval">
-                    <div class="qris-reco-header">
-                        <div>
-                            <h3>Approval Owner (QRIS)</h3>
-                            <small>Minutes = patokan. Periode CLEAR hanya setelah Owner approve.</small>
-                        </div>
-                        <div class="qris-reco-header-actions" id="qrisOwnerActions" data-owner-only hidden>
-                            <button type="button" id="qrisApproveSetoranBtn" class="qris-reco-btn-primary" data-owner-action disabled>
-                                APPROVE SETORAN
-                            </button>
-                        </div>
-                    </div>
-                    <p id="qrisApproveHint" class="qris-reco-manual-hint"></p>
-                </section>
-
-                <section id="qris-reconciliation-section"></section>
-            </div>
-        </details>
-
-        <!-- Preview bukti foto (private bucket → signed URL) -->
-        <div id="setoran3ProofModal" class="qris-reco-modal setoran3-scroll-modal" hidden>
-            <div class="qris-reco-modal-backdrop" data-s3-proof-close></div>
-            <div class="qris-reco-modal-panel setoran3-proof-modal-panel" role="dialog" aria-modal="true" aria-labelledby="setoran3ProofModalTitle">
-                <div class="qris-reco-modal-header">
-                    <div>
-                        <h4 id="setoran3ProofModalTitle">BUKTI FOTO / STRUK</h4>
-                        <small id="setoran3ProofModalMeta">—</small>
-                    </div>
-                    <button type="button" class="qris-reco-modal-close" data-s3-proof-close aria-label="Tutup">&times;</button>
-                </div>
-                <div class="setoran3-proof-modal-body">
-                    <img id="setoran3ProofModalImg" alt="Bukti foto setoran" hidden>
-                    <p id="setoran3ProofModalError" class="qris-reco-form-error" hidden></p>
-                </div>
-            </div>
+        <div class="s3sheet-period-fields">
+          <input type="date" id="s3v2Start" hidden>
+          <input type="date" id="s3v2End" hidden>
+          <button type="button" class="s3sheet-period-open" id="s3v2PeriodOpen"><span>📅</span><b id="s3v2PeriodLabel">PILIH PERIODE</b></button>
+          <button type="button" id="s3v2Apply">TAMPILKAN</button>
         </div>
+      </section>
 
-    </div>
+      <div id="s3v2Message" class="s3sheet-message" hidden></div>
+
+      <section class="s3sheet-table-card">
+        <div class="s3sheet-table-head">
+          <div><strong>SEMUA CABANG</strong><small>10 cabang langsung tampil seperti lembar kerja SVP</small></div>
+          <span id="s3sheetStatusMeta">0/10 Sudah Diambil</span>
+        </div>
+        <div class="s3sheet-table-wrap">
+          <table class="s3sheet-table">
+            <thead><tr>
+              <th>Cabang</th><th>Cash Harus Diambil</th><th>Non Tunai Minutes</th><th>Nett Produk</th><th>BRI Merchant</th><th>Selisih Non Tunai</th><th>Biaya di luar Cashout</th><th>Cash Aktual</th><th>Keterangan</th><th>Bukti</th><th>Sudah Diambil</th><th>Riwayat</th>
+            </tr></thead>
+            <tbody id="s3sheetBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="s3sheet-totals" aria-label="Rangkuman semua cabang">
+        <div class="s3sheet-total is-primary"><span>Total Cash Harus Diambil</span><strong id="s3totCashRef">Rp0</strong></div>
+        <div class="s3sheet-total is-blue"><span>Total Non Tunai Minutes</span><strong id="s3totNonCash">Rp0</strong></div>
+        <div class="s3sheet-total is-purple"><span>Total BRI Merchant</span><strong id="s3totBri">Rp0</strong></div>
+        <div class="s3sheet-total is-red"><span>Total Selisih Non Tunai</span><strong id="s3totDiff">Rp0</strong></div>
+        <div class="s3sheet-total is-actual"><span>Total Cash Aktual</span><strong id="s3totActual">Rp0</strong></div>
+      </section>
+    </main>
+  </div>
 </div>
 
-<nav class="erp-bottom-nav" aria-label="Navigasi bawah">
-    <a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a>
-    <a href="./setoran-3-harian.html" class="is-active"><span class="bn-icon">⬡</span>Setoran</a>
-    <a href="./finance.html?menu=qris"><span class="bn-icon">◈</span>QRIS</a>
-    <a href="./finance.html?menu=laporan"><span class="bn-icon">▥</span>Laporan</a>
-    <a href="./login.html"><span class="bn-icon">👤</span>Akun</a>
-</nav>
+<div class="s3period-modal" id="s3periodModal" hidden aria-hidden="true">
+  <div class="s3period-backdrop" data-s3period-close></div>
+  <div class="s3period-panel" role="dialog" aria-modal="true" aria-labelledby="s3periodTitle">
+    <div class="s3period-head"><div><span class="s3sheet-label">PERIODE SETORAN</span><h3 id="s3periodTitle">Pilih Tanggal</h3></div><button type="button" data-s3period-close>×</button></div>
+    <div class="s3period-nav"><button type="button" id="s3periodPrev">‹</button><strong id="s3periodMonth">—</strong><button type="button" id="s3periodNext">›</button></div>
+    <div class="s3period-week"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+    <div class="s3period-days" id="s3periodDays"></div>
+    <div class="s3period-preview"><span>Rentang aktif</span><strong id="s3periodPreview">—</strong><small>Maksimal 3 hari</small></div>
+    <div class="s3period-actions"><button type="button" class="is-ghost" data-s3period-close>BATAL</button><button type="button" class="is-primary" id="s3periodUse" disabled>GUNAKAN PERIODE</button></div>
+  </div>
+</div>
+
+<div class="s3sheet-modal" id="s3sheetHistoryModal" hidden>
+  <div class="s3sheet-modal-backdrop" data-s3-close-history></div>
+  <div class="s3sheet-modal-panel">
+    <div class="s3sheet-modal-head"><div><strong id="s3sheetHistoryTitle">RIWAYAT</strong><small id="s3sheetHistoryPeriod">—</small></div><button type="button" data-s3-close-history>×</button></div>
+    <div id="s3sheetHistoryList" class="s3sheet-history-list"></div>
+  </div>
+</div>
+<div class="s3sheet-busy" id="s3v2Busy" hidden>Memproses...</div>
 
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/modules/setoran-money-engine.js"></script>
 <script src="../js/modules/daily-data-engine.js"></script>
-<script src="../js/modules/setoran-3-harian.js"></script>
-<script src="../js/modules/qris-reconciliation.js"></script>
+<script src="../js/modules/setoran-3-harian-direct-flow.js"></script>
+<script src="../js/modules/setoran-3-harian-period-ui.js"></script>
 <script src="../js/loader.js"></script>
 <script>
-async function loadShell(){
-    const sidebar = document.getElementById("sidebar");
-    const header = document.getElementById("header");
-    const qrisSec = document.getElementById("qris-reconciliation-section");
-    const setoranSec = document.getElementById("setoran-3-harian-section");
-
-    if (sidebar) {
-        sidebar.innerHTML = await (await fetch("../components/sidebar.html")).text();
-        if (typeof initSidebar === "function") initSidebar();
-        else {
-            const el = document.querySelector(".sidebar");
-            const btn = document.getElementById("sidebarToggle");
-            if (localStorage.getItem("sidebar-collapse") === "true") {
-                el?.classList.add("collapsed");
-                document.body.classList.add("sidebar-collapsed");
-            }
-            btn?.addEventListener("click", () => {
-                if (window.matchMedia("(max-width:900px)").matches) {
-                    el?.classList.toggle("is-mobile-open");
-                    document.body.classList.toggle("erp-drawer-open", el?.classList.contains("is-mobile-open"));
-                    return;
-                }
-                el?.classList.toggle("collapsed");
-                const collapsed = el?.classList.contains("collapsed");
-                document.body.classList.toggle("sidebar-collapsed", !!collapsed);
-                localStorage.setItem("sidebar-collapse", collapsed ? "true" : "false");
-            });
-        }
-        if (typeof markActiveSidebarLink === "function") markActiveSidebarLink();
-        else {
-            document.querySelectorAll(".menu-item").forEach(a => {
-                a.classList.toggle("active", a.getAttribute("href")?.includes("setoran-3-harian"));
-            });
-        }
+async function loadSetoranShell(){
+  const sidebar=document.getElementById('sidebar');
+  const header=document.getElementById('header');
+  if(sidebar){
+    sidebar.innerHTML=await (await fetch('../components/sidebar.html')).text();
+    if(typeof initSidebar==='function') initSidebar();
+    if(typeof markActiveSidebarLink==='function') markActiveSidebarLink();
+  }
+  if(header){
+    header.innerHTML=await (await fetch('../components/header.html')).text();
+    if(typeof OwnerAuth!=='undefined'){
+      OwnerAuth.bindUi(); OwnerAuth.syncHeader(); OwnerAuth.applyAccessControl();
     }
-
-    if (header) {
-        header.innerHTML = await (await fetch("../components/header.html")).text();
-        OwnerAuth.bindUi();
-        OwnerAuth.syncHeader();
-        OwnerAuth.applyAccessControl();
-        const title = document.getElementById("erpHeaderTitle");
-        const sub = document.getElementById("erpHeaderSub");
-        if (title) title.textContent = "Setoran 3 Harian";
-        if (sub) sub.textContent = "Pengajuan SPV → Pemeriksaan Owner";
-        if (typeof initErpShellChrome === "function") initErpShellChrome();
-        if (typeof syncSidebarRoleMeta === "function") syncSidebarRoleMeta();
-    }
-
-    if (setoranSec) {
-        setoranSec.innerHTML = await (await fetch("../components/setoran-3-harian-table.html")).text();
-        const sectionC = setoranSec.querySelector("#sectionSetoran3Table");
-        sectionC?.classList.add("setoran3-section-c");
-    }
-
-    if (qrisSec) {
-        qrisSec.innerHTML = await (await fetch("../components/qris-reconciliation.html")).text();
-    }
-
-    document.dispatchEvent(new CustomEvent("erp:components-ready"));
-    if (typeof syncHeaderContextFromPage === "function") {
-        syncHeaderContextFromPage();
-        setTimeout(syncHeaderContextFromPage, 400);
-        setTimeout(syncHeaderContextFromPage, 1200);
-    }
+    const title=document.getElementById('erpHeaderTitle');
+    const sub=document.getElementById('erpHeaderSub');
+    if(title) title.textContent='Setoran 3 Harian';
+    if(sub) sub.textContent='Verifikasi 10 cabang · maksimal 3 hari';
+    if(typeof initErpShellChrome==='function') initErpShellChrome();
+    if(typeof syncSidebarRoleMeta==='function') syncSidebarRoleMeta();
+  }
+  document.dispatchEvent(new CustomEvent('erp:components-ready'));
 }
-
-document.addEventListener("erp:finance-ready", () => {
-    loadShell();
-});
+window.addEventListener('DOMContentLoaded',()=>{loadSetoranShell();},{once:true});
 </script>
-
 </body>
 </html>
