@@ -24,28 +24,27 @@
   <div id="header"></div>
   <div class="erp-content setoran-page">
     <main class="s3sheet-shell">
-      <header class="s3sheet-head">
-        <div>
+      <header class="s3sheet-head s3sheet-head-inline">
+        <div class="s3sheet-title-block">
           <div class="s3sheet-eyebrow">LAPORAN • SETORAN</div>
           <h1>SETORAN 3 HARIAN</h1>
           <p>10 cabang · angka canonical maksimal 3 hari · SVP input BRI/biaya/keterangan/bukti</p>
         </div>
+        <div class="s3sheet-head-actions">
+          <div class="s3sheet-head-period-copy">
+            <span class="s3sheet-label">PERIODE AKTIF</span>
+            <strong id="s3PeriodText">—</strong>
+            <small>Maksimal 3 hari</small>
+          </div>
+          <div class="s3sheet-period-fields">
+            <input type="date" id="s3v2Start" hidden>
+            <input type="date" id="s3v2End" hidden>
+            <button type="button" class="s3sheet-period-open" id="s3v2PeriodOpen"><span>📅</span><b id="s3v2PeriodLabel">PILIH PERIODE</b></button>
+            <button type="button" id="s3v2Apply">TAMPILKAN</button>
+          </div>
+        </div>
         <div class="s3sheet-user"><span id="s3v2Role">—</span><strong id="s3v2User">—</strong></div>
       </header>
-
-      <section class="s3sheet-toolbar">
-        <div class="s3sheet-period-copy">
-          <span class="s3sheet-label">PERIODE AKTIF</span>
-          <strong id="s3PeriodText">—</strong>
-          <small>Maksimal 3 hari</small>
-        </div>
-        <div class="s3sheet-period-fields">
-          <input type="date" id="s3v2Start" hidden>
-          <input type="date" id="s3v2End" hidden>
-          <button type="button" class="s3sheet-period-open" id="s3v2PeriodOpen"><span>📅</span><b id="s3v2PeriodLabel">PILIH PERIODE</b></button>
-          <button type="button" id="s3v2Apply">TAMPILKAN</button>
-        </div>
-      </section>
 
       <div id="s3v2Message" class="s3sheet-message" hidden></div>
 
@@ -101,6 +100,7 @@
 <script src="../js/modules/setoran-money-engine.js"></script>
 <script src="../js/modules/daily-data-engine.js"></script>
 <script src="../js/modules/setoran-3-harian-direct-flow.js"></script>
+<script src="../js/modules/setoran-3-harian-role-compat.js"></script>
 <script src="../js/modules/setoran-3-harian-period-ui.js"></script>
 <script src="../js/loader.js"></script>
 <script>
