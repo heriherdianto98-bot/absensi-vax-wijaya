@@ -1,11 +1,14 @@
 /* ERP VAX — Setoran 3 Harian role compatibility
-   Keeps Owner review-only; enables manual inputs for SPV/SVP roles. */
+   Owner and SPV/SVP may perform direct manual verification entry.
+   Owner remains visually identified as Owner, but is no longer read-only. */
 (function(){
   "use strict";
   if(typeof SetoranDirectFlow === "undefined") return;
 
+  // Legacy workflow uses isSvp() as the edit-permission gate.
+  // Direct-flow decision: Owner has the same manual entry permission as SPV/SVP.
   SetoranDirectFlow.isSvp = function(){
-    return ["svp","spv"].includes(String(this.role||"").toLowerCase());
+    return ["owner","svp","spv"].includes(String(this.role||"").toLowerCase());
   };
 
   SetoranDirectFlow.loadIdentity = async function(){
@@ -29,7 +32,7 @@
 
     const roleEl=document.getElementById("s3v2Role");
     const userEl=document.getElementById("s3v2User");
-    if(roleEl) roleEl.textContent=this.role==="owner"?"OWNER · REVIEW":"SPV · VERIFIKASI";
+    if(roleEl) roleEl.textContent=this.role==="owner"?"OWNER · VERIFIKASI":"SPV · VERIFIKASI";
     if(userEl) userEl.textContent=data.nama||this.role.toUpperCase();
   };
 })();
