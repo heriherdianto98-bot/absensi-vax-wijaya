@@ -456,19 +456,27 @@ const DashboardEngine = {
 
         try{
 
-            // nama_minutes/aktif dipakai untuk daftar cabang operasional (Semua Cabang).
+            // Tabel Harian memakai jalur canonical ketika DailyDataEngine dimuat.
+            // Halaman lain tetap memakai fallback lama sampai migrasinya diuji terpisah.
             let cabang = null;
-            let errCabang = null;
-            ({ data: cabang, error: errCabang } = await db
-                .from(this.TABLE_CABANG)
-                .select("id,nama_cabang,nama_minutes,aktif"));
-
-            if(errCabang && /nama_minutes|column/i.test(errCabang.message || "")){
+            if(
+                typeof DailyDataEngine !== "undefined"
+                && typeof DailyDataEngine.fetchCabang === "function"
+            ){
+                cabang = await DailyDataEngine.fetchCabang(db);
+            }else{
+                let errCabang = null;
                 ({ data: cabang, error: errCabang } = await db
                     .from(this.TABLE_CABANG)
-                    .select("id,nama_cabang,aktif"));
+                    .select("id,nama_cabang,nama_minutes,aktif"));
+
+                if(errCabang && /nama_minutes|column/i.test(errCabang.message || "")){
+                    ({ data: cabang, error: errCabang } = await db
+                        .from(this.TABLE_CABANG)
+                        .select("id,nama_cabang,aktif"));
+                }
+                if(errCabang) throw errCabang;
             }
-            if(errCabang) throw errCabang;
             if(seq !== this._loadSeq) return;
 
             this.cabangList = cabang || [];
@@ -490,11 +498,16 @@ const DashboardEngine = {
             ]);
             if(seq !== this._loadSeq) return;
 
-            const mapRows = (rows) => (rows || []).map(r => ({
-                ...r,
-                tanggal: this.normalizeTanggal(r.tanggal) || r.tanggal,
-                nama_cabang: this.cabangList.find(c => c.id == r.cabang_id)?.nama_cabang || "-"
-            }));
+            const mapRows = (rows) => (
+                typeof DailyDataEngine !== "undefined"
+                && typeof DailyDataEngine.normalizeRows === "function"
+            )
+                ? DailyDataEngine.normalizeRows(rows, this.cabangList)
+                : (rows || []).map(r => ({
+                    ...r,
+                    tanggal: this.normalizeTanggal(r.tanggal) || r.tanggal,
+                    nama_cabang: this.cabangList.find(c => c.id == r.cabang_id)?.nama_cabang || "-"
+                }));
 
             this.rawData = mapRows(curRows);
             const prevRows = mapRows(prevRowsRaw);
@@ -709,6 +722,22 @@ const DashboardEngine = {
      * Semua Cabang → in(operational cabang ids), Floating excluded.
      */
     async fetchRecapRows(rangeStart, rangeEnd, cabangIdNumeric){
+        if(
+            typeof DailyDataEngine !== "undefined"
+            && typeof DailyDataEngine.fetchSourceRows === "function"
+        ){
+            const cabangIds = cabangIdNumeric
+                ? [cabangIdNumeric]
+                : this.getOperationalCabangIds();
+
+            return DailyDataEngine.fetchSourceRows({
+                client: db,
+                start: rangeStart,
+                end: rangeEnd,
+                cabangIds
+            });
+        }
+
         const pageSize = 1000;
         const rows = [];
         let from = 0;
