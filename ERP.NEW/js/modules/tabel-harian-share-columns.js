@@ -9,7 +9,7 @@ Sources:
 - Share Cukur  : provider_sales_daily_source.provider_share
 
 Tidak mengubah formula core, cash, Nett Revenue, Cash Out, atau scheduler.
-Hanya menambahkan kolom harian presenter.
+Hanya menambahkan kolom harian presenter + card total Nett Produk.
 =========================================================
 */
 
@@ -21,6 +21,7 @@ const TabelHarianShareColumns = {
         this.patchFreshnessBeforeOpen();
         this.ensureStyles();
         this.ensureHeader();
+        this.ensureNettProdukCard();
         this.patchPresenter();
         this.refreshRows();
     },
@@ -103,8 +104,31 @@ const TabelHarianShareColumns = {
                 text-align:right;
                 font-weight:700;
             }
+            #thcTotals .thc-tot-item.is-nett-product{
+                border-color:rgba(45,212,191,.60);
+                box-shadow:inset 3px 0 0 #2dd4bf, 0 0 20px rgba(45,212,191,.08);
+            }
+            #thcTotals .thc-tot-item.is-nett-product > span,
+            #thcTotals .thc-tot-item.is-nett-product > strong{ color:#5eead4; }
         `;
         document.head.appendChild(style);
+    },
+
+    ensureNettProdukCard(){
+        const grid = document.querySelector("#thcTotals .thc-totals-grid");
+        if(!grid) return;
+        let card = document.getElementById("thcTotNettProduk")?.closest(".thc-tot-item") || null;
+        if(!card){
+            card = document.createElement("div");
+            card.className = "thc-tot-item is-nett-product";
+            card.innerHTML = `<span>Nett Produk</span><strong id="thcTotNettProduk">—</strong><em class="thc-share-desc">Produk bersih setelah dikurangi share produk</em>`;
+            const productCard = document.getElementById("thcTotProduk")?.closest(".thc-tot-item") || null;
+            if(productCard?.parentElement === grid) productCard.insertAdjacentElement("afterend", card);
+            else grid.appendChild(card);
+        }
+        if(typeof TabelHarianShareCards?.syncNominalTypography === "function"){
+            TabelHarianShareCards.syncNominalTypography();
+        }
     },
 
     ensureHeader(){
@@ -140,7 +164,6 @@ const TabelHarianShareColumns = {
             nettProduk.textContent = "Nett Produk";
         }
 
-        // Posisi final: Omzet / Gross -> Nett Produk -> Share Produk -> Share Cukur -> Nett Revenue
         row.insertBefore(nettProduk, shareProduk);
     },
 
@@ -152,6 +175,7 @@ const TabelHarianShareColumns = {
         TabelHarianCabang.renderTable = (...args) => {
             const result = original(...args);
             this.ensureHeader();
+            this.ensureNettProdukCard();
             this.paintLoadingCells();
             this.refreshRows();
             return result;
@@ -263,6 +287,8 @@ const TabelHarianShareColumns = {
             cells.produk.textContent = "…";
             cells.cukur.textContent = "…";
         }
+        const total = document.getElementById("thcTotNettProduk");
+        if(total) total.textContent = "Memuat…";
     },
 
     paintValues(nettProdukMap, produkMap, cukurMap){
@@ -278,11 +304,19 @@ const TabelHarianShareColumns = {
             cells.produk.textContent = this.formatRupiah(produkMap.get(key) || 0);
             cells.cukur.textContent = this.formatRupiah(cukurMap.get(key) || 0);
         });
+
+        const totalNettProduk = [...nettProdukMap.values()].reduce((sum, value) => sum + Number(value || 0), 0);
+        const totalEl = document.getElementById("thcTotNettProduk");
+        if(totalEl) totalEl.textContent = this.formatRupiah(totalNettProduk);
+        if(typeof TabelHarianShareCards?.syncNominalTypography === "function"){
+            TabelHarianShareCards.syncNominalTypography();
+        }
     },
 
     async refreshRows(){
         this.ensureStyles();
         this.ensureHeader();
+        this.ensureNettProdukCard();
         if(typeof TabelHarianCabang === "undefined" || typeof DashboardEngine === "undefined") return;
         const filter = this.getFilter();
         if(!filter?.start || !filter?.end) return;
@@ -308,6 +342,8 @@ const TabelHarianShareColumns = {
                 cells.produk.textContent = "—";
                 cells.cukur.textContent = "—";
             }
+            const totalEl = document.getElementById("thcTotNettProduk");
+            if(totalEl) totalEl.textContent = "—";
         }
     }
 };
