@@ -1,0 +1,229 @@
+/*
+=========================================================
+VAX ERP — Setoran 3 Harian UI-ONLY Simplification
+Scope: presentation only. No canonical engine, formula,
+workflow, receipt, proof, or reconciliation logic changes.
+=========================================================
+*/
+
+/* Main page: quieter, flatter, denser */
+.setoran3-page,
+#setoran3Page,
+.page-setoran-3-harian {
+  --s3-ui-gap: 12px;
+  --s3-ui-radius: 14px;
+  --s3-ui-soft: rgba(255,255,255,.055);
+  --s3-ui-line: rgba(255,255,255,.09);
+}
+
+.setoran3-page .card,
+#setoran3Page .card,
+.page-setoran-3-harian .card {
+  box-shadow: none;
+}
+
+/* Header / period controls: compact and functional */
+#setoran3PageHeader,
+.setoran3-page-header,
+.setoran3-toolbar,
+.setoran3-filterbar {
+  gap: 10px !important;
+  margin-bottom: 12px !important;
+}
+
+#setoran3PeriodBtn,
+#setoran3TodayBtn,
+#setoran3PrintBtn,
+#setoran3AllBranchesPeriodBtn {
+  min-height: 36px !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+}
+
+/* Four business-critical numbers remain the visual focus */
+#setoran3SummaryCards {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin: 10px 0 14px !important;
+}
+
+#setoran3SummaryCards > * {
+  min-height: 96px !important;
+  padding: 14px 16px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  border-radius: var(--s3-ui-radius) !important;
+  background: var(--s3-ui-soft) !important;
+  box-shadow: none !important;
+}
+
+#setoran3SummaryCards .value,
+#setoran3SummaryCards [class*="value"],
+#setoran3SummaryCards strong {
+  line-height: 1.05 !important;
+}
+
+#setoran3SummaryCards small,
+#setoran3SummaryCards .subtitle,
+#setoran3SummaryCards [class*="subtitle"] {
+  opacity: .68;
+}
+
+/* Active branch / period line: compact single operational strip */
+#setoran3ActiveCabang,
+#setoran3ActiveCabangUi,
+.setoran3-active-cabang,
+.setoran3-branch-nav {
+  min-height: 42px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Workflow progress should read as one short flow, not many heavy cards */
+#setoran3Progress,
+#setoran3ProgressWrap,
+.setoran3-progress,
+.setoran3-workflow {
+  padding: 8px 10px !important;
+  margin: 8px 0 12px !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+#setoran3ProgressList,
+.setoran3-progress-list {
+  gap: 6px !important;
+}
+
+#setoran3ProgressList > *,
+.setoran3-progress-list > * {
+  min-height: 34px !important;
+  padding: 6px 10px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+/* Secondary content: visually demoted */
+#setoran3AllBranchesCard,
+#setoran3AnalysisCard,
+#setoran3InsightCard,
+#setoran3HistoryCard,
+#setoran3ProofHistory,
+.setoran3-secondary,
+.setoran3-analysis,
+.setoran3-history,
+.setoran3-insight {
+  margin-top: 10px !important;
+  box-shadow: none !important;
+}
+
+/* SPV form: operational, not decorative */
+#setoran3SpvFormCard {
+  padding: 14px !important;
+  margin-top: 10px !important;
+  border-radius: var(--s3-ui-radius) !important;
+  box-shadow: none !important;
+}
+
+#setoran3SpvFormCard .form-grid,
+#setoran3SpvFormCard [class*="form-grid"] {
+  gap: 10px !important;
+}
+
+#setoran3SpvFormCard label {
+  margin-bottom: 3px !important;
+}
+
+#setoran3SpvFormCard input,
+#setoran3SpvFormCard textarea,
+#setoran3SpvFormCard select {
+  min-height: 38px !important;
+}
+
+#setoran3SpvFormCard textarea {
+  min-height: 70px !important;
+}
+
+#setoran3SpvFormCard button {
+  min-height: 38px !important;
+}
+
+/* Table: tighter, easier to scan */
+#setoran3Table,
+.setoran3-table {
+  font-size: 13px !important;
+}
+
+#setoran3Table th,
+#setoran3Table td,
+.setoran3-table th,
+.setoran3-table td {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* Technical/detail blocks use native disclosure if present */
+#setoran3Page details,
+.setoran3-page details {
+  border: 1px solid var(--s3-ui-line);
+  border-radius: 12px;
+  background: rgba(255,255,255,.025);
+  margin-top: 8px;
+}
+
+#setoran3Page details > summary,
+.setoran3-page details > summary {
+  cursor: pointer;
+  padding: 10px 12px;
+  font-weight: 600;
+}
+
+#setoran3Page details > :not(summary),
+.setoran3-page details > :not(summary) {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+/* Proof / receipt surfaces remain available but visually quieter */
+.setoran3-proof-view,
+.setoran3-proof-panel,
+.setoran3-proof-alert,
+[id*="setoran3Proof"] {
+  box-shadow: none !important;
+}
+
+/* Modal remains readable but less oversized */
+#setoran3OwnerModal .modal-content,
+#setoran3ProofModal .modal-content,
+.setoran3-modal .modal-content {
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+
+/* Mobile/tablet: keep four KPIs legible without a long vertical wall */
+@media (max-width: 900px) {
+  #setoran3SummaryCards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  #setoran3SummaryCards {
+    gap: 8px !important;
+  }
+
+  #setoran3SummaryCards > * {
+    min-height: 86px !important;
+    padding: 12px !important;
+  }
+
+  #setoran3SpvFormCard {
+    padding: 12px !important;
+  }
+}
+
+/* Print is intentionally untouched by this UI-only layer. */
+@media print {
+  /* no overrides */
+}
