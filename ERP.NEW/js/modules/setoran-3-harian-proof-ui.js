@@ -18,6 +18,38 @@
     document.querySelectorAll("[data-s3proof-close]").forEach(x=>x.addEventListener("click",()=>{document.getElementById("s3proofViewModal").hidden=true;}));
   };
 
+  flow.compressProofImage=async function(file){
+    if(!file||!String(file.type||"").startsWith("image/")) throw new Error("Bukti harus berupa file gambar.");
+    const MAX_SIDE=1600;
+    const TARGET_BYTES=350*1024;
+    let bitmap=null, img=null, objectUrl="";
+    try{
+      if(typeof createImageBitmap==="function") bitmap=await createImageBitmap(file,{imageOrientation:"from-image"});
+    }catch(_e){bitmap=null;}
+    if(!bitmap){
+      objectUrl=URL.createObjectURL(file);
+      img=await new Promise((resolve,reject)=>{const el=new Image();el.onload=()=>resolve(el);el.onerror=()=>reject(new Error("Gambar bukti tidak dapat dibaca."));el.src=objectUrl;});
+    }
+    const sw=bitmap?.width||img?.naturalWidth||img?.width||0;
+    const sh=bitmap?.height||img?.naturalHeight||img?.height||0;
+    if(!sw||!sh) throw new Error("Ukuran gambar bukti tidak valid.");
+    const scale=Math.min(1,MAX_SIDE/Math.max(sw,sh));
+    const w=Math.max(1,Math.round(sw*scale)),h=Math.max(1,Math.round(sh*scale));
+    const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    const ctx=canvas.getContext("2d",{alpha:false});
+    ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.drawImage(bitmap||img,0,0,w,h);
+    const toBlob=(type,quality)=>new Promise(resolve=>canvas.toBlob(resolve,type,quality));
+    let quality=.76;
+    let blob=await toBlob("image/webp",quality);
+    let type="image/webp",ext="webp";
+    if(!blob){type="image/jpeg";ext="jpg";blob=await toBlob(type,.78);}
+    while(blob&&blob.size>TARGET_BYTES&&quality>.46){quality-=.08;const next=await toBlob(type,quality);if(!next)break;blob=next;}
+    if(!blob) throw new Error("Gagal mengompres bukti foto.");
+    try{bitmap?.close?.();}catch(_e){}
+    if(objectUrl) URL.revokeObjectURL(objectUrl);
+    return {blob,ext,contentType:type,originalBytes:file.size||0,compressedBytes:blob.size};
+  };
+
   const baseLoadSavedRows=flow.loadSavedRows.bind(flow);
   flow.loadSavedRows=async function(p){
     await baseLoadSavedRows(p);
@@ -31,6 +63,7 @@
     for(const saved of rows){
       const pr=latest.get(String(saved.id));
       if(pr){saved._proofLatest=pr;saved.proof_path=pr.storage_path;}
+      else{saved._proofLatest=null;saved.proof_path=null;}
     }
   };
 
@@ -47,16 +80,53 @@
 
   flow.uploadProof=async function(saved,file,kind){
     if(!saved?.id) throw new Error("Data setoran belum tersimpan.");
-    const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
-    const path=`${saved.id}/${Date.now()}-${Math.random().toString(36).slice(2,10)}.${ext}`;
-    const {error:u}=await db.storage.from(this.PROOF_BUCKET).upload(path,file,{upsert:false,contentType:file.type||undefined});
+    const packed=await this.compressProofImage(file);
+    const path=`${saved.id}/${Date.now()}-${Math.random().toString(36).slice(2,10)}.${packed.ext}`;
+    const {error:u}=await db.storage.from(this.PROOF_BUCKET).upload(path,packed.blob,{upsert:false,contentType:packed.contentType,cacheControl:"3600"});
     if(u) throw u;
     const proofRow={setoran_id:saved.id,request_no:saved.proof_request_no||1,storage_path:path,uploaded_by:this.user.id,proof_kind:kind};
     const {data:inserted,error:i}=await db.from(this.PROOF_TABLE).insert(proofRow).select("*").single();
     if(i){await db.storage.from(this.PROOF_BUCKET).remove([path]).catch(()=>{});throw i;}
     saved.proof_path=path;
     saved._proofLatest=inserted||proofRow;
+    saved._proofCompression={originalBytes:packed.originalBytes,compressedBytes:packed.compressedBytes};
     return inserted||proofRow;
+  };
+
+  flow.deleteProofs=async function(saved){
+    if(!saved?.id) return {deleted:0};
+    const {data,error}=await db.from(this.PROOF_TABLE).select("id,storage_path").eq("setoran_id",saved.id);
+    if(error) throw error;
+    const proofs=data||[];
+    const paths=proofs.map(x=>x.storage_path).filter(Boolean);
+    if(paths.length){
+      const {error:se}=await db.storage.from(this.PROOF_BUCKET).remove(paths);
+      if(se) throw se;
+    }
+    if(proofs.length){
+      const {error:de}=await db.from(this.PROOF_TABLE).delete().eq("setoran_id",saved.id);
+      if(de) throw de;
+    }
+    const {data:clean,error:ue}=await db.from(this.TABLE).update({proof_path:null,proof_uploaded_by:null,proof_uploaded_at:null,updated_by:this.user.id,updated_at:new Date().toISOString()}).eq("id",saved.id).select("*").single();
+    if(ue) throw ue;
+    clean._proofLatest=null;clean.proof_path=null;
+    this.savedRows.set(this.key(clean.cabang_id),clean);
+    return {deleted:proofs.length};
+  };
+
+  const baseSaveRow=flow.saveRow.bind(flow);
+  flow.saveRow=async function(tr,options={}){
+    const id=Number(tr?.dataset?.cabangId||0);
+    const wasTaken=id?this.model(id).taken:false;
+    const result=await baseSaveRow(tr,options);
+    if(options?.taken===false&&wasTaken&&id){
+      const saved=this.savedRows.get(this.key(id));
+      const r=await this.deleteProofs(saved);
+      this.pendingFiles.delete(this.key(id));
+      this.renderTable();this.renderTotals();
+      if(!options.quiet) this.ok(r.deleted?"Status kembali Belum Diambil. Bukti foto lama sudah dihapus.":"Status kembali Belum Diambil.");
+    }
+    return result;
   };
 
   const baseOnChange=flow.onTableChange.bind(flow);
@@ -69,7 +139,10 @@
       this.pendingFiles.set(this.key(tr.dataset.cabangId),file);
       try{
         await this.saveRow(tr,{taken:null,quiet:true});
-        this.ok("Bukti foto tersimpan.");
+        const saved=this.savedRows.get(this.key(tr.dataset.cabangId));
+        const c=saved?._proofCompression;
+        const info=c&&c.originalBytes?` (${Math.round(c.originalBytes/1024)} KB → ${Math.round(c.compressedBytes/1024)} KB)`:"";
+        this.ok(`Bukti foto tersimpan dan dikompres${info}.`);
       }catch(err){
         this.pendingFiles.delete(this.key(tr.dataset.cabangId));
         this.fail(err?.message||String(err));
