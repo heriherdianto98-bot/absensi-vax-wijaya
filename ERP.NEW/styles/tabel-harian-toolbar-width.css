@@ -1,0 +1,24 @@
+/* ERP VAX — Tabel Harian toolbar/table width alignment
+   UI only: jadikan shell tabel selebar konten tabel agar toolbar + totals tidak terlihat terpotong. */
+
+.thc-page .thc-table-section{
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    align-self: flex-start;
+}
+
+.thc-page .thc-pin-stack,
+.thc-page .thc-table-toolbar,
+.thc-page .thc-unified-toolbar,
+.thc-page .thc-totals{
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+}
+
+/* Tabel tetap menjadi penentu lebar natural seluruh shell. */
+.thc-page .thc-table-scroll,
+.thc-page .thc-table.setoran3-table{
+    max-width: none !important;
+}
