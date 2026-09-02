@@ -425,10 +425,15 @@ const TabelHarianCabang = {
 
     rowFromEngine(raw){
         const s = DashboardEngine.summarizeRows([raw]);
-        if(typeof SetoranMoneyEngine === "undefined" || typeof SetoranMoneyEngine.calculateBranchMoney !== "function"){
-            throw new Error("SetoranMoneyEngine tidak termuat — canonical money engine wajib.");
+        const money = raw?.canonical_money;
+        if(
+            !money
+            || !Number.isFinite(Number(money.netRevenueErp))
+            || !Number.isFinite(Number(money.nonCash))
+            || !Number.isFinite(Number(money.cashReference))
+        ){
+            throw new Error("DailyDataEngine tidak menghasilkan canonical money.");
         }
-        const money = SetoranMoneyEngine.calculateBranchMoney(raw);
         return {
             tanggal: DashboardEngine.normalizeTanggal(raw?.tanggal) || String(raw?.tanggal || "").slice(0, 10),
             cabang_id: Number(raw?.cabang_id),
