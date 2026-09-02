@@ -15,13 +15,35 @@ Tidak mengubah source, formula core Tabel Harian, Cash Out, atau scheduler.
 const TabelHarianShareCards = {
     _seq: 0,
     _patched: false,
+    _columnsLoading: false,
 
     boot(){
         this.ensureStyles();
         this.ensureCards();
         this.syncNominalTypography();
         this.patchPresenter();
+        this.ensureDailyColumnsPresenter();
         this.refresh();
+    },
+
+    ensureDailyColumnsPresenter(){
+        if(typeof TabelHarianShareColumns !== "undefined"){
+            TabelHarianShareColumns.boot();
+            return;
+        }
+        if(this._columnsLoading) return;
+        this._columnsLoading = true;
+        const script = document.createElement("script");
+        script.src = "../js/modules/tabel-harian-share-columns.js?v=20260902-sharecols1";
+        script.onload = () => {
+            this._columnsLoading = false;
+            if(typeof TabelHarianShareColumns !== "undefined") TabelHarianShareColumns.boot();
+        };
+        script.onerror = () => {
+            this._columnsLoading = false;
+            console.error("[TabelHarianShareCards] gagal memuat tabel-harian-share-columns.js");
+        };
+        document.head.appendChild(script);
     },
 
     ensureStyles(){
