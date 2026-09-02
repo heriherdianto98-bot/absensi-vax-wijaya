@@ -47,7 +47,7 @@ function resolveDate() {
 }
 
 const { db: activityDate, recapDate } = resolveDate();
-console.log(`Share Produk Daily sync: ${activityDate}`);
+console.log(`Provider Product Share Daily sync: ${activityDate}`);
 
 const { data: cabangs, error: cabErr } = await sb
   .from("cabang")
@@ -59,10 +59,11 @@ const { data: cabangs, error: cabErr } = await sb
   .order("urutan");
 if (cabErr) throw cabErr;
 
+// Payroll historis harus tetap bisa menemukan karyawan yang sekarang NONAKTIF.
+// Jangan filter aktif=true di source mapping.
 const { data: karyawan, error: karErr } = await sb
   .from("karyawan")
-  .select("id,nama_karyawan,cabang_id,aktif")
-  .eq("aktif", true);
+  .select("id,nama_karyawan,cabang_id,aktif,jabatan");
 if (karErr) throw karErr;
 
 function cariEmployee(providerName, cabangId) {
@@ -162,9 +163,9 @@ try {
       await page.waitForTimeout(1200);
 
       const providerRows = await bacaProviderProductRecap(page);
+      const now = new Date().toISOString();
       const rowsToSave = providerRows.map(r => {
         const employeeId = cariEmployee(r.providerName, cabang.id);
-        const now = new Date().toISOString();
         return {
           period_start: activityDate,
           period_end: activityDate,
@@ -184,8 +185,12 @@ try {
         };
       });
 
-      const totalShare = rowsToSave.reduce((sum, r) => sum + Number(r.revenue_share || 0), 0);
+      const totalShareDetail = rowsToSave.reduce(
+        (sum, r) => sum + Number(r.revenue_share || 0),
+        0
+      );
 
+      // Idempotent per tanggal+cabang. Source historis/snapshot lama tidak disentuh.
       const { error: delErr } = await sb
         .from("product_sales_source")
         .delete()
@@ -200,23 +205,36 @@ try {
         if (insErr) throw insErr;
       }
 
+      // CANONICAL PROTECTION:
+      // share_produk pada daily_recap_source adalah source-of-truth harian.
+      // Presenter provider hanya RECONCILE, tidak boleh overwrite canonical.
       const { data: recapRow, error: recapFindErr } = await sb
         .from("daily_recap_source")
-        .select("id")
+        .select("id,share_produk")
         .eq("tanggal", activityDate)
         .eq("cabang_id", cabang.id)
         .maybeSingle();
       if (recapFindErr) throw recapFindErr;
       if (!recapRow?.id) throw new Error(`daily_recap_source belum ada untuk ${activityDate}`);
 
-      const { error: updErr } = await sb
-        .from("daily_recap_source")
-        .update({ share_produk: totalShare, updated_at: new Date().toISOString() })
-        .eq("id", recapRow.id);
-      if (updErr) throw updErr;
+      const canonicalShare = Number(recapRow.share_produk || 0);
+      const selisih = canonicalShare - totalShareDetail;
+      const reconcileStatus = selisih === 0 ? "MATCH" : "GAP";
 
-      hasil.push({ cabang: cabang.nama_cabang, status: "OK", rows: rowsToSave.length, share_produk: totalShare });
-      console.log(`✅ ${cabang.nama_cabang}: Share Produk Rp${totalShare.toLocaleString("id-ID")} (${rowsToSave.length} row)`);
+      hasil.push({
+        cabang: cabang.nama_cabang,
+        status: "OK",
+        rows: rowsToSave.length,
+        detail_share: totalShareDetail,
+        canonical_share: canonicalShare,
+        selisih,
+        reconcile: reconcileStatus
+      });
+
+      const prefix = reconcileStatus === "MATCH" ? "✅" : "⚠️";
+      console.log(
+        `${prefix} ${cabang.nama_cabang}: detail Rp${totalShareDetail.toLocaleString("id-ID")} / canonical Rp${canonicalShare.toLocaleString("id-ID")} / selisih Rp${selisih.toLocaleString("id-ID")} (${rowsToSave.length} row)`
+      );
     } catch (error) {
       hasil.push({ cabang: cabang.nama_cabang, status: "ERROR", error: error.message });
       console.error(`❌ ${cabang.nama_cabang}: ${error.message}`);
