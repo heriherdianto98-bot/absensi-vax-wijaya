@@ -28,8 +28,9 @@
       <small>Maksimal 3 hari</small>
     </div>
     <div class="s3sheet-period-fields">
-      <label><span>Dari</span><input type="date" id="s3v2Start"></label>
-      <label><span>Sampai</span><input type="date" id="s3v2End"></label>
+      <input type="date" id="s3v2Start" hidden>
+      <input type="date" id="s3v2End" hidden>
+      <button type="button" class="s3sheet-period-open" id="s3v2PeriodOpen"><span>📅</span><b id="s3v2PeriodLabel">PILIH PERIODE</b></button>
       <button type="button" id="s3v2Apply">TAMPILKAN</button>
     </div>
   </section>
@@ -45,18 +46,7 @@
       <table class="s3sheet-table">
         <thead>
           <tr>
-            <th>Cabang</th>
-            <th>Cash Harus Diambil</th>
-            <th>Non Tunai Minutes</th>
-            <th>Nett Produk</th>
-            <th>BRI Merchant</th>
-            <th>Selisih Non Tunai</th>
-            <th>Biaya di luar Cashout</th>
-            <th>Cash Aktual</th>
-            <th>Keterangan</th>
-            <th>Bukti</th>
-            <th>Sudah Diambil</th>
-            <th>Riwayat</th>
+            <th>Cabang</th><th>Cash Harus Diambil</th><th>Non Tunai Minutes</th><th>Nett Produk</th><th>BRI Merchant</th><th>Selisih Non Tunai</th><th>Biaya di luar Cashout</th><th>Cash Aktual</th><th>Keterangan</th><th>Bukti</th><th>Sudah Diambil</th><th>Riwayat</th>
           </tr>
         </thead>
         <tbody id="s3sheetBody"></tbody>
@@ -66,12 +56,24 @@
 
   <section class="s3sheet-totals" aria-label="Rangkuman semua cabang">
     <div class="s3sheet-total is-primary"><span>Total Cash Harus Diambil</span><strong id="s3totCashRef">Rp0</strong></div>
-    <div class="s3sheet-total"><span>Total Non Tunai Minutes</span><strong id="s3totNonCash">Rp0</strong></div>
-    <div class="s3sheet-total"><span>Total BRI Merchant</span><strong id="s3totBri">Rp0</strong></div>
-    <div class="s3sheet-total"><span>Total Selisih Non Tunai</span><strong id="s3totDiff">Rp0</strong></div>
+    <div class="s3sheet-total is-blue"><span>Total Non Tunai Minutes</span><strong id="s3totNonCash">Rp0</strong></div>
+    <div class="s3sheet-total is-purple"><span>Total BRI Merchant</span><strong id="s3totBri">Rp0</strong></div>
+    <div class="s3sheet-total is-red"><span>Total Selisih Non Tunai</span><strong id="s3totDiff">Rp0</strong></div>
     <div class="s3sheet-total is-actual"><span>Total Cash Aktual</span><strong id="s3totActual">Rp0</strong></div>
   </section>
 </main>
+
+<div class="s3period-modal" id="s3periodModal" hidden aria-hidden="true">
+  <div class="s3period-backdrop" data-s3period-close></div>
+  <div class="s3period-panel" role="dialog" aria-modal="true" aria-labelledby="s3periodTitle">
+    <div class="s3period-head"><div><span class="s3sheet-label">PERIODE SETORAN</span><h3 id="s3periodTitle">Pilih Tanggal</h3></div><button type="button" data-s3period-close>×</button></div>
+    <div class="s3period-nav"><button type="button" id="s3periodPrev">‹</button><strong id="s3periodMonth">—</strong><button type="button" id="s3periodNext">›</button></div>
+    <div class="s3period-week"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+    <div class="s3period-days" id="s3periodDays"></div>
+    <div class="s3period-preview"><span>Rentang aktif</span><strong id="s3periodPreview">—</strong><small>Maksimal 3 hari</small></div>
+    <div class="s3period-actions"><button type="button" class="is-ghost" data-s3period-close>BATAL</button><button type="button" class="is-primary" id="s3periodUse" disabled>GUNAKAN PERIODE</button></div>
+  </div>
+</div>
 
 <div class="s3sheet-modal" id="s3sheetHistoryModal" hidden>
   <div class="s3sheet-modal-backdrop" data-s3-close-history></div>
@@ -86,5 +88,6 @@
 <script src="../js/modules/setoran-money-engine.js"></script>
 <script src="../js/modules/daily-data-engine.js"></script>
 <script src="../js/modules/setoran-3-harian-direct-flow.js"></script>
+<script src="../js/modules/setoran-3-harian-period-ui.js"></script>
 </body>
 </html>
