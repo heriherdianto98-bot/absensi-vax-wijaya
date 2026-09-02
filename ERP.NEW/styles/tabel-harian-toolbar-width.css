@@ -1,6 +1,7 @@
 /* ERP VAX — Tabel Harian toolbar/table width alignment
-   UI only: jadikan shell tabel selebar konten tabel agar toolbar + totals tidak terlihat terpotong. */
+   UI ONLY. Tidak menyentuh engine, data, formula, render row, atau source Supabase. */
 
+/* Shell tabel tetap mengikuti lebar natural seluruh kolom. */
 .thc-page .thc-table-section{
     width: max-content !important;
     min-width: 100% !important;
@@ -17,8 +18,72 @@
     box-sizing: border-box;
 }
 
-/* Tabel tetap menjadi penentu lebar natural seluruh shell. */
 .thc-page .thc-table-scroll,
 .thc-page .thc-table.setoran3-table{
     max-width: none !important;
+}
+
+/*
+   REPORT HEADER
+   Tabel Harian punya lebar natural sekitar 1345px pada desktop karena seluruh
+   kolom uang + KPI. Header laporan diberi min-width yang sama supaya panel judul
+   tidak terlihat terpotong. Ini hanya background/layout header; tabel tidak disentuh.
+*/
+.thc-page{
+    position: relative;
+}
+
+.thc-page .thc-page-head{
+    width: 100% !important;
+    min-width: 1345px !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding-right: 520px !important;
+}
+
+/*
+   ACTIONS DI BARIS JUDUL
+   Tombol tetap node yang sama (ID/event listener tidak berubah), hanya diposisikan
+   secara visual ke kanan header agar Refresh/Sync/Print/PDF/Excel selalu terlihat.
+*/
+.thc-page .thc-tb-actions{
+    position: absolute !important;
+    top: 25px !important;
+    right: 18px !important;
+    z-index: 55 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+
+/* Spacer lama tidak perlu mengambil ruang setelah action keluar dari toolbar. */
+.thc-page .thc-tb-spacer{
+    display: none !important;
+}
+
+/* Filter bar kini khusus filter; tetap satu baris dan tidak berebut ruang dengan action. */
+@media (min-width: 1100px){
+    .thc-page .thc-unified-toolbar{
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+    }
+}
+
+/* Di layar lebih kecil, jangan paksa tombol menabrak judul. */
+@media (max-width: 1099px){
+    .thc-page .thc-page-head{
+        min-width: 100% !important;
+        padding-right: 18px !important;
+    }
+    .thc-page .thc-tb-actions{
+        position: static !important;
+        flex-wrap: wrap !important;
+        margin-left: auto !important;
+    }
+    .thc-page .thc-tb-spacer{
+        display: block !important;
+    }
 }
