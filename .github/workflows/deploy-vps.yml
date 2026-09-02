@@ -34,11 +34,30 @@ jobs:
           rsync -az --exclude=.env --exclude=node_modules/ -e "ssh -i $SSH_KEY" minutes-connector/ "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/"
           rsync -az -e "ssh -i $SSH_KEY" ERP.NEW/ "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/ERP.NEW/"
 
-      - name: Restart and health check
+      - name: Install dependencies
         shell: bash
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
           set -euo pipefail
-          ssh -i "$HOME/.ssh/id_erp_vax_deploy" "$VPS_USER@$VPS_HOST" 'cd /var/www/absensi-vax-wijaya/minutes-connector && npm ci --omit=dev && systemctl restart erp-vax-minutes-sync.service && sleep 3 && systemctl is-active --quiet erp-vax-minutes-sync.service && pgrep -af "node .*scheduler.js" && echo ERP_VAX_DEPLOY_OK'
+          ssh -i "$HOME/.ssh/id_erp_vax_deploy" "$VPS_USER@$VPS_HOST" 'cd /var/www/absensi-vax-wijaya/minutes-connector && npm ci --omit=dev'
+
+      - name: Restart sync service safely
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/id_erp_vax_deploy" "$VPS_USER@$VPS_HOST" 'nohup sh -c "sleep 1; systemctl restart erp-vax-minutes-sync.service" >/tmp/erp-vax-deploy-restart.log 2>&1 </dev/null &'
+          sleep 6
+
+      - name: Final health check
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/id_erp_vax_deploy" "$VPS_USER@$VPS_HOST" 'systemctl is-active --quiet erp-vax-minutes-sync.service && pgrep -af "node .*scheduler.js" && echo ERP_VAX_DEPLOY_OK'
