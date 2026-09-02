@@ -1,0 +1,117 @@
+/* ERP VAX — Setoran 3 Harian history modal polish */
+#s3sheetHistoryModal .s3sheet-modal-panel{
+  width:min(760px,calc(100vw - 56px));
+  max-height:72vh;
+  padding:0;
+  overflow:hidden;
+  border:1px solid rgba(216,165,59,.34);
+  border-radius:14px;
+  background:linear-gradient(180deg,#101923 0%,#0b141d 100%);
+  box-shadow:0 24px 70px rgba(0,0,0,.56),0 0 0 1px rgba(255,255,255,.02) inset;
+}
+#s3sheetHistoryModal .s3sheet-modal-head{
+  position:sticky;
+  top:0;
+  z-index:2;
+  min-height:72px;
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(216,165,59,.22);
+  background:linear-gradient(180deg,#131f2b 0%,#101923 100%);
+}
+#s3sheetHistoryModal .s3sheet-modal-head strong{
+  font-size:18px;
+  line-height:1.2;
+  font-weight:800;
+  color:#f6f8fb;
+}
+#s3sheetHistoryModal .s3sheet-modal-head small{
+  margin-top:4px;
+  font-size:12px;
+  color:#96a7b8;
+}
+#s3sheetHistoryModal .s3sheet-modal-head button{
+  width:36px;
+  height:36px;
+  border-radius:9px;
+  color:#dce4ec;
+  font-size:24px;
+  line-height:1;
+}
+#s3sheetHistoryModal .s3sheet-modal-head button:hover{
+  background:rgba(216,165,59,.10);
+  color:#f2c45b;
+}
+#s3sheetHistoryList{
+  max-height:calc(72vh - 72px);
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:6px 16px 14px;
+  scrollbar-width:thin;
+  scrollbar-color:#526170 #111a23;
+}
+#s3sheetHistoryList::-webkit-scrollbar{width:9px;height:9px}
+#s3sheetHistoryList::-webkit-scrollbar-track{background:#111a23;border-radius:999px}
+#s3sheetHistoryList::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#596978,#3f4b57);
+  border:2px solid #111a23;
+  border-radius:999px;
+}
+#s3sheetHistoryList::-webkit-scrollbar-thumb:hover{background:#6d7d8b}
+#s3sheetHistoryList .s3sheet-history-item{
+  padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,.075);
+}
+#s3sheetHistoryList .s3sheet-history-item:last-child{border-bottom:0}
+#s3sheetHistoryList .s3sheet-history-item>div:first-child{
+  align-items:center;
+}
+#s3sheetHistoryList .s3sheet-history-item strong{
+  font-size:13px;
+  font-weight:800;
+  color:#f3c453;
+  letter-spacing:.015em;
+}
+#s3sheetHistoryList .s3sheet-history-item span{
+  flex:0 0 auto;
+  font-size:11px;
+  color:#8fa1b2;
+}
+#s3sheetHistoryList .s3sheet-history-item p{
+  margin:8px 0 5px;
+  font-size:13px;
+  line-height:1.45;
+  color:#eef3f7;
+  white-space:normal;
+  word-break:break-word;
+}
+#s3sheetHistoryList .s3sheet-history-item small{
+  display:block;
+  font-size:11px;
+  line-height:1.4;
+  color:#91a1b0;
+  white-space:normal;
+  word-break:break-word;
+}
+#s3sheetHistoryList .s3sheet-history-item [style*="display:flex"]{
+  max-width:100%;
+  overflow:hidden;
+}
+#s3sheetHistoryList .s3sheet-history-item [style*="display:flex"] > *{
+  min-width:0;
+}
+#s3sheetHistoryList .s3sheet-history-item [style*="border"]{
+  border-color:rgba(216,165,59,.18)!important;
+  background:#0d1721!important;
+  border-radius:9px!important;
+}
+#s3sheetHistoryList .s3sheet-muted{
+  padding:22px 4px;
+  margin:0;
+  text-align:center;
+  color:#94a5b5;
+  font-size:13px;
+}
+@media (max-width:900px){
+  #s3sheetHistoryModal .s3sheet-modal-panel{width:calc(100vw - 24px);max-height:82vh}
+  #s3sheetHistoryList{max-height:calc(82vh - 72px);padding-left:12px;padding-right:12px}
+}
