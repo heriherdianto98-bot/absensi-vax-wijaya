@@ -17,9 +17,51 @@ const TabelHarianShareCards = {
     _patched: false,
 
     boot(){
+        this.ensureStyles();
         this.ensureCards();
         this.patchPresenter();
         this.refresh();
+    },
+
+    ensureStyles(){
+        if(document.getElementById("thcShareCardStyles")) return;
+        const style = document.createElement("style");
+        style.id = "thcShareCardStyles";
+        style.textContent = `
+            #thcTotals .thc-tot-item.is-share-produk{
+                border-color:rgba(236,72,153,.55);
+                box-shadow:inset 3px 0 0 #ec4899, 0 0 20px rgba(236,72,153,.08);
+            }
+            #thcTotals .thc-tot-item.is-share-produk span,
+            #thcTotals .thc-tot-item.is-share-produk strong{ color:#f472b6; }
+
+            #thcTotals .thc-tot-item.is-share-cukur{
+                border-color:rgba(34,211,238,.55);
+                box-shadow:inset 3px 0 0 #22d3ee, 0 0 20px rgba(34,211,238,.08);
+            }
+            #thcTotals .thc-tot-item.is-share-cukur span,
+            #thcTotals .thc-tot-item.is-share-cukur strong{ color:#67e8f9; }
+
+            #thcTotals .thc-tot-item.is-proteksi{
+                border-color:rgba(249,115,22,.58);
+                box-shadow:inset 3px 0 0 #f97316, 0 0 20px rgba(249,115,22,.08);
+            }
+            #thcTotals .thc-tot-item.is-proteksi span,
+            #thcTotals .thc-tot-item.is-proteksi strong{ color:#fb923c; }
+
+            #thcTotals .thc-tot-item .thc-share-desc{
+                display:block;
+                margin-top:4px;
+                color:#aeb8c7;
+                font-size:11px;
+                line-height:1.25;
+                font-style:normal;
+                font-weight:500;
+                letter-spacing:0;
+                text-transform:none;
+            }
+        `;
+        document.head.appendChild(style);
     },
 
     ensureCards(){
@@ -27,18 +69,44 @@ const TabelHarianShareCards = {
         if(!grid) return;
 
         const defs = [
-            ["thcTotShareProduk", "Share Produk", "is-share-produk", "Total revenue share produk sesuai cabang & periode aktif"],
-            ["thcTotShareCukur", "Share Cukur", "is-share-cukur", "Total provider service share sesuai cabang & periode aktif"],
-            ["thcTotProteksi", "Proteksi Capster", "is-proteksi", "Total Cash Out dengan keterangan PROTEK / PROTEKSI"]
+            [
+                "thcTotShareProduk",
+                "Share Produk",
+                "is-share-produk",
+                "Total share provider dari penjualan produk pada periode aktif"
+            ],
+            [
+                "thcTotShareCukur",
+                "Share Cukur",
+                "is-share-cukur",
+                "Total share provider dari jasa/service pada periode aktif"
+            ],
+            [
+                "thcTotProteksi",
+                "Proteksi Capster",
+                "is-proteksi",
+                "Akumulasi cash out item PROTEK / PROTEKSI pada periode aktif"
+            ]
         ];
 
-        for(const [id, label, cls, title] of defs){
-            if(document.getElementById(id)) continue;
-            const card = document.createElement("div");
-            card.className = `thc-tot-item ${cls}`;
-            card.title = title;
-            card.innerHTML = `<span>${label}</span><strong id="${id}">—</strong>`;
-            grid.appendChild(card);
+        for(const [id, label, cls, desc] of defs){
+            let card = document.getElementById(id)?.closest(".thc-tot-item") || null;
+            if(!card){
+                card = document.createElement("div");
+                card.className = `thc-tot-item ${cls}`;
+                card.innerHTML = `<span>${label}</span><strong id="${id}">—</strong><em class="thc-share-desc">${desc}</em>`;
+                grid.appendChild(card);
+            }else{
+                card.classList.add(cls);
+                let descEl = card.querySelector(".thc-share-desc");
+                if(!descEl){
+                    descEl = document.createElement("em");
+                    descEl.className = "thc-share-desc";
+                    card.appendChild(descEl);
+                }
+                descEl.textContent = desc;
+            }
+            card.title = desc;
         }
     },
 
@@ -50,6 +118,7 @@ const TabelHarianShareCards = {
         const original = TabelHarianCabang.renderTotals.bind(TabelHarianCabang);
         TabelHarianCabang.renderTotals = (...args) => {
             const result = original(...args);
+            this.ensureStyles();
             this.ensureCards();
             this.refresh();
             return result;
@@ -162,6 +231,7 @@ const TabelHarianShareCards = {
     },
 
     async refresh(){
+        this.ensureStyles();
         this.ensureCards();
         if(typeof DashboardEngine === "undefined") return;
 
