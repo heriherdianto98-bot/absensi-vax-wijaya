@@ -61,6 +61,20 @@ const TabelHarianShareCards = {
                 letter-spacing:0;
                 text-transform:none;
             }
+
+            #thcTotNett + *{ display:none; }
+            #thcTotNett::after{
+                content:"Laba bersih operasional cabang";
+                display:block;
+                margin-top:4px;
+                color:#aeb8c7;
+                font-size:11px;
+                line-height:1.25;
+                font-style:normal;
+                font-weight:500;
+                letter-spacing:0;
+                text-transform:none;
+            }
         `;
         document.head.appendChild(style);
     },
