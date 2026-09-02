@@ -159,20 +159,41 @@
     const {data,error}=await db.from(this.PROOF_TABLE).select("*").eq("setoran_id",saved.id).order("uploaded_at",{ascending:false}).limit(20);
     if(error) return this.fail(error.message);
     const proofs=data||[];
-    if(!proofs.length) return this.fail("Belum ada bukti tersimpan untuk cabang ini.");
+    if(!proofs.length){
+      saved._proofLatest=null;saved.proof_path=null;
+      this.renderTable();
+      return this.fail("Belum ada bukti tersimpan untuk cabang ini.");
+    }
     const name=this.canonicalName(this.branches.find(b=>Number(b.id)===Number(branchId))?.nama_cabang||"");
     const body=document.getElementById("s3proofViewBody");
     document.getElementById("s3proofViewTitle").textContent=`BUKTI · ${name}`;
-    document.getElementById("s3proofViewMeta").textContent=`${proofs.length} bukti tersimpan`;
     body.innerHTML="Memuat bukti...";
     document.getElementById("s3proofViewModal").hidden=false;
-    const cards=[];
+
+    const valid=[];
     for(const pr of proofs){
       const {data:signed,error:se}=await db.storage.from(this.PROOF_BUCKET).createSignedUrl(pr.storage_path,3600);
-      if(se){cards.push(`<div class="s3sheet-history-item"><p>Gagal membuka bukti: ${this.esc(se.message)}</p></div>`);continue;}
-      cards.push(`<div style="margin:0 0 14px"><img src="${signed.signedUrl}" alt="Bukti setoran" style="max-width:100%;max-height:62vh;border-radius:12px;border:1px solid rgba(216,165,59,.28);object-fit:contain"><div style="margin-top:6px;color:#93a2b3;font-size:11px">${this.esc(pr.proof_kind||"BUKTI")} · ${pr.uploaded_at?new Date(pr.uploaded_at).toLocaleString("id-ID"):""}</div></div>`);
+      if(se||!signed?.signedUrl) continue;
+      const ok=await new Promise(resolve=>{
+        const test=new Image();
+        const timer=setTimeout(()=>resolve(false),8000);
+        test.onload=()=>{clearTimeout(timer);resolve(true)};
+        test.onerror=()=>{clearTimeout(timer);resolve(false)};
+        test.src=signed.signedUrl;
+      });
+      if(ok) valid.push({pr,url:signed.signedUrl});
     }
-    body.innerHTML=cards.join("");
+
+    if(!valid.length){
+      saved._proofLatest=null;saved.proof_path=null;
+      document.getElementById("s3proofViewMeta").textContent="0 bukti aktif";
+      body.innerHTML=`<div class="s3sheet-history-item"><p>File bukti lama sudah tidak ada di Storage. Silakan upload bukti baru.</p></div>`;
+      this.renderTable();
+      return;
+    }
+
+    document.getElementById("s3proofViewMeta").textContent=`${valid.length} bukti tersimpan`;
+    body.innerHTML=valid.map(({pr,url})=>`<div style="margin:0 0 14px"><img src="${url}" alt="Bukti setoran" style="max-width:100%;max-height:62vh;border-radius:12px;border:1px solid rgba(216,165,59,.28);object-fit:contain"><div style="margin-top:6px;color:#93a2b3;font-size:11px">${this.esc(pr.proof_kind||"BUKTI")} · ${pr.uploaded_at?new Date(pr.uploaded_at).toLocaleString("id-ID"):""}</div></div>`).join("");
   };
 
   const baseOnClick=flow.onTableClick.bind(flow);
