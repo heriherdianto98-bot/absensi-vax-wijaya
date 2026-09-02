@@ -29,26 +29,111 @@ const TabelHarianShareCards = {
         const style = document.createElement("style");
         style.id = "thcShareCardStyles";
         style.textContent = `
-            #thcTotals .thc-tot-item.is-share-produk{
-                border-color:rgba(236,72,153,.55);
-                box-shadow:inset 3px 0 0 #ec4899, 0 0 20px rgba(236,72,153,.08);
+            /* Setiap card TOTAL PERIODE punya identitas warna sendiri — UI only. */
+            #thcTotals .thc-tot-item.is-omzet{
+                border-color:rgba(250,204,21,.58);
+                box-shadow:inset 3px 0 0 #facc15, 0 0 20px rgba(250,204,21,.07);
             }
-            #thcTotals .thc-tot-item.is-share-produk span,
-            #thcTotals .thc-tot-item.is-share-produk strong{ color:#f472b6; }
+            #thcTotals .thc-tot-item.is-omzet > span,
+            #thcTotals .thc-tot-item.is-omzet > strong{ color:#facc15; }
+
+            #thcTotals .thc-tot-item.is-gross-service{
+                border-color:rgba(45,212,191,.58);
+                box-shadow:inset 3px 0 0 #2dd4bf, 0 0 20px rgba(45,212,191,.07);
+            }
+            #thcTotals .thc-tot-item.is-gross-service > span,
+            #thcTotals .thc-tot-item.is-gross-service > strong{ color:#5eead4; }
+
+            #thcTotals .thc-tot-item.is-produk{
+                border-color:rgba(244,114,182,.58);
+                box-shadow:inset 3px 0 0 #f472b6, 0 0 20px rgba(244,114,182,.07);
+            }
+            #thcTotals .thc-tot-item.is-produk > span,
+            #thcTotals .thc-tot-item.is-produk > strong{ color:#f9a8d4; }
+
+            #thcTotals .thc-tot-item.is-nett{
+                border-color:rgba(56,189,248,.60);
+                box-shadow:inset 3px 0 0 #38bdf8, 0 0 20px rgba(56,189,248,.08);
+            }
+            #thcTotals .thc-tot-item.is-nett > span,
+            #thcTotals .thc-tot-item.is-nett > strong{ color:#67e8f9; }
+
+            #thcTotals .thc-tot-item.is-nontunai{
+                border-color:rgba(129,140,248,.58);
+                box-shadow:inset 3px 0 0 #818cf8, 0 0 20px rgba(129,140,248,.07);
+            }
+            #thcTotals .thc-tot-item.is-nontunai > span,
+            #thcTotals .thc-tot-item.is-nontunai > strong{ color:#a5b4fc; }
+
+            #thcTotals .thc-tot-item.is-cash{
+                border-color:rgba(52,211,153,.58);
+                box-shadow:inset 3px 0 0 #34d399, 0 0 20px rgba(52,211,153,.07);
+            }
+            #thcTotals .thc-tot-item.is-cash > span,
+            #thcTotals .thc-tot-item.is-cash > strong{ color:#6ee7b7; }
+
+            #thcTotals .thc-tot-item.is-cashout{
+                border-color:rgba(239,68,68,.62);
+                box-shadow:inset 3px 0 0 #ef4444, 0 0 20px rgba(239,68,68,.08);
+            }
+            #thcTotals .thc-tot-item.is-cashout > span,
+            #thcTotals .thc-tot-item.is-cashout > strong{ color:#ff4d4f; }
+
+            #thcTotals .thc-tot-item.is-actual{
+                border-color:rgba(245,158,11,.60);
+                box-shadow:inset 3px 0 0 #f59e0b, 0 0 20px rgba(245,158,11,.07);
+            }
+            #thcTotals .thc-tot-item.is-actual > span,
+            #thcTotals .thc-tot-item.is-actual > strong{ color:#fbbf24; }
+
+            #thcTotals .thc-tot-item.is-customer{
+                border-color:rgba(14,165,233,.58);
+                box-shadow:inset 3px 0 0 #0ea5e9, 0 0 20px rgba(14,165,233,.07);
+            }
+            #thcTotals .thc-tot-item.is-customer > span,
+            #thcTotals .thc-tot-item.is-customer > strong{ color:#7dd3fc; }
+
+            #thcTotals .thc-tot-item.is-transaksi{
+                border-color:rgba(34,197,94,.58);
+                box-shadow:inset 3px 0 0 #22c55e, 0 0 20px rgba(34,197,94,.07);
+            }
+            #thcTotals .thc-tot-item.is-transaksi > span,
+            #thcTotals .thc-tot-item.is-transaksi > strong{ color:#4ade80; }
+
+            #thcTotals .thc-tot-item.is-services{
+                border-color:rgba(249,115,22,.60);
+                box-shadow:inset 3px 0 0 #f97316, 0 0 20px rgba(249,115,22,.07);
+            }
+            #thcTotals .thc-tot-item.is-services > span,
+            #thcTotals .thc-tot-item.is-services > strong{ color:#fb923c; }
+
+            #thcTotals .thc-tot-item.is-avgticket{
+                border-color:rgba(163,230,53,.58);
+                box-shadow:inset 3px 0 0 #a3e635, 0 0 20px rgba(163,230,53,.07);
+            }
+            #thcTotals .thc-tot-item.is-avgticket > span,
+            #thcTotals .thc-tot-item.is-avgticket > strong{ color:#bef264; }
+
+            #thcTotals .thc-tot-item.is-share-produk{
+                border-color:rgba(225,29,72,.58);
+                box-shadow:inset 3px 0 0 #e11d48, 0 0 20px rgba(225,29,72,.08);
+            }
+            #thcTotals .thc-tot-item.is-share-produk > span,
+            #thcTotals .thc-tot-item.is-share-produk > strong{ color:#fb7185; }
 
             #thcTotals .thc-tot-item.is-share-cukur{
-                border-color:rgba(34,211,238,.55);
-                box-shadow:inset 3px 0 0 #22d3ee, 0 0 20px rgba(34,211,238,.08);
+                border-color:rgba(20,184,166,.58);
+                box-shadow:inset 3px 0 0 #14b8a6, 0 0 20px rgba(20,184,166,.08);
             }
-            #thcTotals .thc-tot-item.is-share-cukur span,
-            #thcTotals .thc-tot-item.is-share-cukur strong{ color:#67e8f9; }
+            #thcTotals .thc-tot-item.is-share-cukur > span,
+            #thcTotals .thc-tot-item.is-share-cukur > strong{ color:#2dd4bf; }
 
             #thcTotals .thc-tot-item.is-proteksi{
-                border-color:rgba(249,115,22,.58);
-                box-shadow:inset 3px 0 0 #f97316, 0 0 20px rgba(249,115,22,.08);
+                border-color:rgba(194,65,12,.60);
+                box-shadow:inset 3px 0 0 #c2410c, 0 0 20px rgba(194,65,12,.08);
             }
-            #thcTotals .thc-tot-item.is-proteksi span,
-            #thcTotals .thc-tot-item.is-proteksi strong{ color:#fb923c; }
+            #thcTotals .thc-tot-item.is-proteksi > span,
+            #thcTotals .thc-tot-item.is-proteksi > strong{ color:#fdba74; }
 
             #thcTotals .thc-tot-item .thc-share-desc{
                 display:block;
