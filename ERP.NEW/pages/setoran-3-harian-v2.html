@@ -3,121 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Setoran 3 Harian V2 | VAX ERP</title>
+<title>Setoran 3 Harian | VAX ERP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="../styles/setoran-3-harian-direct-flow.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="s3v2-body">
-<main class="s3v2-shell">
-    <header class="s3v2-topbar">
-        <div class="s3v2-title">
-            <h1>SETORAN 3 HARIAN</h1>
-            <p>Verifikasi uang cabang · sistem menghitung, SVP mencatat, Owner memeriksa</p>
-        </div>
-        <div class="s3v2-user">
-            <div><span class="s3v2-role" id="s3v2Role">—</span></div>
-            <strong id="s3v2User">—</strong>
-        </div>
-    </header>
+<body class="s3sheet-body">
+<main class="s3sheet-shell">
+  <header class="s3sheet-head">
+    <div>
+      <div class="s3sheet-eyebrow">LAPORAN • SETORAN</div>
+      <h1>SETORAN 3 HARIAN</h1>
+      <p>1 baris = 1 cabang · angka canonical 3 hari · SVP input BRI/biaya/keterangan/bukti</p>
+    </div>
+    <div class="s3sheet-user"><span id="s3v2Role">—</span><strong id="s3v2User">—</strong></div>
+  </header>
 
-    <section class="s3v2-controls">
-        <div class="s3v2-period">
-            <label class="s3v2-field">
-                <span>Dari</span>
-                <input type="date" id="s3v2Start">
-            </label>
-            <label class="s3v2-field">
-                <span>Sampai</span>
-                <input type="date" id="s3v2End">
-            </label>
-            <button type="button" class="s3v2-btn s3v2-btn-primary" id="s3v2Apply">TAMPILKAN</button>
-        </div>
-        <div class="s3v2-muted">Maksimal 3 hari per verifikasi</div>
-    </section>
+  <section class="s3sheet-toolbar">
+    <div class="s3sheet-period-copy">
+      <span class="s3sheet-label">PERIODE AKTIF</span>
+      <strong id="s3PeriodText">—</strong>
+      <small>Maksimal 3 hari</small>
+    </div>
+    <div class="s3sheet-period-fields">
+      <label><span>Dari</span><input type="date" id="s3v2Start"></label>
+      <label><span>Sampai</span><input type="date" id="s3v2End"></label>
+      <button type="button" id="s3v2Apply">TAMPILKAN</button>
+    </div>
+  </section>
 
-    <section class="s3v2-global">
-        <div class="s3v2-global-head">
-            <strong>SEMUA CABANG</strong>
-            <small>Owner melihat total tanpa ikut menghitung</small>
-        </div>
-        <div class="s3v2-global-cards" id="s3v2GlobalCards"></div>
-    </section>
+  <div id="s3v2Message" class="s3sheet-message" hidden></div>
 
-    <section class="s3v2-branches-wrap">
-        <div class="s3v2-branches" id="s3v2Branches"></div>
-    </section>
+  <section class="s3sheet-table-card">
+    <div class="s3sheet-table-head">
+      <div><strong>SEMUA CABANG</strong><small>10 cabang langsung tampil seperti lembar kerja SVP</small></div>
+      <span id="s3sheetStatusMeta">0/10 Sudah Diambil</span>
+    </div>
+    <div class="s3sheet-table-wrap">
+      <table class="s3sheet-table">
+        <thead>
+          <tr>
+            <th>Cabang</th>
+            <th>Cash Harus Diambil</th>
+            <th>Non Tunai Minutes</th>
+            <th>Nett Produk</th>
+            <th>BRI Merchant</th>
+            <th>Selisih Non Tunai</th>
+            <th>Biaya di luar Cashout</th>
+            <th>Cash Aktual</th>
+            <th>Keterangan</th>
+            <th>Bukti</th>
+            <th>Sudah Diambil</th>
+            <th>Riwayat</th>
+          </tr>
+        </thead>
+        <tbody id="s3sheetBody"></tbody>
+      </table>
+    </div>
+  </section>
 
-    <div id="s3v2Message" class="s3v2-message" hidden></div>
-
-    <section class="s3v2-main">
-        <article class="s3v2-flow-card">
-            <div class="s3v2-branch-head">
-                <div>
-                    <h2 id="s3v2BranchName">—</h2>
-                    <p id="s3v2PeriodLabel">—</p>
-                </div>
-                <span class="s3v2-status is-pending" id="s3v2Status">○ BELUM DIAMBIL</span>
-            </div>
-            <div class="s3v2-flow" id="s3v2FlowNodes"></div>
-        </article>
-
-        <aside class="s3v2-side">
-            <h3>VERIFIKASI CABANG</h3>
-            <p class="s3v2-side-sub">SVP isi hasil aktual. Owner melihat tampilan yang sama secara read-only.</p>
-
-            <div class="s3v2-editor" id="s3v2Editor">
-                <label class="s3v2-field">
-                    <span>Cash Aktual Diambil</span>
-                    <input type="number" inputmode="numeric" min="0" step="1000" id="s3v2CashActual" placeholder="0">
-                </label>
-                <div class="s3v2-cash-diff" id="s3v2CashDiff">Selisih cash: —</div>
-
-                <p class="s3v2-requirement" id="s3v2DiffRequirement" hidden>
-                    Ada selisih non-tunai. Keterangan dan bukti foto wajib sebelum status “Sudah Diambil”.
-                </p>
-
-                <label class="s3v2-field">
-                    <span>Catatan / Keterangan Selisih</span>
-                    <textarea id="s3v2Note" placeholder="Jelaskan penyebab selisih atau catatan verifikasi..."></textarea>
-                </label>
-
-                <div class="s3v2-proof-pick">
-                    <input type="file" id="s3v2ProofFile" accept="image/*">
-                    <label for="s3v2ProofFile">+ BUKTI FOTO</label>
-                    <span id="s3v2ProofPicked">Belum ada file dipilih</span>
-                </div>
-
-                <div class="s3v2-actions">
-                    <button type="button" class="s3v2-btn" id="s3v2Save" data-edit>SIMPAN</button>
-                    <button type="button" class="s3v2-btn s3v2-btn-green" id="s3v2Taken" data-edit>✓ SUDAH DIAMBIL</button>
-                    <button type="button" class="s3v2-btn s3v2-btn-danger" id="s3v2Reopen" data-edit hidden>UBAH KE BELUM DIAMBIL</button>
-                </div>
-
-                <div class="s3v2-owner-hint" id="s3v2OwnerHint" hidden>
-                    Mode Owner: semua angka, catatan, bukti, dan histori dapat diperiksa tanpa melakukan approval atau perhitungan manual.
-                </div>
-            </div>
-
-            <div class="s3v2-section-line"></div>
-            <h3>BUKTI</h3>
-            <p class="s3v2-side-sub">Foto selisih / bukti setoran tersimpan per cabang dan periode.</p>
-            <div class="s3v2-proof-list" id="s3v2Proofs"><span class="s3v2-muted">Belum ada bukti.</span></div>
-
-            <div class="s3v2-section-line"></div>
-            <button type="button" class="s3v2-history-button" id="s3v2HistoryToggle">
-                <span>HISTORI PERUBAHAN</span><span>▾</span>
-            </button>
-            <div class="s3v2-history" id="s3v2History" hidden>
-                <div id="s3v2HistoryList"><div class="s3v2-muted">Belum ada histori.</div></div>
-            </div>
-        </aside>
-    </section>
+  <section class="s3sheet-totals" aria-label="Rangkuman semua cabang">
+    <div class="s3sheet-total is-primary"><span>Total Cash Harus Diambil</span><strong id="s3totCashRef">Rp0</strong></div>
+    <div class="s3sheet-total"><span>Total Non Tunai Minutes</span><strong id="s3totNonCash">Rp0</strong></div>
+    <div class="s3sheet-total"><span>Total BRI Merchant</span><strong id="s3totBri">Rp0</strong></div>
+    <div class="s3sheet-total"><span>Total Selisih Non Tunai</span><strong id="s3totDiff">Rp0</strong></div>
+    <div class="s3sheet-total is-actual"><span>Total Cash Aktual</span><strong id="s3totActual">Rp0</strong></div>
+  </section>
 </main>
 
-<div class="s3v2-busy" id="s3v2Busy" hidden>Memproses...</div>
+<div class="s3sheet-modal" id="s3sheetHistoryModal" hidden>
+  <div class="s3sheet-modal-backdrop" data-s3-close-history></div>
+  <div class="s3sheet-modal-panel">
+    <div class="s3sheet-modal-head"><div><strong id="s3sheetHistoryTitle">RIWAYAT</strong><small id="s3sheetHistoryPeriod">—</small></div><button type="button" data-s3-close-history>×</button></div>
+    <div id="s3sheetHistoryList" class="s3sheet-history-list"></div>
+  </div>
+</div>
+<div class="s3sheet-busy" id="s3v2Busy" hidden>Memproses...</div>
 
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/setoran-money-engine.js"></script>
