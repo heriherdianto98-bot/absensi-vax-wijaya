@@ -1,17 +1,62 @@
 /* ERP VAX — Setoran 3 Harian integrated shell */
 body.s3sheet-erp-integrated{overflow:hidden;background:var(--bg,#08111b)}
 body.s3sheet-erp-integrated .erp-wrapper{height:100vh;overflow:hidden}
-body.s3sheet-erp-integrated .erp-content{height:calc(100vh - var(--erp-top-header-h,64px));padding:12px 14px 10px;overflow:hidden}
-body.s3sheet-erp-integrated .s3sheet-shell{width:100%;height:100%;margin:0;padding:0;gap:7px}
-body.s3sheet-erp-integrated .s3sheet-head{padding:2px 4px 7px}
+body.s3sheet-erp-integrated .erp-content{height:calc(100vh - var(--erp-top-header-h,64px));padding:10px 14px 10px;overflow:hidden}
+body.s3sheet-erp-integrated .s3sheet-shell{width:100%;height:100%;margin:0;padding:0;gap:7px;grid-template-rows:auto auto minmax(0,1fr) auto}
+
+/* Header: title kiri, periode aktif kanan — hilangkan bar periode terpisah */
+body.s3sheet-erp-integrated .s3sheet-head{padding:5px 4px 9px;min-height:76px;display:grid;grid-template-columns:minmax(300px,1fr) auto;align-items:center;gap:18px}
 body.s3sheet-erp-integrated .s3sheet-head h1{font-size:24px}
+body.s3sheet-erp-integrated .s3sheet-title-block p{margin-bottom:0}
 body.s3sheet-erp-integrated .s3sheet-user{display:none}
-body.s3sheet-erp-integrated .s3sheet-toolbar{border-color:rgba(216,165,59,.22);box-shadow:0 8px 22px rgba(0,0,0,.18)}
+body.s3sheet-erp-integrated .s3sheet-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:14px;min-width:590px}
+body.s3sheet-erp-integrated .s3sheet-head-period-copy{min-width:205px;display:grid;gap:1px;text-align:right}
+body.s3sheet-erp-integrated .s3sheet-head-period-copy strong{font-size:13px;color:#f4f7fb;white-space:nowrap}
+body.s3sheet-erp-integrated .s3sheet-head-period-copy small{font-size:9px;color:#93a2b3}
+body.s3sheet-erp-integrated .s3sheet-period-fields{display:flex;align-items:center;gap:8px}
+body.s3sheet-erp-integrated .s3sheet-period-open{min-width:265px;height:36px}
+body.s3sheet-erp-integrated .s3sheet-period-fields #s3v2Apply{height:36px}
+
 body.s3sheet-erp-integrated .s3sheet-table-card{border-color:rgba(216,165,59,.22)}
 body.s3sheet-erp-integrated .s3sheet-table th{font-size:10px;height:48px}
 body.s3sheet-erp-integrated .s3sheet-table td{font-size:11.5px;height:41px}
 body.s3sheet-erp-integrated .s3sheet-branch{font-size:12px}
 body.s3sheet-erp-integrated .s3sheet-auto,body.s3sheet-erp-integrated .s3sheet-actual{font-size:11.5px}
+
+/* Kolom input manual SPV harus terlihat sebagai field kerja */
+body.s3sheet-erp-integrated .s3sheet-input:not([disabled]){background:linear-gradient(180deg,#101b28,#0b1520);border-color:rgba(216,165,59,.34);color:#fff;font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+body.s3sheet-erp-integrated .s3sheet-input:not([disabled]):hover{border-color:rgba(216,165,59,.55)}
+body.s3sheet-erp-integrated .s3sheet-input:not([disabled]):focus{border-color:#e0ad31;box-shadow:0 0 0 2px rgba(224,173,49,.12)}
+body.s3sheet-erp-integrated .s3sheet-input[disabled]{opacity:.64}
+
+/* Proporsi kolom supaya RIWAYAT tidak terpotong */
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(1),body.s3sheet-erp-integrated .s3sheet-table td:nth-child(1){width:13%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(2){width:10%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(3){width:8.5%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(4){width:6.7%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(5){width:8.5%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(6){width:9.5%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(7){width:9.5%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(8){width:8.2%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(9){width:10%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(10){width:5.2%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(11){width:6.3%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(12){width:4.6%}
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(12),body.s3sheet-erp-integrated .s3sheet-table td:nth-child(12){min-width:58px;text-align:center}
+body.s3sheet-erp-integrated .s3sheet-history-btn{width:42px;min-width:42px;padding:0;font-size:11px}
+
 body.s3sheet-erp-integrated .s3sheet-total{height:86px}
 body.s3sheet-erp-integrated .s3sheet-total strong{font-size:22px}
-@media(max-height:800px){body.s3sheet-erp-integrated .erp-content{padding-top:8px}body.s3sheet-erp-integrated .s3sheet-table th{height:42px}body.s3sheet-erp-integrated .s3sheet-table td{height:36px}body.s3sheet-erp-integrated .s3sheet-total{height:78px}}
+
+@media(max-width:1350px){
+  body.s3sheet-erp-integrated .s3sheet-head-actions{min-width:520px;gap:9px}
+  body.s3sheet-erp-integrated .s3sheet-head-period-copy{min-width:170px}
+  body.s3sheet-erp-integrated .s3sheet-period-open{min-width:230px}
+}
+@media(max-height:800px){
+  body.s3sheet-erp-integrated .erp-content{padding-top:7px}
+  body.s3sheet-erp-integrated .s3sheet-head{min-height:66px;padding-top:2px;padding-bottom:5px}
+  body.s3sheet-erp-integrated .s3sheet-table th{height:42px}
+  body.s3sheet-erp-integrated .s3sheet-table td{height:36px}
+  body.s3sheet-erp-integrated .s3sheet-total{height:78px}
+}
