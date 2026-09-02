@@ -23,12 +23,7 @@
     max-width: none !important;
 }
 
-/*
-   REPORT HEADER
-   Tabel Harian punya lebar natural sekitar 1345px pada desktop karena seluruh
-   kolom uang + KPI. Header laporan diberi min-width yang sama supaya panel judul
-   tidak terlihat terpotong. Ini hanya background/layout header; tabel tidak disentuh.
-*/
+/* Header laporan dibuat sepanjang shell data tanpa mengubah struktur tabel. */
 .thc-page{
     position: relative;
 }
@@ -38,17 +33,19 @@
     min-width: 1345px !important;
     max-width: none !important;
     box-sizing: border-box !important;
-    padding-right: 520px !important;
+    padding-right: 610px !important;
 }
 
 /*
-   ACTIONS DI BARIS JUDUL
-   Tombol tetap node yang sama (ID/event listener tidak berubah), hanya diposisikan
-   secara visual ke kanan header agar Refresh/Sync/Print/PDF/Excel selalu terlihat.
+   ACTIONS FINAL: sejajar dengan judul laporan.
+   .thc-tb-actions tetap node/event yang sama, tetapi dinaikkan dari pin-stack
+   ke area kanan panel judul. Karena ancestor .thc-pin-stack sticky/positioned,
+   offset negatif diperlukan agar benar-benar masuk ke baris judul, bukan tetap
+   menggantung di baris filter.
 */
 .thc-page .thc-tb-actions{
     position: absolute !important;
-    top: 25px !important;
+    top: -98px !important;
     right: 18px !important;
     z-index: 55 !important;
     display: flex !important;
@@ -59,12 +56,11 @@
     margin: 0 !important;
 }
 
-/* Spacer lama tidak perlu mengambil ruang setelah action keluar dari toolbar. */
+/* Filter bawah sekarang khusus filter. */
 .thc-page .thc-tb-spacer{
     display: none !important;
 }
 
-/* Filter bar kini khusus filter; tetap satu baris dan tidak berebut ruang dengan action. */
 @media (min-width: 1100px){
     .thc-page .thc-unified-toolbar{
         flex-wrap: nowrap !important;
@@ -72,7 +68,7 @@
     }
 }
 
-/* Di layar lebih kecil, jangan paksa tombol menabrak judul. */
+/* Di layar kecil tombol kembali ke toolbar agar tidak menabrak judul. */
 @media (max-width: 1099px){
     .thc-page .thc-page-head{
         min-width: 100% !important;
