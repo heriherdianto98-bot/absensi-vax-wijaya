@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="../styles/setoran-3-harian-erp-integration.css">
 <link rel="stylesheet" href="../styles/setoran-3-harian-erp-scale.css">
 <link rel="stylesheet" href="../styles/setoran-3-harian-history-polish.css">
+<link rel="stylesheet" href="../styles/setoran-3-harian-nett-product-card.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="setoran-dark s3sheet-body s3sheet-erp-integrated">
@@ -68,6 +69,7 @@
       <section class="s3sheet-totals" aria-label="Rangkuman semua cabang">
         <div class="s3sheet-total is-primary"><span>Total Cash Harus Diambil</span><strong id="s3totCashRef">Rp0</strong></div>
         <div class="s3sheet-total is-blue"><span>Total Non Tunai Minutes</span><strong id="s3totNonCash">Rp0</strong></div>
+        <div class="s3sheet-total is-product"><span>Total Nett Produk</span><strong id="s3totNettProduct">Rp0</strong></div>
         <div class="s3sheet-total is-purple"><span>Total BRI Merchant</span><strong id="s3totBri">Rp0</strong></div>
         <div class="s3sheet-total is-red"><span>Total Selisih Non Tunai</span><strong id="s3totDiff">Rp0</strong></div>
         <div class="s3sheet-total is-actual"><span>Total Cash Aktual</span><strong id="s3totActual">Rp0</strong></div>
@@ -106,6 +108,7 @@
 <script src="../js/modules/setoran-3-harian-input-format.js"></script>
 <script src="../js/modules/setoran-3-harian-proof-ui.js"></script>
 <script src="../js/modules/setoran-3-harian-period-ui.js"></script>
+<script src="../js/modules/setoran-3-harian-nett-product-total.js"></script>
 <script src="../js/loader.js"></script>
 <script>
 async function loadSetoranShell(){
