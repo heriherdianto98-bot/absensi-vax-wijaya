@@ -1,0 +1,103 @@
+/* Setoran 3 Harian V2 — UI polish override
+   Scope: presentation only. Canonical formulas/workflow untouched. */
+
+/* Taller, clearer spreadsheet header — closer to Tabel Harian Semua Cabang */
+.s3sheet-table th{
+  height:48px !important;
+  padding:7px 7px !important;
+  font-size:10.5px !important;
+  line-height:1.15 !important;
+  letter-spacing:.035em !important;
+  vertical-align:middle !important;
+  background:linear-gradient(180deg,#172433 0%,#101a25 100%) !important;
+  border-bottom:2px solid rgba(216,165,59,.58) !important;
+  text-shadow:0 1px 0 rgba(0,0,0,.28);
+}
+
+/* Body stays readable without making the page taller than needed */
+.s3sheet-table td{
+  height:40px !important;
+  font-size:11.5px !important;
+}
+.s3sheet-branch{
+  font-size:12px !important;
+  font-weight:800 !important;
+}
+.s3sheet-auto,
+.s3sheet-actual,
+.s3sheet-diff{
+  font-size:11.5px !important;
+}
+
+/* Give the important long labels enough room */
+.s3sheet-table th:nth-child(1),.s3sheet-table td:nth-child(1){width:13.2% !important;}
+.s3sheet-table th:nth-child(2){width:10.2% !important;}
+.s3sheet-table th:nth-child(3){width:9.2% !important;}
+.s3sheet-table th:nth-child(4){width:7.3% !important;}
+.s3sheet-table th:nth-child(5){width:8.8% !important;}
+.s3sheet-table th:nth-child(6){width:9.4% !important;}
+.s3sheet-table th:nth-child(7){width:10.2% !important;}
+.s3sheet-table th:nth-child(8){width:8.6% !important;}
+.s3sheet-table th:nth-child(9){width:10.1% !important;}
+.s3sheet-table th:nth-child(10){width:5.2% !important;}
+.s3sheet-table th:nth-child(11){width:6.7% !important;}
+.s3sheet-table th:nth-child(12){width:3.1% !important;}
+
+/* Manual SVP fields must visibly look editable */
+.s3sheet-input{
+  height:30px !important;
+  font-size:11px !important;
+  font-weight:700;
+  background:linear-gradient(180deg,#0c1722,#09131d) !important;
+  border:1px solid rgba(216,165,59,.28) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.s3sheet-input:hover:not([disabled]){
+  border-color:rgba(216,165,59,.52) !important;
+}
+.s3sheet-input:focus{
+  border-color:#d8a53b !important;
+  box-shadow:0 0 0 2px rgba(216,165,59,.13),inset 0 1px 0 rgba(255,255,255,.03) !important;
+}
+
+/* Owner is read-only, but fields remain visually identifiable instead of disappearing */
+.s3sheet-input[disabled]{
+  opacity:1 !important;
+  background:#0b1520 !important;
+  border:1px solid rgba(255,255,255,.09) !important;
+  color:#9eabb8 !important;
+  cursor:not-allowed;
+}
+
+/* Auto-calculated difference should look intentionally computed, not like a dead cell */
+.s3sheet-diff{
+  position:relative;
+  font-weight:800 !important;
+  background:rgba(72,207,141,.025);
+}
+.s3sheet-diff.is-alert{
+  background:rgba(255,112,112,.055);
+}
+
+/* Keterangan needs more readable typing area */
+.s3sheet-note{
+  padding-left:8px !important;
+  text-align:left !important;
+}
+
+/* Keep totals compact while preserving strong ERP card character */
+.s3sheet-total{
+  height:82px !important;
+  padding:11px 14px !important;
+}
+.s3sheet-total strong{
+  margin-top:6px !important;
+  font-size:20px !important;
+}
+
+@media(max-width:1366px){
+  .s3sheet-table th{font-size:9.5px !important;height:44px !important;}
+  .s3sheet-table td{font-size:10.5px !important;height:37px !important;}
+  .s3sheet-branch{font-size:11px !important;}
+  .s3sheet-input{font-size:10px !important;height:28px !important;}
+}
