@@ -16,6 +16,7 @@ Tanggung jawab:
 - normalisasi tanggal/nama cabang
 - deduplikasi tanggal + cabang_id
 - agregasi dataset canonical
+- derivasi Nett Produk canonical = Produk - Share Produk
 
 Rumus uang TIDAK didefinisikan ulang di sini.
 Semua Nett ERP / Non Tunai / Cash Referensi wajib melalui
@@ -190,6 +191,17 @@ const DailyDataEngine = {
         return SetoranMoneyEngine.calculateBranchMoney(row);
     },
 
+    productOf(row){
+        const product = Number(row?.produk || 0);
+        const shareProduct = Number(row?.share_produk || 0);
+
+        return {
+            product,
+            shareProduct,
+            nettProduct: product - shareProduct
+        };
+    },
+
     normalizeRows(rows, cabangList){
         const branches = Array.isArray(cabangList) ? cabangList : [];
         const branchMap = new Map(
@@ -206,11 +218,15 @@ const DailyDataEngine = {
             if(!tanggal || cabangId === null || !branchMap.has(cabangId)) return;
 
             const cabang = branchMap.get(cabangId);
+            const canonicalProduct = this.productOf(raw);
             const canonical = {
                 ...raw,
                 tanggal,
                 cabang_id: cabangId,
                 nama_cabang: cabang.nama_cabang,
+                source_nett_produk: Number(raw?.nett_produk || 0),
+                nett_produk: canonicalProduct.nettProduct,
+                canonical_product: canonicalProduct,
                 canonical_money: this.moneyOf(raw),
                 canonical_order: cabang.canonical_order
             };
@@ -246,8 +262,20 @@ const DailyDataEngine = {
             cashReference: 0
         });
 
+        const productMoney = list.reduce((total, row) => {
+            const value = row?.canonical_product || this.productOf(row);
+            total.product += Number(value.product || 0);
+            total.shareProduct += Number(value.shareProduct || 0);
+            total.nettProduct += Number(value.nettProduct || 0);
+            return total;
+        }, {
+            product: 0,
+            shareProduct: 0,
+            nettProduct: 0
+        });
+
         const grossService = sum("service");
-        const product = sum("produk");
+        const product = productMoney.product;
         const omzet = grossService + product;
         const transaction = sum("transaction_minutes");
 
@@ -256,6 +284,8 @@ const DailyDataEngine = {
             branchCount: new Set(list.map((row) => row.cabang_id)).size,
             grossService,
             product,
+            shareProduct: productMoney.shareProduct,
+            nettProduct: productMoney.nettProduct,
             omzet,
             nettRevenueMinutes: sum("nett_revenue"),
             productCost: sum("product_cost"),
