@@ -60,6 +60,32 @@
     display: none !important;
 }
 
+/*
+   FREEZE TITLE — panel "Tabel Harian Semua Cabang" ikut diam saat scroll.
+   Toolbar/filter dan header tabel diturunkan agar tidak menimpa panel judul.
+   UI ONLY; tidak menyentuh engine maupun data.
+*/
+.thc-page{
+    --thc-page-head-h: 92px;
+    --thc-pin-stack-h: 104px;
+    --thc-page-head-top: var(--erp-top-header-h, 58px);
+    --thc-pin-stack-top: calc(var(--erp-top-header-h, 58px) + var(--thc-page-head-h, 92px) + 12px);
+    --thc-thead-top: calc(var(--erp-top-header-h, 58px) + var(--thc-page-head-h, 92px) + 12px + var(--thc-pin-stack-h, 104px) - 1px);
+}
+
+body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
+.erp-wrapper .thc-page .thc-page-head,
+.thc-page .thc-page-head{
+    position: sticky !important;
+    top: var(--thc-page-head-top) !important;
+    z-index: 60 !important;
+    box-shadow: 0 10px 22px rgba(0,0,0,.42) !important;
+}
+
+.thc-page .thc-pin-stack{
+    top: var(--thc-pin-stack-top) !important;
+}
+
 @media (min-width: 1100px){
     .thc-page .thc-unified-toolbar{
         flex-wrap: nowrap !important;
