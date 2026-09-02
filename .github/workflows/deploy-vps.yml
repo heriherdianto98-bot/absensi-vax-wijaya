@@ -1,82 +1,29 @@
 name: Deploy ERP VAX to VPS
 
-on:
+"on":
   workflow_dispatch:
 
-concurrency:
-  group: erp-vax-vps-deploy
-  cancel-in-progress: false
-
 jobs:
-  deploy:
+  ssh-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout ERP-VAX main
-        uses: actions/checkout@v4
-
-      - name: Prepare SSH
+      - name: Prepare SSH key
         shell: bash
         env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           set -euo pipefail
-          test -n "$VPS_HOST"
-          test -n "$VPS_USER"
-          test -n "$VPS_SSH_KEY"
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_erp_vax_deploy
-          chmod 600 ~/.ssh/id_erp_vax_deploy
-          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "$VPS_SSH_KEY" > "$HOME/.ssh/id_erp_vax_deploy"
+          chmod 600 "$HOME/.ssh/id_erp_vax_deploy"
+          ssh-keyscan -H "$VPS_HOST" >> "$HOME/.ssh/known_hosts"
 
-      - name: Deploy canonical repo content
+      - name: Test VPS SSH connection
         shell: bash
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
           set -euo pipefail
-          SSH="ssh -i ~/.ssh/id_erp_vax_deploy"
-          RSYNC_SSH="ssh -i ~/.ssh/id_erp_vax_deploy"
-
-          $SSH "$VPS_USER@$VPS_HOST" 'mkdir -p /var/www/absensi-vax-wijaya/minutes-connector /var/www/absensi-vax-wijaya/ERP.NEW'
-
-          rsync -az --delete \
-            --exclude='.env' \
-            --exclude='node_modules/' \
-            -e "$RSYNC_SSH" \
-            minutes-connector/ \
-            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/"
-
-          rsync -az --delete \
-            -e "$RSYNC_SSH" \
-            ERP.NEW/ \
-            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/ERP.NEW/"
-
-      - name: Install connector dependencies and restart service
-        shell: bash
-        env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
-        run: |
-          set -euo pipefail
-          ssh -i ~/.ssh/id_erp_vax_deploy "$VPS_USER@$VPS_HOST" <<'REMOTE'
-            set -euo pipefail
-            cd /var/www/absensi-vax-wijaya/minutes-connector
-            npm ci --omit=dev
-            systemctl restart erp-vax-minutes-sync.service
-            sleep 3
-            systemctl is-active --quiet erp-vax-minutes-sync.service
-            systemctl --no-pager --full status erp-vax-minutes-sync.service | head -n 30
-REMOTE
-
-      - name: Final health check
-        shell: bash
-        env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
-        run: |
-          set -euo pipefail
-          ssh -i ~/.ssh/id_erp_vax_deploy "$VPS_USER@$VPS_HOST" \
-            'pgrep -af "node .*scheduler.js" && systemctl is-active erp-vax-minutes-sync.service'
+          ssh -i "$HOME/.ssh/id_erp_vax_deploy" "$VPS_USER@$VPS_HOST" 'echo ERP_VAX_SSH_OK && hostname && systemctl is-active erp-vax-minutes-sync.service'
