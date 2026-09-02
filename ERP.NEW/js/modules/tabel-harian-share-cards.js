@@ -19,6 +19,7 @@ const TabelHarianShareCards = {
     boot(){
         this.ensureStyles();
         this.ensureCards();
+        this.syncNominalTypography();
         this.patchPresenter();
         this.refresh();
     },
@@ -108,6 +109,22 @@ const TabelHarianShareCards = {
             }
             card.title = desc;
         }
+
+        this.syncNominalTypography();
+    },
+
+    syncNominalTypography(){
+        const ref = document.getElementById("thcTotNett");
+        if(!ref || typeof getComputedStyle !== "function") return;
+        const css = getComputedStyle(ref);
+        for(const id of ["thcTotShareProduk", "thcTotShareCukur", "thcTotProteksi"]){
+            const el = document.getElementById(id);
+            if(!el) continue;
+            el.style.fontSize = css.fontSize;
+            el.style.fontWeight = css.fontWeight;
+            el.style.lineHeight = css.lineHeight;
+            el.style.letterSpacing = css.letterSpacing;
+        }
     },
 
     patchPresenter(){
@@ -120,6 +137,7 @@ const TabelHarianShareCards = {
             const result = original(...args);
             this.ensureStyles();
             this.ensureCards();
+            this.syncNominalTypography();
             this.refresh();
             return result;
         };
@@ -228,6 +246,7 @@ const TabelHarianShareCards = {
         set("thcTotShareProduk", shareProduk);
         set("thcTotShareCukur", shareCukur);
         set("thcTotProteksi", proteksi);
+        this.syncNominalTypography();
     },
 
     async refresh(){
