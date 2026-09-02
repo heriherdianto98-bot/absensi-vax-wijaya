@@ -4,11 +4,12 @@ VAX ERP — Tabel Harian Share Columns
 =========================================================
 READ ONLY presenter.
 Sources:
+- Nett Produk  : DailyDataEngine canonical = produk - share_produk
 - Share Produk : daily_recap_source.share_produk
 - Share Cukur  : provider_sales_daily_source.provider_share
 
 Tidak mengubah formula core, cash, Nett Revenue, Cash Out, atau scheduler.
-Hanya menambahkan 2 kolom harian pada tabel.
+Hanya menambahkan kolom harian presenter.
 =========================================================
 */
 
@@ -46,8 +47,6 @@ const TabelHarianShareColumns = {
                 ? !ErpFreshness.isVpsOnline(syncRow)
                 : false;
 
-            // Jangan sembunyikan error nyata. Guard ini hanya mencegah false alarm
-            // provider/freshness sebelum barber buka pukul 10:00 WIB.
             if(vpsDown || syncFailed) return state;
 
             const lastHm = state.provider?.lastHm || "—";
@@ -90,10 +89,13 @@ const TabelHarianShareColumns = {
         const style = document.createElement("style");
         style.id = "thcShareColumnStyles";
         style.textContent = `
+            #thcTable th.thc-col-nett-produk,
+            #thcTable td.thc-col-nett-produk{ color:#5eead4; }
             #thcTable th.thc-col-share-produk,
             #thcTable td.thc-col-share-produk{ color:#fb7185; }
             #thcTable th.thc-col-share-cukur,
             #thcTable td.thc-col-share-cukur{ color:#2dd4bf; }
+            #thcTable td.thc-col-nett-produk,
             #thcTable td.thc-col-share-produk,
             #thcTable td.thc-col-share-cukur{
                 font-variant-numeric:tabular-nums;
@@ -108,20 +110,38 @@ const TabelHarianShareColumns = {
     ensureHeader(){
         const row = document.querySelector("#thcTable thead tr");
         if(!row) return;
-        if(row.querySelector("th.thc-col-share-produk") && row.querySelector("th.thc-col-share-cukur")) return;
+
         const cells = [...row.children].filter(el => el.tagName === "TH");
         if(cells.length < 4) return;
-        const nett = cells.find(th => String(th.textContent || "").trim().toLowerCase() === "nett revenue") || cells[3];
-        const produk = document.createElement("th");
-        produk.className = "thc-col-share-produk";
-        produk.scope = "col";
-        produk.textContent = "Share Produk";
-        const cukur = document.createElement("th");
-        cukur.className = "thc-col-share-cukur";
-        cukur.scope = "col";
-        cukur.textContent = "Share Cukur";
-        row.insertBefore(produk, nett);
-        row.insertBefore(cukur, nett);
+
+        let nettProduk = row.querySelector("th.thc-col-nett-produk");
+        let shareProduk = row.querySelector("th.thc-col-share-produk");
+        let shareCukur = row.querySelector("th.thc-col-share-cukur");
+        const nettRevenue = cells.find(th => String(th.textContent || "").trim().toLowerCase() === "nett revenue") || cells[3];
+
+        if(!shareProduk){
+            shareProduk = document.createElement("th");
+            shareProduk.className = "thc-col-share-produk";
+            shareProduk.scope = "col";
+            shareProduk.textContent = "Share Produk";
+            row.insertBefore(shareProduk, nettRevenue);
+        }
+        if(!shareCukur){
+            shareCukur = document.createElement("th");
+            shareCukur.className = "thc-col-share-cukur";
+            shareCukur.scope = "col";
+            shareCukur.textContent = "Share Cukur";
+            row.insertBefore(shareCukur, nettRevenue);
+        }
+        if(!nettProduk){
+            nettProduk = document.createElement("th");
+            nettProduk.className = "thc-col-nett-produk";
+            nettProduk.scope = "col";
+            nettProduk.textContent = "Nett Produk";
+        }
+
+        // Posisi final: Omzet / Gross -> Nett Produk -> Share Produk -> Share Cukur -> Nett Revenue
+        row.insertBefore(nettProduk, shareProduk);
     },
 
     patchPresenter(){
@@ -190,6 +210,18 @@ const TabelHarianShareColumns = {
         return map;
     },
 
+    aggregateNettProduk(rows){
+        const map = new Map();
+        for(const row of rows || []){
+            const key = this.rowKey(row?.tanggal, row?.cabang_id);
+            if(!/^\d{4}-\d{2}-\d{2}\|\d+$/.test(key)) continue;
+            const produk = Number(row?.produk || 0);
+            const shareProduk = Number(row?.share_produk || 0);
+            map.set(key, (map.get(key) || 0) + (produk - shareProduk));
+        }
+        return map;
+    },
+
     formatRupiah(value){
         if(typeof TabelHarianCabang?.formatRupiah === "function") return TabelHarianCabang.formatRupiah(Number(value || 0));
         return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", minimumFractionDigits:0, maximumFractionDigits:0 }).format(Number(value || 0));
@@ -197,23 +229,29 @@ const TabelHarianShareColumns = {
 
     ensureCells(tr){
         if(!tr) return null;
+        let nettProduk = tr.querySelector("td.thc-col-nett-produk");
         let produk = tr.querySelector("td.thc-col-share-produk");
         let cukur = tr.querySelector("td.thc-col-share-cukur");
-        if(produk && cukur) return { produk, cukur };
         const cells = [...tr.children].filter(el => el.tagName === "TD");
         if(cells.length < 4) return null;
-        const nettCell = cells[3];
+        const nettRevenueCell = cells.find(td => td.classList.contains("thc-col-nett-revenue")) || cells[3];
+
         if(!produk){
             produk = document.createElement("td");
             produk.className = "thc-col-share-produk";
-            tr.insertBefore(produk, nettCell);
+            tr.insertBefore(produk, nettRevenueCell);
         }
         if(!cukur){
             cukur = document.createElement("td");
             cukur.className = "thc-col-share-cukur";
-            tr.insertBefore(cukur, nettCell);
+            tr.insertBefore(cukur, nettRevenueCell);
         }
-        return { produk, cukur };
+        if(!nettProduk){
+            nettProduk = document.createElement("td");
+            nettProduk.className = "thc-col-nett-produk";
+        }
+        tr.insertBefore(nettProduk, produk);
+        return { nettProduk, produk, cukur };
     },
 
     paintLoadingCells(){
@@ -221,12 +259,13 @@ const TabelHarianShareColumns = {
         for(const tr of domRows){
             const cells = this.ensureCells(tr);
             if(!cells) continue;
+            cells.nettProduk.textContent = "…";
             cells.produk.textContent = "…";
             cells.cukur.textContent = "…";
         }
     },
 
-    paintValues(produkMap, cukurMap){
+    paintValues(nettProdukMap, produkMap, cukurMap){
         const domRows = [...document.querySelectorAll("#thcTbody tr[data-tanggal]")];
         const dataRows = Array.isArray(TabelHarianCabang?.rows) ? TabelHarianCabang.rows : [];
         domRows.forEach((tr, index) => {
@@ -235,6 +274,7 @@ const TabelHarianShareColumns = {
             const key = this.rowKey(data.tanggal, data.cabang_id);
             const cells = this.ensureCells(tr);
             if(!cells) return;
+            cells.nettProduk.textContent = this.formatRupiah(nettProdukMap.get(key) || 0);
             cells.produk.textContent = this.formatRupiah(produkMap.get(key) || 0);
             cells.cukur.textContent = this.formatRupiah(cukurMap.get(key) || 0);
         });
@@ -250,19 +290,21 @@ const TabelHarianShareColumns = {
         this.paintLoadingCells();
         try{
             const [produkRows, providerRows] = await Promise.all([
-                this.fetchAll("daily_recap_source", "cabang_id,tanggal,share_produk", "tanggal", filter),
+                this.fetchAll("daily_recap_source", "cabang_id,tanggal,produk,share_produk", "tanggal", filter),
                 this.fetchAll("provider_sales_daily_source", "cabang_id,activity_date,provider_share", "activity_date", filter)
             ]);
             if(seq !== this._seq) return;
+            const nettProdukMap = this.aggregateNettProduk(produkRows);
             const produkMap = this.aggregate(produkRows, "tanggal", "share_produk");
             const cukurMap = this.aggregate(providerRows, "activity_date", "provider_share");
-            this.paintValues(produkMap, cukurMap);
+            this.paintValues(nettProdukMap, produkMap, cukurMap);
         }catch(error){
             if(seq !== this._seq) return;
             console.error("[TabelHarianShareColumns] gagal memuat:", error);
             for(const tr of document.querySelectorAll("#thcTbody tr[data-tanggal]")){
                 const cells = this.ensureCells(tr);
                 if(!cells) continue;
+                cells.nettProduk.textContent = "—";
                 cells.produk.textContent = "—";
                 cells.cukur.textContent = "—";
             }
