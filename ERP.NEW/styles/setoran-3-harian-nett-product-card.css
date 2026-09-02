@@ -1,0 +1,25 @@
+/* VAX ERP — Nett Produk summary card, keep existing Setoran layout scale */
+body.s3sheet-erp-integrated .s3sheet-totals{
+  grid-template-columns:repeat(6,minmax(0,1fr));
+}
+body.s3sheet-erp-integrated .s3sheet-total.is-product{
+  border-color:rgba(70,210,202,.42);
+  box-shadow:0 9px 22px rgba(0,0,0,.24),inset 3px 0 0 #46d2ca;
+}
+body.s3sheet-erp-integrated .s3sheet-total.is-product strong{
+  color:#70e6df;
+}
+body.s3sheet-erp-integrated .s3sheet-total{
+  min-width:0;
+}
+body.s3sheet-erp-integrated .s3sheet-total span{
+  white-space:normal;
+  line-height:1.15;
+}
+body.s3sheet-erp-integrated .s3sheet-total strong{
+  font-size:clamp(19px,1.35vw,24px);
+}
+@media(max-width:1280px){
+  body.s3sheet-erp-integrated .s3sheet-total{padding-left:10px;padding-right:10px}
+  body.s3sheet-erp-integrated .s3sheet-total strong{font-size:19px}
+}
