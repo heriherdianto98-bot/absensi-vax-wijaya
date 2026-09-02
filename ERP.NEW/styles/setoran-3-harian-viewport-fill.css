@@ -1,0 +1,20 @@
+/* ERP VAX — Setoran 3 Harian viewport fill + larger table text */
+body.s3sheet-erp-integrated .erp-content{padding-bottom:0}
+body.s3sheet-erp-integrated .s3sheet-table th{height:56px;font-size:13px!important;line-height:1.15}
+body.s3sheet-erp-integrated .s3sheet-table td{height:49px;font-size:15px!important}
+body.s3sheet-erp-integrated .s3sheet-branch{font-size:15.5px!important;font-weight:800}
+body.s3sheet-erp-integrated .s3sheet-auto,
+body.s3sheet-erp-integrated .s3sheet-actual,
+body.s3sheet-erp-integrated .s3sheet-diff{font-size:15px!important;font-weight:800}
+body.s3sheet-erp-integrated .s3sheet-input{height:36px;font-size:14.5px!important}
+body.s3sheet-erp-integrated .s3sheet-note{font-size:14px!important}
+body.s3sheet-erp-integrated .s3sheet-proof-btn,
+body.s3sheet-erp-integrated .s3sheet-history-btn{height:34px;font-size:12.5px!important}
+body.s3sheet-erp-integrated .s3sheet-check{height:34px;font-size:11px!important}
+body.s3sheet-erp-integrated .s3sheet-total{height:102px}
+body.s3sheet-erp-integrated .s3sheet-shell{height:100%;align-content:stretch}
+@media(max-height:820px){
+  body.s3sheet-erp-integrated .s3sheet-table th{height:48px;font-size:12px!important}
+  body.s3sheet-erp-integrated .s3sheet-table td{height:42px;font-size:13.5px!important}
+  body.s3sheet-erp-integrated .s3sheet-total{height:88px}
+}
