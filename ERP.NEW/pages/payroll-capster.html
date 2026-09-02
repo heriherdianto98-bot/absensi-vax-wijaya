@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Gaji Capster | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/toolbar.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/light-contrast.css">
+<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/tabel-harian-cabang.css">
+<link rel="stylesheet" href="../styles/payroll-capster.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="setoran-dark">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <div class="erp-content setoran-page">
+    <section class="thc-page payroll-page" id="payrollPage">
+      <header class="thc-page-head payroll-page-head" aria-label="Judul halaman">
+        <p class="thc-page-eyebrow">MASTER GAJI • MINUTES</p>
+        <h2 class="thc-page-title">Payroll Capster</h2>
+        <p class="thc-page-sub">Gaji kotor dari provider_share Minutes · bonus manual Owner/SVP</p>
+      </header>
+
+      <section class="setoran-section-card payroll-panel">
+        <div class="payroll-toolbar">
+          <label><span>Bulan</span><input id="payrollMonth" type="month"></label>
+          <label><span>Capster</span><select id="payrollEmployee"><option value="">Semua Capster</option></select></label>
+          <div class="payroll-toolbar-actions">
+            <button id="payrollRefresh" type="button">Refresh</button>
+            <button id="payrollPrint" type="button">Print</button>
+            <button id="payrollPdf" type="button">PDF</button>
+          </div>
+        </div>
+        <p id="payrollStatus" class="payroll-status">Memuat payroll…</p>
+      </section>
+
+      <section id="payrollPending" class="payroll-pending" hidden>
+        <div><strong id="pendingRows">0</strong><span>Pending Mapping</span></div>
+        <div><strong id="pendingServices">0</strong><span>Services</span></div>
+        <div><strong id="pendingShare">Rp0</strong><span>Provider Share</span></div>
+      </section>
+
+      <section id="payrollList" class="payroll-list"></section>
+    </section>
+  </div>
+</div>
+<nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./tabel-harian-cabang.html"><span class="bn-icon">▦</span>Tabel</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
+
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/modules/payroll-manual-adjustment-store.js"></script>
+<script src="../js/modules/payroll-capster-engine.js"></script>
+<script src="../js/modules/payroll-capster-ui.js"></script>
+<script>
+fetch('../components/sidebar.html').then(r=>r.text()).then(html=>{ document.getElementById('sidebar').innerHTML=html; }).catch(()=>{});
+fetch('../components/header.html').then(r=>r.text()).then(html=>{ document.getElementById('header').innerHTML=html; }).catch(()=>{});
+</script>
+</body>
+</html>
