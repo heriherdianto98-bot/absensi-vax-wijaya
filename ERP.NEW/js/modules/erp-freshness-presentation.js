@@ -151,3 +151,206 @@ Tujuan:
 
     console.log("[Freshness Presentation] UI guard aktif; sync engine tidak disentuh.");
 })();
+
+/*
+=========================================================
+TABEL HARIAN — LOMPAT TANGGAL UI FIX
+=========================================================
+UI/navigation only:
+- karakter kalender dibuat dari Unicode escape agar kebal mojibake/encoding lokal
+- kalender boleh pindah bulan dan semua tanggal bisa dipilih
+- tanggal di luar periode aktif menjadi custom single-date lalu reload engine
+- tidak mengubah formula uang / sync / source data
+=========================================================
+*/
+(function(){
+    "use strict";
+
+    const path = String(window.location.pathname || "").toLowerCase();
+    if(!path.includes("tabel-harian-cabang")) return;
+
+    function normalizeJumpChrome(){
+        const ico = document.querySelector("#thcJumpDateBtn .thc-jump-ico");
+        const close = document.querySelector("#thcJumpCalModal .thc-jump-cal-x");
+        const prev = document.getElementById("thcJumpCalPrev");
+        const next = document.getElementById("thcJumpCalNext");
+        const hint = document.querySelector("#thcJumpCalModal .thc-jump-cal-hint");
+        if(ico) ico.textContent = "\u{1F4C5}";
+        if(close) close.textContent = "\u00D7";
+        if(prev) prev.textContent = "\u2039";
+        if(next) next.textContent = "\u203A";
+        if(hint) hint.textContent = "Pilih tanggal untuk menampilkan data tanggal tersebut \u2014 cabang tetap mengikuti filter aktif";
+    }
+
+    function install(){
+        if(typeof TabelHarianCabang === "undefined") return false;
+        if(TabelHarianCabang.__jumpDateFixInstalled){
+            normalizeJumpChrome();
+            return true;
+        }
+        TabelHarianCabang.__jumpDateFixInstalled = true;
+
+        TabelHarianCabang.renderJumpDates = function(){
+            const btn = document.getElementById("thcJumpDateBtn");
+            const wrap = document.getElementById("thcJumpWrap");
+            const feedback = document.getElementById("thcJumpFeedback");
+            if(feedback){
+                feedback.hidden = true;
+                feedback.textContent = "";
+            }
+
+            const dates = [...new Set(
+                (this.rows || [])
+                    .map((r) => String(r.tanggal || "").slice(0, 10))
+                    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
+            )].sort();
+            this._jumpDates = dates;
+            if(wrap) wrap.hidden = false;
+            if(btn) btn.disabled = false;
+
+            const rangeEnd = String(DashboardEngine?.lastRange?.end || "").slice(0, 10);
+            const today = (typeof DashboardEngine !== "undefined" && DashboardEngine.getJakartaToday)
+                ? DashboardEngine.getJakartaToday()
+                : new Date().toISOString().slice(0, 10);
+            const seed = dates.includes(this._jumpSelected)
+                ? this._jumpSelected
+                : (dates[dates.length - 1] || rangeEnd || today);
+
+            this._jumpSelected = /^\d{4}-\d{2}-\d{2}$/.test(seed) ? seed : today;
+            this._jumpViewYear = Number(this._jumpSelected.slice(0, 4));
+            this._jumpViewMonth = Number(this._jumpSelected.slice(5, 7)) - 1;
+            this.syncJumpTriggerLabel();
+            normalizeJumpChrome();
+            if(this.isJumpCalendarOpen()) this.renderJumpCalendar();
+        };
+
+        TabelHarianCabang.openJumpCalendar = function(){
+            const btn = document.getElementById("thcJumpDateBtn");
+            const modal = document.getElementById("thcJumpCalModal");
+            if(!modal || !btn || btn.disabled) return;
+
+            const today = (typeof DashboardEngine !== "undefined" && DashboardEngine.getJakartaToday)
+                ? DashboardEngine.getJakartaToday()
+                : new Date().toISOString().slice(0, 10);
+            const seed = this._jumpSelected
+                || String(DashboardEngine?.lastRange?.end || "").slice(0, 10)
+                || today;
+            this._jumpViewYear = Number(seed.slice(0, 4));
+            this._jumpViewMonth = Number(seed.slice(5, 7)) - 1;
+
+            modal.hidden = false;
+            modal.setAttribute("aria-hidden", "false");
+            btn.setAttribute("aria-expanded", "true");
+            document.body.classList.add("thc-jump-cal-open");
+            normalizeJumpChrome();
+            this.renderJumpCalendar();
+        };
+
+        TabelHarianCabang.renderJumpCalendar = function(){
+            const grid = document.getElementById("thcJumpCalDays");
+            const label = document.getElementById("thcJumpCalMonthLabel");
+            if(!grid || this._jumpViewYear == null || this._jumpViewMonth == null) return;
+
+            const monthNames = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+            if(label) label.textContent = `${monthNames[this._jumpViewMonth]} ${this._jumpViewYear}`;
+
+            const today = (typeof DashboardEngine !== "undefined" && DashboardEngine.getJakartaToday)
+                ? DashboardEngine.getJakartaToday()
+                : "";
+            const inCurrentDataset = new Set(this._jumpDates || []);
+            const first = new Date(Date.UTC(this._jumpViewYear, this._jumpViewMonth, 1));
+            const mondayIndex = (first.getUTCDay() + 6) % 7;
+            const daysInMonth = new Date(Date.UTC(this._jumpViewYear, this._jumpViewMonth + 1, 0)).getUTCDate();
+
+            let html = "";
+            for(let i = 0; i < mondayIndex; i++){
+                html += `<span class="thc-jump-day is-empty" aria-hidden="true"></span>`;
+            }
+            for(let day = 1; day <= daysInMonth; day++){
+                const iso = `${this._jumpViewYear}-${String(this._jumpViewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                const classes = ["thc-jump-day"];
+                if(iso === today) classes.push("is-today");
+                if(this._jumpSelected && iso === this._jumpSelected) classes.push("is-selected");
+                if(inCurrentDataset.has(iso)) classes.push("is-in-dataset");
+                html += `<button type="button" class="${classes.join(" ")}" data-thc-jump-day="${iso}">${day}</button>`;
+            }
+            grid.innerHTML = html;
+            normalizeJumpChrome();
+        };
+
+        const originalJump = TabelHarianCabang.jumpToDate.bind(TabelHarianCabang);
+        TabelHarianCabang.jumpToDate = function(iso){
+            const tanggal = String(iso || "").trim().slice(0, 10);
+            if(!/^\d{4}-\d{2}-\d{2}$/.test(tanggal)) return;
+
+            if((this._jumpDates || []).includes(tanggal)){
+                originalJump(tanggal);
+                return;
+            }
+
+            this.showJumpFeedback("");
+            this._jumpSelected = tanggal;
+            this.syncJumpTriggerLabel();
+
+            if(typeof DashboardEngine === "undefined" || typeof loadDashboardFromToolbar !== "function"){
+                this.showJumpFeedback("Tidak dapat memuat tanggal tersebut. Muat ulang halaman.");
+                return;
+            }
+
+            DashboardEngine.lastCustomMode = "range";
+            DashboardEngine.lastCustomStart = tanggal;
+            DashboardEngine.lastCustomEnd = tanggal;
+
+            const startEl = document.getElementById("customStartDate");
+            const endEl = document.getElementById("customEndDate");
+            const modeEl = document.getElementById("customPeriodMode");
+            if(startEl) startEl.value = tanggal;
+            if(endEl) endEl.value = tanggal;
+            if(modeEl) modeEl.value = "range";
+
+            const displayLabel = (typeof formatDisplayDateId === "function")
+                ? formatDisplayDateId(tanggal)
+                : tanggal;
+
+            if(typeof setPeriodControlToCustomActive === "function"){
+                setPeriodControlToCustomActive(displayLabel);
+            }else{
+                const periodFilter = document.getElementById("periodFilter");
+                if(periodFilter) periodFilter.value = "customtanggal";
+            }
+
+            if(typeof persistDashboardFilters === "function"){
+                persistDashboardFilters({
+                    periode: "customtanggal",
+                    customStart: tanggal,
+                    customEnd: tanggal,
+                    customMode: "range",
+                    customMonth: null,
+                    customYear: null,
+                    displayLabel
+                });
+            }
+
+            this.closeJumpCalendar();
+            loadDashboardFromToolbar({ start: tanggal, end: tanggal, mode: "range" });
+            if(typeof syncHeaderContextFromPage === "function"){
+                setTimeout(syncHeaderContextFromPage, 0);
+            }
+        };
+
+        normalizeJumpChrome();
+        if(typeof TabelHarianCabang.renderJumpDates === "function"){
+            TabelHarianCabang.renderJumpDates();
+        }
+        console.log("[Tabel Harian] Lompat Tanggal fix aktif.");
+        return true;
+    }
+
+    document.addEventListener("erp:components-ready", () => {
+        setTimeout(install, 0);
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(install, 500);
+    });
+    setTimeout(install, 1200);
+})();
