@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="../styles/kpi-ultimate.css">
 <link rel="stylesheet" href="../styles/ai.css?v=20260901-ai6">
 <link rel="stylesheet" href="../styles/erp-freshness.css">
+<link rel="stylesheet" href="../styles/tabel-harian-toolbar-width.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="setoran-dark">
@@ -32,36 +33,6 @@
     <div id="header"></div>
     <div class="erp-content setoran-page">
         <section class="thc-page" id="thcPage">
-
-            <header class="thc-print-identity thc-print-only" id="thcPrintIdentity" aria-hidden="true">
-                <div class="thc-print-head">
-                    <div class="thc-print-brand-wrap">
-                        <img src="../assets/brand/erp-vax-wijaya.png" alt="ERP VAX WIJAYA" class="thc-print-logo">
-                        <div class="thc-print-copy">
-                            <h1>ERP VAX WIJAYA</h1>
-                            <div class="thc-print-doc">HARIAN</div>
-                            <div class="thc-print-sys">ENTERPRISE MANAGEMENT SYSTEM</div>
-                        </div>
-                    </div>
-                    <div class="thc-print-mark">DOKUMEN OPERASIONAL<em>INTERNAL</em></div>
-                </div>
-                <div class="thc-print-rule"></div>
-                <div class="thc-print-title-wrap">
-                    <div class="thc-print-t1">TABEL HARIAN</div>
-                    <p class="thc-print-sub">Daily Recap · posisi sesuai filter aktif.</p>
-                </div>
-                <section class="thc-print-meta-grid">
-                    <div>
-                        <div class="thc-print-item"><span class="lbl">Cabang</span><span class="val" id="thcPrintCabang">—</span></div>
-                        <div class="thc-print-item"><span class="lbl">Periode</span><span class="val" id="thcPrintPeriode">—</span></div>
-                    </div>
-                    <div>
-                        <div class="thc-print-item"><span class="lbl">Tanggal Cetak</span><span class="val" id="thcPrintDate">—</span></div>
-                        <div class="thc-print-item"><span class="lbl">Waktu Cetak</span><span class="val" id="thcPrintTime">—</span></div>
-                    </div>
-                </section>
-            </header>
-
             <header class="thc-page-head" id="thcPageHead" aria-label="Judul halaman">
                 <p class="thc-page-eyebrow">LAPORAN • MINUTES</p>
                 <h2 class="thc-page-title">Tabel Harian Semua Cabang</h2>
@@ -72,57 +43,15 @@
                 <div class="thc-pin-stack" id="thcPinStack">
                     <div class="thc-table-toolbar" id="thcTableToolbar" aria-label="Filter dan aksi tabel">
                         <div class="thc-unified-toolbar">
-                            <label class="thc-tb-field thc-tb-cabang">
-                                <span class="thc-tb-label">Cabang</span>
-                                <select id="branchFilter">
-                                    <option value="Semua Cabang">Semua Cabang</option>
-                                    <option value="AR Hakim">AR Hakim</option>
-                                    <option value="Kalijati">Kalijati</option>
-                                    <option value="Parahyangan">Parahyangan</option>
-                                    <option value="Cinangsi">Cinangsi</option>
-                                    <option value="Pamanukan">Pamanukan</option>
-                                    <option value="Palabuan">Palabuan</option>
-                                    <option value="Soklat">Soklat</option>
-                                    <option value="Rawabadak">Rawabadak</option>
-                                    <option value="Pagaden">Pagaden</option>
-                                    <option value="Mekarwangi">Mekarwangi</option>
-                                </select>
-                            </label>
+                            <label class="thc-tb-field thc-tb-cabang"><span class="thc-tb-label">Cabang</span><select id="branchFilter"><option value="Semua Cabang">Semua Cabang</option><option value="AR Hakim">AR Hakim</option><option value="Kalijati">Kalijati</option><option value="Parahyangan">Parahyangan</option><option value="Cinangsi">Cinangsi</option><option value="Pamanukan">Pamanukan</option><option value="Palabuan">Palabuan</option><option value="Soklat">Soklat</option><option value="Rawabadak">Rawabadak</option><option value="Pagaden">Pagaden</option><option value="Mekarwangi">Mekarwangi</option></select></label>
                             <span class="thc-tb-sep" aria-hidden="true"></span>
-                            <label class="thc-tb-field thc-tb-periode">
-                                <span class="thc-tb-label">Periode</span>
-                                <select id="periodFilter">
-                                    <option value="hariini">Hari Ini</option>
-                                    <option value="kemarin">Kemarin</option>
-                                    <option value="7hari">7 Hari</option>
-                                    <option value="30hari">30 Hari</option>
-                                    <option value="bulanini">Bulan Ini</option>
-                                    <option value="tahunini">Tahun Ini</option>
-                                    <option value="customtanggal">Custom Tanggal</option>
-                                </select>
-                            </label>
+                            <label class="thc-tb-field thc-tb-periode"><span class="thc-tb-label">Periode</span><select id="periodFilter"><option value="hariini">Hari Ini</option><option value="kemarin">Kemarin</option><option value="7hari">7 Hari</option><option value="30hari">30 Hari</option><option value="bulanini">Bulan Ini</option><option value="tahunini">Tahun Ini</option><option value="customtanggal">Custom Tanggal</option></select></label>
                             <span class="thc-tb-sep" aria-hidden="true"></span>
-                            <div class="thc-tb-field thc-tb-lastsync" id="toolbarSyncMeta">
-                                <span class="thc-tb-label">Last Sync</span>
-                                <strong id="toolbarLastSync" class="thc-tb-lastsync-value">—</strong>
-                            </div>
+                            <div class="thc-tb-field thc-tb-lastsync" id="toolbarSyncMeta"><span class="thc-tb-label">Last Sync</span><strong id="toolbarLastSync" class="thc-tb-lastsync-value">—</strong></div>
                             <span class="thc-tb-sep" aria-hidden="true"></span>
-                            <div class="thc-tb-field thc-tb-jump" id="thcJumpWrap">
-                                <span class="thc-tb-label">Lompat Tanggal</span>
-                                <button type="button" id="thcJumpDateBtn" class="thc-jump-trigger" disabled aria-haspopup="dialog" aria-expanded="false">
-                                    <span id="thcJumpDateLabel">—</span>
-                                    <span class="thc-jump-ico" aria-hidden="true">📅</span>
-                                </button>
-                                <span class="thc-jump-feedback" id="thcJumpFeedback" hidden></span>
-                            </div>
+                            <div class="thc-tb-field thc-tb-jump" id="thcJumpWrap"><span class="thc-tb-label">Lompat Tanggal</span><button type="button" id="thcJumpDateBtn" class="thc-jump-trigger" disabled aria-haspopup="dialog" aria-expanded="false"><span id="thcJumpDateLabel">—</span><span class="thc-jump-ico" aria-hidden="true">📅</span></button><span class="thc-jump-feedback" id="thcJumpFeedback" hidden></span></div>
                             <div class="thc-tb-spacer" aria-hidden="true"></div>
-                            <div class="thc-tb-actions">
-                                <button type="button" id="btnRefresh" class="thc-action-btn thc-action-refresh">Refresh</button>
-                                <button type="button" id="btnSync" class="thc-action-btn thc-action-sync">Sync Minutes</button>
-                                <button type="button" id="thcPrint" class="thc-action-btn thc-action-print">Print</button>
-                                <button type="button" id="thcPdf" class="thc-action-btn thc-action-pdf">PDF</button>
-                                <button type="button" id="thcExcel" class="thc-action-btn thc-action-excel">Excel</button>
-                            </div>
+                            <div class="thc-tb-actions"><button type="button" id="btnRefresh" class="thc-action-btn thc-action-refresh">Refresh</button><button type="button" id="btnSync" class="thc-action-btn thc-action-sync">Sync Minutes</button><button type="button" id="thcPrint" class="thc-action-btn thc-action-print">Print</button><button type="button" id="thcPdf" class="thc-action-btn thc-action-pdf">PDF</button><button type="button" id="thcExcel" class="thc-action-btn thc-action-excel">Excel</button></div>
                         </div>
                         <p class="thc-row-meta" id="thcMeta">Memuat…</p>
                     </div>
@@ -130,81 +59,18 @@
                 </div>
 
                 <div id="thcDashModalHost"></div>
-                <div id="thcJumpCalModal" class="thc-jump-cal-modal" hidden aria-hidden="true">
-                    <div class="thc-jump-cal-backdrop" data-thc-jump-close></div>
-                    <div class="thc-jump-cal-panel" role="dialog" aria-modal="true" aria-labelledby="thcJumpCalTitle">
-                        <div class="thc-jump-cal-header"><h3 id="thcJumpCalTitle">Lompat Tanggal</h3><button type="button" class="thc-jump-cal-x" data-thc-jump-close aria-label="Tutup">×</button></div>
-                        <div class="thc-jump-cal-nav"><button type="button" id="thcJumpCalPrev" aria-label="Bulan sebelumnya">‹</button><strong id="thcJumpCalMonthLabel">—</strong><button type="button" id="thcJumpCalNext" aria-label="Bulan berikutnya">›</button></div>
-                        <div class="thc-jump-cal-weekdays" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
-                        <div id="thcJumpCalDays" class="thc-jump-cal-days"></div>
-                        <p class="thc-jump-cal-hint">Navigasi ke tanggal dalam periode aktif — tidak mengubah filter</p>
-                    </div>
-                </div>
+                <div id="thcJumpCalModal" class="thc-jump-cal-modal" hidden aria-hidden="true"><div class="thc-jump-cal-backdrop" data-thc-jump-close></div><div class="thc-jump-cal-panel" role="dialog" aria-modal="true" aria-labelledby="thcJumpCalTitle"><div class="thc-jump-cal-header"><h3 id="thcJumpCalTitle">Lompat Tanggal</h3><button type="button" class="thc-jump-cal-x" data-thc-jump-close aria-label="Tutup">×</button></div><div class="thc-jump-cal-nav"><button type="button" id="thcJumpCalPrev" aria-label="Bulan sebelumnya">‹</button><strong id="thcJumpCalMonthLabel">—</strong><button type="button" id="thcJumpCalNext" aria-label="Bulan berikutnya">›</button></div><div class="thc-jump-cal-weekdays" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div><div id="thcJumpCalDays" class="thc-jump-cal-days"></div><p class="thc-jump-cal-hint">Navigasi ke tanggal dalam periode aktif — tidak mengubah filter</p></div></div>
 
-                <div class="thc-table-scroll" id="thcScroll">
-                    <div id="thcLoading" class="thc-state">Memuat data DashboardEngine…</div>
-                    <div id="thcError" class="thc-error" hidden></div>
-                    <div id="thcEmpty" class="thc-state" hidden>Tidak ada data pada filter aktif.</div>
-                    <table class="setoran3-table thc-table" id="thcTable" hidden>
-                        <thead><tr>
-                            <th class="thc-sticky-col thc-sticky-tanggal" scope="col">Tanggal</th>
-                            <th class="thc-sticky-col thc-sticky-cabang" scope="col">Cabang</th>
-                            <th>Omzet / Gross</th><th>Nett Revenue</th><th>Non Tunai</th><th class="thc-col-cashout">Cash Out</th><th>Cash Bersih</th><th>Customer</th><th>Transaksi</th><th>Services</th>
-                        </tr></thead>
-                        <tbody id="thcTbody"></tbody>
-                    </table>
-                </div>
+                <div class="thc-table-scroll" id="thcScroll"><div id="thcLoading" class="thc-state">Memuat data DashboardEngine…</div><div id="thcError" class="thc-error" hidden></div><div id="thcEmpty" class="thc-state" hidden>Tidak ada data pada filter aktif.</div><table class="setoran3-table thc-table" id="thcTable" hidden><thead><tr><th class="thc-sticky-col thc-sticky-tanggal" scope="col">Tanggal</th><th class="thc-sticky-col thc-sticky-cabang" scope="col">Cabang</th><th>Omzet / Gross</th><th>Nett Revenue</th><th>Non Tunai</th><th class="thc-col-cashout">Cash Out</th><th>Cash Bersih</th><th>Customer</th><th>Transaksi</th><th>Services</th></tr></thead><tbody id="thcTbody"></tbody></table></div>
 
-                <div class="thc-totals" id="thcTotals" hidden>
-                    <div class="thc-totals-label">TOTAL PERIODE</div>
-                    <div class="thc-totals-grid">
-                        <div class="thc-tot-item is-omzet"><span>Omzet / Gross</span><strong id="thcTotOmzet">—</strong></div>
-                        <div class="thc-tot-item is-gross-service"><span>Gross Service</span><strong id="thcTotGrossService">—</strong></div>
-                        <div class="thc-tot-item is-produk"><span>Product Terjual</span><strong id="thcTotProduk">—</strong></div>
-                        <div class="thc-tot-item is-nett is-explained"><span>Nett Revenue</span><strong id="thcTotNett">—</strong><em class="thc-tot-desc">Hak bersih usaha setelah share &amp; pengurang operasional</em></div>
-                        <div class="thc-tot-item is-nontunai is-explained"><span>Non Tunai</span><strong id="thcTotNonTunai">—</strong><em class="thc-tot-desc">Bagian Nett Revenue yang diterima secara non-cash</em></div>
-                        <div class="thc-tot-item is-cash is-explained"><span>Cash Kotor</span><strong id="thcTotCash">—</strong><em class="thc-tot-desc">Uang cash transaksi sebelum share, cash out &amp; pengurang lain</em></div>
-                        <div class="thc-tot-item is-cashout is-link" id="thcCardCashOut" role="link" tabindex="0" title="Buka modul Cash Out dengan filter aktif"><span>Cash Out</span><strong id="thcTotCashOut">—</strong><em class="thc-tot-go" aria-hidden="true">↗</em></div>
-                        <div class="thc-tot-item is-actual is-explained"><span>Cash Bersih</span><strong id="thcTotSetoran">—</strong><em class="thc-tot-desc">Uang fisik bersih yang tersedia di kasir</em></div>
-                        <div class="thc-tot-item is-customer"><span>Customer</span><strong id="thcTotCustomer">—</strong></div>
-                        <div class="thc-tot-item is-transaksi"><span>Transaksi</span><strong id="thcTotTransaksi">—</strong></div>
-                        <div class="thc-tot-item is-services"><span>Services</span><strong id="thcTotServices">—</strong></div>
-                        <div class="thc-tot-item is-avgticket"><span>Avg Ticket</span><strong id="thcTotAvgTicket">—</strong></div>
-                    </div>
-                </div>
+                <div class="thc-totals" id="thcTotals" hidden><div class="thc-totals-label">TOTAL PERIODE</div><div class="thc-totals-grid"><div class="thc-tot-item is-omzet"><span>Omzet / Gross</span><strong id="thcTotOmzet">—</strong></div><div class="thc-tot-item is-gross-service"><span>Gross Service</span><strong id="thcTotGrossService">—</strong></div><div class="thc-tot-item is-produk"><span>Product Terjual</span><strong id="thcTotProduk">—</strong></div><div class="thc-tot-item is-nett is-explained"><span>Nett Revenue</span><strong id="thcTotNett">—</strong><em class="thc-tot-desc">Hak bersih usaha setelah share &amp; pengurang operasional</em></div><div class="thc-tot-item is-nontunai is-explained"><span>Non Tunai</span><strong id="thcTotNonTunai">—</strong><em class="thc-tot-desc">Bagian Nett Revenue yang diterima secara non-cash</em></div><div class="thc-tot-item is-cash is-explained"><span>Cash Kotor</span><strong id="thcTotCash">—</strong><em class="thc-tot-desc">Uang cash transaksi sebelum share, cash out &amp; pengurang lain</em></div><div class="thc-tot-item is-cashout is-link" id="thcCardCashOut" role="link" tabindex="0" title="Buka modul Cash Out dengan filter aktif"><span>Cash Out</span><strong id="thcTotCashOut">—</strong><em class="thc-tot-go" aria-hidden="true">↗</em></div><div class="thc-tot-item is-actual is-explained"><span>Cash Bersih</span><strong id="thcTotSetoran">—</strong><em class="thc-tot-desc">Uang fisik bersih yang tersedia di kasir</em></div><div class="thc-tot-item is-customer"><span>Customer</span><strong id="thcTotCustomer">—</strong></div><div class="thc-tot-item is-transaksi"><span>Transaksi</span><strong id="thcTotTransaksi">—</strong></div><div class="thc-tot-item is-services"><span>Services</span><strong id="thcTotServices">—</strong></div><div class="thc-tot-item is-avgticket"><span>Avg Ticket</span><strong id="thcTotAvgTicket">—</strong></div></div></div>
             </section>
 
             <section id="widget-section" class="thc-ai-host" aria-label="VAX AI Insight"></section>
-            <div class="thc-sales-panels" id="thcSalesPanels">
-                <div class="thc-produk-slot">
-                    <section class="thc-produk-section" id="thcProdukSection" aria-label="Penjualan Produk">
-                        <div class="thc-produk-summary"><span class="thc-produk-kicker">READ ONLY · PRODUCT SALES</span><h3 class="thc-produk-title">TOTAL PENJUALAN PRODUK PERIODE</h3><div class="thc-produk-hero"><span class="thc-produk-hero-label">Total periode</span><strong class="thc-produk-val" id="thcProdukTotalVal">Rp0</strong><em class="thc-produk-meta" id="thcProdukTotalMeta"></em></div></div>
-                        <div class="thc-produk-detail"><p class="thc-produk-detail-label">Rincian Penjualan Produk</p><div class="thc-produk-list-wrap" id="thcProdukListWrap"><div class="thc-produk-list" id="thcProdukList" aria-live="polite"><p class="thc-produk-empty">Rp0 · belum ada penjualan produk pada periode ini.</p></div></div></div>
-                    </section>
-                </div>
-                <section class="thc-kpiu-section" id="thcKpiuSection" aria-label="KPI Ultimate">
-                    <div class="thc-kpiu-summary">
-                        <span class="thc-kpiu-kicker">READ ONLY · KPI ULTIMATE</span><h3 class="thc-kpiu-title">KPI ULTIMATE KASIR</h3><em class="thc-kpiu-meta" id="thcKpiuMeta"></em>
-                        <div class="thc-kpiu-cards">
-                            <article class="thc-kpiu-card"><span>Target Bulanan</span><strong id="thcKpiuTargetVal">Rp0</strong></article>
-                            <article class="thc-kpiu-card is-realisasi"><span>Realisasi</span><strong id="thcKpiuRealisasiVal">Rp0</strong></article>
-                            <article class="thc-kpiu-card" id="thcKpiuSelisihCard"><span>Selisih</span><strong id="thcKpiuSelisihVal">Rp0</strong></article>
-                            <article class="thc-kpiu-card"><span>Progress</span><strong id="thcKpiuProgressVal">0%</strong></article>
-                        </div>
-                        <div class="thc-kpiu-edit" data-owner-only id="thcKpiuEditWrap"><label class="thc-kpiu-edit-field"><span>Ubah target cabang</span><input id="thcKpiuTargetInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Target KPI Ultimate"></label><button type="button" id="thcKpiuTargetSave" class="thc-kpiu-save">Simpan Target</button><em class="thc-kpiu-edit-msg" id="thcKpiuTargetMsg"></em></div>
-                    </div>
-                    <div class="thc-kpiu-detail">
-                        <p class="thc-kpiu-detail-label">Per kasir · CLOSE</p><div class="thc-kpiu-table-wrap"><table class="thc-kpiu-table" id="thcKpiuKasirTable"><thead><tr><th>Nama Kasir</th><th class="thc-num">Trx Ultimate</th><th class="thc-num">Realisasi</th><th class="thc-num">Target Cabang</th><th class="thc-num">Progress</th><th>Status</th></tr></thead><tbody id="thcKpiuKasirTbody"><tr><td colspan="6" class="thc-kpiu-empty">Memuat KPI Ultimate…</td></tr></tbody></table></div>
-                        <p class="thc-kpiu-detail-label">Detail package</p><div class="thc-kpiu-pkg" id="thcKpiuPkg"></div>
-                    </div>
-                </section>
-            </div>
-
-            <footer class="thc-print-foot thc-print-only" id="thcPrintFoot" aria-hidden="true"><div><b>ERP VAX WIJAYA</b>HARIAN</div><div class="c">INTERNAL / CONFIDENTIAL<br>Generated automatically</div><div class="r"><span id="thcPrintFootDate">—</span><br><span id="thcPrintFootTime">—</span></div></footer>
+            <div class="thc-sales-panels" id="thcSalesPanels"><div class="thc-produk-slot"><section class="thc-produk-section" id="thcProdukSection" aria-label="Penjualan Produk"><div class="thc-produk-summary"><span class="thc-produk-kicker">READ ONLY · PRODUCT SALES</span><h3 class="thc-produk-title">TOTAL PENJUALAN PRODUK PERIODE</h3><div class="thc-produk-hero"><span class="thc-produk-hero-label">Total periode</span><strong class="thc-produk-val" id="thcProdukTotalVal">Rp0</strong><em class="thc-produk-meta" id="thcProdukTotalMeta"></em></div></div><div class="thc-produk-detail"><p class="thc-produk-detail-label">Rincian Penjualan Produk</p><div class="thc-produk-list-wrap" id="thcProdukListWrap"><div class="thc-produk-list" id="thcProdukList" aria-live="polite"><p class="thc-produk-empty">Rp0 · belum ada penjualan produk pada periode ini.</p></div></div></div></section></div><section class="thc-kpiu-section" id="thcKpiuSection" aria-label="KPI Ultimate"><div class="thc-kpiu-summary"><span class="thc-kpiu-kicker">READ ONLY · KPI ULTIMATE</span><h3 class="thc-kpiu-title">KPI ULTIMATE KASIR</h3><em class="thc-kpiu-meta" id="thcKpiuMeta"></em><div class="thc-kpiu-cards"><article class="thc-kpiu-card"><span>Target Bulanan</span><strong id="thcKpiuTargetVal">Rp0</strong></article><article class="thc-kpiu-card is-realisasi"><span>Realisasi</span><strong id="thcKpiuRealisasiVal">Rp0</strong></article><article class="thc-kpiu-card" id="thcKpiuSelisihCard"><span>Selisih</span><strong id="thcKpiuSelisihVal">Rp0</strong></article><article class="thc-kpiu-card"><span>Progress</span><strong id="thcKpiuProgressVal">0%</strong></article></div><div class="thc-kpiu-edit" data-owner-only id="thcKpiuEditWrap"><label class="thc-kpiu-edit-field"><span>Ubah target cabang</span><input id="thcKpiuTargetInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Target KPI Ultimate"></label><button type="button" id="thcKpiuTargetSave" class="thc-kpiu-save">Simpan Target</button><em class="thc-kpiu-edit-msg" id="thcKpiuTargetMsg"></em></div></div><div class="thc-kpiu-detail"><p class="thc-kpiu-detail-label">Per kasir · CLOSE</p><div class="thc-kpiu-table-wrap"><table class="thc-kpiu-table" id="thcKpiuKasirTable"><thead><tr><th>Nama Kasir</th><th class="thc-num">Trx Ultimate</th><th class="thc-num">Realisasi</th><th class="thc-num">Target Cabang</th><th class="thc-num">Progress</th><th>Status</th></tr></thead><tbody id="thcKpiuKasirTbody"><tr><td colspan="6" class="thc-kpiu-empty">Memuat KPI Ultimate…</td></tr></tbody></table></div><p class="thc-kpiu-detail-label">Detail package</p><div class="thc-kpiu-pkg" id="thcKpiuPkg"></div></div></section></div>
         </section>
     </div>
 </div>
-
 <nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./tabel-harian-cabang.html" class="is-active"><span class="bn-icon">▦</span>Tabel</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
 
 <script src="../config/minutes.js"></script>
@@ -220,7 +86,7 @@
 <script src="../js/modules/vax-ai-insight.js?v=20260818-ai4"></script>
 <script src="../js/modules/tabel-harian-cabang.js"></script>
 <script src="../js/modules/tabel-harian-share-cards.js?v=20260902-sharecards1"></script>
-<script src="../js/modules/tabel-harian-print-full.js?v=20260903-printfull1"></script>
+<script src="../js/modules/tabel-harian-print-full.js?v=20260903-printfull2"></script>
 <script src="../js/modules/kpi-ultimate.js"></script>
 <script src="../js/loader.js"></script>
 <script>
@@ -228,44 +94,17 @@ document.addEventListener("erp:finance-ready", async () => {
     const sidebar = document.getElementById("sidebar");
     const header = document.getElementById("header");
     const modalHost = document.getElementById("thcDashModalHost");
-
-    if(sidebar){
-        sidebar.innerHTML = await (await fetch("../components/sidebar.html")).text();
-        if(typeof initSidebar === "function") initSidebar();
-        if(typeof markActiveSidebarLink === "function") markActiveSidebarLink();
-        else document.querySelectorAll(".menu-item").forEach((a) => a.classList.toggle("active", a.dataset.erpNav === "tabel-harian"));
-    }
-
-    if(header){
-        header.innerHTML = await (await fetch("../components/header.html")).text();
-        OwnerAuth.bindUi(); OwnerAuth.syncHeader(); OwnerAuth.applyAccessControl();
-        const title = document.getElementById("erpHeaderTitle");
-        const sub = document.getElementById("erpHeaderSub");
-        if(title) title.textContent = "Tabel Harian Semua Cabang";
-        if(sub) sub.textContent = "Control panel Dashboard · output tabel harian";
-        if(typeof initErpShellChrome === "function") initErpShellChrome();
-        if(typeof syncSidebarRoleMeta === "function") syncSidebarRoleMeta();
-    }
-
-    if(modalHost && !document.getElementById("customPeriodModal")){
-        const html = await (await fetch("../components/toolbar.html")).text();
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        const modal = doc.getElementById("customPeriodModal");
-        if(modal){ modalHost.appendChild(modal); const modeEl = document.getElementById("customPeriodMode"); if(modeEl) modeEl.value = "range"; }
-    }
-
+    if(sidebar){ sidebar.innerHTML = await (await fetch("../components/sidebar.html")).text(); if(typeof initSidebar === "function") initSidebar(); if(typeof markActiveSidebarLink === "function") markActiveSidebarLink(); else document.querySelectorAll(".menu-item").forEach((a) => a.classList.toggle("active", a.dataset.erpNav === "tabel-harian")); }
+    if(header){ header.innerHTML = await (await fetch("../components/header.html")).text(); OwnerAuth.bindUi(); OwnerAuth.syncHeader(); OwnerAuth.applyAccessControl(); const title = document.getElementById("erpHeaderTitle"); const sub = document.getElementById("erpHeaderSub"); if(title) title.textContent = "Tabel Harian Semua Cabang"; if(sub) sub.textContent = "Control panel Dashboard · output tabel harian"; if(typeof initErpShellChrome === "function") initErpShellChrome(); if(typeof syncSidebarRoleMeta === "function") syncSidebarRoleMeta(); }
+    if(modalHost && !document.getElementById("customPeriodModal")){ const html = await (await fetch("../components/toolbar.html")).text(); const doc = new DOMParser().parseFromString(html, "text/html"); const modal = doc.getElementById("customPeriodModal"); if(modal){ modalHost.appendChild(modal); const modeEl = document.getElementById("customPeriodMode"); if(modeEl) modeEl.value = "range"; } }
     document.body.classList.add("has-bottom-nav");
-    const widget = document.getElementById("widget-section");
-    if(widget && !widget.querySelector("#vaxAiInsight")) widget.innerHTML = await (await fetch("../components/ai-insight.html")).text();
-
+    const widget = document.getElementById("widget-section"); if(widget && !widget.querySelector("#vaxAiInsight")) widget.innerHTML = await (await fetch("../components/ai-insight.html")).text();
     if(typeof TabelHarianShareCards !== "undefined") TabelHarianShareCards.boot();
     TabelHarianCabang.boot();
     if(typeof KpiUltimate !== "undefined") KpiUltimate.boot();
     document.dispatchEvent(new CustomEvent("erp:components-ready"));
-
     if(typeof syncHeaderContextFromPage === "function"){ syncHeaderContextFromPage(); setTimeout(syncHeaderContextFromPage, 400); }
 });
 </script>
-
 </body>
 </html>
