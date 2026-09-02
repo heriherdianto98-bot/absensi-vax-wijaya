@@ -38,15 +38,14 @@
 
 /*
    ACTIONS FINAL: sejajar dengan judul laporan.
-   .thc-tb-actions tetap node/event yang sama, tetapi dinaikkan dari pin-stack
-   ke area kanan panel judul. Karena ancestor .thc-pin-stack sticky/positioned,
-   offset negatif diperlukan agar benar-benar masuk ke baris judul, bukan tetap
-   menggantung di baris filter.
+   Node/event tombol tetap sama. Group dinaikkan ke panel judul dan digeser
+   ke kiri agar seluruh Refresh/Sync/Print/PDF/Excel terlihat pada laptop
+   dengan browser zoom 80%, tanpa perlu scroll horizontal.
 */
 .thc-page .thc-tb-actions{
     position: absolute !important;
     top: -98px !important;
-    right: 18px !important;
+    right: 190px !important;
     z-index: 55 !important;
     display: flex !important;
     flex-wrap: nowrap !important;
