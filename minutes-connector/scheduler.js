@@ -20,7 +20,6 @@ function sekarangWIB() {
 function dalamJamOperasional() {
   const sekarang = sekarangWIB();
   const jam = sekarang.getHours();
-
   return jam >= 7 && jam <= 23;
 }
 
@@ -41,14 +40,13 @@ function jakartaTodayISO() {
   }).format(new Date());
 }
 
-function jalankanNodeFile(fileName, label, selesai) {
+function jalankanNodeFile(fileName, label, selesai, args = []) {
   const filePath = path.join(__dirname, fileName);
-
   console.log(`[${formatWaktu()}] Menjalankan ${label}...`);
 
   const proses = spawn(
     process.execPath,
-    [filePath],
+    [filePath, ...args],
     {
       cwd: __dirname,
       stdio: "inherit"
@@ -56,9 +54,7 @@ function jalankanNodeFile(fileName, label, selesai) {
   );
 
   proses.on("error", error => {
-    console.error(
-      `[${formatWaktu()}] ${label} gagal dijalankan: ${error.message}`
-    );
+    console.error(`[${formatWaktu()}] ${label} gagal dijalankan: ${error.message}`);
     selesai(1);
   });
 
@@ -66,9 +62,7 @@ function jalankanNodeFile(fileName, label, selesai) {
     if (kode === 0) {
       console.log(`[${formatWaktu()}] ${label} selesai.`);
     } else {
-      console.error(
-        `[${formatWaktu()}] ${label} berhenti dengan kode ${kode}.`
-      );
+      console.error(`[${formatWaktu()}] ${label} berhenti dengan kode ${kode}.`);
     }
     selesai(kode ?? 1);
   });
@@ -76,7 +70,6 @@ function jalankanNodeFile(fileName, label, selesai) {
 
 function jalankanDailyRecap(selesai) {
   const filePath = path.join(__dirname, "sync.js");
-
   console.log(`[${formatWaktu()}] Menjalankan Minutes Daily Recap via xvfb-run...`);
 
   const proses = spawn(
@@ -89,9 +82,7 @@ function jalankanDailyRecap(selesai) {
   );
 
   proses.on("error", error => {
-    console.error(
-      `[${formatWaktu()}] Minutes Daily Recap gagal dijalankan: ${error.message}`
-    );
+    console.error(`[${formatWaktu()}] Minutes Daily Recap gagal dijalankan: ${error.message}`);
     selesai(1);
   });
 
@@ -99,9 +90,7 @@ function jalankanDailyRecap(selesai) {
     if (kode === 0) {
       console.log(`[${formatWaktu()}] Minutes Daily Recap selesai.`);
     } else {
-      console.error(
-        `[${formatWaktu()}] Minutes Daily Recap berhenti dengan kode ${kode}.`
-      );
+      console.error(`[${formatWaktu()}] Minutes Daily Recap berhenti dengan kode ${kode}.`);
     }
     selesai(kode ?? 1);
   });
@@ -135,9 +124,7 @@ function jalankanKpiUltimate(selesai) {
   );
 
   proses.on("error", error => {
-    console.error(
-      `[${formatWaktu()}] KPI Ultimate gagal dijalankan: ${error.message}`
-    );
+    console.error(`[${formatWaktu()}] KPI Ultimate gagal dijalankan: ${error.message}`);
     selesai(1);
   });
 
@@ -145,9 +132,7 @@ function jalankanKpiUltimate(selesai) {
     if (kode === 0) {
       console.log(`[${formatWaktu()}] KPI Ultimate source refresh selesai.`);
     } else {
-      console.error(
-        `[${formatWaktu()}] KPI Ultimate source refresh berhenti dengan kode ${kode}.`
-      );
+      console.error(`[${formatWaktu()}] KPI Ultimate source refresh berhenti dengan kode ${kode}.`);
     }
     selesai(kode ?? 1);
   });
@@ -162,19 +147,14 @@ function jalankanCashOutMonthlyReconcile(selesai) {
   if (!harusJalankanCashOutReconcile()) {
     const sisaMenit = Math.max(
       1,
-      Math.ceil(
-        (CASHOUT_RECONCILE_MS - (Date.now() - lastCashOutReconcileAt)) / 60000
-      )
+      Math.ceil((CASHOUT_RECONCILE_MS - (Date.now() - lastCashOutReconcileAt)) / 60000)
     );
-    console.log(
-      `[${formatWaktu()}] SKIP Cash Out Monthly Reconciliation (berikutnya ~${sisaMenit} menit).`
-    );
+    console.log(`[${formatWaktu()}] SKIP Cash Out Monthly Reconciliation (berikutnya ~${sisaMenit} menit).`);
     selesai(0);
     return;
   }
 
   lastCashOutReconcileAt = Date.now();
-
   const filePath = path.join(__dirname, "cashout-monthly-reconcile.js");
 
   console.log(
@@ -201,21 +181,15 @@ function jalankanCashOutMonthlyReconcile(selesai) {
   );
 
   proses.on("error", error => {
-    console.error(
-      `[${formatWaktu()}] Cash Out Monthly Reconciliation gagal dijalankan: ${error.message}`
-    );
+    console.error(`[${formatWaktu()}] Cash Out Monthly Reconciliation gagal dijalankan: ${error.message}`);
     selesai(1);
   });
 
   proses.on("close", kode => {
     if (kode === 0) {
-      console.log(
-        `[${formatWaktu()}] Cash Out Monthly Reconciliation selesai.`
-      );
+      console.log(`[${formatWaktu()}] Cash Out Monthly Reconciliation selesai.`);
     } else {
-      console.error(
-        `[${formatWaktu()}] Cash Out Monthly Reconciliation berhenti dengan kode ${kode}.`
-      );
+      console.error(`[${formatWaktu()}] Cash Out Monthly Reconciliation berhenti dengan kode ${kode}.`);
     }
     selesai(kode ?? 1);
   });
@@ -223,16 +197,12 @@ function jalankanCashOutMonthlyReconcile(selesai) {
 
 function jalankanSync() {
   if (sedangBerjalan) {
-    console.log(
-      `[${formatWaktu()}] Sync sebelumnya masih berjalan. Dilewati.`
-    );
+    console.log(`[${formatWaktu()}] Sync sebelumnya masih berjalan. Dilewati.`);
     return;
   }
 
   if (!dalamJamOperasional()) {
-    console.log(
-      `[${formatWaktu()}] Di luar jam sync 07.00–00.00 WIB.`
-    );
+    console.log(`[${formatWaktu()}] Di luar jam sync 07.00–00.00 WIB.`);
     return;
   }
 
@@ -261,12 +231,21 @@ function jalankanSync() {
               "product-sales-sync.js",
               "Minutes Product Sales Daily",
               () => {
-                jalankanKpiUltimate(() => {
-                  jalankanCashOutMonthlyReconcile(() => {
-                    sedangBerjalan = false;
-                    console.log(`[${formatWaktu()}] Siklus sync selesai.`);
-                  });
-                });
+                // Detail share produk per penjual wajib ikut sync harian.
+                // Script ini hanya merekonsiliasi terhadap canonical share_produk,
+                // tidak pernah overwrite daily_recap_source.share_produk.
+                jalankanNodeFile(
+                  "provider-product-sales-sync.js",
+                  "Minutes Provider Product Share Daily",
+                  () => {
+                    jalankanKpiUltimate(() => {
+                      jalankanCashOutMonthlyReconcile(() => {
+                        sedangBerjalan = false;
+                        console.log(`[${formatWaktu()}] Siklus sync selesai.`);
+                      });
+                    });
+                  }
+                );
               }
             );
           }
@@ -277,15 +256,11 @@ function jalankanSync() {
 }
 
 jalankanSync();
-
-setInterval(
-  jalankanSync,
-  1 * 60 * 1000
-);
+setInterval(jalankanSync, 1 * 60 * 1000);
 
 console.log("");
 console.log("Scheduler aktif.");
 console.log("Jadwal: setiap 1 menit.");
-console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily -> KPI Ultimate (DATE=hari ini WIB) -> Cash Out Monthly Reconciliation (max 1×/6 jam).");
+console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily -> Provider Product Share Daily -> KPI Ultimate (DATE=hari ini WIB) -> Cash Out Monthly Reconciliation (max 1×/6 jam).");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
