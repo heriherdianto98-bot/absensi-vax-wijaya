@@ -5,27 +5,26 @@
   "use strict";
 
   const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
-  function normalizeLabel(v){
-    return String(v || "").replace(/\s+/g, " ").trim();
-  }
+  const normalizeLabel = (v) => String(v || "").replace(/\s+/g, " ").trim();
 
   function toneFor(label){
     const s = normalizeLabel(label).toLowerCase();
-    if(s.includes("cash out")) return "red";
-    if(s.includes("cash bersih")) return "green";
-    if(s.includes("non tunai")) return "blue";
-    if(s.includes("nett produk")) return "teal";
-    if(s.includes("share produk")) return "rose";
-    if(s.includes("share cukur")) return "cyan";
-    if(s.includes("nett revenue")) return "gold";
-    if(s.includes("product")) return "purple";
-    if(s.includes("omzet")) return "gold";
-    if(s.includes("proteksi")) return "orange";
-    if(s.includes("transaksi")) return "green2";
-    if(s.includes("customer")) return "sky";
-    if(s.includes("services")) return "orange";
-    if(s.includes("avg ticket")) return "lime";
+    if(s.includes("cash out")) return "cashout";
+    if(s.includes("cash bersih")) return "actual";
+    if(s.includes("cash kotor") || s === "cash") return "cash";
+    if(s.includes("non tunai")) return "nontunai";
+    if(s.includes("nett produk")) return "nettproduk";
+    if(s.includes("share produk")) return "shareproduk";
+    if(s.includes("share cukur")) return "sharecukur";
+    if(s.includes("nett revenue")) return "nett";
+    if(s.includes("gross service")) return "grossservice";
+    if(s.includes("product")) return "produk";
+    if(s.includes("omzet")) return "omzet";
+    if(s.includes("proteksi")) return "proteksi";
+    if(s.includes("transaksi")) return "transaksi";
+    if(s.includes("customer")) return "customer";
+    if(s.includes("services")) return "services";
+    if(s.includes("avg ticket")) return "avgticket";
     return "neutral";
   }
 
@@ -89,20 +88,28 @@
     return `
       *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
       .full-summary{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;margin-bottom:10px!important}
-      .full-summary .sum{position:relative;min-height:52px;border:1px solid #cfc8b5!important;border-left:4px solid #d4af37!important;border-top:1px solid #cfc8b5!important;border-radius:7px!important;padding:7px 9px!important;background:linear-gradient(180deg,#fff 0%,#f7f8fa 100%)!important;box-shadow:0 2px 7px rgba(0,0,0,.10)!important}
-      .full-summary .sum .lbl{font-size:6.4pt!important;line-height:1.15!important;letter-spacing:.07em!important;color:#5f5a4b!important}
+      .full-summary .sum{position:relative;min-height:54px;border:1px solid #d7dbe2!important;border-left:4px solid #d4af37!important;border-top:1px solid #d7dbe2!important;border-radius:7px!important;padding:7px 9px!important;background:#fff!important;box-shadow:0 2px 7px rgba(0,0,0,.10)!important}
+      .full-summary .sum .lbl{font-size:6.4pt!important;line-height:1.15!important;letter-spacing:.07em!important;color:#5f6672!important}
       .full-summary .sum .val{font-size:11.5pt!important;line-height:1.1!important;margin-top:4px!important;color:#111!important}
-      .full-summary .tone-gold{border-left-color:#d4af37!important;background:linear-gradient(180deg,#fffdf6 0%,#f8f2df 100%)!important}.full-summary .tone-gold .val{color:#9a7610!important}
-      .full-summary .tone-blue{border-left-color:#4968c9!important}.full-summary .tone-blue .val{color:#3e57ad!important}
-      .full-summary .tone-teal{border-left-color:#0f8a7b!important}.full-summary .tone-teal .val{color:#0f766e!important}
-      .full-summary .tone-purple{border-left-color:#8b5bb8!important}.full-summary .tone-purple .val{color:#7a4ca6!important}
-      .full-summary .tone-red{border-left-color:#b91c1c!important;background:linear-gradient(180deg,#fffafa 0%,#fbefef 100%)!important}.full-summary .tone-red .val{color:#b91c1c!important}
-      .full-summary .tone-green,.full-summary .tone-green2{border-left-color:#0f766e!important;background:linear-gradient(180deg,#f8fffc 0%,#edf8f3 100%)!important}.full-summary .tone-green .val,.full-summary .tone-green2 .val{color:#0f766e!important}
-      .full-summary .tone-rose{border-left-color:#e05a7a!important}.full-summary .tone-rose .val{color:#b63859!important}
-      .full-summary .tone-cyan{border-left-color:#0891b2!important}.full-summary .tone-cyan .val{color:#0e7490!important}
-      .full-summary .tone-orange{border-left-color:#d97706!important}.full-summary .tone-orange .val{color:#b45309!important}
-      .full-summary .tone-sky{border-left-color:#0284c7!important}.full-summary .tone-sky .val{color:#0369a1!important}
-      .full-summary .tone-lime{border-left-color:#65a30d!important}.full-summary .tone-lime .val{color:#4d7c0f!important}
+
+      /* Warna card mengikuti identitas card TOTAL PERIODE di layar ERP. */
+      .full-summary .tone-omzet{border-left-color:#facc15!important;background:linear-gradient(180deg,#fffef5,#fff9d8)!important}.full-summary .tone-omzet .val{color:#9a7610!important}
+      .full-summary .tone-grossservice{border-left-color:#2dd4bf!important;background:linear-gradient(180deg,#f7fffd,#e9fbf7)!important}.full-summary .tone-grossservice .val{color:#0f766e!important}
+      .full-summary .tone-produk{border-left-color:#f472b6!important;background:linear-gradient(180deg,#fff9fc,#fdebf4)!important}.full-summary .tone-produk .val{color:#be477f!important}
+      .full-summary .tone-nettproduk{border-left-color:#2dd4bf!important;background:linear-gradient(180deg,#f7fffd,#e8faf6)!important}.full-summary .tone-nettproduk .val{color:#0f766e!important}
+      .full-summary .tone-nett{border-left-color:#38bdf8!important;background:linear-gradient(180deg,#f7fcff,#e9f7fd)!important}.full-summary .tone-nett .val{color:#0879a8!important}
+      .full-summary .tone-nontunai{border-left-color:#818cf8!important;background:linear-gradient(180deg,#fafaff,#eef0ff)!important}.full-summary .tone-nontunai .val{color:#5966c7!important}
+      .full-summary .tone-cash{border-left-color:#34d399!important;background:linear-gradient(180deg,#f8fffc,#eafaf3)!important}.full-summary .tone-cash .val{color:#15805d!important}
+      .full-summary .tone-cashout{border-left-color:#ef4444!important;background:linear-gradient(180deg,#fffafa,#fcebec)!important}.full-summary .tone-cashout .val{color:#c62828!important}
+      .full-summary .tone-actual{border-left-color:#f59e0b!important;background:linear-gradient(180deg,#fffdf7,#fff4da)!important}.full-summary .tone-actual .val{color:#9a6710!important}
+      .full-summary .tone-customer{border-left-color:#0ea5e9!important;background:linear-gradient(180deg,#f7fcff,#e9f6fd)!important}.full-summary .tone-customer .val{color:#0477aa!important}
+      .full-summary .tone-transaksi{border-left-color:#22c55e!important;background:linear-gradient(180deg,#f8fff9,#eaf8ef)!important}.full-summary .tone-transaksi .val{color:#16823d!important}
+      .full-summary .tone-services{border-left-color:#f97316!important;background:linear-gradient(180deg,#fffaf6,#fff0e5)!important}.full-summary .tone-services .val{color:#b94b08!important}
+      .full-summary .tone-avgticket{border-left-color:#a3e635!important;background:linear-gradient(180deg,#fcfff6,#f1f8df)!important}.full-summary .tone-avgticket .val{color:#5d850d!important}
+      .full-summary .tone-shareproduk{border-left-color:#e11d48!important;background:linear-gradient(180deg,#fff8fa,#fdecef)!important}.full-summary .tone-shareproduk .val{color:#b51e42!important}
+      .full-summary .tone-sharecukur{border-left-color:#14b8a6!important;background:linear-gradient(180deg,#f7fffd,#e8faf7)!important}.full-summary .tone-sharecukur .val{color:#0f766e!important}
+      .full-summary .tone-proteksi{border-left-color:#c2410c!important;background:linear-gradient(180deg,#fffaf7,#fff0e8)!important}.full-summary .tone-proteksi .val{color:#a33a0a!important}
+
       table.rpt.is-daily-full{table-layout:auto!important;width:100%!important}
       table.rpt.is-daily-full th{font-size:6.1pt!important;padding:5px 3px!important;white-space:normal!important;line-height:1.15!important;text-align:center!important}
       table.rpt.is-daily-full td{font-size:6.7pt!important;padding:4px 4px!important;line-height:1.2!important}
@@ -112,14 +119,21 @@
       table.rpt.is-daily-full td.num{font-size:6.8pt!important;font-weight:800!important}
       table.rpt.is-daily-full td.is-neg{color:#8b1a1a!important;background:#fff1f1!important}
       table.rpt.is-daily-full tfoot td{font-size:6.7pt!important}
+
+      /* TTD dibuat menyatu dengan laporan inti, bukan menggantung sendiri di halaman paling akhir. */
+      .core-sign-wrap{margin-top:8px!important;break-inside:avoid!important;page-break-inside:avoid!important;break-before:avoid!important;page-break-before:avoid!important}
+      .core-sign-wrap .sign{margin-top:4px!important;padding-top:3px!important;break-before:avoid!important;page-break-before:avoid!important}
+      .core-sign-wrap .sign .stage{height:17mm!important;margin-top:0!important;margin-bottom:2px!important}
+      .core-sign-wrap .audit-note{margin-top:2px!important}
+
       @media print{.full-summary .sum{box-shadow:0 1.5px 5px rgba(0,0,0,.14)!important}.full-summary{break-inside:avoid!important;page-break-inside:avoid!important}}
     `;
   }
 
   function install(){
     const th = window.TabelHarianCabang;
-    if(!th || th.__fullPrintInstalled) return false;
-    th.__fullPrintInstalled = true;
+    if(!th || th.__fullPrintInstalledV2) return false;
+    th.__fullPrintInstalledV2 = true;
 
     th.openReport = async function(mode){
       if(!this.rows?.length){ alert("Tidak ada data untuk diekspor pada filter aktif."); return; }
@@ -151,9 +165,8 @@
         <section class="meta"><div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(cabang)}</span></div><div class="item"><span class="lbl">Periode</span><span class="val">${esc(periode)}</span></div></div><div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(clock.dateLabel)}</span></div><div class="item"><span class="lbl">Waktu Cetak</span><span class="val">${esc(clock.timeLabel)}</span></div></div></section>
         ${buildCardsHtml(cards)}
         ${dailyTable}
+        <div class="core-sign-wrap">${signHtml}<p class="audit-note">Seluruh kolom dan card diambil dari tampilan Tabel Harian pada filter aktif. Print/PDF hanya presenter; engine dan rumus tidak diubah.</p></div>
         ${extra}
-        ${signHtml}
-        <p class="audit-note">Seluruh kolom dan card diambil dari tampilan Tabel Harian pada filter aktif. Print/PDF hanya presenter; engine dan rumus tidak diubah.</p>
       </div>
       <p class="no-print"><button type="button" onclick="window.print()">Print / PDF</button></p>
       <script>document.title=${JSON.stringify(filename)};window.onload=function(){setTimeout(function(){window.print();},260)};<\/script>
@@ -161,7 +174,7 @@
 
       if(w.closed) return;
       w.document.open(); w.document.write(html); w.document.close();
-      console.log(`[TabelHarianFullPrint] ${titleHint} siap · ${snap.headers.length} kolom · ${snap.rows.length} baris`);
+      console.log(`[TabelHarianFullPrint] ${titleHint} siap · ${snap.headers.length} kolom · ${snap.rows.length} baris · ${cards.length} card`);
     };
     return true;
   }
