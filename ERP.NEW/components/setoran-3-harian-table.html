@@ -1,0 +1,160 @@
+<section class="setoran-section-card setoran3-work-section" id="sectionSetoran3Table">
+    <div class="qris-reco-header setoran3-work-header">
+        <div>
+            <h3>Kerja Cabang Aktif</h3>
+            <small id="setoran3DetailHint">SPV ajukan → Owner periksa. Cash Referensi tidak bisa diedit.</small>
+        </div>
+        <div class="setoran3-header-actions">
+            <button type="button" id="setoran3PrintBtn" class="qris-reco-btn-ghost" hidden>
+                🖨 PRINT BULANAN
+            </button>
+        </div>
+    </div>
+
+    <div id="setoran3ActionBanner" class="qris-reco-import-banner" hidden></div>
+
+    <div id="setoran3AllMode" class="setoran3-all-mode" hidden>
+        <p class="setoran3-all-hint">
+            Progress cabang ada di atas. Kerja memakai navigasi ◀ ▶ cabang aktif.
+        </p>
+    </div>
+
+    <div id="setoran3SingleMode" class="setoran3-single-mode" hidden>
+        <div id="setoran3CashOutWarn" class="setoran3-cashout-warn" hidden></div>
+        <div id="setoran3OwnerTakenWork" class="setoran3-taken-panel" hidden></div>
+
+        <!-- C. PENGAJUAN SETORAN (SPV) -->
+        <div id="setoran3SpvFormCard" class="setoran3-form-card setoran3-work-card" hidden>
+            <h4>PENGAJUAN SETORAN</h4>
+            <p class="setoran3-form-lead">Isi Setoran Cash Aktual → Draft → Submit ke Owner.</p>
+
+            <div class="setoran3-work-kpis">
+                <div class="setoran3-work-kpi is-ref">
+                    <span>Cash Referensi</span>
+                    <strong id="setoran3FormCashRef">—</strong>
+                    <em>read only · dari Minutes</em>
+                </div>
+                <div class="setoran3-work-kpi is-selisih" id="setoran3FormSelisihBox">
+                    <span>Selisih</span>
+                    <strong id="setoran3FormSelisih">—</strong>
+                    <em>aktual − referensi</em>
+                </div>
+            </div>
+
+            <label>
+                Setoran Cash Aktual
+                <input type="number" id="setoran3FormCash" min="0" step="1" inputmode="numeric" placeholder="0">
+            </label>
+            <div class="setoran3-form-total">
+                Total Setoran Aktual: <strong id="setoran3FormTotal">—</strong>
+            </div>
+            <label>
+                Catatan Cabang
+                <textarea id="setoran3FormNote" rows="3" placeholder="Alasan cash out, traffic, kendala, setoran terlambat…"></textarea>
+            </label>
+
+            <p id="setoran3FormError" class="qris-reco-form-error" hidden></p>
+            <div class="setoran3-form-actions">
+                <button type="button" id="setoran3BtnSaveDraft" class="qris-reco-btn-primary">SIMPAN DRAFT</button>
+                <button type="button" id="setoran3BtnSubmit" class="qris-reco-btn-action" hidden>SUBMIT KE OWNER</button>
+                <button type="button" id="setoran3BtnSubmitUlang" class="qris-reco-btn-action" hidden>SUBMIT ULANG KE OWNER</button>
+            </div>
+        </div>
+
+        <!-- D. PEMERIKSAAN OWNER -->
+        <div id="setoran3OwnerActionCard" class="setoran3-form-card setoran3-work-card" hidden>
+            <h4>PEMERIKSAAN OWNER</h4>
+            <p class="setoran3-form-lead">Nominal pengajuan tidak boleh diubah Owner.</p>
+            <div id="setoran3OwnerNoteBox" class="qris-reco-note-box setoran3-owner-inspect"></div>
+            <div class="setoran3-form-actions" id="setoran3OwnerActionBtns"></div>
+        </div>
+
+        <!-- E. DETAIL SEKUNDER — accordion default closed -->
+        <details class="s3-acc" id="s3AccOperasional">
+            <summary class="s3-acc-summary">
+                <span>Detail Operasional</span>
+                <small>Tabel · Customer · Services · Product Cost</small>
+            </summary>
+            <div class="s3-acc-body">
+                <div class="setoran3-perf-grid" id="setoran3PerfGrid"></div>
+                <div class="qris-reco-table-wrap setoran3-table-wrap">
+                    <table class="qris-reco-table setoran3-table">
+                        <thead>
+                            <tr>
+                                <th>Periode</th>
+                                <th>Nett Revenue</th>
+                                <th>Cash Minutes</th>
+                                <th>QRIS / Non Cash</th>
+                                <th>Cash Out</th>
+                                <th>Cash Referensi</th>
+                                <th>Setoran Cash Aktual</th>
+                                <th>Status</th>
+                                <th>Catatan Cabang</th>
+                                <th>Catatan Owner</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="setoran3TableBody">
+                            <tr><td colspan="11">Memuat data…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </details>
+
+        <details class="s3-acc" id="s3AccAi">
+            <summary class="s3-acc-summary">
+                <span id="setoran3AiTitle">AI Insight</span>
+                <small>Analisis histori Minutes</small>
+            </summary>
+            <div class="s3-acc-body">
+                <section class="setoran3-ai" id="setoran3AiSection">
+                    <div id="setoran3AiBody" class="setoran3-ai-body">
+                        <p class="setoran3-ai-loading">Memuat analisis dari histori Minutes…</p>
+                    </div>
+                </section>
+            </div>
+        </details>
+    </div>
+</section>
+
+<div id="setoran3OwnerModal" class="qris-reco-modal" hidden>
+    <div class="qris-reco-modal-backdrop" data-s3-close></div>
+    <div class="qris-reco-modal-panel" role="dialog" aria-modal="true">
+        <div class="qris-reco-modal-header">
+            <div>
+                <h4 id="setoran3OwnerTitle">Detail Pengajuan</h4>
+                <small id="setoran3OwnerCabang">—</small>
+            </div>
+            <button type="button" class="qris-reco-modal-close" data-s3-close>&times;</button>
+        </div>
+        <form id="setoran3OwnerForm" class="qris-reco-form">
+            <input type="hidden" id="setoran3OwnerMode" value="detail">
+            <input type="hidden" id="setoran3OwnerCabangId">
+
+            <div class="qris-reco-form-meta">
+                <div><span>Nett Revenue</span><strong id="setoran3OwnerNett">—</strong></div>
+                <div><span>Cash Minutes</span><strong id="setoran3OwnerMinutesCash">—</strong></div>
+                <div><span>QRIS / Non Cash</span><strong id="setoran3OwnerMinutesNonCash">—</strong></div>
+                <div><span>Cash Out</span><strong id="setoran3OwnerMinutesCashOut">—</strong></div>
+                <div><span>Cash Referensi</span><strong id="setoran3OwnerCashRef">—</strong></div>
+                <div><span>Setoran Cash Aktual</span><strong id="setoran3OwnerCashActual">—</strong></div>
+            </div>
+
+            <div id="setoran3OwnerSpvNote" class="qris-reco-note-box"></div>
+            <div id="setoran3OwnerAiBrief" class="qris-reco-note-box" hidden></div>
+            <div id="setoran3OwnerNoteReadonly" class="qris-reco-note-box" hidden></div>
+
+            <label id="setoran3OwnerNoteLabel" hidden>
+                Catatan Owner <span id="setoran3OwnerNoteRequired" hidden>(wajib)</span>
+                <textarea id="setoran3OwnerNote" rows="3" placeholder="Catatan Owner…"></textarea>
+            </label>
+
+            <p id="setoran3OwnerError" class="qris-reco-form-error" hidden></p>
+            <div class="qris-reco-form-actions">
+                <button type="button" class="qris-reco-btn-ghost" data-s3-close>Batal</button>
+                <button type="submit" class="qris-reco-btn-primary" id="setoran3OwnerSave" hidden disabled>Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
