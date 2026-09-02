@@ -117,9 +117,8 @@ const TabelHarianShareCards = {
         const ref = document.getElementById("thcTotNett");
         if(!ref || typeof getComputedStyle !== "function") return;
         const css = getComputedStyle(ref);
-        for(const id of ["thcTotShareProduk", "thcTotShareCukur", "thcTotProteksi"]){
-            const el = document.getElementById(id);
-            if(!el) continue;
+        const values = document.querySelectorAll("#thcTotals .thc-tot-item strong");
+        for(const el of values){
             el.style.fontSize = css.fontSize;
             el.style.fontWeight = css.fontWeight;
             el.style.lineHeight = css.lineHeight;
