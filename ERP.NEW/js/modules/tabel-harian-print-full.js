@@ -87,12 +87,11 @@
   function extraCss(){
     return `
       *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-      .full-summary{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;margin-bottom:10px!important}
-      .full-summary .sum{position:relative;min-height:54px;border:1px solid #d7dbe2!important;border-left:4px solid #d4af37!important;border-top:1px solid #d7dbe2!important;border-radius:7px!important;padding:7px 9px!important;background:#fff!important;box-shadow:0 2px 7px rgba(0,0,0,.10)!important}
-      .full-summary .sum .lbl{font-size:6.4pt!important;line-height:1.15!important;letter-spacing:.07em!important;color:#5f6672!important}
-      .full-summary .sum .val{font-size:11.5pt!important;line-height:1.1!important;margin-top:4px!important;color:#111!important}
-
-      /* Warna card mengikuti identitas card TOTAL PERIODE di layar ERP. */
+      @page{size:A4 landscape;margin:8mm 10mm 10mm 10mm!important}
+      .full-summary{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;margin-bottom:7px!important}
+      .full-summary .sum{position:relative;min-height:48px;border:1px solid #d7dbe2!important;border-left:4px solid #d4af37!important;border-top:1px solid #d7dbe2!important;border-radius:7px!important;padding:6px 8px!important;background:#fff!important;box-shadow:0 2px 7px rgba(0,0,0,.10)!important}
+      .full-summary .sum .lbl{font-size:6.1pt!important;line-height:1.12!important;letter-spacing:.07em!important;color:#5f6672!important}
+      .full-summary .sum .val{font-size:10.8pt!important;line-height:1.05!important;margin-top:3px!important;color:#111!important}
       .full-summary .tone-omzet{border-left-color:#facc15!important;background:linear-gradient(180deg,#fffef5,#fff9d8)!important}.full-summary .tone-omzet .val{color:#9a7610!important}
       .full-summary .tone-grossservice{border-left-color:#2dd4bf!important;background:linear-gradient(180deg,#f7fffd,#e9fbf7)!important}.full-summary .tone-grossservice .val{color:#0f766e!important}
       .full-summary .tone-produk{border-left-color:#f472b6!important;background:linear-gradient(180deg,#fff9fc,#fdebf4)!important}.full-summary .tone-produk .val{color:#be477f!important}
@@ -110,30 +109,42 @@
       .full-summary .tone-sharecukur{border-left-color:#14b8a6!important;background:linear-gradient(180deg,#f7fffd,#e8faf7)!important}.full-summary .tone-sharecukur .val{color:#0f766e!important}
       .full-summary .tone-proteksi{border-left-color:#c2410c!important;background:linear-gradient(180deg,#fffaf7,#fff0e8)!important}.full-summary .tone-proteksi .val{color:#a33a0a!important}
 
-      table.rpt.is-daily-full{table-layout:auto!important;width:100%!important}
-      table.rpt.is-daily-full th{font-size:6.1pt!important;padding:5px 3px!important;white-space:normal!important;line-height:1.15!important;text-align:center!important}
-      table.rpt.is-daily-full td{font-size:6.7pt!important;padding:4px 4px!important;line-height:1.2!important}
+      table.rpt.is-daily-full{table-layout:auto!important;width:100%!important;margin-bottom:0!important}
+      table.rpt.is-daily-full th{font-size:5.9pt!important;padding:4px 3px!important;white-space:normal!important;line-height:1.1!important;text-align:center!important}
+      table.rpt.is-daily-full td{font-size:6.35pt!important;padding:3.2px 4px!important;line-height:1.12!important}
       table.rpt.is-daily-full th:first-child,table.rpt.is-daily-full td:first-child{white-space:nowrap!important;text-align:left!important}
       table.rpt.is-daily-full th:nth-child(2),table.rpt.is-daily-full td:nth-child(2){white-space:nowrap!important;text-align:left!important}
       table.rpt.is-daily-full th.num,table.rpt.is-daily-full td.num{text-align:right!important;white-space:nowrap!important}
-      table.rpt.is-daily-full td.num{font-size:6.8pt!important;font-weight:800!important}
+      table.rpt.is-daily-full td.num{font-size:6.45pt!important;font-weight:800!important}
       table.rpt.is-daily-full td.is-neg{color:#8b1a1a!important;background:#fff1f1!important}
-      table.rpt.is-daily-full tfoot td{font-size:6.7pt!important}
+      table.rpt.is-daily-full tfoot td{font-size:6.45pt!important;padding:4px!important}
 
-      /* TTD dibuat menyatu dengan laporan inti, bukan menggantung sendiri di halaman paling akhir. */
-      .core-sign-wrap{margin-top:8px!important;break-inside:avoid!important;page-break-inside:avoid!important;break-before:avoid!important;page-break-before:avoid!important}
-      .core-sign-wrap .sign{margin-top:4px!important;padding-top:3px!important;break-before:avoid!important;page-break-before:avoid!important}
-      .core-sign-wrap .sign .stage{height:17mm!important;margin-top:0!important;margin-bottom:2px!important}
-      .core-sign-wrap .audit-note{margin-top:2px!important}
+      /* FINAL: TTD wajib ikut halaman terakhir tabel, tidak ada halaman khusus TTD. */
+      .core-sign-wrap{margin:3px 0 0!important;padding:0!important;break-inside:avoid!important;page-break-inside:avoid!important;break-before:auto!important;page-break-before:auto!important}
+      .core-sign-wrap .sign{margin:0!important;padding:0!important;gap:6px 16px!important;break-before:auto!important;page-break-before:auto!important;break-inside:avoid!important;page-break-inside:avoid!important}
+      .core-sign-wrap .sign .stage{height:13mm!important;margin:0 auto 1px!important}
+      .core-sign-wrap .sign .stage.is-empty{height:10mm!important}
+      .core-sign-wrap .sign .stamp{width:31mm!important;height:18mm!important}
+      .core-sign-wrap .sign .ttd{width:38mm!important}
+      .core-sign-wrap .sign .ttd img,.core-sign-wrap .sign .ttd svg{max-height:16mm!important}
+      .core-sign-wrap .sign .who,.core-sign-wrap .sign .name{font-size:7.8pt!important}
+      .core-sign-wrap .sign .role,.core-sign-wrap .sign .job{font-size:6.2pt!important;margin-top:1px!important}
+      .core-sign-wrap .sign .line{margin-top:2px!important}
+      .core-sign-wrap .audit-note{margin:1px 0 0!important;font-size:5.7pt!important;line-height:1.15!important}
+      .foot{display:none!important}
 
-      @media print{.full-summary .sum{box-shadow:0 1.5px 5px rgba(0,0,0,.14)!important}.full-summary{break-inside:avoid!important;page-break-inside:avoid!important}}
+      @media print{
+        .full-summary .sum{box-shadow:0 1px 4px rgba(0,0,0,.12)!important}
+        .full-summary{break-inside:avoid!important;page-break-inside:avoid!important}
+        .core-sign-wrap{orphans:1!important;widows:1!important}
+      }
     `;
   }
 
   function install(){
     const th = window.TabelHarianCabang;
-    if(!th || th.__fullPrintInstalledV2) return false;
-    th.__fullPrintInstalledV2 = true;
+    if(!th || th.__fullPrintInstalledV3) return false;
+    th.__fullPrintInstalledV3 = true;
 
     th.openReport = async function(mode){
       if(!this.rows?.length){ alert("Tidak ada data untuk diekspor pada filter aktif."); return; }
@@ -152,12 +163,12 @@
       const titleHint = mode === "pdf" ? "PDF" : "Print";
       const cards = snapshotCards();
       const dailyTable = buildTableHtml(snap);
-      const extra = typeof this.buildHarianExtraPrintSections === "function" ? this.buildHarianExtraPrintSections() : "";
       const signHtml = typeof this.buildPrintSignBlock === "function" ? this.buildPrintSignBlock(sigSrc) : "";
       const baseCss = this.getHarianPrintCss();
 
+      /* Print Tabel Harian difokuskan ke data tabel + seluruh card + TTD.
+         Panel AI/Product/KPI bukan bagian tabel harian sehingga tidak dipaksa masuk dan tidak membuat lembar TTD terpisah. */
       const html = `<!doctype html><html lang="id"><head><meta charset="utf-8"><title>${esc(filename)}</title><style>${baseCss}${extraCss()}</style></head><body class="harian-print">
-      <footer class="foot" aria-hidden="true"><div><b>ERP VAX WIJAYA</b>HARIAN</div><div class="c">INTERNAL / CONFIDENTIAL<br>Generated automatically</div><div class="r">${esc(clock.dateLabel)}<br>${esc(clock.timeLabel)}</div></footer>
       <div class="sheet">
         <header class="head"><div class="brand">${logoSrc ? `<img src="${logoSrc}" alt="ERP VAX WIJAYA">` : ""}<div class="copy"><h1>ERP VAX WIJAYA</h1><div class="doc">HARIAN</div><div class="sys">Enterprise Management System</div></div></div><div class="head-right"><div class="mark">Dokumen Operasional<em>Internal</em></div></div></header>
         <div class="rule"></div>
@@ -166,7 +177,6 @@
         ${buildCardsHtml(cards)}
         ${dailyTable}
         <div class="core-sign-wrap">${signHtml}<p class="audit-note">Seluruh kolom dan card diambil dari tampilan Tabel Harian pada filter aktif. Print/PDF hanya presenter; engine dan rumus tidak diubah.</p></div>
-        ${extra}
       </div>
       <p class="no-print"><button type="button" onclick="window.print()">Print / PDF</button></p>
       <script>document.title=${JSON.stringify(filename)};window.onload=function(){setTimeout(function(){window.print();},260)};<\/script>
@@ -174,7 +184,7 @@
 
       if(w.closed) return;
       w.document.open(); w.document.write(html); w.document.close();
-      console.log(`[TabelHarianFullPrint] ${titleHint} siap · ${snap.headers.length} kolom · ${snap.rows.length} baris · ${cards.length} card`);
+      console.log(`[TabelHarianFullPrint] ${titleHint} siap · ${snap.headers.length} kolom · ${snap.rows.length} baris · ${cards.length} card · TTD final data page`);
     };
     return true;
   }
