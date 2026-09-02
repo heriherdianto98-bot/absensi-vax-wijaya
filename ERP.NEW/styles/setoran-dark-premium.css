@@ -1,0 +1,327 @@
+/*
+=========================================================
+VAX ERP — Setoran 3 Harian visual override
+UI-ONLY. Loaded by pages/setoran-3-harian.html.
+No canonical engine, formula, workflow, receipt, proof,
+or reconciliation logic changes.
+=========================================================
+*/
+
+/* Page rhythm: quieter, flatter, denser */
+.setoran-page {
+  --s3-ui-gap: 12px;
+  --s3-ui-radius: 14px;
+  --s3-ui-soft: rgba(255,255,255,.045);
+  --s3-ui-soft-2: rgba(255,255,255,.025);
+  --s3-ui-line: rgba(255,255,255,.09);
+  --s3-ui-muted: rgba(255,255,255,.62);
+}
+
+.setoran-page .setoran-section-card,
+.setoran-page .setoran3-all-summary,
+.setoran-page .setoran3-status-compact,
+.setoran-page .s3-acc-page {
+  box-shadow: none !important;
+}
+
+/* Global summary: still available, but not visually louder than the active branch */
+.setoran3-all-summary {
+  padding: 14px 16px !important;
+  margin-bottom: 12px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  background: var(--s3-ui-soft-2) !important;
+}
+
+.setoran3-all-summary-head {
+  gap: 12px !important;
+  margin-bottom: 10px !important;
+}
+
+.setoran3-all-summary-eyebrow,
+.setoran3-all-summary-sub {
+  opacity: .62;
+}
+
+#setoran3AllBranchesCards {
+  display: grid !important;
+  grid-template-columns: repeat(5,minmax(0,1fr)) !important;
+  gap: 8px !important;
+}
+
+#setoran3AllBranchesCards > * {
+  min-height: 78px !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  background: var(--s3-ui-soft) !important;
+  box-shadow: none !important;
+}
+
+#setoran3AllBranchesCards em {
+  display: none !important;
+}
+
+/* Main hero / controls: one compact operating strip */
+#setoran3Sticky {
+  position: static !important;
+  top: auto !important;
+  padding: 14px 16px !important;
+  margin-bottom: 10px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  background: rgba(13,14,17,.94) !important;
+  box-shadow: none !important;
+}
+
+.setoran3-sticky-top {
+  margin-bottom: 10px !important;
+}
+
+.setoran3-sticky-top h2 {
+  font-size: 20px !important;
+  letter-spacing: .02em !important;
+}
+
+.setoran3-sticky-sub {
+  margin-top: 2px !important;
+  opacity: .62;
+}
+
+.setoran3-sticky-controls {
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) minmax(280px,.9fr) !important;
+  gap: 10px !important;
+  align-items: end !important;
+}
+
+#setoran3PeriodBtn,
+#setoran3TodayBtn,
+#setoran3AllBranchesPeriodBtn,
+.setoran3-nav-btn,
+.setoran3-finance-link {
+  min-height: 36px !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+  box-shadow: none !important;
+}
+
+#setoran3ActiveCabang {
+  min-height: 36px !important;
+  padding: 7px 12px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+/* Four branch KPI cards = primary visual focus */
+#setoran3SummarySection {
+  padding: 14px 16px !important;
+  margin: 10px 0 !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  background: rgba(255,255,255,.025) !important;
+  box-shadow: none !important;
+}
+
+.setoran3-hero-kpi-head {
+  margin-bottom: 8px !important;
+}
+
+#setoran3SummaryCards {
+  display: grid !important;
+  grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+  gap: 9px !important;
+  margin: 8px 0 0 !important;
+}
+
+#setoran3SummaryCards > * {
+  min-height: 92px !important;
+  padding: 13px 14px !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  background: var(--s3-ui-soft) !important;
+  box-shadow: none !important;
+}
+
+#setoran3SummaryCards strong {
+  line-height: 1.05 !important;
+}
+
+#setoran3SummaryCards small,
+#setoran3SummaryCards em,
+#setoran3SummaryCards [class*="sub"] {
+  opacity: .62 !important;
+}
+
+/* Workflow status: short line first; branch list stays folded */
+#sectionSetoran3Progress {
+  padding: 10px 12px !important;
+  margin: 8px 0 10px !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  background: var(--s3-ui-soft-2) !important;
+  box-shadow: none !important;
+}
+
+.setoran3-status-compact-row {
+  gap: 10px !important;
+}
+
+.setoran3-progress-toggle {
+  min-height: 34px !important;
+  padding: 6px 10px !important;
+  box-shadow: none !important;
+}
+
+#setoran3ProgressStats {
+  margin-top: 6px !important;
+}
+
+#setoran3ProgressListWrap {
+  margin-top: 8px !important;
+}
+
+#setoran3ProgressList {
+  gap: 6px !important;
+}
+
+#setoran3ProgressList > * {
+  min-height: 34px !important;
+  padding: 6px 10px !important;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+}
+
+/* Main injected operational area */
+#setoran-3-harian-section {
+  margin-top: 8px !important;
+}
+
+#setoran3SpvFormCard {
+  padding: 14px !important;
+  margin-top: 10px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  background: var(--s3-ui-soft-2) !important;
+  box-shadow: none !important;
+}
+
+#setoran3SpvFormCard input,
+#setoran3SpvFormCard select,
+#setoran3SpvFormCard textarea,
+#setoran3SpvFormCard button {
+  box-shadow: none !important;
+}
+
+#setoran3SpvFormCard input,
+#setoran3SpvFormCard select,
+#setoran3SpvFormCard button {
+  min-height: 38px !important;
+}
+
+#setoran3SpvFormCard textarea {
+  min-height: 70px !important;
+}
+
+/* Tables: operational density, no decorative bulk */
+#setoran3Table,
+.setoran3-table {
+  font-size: 13px !important;
+}
+
+#setoran3Table th,
+#setoran3Table td,
+.setoran3-table th,
+.setoran3-table td {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* Secondary / technical sections stay available but quieter */
+.s3-acc-page {
+  margin-top: 10px !important;
+  border: 1px solid var(--s3-ui-line) !important;
+  border-radius: 12px !important;
+  background: rgba(255,255,255,.018) !important;
+  overflow: hidden;
+}
+
+.s3-acc-summary {
+  padding: 10px 12px !important;
+  cursor: pointer;
+}
+
+.s3-acc-summary small {
+  opacity: .58;
+}
+
+.s3-acc-body {
+  padding: 10px 12px 12px !important;
+}
+
+.setoran3-qris-surface,
+#sectionApproval {
+  box-shadow: none !important;
+}
+
+/* Proof / owner modals remain functionally intact, only remove visual excess */
+.setoran3-proof-view,
+.setoran3-proof-panel,
+.setoran3-proof-alert,
+[id*="setoran3Proof"] {
+  box-shadow: none !important;
+}
+
+.qris-reco-modal-panel,
+.setoran3-proof-modal-panel {
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  #setoran3AllBranchesCards {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .setoran3-sticky-controls {
+    grid-template-columns: 1fr !important;
+  }
+
+  #setoran3SummaryCards {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .setoran3-all-summary,
+  #setoran3Sticky,
+  #setoran3SummarySection {
+    padding: 12px !important;
+  }
+
+  #setoran3AllBranchesCards {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  #setoran3SummaryCards {
+    gap: 7px !important;
+  }
+
+  #setoran3SummaryCards > * {
+    min-height: 84px !important;
+    padding: 11px !important;
+  }
+
+  .setoran3-status-compact-row {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+}
+
+/* Print intentionally untouched. */
+@media print {
+  /* no overrides */
+}
