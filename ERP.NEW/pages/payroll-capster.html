@@ -18,13 +18,14 @@
 <link rel="stylesheet" href="../styles/light-contrast.css">
 <link rel="stylesheet" href="../styles/setoran-dark-premium.css">
 <link rel="stylesheet" href="../styles/tabel-harian-cabang.css">
-<link rel="stylesheet" href="../styles/payroll-capster.css?v=20260903-unified2">
-<link rel="stylesheet" href="../styles/payroll-capster-select.css?v=20260903-unified2">
-<link rel="stylesheet" href="../styles/payroll-capster-v3.css?v=20260903-unified2">
-<link rel="stylesheet" href="../styles/payroll-unified.css?v=20260903-unified2">
+<link rel="stylesheet" href="../styles/payroll-capster.css?v=20260903-unified3">
+<link rel="stylesheet" href="../styles/payroll-capster-select.css?v=20260903-unified3">
+<link rel="stylesheet" href="../styles/payroll-capster-v3.css?v=20260903-unified3">
+<link rel="stylesheet" href="../styles/payroll-unified.css?v=20260903-unified3">
+<link rel="stylesheet" href="../styles/master-gaji-pokok.css?v=20260903-master1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="setoran-dark payroll-aruskas-theme">
+<body class="setoran-dark payroll-aruskas-theme payroll-master-separate">
 <div id="sidebar"></div>
 <div class="erp-wrapper">
   <div id="header"></div>
@@ -51,6 +52,7 @@
             <button id="payrollPeriodBtn" type="button" class="payroll-period-btn" aria-haspopup="dialog" aria-expanded="false"><strong id="payrollPeriodLabel">—</strong><span aria-hidden="true">▣</span></button>
           </div>
           <div class="payroll-toolbar-actions">
+            <a class="payroll-master-link" href="./master-gaji-pokok.html">Master Gaji Pokok</a>
             <button id="payrollRefresh" type="button">Refresh</button>
             <button id="payrollPrint" type="button">Print</button>
             <button id="payrollPdf" type="button">PDF</button>
@@ -76,7 +78,7 @@
     <div class="payroll-period-head"><div><small>PERIODE PAYROLL</small><h3 id="payrollPeriodTitle">Pilih Bulan</h3></div><button type="button" data-payroll-period-close aria-label="Tutup">×</button></div>
     <div class="payroll-period-year"><button id="payrollYearPrev" type="button" aria-label="Tahun sebelumnya">‹</button><strong id="payrollYearLabel">2026</strong><button id="payrollYearNext" type="button" aria-label="Tahun berikutnya">›</button></div>
     <div id="payrollMonthGrid" class="payroll-month-grid"></div>
-    <p class="payroll-period-hint">Payroll dihitung per bulan agar master gaji, denda, kasbon dan bonus tetap konsisten.</p>
+    <p class="payroll-period-hint">Payroll dihitung per bulan. Gaji pokok fixed salary diambil otomatis dari Master Gaji Pokok sesuai periode berlaku.</p>
   </section>
 </div>
 
@@ -85,10 +87,10 @@
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/loader.js"></script>
 <script src="../js/modules/payroll-manual-adjustment-store.js"></script>
-<script src="../js/modules/payroll-salary-master-store.js?v=20260903-unified2"></script>
-<script src="../js/modules/payroll-unified-engine.js?v=20260903-unified2"></script>
-<script src="../js/modules/payroll-capster-print.js?v=20260903-unified2"></script>
-<script src="../js/modules/payroll-capster-ui.js?v=20260903-unified2"></script>
+<script src="../js/modules/payroll-salary-master-store.js?v=20260903-unified3"></script>
+<script src="../js/modules/payroll-unified-engine.js?v=20260903-unified3"></script>
+<script src="../js/modules/payroll-capster-print.js?v=20260903-unified3"></script>
+<script src="../js/modules/payroll-capster-ui.js?v=20260903-unified3"></script>
 <script>
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
