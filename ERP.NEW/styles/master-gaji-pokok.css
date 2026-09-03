@@ -1,6 +1,7 @@
 /* ERP VAX — Master Gaji Pokok standalone UI */
-.salary-master-page{padding-bottom:28px}
-.salary-master-head{border-left-color:#5da7c6!important;position:sticky;top:var(--erp-top-header-h,58px);z-index:65;background:linear-gradient(180deg,#131a21 0%,#0f151b 100%);box-shadow:0 10px 22px rgba(0,0,0,.26),0 1px 0 rgba(93,167,198,.12)}
+.salary-master-page{padding-bottom:28px;padding-top:102px}
+.salary-master-head{border-left-color:#5da7c6!important;position:fixed!important;top:calc(var(--erp-top-header-h,58px) + 12px)!important;left:calc(var(--sidebar-width,220px) + var(--content-pad-x,14px))!important;right:var(--content-pad-x,14px)!important;z-index:165!important;background:linear-gradient(180deg,#131a21 0%,#0f151b 100%);box-shadow:0 10px 22px rgba(0,0,0,.26),0 1px 0 rgba(93,167,198,.12)}
+.sidebar.collapsed ~ .erp-wrapper .salary-master-head,body.sidebar-collapsed .salary-master-head{left:calc(var(--sidebar-collapse,72px) + var(--content-pad-x,14px))!important}
 .salary-master-panel{padding:16px!important;overflow:visible!important}
 .salary-master-toolbar{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(300px,1.35fr) auto;gap:12px;align-items:end}
 .salary-master-field{display:flex;flex-direction:column;gap:7px;padding:10px;border:1px solid #2a3642;border-radius:12px;background:linear-gradient(180deg,#171e26,#10161c);box-shadow:0 6px 16px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.03)}
@@ -43,4 +44,5 @@
 .payroll-master-separate .payroll-salary-master{display:none!important}
 .payroll-master-link{height:46px!important;border-radius:11px!important;border:1px solid #486477!important;background:linear-gradient(180deg,#1a2933,#111a21)!important;color:#cfe5ef!important;padding:0 14px!important;font-weight:800!important;text-decoration:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap}.payroll-master-link:hover{border-color:#69a9c2!important;box-shadow:0 0 0 2px rgba(93,167,198,.1),0 8px 18px rgba(0,0,0,.24)!important}
 @media(max-width:1050px){.salary-master-toolbar{grid-template-columns:1fr 1fr}.salary-master-actions{grid-column:1/-1}.salary-master-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.salary-master-head{left:12px!important;right:12px!important}.salary-master-page{padding-top:96px}}
 @media(max-width:700px){.salary-master-toolbar{grid-template-columns:1fr}.salary-master-actions{grid-column:auto;flex-wrap:wrap}.salary-current{grid-template-columns:1fr}.salary-history{overflow:auto}}
