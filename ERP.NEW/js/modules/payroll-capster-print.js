@@ -1,5 +1,5 @@
 /* VAX ERP — Unified Payroll Print Presenter
-   Header/footer mengikuti MASTER PRINT Tabel Harian Semua Cabang.
+   Header/footer mengikuti pola MASTER PRINT Tabel Harian Semua Cabang.
    Output: A4 portrait untuk Print / Save as PDF.
 */
 (() => {
@@ -23,12 +23,14 @@
 
   function css(){return `
     *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-    @page{size:A4 portrait;margin:26mm 8mm 18mm}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#171717;background:#fff;font-size:8.5pt}
-    .sheet{width:100%}
+    @page{size:A4 portrait;margin:8mm 8mm 8mm}
+    html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;color:#171717;background:#fff;font-size:8.5pt}
+    .page-frame{width:100%;border-collapse:collapse;table-layout:fixed}
+    .page-frame>thead{display:table-header-group}.page-frame>tfoot{display:table-footer-group}
+    .page-frame>thead>tr>td,.page-frame>tfoot>tr>td,.page-frame>tbody>tr>td{padding:0;border:0;vertical-align:top}
+    .head-space{height:24mm}.foot-space{height:13mm}
 
-    /* MASTER HEADER — sama pola Tabel Harian Semua Cabang */
-    .master-head{position:fixed;top:-20mm;left:0;right:0;height:20mm;background:#fff;z-index:10}
+    .master-head{height:20mm;background:#fff}
     .master-head-inner{display:flex;justify-content:space-between;align-items:flex-start;gap:8mm;height:15mm}
     .brand{display:flex;align-items:center;gap:4mm}.logo{width:14mm;height:14mm;object-fit:contain}
     .brand-copy h1{margin:0;font-size:14pt;font-weight:800;letter-spacing:.035em;line-height:1.05}
@@ -37,20 +39,20 @@
     .head-right{text-align:right;padding-top:.6mm}.head-right .doc{font-size:6.6pt;color:#666;letter-spacing:.08em;text-transform:uppercase}.head-right strong{display:block;margin-top:1mm;font-size:7.3pt;letter-spacing:.08em}
     .gold-rule{height:1mm;background:#d4af37;margin-top:2.5mm}
 
-    /* MASTER FOOTER — repeating setiap halaman */
-    .master-foot{position:fixed;bottom:-12mm;left:0;right:0;height:10mm;border-top:1px solid #b8b8b8;background:#fff;padding-top:2mm;display:flex;justify-content:space-between;align-items:flex-start;color:#666;font-size:6.2pt;z-index:10}
+    .master-foot{height:10mm;border-top:1px solid #b8b8b8;background:#fff;padding-top:2mm;display:flex;justify-content:space-between;align-items:flex-start;color:#666;font-size:6.2pt}
     .master-foot strong{color:#111}.foot-center{text-align:center;flex:1}.foot-right{text-align:right}
 
+    .content{padding:0}
     .report-title{margin:0 0 4mm}.report-title h2{font-size:14pt;margin:0}.report-title p{margin:1mm 0 0;color:#666;font-size:7.4pt}
     .meta{display:grid;grid-template-columns:1fr 1fr;gap:2mm 10mm;border:1px solid #d5d5d5;padding:3mm 4mm;margin-bottom:5mm}.meta .item{display:flex;justify-content:space-between;gap:5mm}.meta .lbl{color:#666}.meta .val{font-weight:700;text-align:right}
-    .employee{border:1px solid #aaa;margin-bottom:5mm;break-inside:auto}.emp-head{display:flex;justify-content:space-between;gap:5mm;padding:3mm 4mm;border-bottom:1px solid #aaa;background:#f5f5f5}.emp-head h3{margin:0;font-size:11pt}.emp-head p{margin:1mm 0 0;font-size:7pt;color:#666}.net{text-align:right}.net span{display:block;font-size:7pt;color:#666;text-transform:uppercase}.net strong{font-size:12pt}
-    .tbl{width:100%;border-collapse:collapse}.tbl th,.tbl td{border-bottom:1px solid #ddd;padding:1.8mm 1.5mm;font-size:6.9pt}.tbl th{background:#fafafa;text-transform:uppercase;font-size:6.2pt;text-align:left;white-space:nowrap}.tbl .num{text-align:right;white-space:nowrap}
+    .employee{border:1px solid #aaa;margin-bottom:5mm;break-inside:avoid-page;page-break-inside:avoid}.emp-head{display:flex;justify-content:space-between;gap:5mm;padding:3mm 4mm;border-bottom:1px solid #aaa;background:#f5f5f5}.emp-head h3{margin:0;font-size:11pt}.emp-head p{margin:1mm 0 0;font-size:7pt;color:#666}.net{text-align:right}.net span{display:block;font-size:7pt;color:#666;text-transform:uppercase}.net strong{font-size:12pt}
+    .tbl{width:100%;border-collapse:collapse}.tbl thead{display:table-header-group}.tbl th,.tbl td{border-bottom:1px solid #ddd;padding:1.8mm 1.5mm;font-size:6.9pt}.tbl th{background:#fafafa;text-transform:uppercase;font-size:6.2pt;text-align:left;white-space:nowrap}.tbl .num{text-align:right;white-space:nowrap}.tbl tr{break-inside:avoid;page-break-inside:avoid}
     .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;padding:3mm}.sum{border:1px solid #ccc;padding:2.2mm}.sum span{display:block;color:#666;font-size:6.2pt;text-transform:uppercase}.sum strong{display:block;margin-top:1mm;font-size:8.6pt}.empty{text-align:center;padding:8mm;color:#777}
     .sign{margin-top:8mm;display:grid;grid-template-columns:1fr 1fr;gap:20mm;break-inside:avoid;page-break-inside:avoid}.sign .box{text-align:center}.sign .space{height:18mm}.sign .line{border-top:1px solid #333;padding-top:1.5mm;font-weight:700}.sign .role{font-size:7pt;color:#666;margin-top:1mm}
 
     @media screen{
-      body{padding:16px;background:#f3f1ea}.sheet{background:#fff;padding:24px;max-width:210mm;margin:auto;box-shadow:0 8px 28px rgba(0,0,0,.12)}
-      .master-head,.master-foot{position:static;height:auto}.master-head{margin-bottom:5mm}.master-foot{margin-top:6mm}
+      body{padding:16px;background:#f3f1ea}.page-frame{background:#fff;max-width:210mm;margin:auto;box-shadow:0 8px 28px rgba(0,0,0,.12)}
+      .page-frame>thead,.page-frame>tfoot{display:table-row-group}.head-space,.foot-space{height:auto}.master-head{height:auto;padding:16px 20px 0}.master-foot{height:auto;margin:0 20px;padding:10px 0 16px}.content{padding:0 20px 20px}
     }
   `;}
 
@@ -66,16 +68,16 @@
     const w=window.open('','_blank');if(!w){alert('Popup print diblokir browser.');return;}
     const logo='../assets/logo-vax-wijaya.png';
     const printedAt=nowWib();
-    const html=`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Payroll Karyawan ${esc(snap.month)}</title><style>${css()}</style></head><body><div class="sheet">
-      <header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">PAYROLL KARYAWAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN OPERASIONAL</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>
-
-      <footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>
-
-      <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Gaji Pokok − Denda − Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk</p></section>
-      <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
-      ${snap.cards.map(cardHtml).join('')}
-      <section class="sign"><div class="box"><div class="space"></div><div class="line">Supervisor</div><div class="role">VAX WIJAYA</div></div><div class="box"><div class="space"></div><div class="line">Owner</div><div class="role">VAX WIJAYA</div></div></section>
-    </div><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\/script></body></html>`;
+    const header=`<header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">PAYROLL KARYAWAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN OPERASIONAL</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>`;
+    const footer=`<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
+    const html=`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Payroll Karyawan ${esc(snap.month)}</title><style>${css()}</style></head><body>
+      <table class="page-frame"><thead><tr><td><div class="head-space">${header}</div></td></tr></thead><tfoot><tr><td><div class="foot-space">${footer}</div></td></tr></tfoot><tbody><tr><td><main class="content">
+        <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Gaji Pokok − Denda − Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk</p></section>
+        <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
+        ${snap.cards.map(cardHtml).join('')}
+        <section class="sign"><div class="box"><div class="space"></div><div class="line">Supervisor</div><div class="role">VAX WIJAYA</div></div><div class="box"><div class="space"></div><div class="line">Owner</div><div class="role">VAX WIJAYA</div></div></section>
+      </main></td></tr></tbody></table>
+      <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\/script></body></html>`;
     w.document.open();w.document.write(html);w.document.close();
   }
   window.PayrollCapsterPrint={open};
