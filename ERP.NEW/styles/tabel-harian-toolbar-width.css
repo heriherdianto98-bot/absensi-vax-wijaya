@@ -37,33 +37,22 @@
 }
 
 /*
-   ACTIONS FINAL: node/event tombol existing tetap dipakai.
-   Group ditempatkan di sisi kiri area konten seperti layout sebelumnya,
-   bukan di ujung kanan shell tabel yang max-content. Dengan fixed terhadap
-   viewport ERP, tombol tetap terlihat saat scroll vertikal maupun horizontal.
+   ACTIONS FINAL: sejajar dengan judul laporan.
+   Node/event tombol tetap sama. Group dinaikkan ke panel judul dan digeser
+   ke kiri agar seluruh Refresh/Sync/Print/PDF/Excel terlihat pada laptop
+   dengan browser zoom 80%, tanpa perlu scroll horizontal.
 */
 .thc-page .thc-tb-actions{
-    position: fixed !important;
-    top: calc(var(--erp-top-header-h, 58px) + 24px) !important;
-    left: 245px !important;
-    right: auto !important;
-    z-index: 90 !important;
+    position: absolute !important;
+    top: -98px !important;
+    right: 190px !important;
+    z-index: 55 !important;
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     gap: 8px !important;
     width: auto !important;
-    max-width: calc(100vw - 280px) !important;
     margin: 0 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* Pastikan parent tidak memotong tombol saat desktop. */
-.thc-page .thc-pin-stack,
-.thc-page .thc-table-toolbar,
-.thc-page .thc-unified-toolbar{
-    overflow: visible !important;
 }
 
 /* Filter bawah sekarang khusus filter. */
@@ -112,10 +101,6 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
     .thc-page .thc-tb-actions{
         position: static !important;
-        top: auto !important;
-        right: auto !important;
-        left: auto !important;
-        max-width: none !important;
         flex-wrap: wrap !important;
         margin-left: auto !important;
     }
