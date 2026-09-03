@@ -37,24 +37,26 @@
 }
 
 /*
-   ACTIONS FINAL: sejajar dengan judul laporan.
-   Node/event tombol tetap sama. Group dinaikkan ke panel judul dan digeser
-   ke kiri agar seluruh Refresh/Sync/Print/PDF/Excel terlihat pada laptop
-   dengan browser zoom 80%, tanpa perlu scroll horizontal.
+   ACTIONS: paksa tampil sejajar dengan judul "Tabel Harian Semua Cabang".
+   Tombol tetap node/event existing, hanya diposisikan relatif viewport agar
+   tidak ikut kabur bersama shell tabel max-content / horizontal scroll.
 */
 .thc-page .thc-tb-actions{
-    position: absolute !important;
-    top: -98px !important;
-    right: 190px !important;
-    z-index: 75 !important;
+    position: fixed !important;
+    top: calc(var(--erp-top-header-h, 58px) + 26px) !important;
+    left: 760px !important;
+    right: auto !important;
+    z-index: 120 !important;
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     gap: 8px !important;
     width: auto !important;
+    max-width: calc(100vw - 790px) !important;
     margin: 0 !important;
     visibility: visible !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
 /* Filter bawah sekarang khusus filter. */
@@ -101,6 +103,15 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
 }
 
+/* Layar laptop lebih sempit: geser group ke kiri tapi tetap satu baris dengan judul. */
+@media (min-width: 1100px) and (max-width: 1450px){
+    .thc-page .thc-tb-actions{
+        left: 620px !important;
+        max-width: calc(100vw - 645px) !important;
+        gap: 6px !important;
+    }
+}
+
 /* Di layar kecil tombol kembali ke toolbar agar tidak menabrak judul. */
 @media (max-width: 1099px){
     .thc-page .thc-page-head{
@@ -109,6 +120,10 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
     .thc-page .thc-tb-actions{
         position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        max-width: none !important;
         flex-wrap: wrap !important;
         margin-left: auto !important;
     }
