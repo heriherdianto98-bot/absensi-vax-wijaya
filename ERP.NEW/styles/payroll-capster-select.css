@@ -1,0 +1,111 @@
+/* VAX ERP — Payroll premium custom dropdown, visual-only */
+.payroll-select-shell{position:relative;display:block;min-width:0;z-index:1}
+.payroll-select-shell.is-open{z-index:80}
+.payroll-select-shell.is-enhanced>select{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  opacity:0!important;pointer-events:none!important;
+  inset:auto!important;clip:rect(0 0 0 0)!important;
+}
+.payroll-select-shell.is-enhanced::after{display:none!important}
+.payroll-select-trigger{
+  width:100%;height:44px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border:1px solid rgba(201,162,39,.42);
+  border-radius:10px;
+  background:linear-gradient(180deg,#1D1A11 0%,#12110D 100%);
+  color:#FFF;
+  padding:0 12px 0 13px;
+  font:800 15px 'Source Sans 3',sans-serif;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 3px 9px rgba(0,0,0,.22);
+  transition:border-color .2s ease,box-shadow .22s ease,background .22s ease,transform .18s ease;
+}
+.payroll-select-trigger::after{
+  content:"⌄";
+  flex:0 0 auto;
+  color:#F5D76E;
+  font-size:18px;
+  line-height:1;
+  font-weight:900;
+  text-shadow:0 0 10px rgba(201,162,39,.24);
+  transition:transform .2s ease,color .2s ease;
+}
+.payroll-select-trigger:hover{
+  border-color:rgba(226,193,90,.72);
+  background:linear-gradient(180deg,#292313 0%,#16130E 100%);
+  box-shadow:0 0 0 1px rgba(201,162,39,.16),0 7px 17px rgba(201,162,39,.11),inset 0 1px 0 rgba(255,255,255,.06);
+  transform:translateY(-1px);
+}
+.payroll-select-shell.is-open .payroll-select-trigger{
+  border-color:#E2C15A;
+  background:linear-gradient(180deg,#302814 0%,#18150F 100%);
+  box-shadow:0 0 0 1px rgba(201,162,39,.30),0 0 0 3px rgba(201,162,39,.12),0 8px 22px rgba(201,162,39,.14),inset 0 1px 0 rgba(255,255,255,.07);
+}
+.payroll-select-shell.is-open .payroll-select-trigger::after{transform:rotate(180deg);color:#FFF0A5}
+.payroll-select-trigger:disabled{opacity:.52;cursor:not-allowed;transform:none!important;filter:saturate(.5)}
+.payroll-select-menu{
+  position:absolute;
+  left:0;right:0;
+  top:calc(100% + 7px);
+  z-index:90;
+  max-height:310px;
+  overflow:auto;
+  padding:6px;
+  border:1px solid rgba(201,162,39,.52);
+  border-radius:12px;
+  background:
+    radial-gradient(circle at 50% -25%,rgba(201,162,39,.12),transparent 45%),
+    linear-gradient(180deg,#1B1811 0%,#0E0D0A 100%);
+  box-shadow:0 0 0 1px rgba(201,162,39,.12),0 18px 42px rgba(0,0,0,.56),0 0 22px rgba(201,162,39,.11),inset 0 1px 0 rgba(255,255,255,.05);
+  transform-origin:top center;
+  animation:payroll-select-in .18s cubic-bezier(.2,.8,.2,1);
+  scrollbar-width:thin;
+  scrollbar-color:#80681f #12100c;
+}
+.payroll-select-menu[hidden]{display:none!important}
+@keyframes payroll-select-in{
+  from{opacity:0;transform:translateY(-7px) scale(.982)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.payroll-select-option{
+  position:relative;
+  width:100%;
+  min-height:39px;
+  display:flex;align-items:center;
+  border:1px solid transparent;
+  border-radius:8px;
+  background:transparent;
+  color:#EEECE6;
+  padding:7px 10px;
+  font:750 14px 'Source Sans 3',sans-serif;
+  text-align:left;
+  cursor:pointer;
+  transition:background .16s ease,color .16s ease,border-color .16s ease,box-shadow .18s ease,transform .16s ease;
+}
+.payroll-select-option:hover{
+  color:#FFF7D8;
+  border-color:rgba(201,162,39,.28);
+  background:linear-gradient(90deg,rgba(201,162,39,.18),rgba(201,162,39,.06));
+  box-shadow:inset 3px 0 0 rgba(226,193,90,.72);
+  transform:translateX(2px);
+}
+.payroll-select-option.is-selected{
+  color:#FFF0A5;
+  border-color:rgba(226,193,90,.42);
+  background:linear-gradient(90deg,rgba(92,74,23,.84),rgba(45,37,17,.80));
+  box-shadow:inset 3px 0 0 #E2C15A,0 0 12px rgba(201,162,39,.08);
+  font-weight:900;
+}
+.payroll-select-option.is-selected::after{
+  content:"✓";
+  margin-left:auto;
+  color:#F5D76E;
+  font-size:13px;
+  font-weight:900;
+}
+.payroll-select-option:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+.payroll-select-menu::-webkit-scrollbar{width:8px}.payroll-select-menu::-webkit-scrollbar-track{background:#12100c;border-radius:8px}.payroll-select-menu::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#9f8224,#5d4c19);border-radius:8px;border:2px solid #12100c}
+
+@media print{.payroll-select-trigger,.payroll-select-menu{display:none!important}.payroll-select-shell.is-enhanced>select{position:static!important;width:auto!important;height:auto!important;opacity:1!important;pointer-events:auto!important;clip:auto!important}}
