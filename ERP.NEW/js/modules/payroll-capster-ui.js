@@ -2,7 +2,12 @@
 (() => {
   const el=id=>document.getElementById(id);
   const money=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n||0));
-  const escapeHtml=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const rupiahInput=n=>`Rp ${new Intl.NumberFormat('id-ID',{maximumFractionDigits:0}).format(Number(n||0))}`;
+  const parseRupiah=value=>{
+    const digits=String(value??'').replace(/[^0-9]/g,'');
+    return Number(digits||0);
+  };
+  const escapeHtml=s=>String(s??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));
   const MONTHS=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   let manualMonth=null, selectedMonth='', periodYear=2026, allCapsters=[];
 
@@ -100,6 +105,7 @@
   }
 
   function openPeriod(){
+    closeFancySelects();
     periodYear=Number((selectedMonth||todayMonth()).slice(0,4));
     renderPeriodGrid();
     const m=el('payrollPeriodModal');
@@ -133,6 +139,17 @@
     const box=el('payrollPending'); if(!p||!p.rows){ box.hidden=true; return; }
     box.hidden=false; el('pendingRows').textContent=p.rows; el('pendingServices').textContent=p.service; el('pendingShare').textContent=money(p.providerShare);
   }
+
+  function bindRupiahInputs(){
+    document.querySelectorAll('.payroll-manual .js-money-input').forEach(input=>{
+      const format=()=>{ input.value=rupiahInput(parseRupiah(input.value)); };
+      input.addEventListener('input',format);
+      input.addEventListener('blur',format);
+      input.addEventListener('focus',()=>requestAnimationFrame(()=>input.select()));
+      format();
+    });
+  }
+
   function renderCard(row){
     const s=row.summary||{},daily=row.daily||[];
     const rows=daily.length?daily.map(d=>`<tr><td>${escapeHtml(d.tanggal)}</td><td>${escapeHtml(d.cabang)}</td><td class="num">${Number(d.service||0)}</td><td class="num">${money(d.gajiHarian)}</td><td class="num">${money(d.bonusProduk)}</td></tr>`).join(''):'<tr><td colspan="5" class="payroll-empty">Tidak ada aktivitas pada periode ini.</td></tr>';
@@ -142,13 +159,29 @@
       <div class="payroll-summary">
         <div class="payroll-sum"><span>Gaji Kotor</span><strong>${money(s.gajiKotor)}</strong></div><div class="payroll-sum"><span>Denda</span><strong>${money(s.denda)}</strong></div><div class="payroll-sum"><span>Bonus Insentif</span><strong>${money(s.bonusInsentif)}</strong></div><div class="payroll-sum"><span>Bonus KPI</span><strong>${money(s.bonusKpi)}</strong></div><div class="payroll-sum"><span>Bonus Produk</span><strong>${money(s.bonusProduk)}</strong></div><div class="payroll-sum is-net"><span>Gaji Bersih</span><strong>${money(s.gajiBersih)}</strong></div>
       </div>
-      <div class="payroll-manual"><label><span>Bonus Insentif</span><input class="js-insentif" inputmode="numeric" value="${Number(s.bonusInsentif||0)}"></label><label><span>Bonus KPI</span><input class="js-kpi" inputmode="numeric" value="${Number(s.bonusKpi||0)}"></label><label><span>Catatan</span><input class="js-note" value="${escapeHtml(manualMonth?.byEmployee?.[String(row.employeeId)]?.note||'')}"></label><button type="button" class="payroll-save">Simpan Bonus</button><p class="payroll-save-msg"></p></div>
+      <div class="payroll-manual"><label><span>Bonus Insentif</span><input class="js-insentif js-money-input" inputmode="numeric" autocomplete="off" value="${rupiahInput(s.bonusInsentif)}"></label><label><span>Bonus KPI</span><input class="js-kpi js-money-input" inputmode="numeric" autocomplete="off" value="${rupiahInput(s.bonusKpi)}"></label><label><span>Catatan</span><input class="js-note" value="${escapeHtml(manualMonth?.byEmployee?.[String(row.employeeId)]?.note||'')}"></label><button type="button" class="payroll-save">Simpan Bonus</button><p class="payroll-save-msg"></p></div>
     </article>`;
   }
   function bindSave(month){
     document.querySelectorAll('.payroll-employee-card').forEach(card=>card.querySelector('.payroll-save')?.addEventListener('click',async e=>{
       const btn=e.currentTarget,msg=card.querySelector('.payroll-save-msg');
-      try{btn.disabled=true;msg.textContent='Menyimpan…';await PayrollManualAdjustmentStore.save({employeeId:Number(card.dataset.employeeId),periodMonth:month,bonusInsentif:Number(card.querySelector('.js-insentif').value||0),bonusKpi:Number(card.querySelector('.js-kpi').value||0),note:card.querySelector('.js-note').value});msg.className='payroll-save-msg ok';msg.textContent='Tersimpan.';await loadPayroll(false);}catch(err){msg.className='payroll-save-msg err';msg.textContent=err?.message||'Gagal menyimpan.';}finally{btn.disabled=false;}
+      try{
+        btn.disabled=true;
+        msg.textContent='Menyimpan…';
+        await PayrollManualAdjustmentStore.save({
+          employeeId:Number(card.dataset.employeeId),
+          periodMonth:month,
+          bonusInsentif:parseRupiah(card.querySelector('.js-insentif').value),
+          bonusKpi:parseRupiah(card.querySelector('.js-kpi').value),
+          note:card.querySelector('.js-note').value
+        });
+        msg.className='payroll-save-msg ok';
+        msg.textContent='Tersimpan.';
+        await loadPayroll(false);
+      }catch(err){
+        msg.className='payroll-save-msg err';
+        msg.textContent=err?.message||'Gagal menyimpan.';
+      }finally{btn.disabled=false;}
     }));
   }
   async function maybeLoad(){
@@ -164,7 +197,10 @@
       manualMonth=await PayrollManualAdjustmentStore.loadMonth(month);
       const adjustments=PayrollManualAdjustmentStore.toEngineAdjustments(manualMonth);
       const result=await PayrollCapsterEngine.loadPeriod({start,end,branchId,employeeId,adjustments});
-      renderPending(result.pendingSummary); el('payrollList').innerHTML=result.payroll.length?result.payroll.map(renderCard).join(''):'<div class="payroll-empty">Tidak ada payroll pada filter ini.</div>'; bindSave(month);
+      renderPending(result.pendingSummary);
+      el('payrollList').innerHTML=result.payroll.length?result.payroll.map(renderCard).join(''):'<div class="payroll-empty">Tidak ada payroll pada filter ini.</div>';
+      bindRupiahInputs();
+      bindSave(month);
       const branchName=el('payrollBranch').selectedOptions[0]?.textContent||'—';
       el('payrollStatus').className='payroll-status';
       el('payrollStatus').textContent=`${branchName} · ${result.payroll.length} capster · ${monthLabel(month)} · Gaji Kotor ${money(result.totals.gajiKotor)} · Gaji Bersih ${money(result.totals.gajiBersih)}`;
@@ -178,11 +214,14 @@
     el('payrollBranch').addEventListener('change',async()=>{refreshEmployeeOptions();renderFancySelect(el('payrollBranch'));syncHeaderContext();await maybeLoad();});
     el('payrollEmployee').addEventListener('change',()=>{renderFancySelect(el('payrollEmployee'));maybeLoad();});
     el('payrollRefresh').addEventListener('click',()=>maybeLoad());
-    el('payrollPeriodBtn').addEventListener('click',openPeriod); el('payrollYearPrev').addEventListener('click',()=>{periodYear--;renderPeriodGrid();}); el('payrollYearNext').addEventListener('click',()=>{periodYear++;renderPeriodGrid();});
+    el('payrollPeriodBtn').addEventListener('click',openPeriod);
+    el('payrollYearPrev').addEventListener('click',()=>{periodYear--;renderPeriodGrid();});
+    el('payrollYearNext').addEventListener('click',()=>{periodYear++;renderPeriodGrid();});
     document.querySelectorAll('[data-payroll-period-close]').forEach(x=>x.addEventListener('click',closePeriod));
     document.addEventListener('click',e=>{if(!e.target.closest('.payroll-select-shell')) closeFancySelects();});
     document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeFancySelects();if(!el('payrollPeriodModal').hidden) closePeriod();}});
-    el('payrollPrint').addEventListener('click',()=>window.PayrollCapsterPrint?.open('print')); el('payrollPdf').addEventListener('click',()=>window.PayrollCapsterPrint?.open('pdf'));
+    el('payrollPrint').addEventListener('click',()=>window.PayrollCapsterPrint?.open('print'));
+    el('payrollPdf').addEventListener('click',()=>window.PayrollCapsterPrint?.open('pdf'));
     syncHeaderContext();
     setTimeout(syncHeaderContext,250);
   }
