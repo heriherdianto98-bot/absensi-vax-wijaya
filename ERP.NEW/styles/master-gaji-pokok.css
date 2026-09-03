@@ -1,6 +1,6 @@
 /* ERP VAX — Master Gaji Pokok standalone UI */
 .salary-master-page{padding-bottom:28px}
-.salary-master-head{border-left-color:#5da7c6!important}
+.salary-master-head{border-left-color:#5da7c6!important;position:sticky;top:var(--erp-top-header-h,58px);z-index:65;background:linear-gradient(180deg,#131a21 0%,#0f151b 100%);box-shadow:0 10px 22px rgba(0,0,0,.26),0 1px 0 rgba(93,167,198,.12)}
 .salary-master-panel{padding:16px!important;overflow:visible!important}
 .salary-master-toolbar{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(300px,1.35fr) auto;gap:12px;align-items:end}
 .salary-master-field{display:flex;flex-direction:column;gap:7px;padding:10px;border:1px solid #2a3642;border-radius:12px;background:linear-gradient(180deg,#171e26,#10161c);box-shadow:0 6px 16px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.03)}
