@@ -11,6 +11,7 @@ Canonical sources:
 - Non-Capster        : payroll_salary_master (MONTHLY / DAILY)
 - Denda              : absensi.denda
 - Kasbon             : employee_cash_advances.current_outstanding (status AKTIF)
+                       yang dicairkan di periode payroll terpilih
 - Bonus Produk       : product_sales_source.revenue_share by employee_id
 - Bonus Insentif/KPI : payroll_manual_adjustments
 
@@ -48,7 +49,7 @@ const PayrollUnifiedEngine = {
     async fetchProviderRows(start,end){ const {data,error}=await db.from(this.TABLE_PROVIDER_DAILY).select("id,activity_date,cabang_id,cabang_minutes_name,provider_name_raw,provider_name_normalized,provider_minutes_id,employee_id,mapping_status,total_service,provider_share").gte("activity_date",start).lte("activity_date",end).order("activity_date",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
     async fetchProductRows(start,end){ const {data,error}=await db.from(this.TABLE_PRODUCT_SALES).select("id,period_start,period_end,cabang_id,cabang_minutes_name,product_name,provider_name_raw,employee_id,mapping_status,qty,revenue_share").gte("period_start",start).lte("period_start",end).order("period_start",{ascending:true}); if(error)throw error; return (Array.isArray(data)?data:[]).filter(r=>{const s=this.normalizeDate(r.period_start),e=this.normalizeDate(r.period_end);return s&&e&&s===e&&s>=start&&s<=end;}); },
     async fetchAbsensi(start,end){ const {data,error}=await db.from(this.TABLE_ABSENSI).select("id,karyawan_id,cabang_id,cabang_asal_id,tanggal,status,terlambat_menit,denda,status_denda").gte("tanggal",start).lte("tanggal",end).order("tanggal",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
-    async fetchKasbon(end){ const {data,error}=await db.from(this.TABLE_KASBON).select("id,employee_id,branch_id,employee_name_snapshot,position_snapshot,request_date,approved_amount,disbursement_date,status,current_outstanding,total_paid").lte("disbursement_date",end).order("disbursement_date",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
+    async fetchKasbon(start,end){ const {data,error}=await db.from(this.TABLE_KASBON).select("id,employee_id,branch_id,employee_name_snapshot,position_snapshot,request_date,approved_amount,disbursement_date,status,current_outstanding,total_paid").gte("disbursement_date",start).lte("disbursement_date",end).order("disbursement_date",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
 
     buildPendingMapping(providerRows,cabangMap){
         return providerRows.filter(r=>!r.employee_id||String(r.mapping_status||"").toUpperCase()!=="MATCHED").map(r=>({
@@ -127,8 +128,8 @@ const PayrollUnifiedEngine = {
         });
 
         ownKasbon.forEach(k=>{
-            const disb=this.normalizeDate(k.disbursement_date);
-            const date=disb&&disb>=range.start?disb:range.start;
+            const date=this.normalizeDate(k.disbursement_date);
+            if(!date)return;
             const branchId=Number(k.branch_id)||employee.cabang_id;
             const row=ensure(date,branchId,cabangMap.get(branchId)||homeCabang);
             row.kasbon+=this.number(k.current_outstanding);
@@ -155,7 +156,7 @@ const PayrollUnifiedEngine = {
     async loadPeriod({start,end,branchId=null,employeeId=null,adjustments={}}={}){
         const range=this.validateRange(start,end);
         const [karyawan,cabang,providerRows,productRows,absensiRows,kasbonRows,salaryData]=await Promise.all([
-            this.fetchKaryawan(),this.fetchCabang(),this.fetchProviderRows(range.start,range.end),this.fetchProductRows(range.start,range.end),this.fetchAbsensi(range.start,range.end),this.fetchKasbon(range.end),window.PayrollSalaryMasterStore?.loadAll?.()||Promise.resolve({rows:[],byEmployee:{}})
+            this.fetchKaryawan(),this.fetchCabang(),this.fetchProviderRows(range.start,range.end),this.fetchProductRows(range.start,range.end),this.fetchAbsensi(range.start,range.end),this.fetchKasbon(range.start,range.end),window.PayrollSalaryMasterStore?.loadAll?.()||Promise.resolve({rows:[],byEmployee:{}})
         ]);
         const cabangMap=new Map(cabang.map(r=>[Number(r.id),r.nama_cabang]));
         let employees=karyawan.slice();
