@@ -1,0 +1,217 @@
+/* ERP VAX — Payroll Capster visual balance V3
+   UI only. Neutral Arus Kas base + selective accents. */
+
+:root{
+  --pay-v3-bg:#0b0f14;
+  --pay-v3-panel:#11171e;
+  --pay-v3-panel-2:#151c24;
+  --pay-v3-line:#283442;
+  --pay-v3-text:#f6f8fb;
+  --pay-v3-muted:#9aa8b7;
+  --pay-v3-blue:#5da7c6;
+  --pay-v3-cyan:#64c2c8;
+  --pay-v3-green:#58bd8b;
+  --pay-v3-violet:#8e8ac9;
+  --pay-v3-red:#e86666;
+  --pay-v3-gold:#d4af37;
+}
+
+/* Keep the shell dark/neutral; gold becomes an accent, not the whole theme. */
+.payroll-aruskas-theme .payroll-page-head{
+  border-color:#25303b!important;
+  border-left-color:var(--pay-v3-gold)!important;
+  background:linear-gradient(180deg,#151b22 0%,#0d1217 100%)!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+.payroll-aruskas-theme .payroll-page-head::after{opacity:.25!important}
+.payroll-aruskas-theme .payroll-page-head .thc-page-eyebrow{color:#d7bd65!important}
+.payroll-aruskas-theme .payroll-page-head .thc-page-sub{color:#aeb8c3!important}
+
+.payroll-aruskas-theme .payroll-panel{
+  overflow:visible!important;
+  border-color:#25303b!important;
+  background:linear-gradient(180deg,#121820 0%,#0d1217 100%)!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.payroll-aruskas-theme .payroll-toolbar{position:relative;z-index:30}
+.payroll-aruskas-theme .payroll-status{position:relative;z-index:1;border-left-color:#4f7284;background:linear-gradient(90deg,rgba(69,105,124,.12),transparent 74%);color:#aeb8c3}
+
+/* Filter boxes: distinct coloured title strips, neutral body. */
+.payroll-aruskas-theme .payroll-filter-card,
+.payroll-aruskas-theme .payroll-toolbar>label,
+.payroll-aruskas-theme .payroll-period-field{
+  border-color:#2a3642!important;
+  background:linear-gradient(180deg,#171e26 0%,#10161c 100%)!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.035)!important;
+  animation:none!important;
+}
+.payroll-aruskas-theme .payroll-filter-card::before,
+.payroll-aruskas-theme .payroll-toolbar>label::before,
+.payroll-aruskas-theme .payroll-period-field::before{display:none!important}
+.payroll-aruskas-theme .payroll-filter-card:hover,
+.payroll-aruskas-theme .payroll-toolbar>label:hover,
+.payroll-aruskas-theme .payroll-period-field:hover{
+  border-color:#3a4c5b!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.28),0 0 0 1px rgba(93,167,198,.08)!important;
+}
+.payroll-aruskas-theme .payroll-filter-card:focus-within,
+.payroll-aruskas-theme .payroll-toolbar>label:focus-within,
+.payroll-aruskas-theme .payroll-period-field:focus-within{
+  border-color:#4f7c91!important;
+  box-shadow:0 0 0 2px rgba(93,167,198,.12),0 8px 20px rgba(0,0,0,.28)!important;
+  animation:none!important;
+}
+.payroll-aruskas-theme .payroll-field-label,
+.payroll-aruskas-theme .payroll-toolbar label>span:first-child,
+.payroll-aruskas-theme .payroll-period-field>span:first-child{
+  display:inline-flex!important;
+  width:max-content;
+  align-items:center;
+  min-height:22px;
+  padding:0 8px;
+  border-radius:6px;
+  border:1px solid rgba(93,167,198,.20);
+  background:rgba(93,167,198,.10);
+  color:#b9d7e3!important;
+  font-size:10px!important;
+  letter-spacing:.08em!important;
+  text-shadow:none!important;
+}
+.payroll-aruskas-theme .payroll-filter-capster .payroll-field-label{border-color:rgba(142,138,201,.22);background:rgba(142,138,201,.10);color:#cbc8ef!important}
+.payroll-aruskas-theme .payroll-period-field>.payroll-field-label{border-color:rgba(212,175,55,.22);background:rgba(212,175,55,.08);color:#dfca7a!important}
+
+/* Custom dropdown: fully opaque so lower content never shows through. */
+.payroll-aruskas-theme .payroll-select-trigger{
+  border-color:#334353!important;
+  background:linear-gradient(180deg,#151d25 0%,#0f151b 100%)!important;
+  color:#f7f9fb!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 3px 9px rgba(0,0,0,.24)!important;
+}
+.payroll-aruskas-theme .payroll-select-trigger::after{color:#c9d5df!important;text-shadow:none!important}
+.payroll-aruskas-theme .payroll-select-trigger:hover{
+  border-color:#557387!important;
+  background:linear-gradient(180deg,#19242d 0%,#111820 100%)!important;
+  box-shadow:0 0 0 1px rgba(93,167,198,.10),0 7px 17px rgba(0,0,0,.26)!important;
+}
+.payroll-aruskas-theme .payroll-select-shell.is-open .payroll-select-trigger{
+  border-color:#69a9c2!important;
+  background:linear-gradient(180deg,#1a2832 0%,#111a21 100%)!important;
+  box-shadow:0 0 0 2px rgba(93,167,198,.14),0 8px 20px rgba(0,0,0,.30)!important;
+}
+.payroll-aruskas-theme .payroll-select-menu{
+  z-index:500!important;
+  max-height:250px!important;
+  border-color:#3d5263!important;
+  background:#10161d!important;
+  background-image:linear-gradient(180deg,#141c24 0%,#0d1319 100%)!important;
+  opacity:1!important;
+  backdrop-filter:none!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.68),0 0 0 1px rgba(93,167,198,.08)!important;
+  scrollbar-color:#506778 #0d1319!important;
+}
+.payroll-aruskas-theme .payroll-select-option{color:#e7edf3!important;background:transparent!important}
+.payroll-aruskas-theme .payroll-select-option:hover{
+  color:#fff!important;
+  border-color:rgba(93,167,198,.20)!important;
+  background:linear-gradient(90deg,rgba(93,167,198,.18),rgba(93,167,198,.05))!important;
+  box-shadow:inset 3px 0 0 #5da7c6!important;
+}
+.payroll-aruskas-theme .payroll-select-option.is-selected{
+  color:#f5f9fc!important;
+  border-color:rgba(100,194,200,.24)!important;
+  background:linear-gradient(90deg,rgba(47,100,108,.54),rgba(25,47,56,.70))!important;
+  box-shadow:inset 3px 0 0 #64c2c8!important;
+}
+.payroll-aruskas-theme .payroll-select-option.is-selected::after{color:#d7bd65!important}
+
+.payroll-aruskas-theme .payroll-period-btn{
+  border-color:#394854!important;
+  background:linear-gradient(180deg,#151d25 0%,#0f151b 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 3px 9px rgba(0,0,0,.22)!important;
+}
+.payroll-aruskas-theme .payroll-period-btn>span{color:#d7bd65!important;text-shadow:none!important}
+.payroll-aruskas-theme .payroll-period-btn:hover,
+.payroll-aruskas-theme .payroll-period-btn[aria-expanded="true"]{
+  border-color:#557387!important;
+  background:linear-gradient(180deg,#19242d 0%,#111820 100%)!important;
+  box-shadow:0 0 0 2px rgba(93,167,198,.10),0 7px 17px rgba(0,0,0,.26)!important;
+}
+
+/* Buttons: neutral/blue for actions, gold only for PDF. */
+.payroll-aruskas-theme #payrollRefresh{border-color:#344653!important;background:linear-gradient(180deg,#1a252e,#111820)!important;color:#d6e4ec!important}
+.payroll-aruskas-theme #payrollPrint{border-color:#4b5c68!important;background:linear-gradient(180deg,#171e25,#10161c)!important;color:#eef2f5!important}
+.payroll-aruskas-theme #payrollPdf{border-color:#b9982f!important;background:linear-gradient(180deg,#d4b638,#b28c1e)!important;color:#15120a!important}
+
+/* Three top metrics: different semantic accents. */
+.payroll-aruskas-theme .erp-metric-card{
+  animation:none!important;
+  border-color:#2b3742!important;
+  background:linear-gradient(180deg,#171e25,#10161c)!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.03)!important;
+}
+.payroll-aruskas-theme .erp-metric-card::after{display:none!important}
+.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(1){border-left-color:#d89d4c!important}.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(1) span,.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(1) strong{color:#e6b56f!important}
+.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(2){border-left-color:#5da7c6!important}.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(2) span,.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(2) strong{color:#9fc9da!important}
+.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(3){border-left-color:#64c2c8!important}.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(3) span,.payroll-aruskas-theme .payroll-pending .erp-metric-card:nth-child(3) strong{color:#a5dde0!important}
+
+/* Employee card: graphite/navy, not gold wash. */
+.payroll-aruskas-theme .payroll-employee-card{
+  animation:payroll-card-in .25s ease both!important;
+  border-color:#29343e!important;
+  border-left-color:#4f8ca6!important;
+  background:linear-gradient(180deg,#10161c,#0b1015)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.payroll-aruskas-theme .payroll-employee-card::before{display:none!important}
+.payroll-aruskas-theme .payroll-employee-card:hover{border-color:#3d5363!important;box-shadow:0 16px 34px rgba(0,0,0,.34),0 0 20px rgba(93,167,198,.06)!important}
+.payroll-aruskas-theme .payroll-card-head{
+  border-bottom-color:#25313b!important;
+  background:linear-gradient(180deg,#18222b 0%,#111820 100%)!important;
+}
+.payroll-aruskas-theme .payroll-person p{color:#aeb9c4!important}
+.payroll-aruskas-theme .payroll-net{border-color:rgba(212,175,55,.30)!important;background:linear-gradient(180deg,rgba(52,44,22,.50),rgba(24,22,16,.72))!important}
+.payroll-aruskas-theme .payroll-net span{color:#d9c36f!important}.payroll-aruskas-theme .payroll-net strong{color:#f1d461!important}
+
+/* Table: dark graphite with a thin gold keyline only. */
+.payroll-aruskas-theme .payroll-table th{background:linear-gradient(180deg,#202a33,#151d24)!important;border-bottom-color:#8f7a32!important;box-shadow:0 1px 0 #8f7a32,0 5px 12px rgba(0,0,0,.18)!important;color:#eef3f6!important}
+.payroll-aruskas-theme .payroll-table td{background:#0e1419!important;color:#e6ebef!important}
+.payroll-aruskas-theme .payroll-table tbody tr:nth-child(even) td{background:#11181f!important}
+.payroll-aruskas-theme .payroll-table tbody tr:hover td{background:#17222a!important}
+
+/* Summary cards get semantic colours instead of one gold palette. */
+.payroll-aruskas-theme .payroll-summary{background:linear-gradient(180deg,#0d1318,#0a0f13)!important;border-top-color:#25313b!important}
+.payroll-aruskas-theme .payroll-sum{
+  animation:none!important;
+  background:linear-gradient(180deg,#161d24,#10161c)!important;
+  border-color:#2c3944!important;
+  border-top-color:#4b6373!important;
+  box-shadow:0 5px 13px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.payroll-aruskas-theme .payroll-sum::after{display:none!important}
+.payroll-aruskas-theme .payroll-sum span{color:#9eacb8!important}.payroll-aruskas-theme .payroll-sum strong{color:#f4f7f9!important}
+.payroll-aruskas-theme .payroll-sum:nth-child(1){border-top-color:#5da7c6!important}.payroll-aruskas-theme .payroll-sum:nth-child(1) span{color:#9ec9db!important}
+.payroll-aruskas-theme .payroll-sum:nth-child(2){border-color:#4b2b2e!important;border-top-color:#e86666!important;background:linear-gradient(180deg,#241719,#141114)!important}.payroll-aruskas-theme .payroll-sum:nth-child(2) span,.payroll-aruskas-theme .payroll-sum:nth-child(2) strong{color:#ef8f8f!important}
+.payroll-aruskas-theme .payroll-sum:nth-child(3){border-top-color:#58bd8b!important}.payroll-aruskas-theme .payroll-sum:nth-child(3) span{color:#8fd0ad!important}
+.payroll-aruskas-theme .payroll-sum:nth-child(4){border-top-color:#8e8ac9!important}.payroll-aruskas-theme .payroll-sum:nth-child(4) span{color:#b4b0df!important}
+.payroll-aruskas-theme .payroll-sum:nth-child(5){border-top-color:#d89d4c!important}.payroll-aruskas-theme .payroll-sum:nth-child(5) span{color:#dfb276!important}
+.payroll-aruskas-theme .payroll-sum.is-net{border-color:#645522!important;border-top-color:#d4af37!important;background:linear-gradient(180deg,#211d13,#14130f)!important;box-shadow:0 6px 15px rgba(0,0,0,.24),0 0 14px rgba(212,175,55,.06)!important}.payroll-aruskas-theme .payroll-sum.is-net span{color:#d9c36f!important}.payroll-aruskas-theme .payroll-sum.is-net strong{color:#f3d86d!important}
+
+/* Manual inputs: blue-grey focus; no permanent gold wash. */
+.payroll-aruskas-theme .payroll-manual{background:linear-gradient(180deg,#0f151a,#0b1014)!important;border-top-color:#25313b!important}
+.payroll-aruskas-theme .payroll-manual label{color:#a9b6c1!important}
+.payroll-aruskas-theme .payroll-manual input{border-color:#33414d!important;background:linear-gradient(180deg,#151d24,#10161c)!important;color:#f7f9fb!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 2px 7px rgba(0,0,0,.16)!important}
+.payroll-aruskas-theme .payroll-manual input:hover{border-color:#4c6575!important;background:linear-gradient(180deg,#18222a,#111820)!important}
+.payroll-aruskas-theme .payroll-manual input:focus{border-color:#5da7c6!important;box-shadow:0 0 0 3px rgba(93,167,198,.12),0 0 14px rgba(93,167,198,.08)!important}
+.payroll-aruskas-theme .payroll-save{border-color:#46796a!important;background:linear-gradient(180deg,#3f8a6c,#2d6652)!important;color:#f6fffb!important;box-shadow:0 4px 12px rgba(0,0,0,.20)!important}
+
+/* Period modal: same balance as Arus Kas, with blue-grey body and selective gold. */
+.payroll-aruskas-theme .payroll-period-backdrop{background:rgba(3,6,9,.80)!important;backdrop-filter:blur(6px) saturate(.72)!important}
+.payroll-aruskas-theme .payroll-period-dialog{border-color:#3a4b58!important;background:linear-gradient(180deg,#161f27,#0e141a)!important;box-shadow:0 24px 62px rgba(0,0,0,.65),0 0 0 1px rgba(93,167,198,.06)!important}
+.payroll-aruskas-theme .payroll-period-head{border-bottom-color:#2b3843!important}.payroll-aruskas-theme .payroll-period-head small{color:#9ec9db!important}.payroll-aruskas-theme .payroll-period-year strong{color:#e1e8ed!important}
+.payroll-aruskas-theme .payroll-period-year button{border-color:#3d5363!important;background:#131b22!important;color:#b9d7e3!important}
+.payroll-aruskas-theme .payroll-month-grid button{border-color:#2b3843!important;background:linear-gradient(180deg,#161e26,#111820)!important;color:#e8edf1!important;box-shadow:0 4px 10px rgba(0,0,0,.18)!important}
+.payroll-aruskas-theme .payroll-month-grid button:hover{border-color:#557387!important;background:linear-gradient(180deg,#1c2a34,#141d24)!important;box-shadow:0 7px 16px rgba(0,0,0,.25),0 0 12px rgba(93,167,198,.06)!important}
+.payroll-aruskas-theme .payroll-month-grid button.is-active{border-color:#b39834!important;background:linear-gradient(180deg,#262116,#191711)!important;box-shadow:0 0 0 1px rgba(212,175,55,.12),0 6px 14px rgba(0,0,0,.24)!important}.payroll-aruskas-theme .payroll-month-grid button.is-active span{color:#e8cf6e!important}.payroll-aruskas-theme .payroll-month-grid button.is-active strong{color:#bcae79!important}
+
+@media(max-width:1100px){.payroll-aruskas-theme .payroll-toolbar{z-index:30}}
+@media print{.payroll-aruskas-theme .payroll-page-head,.payroll-aruskas-theme .payroll-panel,.payroll-aruskas-theme .payroll-employee-card,.payroll-aruskas-theme .payroll-sum{box-shadow:none!important}}
