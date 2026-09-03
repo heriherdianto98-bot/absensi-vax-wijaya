@@ -38,21 +38,22 @@
 
 /*
    ACTIONS FINAL: node/event tombol existing tetap dipakai.
-   Karena shell tabel max-content jauh lebih lebar dari viewport, group action
-   dipasang ke viewport ERP (fixed) agar Refresh/Sync/Print/PDF/Excel selalu
-   terlihat di sisi kanan panel judul dan ikut freeze saat scroll vertikal.
+   Group ditempatkan di sisi kiri area konten seperti layout sebelumnya,
+   bukan di ujung kanan shell tabel yang max-content. Dengan fixed terhadap
+   viewport ERP, tombol tetap terlihat saat scroll vertikal maupun horizontal.
 */
 .thc-page .thc-tb-actions{
     position: fixed !important;
     top: calc(var(--erp-top-header-h, 58px) + 24px) !important;
-    right: 28px !important;
-    left: auto !important;
+    left: 245px !important;
+    right: auto !important;
     z-index: 90 !important;
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     gap: 8px !important;
     width: auto !important;
+    max-width: calc(100vw - 280px) !important;
     margin: 0 !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -114,6 +115,7 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         top: auto !important;
         right: auto !important;
         left: auto !important;
+        max-width: none !important;
         flex-wrap: wrap !important;
         margin-left: auto !important;
     }
