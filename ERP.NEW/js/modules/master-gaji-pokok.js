@@ -11,8 +11,18 @@
 
   function today(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
   function isCapster(r){return String(r?.jabatan||'').trim().toLowerCase()==='capster';}
+  function isRyanFloating(r){
+    const name=String(r?.nama_karyawan||'').toLowerCase().replace(/\s+/g,' ').trim();
+    const role=String(r?.jabatan||'').toLowerCase();
+    return name==='ryan casmin' && role.includes('kasir') && (role.includes('backup')||role.includes('floating'));
+  }
   function dateLabel(date){const [y,m,d]=String(date||'').split('-').map(Number);return y&&m&&d?`${String(d).padStart(2,'0')} ${MONTHS[m-1]} ${y}`:'—';}
   function effectivePeriod(row){if(!row)return '—';return `${dateLabel(row.effectiveFrom)} — ${row.effectiveTo?dateLabel(row.effectiveTo):'seterusnya'}`;}
+  function monthRange(date=today()){
+    const [y,m]=String(date).split('-').map(Number);
+    const end=new Date(Date.UTC(y,m,0)).getUTCDate();
+    return {start:`${y}-${String(m).padStart(2,'0')}-01`,end:`${y}-${String(m).padStart(2,'0')}-${String(end).padStart(2,'0')}`};
+  }
 
   async function loadBase(){
     [cabangs,employees]=await Promise.all([PayrollUnifiedEngine.fetchCabang(),PayrollUnifiedEngine.fetchKaryawan()]);
@@ -36,11 +46,53 @@
     el('salaryHistory').innerHTML='<div class="salary-empty">Pilih karyawan untuk melihat histori gaji.</div>';
   }
 
+  async function renderRyanFloating(){
+    const range=monthRange();
+    const result=await PayrollUnifiedEngine.loadPeriod({start:range.start,end:range.end,employeeId:selectedEmployee.id});
+    const payroll=(result.payroll||[])[0]||null;
+    const daily=(payroll?.daily||[]).filter(r=>Number(r.gajiPokok||0)>0);
+    const total=Number(payroll?.summary?.gajiPokok||0);
+    el('salaryEmployeeTitle').textContent=selectedEmployee.nama_karyawan||'Ryan Casmin';
+    el('salaryRole').textContent=selectedEmployee.jabatan||'Kasir Backup / Floating';
+    el('salaryCurrentAmount').textContent=money(total);
+    el('salaryCurrentBasis').textContent='Harian · Cash Out';
+    el('salaryCurrentPeriod').textContent=`${dateLabel(range.start)} — ${dateLabel(range.end)}`;
+
+    el('salaryBasis').value='DAILY';
+    el('salaryAmount').value=rupiah(0);
+    el('salaryNote').value='Otomatis dari Cash Out Minutes semua cabang';
+    setEffectiveDate(today());
+    el('salaryBasis').disabled=true;
+    el('salaryAmount').disabled=true;
+    el('salaryEffectiveBtn').disabled=true;
+    el('salaryNote').disabled=true;
+    el('salarySave').disabled=true;
+
+    if(!daily.length){
+      el('salaryHistory').innerHTML='<div class="salary-empty">Belum ada Cash Out gaji backup kasir pada bulan berjalan.</div>';
+    }else{
+      el('salaryHistory').innerHTML=`<table><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th>Basis</th><th class="num">Gaji Pokok</th><th>Sumber</th></tr></thead><tbody>${daily.map(r=>`<tr><td>${esc(dateLabel(r.tanggal))}</td><td>${esc(r.cabang||'—')}</td><td>Harian</td><td class="num">${money(r.gajiPokok)}</td><td>Cash Out Minutes</td></tr>`).join('')}</tbody></table>`;
+    }
+    el('salaryStatus').textContent=`${selectedEmployee.nama_karyawan} memakai payroll otomatis dari Cash Out Minutes semua cabang. Total bulan berjalan ${money(total)} dari ${daily.length} hari pembayaran backup kasir.`;
+  }
+
   async function loadEmployee(){
     const id=Number(el('salaryEmployee').value||0);
     selectedEmployee=employees.find(r=>Number(r.id)===id)||null;
     if(!selectedEmployee){renderEmpty();return;}
     el('salaryStatus').textContent='Memuat master gaji…';
+
+    if(isRyanFloating(selectedEmployee)){
+      history=[];
+      await renderRyanFloating();
+      return;
+    }
+
+    el('salaryBasis').disabled=false;
+    el('salaryAmount').disabled=false;
+    el('salaryEffectiveBtn').disabled=false;
+    el('salaryNote').disabled=false;
+    el('salarySave').disabled=false;
     history=await PayrollSalaryMasterStore.loadEmployee(id);
     const current=PayrollSalaryMasterStore.rateAt(history,id,today()) || history.slice().sort((a,b)=>b.effectiveFrom.localeCompare(a.effectiveFrom))[0] || null;
     el('salaryEmployeeTitle').textContent=selectedEmployee.nama_karyawan||'—';
@@ -64,6 +116,7 @@
   }
 
   function openCalendar(){
+    if(el('salaryEffectiveBtn').disabled)return;
     const base=el('salaryEffectiveDate').value||today();const [y,m]=base.split('-').map(Number);calendarYear=y;calendarMonth=m-1;renderCalendar();
     const modal=el('salaryDateModal');modal.hidden=false;modal.setAttribute('aria-hidden','false');el('salaryEffectiveBtn').setAttribute('aria-expanded','true');
   }
@@ -86,11 +139,12 @@
     e.preventDefault();const msg=el('salaryFormMsg'),btn=el('salarySave');
     try{
       if(!selectedEmployee)throw new Error('Pilih karyawan terlebih dahulu.');
+      if(isRyanFloating(selectedEmployee))throw new Error('Ryan Casmin memakai gaji otomatis dari Cash Out Minutes semua cabang.');
       const effectiveFrom=el('salaryEffectiveDate').value;if(!effectiveFrom)throw new Error('Pilih tanggal Berlaku Mulai.');
       btn.disabled=true;msg.className='salary-form-msg';msg.textContent='Menyimpan master gaji…';
       await PayrollSalaryMasterStore.save({employeeId:selectedEmployee.id,payBasis:el('salaryBasis').value,amount:parseRupiah(el('salaryAmount').value),effectiveFrom,note:el('salaryNote').value});
       msg.className='salary-form-msg ok';msg.textContent='Master gaji tersimpan. Payroll akan mengambilnya otomatis sesuai periode berlaku.';await loadEmployee();
-    }catch(err){msg.className='salary-form-msg err';msg.textContent=err?.message||'Gagal menyimpan master gaji.';}finally{btn.disabled=false;}
+    }catch(err){msg.className='salary-form-msg err';msg.textContent=err?.message||'Gagal menyimpan master gaji.';}finally{if(!isRyanFloating(selectedEmployee))btn.disabled=false;}
   }
 
   async function init(){
