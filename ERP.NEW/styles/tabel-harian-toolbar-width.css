@@ -34,13 +34,13 @@
     padding-right: 610px !important;
 }
 
-/* ACTIONS: di DEPAN / di dalam panel judul, sejajar dengan title. */
+/* ACTIONS: tampil DI DALAM layer panel judul, sejajar dengan title. */
 .thc-page .thc-tb-actions{
     position: fixed !important;
     top: calc(var(--erp-top-header-h, 58px) + 78px) !important;
     left: 815px !important;
     right: auto !important;
-    transform: translateY(-56px) !important;
+    transform: none !important;
     z-index: 120 !important;
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -96,7 +96,7 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     .thc-page .thc-tb-actions{
         top: calc(var(--erp-top-header-h, 58px) + 76px) !important;
         left: 655px !important;
-        transform: translateY(-54px) !important;
+        transform: none !important;
         max-width: calc(100vw - 680px) !important;
         gap: 6px !important;
     }
