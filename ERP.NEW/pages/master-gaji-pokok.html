@@ -96,10 +96,23 @@
 <script src="../js/modules/payroll-unified-engine.js?v=20260903-master1"></script>
 <script src="../js/modules/master-gaji-pokok.js?v=20260903-master1"></script>
 <script>
+function ensureMasterGajiPokokSidebarEntry(){
+  const sidebar=document.querySelector('.sidebar');
+  if(!sidebar || sidebar.querySelector('[data-erp-nav="master-gaji-pokok"]')) return;
+  const payroll=sidebar.querySelector('[data-erp-nav="payroll"]');
+  if(!payroll) return;
+  const link=document.createElement('a');
+  link.href='./master-gaji-pokok.html';
+  link.className='menu-item active';
+  link.dataset.erpNav='master-gaji-pokok';
+  link.innerHTML='<span class="menu-icon" aria-hidden="true">◇</span><span>Master Gaji Pokok</span>';
+  payroll.insertAdjacentElement('afterend',link);
+}
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
-  initErpShellChrome?.();ensurePayrollSidebarEntry?.();
-  const payrollLink=document.querySelector('.sidebar [data-erp-nav="payroll"]'); if(payrollLink) payrollLink.classList.add('active');
+  initErpShellChrome?.();ensurePayrollSidebarEntry?.();ensureMasterGajiPokokSidebarEntry();
+  document.querySelector('.sidebar [data-erp-nav="payroll"]')?.classList.remove('active');
+  const masterLink=document.querySelector('.sidebar [data-erp-nav="master-gaji-pokok"]'); if(masterLink) masterLink.classList.add('active');
   const t=document.getElementById('erpHeaderCabang'); if(t) t.textContent='Master Gaji Pokok';
   const p=document.getElementById('erpHeaderPeriode'); if(p) p.textContent='Master Data';
 }).catch(()=>{});
