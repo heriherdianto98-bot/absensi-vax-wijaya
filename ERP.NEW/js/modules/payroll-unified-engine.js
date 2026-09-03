@@ -34,6 +34,14 @@ const PayrollUnifiedEngine = {
     addDays(date,days){ const [y,m,d]=date.split("-").map(Number); const dt=new Date(Date.UTC(y,m-1,d)); dt.setUTCDate(dt.getUTCDate()+days); return dt.toISOString().slice(0,10); },
     dates(start,end){ const out=[]; for(let d=start;d<=end;d=this.addDays(d,1))out.push(d); return out; },
     daysInMonth(date){ const [y,m]=date.split("-").map(Number); return new Date(Date.UTC(y,m,0)).getUTCDate(); },
+    monthlyDailyAmount(amount,date){
+        const total=Math.round(this.number(amount));
+        const days=this.daysInMonth(date);
+        const base=Math.floor(total/days);
+        const remainder=total-(base*days);
+        const day=Number(String(date).slice(8,10));
+        return base+(day<=remainder?1:0);
+    },
 
     async fetchKaryawan(){ const {data,error}=await db.from(this.TABLE_KARYAWAN).select("id,nama_karyawan,cabang_id,jabatan,aktif").order("nama_karyawan",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
     async fetchCabang(){ const {data,error}=await db.from(this.TABLE_CABANG).select("id,nama_cabang").order("id",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
@@ -86,7 +94,7 @@ const PayrollUnifiedEngine = {
                 if(!rate)return;
                 salaryRates.push(rate);
                 if(rate.payBasis==="MONTHLY"){
-                    const amount=this.number(rate.amount)/this.daysInMonth(date);
+                    const amount=this.monthlyDailyAmount(rate.amount,date);
                     const row=ensure(date,employee.cabang_id,homeCabang);
                     row.gajiPokok+=amount; row.salaryBasis="MONTHLY"; gajiPokok+=amount;
                 }else if(rate.payBasis==="DAILY"&&attendanceDates.has(date)){
