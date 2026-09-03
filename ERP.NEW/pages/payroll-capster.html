@@ -35,29 +35,43 @@
 
       <section class="setoran-section-card payroll-panel">
         <div class="payroll-toolbar">
-          <label><span>Bulan</span><input id="payrollMonth" type="month"></label>
-          <label><span>Capster</span><select id="payrollEmployee"><option value="">Semua Capster</option></select></label>
+          <label><span>Cabang</span><select id="payrollBranch"><option value="">Pilih Cabang</option></select></label>
+          <label><span>Capster</span><select id="payrollEmployee" disabled><option value="">Pilih cabang dulu</option></select></label>
+          <div class="payroll-period-field">
+            <span>Periode</span>
+            <button id="payrollPeriodBtn" type="button" class="payroll-period-btn"><strong id="payrollPeriodLabel">—</strong><span aria-hidden="true">▣</span></button>
+          </div>
           <div class="payroll-toolbar-actions">
             <button id="payrollRefresh" type="button">Refresh</button>
             <button id="payrollPrint" type="button">Print</button>
             <button id="payrollPdf" type="button">PDF</button>
           </div>
         </div>
-        <p id="payrollStatus" class="payroll-status">Memuat payroll…</p>
+        <p id="payrollStatus" class="payroll-status">Pilih cabang untuk melihat payroll.</p>
       </section>
 
       <section id="payrollPending" class="payroll-pending" hidden>
-        <div><strong id="pendingRows">0</strong><span>Pending Mapping</span></div>
-        <div><strong id="pendingServices">0</strong><span>Services</span></div>
-        <div><strong id="pendingShare">Rp0</strong><span>Provider Share</span></div>
+        <div class="erp-metric-card"><span>Pending Mapping</span><strong id="pendingRows">0</strong></div>
+        <div class="erp-metric-card"><span>Services</span><strong id="pendingServices">0</strong></div>
+        <div class="erp-metric-card"><span>Provider Share</span><strong id="pendingShare">Rp0</strong></div>
       </section>
 
       <section id="payrollList" class="payroll-list"></section>
     </section>
   </div>
 </div>
-<nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./tabel-harian-cabang.html"><span class="bn-icon">▦</span>Tabel</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
 
+<div id="payrollPeriodModal" class="payroll-period-modal" hidden aria-hidden="true">
+  <div class="payroll-period-backdrop" data-payroll-period-close></div>
+  <section class="payroll-period-dialog" role="dialog" aria-modal="true" aria-labelledby="payrollPeriodTitle">
+    <div class="payroll-period-head"><div><small>PERIODE PAYROLL</small><h3 id="payrollPeriodTitle">Pilih Bulan</h3></div><button type="button" data-payroll-period-close aria-label="Tutup">×</button></div>
+    <div class="payroll-period-year"><button id="payrollYearPrev" type="button">‹</button><strong id="payrollYearLabel">2026</strong><button id="payrollYearNext" type="button">›</button></div>
+    <div id="payrollMonthGrid" class="payroll-month-grid"></div>
+    <p class="payroll-period-hint">Payroll dihitung per bulan agar bonus, KPI dan rekap gaji tetap konsisten.</p>
+  </section>
+</div>
+
+<nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./tabel-harian-cabang.html"><span class="bn-icon">▦</span>Tabel</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/loader.js"></script>
@@ -66,18 +80,9 @@
 <script src="../js/modules/payroll-capster-print.js"></script>
 <script src="../js/modules/payroll-capster-ui.js"></script>
 <script>
-Promise.all([
-  loadComponent('sidebar','../components/sidebar.html'),
-  loadComponent('header','../components/header.html')
-]).then(()=>{
-  if(typeof OwnerAuth !== 'undefined'){
-    OwnerAuth.bindUi?.();
-    OwnerAuth.syncHeader?.();
-    OwnerAuth.applyAccessControl?.();
-  }
-  initErpShellChrome?.();
-  ensurePayrollSidebarEntry?.();
-  markActiveSidebarLink?.();
+Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
+  if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
+  initErpShellChrome?.();ensurePayrollSidebarEntry?.();markActiveSidebarLink?.();
 }).catch(()=>{});
 </script>
 </body>
