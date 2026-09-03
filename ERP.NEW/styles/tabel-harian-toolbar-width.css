@@ -1,7 +1,6 @@
 /* ERP VAX — Tabel Harian toolbar/table width alignment
    UI ONLY. Tidak menyentuh engine, data, formula, render row, atau source Supabase. */
 
-/* Shell tabel tetap mengikuti lebar natural seluruh kolom. */
 .thc-page .thc-table-section{
     width: max-content !important;
     min-width: 100% !important;
@@ -23,7 +22,6 @@
     max-width: none !important;
 }
 
-/* Header laporan dibuat sepanjang shell data tanpa mengubah struktur tabel. */
 .thc-page{
     position: relative;
 }
@@ -36,15 +34,11 @@
     padding-right: 610px !important;
 }
 
-/*
-   ACTIONS: paksa tampil sejajar dengan judul "Tabel Harian Semua Cabang".
-   Tombol tetap node/event existing, hanya diposisikan relatif viewport agar
-   tidak ikut kabur bersama shell tabel max-content / horizontal scroll.
-*/
+/* ACTIONS: benar-benar masuk ke dalam panel judul, sejajar dengan title. */
 .thc-page .thc-tb-actions{
     position: fixed !important;
-    top: calc(var(--erp-top-header-h, 58px) + 26px) !important;
-    left: 760px !important;
+    top: calc(var(--erp-top-header-h, 58px) + 78px) !important;
+    left: 815px !important;
     right: auto !important;
     z-index: 120 !important;
     display: flex !important;
@@ -52,23 +46,17 @@
     align-items: center !important;
     gap: 8px !important;
     width: auto !important;
-    max-width: calc(100vw - 790px) !important;
+    max-width: calc(100vw - 845px) !important;
     margin: 0 !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
 }
 
-/* Filter bawah sekarang khusus filter. */
 .thc-page .thc-tb-spacer{
     display: none !important;
 }
 
-/*
-   FREEZE TITLE — panel "Tabel Harian Semua Cabang" ikut diam saat scroll.
-   Toolbar/filter dan header tabel diturunkan agar tidak menimpa panel judul.
-   UI ONLY; tidak menyentuh engine maupun data.
-*/
 .thc-page{
     --thc-page-head-h: 92px;
     --thc-pin-stack-h: 104px;
@@ -103,16 +91,15 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
 }
 
-/* Layar laptop lebih sempit: geser group ke kiri tapi tetap satu baris dengan judul. */
 @media (min-width: 1100px) and (max-width: 1450px){
     .thc-page .thc-tb-actions{
-        left: 620px !important;
-        max-width: calc(100vw - 645px) !important;
+        top: calc(var(--erp-top-header-h, 58px) + 76px) !important;
+        left: 655px !important;
+        max-width: calc(100vw - 680px) !important;
         gap: 6px !important;
     }
 }
 
-/* Di layar kecil tombol kembali ke toolbar agar tidak menabrak judul. */
 @media (max-width: 1099px){
     .thc-page .thc-page-head{
         min-width: 100% !important;
