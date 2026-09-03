@@ -34,9 +34,12 @@
     <div class="erp-content setoran-page">
         <section class="thc-page" id="thcPage">
             <header class="thc-page-head" id="thcPageHead" aria-label="Judul halaman">
-                <p class="thc-page-eyebrow">LAPORAN • MINUTES</p>
-                <h2 class="thc-page-title">Tabel Harian Semua Cabang</h2>
-                <p class="thc-page-sub">1 baris = 1 tanggal + 1 cabang</p>
+                <div class="thc-page-head-copy">
+                    <p class="thc-page-eyebrow">LAPORAN • MINUTES</p>
+                    <h2 class="thc-page-title">Tabel Harian Semua Cabang</h2>
+                    <p class="thc-page-sub">1 baris = 1 tanggal + 1 cabang</p>
+                </div>
+                <div class="thc-tb-actions"><button type="button" id="btnRefresh" class="thc-action-btn thc-action-refresh">Refresh</button><button type="button" id="btnSync" class="thc-action-btn thc-action-sync">Sync Minutes</button><button type="button" id="thcPrint" class="thc-action-btn thc-action-print">Print</button><button type="button" id="thcPdf" class="thc-action-btn thc-action-pdf">PDF</button><button type="button" id="thcExcel" class="thc-action-btn thc-action-excel">Excel</button></div>
             </header>
 
             <section class="setoran-section-card thc-table-section" id="thcTableSection">
@@ -51,7 +54,6 @@
                             <span class="thc-tb-sep" aria-hidden="true"></span>
                             <div class="thc-tb-field thc-tb-jump" id="thcJumpWrap"><span class="thc-tb-label">Lompat Tanggal</span><button type="button" id="thcJumpDateBtn" class="thc-jump-trigger" disabled aria-haspopup="dialog" aria-expanded="false"><span id="thcJumpDateLabel">—</span><span class="thc-jump-ico" aria-hidden="true">📅</span></button><span class="thc-jump-feedback" id="thcJumpFeedback" hidden></span></div>
                             <div class="thc-tb-spacer" aria-hidden="true"></div>
-                            <div class="thc-tb-actions"><button type="button" id="btnRefresh" class="thc-action-btn thc-action-refresh">Refresh</button><button type="button" id="btnSync" class="thc-action-btn thc-action-sync">Sync Minutes</button><button type="button" id="thcPrint" class="thc-action-btn thc-action-print">Print</button><button type="button" id="thcPdf" class="thc-action-btn thc-action-pdf">PDF</button><button type="button" id="thcExcel" class="thc-action-btn thc-action-excel">Excel</button></div>
                         </div>
                         <p class="thc-row-meta" id="thcMeta">Memuat…</p>
                     </div>
