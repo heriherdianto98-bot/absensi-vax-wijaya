@@ -10,25 +10,109 @@
   function monthEnd(month){ const [y,m]=month.split('-').map(Number); return `${y}-${String(m).padStart(2,'0')}-${String(new Date(Date.UTC(y,m,0)).getUTCDate()).padStart(2,'0')}`; }
   function monthLabel(month){ const [y,m]=month.split('-').map(Number); return `${MONTHS[m-1]} ${y}`; }
 
+  function syncHeaderContext(){
+    const branch=el('payrollBranch');
+    const branchText=branch?.value ? branch.selectedOptions?.[0]?.textContent?.trim() : '—';
+    const hBranch=document.getElementById('erpHeaderCabang');
+    const hPeriod=document.getElementById('erpHeaderPeriode');
+    if(hBranch) hBranch.textContent=branchText||'—';
+    if(hPeriod) hPeriod.textContent=selectedMonth ? monthLabel(selectedMonth) : '—';
+    if(typeof syncSidebarRoleMeta==='function') syncSidebarRoleMeta();
+  }
+
+  function closeFancySelects(except=null){
+    document.querySelectorAll('.payroll-select-shell.is-open').forEach(shell=>{
+      if(shell===except) return;
+      shell.classList.remove('is-open');
+      const trigger=shell.querySelector('.payroll-select-trigger');
+      const menu=shell.querySelector('.payroll-select-menu');
+      trigger?.setAttribute('aria-expanded','false');
+      if(menu) menu.hidden=true;
+    });
+  }
+
+  function renderFancySelect(select){
+    if(!select) return;
+    const shell=select.closest('.payroll-select-shell');
+    if(!shell) return;
+    let trigger=shell.querySelector('.payroll-select-trigger');
+    let menu=shell.querySelector('.payroll-select-menu');
+    if(!trigger){
+      shell.classList.add('is-enhanced');
+      trigger=document.createElement('button');
+      trigger.type='button';
+      trigger.className='payroll-select-trigger';
+      trigger.setAttribute('aria-haspopup','listbox');
+      trigger.setAttribute('aria-expanded','false');
+      menu=document.createElement('div');
+      menu.className='payroll-select-menu';
+      menu.hidden=true;
+      menu.setAttribute('role','listbox');
+      shell.append(trigger,menu);
+      trigger.addEventListener('click',()=>{
+        if(trigger.disabled) return;
+        const willOpen=!shell.classList.contains('is-open');
+        closeFancySelects(shell);
+        shell.classList.toggle('is-open',willOpen);
+        trigger.setAttribute('aria-expanded',willOpen?'true':'false');
+        menu.hidden=!willOpen;
+        if(willOpen){
+          const active=menu.querySelector('.is-selected');
+          requestAnimationFrame(()=>active?.scrollIntoView({block:'nearest'}));
+        }
+      });
+    }
+
+    const selected=select.selectedOptions?.[0];
+    trigger.textContent=selected?.textContent?.trim()||'Pilih';
+    trigger.disabled=Boolean(select.disabled);
+    shell.classList.toggle('is-disabled',Boolean(select.disabled));
+    menu.innerHTML=Array.from(select.options).map(opt=>`<button type="button" class="payroll-select-option${opt.selected?' is-selected':''}" role="option" aria-selected="${opt.selected?'true':'false'}" data-value="${escapeHtml(opt.value)}" ${opt.disabled?'disabled':''}>${escapeHtml(opt.textContent)}</button>`).join('');
+    menu.querySelectorAll('.payroll-select-option').forEach(btn=>btn.addEventListener('click',()=>{
+      if(btn.disabled) return;
+      select.value=btn.dataset.value;
+      renderFancySelect(select);
+      closeFancySelects();
+      select.dispatchEvent(new Event('change',{bubbles:true}));
+    }));
+  }
+
   async function loadMaster(){
     const [cabangs,capsters]=await Promise.all([PayrollCapsterEngine.fetchCabang(),PayrollCapsterEngine.fetchKaryawan()]);
     allCapsters=(capsters||[]).filter(x=>PayrollCapsterEngine.isCapster(x));
     el('payrollBranch').innerHTML='<option value="">Pilih Cabang</option>'+(cabangs||[]).map(c=>`<option value="${c.id}">${escapeHtml(c.nama_cabang)}</option>`).join('');
+    renderFancySelect(el('payrollBranch'));
+    renderFancySelect(el('payrollEmployee'));
   }
   function refreshEmployeeOptions(){
     const branchId=el('payrollBranch').value;
     const select=el('payrollEmployee');
-    if(!branchId){ select.disabled=true; select.innerHTML='<option value="">Pilih cabang dulu</option>'; return; }
+    if(!branchId){
+      select.disabled=true;
+      select.innerHTML='<option value="">Pilih cabang dulu</option>';
+      renderFancySelect(select);
+      return;
+    }
     const rows=allCapsters.filter(r=>Number(r.cabang_id)===Number(branchId));
     select.disabled=false;
     select.innerHTML='<option value="">Semua Capster Cabang</option>'+rows.map(r=>`<option value="${r.id}">${escapeHtml(r.nama_karyawan)}${r.aktif===false?' · nonaktif':''}</option>`).join('');
+    renderFancySelect(select);
   }
 
   function openPeriod(){
-    periodYear=Number((selectedMonth||todayMonth()).slice(0,4)); renderPeriodGrid();
-    const m=el('payrollPeriodModal'); m.hidden=false; m.setAttribute('aria-hidden','false');
+    periodYear=Number((selectedMonth||todayMonth()).slice(0,4));
+    renderPeriodGrid();
+    const m=el('payrollPeriodModal');
+    m.hidden=false;
+    m.setAttribute('aria-hidden','false');
+    el('payrollPeriodBtn')?.setAttribute('aria-expanded','true');
   }
-  function closePeriod(){ const m=el('payrollPeriodModal'); m.hidden=true; m.setAttribute('aria-hidden','true'); }
+  function closePeriod(){
+    const m=el('payrollPeriodModal');
+    m.hidden=true;
+    m.setAttribute('aria-hidden','true');
+    el('payrollPeriodBtn')?.setAttribute('aria-expanded','false');
+  }
   function renderPeriodGrid(){
     el('payrollYearLabel').textContent=periodYear;
     const active=selectedMonth;
@@ -37,7 +121,11 @@
       return `<button type="button" data-month="${value}" class="${value===active?'is-active':''}"><span>${label}</span><strong>${periodYear}</strong></button>`;
     }).join('');
     el('payrollMonthGrid').querySelectorAll('[data-month]').forEach(btn=>btn.addEventListener('click',async()=>{
-      selectedMonth=btn.dataset.month; el('payrollPeriodLabel').textContent=monthLabel(selectedMonth); closePeriod(); await maybeLoad();
+      selectedMonth=btn.dataset.month;
+      el('payrollPeriodLabel').textContent=monthLabel(selectedMonth);
+      syncHeaderContext();
+      closePeriod();
+      await maybeLoad();
     }));
   }
 
@@ -64,6 +152,7 @@
     }));
   }
   async function maybeLoad(){
+    syncHeaderContext();
     if(!el('payrollBranch').value){ el('payrollList').innerHTML=''; el('payrollPending').hidden=true; el('payrollStatus').textContent='Pilih cabang untuk melihat payroll.'; return; }
     await loadPayroll();
   }
@@ -77,18 +166,25 @@
       const result=await PayrollCapsterEngine.loadPeriod({start,end,branchId,employeeId,adjustments});
       renderPending(result.pendingSummary); el('payrollList').innerHTML=result.payroll.length?result.payroll.map(renderCard).join(''):'<div class="payroll-empty">Tidak ada payroll pada filter ini.</div>'; bindSave(month);
       const branchName=el('payrollBranch').selectedOptions[0]?.textContent||'—';
+      el('payrollStatus').className='payroll-status';
       el('payrollStatus').textContent=`${branchName} · ${result.payroll.length} capster · ${monthLabel(month)} · Gaji Kotor ${money(result.totals.gajiKotor)} · Gaji Bersih ${money(result.totals.gajiBersih)}`;
+      syncHeaderContext();
     }catch(err){ el('payrollStatus').className='payroll-status is-error'; el('payrollStatus').textContent=err?.message||'Gagal memuat payroll.'; el('payrollList').innerHTML=''; }
   }
   async function init(){
     if(!el('payrollBranch'))return;
     selectedMonth=todayMonth(); el('payrollPeriodLabel').textContent=monthLabel(selectedMonth); periodYear=Number(selectedMonth.slice(0,4));
     try{await loadMaster();}catch(err){el('payrollStatus').className='payroll-status is-error';el('payrollStatus').textContent=err?.message||'Gagal memuat master payroll.';return;}
-    el('payrollBranch').addEventListener('change',async()=>{refreshEmployeeOptions();await maybeLoad();});
-    el('payrollEmployee').addEventListener('change',()=>maybeLoad()); el('payrollRefresh').addEventListener('click',()=>maybeLoad());
+    el('payrollBranch').addEventListener('change',async()=>{refreshEmployeeOptions();renderFancySelect(el('payrollBranch'));syncHeaderContext();await maybeLoad();});
+    el('payrollEmployee').addEventListener('change',()=>{renderFancySelect(el('payrollEmployee'));maybeLoad();});
+    el('payrollRefresh').addEventListener('click',()=>maybeLoad());
     el('payrollPeriodBtn').addEventListener('click',openPeriod); el('payrollYearPrev').addEventListener('click',()=>{periodYear--;renderPeriodGrid();}); el('payrollYearNext').addEventListener('click',()=>{periodYear++;renderPeriodGrid();});
     document.querySelectorAll('[data-payroll-period-close]').forEach(x=>x.addEventListener('click',closePeriod));
+    document.addEventListener('click',e=>{if(!e.target.closest('.payroll-select-shell')) closeFancySelects();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeFancySelects();if(!el('payrollPeriodModal').hidden) closePeriod();}});
     el('payrollPrint').addEventListener('click',()=>window.PayrollCapsterPrint?.open('print')); el('payrollPdf').addEventListener('click',()=>window.PayrollCapsterPrint?.open('pdf'));
+    syncHeaderContext();
+    setTimeout(syncHeaderContext,250);
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();
