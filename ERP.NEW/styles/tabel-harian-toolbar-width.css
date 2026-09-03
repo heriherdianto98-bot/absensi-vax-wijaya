@@ -37,23 +37,32 @@
 }
 
 /*
-   ACTIONS FINAL: tetap memakai node/event tombol existing.
-   Jangan anchor ke sisi kanan shell max-content karena shell tabel bisa jauh lebih
-   lebar dari viewport dan membuat Refresh/Sync/Print/PDF/Excel "hilang".
-   Group di-anchor ke viewport ERP yang terlihat.
+   ACTIONS FINAL: node/event tombol existing tetap dipakai.
+   Karena shell tabel max-content jauh lebih lebar dari viewport, group action
+   dipasang ke viewport ERP (fixed) agar Refresh/Sync/Print/PDF/Excel selalu
+   terlihat di sisi kanan panel judul dan ikut freeze saat scroll vertikal.
 */
 .thc-page .thc-tb-actions{
-    position: absolute !important;
-    top: -98px !important;
-    right: auto !important;
-    left: calc(100vw - 650px) !important;
-    z-index: 65 !important;
+    position: fixed !important;
+    top: calc(var(--erp-top-header-h, 58px) + 24px) !important;
+    right: 28px !important;
+    left: auto !important;
+    z-index: 90 !important;
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     gap: 8px !important;
     width: auto !important;
     margin: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Pastikan parent tidak memotong tombol saat desktop. */
+.thc-page .thc-pin-stack,
+.thc-page .thc-table-toolbar,
+.thc-page .thc-unified-toolbar{
+    overflow: visible !important;
 }
 
 /* Filter bawah sekarang khusus filter. */
@@ -102,6 +111,8 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
     .thc-page .thc-tb-actions{
         position: static !important;
+        top: auto !important;
+        right: auto !important;
         left: auto !important;
         flex-wrap: wrap !important;
         margin-left: auto !important;
