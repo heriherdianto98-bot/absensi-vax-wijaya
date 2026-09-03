@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="../styles/tabel-harian-cabang.css">
 <link rel="stylesheet" href="../styles/payroll-capster.css?v=20260903-aruskas2">
 <link rel="stylesheet" href="../styles/payroll-capster-select.css?v=20260903-aruskas2">
+<link rel="stylesheet" href="../styles/payroll-capster-v3.css?v=20260903-balanced1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="setoran-dark payroll-aruskas-theme">
@@ -85,7 +86,7 @@
 <script src="../js/modules/payroll-manual-adjustment-store.js"></script>
 <script src="../js/modules/payroll-capster-engine.js"></script>
 <script src="../js/modules/payroll-capster-print.js"></script>
-<script src="../js/modules/payroll-capster-ui.js?v=20260903-aruskas2"></script>
+<script src="../js/modules/payroll-capster-ui.js?v=20260903-balanced1"></script>
 <script>
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
