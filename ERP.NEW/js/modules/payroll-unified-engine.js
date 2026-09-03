@@ -8,7 +8,9 @@ Gaji Bersih = Gaji Pokok - Denda - Kasbon
 
 Canonical sources:
 - Capster Gaji Pokok : provider_sales_daily_source.provider_share (Minutes)
-- Non-Capster        : payroll_salary_master (MONTHLY / DAILY)
+- Fixed salary       : payroll_salary_master (MONTHLY / DAILY)
+- Ryan Casmin        : daily_recap_source.keterangan_cash_out semua cabang,
+                       item gaji kasir/backup harian Rp100.000–Rp150.000
 - Denda              : absensi.denda
 - Kasbon             : employee_cash_advances.current_outstanding (status AKTIF)
                        yang dicairkan di periode payroll terpilih
@@ -26,11 +28,14 @@ const PayrollUnifiedEngine = {
     TABLE_PRODUCT_SALES:"product_sales_source",
     TABLE_ABSENSI:"absensi",
     TABLE_KASBON:"employee_cash_advances",
+    TABLE_DAILY_RECAP:"daily_recap_source",
 
     number(v){ const n=Number(v||0); return Number.isFinite(n)?n:0; },
     normalizeDate(v){ const s=String(v||"").trim(); if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s; if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10); return ""; },
     validateRange(start,end){ const s=this.normalizeDate(start),e=this.normalizeDate(end); if(!s||!e)throw new Error("Payroll: periode tidak valid"); if(s>e)throw new Error("Payroll: tanggal awal melebihi akhir"); return {start:s,end:e}; },
     isCapster(emp){ return String(emp?.jabatan||"").trim().toLowerCase()==="capster"; },
+    normalizeName(v){ return String(v||"").trim().toLowerCase().replace(/\s+/g," "); },
+    isRyanCasmin(emp){ return this.normalizeName(emp?.nama_karyawan)==="ryan casmin"; },
     adjustmentFor(adjustments,id){ const r=(adjustments||{})[id]||(adjustments||{})[String(id)]||{}; return {bonusInsentif:Math.max(0,this.number(r.bonusInsentif)),bonusKpi:Math.max(0,this.number(r.bonusKpi))}; },
     addDays(date,days){ const [y,m,d]=date.split("-").map(Number); const dt=new Date(Date.UTC(y,m-1,d)); dt.setUTCDate(dt.getUTCDate()+days); return dt.toISOString().slice(0,10); },
     dates(start,end){ const out=[]; for(let d=start;d<=end;d=this.addDays(d,1))out.push(d); return out; },
@@ -43,6 +48,29 @@ const PayrollUnifiedEngine = {
         const day=Number(String(date).slice(8,10));
         return base+(day<=remainder?1:0);
     },
+    parseRupiahFromText(text){
+        const m=String(text||"").match(/rp\s*([\d.,]+)/i);
+        if(!m)return 0;
+        const digits=String(m[1]||"").replace(/\D/g,"");
+        return digits?Number(digits):0;
+    },
+    extractRyanCashOutItems(cashOutRows){
+        const out=[];
+        (cashOutRows||[]).forEach(day=>{
+            const tanggal=this.normalizeDate(day.tanggal);
+            const branchId=Number(day.cabang_id)||null;
+            const raw=String(day.keterangan_cash_out||"").trim();
+            if(!tanggal||!branchId||!raw)return;
+            raw.split(/\s*;\s*/).map(s=>s.trim()).filter(Boolean).forEach(chunk=>{
+                const norm=this.normalizeName(chunk);
+                const amount=this.parseRupiahFromText(chunk);
+                if(!norm.includes("gaji")||!norm.includes("kasir"))return;
+                if(amount<100000||amount>150000)return;
+                out.push({tanggal,cabangId:branchId,amount,keterangan:chunk});
+            });
+        });
+        return out;
+    },
 
     async fetchKaryawan(){ const {data,error}=await db.from(this.TABLE_KARYAWAN).select("id,nama_karyawan,cabang_id,jabatan,aktif").order("nama_karyawan",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
     async fetchCabang(){ const {data,error}=await db.from(this.TABLE_CABANG).select("id,nama_cabang").order("id",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
@@ -50,6 +78,7 @@ const PayrollUnifiedEngine = {
     async fetchProductRows(start,end){ const {data,error}=await db.from(this.TABLE_PRODUCT_SALES).select("id,period_start,period_end,cabang_id,cabang_minutes_name,product_name,provider_name_raw,employee_id,mapping_status,qty,revenue_share").gte("period_start",start).lte("period_start",end).order("period_start",{ascending:true}); if(error)throw error; return (Array.isArray(data)?data:[]).filter(r=>{const s=this.normalizeDate(r.period_start),e=this.normalizeDate(r.period_end);return s&&e&&s===e&&s>=start&&s<=end;}); },
     async fetchAbsensi(start,end){ const {data,error}=await db.from(this.TABLE_ABSENSI).select("id,karyawan_id,cabang_id,cabang_asal_id,tanggal,status,terlambat_menit,denda,status_denda").gte("tanggal",start).lte("tanggal",end).order("tanggal",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
     async fetchKasbon(start,end){ const {data,error}=await db.from(this.TABLE_KASBON).select("id,employee_id,branch_id,employee_name_snapshot,position_snapshot,request_date,approved_amount,disbursement_date,status,current_outstanding,total_paid").gte("disbursement_date",start).lte("disbursement_date",end).order("disbursement_date",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
+    async fetchCashOutRows(start,end){ const {data,error}=await db.from(this.TABLE_DAILY_RECAP).select("tanggal,cabang_id,cash_out,keterangan_cash_out").gte("tanggal",start).lte("tanggal",end).order("tanggal",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
 
     buildPendingMapping(providerRows,cabangMap){
         return providerRows.filter(r=>!r.employee_id||String(r.mapping_status||"").toUpperCase()!=="MATCHED").map(r=>({
@@ -59,12 +88,12 @@ const PayrollUnifiedEngine = {
     },
 
     newDaily(date,branchId,cabang,isCapster){
-        return {tanggal:date,cabangId:branchId||null,cabang:cabang||"—",service:isCapster?0:null,gajiPokok:0,denda:0,kasbon:0,bonusProduk:0,bonusProdukQty:0,productItems:[],providerRows:[],salaryBasis:null};
+        return {tanggal:date,cabangId:branchId||null,cabang:cabang||"—",service:isCapster?0:null,gajiPokok:0,denda:0,kasbon:0,bonusProduk:0,bonusProdukQty:0,productItems:[],providerRows:[],cashOutSalaryItems:[],salaryBasis:null};
     },
 
     buildEmployeePayroll(employee,ctx){
-        const {range,cabangMap,providerRows,productRows,absensiRows,kasbonRows,salaryData,adjustments}=ctx;
-        const employeeId=Number(employee.id), capster=this.isCapster(employee), homeCabang=cabangMap.get(Number(employee.cabang_id))||"—";
+        const {range,cabangMap,providerRows,productRows,absensiRows,kasbonRows,cashOutRows,salaryData,adjustments}=ctx;
+        const employeeId=Number(employee.id), capster=this.isCapster(employee), ryan=this.isRyanCasmin(employee), homeCabang=cabangMap.get(Number(employee.cabang_id))||"—";
         const dailyMap=new Map();
         const keyFor=(date,branchId)=>`${date}|${Number(branchId)||0}`;
         const ensure=(date,branchId,cabang)=>{ const key=keyFor(date,branchId); if(!dailyMap.has(key))dailyMap.set(key,this.newDaily(date,branchId,cabang,capster)); return dailyMap.get(key); };
@@ -74,7 +103,7 @@ const PayrollUnifiedEngine = {
         const ownAbsensi=absensiRows.filter(r=>Number(r.karyawan_id)===employeeId);
         const ownKasbon=kasbonRows.filter(r=>Number(r.employee_id)===employeeId&&String(r.status||"").toUpperCase()==="AKTIF"&&this.number(r.current_outstanding)>0);
 
-        let gajiPokok=0, salaryMissing=false, salarySource=capster?"MINUTES_SHARE":"FIXED_MASTER";
+        let gajiPokok=0, salaryMissing=false, salarySource=capster?"MINUTES_SHARE":(ryan?"CASHOUT_FLOATING_DAILY":"FIXED_MASTER");
         const salaryRates=[];
 
         if(capster){
@@ -88,6 +117,16 @@ const PayrollUnifiedEngine = {
                 row.providerRows.push(r.id);
                 gajiPokok+=this.number(r.provider_share);
             });
+        }else if(ryan){
+            const items=this.extractRyanCashOutItems(cashOutRows);
+            items.forEach(item=>{
+                const row=ensure(item.tanggal,item.cabangId,cabangMap.get(item.cabangId)||homeCabang);
+                row.gajiPokok+=item.amount;
+                row.salaryBasis="CASHOUT_FLOATING_DAILY";
+                row.cashOutSalaryItems.push(item.keterangan);
+                gajiPokok+=item.amount;
+            });
+            salaryMissing=false;
         }else{
             const attendanceDates=new Set(ownAbsensi.map(r=>this.normalizeDate(r.tanggal)).filter(Boolean));
             this.dates(range.start,range.end).forEach(date=>{
@@ -147,7 +186,7 @@ const PayrollUnifiedEngine = {
         const uniqueRates=[...new Map(salaryRates.map(r=>[r.id,r])).values()];
 
         return {
-            employeeId,namaKaryawan:employee.nama_karyawan||"—",jabatan:employee.jabatan||"—",aktif:Boolean(employee.aktif),isCapster:capster,
+            employeeId,namaKaryawan:employee.nama_karyawan||"—",jabatan:employee.jabatan||"—",aktif:Boolean(employee.aktif),isCapster:capster,isRyanCashoutFloating:ryan,
             homeCabangId:employee.cabang_id,homeCabang,daily,salarySource,salaryMissing,salaryRates:uniqueRates,
             summary:{totalService,gajiPokok,gajiKotor:gajiPokok,denda,kasbon,bonusInsentif:adj.bonusInsentif,bonusKpi:adj.bonusKpi,bonusProduk,gajiBersih}
         };
@@ -155,14 +194,14 @@ const PayrollUnifiedEngine = {
 
     async loadPeriod({start,end,branchId=null,employeeId=null,adjustments={}}={}){
         const range=this.validateRange(start,end);
-        const [karyawan,cabang,providerRows,productRows,absensiRows,kasbonRows,salaryData]=await Promise.all([
-            this.fetchKaryawan(),this.fetchCabang(),this.fetchProviderRows(range.start,range.end),this.fetchProductRows(range.start,range.end),this.fetchAbsensi(range.start,range.end),this.fetchKasbon(range.start,range.end),window.PayrollSalaryMasterStore?.loadAll?.()||Promise.resolve({rows:[],byEmployee:{}})
+        const [karyawan,cabang,providerRows,productRows,absensiRows,kasbonRows,cashOutRows,salaryData]=await Promise.all([
+            this.fetchKaryawan(),this.fetchCabang(),this.fetchProviderRows(range.start,range.end),this.fetchProductRows(range.start,range.end),this.fetchAbsensi(range.start,range.end),this.fetchKasbon(range.start,range.end),this.fetchCashOutRows(range.start,range.end),window.PayrollSalaryMasterStore?.loadAll?.()||Promise.resolve({rows:[],byEmployee:{}})
         ]);
         const cabangMap=new Map(cabang.map(r=>[Number(r.id),r.nama_cabang]));
         let employees=karyawan.slice();
         if(branchId!==null&&branchId!==undefined&&String(branchId).trim()!=="")employees=employees.filter(r=>Number(r.cabang_id)===Number(branchId));
         if(employeeId!==null&&employeeId!==undefined&&String(employeeId).trim()!=="")employees=employees.filter(r=>Number(r.id)===Number(employeeId));
-        const ctx={range,cabangMap,providerRows,productRows,absensiRows,kasbonRows,salaryData,adjustments};
+        const ctx={range,cabangMap,providerRows,productRows,absensiRows,kasbonRows,cashOutRows,salaryData,adjustments};
         const payroll=employees.map(e=>this.buildEmployeePayroll(e,ctx));
         let pendingMapping=this.buildPendingMapping(providerRows,cabangMap);
         if(branchId!==null&&branchId!==undefined&&String(branchId).trim()!=="")pendingMapping=pendingMapping.filter(r=>Number(r.cabangId)===Number(branchId));
