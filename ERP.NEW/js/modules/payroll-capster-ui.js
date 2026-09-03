@@ -8,7 +8,6 @@
   };
   const escapeHtml = s => String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 
-  let lastResult = null;
   let manualMonth = null;
 
   function todayMonth(){
@@ -31,7 +30,7 @@
     el('pendingShare').textContent = money(p.providerShare);
   }
 
-  function renderCard(row, month){
+  function renderCard(row){
     const s = row.summary || {};
     const daily = row.daily || [];
     const rows = daily.length ? daily.map(d=>`<tr><td>${escapeHtml(d.tanggal)}</td><td>${escapeHtml(d.cabang)}</td><td class="num">${Number(d.service||0)}</td><td class="num">${money(d.gajiHarian)}</td><td class="num">${money(d.bonusProduk)}</td></tr>`).join('') : '<tr><td colspan="5" class="payroll-empty">Tidak ada aktivitas pada bulan ini.</td></tr>';
@@ -80,9 +79,8 @@
       manualMonth = await PayrollManualAdjustmentStore.loadMonth(month);
       const adjustments = PayrollManualAdjustmentStore.toEngineAdjustments(manualMonth);
       const result = await PayrollCapsterEngine.loadPeriod({start,end,employeeId,adjustments});
-      lastResult = result;
       renderPending(result.pendingSummary);
-      el('payrollList').innerHTML = result.payroll.length ? result.payroll.map(r=>renderCard(r,month)).join('') : '<div class="payroll-empty">Tidak ada payroll pada filter ini.</div>';
+      el('payrollList').innerHTML = result.payroll.length ? result.payroll.map(renderCard).join('') : '<div class="payroll-empty">Tidak ada payroll pada filter ini.</div>';
       bindSave(month);
       el('payrollStatus').className='payroll-status';
       el('payrollStatus').textContent = `${result.payroll.length} capster · ${start} s/d ${end} · Gaji Kotor ${money(result.totals.gajiKotor)} · Gaji Bersih ${money(result.totals.gajiBersih)}`;
@@ -99,8 +97,8 @@
     el('payrollRefresh').addEventListener('click',()=>loadPayroll());
     el('payrollMonth').addEventListener('change',()=>loadPayroll());
     el('payrollEmployee').addEventListener('change',()=>loadPayroll());
-    el('payrollPrint').addEventListener('click',()=>window.print());
-    el('payrollPdf').addEventListener('click',()=>window.print());
+    el('payrollPrint').addEventListener('click',()=>window.PayrollCapsterPrint?.open('print'));
+    el('payrollPdf').addEventListener('click',()=>window.PayrollCapsterPrint?.open('pdf'));
     await loadPayroll();
   }
 
