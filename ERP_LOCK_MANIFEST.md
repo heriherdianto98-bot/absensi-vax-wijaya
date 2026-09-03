@@ -211,6 +211,44 @@ Files below are the verified Share Provider baseline and MUST NOT be modified un
 - minutes-connector/provider-sales-sync.js
 - minutes-connector/scheduler.js
 
+## HARD LOCK — UNIFIED PAYROLL BUSINESS FORMULA
+
+Status: BUSINESS RULE LOCKED / IMPLEMENTATION UNDER OWNER VALIDATION
+
+Locked formula:
+- `Gaji Bersih = Gaji Pokok - Denda - Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk`
+
+Locked source ownership:
+- Capster Gaji Pokok = `provider_sales_daily_source.provider_share` dari Minutes. Jangan dipindahkan ke fixed salary master.
+- Non-Capster Gaji Pokok = `payroll_salary_master`, dengan histori periode efektif dan basis `MONTHLY` atau `DAILY` per karyawan.
+- Denda = `absensi.denda` per karyawan/tanggal.
+- Kasbon = source `employee_cash_advances`; payroll tidak membuat input Kasbon paralel.
+- Bonus Produk = `product_sales_source.revenue_share` yang sudah matched ke `employee_id`, hanya detail harian `period_start = period_end` agar snapshot bulanan lama tidak double count.
+- Bonus Insentif dan Bonus KPI = `payroll_manual_adjustments`.
+
+Locked role behavior:
+- Master Gaji adalah unified payroll untuk Capster, Kasir, Kasir Backup, Supervisor/SVP, Tim Floating, dan jabatan lain yang terdaftar di master karyawan.
+- Setelah Cabang dipilih, pilihan Karyawan mengikuti master karyawan cabang tersebut.
+- Service hanya merupakan komponen Capster dari Minutes; untuk non-Capster tampil `—`.
+- Share/Bonus Produk mengikuti seller `employee_id`, sehingga dapat masuk ke Capster maupun Kasir.
+- Generic Minutes `Backup` / `Capster` yang belum diketahui orangnya tetap Pending Mapping dan tidak boleh dipaksa ke payroll seseorang.
+- Nominal fixed salary non-Capster tidak boleh di-hardcode berdasarkan jabatan karena tiap karyawan dapat berbeda.
+- Perubahan gaji masa depan tidak boleh mengubah histori lama; gunakan `effective_from` / `effective_to` pada salary master.
+
+Current implementation files (not file-level HARD LOCK until OWNER PASS):
+- `ERP.NEW/js/modules/payroll-unified-engine.js`
+- `ERP.NEW/js/modules/payroll-salary-master-store.js`
+- `ERP.NEW/js/modules/payroll-manual-adjustment-store.js`
+- `ERP.NEW/pages/payroll-capster.html`
+- `ERP.NEW/js/modules/payroll-capster-ui.js`
+- `ERP.NEW/js/modules/payroll-capster-print.js`
+- `ERP.NEW/styles/payroll-unified.css`
+- `ERP.NEW/migrations/20260903_payroll_salary_master_v1.sql`
+
+Unlock rule:
+- Formula atau source ownership di atas hanya boleh diubah setelah Owner secara eksplisit membuka LOCK.
+- UI/presentation boleh diperbaiki selama tidak mengubah rumus atau source ownership.
+
 ## CHANGE POLICY
 
 - Stable baseline is reference-only.
