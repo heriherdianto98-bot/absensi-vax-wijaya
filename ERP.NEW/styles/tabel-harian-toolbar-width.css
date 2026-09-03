@@ -37,16 +37,17 @@
 }
 
 /*
-   ACTIONS FINAL: sejajar dengan judul laporan.
-   Node/event tombol tetap sama. Group dinaikkan ke panel judul dan digeser
-   ke kiri agar seluruh Refresh/Sync/Print/PDF/Excel terlihat pada laptop
-   dengan browser zoom 80%, tanpa perlu scroll horizontal.
+   ACTIONS FINAL: tetap memakai node/event tombol existing.
+   Jangan anchor ke sisi kanan shell max-content karena shell tabel bisa jauh lebih
+   lebar dari viewport dan membuat Refresh/Sync/Print/PDF/Excel "hilang".
+   Group di-anchor ke viewport ERP yang terlihat.
 */
 .thc-page .thc-tb-actions{
     position: absolute !important;
     top: -98px !important;
-    right: 190px !important;
-    z-index: 55 !important;
+    right: auto !important;
+    left: calc(100vw - 650px) !important;
+    z-index: 65 !important;
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
@@ -101,6 +102,7 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
     .thc-page .thc-tb-actions{
         position: static !important;
+        left: auto !important;
         flex-wrap: wrap !important;
         margin-left: auto !important;
     }
