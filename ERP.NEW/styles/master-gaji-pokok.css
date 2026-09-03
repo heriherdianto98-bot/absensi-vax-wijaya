@@ -1,0 +1,46 @@
+/* ERP VAX — Master Gaji Pokok standalone UI */
+.salary-master-page{padding-bottom:28px}
+.salary-master-head{border-left-color:#5da7c6!important}
+.salary-master-panel{padding:16px!important;overflow:visible!important}
+.salary-master-toolbar{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(300px,1.35fr) auto;gap:12px;align-items:end}
+.salary-master-field{display:flex;flex-direction:column;gap:7px;padding:10px;border:1px solid #2a3642;border-radius:12px;background:linear-gradient(180deg,#171e26,#10161c);box-shadow:0 6px 16px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.03)}
+.salary-master-field>span{display:inline-flex;width:max-content;min-height:22px;align-items:center;padding:0 8px;border-radius:6px;border:1px solid rgba(93,167,198,.2);background:rgba(93,167,198,.1);color:#b9d7e3;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.salary-master-field select,.salary-master-field input{height:46px;border:1px solid #334353;border-radius:10px;background:linear-gradient(180deg,#151d25,#0f151b);color:#f7f9fb;padding:0 14px;font:700 15px 'Source Sans 3',sans-serif;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.salary-master-field select:focus,.salary-master-field input:focus{border-color:#69a9c2;box-shadow:0 0 0 2px rgba(93,167,198,.13)}
+.salary-master-actions{display:flex;gap:10px;align-items:center}
+.salary-master-actions a,.salary-master-actions button,.salary-save-btn{height:46px;border-radius:11px;border:1px solid #3b4b58;background:linear-gradient(180deg,#1a252e,#111820);color:#eaf1f5;padding:0 18px;font:800 14px 'Source Sans 3',sans-serif;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.salary-master-actions a:hover,.salary-master-actions button:hover{border-color:#5d7c90;box-shadow:0 0 0 1px rgba(93,167,198,.1),0 8px 18px rgba(0,0,0,.25)}
+.salary-master-status{margin:12px 0 0;padding:10px 12px;border-left:2px solid #5da7c6;background:linear-gradient(90deg,rgba(69,105,124,.12),transparent 76%);color:#aeb8c3;font-size:13px;font-weight:700}
+.salary-master-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:14px;margin-top:14px}
+.salary-master-card{border:1px solid #2a3642;border-radius:14px;background:linear-gradient(180deg,#121920,#0d1318);box-shadow:0 12px 28px rgba(0,0,0,.27),inset 0 1px 0 rgba(255,255,255,.025);overflow:hidden}
+.salary-master-card-head{padding:16px 18px;border-bottom:1px solid #26333e;background:linear-gradient(180deg,#18222b,#111820)}
+.salary-master-card-head small{display:block;color:#9fc9da;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.salary-master-card-head h3{margin:4px 0 0;color:#f6f8fb;font-size:22px;line-height:1.1}
+.salary-master-card-body{padding:16px 18px}
+.salary-current{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.salary-current .metric{padding:13px;border:1px solid #2c3944;border-radius:11px;background:linear-gradient(180deg,#161d24,#10161c)}
+.salary-current .metric span{display:block;color:#93a4b1;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.salary-current .metric strong{display:block;margin-top:4px;color:#f4f7f9;font-size:19px}
+.salary-current .metric.is-amount{border-top-color:#58bd8b}.salary-current .metric.is-amount strong{color:#9be0bc}
+.salary-current .metric.is-period{border-top-color:#d4af37}.salary-current .metric.is-period strong{color:#efd66f}
+.salary-master-form{display:grid;gap:11px}
+.salary-master-form .salary-master-field{padding:0;border:0;background:none;box-shadow:none}
+.salary-date-btn{height:46px;border:1px solid #334353;border-radius:10px;background:linear-gradient(180deg,#151d25,#0f151b);color:#f7f9fb;padding:0 14px;font:700 15px 'Source Sans 3',sans-serif;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.salary-date-btn:hover,.salary-date-btn[aria-expanded="true"]{border-color:#69a9c2;box-shadow:0 0 0 2px rgba(93,167,198,.12)}
+.salary-save-btn{width:100%;border-color:#3d8768;background:linear-gradient(180deg,#49a47d,#317b5d);color:#fff;box-shadow:0 8px 18px rgba(49,123,93,.16)}
+.salary-save-btn:hover{filter:brightness(1.06)}
+.salary-save-btn:disabled{opacity:.6;cursor:wait}
+.salary-form-msg{min-height:20px;margin:0;color:#9db0bd;font-size:12px;font-weight:700}.salary-form-msg.ok{color:#80d7a8}.salary-form-msg.err{color:#ef8c8c}
+.salary-history{margin-top:14px;border:1px solid #2a3642;border-radius:14px;background:#0e1419;overflow:hidden}
+.salary-history h3{margin:0;padding:14px 16px;border-bottom:1px solid #27343e;color:#f5f7f9;font-size:17px}
+.salary-history table{width:100%;border-collapse:collapse}.salary-history th,.salary-history td{padding:11px 14px;border-bottom:1px solid #1f2b34;text-align:left;font-size:13px}.salary-history th{background:#17212a;color:#b9c6d0;font-size:10px;letter-spacing:.07em;text-transform:uppercase}.salary-history td{color:#e3e8ec}.salary-history td.num{text-align:right;font-weight:800}.salary-history tr:last-child td{border-bottom:0}.salary-empty{padding:22px;text-align:center;color:#8796a3}
+.salary-date-modal[hidden]{display:none!important}.salary-date-modal{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px}.salary-date-backdrop{position:absolute;inset:0;background:rgba(2,6,10,.78);backdrop-filter:blur(8px)}
+.salary-date-dialog{position:relative;width:min(430px,94vw);border:1px solid #3d5263;border-radius:16px;background:linear-gradient(180deg,#171f28,#0e141a);box-shadow:0 24px 70px rgba(0,0,0,.65),0 0 0 1px rgba(93,167,198,.07);overflow:hidden;animation:salaryPop .18s ease-out}
+@keyframes salaryPop{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+.salary-date-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid #2a3742}.salary-date-head small{display:block;color:#9fc9da;font-size:9px;font-weight:800;letter-spacing:.12em}.salary-date-head h3{margin:2px 0 0;color:#fff;font-size:20px}.salary-date-head button{width:36px;height:36px;border:1px solid #2f3e49;border-radius:9px;background:#10171d;color:#dfe6eb;font-size:22px;cursor:pointer}
+.salary-cal-nav{display:grid;grid-template-columns:42px 1fr 42px;gap:8px;align-items:center;padding:12px 16px}.salary-cal-nav button{height:38px;border:1px solid #344653;border-radius:9px;background:#121a21;color:#dce5ea;font-size:20px;cursor:pointer}.salary-cal-nav strong{text-align:center;color:#f0d66d;font-size:17px}
+.salary-weekdays,.salary-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:0 16px}.salary-weekdays span{text-align:center;color:#7f909d;font-size:10px;font-weight:800}.salary-days{padding-top:7px;padding-bottom:16px}.salary-day{height:40px;border:1px solid #26343e;border-radius:9px;background:#11181f;color:#e5ebef;font-weight:800;cursor:pointer}.salary-day:hover{border-color:#5b8aa0;background:#18242d;box-shadow:0 0 0 1px rgba(93,167,198,.08)}.salary-day.is-selected{border-color:#d4af37;background:linear-gradient(180deg,#332b14,#1d1a11);color:#f3d76a;box-shadow:0 0 16px rgba(212,175,55,.08)}.salary-day.is-muted{opacity:.25;pointer-events:none}
+.payroll-master-separate .payroll-salary-master{display:none!important}
+.payroll-master-link{height:46px!important;border-radius:11px!important;border:1px solid #486477!important;background:linear-gradient(180deg,#1a2933,#111a21)!important;color:#cfe5ef!important;padding:0 14px!important;font-weight:800!important;text-decoration:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap}.payroll-master-link:hover{border-color:#69a9c2!important;box-shadow:0 0 0 2px rgba(93,167,198,.1),0 8px 18px rgba(0,0,0,.24)!important}
+@media(max-width:1050px){.salary-master-toolbar{grid-template-columns:1fr 1fr}.salary-master-actions{grid-column:1/-1}.salary-master-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.salary-master-toolbar{grid-template-columns:1fr}.salary-master-actions{grid-column:auto;flex-wrap:wrap}.salary-current{grid-template-columns:1fr}.salary-history{overflow:auto}}
