@@ -92,9 +92,21 @@
 <script src="../js/modules/payroll-capster-print.js?v=20260903-unified3"></script>
 <script src="../js/modules/payroll-capster-ui.js?v=20260903-unified3"></script>
 <script>
+function ensureMasterGajiPokokSidebarEntry(){
+  const sidebar=document.querySelector('.sidebar');
+  if(!sidebar || sidebar.querySelector('[data-erp-nav="master-gaji-pokok"]')) return;
+  const payroll=sidebar.querySelector('[data-erp-nav="payroll"]');
+  if(!payroll) return;
+  const link=document.createElement('a');
+  link.href='./master-gaji-pokok.html';
+  link.className='menu-item';
+  link.dataset.erpNav='master-gaji-pokok';
+  link.innerHTML='<span class="menu-icon" aria-hidden="true">◇</span><span>Master Gaji Pokok</span>';
+  payroll.insertAdjacentElement('afterend',link);
+}
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
-  initErpShellChrome?.();ensurePayrollSidebarEntry?.();markActiveSidebarLink?.();
+  initErpShellChrome?.();ensurePayrollSidebarEntry?.();ensureMasterGajiPokokSidebarEntry();markActiveSidebarLink?.();
 }).catch(()=>{});
 </script>
 </body>
