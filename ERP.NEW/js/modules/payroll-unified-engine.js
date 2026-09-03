@@ -11,6 +11,7 @@ Canonical sources:
 - Fixed salary       : payroll_salary_master (MONTHLY / DAILY)
 - Kasir Backup/Floating: daily_recap_source.keterangan_cash_out semua cabang
   melalui Backup Cashier Assignment Engine (nama eksplisit -> absensi -> continuity -> sisa pasangan)
+  + tambahan bensin bernama eksplisit (contoh Bensin Hairi / Uang Bensin Ryan)
 - Denda              : absensi.denda
 - Kasbon             : employee_cash_advances.current_outstanding (status AKTIF)
 - Bonus Produk       : product_sales_source.revenue_share by employee_id
@@ -58,9 +59,26 @@ const PayrollUnifiedEngine = {
     return out.sort((a,b)=>a.tanggal.localeCompare(b.tanggal)||a.cabangId-b.cabangId||a.key.localeCompare(b.key));
   },
 
+  extractBackupFuelAllowances(cashOutRows,backups){
+    const out=[];
+    (cashOutRows||[]).forEach(day=>{
+      const tanggal=this.normalizeDate(day.tanggal), branchId=Number(day.cabang_id)||null, raw=String(day.keterangan_cash_out||"").trim();
+      if(!tanggal||!branchId||!raw)return;
+      raw.split(/\s*;\s*/).map(s=>s.trim()).filter(Boolean).forEach((chunk,index)=>{
+        const norm=this.normalizeName(chunk), amount=this.parseRupiahFromText(chunk);
+        if(!norm.includes("bensin")||amount<=0)return;
+        const matches=(backups||[]).filter(emp=>this.aliasesForBackup(emp).some(a=>a.length>=4&&new RegExp(`(^|[^a-z0-9])${a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}([^a-z0-9]|$)`,`i`).test(norm)));
+        if(matches.length!==1)return;
+        out.push({key:`fuel|${tanggal}|${branchId}|${index}`,tanggal,cabangId:branchId,amount,keterangan:chunk,employeeId:Number(matches[0].id),employeeName:matches[0].nama_karyawan,confidence:"HIGH",reason:"NAMED_FUEL_ALLOWANCE"});
+      });
+    });
+    return out.sort((a,b)=>a.tanggal.localeCompare(b.tanggal)||a.cabangId-b.cabangId||a.key.localeCompare(b.key));
+  },
+
   buildBackupAssignments({karyawan,absensiRows,cashOutRows}){
     const backups=(karyawan||[]).filter(e=>e.aktif!==false&&this.isBackupFloating(e));
     const items=this.extractBackupCashOutItems(cashOutRows);
+    const fuelAllowances=this.extractBackupFuelAllowances(cashOutRows,backups);
     const byDate=new Map(); items.forEach(i=>{ if(!byDate.has(i.tanggal))byDate.set(i.tanggal,[]); byDate.get(i.tanggal).push(i); });
     const lastByBranch=new Map();
     const attendance=(absensiRows||[]).filter(a=>backups.some(e=>Number(e.id)===Number(a.karyawan_id)));
@@ -96,7 +114,7 @@ const PayrollUnifiedEngine = {
       if(unresolved.length===1&&remaining.length===1&&dayItems.length===backups.length){ assign(unresolved[0],remaining[0],"MEDIUM","REMAINDER_PAIR"); used.add(Number(remaining[0].id)); }
     });
 
-    return {items,assigned:items.filter(i=>i.employeeId),pending:items.filter(i=>!i.employeeId),backups};
+    return {items,assigned:items.filter(i=>i.employeeId),pending:items.filter(i=>!i.employeeId),fuelAllowances,backups};
   },
 
   async fetchKaryawan(){ const {data,error}=await db.from(this.TABLE_KARYAWAN).select("id,nama_karyawan,cabang_id,jabatan,aktif").order("nama_karyawan",{ascending:true}); if(error)throw error; return Array.isArray(data)?data:[]; },
@@ -124,7 +142,8 @@ const PayrollUnifiedEngine = {
     if(capster){
       ownProvider.forEach(r=>{ const date=this.normalizeDate(r.activity_date),branchId=Number(r.cabang_id)||employee.cabang_id;if(!date)return;const row=ensure(date,branchId,cabangMap.get(branchId)||r.cabang_minutes_name||homeCabang);row.service=this.number(row.service)+this.number(r.total_service);row.gajiPokok+=this.number(r.provider_share);row.salaryBasis="MINUTES_SHARE";row.providerRows.push(r.id);gajiPokok+=this.number(r.provider_share); });
     }else if(backup){
-      (backupAssignments?.assigned||[]).filter(i=>Number(i.employeeId)===employeeId).forEach(item=>{ const row=ensure(item.tanggal,item.cabangId,cabangMap.get(item.cabangId)||homeCabang);row.gajiPokok+=item.amount;row.salaryBasis="CASHOUT_BACKUP_ASSIGNMENT";row.cashOutSalaryItems.push({keterangan:item.keterangan,confidence:item.confidence,reason:item.reason});gajiPokok+=item.amount; });
+      (backupAssignments?.assigned||[]).filter(i=>Number(i.employeeId)===employeeId).forEach(item=>{ const row=ensure(item.tanggal,item.cabangId,cabangMap.get(item.cabangId)||homeCabang);row.gajiPokok+=item.amount;row.salaryBasis="CASHOUT_BACKUP_ASSIGNMENT";row.cashOutSalaryItems.push({keterangan:item.keterangan,amount:item.amount,confidence:item.confidence,reason:item.reason});gajiPokok+=item.amount; });
+      (backupAssignments?.fuelAllowances||[]).filter(i=>Number(i.employeeId)===employeeId).forEach(item=>{ const row=ensure(item.tanggal,item.cabangId,cabangMap.get(item.cabangId)||homeCabang);row.gajiPokok+=item.amount;row.salaryBasis="CASHOUT_BACKUP_ASSIGNMENT";row.cashOutSalaryItems.push({keterangan:item.keterangan,amount:item.amount,confidence:item.confidence,reason:item.reason});gajiPokok+=item.amount; });
       salaryMissing=false;
     }else{
       const attendanceDates=new Set(ownAbsensi.map(r=>this.normalizeDate(r.tanggal)).filter(Boolean));
