@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Gaji Pokok | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/toolbar.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/light-contrast.css">
+<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/tabel-harian-cabang.css">
+<link rel="stylesheet" href="../styles/master-gaji-pokok.css?v=20260903-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="setoran-dark payroll-aruskas-theme">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <div class="erp-content setoran-page">
+    <section class="thc-page salary-master-page">
+      <header class="thc-page-head salary-master-head">
+        <p class="thc-page-eyebrow">MASTER DATA • PAYROLL</p>
+        <h2 class="thc-page-title">Master Gaji Pokok</h2>
+        <p class="thc-page-sub">Satu kali set gaji tetap per karyawan. Payroll otomatis memakai nominal sesuai periode berlaku.</p>
+      </header>
+
+      <section class="setoran-section-card salary-master-panel">
+        <div class="salary-master-toolbar">
+          <label class="salary-master-field"><span>Cabang</span><select id="salaryBranch"><option value="">Pilih Cabang</option></select></label>
+          <label class="salary-master-field"><span>Karyawan Fixed Salary</span><select id="salaryEmployee" disabled><option value="">Pilih cabang dulu</option></select></label>
+          <div class="salary-master-actions"><a href="./payroll-capster.html">← Kembali ke Payroll</a><button id="salaryRefresh" type="button">Refresh</button></div>
+        </div>
+        <p id="salaryStatus" class="salary-master-status">Pilih cabang dan karyawan.</p>
+      </section>
+
+      <div class="salary-master-grid">
+        <section class="salary-master-card">
+          <div class="salary-master-card-head"><small>MASTER AKTIF</small><h3 id="salaryEmployeeTitle">Belum memilih karyawan</h3></div>
+          <div class="salary-master-card-body">
+            <div class="salary-current">
+              <div class="metric"><span>Jabatan</span><strong id="salaryRole">—</strong></div>
+              <div class="metric is-amount"><span>Gaji Pokok</span><strong id="salaryCurrentAmount">—</strong></div>
+              <div class="metric"><span>Basis</span><strong id="salaryCurrentBasis">—</strong></div>
+              <div class="metric is-period"><span>Periode Berlaku</span><strong id="salaryCurrentPeriod">—</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="salary-master-card">
+          <div class="salary-master-card-head"><small>SET / UBAH GAJI</small><h3>Aturan Gaji Pokok</h3></div>
+          <div class="salary-master-card-body">
+            <form id="salaryForm" class="salary-master-form">
+              <label class="salary-master-field"><span>Basis Gaji</span><select id="salaryBasis"><option value="MONTHLY">Bulanan</option><option value="DAILY">Harian</option></select></label>
+              <label class="salary-master-field"><span>Nominal Gaji Pokok</span><input id="salaryAmount" inputmode="numeric" autocomplete="off" value="Rp 0"></label>
+              <div class="salary-master-field"><span>Berlaku Mulai</span><button id="salaryEffectiveBtn" class="salary-date-btn" type="button" aria-haspopup="dialog" aria-expanded="false"><strong id="salaryEffectiveLabel">Pilih tanggal</strong><span aria-hidden="true">▣</span></button><input id="salaryEffectiveDate" type="hidden"></div>
+              <label class="salary-master-field"><span>Catatan</span><input id="salaryNote" autocomplete="off" placeholder="Opsional"></label>
+              <button id="salarySave" class="salary-save-btn" type="submit">Simpan Master Gaji</button>
+              <p id="salaryFormMsg" class="salary-form-msg"></p>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <section class="salary-history">
+        <h3>Riwayat Gaji Pokok</h3>
+        <div id="salaryHistory"></div>
+      </section>
+    </section>
+  </div>
+</div>
+
+<div id="salaryDateModal" class="salary-date-modal" hidden aria-hidden="true">
+  <div class="salary-date-backdrop" data-salary-date-close></div>
+  <section class="salary-date-dialog" role="dialog" aria-modal="true" aria-labelledby="salaryDateTitle">
+    <div class="salary-date-head"><div><small>BERLAKU MULAI</small><h3 id="salaryDateTitle">Pilih Tanggal</h3></div><button type="button" data-salary-date-close aria-label="Tutup">×</button></div>
+    <div class="salary-cal-nav"><button id="salaryCalPrev" type="button">‹</button><strong id="salaryCalLabel">—</strong><button id="salaryCalNext" type="button">›</button></div>
+    <div class="salary-weekdays"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+    <div id="salaryDays" class="salary-days"></div>
+  </section>
+</div>
+
+<nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./tabel-harian-cabang.html"><span class="bn-icon">▦</span>Tabel</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/payroll-salary-master-store.js?v=20260903-master1"></script>
+<script src="../js/modules/payroll-unified-engine.js?v=20260903-master1"></script>
+<script src="../js/modules/master-gaji-pokok.js?v=20260903-master1"></script>
+<script>
+Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
+  if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
+  initErpShellChrome?.();ensurePayrollSidebarEntry?.();
+  const payrollLink=document.querySelector('.sidebar [data-erp-nav="payroll"]'); if(payrollLink) payrollLink.classList.add('active');
+  const t=document.getElementById('erpHeaderCabang'); if(t) t.textContent='Master Gaji Pokok';
+  const p=document.getElementById('erpHeaderPeriode'); if(p) p.textContent='Master Data';
+}).catch(()=>{});
+</script>
+</body>
+</html>
