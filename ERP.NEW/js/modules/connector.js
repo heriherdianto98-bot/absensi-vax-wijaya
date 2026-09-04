@@ -16,12 +16,12 @@ const db = window.supabase.createClient(
     SUPABASE_KEY
 );
 
-/* Tabel Harian only: autoload Proteksi canonical UI without touching money logic. */
+/* Tabel Harian only: autoload canonical/read-only UI helpers without touching money logic. */
 (function(){
     const path = String(window.location.pathname || "").toLowerCase();
     if(!path.endsWith("/tabel-harian-cabang.html")) return;
 
-    const PROTEKSI_ASSET_VERSION = "20260905-proteksi5";
+    const PROTEKSI_ASSET_VERSION = "20260905-proteksi6";
     const loadScript = (src) => new Promise((resolve, reject) => {
         const key = `${src}?v=${PROTEKSI_ASSET_VERSION}`;
         if(document.querySelector(`script[data-vax-src="${key}"]`)){
@@ -45,6 +45,7 @@ const db = window.supabase.createClient(
             await loadScript("../js/modules/proteksi-card-click-hint.js");
             await loadScript("../js/modules/tabel-harian-negative-values.js");
             await loadScript("../js/modules/share-cukur-card.js");
+            await loadScript("../js/modules/share-cukur-popup-ui.js");
         }catch(err){
             console.error("Tabel Harian UI autoload gagal:", err);
         }
