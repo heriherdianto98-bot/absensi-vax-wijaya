@@ -100,6 +100,23 @@ const BriMerchantDaily = {
         if(idx >= 0) this.rows[idx] = data;
         else this.rows.push(data);
         return data;
+    },
+
+    async remove({ tanggal, cabangId } = {}){
+        if(typeof db === "undefined") throw new Error("Supabase client (db) tidak tersedia.");
+        const d = String(tanggal || "").slice(0,10);
+        const id = Number(cabangId);
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || !Number.isFinite(id)) return;
+
+        const { error } = await db.from(this.TABLE)
+            .delete()
+            .eq("tanggal", d)
+            .eq("cabang_id", id);
+        if(error) throw error;
+
+        const k = this.key(d,id);
+        this.map.delete(k);
+        this.rows = this.rows.filter((r) => this.key(r.tanggal,r.cabang_id) !== k);
     }
 };
 
