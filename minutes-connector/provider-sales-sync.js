@@ -73,10 +73,10 @@ const cabangAktif = (daftarCabang || []).filter(
   (c) => Number(c.id) >= 1 && Number(c.id) <= 10 && c.nama_minutes
 );
 
+// Historis harus tetap bisa memetakan provider yang sekarang nonaktif.
 const { data: daftarKaryawan, error: karyawanError } = await supabase
   .from("karyawan")
-  .select("id,nama_karyawan,cabang_id,aktif")
-  .eq("aktif", true);
+  .select("id,nama_karyawan,cabang_id,aktif");
 
 if (karyawanError) throw karyawanError;
 
@@ -110,33 +110,6 @@ function cariEmployee(providerMinutesId, providerName, cabangId) {
     (k) => normalisasi(k.nama_karyawan) === nama
   );
   return globalMatches.length === 1 ? globalMatches[0].id : null;
-}
-
-async function simpanProvider(row) {
-  const { data: existing, error: findError } = await supabase
-    .from("provider_sales_daily_source")
-    .select("id")
-    .eq("activity_date", row.activity_date)
-    .eq("cabang_id", row.cabang_id)
-    .eq("provider_name_normalized", row.provider_name_normalized)
-    .maybeSingle();
-
-  if (findError) throw findError;
-
-  if (existing?.id) {
-    const { error } = await supabase
-      .from("provider_sales_daily_source")
-      .update(row)
-      .eq("id", existing.id);
-    if (error) throw error;
-    return "UPDATED";
-  }
-
-  const { error } = await supabase
-    .from("provider_sales_daily_source")
-    .insert(row);
-  if (error) throw error;
-  return "INSERTED";
 }
 
 async function bacaDetailProvider(page) {
@@ -294,12 +267,22 @@ try {
       });
 
       if (!providers.length) {
+        const { error: delEmptyErr } = await supabase
+          .from("provider_sales_daily_source")
+          .delete()
+          .eq("activity_date", activityDate)
+          .eq("cabang_id", cabang.id)
+          .eq("source", "MINUTES_PROVIDER_SALES_DAILY");
+        if (delEmptyErr) throw delEmptyErr;
+
         hasil.push({ cabang: cabang.nama_cabang, status: "NO_DATA", providers: 0 });
-        console.log(`ℹ️ ${cabang.nama_cabang}: tidak ada Provider Sales ${activityDate}`);
+        console.log(`ℹ️ ${cabang.nama_cabang}: tidak ada Provider Sales ${activityDate}; row lama dibersihkan`);
         continue;
       }
 
-      let saved = 0;
+      // TWO-PHASE WRITE:
+      // baca dan validasi semua provider dahulu. Database baru diganti setelah semua detail berhasil.
+      const rowsToSave = [];
 
       for (const provider of providers) {
         const providerMinutesId = providerIdDariHref(provider.href);
@@ -310,16 +293,14 @@ try {
         await page.waitForTimeout(3000);
 
         const detail = await bacaDetailProvider(page);
-
         if (!detail) {
-          console.warn(`⚠️ Detail tidak terbaca: ${provider.name}`);
-          continue;
+          throw new Error(`Detail Provider Sales tidak terbaca: ${provider.name}. Tidak ada write untuk cabang ini.`);
         }
 
         const employeeId = cariEmployee(providerMinutesId, provider.name, cabang.id);
         const now = new Date().toISOString();
 
-        const row = {
+        rowsToSave.push({
           activity_date: activityDate,
           cabang_id: cabang.id,
           cabang_minutes_name: cabang.nama_minutes,
@@ -338,21 +319,38 @@ try {
           source: "MINUTES_PROVIDER_SALES_DAILY",
           synced_at: now,
           updated_at: now
-        };
+        });
+      }
 
-        await simpanProvider(row);
-        saved++;
+      // Idempotent exact-date + exact-branch replacement.
+      // Ini menghapus row stale ketika nama provider berubah tetapi provider_minutes_id sama
+      // (contoh "Capster" -> nama asli, atau provider lama yang sudah tidak muncul di Minutes).
+      const { error: delErr } = await supabase
+        .from("provider_sales_daily_source")
+        .delete()
+        .eq("activity_date", activityDate)
+        .eq("cabang_id", cabang.id)
+        .eq("source", "MINUTES_PROVIDER_SALES_DAILY");
+      if (delErr) throw delErr;
 
-        console.log(`  ✅ ${provider.name}: ${detail.totalService} service | share Rp${Number(detail.providerShare).toLocaleString("id-ID")}`);
+      if (rowsToSave.length) {
+        const { error: insErr } = await supabase
+          .from("provider_sales_daily_source")
+          .insert(rowsToSave);
+        if (insErr) throw insErr;
+      }
+
+      for (const row of rowsToSave) {
+        console.log(`  ✅ ${row.provider_name_raw}: ${row.total_service} service | share Rp${Number(row.provider_share).toLocaleString("id-ID")}`);
       }
 
       hasil.push({
         cabang: cabang.nama_cabang,
-        status: saved > 0 ? "OK" : "PARSER_EMPTY",
-        providers: saved
+        status: "OK",
+        providers: rowsToSave.length
       });
 
-      console.log(`✅ ${cabang.nama_cabang}: ${saved} provider tersimpan`);
+      console.log(`✅ ${cabang.nama_cabang}: ${rowsToSave.length} provider tersimpan; stale row dibersihkan`);
     } catch (error) {
       hasil.push({ cabang: cabang.nama_cabang, status: "ERROR", error: error.message });
       console.error(`❌ ${cabang.nama_cabang}: ${error.message}`);
