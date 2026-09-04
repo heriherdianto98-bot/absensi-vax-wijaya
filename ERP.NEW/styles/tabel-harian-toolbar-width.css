@@ -27,17 +27,17 @@
     --thc-page-head-h: 92px;
     --thc-pin-stack-h: 104px;
     --thc-page-head-top: var(--erp-top-header-h, 58px);
-    --thc-pin-stack-top: calc(var(--erp-top-header-h, 58px) + var(--thc-page-head-h, 92px) + 12px);
-    --thc-thead-top: calc(var(--erp-top-header-h, 58px) + var(--thc-page-head-h, 92px) + 12px + var(--thc-pin-stack-h, 104px) - 1px);
+    --thc-pin-stack-top: var(--erp-top-header-h, 58px);
+    --thc-thead-top: calc(var(--erp-top-header-h, 58px) + var(--thc-pin-stack-h, 104px) - 1px);
 }
 
-/* Header = title + existing actions, satu layer, flex row. */
+/* Title + actions ikut scroll vertikal agar area tabel lebih lega. */
 body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
 .erp-wrapper .thc-page .thc-page-head,
 .thc-page .thc-page-head{
-    position: sticky !important;
-    top: var(--thc-page-head-top) !important;
-    z-index: 60 !important;
+    position: relative !important;
+    top: auto !important;
+    z-index: 1 !important;
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
@@ -50,7 +50,7 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     box-sizing: border-box !important;
     padding: 14px 18px !important;
     overflow: visible !important;
-    box-shadow: 0 10px 22px rgba(0,0,0,.42) !important;
+    box-shadow: none !important;
 }
 
 .thc-page .thc-page-head-copy{
