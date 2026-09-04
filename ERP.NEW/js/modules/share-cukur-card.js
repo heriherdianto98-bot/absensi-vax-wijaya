@@ -1,12 +1,13 @@
 /*
 =========================================================
-VAX ERP — SHARE CUKUR CARD + 2-LEVEL DRILLDOWN
+VAX ERP — SHARE CUKUR CARD + 3-LEVEL DRILLDOWN
 =========================================================
 READ ONLY UI consumer.
 Canonical source: provider_sales_daily_source.provider_share
 Flow:
 1. Klik card Share Cukur -> total per cabang.
-2. Klik total cabang -> tanggal, provider/capster, nominal share.
+2. Klik total cabang -> ringkasan provider + total share provider.
+3. Klik provider -> rincian tanggal + nominal share provider tersebut.
 Tidak mengubah data, formula, sync, atau source.
 =========================================================
 */
@@ -71,7 +72,6 @@ Tidak mengubah data, formula, sync, atau source.
     async function fetchRows(filter){
         if(typeof db === "undefined") throw new Error("Supabase client tidak tersedia");
         if(!filter?.start || !filter?.end) return [];
-
         const out = [];
         const pageSize = 1000;
         let from = 0;
@@ -83,11 +83,9 @@ Tidak mengubah data, formula, sync, atau source.
                 .lte("activity_date", filter.end)
                 .eq("source", "MINUTES_PROVIDER_SALES_DAILY")
                 .range(from, from + pageSize - 1);
-
             if(filter.cabangId != null) q = q.eq("cabang_id", filter.cabangId);
             else if(Array.isArray(filter.opIds) && filter.opIds.length) q = q.in("cabang_id", filter.opIds);
             else return [];
-
             const { data, error } = await q;
             if(error) throw error;
             const batch = data || [];
@@ -100,16 +98,14 @@ Tidak mengubah data, formula, sync, atau source.
 
     function normalizedRows(){
         const names = branchNameMap();
-        return (lastRows || [])
-            .map(r => ({
-                tanggal: String(r.activity_date || "").slice(0,10),
-                cabangId: Number(r.cabang_id),
-                cabang: shortName(names.get(Number(r.cabang_id)) || `Cabang #${r.cabang_id}`),
-                provider: String(r.provider_name_raw || "—").trim() || "—",
-                nominal: Number(r.provider_share || 0)
-            }))
-            .filter(r => Number.isFinite(r.nominal) && r.nominal > 0)
-            .sort((a,b) => a.cabang.localeCompare(b.cabang) || a.tanggal.localeCompare(b.tanggal) || a.provider.localeCompare(b.provider));
+        return (lastRows || []).map(r => ({
+            tanggal: String(r.activity_date || "").slice(0,10),
+            cabangId: Number(r.cabang_id),
+            cabang: shortName(names.get(Number(r.cabang_id)) || `Cabang #${r.cabang_id}`),
+            provider: String(r.provider_name_raw || "—").trim() || "—",
+            nominal: Number(r.provider_share || 0)
+        })).filter(r => Number.isFinite(r.nominal) && r.nominal > 0)
+          .sort((a,b) => a.cabang.localeCompare(b.cabang) || a.provider.localeCompare(b.provider) || a.tanggal.localeCompare(b.tanggal));
     }
 
     function groups(){
@@ -124,6 +120,18 @@ Tidak mengubah data, formula, sync, atau source.
         return [...map.values()].sort((a,b) => b.total - a.total || a.cabang.localeCompare(b.cabang));
     }
 
+    function providerGroups(branchGroup){
+        const map = new Map();
+        for(const row of branchGroup?.rows || []){
+            const key = String(row.provider || "—");
+            if(!map.has(key)) map.set(key, { key, provider: row.provider, total:0, rows:[] });
+            const g = map.get(key);
+            g.total += row.nominal;
+            g.rows.push(row);
+        }
+        return [...map.values()].sort((a,b) => b.total - a.total || a.provider.localeCompare(b.provider));
+    }
+
     function total(){
         return normalizedRows().reduce((sum,r) => sum + r.nominal, 0);
     }
@@ -136,7 +144,6 @@ Tidak mengubah data, formula, sync, atau source.
         card.setAttribute("tabindex","0");
         card.setAttribute("aria-label","Buka rincian Share Cukur");
         card.title = "Klik untuk lihat Share Cukur per cabang";
-
         if(!card.querySelector(".share-cukur-click-hint")){
             const hint = document.createElement("span");
             hint.className = "share-cukur-click-hint";
@@ -152,7 +159,6 @@ Tidak mengubah data, formula, sync, atau source.
     function ensureModal(){
         let modal = document.getElementById(MODAL_ID);
         if(modal) return modal;
-
         const style = document.createElement("style");
         style.textContent = `
             #thcTotals .thc-tot-item.is-share-cukur{position:relative;cursor:pointer;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
@@ -174,12 +180,12 @@ Tidak mengubah data, formula, sync, atau source.
             #${MODAL_ID} th{position:sticky;top:0;background:#111b27;color:#5eead4;text-align:left;padding:11px 14px;border-bottom:1px solid #2b3948}
             #${MODAL_ID} td{padding:11px 14px;border-bottom:1px solid #1c2936;vertical-align:middle}
             #${MODAL_ID} td:last-child,#${MODAL_ID} th:last-child{text-align:right;white-space:nowrap}
-            #${MODAL_ID} .sc-branch-btn{border:0;background:transparent;color:#5eead4;font:inherit;font-weight:800;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+            #${MODAL_ID} .sc-branch-btn,#${MODAL_ID} .sc-provider-btn{border:0;background:transparent;color:#5eead4;font:inherit;font-weight:800;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+            #${MODAL_ID} .sc-provider-name{font-weight:800;color:#eef6fb}
             #${MODAL_ID} .sc-back{display:inline-flex;align-items:center;gap:7px;border:1px solid #344254;background:#172231;color:#dbe7f3;border-radius:9px;padding:7px 10px;cursor:pointer;margin:12px 14px 0}
             #${MODAL_ID} .sc-empty{padding:28px;text-align:center;color:#9fb0c3}
         `;
         document.head.appendChild(style);
-
         modal = document.createElement("div");
         modal.id = MODAL_ID;
         modal.hidden = true;
@@ -188,16 +194,19 @@ Tidak mengubah data, formula, sync, atau source.
             <div class="sc-backdrop" data-sc-close></div>
             <section class="sc-panel" role="dialog" aria-modal="true" aria-labelledby="scTitle">
                 <div class="sc-head"><div><h3 id="scTitle">Share Cukur per Cabang</h3><p id="scPeriod">—</p></div><button type="button" class="sc-close" data-sc-close aria-label="Tutup">×</button></div>
-                <div class="sc-total"><span>Total Share Cukur</span><strong id="scGrandTotal">Rp0</strong></div>
+                <div class="sc-total"><span id="scTotalLabel">Total Share Cukur</span><strong id="scGrandTotal">Rp0</strong></div>
                 <div class="sc-wrap"><div id="scBody"></div></div>
             </section>`;
         document.body.appendChild(modal);
-
         modal.addEventListener("click", e => {
             if(e.target.closest("[data-sc-close]")) return closeModal();
             const branch = e.target.closest("[data-sc-branch]");
             if(branch) return renderBranch(branch.dataset.scBranch);
-            if(e.target.closest("[data-sc-back]")) return renderSummary();
+            const provider = e.target.closest("[data-sc-provider]");
+            if(provider) return renderProvider(provider.dataset.scBranch, provider.dataset.scProvider);
+            if(e.target.closest("[data-sc-back-summary]")) return renderSummary();
+            const backBranch = e.target.closest("[data-sc-back-branch]");
+            if(backBranch) return renderBranch(backBranch.dataset.scBackBranch);
         });
         document.addEventListener("keydown", e => {
             if(e.key === "Escape" && !modal.hidden) closeModal();
@@ -208,6 +217,8 @@ Tidak mengubah data, formula, sync, atau source.
     function renderSummary(){
         const modal = ensureModal();
         modal.querySelector("#scTitle").textContent = "Share Cukur per Cabang";
+        modal.querySelector("#scTotalLabel").textContent = "Total Share Cukur";
+        modal.querySelector("#scGrandTotal").textContent = rupiah(total());
         const body = modal.querySelector("#scBody");
         const list = groups();
         if(!list.length){
@@ -221,15 +232,29 @@ Tidak mengubah data, formula, sync, atau source.
         const modal = ensureModal();
         const group = groups().find(g => g.key === key);
         if(!group) return renderSummary();
-        modal.querySelector("#scTitle").textContent = `Rincian Share Cukur — ${group.cabang}`;
-        modal.querySelector("#scBody").innerHTML = `<button type="button" class="sc-back" data-sc-back>← Kembali ke Cabang</button><table><thead><tr><th>Tanggal</th><th>Provider / Capster</th><th>Nominal Share</th></tr></thead><tbody>${group.rows.map(r => `<tr><td>${esc(r.tanggal)}</td><td>${esc(r.provider)}</td><td>${rupiah(r.nominal)}</td></tr>`).join("")}</tbody></table>`;
+        modal.querySelector("#scTitle").textContent = `Share Cukur Provider — ${group.cabang}`;
+        modal.querySelector("#scTotalLabel").textContent = `Total Share ${group.cabang}`;
+        modal.querySelector("#scGrandTotal").textContent = rupiah(group.total);
+        const providers = providerGroups(group);
+        modal.querySelector("#scBody").innerHTML = `<button type="button" class="sc-back" data-sc-back-summary>← Kembali ke Cabang</button><table><thead><tr><th>Provider / Capster</th><th>Total Share Provider</th></tr></thead><tbody>${providers.map(p => `<tr><td><button type="button" class="sc-provider-btn sc-provider-name" data-sc-branch="${esc(group.key)}" data-sc-provider="${esc(p.key)}">${esc(p.provider)}</button></td><td><button type="button" class="sc-provider-btn" data-sc-branch="${esc(group.key)}" data-sc-provider="${esc(p.key)}">${rupiah(p.total)}</button></td></tr>`).join("")}</tbody></table>`;
+    }
+
+    function renderProvider(branchKey, providerKey){
+        const modal = ensureModal();
+        const group = groups().find(g => g.key === branchKey);
+        if(!group) return renderSummary();
+        const provider = providerGroups(group).find(p => p.key === providerKey);
+        if(!provider) return renderBranch(branchKey);
+        modal.querySelector("#scTitle").textContent = `${provider.provider} — ${group.cabang}`;
+        modal.querySelector("#scTotalLabel").textContent = `Total Share ${provider.provider}`;
+        modal.querySelector("#scGrandTotal").textContent = rupiah(provider.total);
+        modal.querySelector("#scBody").innerHTML = `<button type="button" class="sc-back" data-sc-back-branch="${esc(group.key)}">← Kembali ke Provider</button><table><thead><tr><th>Tanggal</th><th>Nominal Share</th></tr></thead><tbody>${provider.rows.sort((a,b) => a.tanggal.localeCompare(b.tanggal)).map(r => `<tr><td>${esc(r.tanggal)}</td><td>${rupiah(r.nominal)}</td></tr>`).join("")}</tbody></table>`;
     }
 
     async function openModal(){
         if(!lastRows.length) await refresh();
         const modal = ensureModal();
         modal.querySelector("#scPeriod").textContent = lastFilter ? `${lastFilter.start} — ${lastFilter.end}` : "Periode aktif";
-        modal.querySelector("#scGrandTotal").textContent = rupiah(total());
         renderSummary();
         modal.hidden = false;
         modal.setAttribute("aria-hidden","false");
@@ -268,7 +293,6 @@ Tidak mengubah data, formula, sync, atau source.
             if(ensureInteractive()) clearInterval(waitCard);
         },100);
         setTimeout(() => clearInterval(waitCard),15000);
-
         document.addEventListener("click", e => {
             if(e.target.closest("#thcTotals .thc-tot-item.is-share-cukur")) openModal();
         });
@@ -278,7 +302,6 @@ Tidak mengubah data, formula, sync, atau source.
                 openModal();
             }
         });
-
         refresh();
         if(!subscribed){
             subscribed = true;
