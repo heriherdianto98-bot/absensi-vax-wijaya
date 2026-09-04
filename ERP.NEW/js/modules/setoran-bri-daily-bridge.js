@@ -2,12 +2,12 @@
 =========================================================
 VAX ERP — SETORAN 3 HARIAN BRI DAILY BRIDGE
 =========================================================
-Jika ada input BRI Merchant Daily pada periode aktif:
-- SUM per cabang untuk 1-3 hari
-- tampil sebagai BRI Merchant di Setoran 3 Harian
-- field periode menjadi read-only (hindari sumber ganda/bentrok)
-Fallback legacy: bila BRI Daily belum tersedia / gagal dibaca,
-Setoran 3 Harian WAJIB tetap tampil dengan mekanisme lama.
+BRI Merchant di Setoran 3 Harian adalah output canonical:
+- SUM bri_merchant_daily per cabang untuk periode aktif 1-3 hari
+- selalu read-only di Setoran 3 Harian
+- tidak ada input manual/sumber ganda dari halaman Setoran
+Fallback fail-safe hanya menjaga tabel Setoran tetap tampil bila pembacaan
+BRI Daily gagal; kolom BRI tetap tidak dapat diedit.
 =========================================================
 */
 "use strict";
@@ -19,6 +19,7 @@ Setoran 3 Harian WAJIB tetap tampil dengan mekanisme lama.
         if(patched || typeof SetoranDirectFlow === "undefined" || typeof BriMerchantDaily === "undefined") return false;
         patched = true;
         const flow = SetoranDirectFlow;
+        flow.briDailyLoaded = false;
 
         const originalLoadSavedRows = flow.loadSavedRows.bind(flow);
         flow.loadSavedRows = async function(p){
@@ -26,9 +27,11 @@ Setoran 3 Harian WAJIB tetap tampil dengan mekanisme lama.
             const ids = (this.branches || []).map(b=>Number(b.id)).filter(Number.isFinite);
             try{
                 await BriMerchantDaily.loadRange({start:p.start,end:p.end,cabangIds:ids});
+                this.briDailyLoaded = true;
             }catch(err){
                 // FAIL-SAFE: BRI Daily tidak boleh membuat tabel Setoran hilang.
-                console.error("Setoran BRI Daily bridge load gagal; fallback legacy aktif:",err);
+                console.error("Setoran BRI Daily bridge load gagal; tabel Setoran tetap tampil:",err);
+                this.briDailyLoaded = false;
                 BriMerchantDaily.rows = [];
                 BriMerchantDaily.map = new Map();
             }
@@ -38,28 +41,25 @@ Setoran 3 Harian WAJIB tetap tampil dengan mekanisme lama.
         flow.model = function(id){
             const m = originalModel(id);
             try{
-                const p = this.period();
-                const daily = BriMerchantDaily.sumBranch(id,p.start,p.end);
-                if(daily.count > 0){
+                if(this.briDailyLoaded){
+                    const p = this.period();
+                    const daily = BriMerchantDaily.sumBranch(id,p.start,p.end);
                     m.bri = daily.total;
                     m.diff = daily.total - this.money(m.s.nonCash);
                     m.briDailyCanonical = true;
                     m.briDailyCount = daily.count;
                 }
-            }catch(_e){ /* fallback legacy */ }
+            }catch(_e){ /* fail-safe: pertahankan model lama, tetapi UI tetap read-only */ }
             return m;
         };
 
         const originalRowHtml = flow.rowHtml.bind(flow);
         flow.rowHtml = function(b){
             let html = originalRowHtml(b);
-            const m = this.model(b.id);
-            if(m.briDailyCanonical){
-                html = html.replace(
-                    'data-field="bri" type="number"',
-                    'data-field="bri" data-bri-daily-canonical="1" type="number" readonly title="Sumber: BRI Merchant Daily dari Tabel Harian"'
-                );
-            }
+            html = html.replace(
+                'data-field="bri" type="number"',
+                'data-field="bri" data-bri-daily-canonical="1" type="number" readonly aria-readonly="true" title="Otomatis: SUM BRI Merchant Daily dari Tabel Harian"'
+            );
             return html;
         };
 
@@ -71,6 +71,7 @@ Setoran 3 Harian WAJIB tetap tampil dengan mekanisme lama.
             color:#f1cfff !important;
             background:rgba(82,39,108,.18) !important;
             cursor:default !important;
+            caret-color:transparent !important;
           }
         `;
         if(!document.getElementById(style.id)) document.head.appendChild(style);
