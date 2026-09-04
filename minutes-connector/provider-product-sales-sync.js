@@ -24,13 +24,10 @@ function resolveDate() {
     const m = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (!m) throw new Error("Format tanggal harus YYYY-MM-DD");
     const [, y, mo, d] = m;
-    const date = new Date(`${y}-${mo}-${d}T00:00:00+07:00`);
-    const label = new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Asia/Jakarta",
-      day: "2-digit",
-      month: "short",
-      year: "numeric"
-    }).format(date);
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthLabel = MONTHS[Number(mo) - 1];
+    if (!monthLabel) throw new Error(`Bulan tidak valid: ${mo}`);
+    const label = `${d} ${monthLabel} ${y}`;
     const usDate = `${mo}/${d}/${y}`;
     return {
       db: value,
@@ -100,10 +97,18 @@ async function bacaProviderProductReport(page) {
       return raw ? Number(raw) : 0;
     };
 
-    const bodyText = clean(document.body?.innerText || "");
+    const rawBodyText = String(document.body?.innerText || "");
+    const bodyText = clean(rawBodyText);
+    const lines = rawBodyText
+      .split(/\n+/)
+      .map(clean)
+      .filter(Boolean);
+
     const titleOk = /provider sales report by product/i.test(bodyText);
+    const expectedPeriodLine = `Report Period ${expectedPeriod} - ${expectedPeriod}`;
+    const actualPeriodLine = lines.find(line => /^report period\b/i.test(line)) || "";
     const periodOk =
-      bodyText.includes(`Report Period ${expectedPeriod} - ${expectedPeriod}`) ||
+      normalize(actualPeriodLine) === normalize(expectedPeriodLine) ||
       bodyText.includes(expectedRange);
 
     if (!titleOk) {
@@ -113,15 +118,11 @@ async function bacaProviderProductReport(page) {
     if (!periodOk) {
       return {
         ok: false,
-        reason: `Periode report tidak sesuai. Target ${expectedRange}.`
+        reason: `Periode report tidak sesuai. Target ${expectedPeriodLine}; terbaca ${actualPeriodLine || "(kosong)"}.`
       };
     }
 
     let headerShare = null;
-    const lines = String(document.body?.innerText || "")
-      .split(/\n+/)
-      .map(clean)
-      .filter(Boolean);
 
     for (let i = 0; i < lines.length; i++) {
       if (normalize(lines[i]) !== "total provider share") continue;
