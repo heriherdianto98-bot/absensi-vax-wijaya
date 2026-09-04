@@ -56,10 +56,26 @@ BRI Daily gagal; kolom BRI tetap tidak dapat diedit.
         const originalRowHtml = flow.rowHtml.bind(flow);
         flow.rowHtml = function(b){
             let html = originalRowHtml(b);
-            html = html.replace(
-                'data-field="bri" type="number"',
-                'data-field="bri" data-bri-daily-canonical="1" type="number" readonly aria-readonly="true" title="Otomatis: SUM BRI Merchant Daily dari Tabel Harian"'
-            );
+
+            // Input formatter dimuat sebelum bridge selesai patch dan dapat mengubah
+            // field BRI dari type=number menjadi type=text. Karena itu kunci field
+            // berdasarkan data-field="bri", bukan berdasarkan tipe input.
+            html = html.replace(/<input\b[^>]*\bdata-field="bri"[^>]*>/i, (inputHtml) => {
+                let locked = inputHtml;
+                if(!/\bdata-bri-daily-canonical="1"/i.test(locked)){
+                    locked = locked.replace(/\bdata-field="bri"/i, 'data-field="bri" data-bri-daily-canonical="1"');
+                }
+                if(!/\breadonly\b/i.test(locked)){
+                    locked = locked.replace(/>$/, ' readonly>');
+                }
+                if(!/\baria-readonly=/i.test(locked)){
+                    locked = locked.replace(/>$/, ' aria-readonly="true">');
+                }
+                if(!/\btitle=/i.test(locked)){
+                    locked = locked.replace(/>$/, ' title="Otomatis: SUM BRI Merchant Daily dari Tabel Harian">');
+                }
+                return locked;
+            });
             return html;
         };
 
