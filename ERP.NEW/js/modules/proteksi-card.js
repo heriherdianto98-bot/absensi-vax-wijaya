@@ -3,22 +3,21 @@
 VAX ERP — PROTEKSI CARD BINDER
 =========================================================
 UI consumer only.
-Source canonical: DailyDataEngine -> daily_recap_source.keterangan_cash_out
-Card mengikuti filter aktif Tabel Harian (tanggal + cabang).
+Canonical source: DailyDataEngine -> daily_recap_source.keterangan_cash_out
+Rule keyword: protek / proteksi / protect.
 
-PENTING:
-- Jangan hitung hanya dari snapshot DashboardEngine.rawData karena snapshot
-  bisa tertinggal dari late Cash Out reconciliation.
-- Setiap render mengambil data canonical terbaru lewat ProteksiEngine.load().
+Important:
+- Existing TabelHarianShareCards historically owned the same card/value id.
+- Patch its proteksi parser so both old presenter and canonical binder agree.
 =========================================================
 */
 "use strict";
 
 (function(){
-    const CARD_ID = "thcProteksiCard";
     const VALUE_ID = "thcTotProteksi";
     let subscribed = false;
     let renderSeq = 0;
+    let legacyPatched = false;
 
     function rupiah(value){
         const n = Number(value || 0);
@@ -30,23 +29,23 @@ PENTING:
         }).format(Number.isFinite(n) ? n : 0);
     }
 
-    function ensureCard(){
-        const grid = document.querySelector("#thcTotals .thc-totals-grid");
-        if(!grid) return null;
+    function patchLegacyPresenter(){
+        if(legacyPatched) return true;
+        if(typeof TabelHarianShareCards === "undefined") return false;
+        if(typeof ProteksiEngine === "undefined") return false;
 
-        let card = document.getElementById(CARD_ID);
-        if(card) return card;
+        TabelHarianShareCards.proteksiFromKeterangan = function(rawText){
+            return ProteksiEngine.parseCashOutDetail(rawText)
+                .filter((item) => item.isProteksi && Number(item.nominal || 0) > 0)
+                .reduce((sum, item) => sum + Number(item.nominal || 0), 0);
+        };
 
-        card = document.createElement("div");
-        card.id = CARD_ID;
-        card.className = "thc-tot-item is-proteksi is-explained";
-        card.innerHTML = `
-            <span>Proteksi Capster</span>
-            <strong id="${VALUE_ID}">Rp0</strong>
-            <em class="thc-tot-desc">Otomatis dari Cash Out: protek / proteksi / protect</em>
-        `;
-        grid.appendChild(card);
-        return card;
+        const card = document.getElementById(VALUE_ID)?.closest(".thc-tot-item");
+        const desc = card?.querySelector(".thc-share-desc");
+        if(desc) desc.textContent = "Akumulasi Cash Out: PROTEK / PROTEKSI / PROTECT pada periode aktif";
+
+        legacyPatched = true;
+        return true;
     }
 
     function activeFilter(){
@@ -55,70 +54,57 @@ PENTING:
         const end = DashboardEngine.lastRange?.end || start;
         if(!start || !end) return null;
 
-        let cabangId = null;
-        if(typeof DashboardEngine.resolveCabangId === "function"){
-            cabangId = DashboardEngine.resolveCabangId(DashboardEngine.lastCabangId);
-        }
-
+        const cabangId = typeof DashboardEngine.resolveCabangId === "function"
+            ? DashboardEngine.resolveCabangId(DashboardEngine.lastCabangId)
+            : null;
         return { start, end, cabangId };
     }
 
     function paint(summary){
-        ensureCard();
         const valueEl = document.getElementById(VALUE_ID);
         if(!valueEl) return;
-
         const total = Number(summary?.total || 0);
         valueEl.textContent = rupiah(total);
         valueEl.dataset.value = String(total);
-
-        const card = document.getElementById(CARD_ID);
-        if(card){
-            const count = Array.isArray(summary?.details) ? summary.details.length : 0;
-            card.title = `${count} baris Cash Out mengandung proteksi pada periode aktif`;
-        }
     }
 
     async function render(){
-        if(typeof DashboardEngine === "undefined") return;
-        if(typeof ProteksiEngine === "undefined") return;
-
-        ensureCard();
-        const seq = ++renderSeq;
+        if(typeof DashboardEngine === "undefined" || typeof ProteksiEngine === "undefined") return;
+        patchLegacyPresenter();
         const filter = activeFilter();
+        if(!filter) return;
 
+        const seq = ++renderSeq;
         try{
-            if(filter && typeof ProteksiEngine.load === "function"){
-                const fresh = await ProteksiEngine.load({
-                    client: (typeof db !== "undefined" ? db : undefined),
-                    start: filter.start,
-                    end: filter.end,
-                    cabangId: filter.cabangId
-                });
-                if(seq !== renderSeq) return;
-                paint(fresh);
-                return;
-            }
+            const fresh = await ProteksiEngine.load({
+                client: (typeof db !== "undefined" ? db : undefined),
+                start: filter.start,
+                end: filter.end,
+                cabangId: filter.cabangId
+            });
+            if(seq !== renderSeq) return;
+            paint(fresh);
         }catch(err){
-            console.warn("[ProteksiCard] fresh canonical load gagal, fallback snapshot:", err);
+            console.warn("[ProteksiCard] canonical load gagal:", err);
         }
-
-        if(seq !== renderSeq) return;
-        const fallback = ProteksiEngine.summarizeRows(DashboardEngine.rawData || []);
-        paint(fallback);
     }
 
     function bind(){
-        if(typeof DashboardEngine === "undefined" || typeof DashboardEngine.subscribe !== "function"){
-            setTimeout(bind, 100);
-            return;
-        }
-        if(typeof ProteksiEngine === "undefined"){
+        if(typeof DashboardEngine === "undefined" || typeof DashboardEngine.subscribe !== "function" || typeof ProteksiEngine === "undefined"){
             setTimeout(bind, 100);
             return;
         }
 
-        ensureCard();
+        const patchTimer = setInterval(() => {
+            if(patchLegacyPresenter()){
+                clearInterval(patchTimer);
+                if(typeof TabelHarianShareCards !== "undefined" && typeof TabelHarianShareCards.refresh === "function"){
+                    TabelHarianShareCards.refresh();
+                }
+                setTimeout(render, 50);
+            }
+        }, 100);
+
         render();
 
         if(!subscribed){
@@ -127,6 +113,12 @@ PENTING:
                 if(event === "loaded" || event === "calculated") render();
             });
         }
+
+        document.addEventListener("change", (e) => {
+            if(e.target?.id === "branchFilter" || e.target?.id === "periodFilter"){
+                setTimeout(render, 150);
+            }
+        });
     }
 
     if(document.readyState === "loading"){
