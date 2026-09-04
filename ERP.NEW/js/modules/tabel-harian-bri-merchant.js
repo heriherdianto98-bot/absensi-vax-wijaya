@@ -2,9 +2,14 @@
 =========================================================
 VAX ERP — TABEL HARIAN BRI MERCHANT DAILY INPUT
 =========================================================
-UI + write bridge ke public.bri_merchant_daily.
+UI NETRAL + write bridge ke public.bri_merchant_daily.
 Owner/SVP dapat input manual per tanggal+cabang.
-Tidak mengubah DailyDataEngine / money formula / Minutes source.
+
+PENTING:
+- TIDAK mengubah DailyDataEngine
+- TIDAK mengubah SetoranMoneyEngine
+- TIDAK mengubah rowFromEngine / computeTotals / rumus Tabel Harian
+- BRI Merchant hanya angka acuan manual untuk rekonsiliasi
 =========================================================
 */
 "use strict";
@@ -13,8 +18,10 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
     const STYLE_ID = "thcBriDailyStyle";
     let role = "";
     let userId = null;
-    let seq = 0;
-    let patched = false;
+    let loadSeq = 0;
+    let refreshTimer = null;
+    let observer = null;
+    let bound = false;
 
     function ensureStyle(){
         if(document.getElementById(STYLE_ID)) return;
@@ -23,18 +30,23 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
         s.textContent = `
             #thcTable th.thc-bri-daily-head,
             #thcTable td.thc-bri-daily-cell{
-                min-width:140px;
-                width:140px;
+                min-width:145px;
+                width:145px;
                 text-align:right;
             }
             #thcTable th.thc-bri-daily-head{
                 color:#e6b8ff !important;
+                background:#0f151d !important;
+                white-space:nowrap;
+            }
+            #thcTable td.thc-bri-daily-cell{
+                background:#151d27;
             }
             #thcTable .thc-bri-daily-input{
-                width:118px;
-                min-width:118px;
+                width:120px;
+                min-width:120px;
                 box-sizing:border-box;
-                border:1px solid rgba(190,120,255,.38);
+                border:1px solid rgba(190,120,255,.42);
                 border-radius:8px;
                 background:#101821;
                 color:#f2d7ff;
@@ -48,21 +60,31 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
                 box-shadow:0 0 0 2px rgba(210,140,255,.14);
             }
             #thcTable .thc-bri-daily-input.is-saving{opacity:.55}
-            #thcTable .thc-bri-daily-input.is-saved{border-color:rgba(76,226,180,.78)}
+            #thcTable .thc-bri-daily-input.is-saved{border-color:rgba(76,226,180,.9)}
             #thcTable .thc-bri-daily-input.is-error{border-color:#ff5c66;color:#ff8f96}
-            #thcTable .thc-bri-daily-input:disabled{opacity:.7;cursor:not-allowed}
+            #thcTable .thc-bri-daily-input:disabled{opacity:.72;cursor:not-allowed}
         `;
         document.head.appendChild(s);
     }
 
     async function loadIdentity(){
         try{
-            const {data:s} = await db.auth.getSession();
-            userId = s?.session?.user?.id || null;
+            const { data: sessionData } = await db.auth.getSession();
+            userId = sessionData?.session?.user?.id || null;
             if(!userId) return;
-            const {data} = await db.from("profiles").select("role,aktif").eq("id",userId).maybeSingle();
-            if(data?.aktif !== false) role = String(data?.role || "").trim().toLowerCase();
-        }catch(_e){ role = ""; }
+            const { data, error } = await db
+                .from("profiles")
+                .select("role,aktif")
+                .eq("id", userId)
+                .maybeSingle();
+            if(error) throw error;
+            if(data?.aktif !== false){
+                role = String(data?.role || "").trim().toLowerCase();
+            }
+        }catch(err){
+            role = "";
+            console.warn("BRI Merchant identity tidak terbaca:", err);
+        }
     }
 
     function canEdit(){
@@ -70,46 +92,55 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
     }
 
     function currentRows(){
-        return (typeof TabelHarianCabang !== "undefined" && Array.isArray(TabelHarianCabang.rows))
-            ? TabelHarianCabang.rows
-            : [];
+        if(typeof TabelHarianCabang === "undefined") return [];
+        return Array.isArray(TabelHarianCabang.rows) ? TabelHarianCabang.rows : [];
     }
 
-    function bounds(rows){
-        const dates = rows.map(r=>String(r?.tanggal||"").slice(0,10)).filter(Boolean).sort();
-        return dates.length ? {start:dates[0], end:dates[dates.length-1]} : null;
+    function getBounds(rows){
+        const dates = rows
+            .map((r) => String(r?.tanggal || "").slice(0,10))
+            .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
+            .sort();
+        return dates.length ? { start: dates[0], end: dates[dates.length - 1] } : null;
     }
 
-    function findNonCashIndex(table){
+    function findHeaderIndex(table, label){
         const ths = [...table.querySelectorAll("thead th")];
-        return ths.findIndex(th => String(th.textContent||"").trim().toUpperCase() === "NON TUNAI");
+        const wanted = String(label || "").trim().toUpperCase();
+        return ths.findIndex((th) => String(th.textContent || "").trim().toUpperCase() === wanted);
     }
 
-    function ensureColumn(table){
-        const nonIdx = findNonCashIndex(table);
-        if(nonIdx < 0) return -1;
-        const headRow = table.querySelector("thead tr");
-        if(!headRow) return -1;
-        if(!headRow.querySelector(".thc-bri-daily-head")){
-            const th = document.createElement("th");
-            th.className = "thc-bri-daily-head";
-            th.textContent = "BRI MERCHANT";
-            const nonTh = headRow.children[nonIdx];
-            nonTh.insertAdjacentElement("afterend", th);
+    function ensureHeader(table){
+        const row = table.querySelector("thead tr");
+        if(!row) return -1;
+
+        let existing = row.querySelector("th.thc-bri-daily-head");
+        if(existing){
+            return [...row.children].indexOf(existing);
         }
-        return nonIdx;
+
+        const nonIdx = findHeaderIndex(table, "NON TUNAI");
+        if(nonIdx < 0) return -1;
+
+        const th = document.createElement("th");
+        th.className = "thc-bri-daily-head";
+        th.scope = "col";
+        th.textContent = "BRI MERCHANT";
+        row.children[nonIdx].insertAdjacentElement("afterend", th);
+        return [...row.children].indexOf(th);
     }
 
-    function rowInput(rowMeta, saved){
+    function makeInput(meta, saved){
         const input = document.createElement("input");
         input.type = "number";
         input.step = "1000";
         input.min = "0";
         input.inputMode = "numeric";
+        input.autocomplete = "off";
         input.className = "thc-bri-daily-input";
         input.placeholder = "0";
-        input.dataset.tanggal = rowMeta.tanggal;
-        input.dataset.cabangId = String(rowMeta.cabang_id);
+        input.dataset.tanggal = String(meta.tanggal || "").slice(0,10);
+        input.dataset.cabangId = String(Number(meta.cabang_id));
         input.value = saved ? String(Number(saved.bri_non_cash_actual || 0)) : "";
         input.disabled = !canEdit();
         input.title = canEdit()
@@ -118,75 +149,112 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
         return input;
     }
 
-    function paintRows(){
+    function ensureCells(){
         const table = document.getElementById("thcTable");
+        const tbody = document.getElementById("thcTbody");
         const rows = currentRows();
-        if(!table || !rows.length) return;
+        if(!table || !tbody || !rows.length) return false;
 
-        const nonIdx = ensureColumn(table);
-        if(nonIdx < 0) return;
+        const briHeaderIdx = ensureHeader(table);
+        if(briHeaderIdx < 0) return false;
 
-        const trs = [...table.querySelectorAll("tbody tr")];
+        const trs = [...tbody.querySelectorAll("tr")];
+        if(!trs.length) return false;
+
         trs.forEach((tr, i) => {
             const meta = rows[i];
             if(!meta) return;
-            tr.dataset.tanggal = tr.dataset.tanggal || meta.tanggal;
-            tr.dataset.cabangId = tr.dataset.cabangId || String(meta.cabang_id);
-            const existing = tr.querySelector("td.thc-bri-daily-cell");
-            const saved = BriMerchantDaily.get(meta.tanggal, meta.cabang_id);
-            if(existing){
-                const inp = existing.querySelector("input");
-                if(inp && document.activeElement !== inp){
-                    inp.value = saved ? String(Number(saved.bri_non_cash_actual || 0)) : "";
-                }
-                return;
+
+            tr.dataset.tanggal = tr.dataset.tanggal || String(meta.tanggal || "").slice(0,10);
+            tr.dataset.cabangId = String(Number(meta.cabang_id));
+
+            let td = tr.querySelector("td.thc-bri-daily-cell");
+            if(!td){
+                const nonIdx = findHeaderIndex(table, "NON TUNAI");
+                const nonCell = tr.children[nonIdx];
+                if(!nonCell) return;
+                td = document.createElement("td");
+                td.className = "thc-bri-daily-cell";
+                nonCell.insertAdjacentElement("afterend", td);
             }
-            const td = document.createElement("td");
-            td.className = "thc-bri-daily-cell";
-            td.appendChild(rowInput(meta, saved));
-            const nonCell = tr.children[nonIdx];
-            nonCell?.insertAdjacentElement("afterend", td);
+
+            const saved = BriMerchantDaily.get(meta.tanggal, meta.cabang_id);
+            let input = td.querySelector(".thc-bri-daily-input");
+            if(!input){
+                input = makeInput(meta, saved);
+                td.replaceChildren(input);
+            }else{
+                input.dataset.tanggal = String(meta.tanggal || "").slice(0,10);
+                input.dataset.cabangId = String(Number(meta.cabang_id));
+                input.disabled = !canEdit();
+                if(document.activeElement !== input){
+                    input.value = saved ? String(Number(saved.bri_non_cash_actual || 0)) : "";
+                }
+            }
         });
+        return true;
     }
 
     async function refresh(){
         const rows = currentRows();
-        if(!rows.length){ paintRows(); return; }
-        const b = bounds(rows);
-        if(!b) return;
-        const ids = [...new Set(rows.map(r=>Number(r.cabang_id)).filter(Number.isFinite))];
-        const mySeq = ++seq;
+        if(!rows.length){
+            ensureCells();
+            return;
+        }
+        const bounds = getBounds(rows);
+        if(!bounds) return;
+
+        const ids = [...new Set(rows.map((r) => Number(r.cabang_id)).filter(Number.isFinite))];
+        const seq = ++loadSeq;
         try{
-            await BriMerchantDaily.loadRange({start:b.start,end:b.end,cabangIds:ids});
-            if(mySeq !== seq) return;
-            paintRows();
+            await BriMerchantDaily.loadRange({
+                start: bounds.start,
+                end: bounds.end,
+                cabangIds: ids
+            });
+            if(seq !== loadSeq) return;
+            ensureCells();
         }catch(err){
             console.error("BRI Merchant Daily load gagal:", err);
+            // UI kolom tetap wajib tampil walau query gagal.
+            ensureCells();
         }
+    }
+
+    function scheduleRefresh(delay = 20){
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => refresh(), delay);
     }
 
     async function saveInput(input){
         if(!canEdit() || !input) return;
-        const tanggal = input.dataset.tanggal;
+
+        const tanggal = String(input.dataset.tanggal || "").slice(0,10);
         const cabangId = Number(input.dataset.cabangId);
         const raw = String(input.value ?? "").trim();
-        input.classList.remove("is-saved","is-error");
+
+        input.classList.remove("is-saved", "is-error");
         input.classList.add("is-saving");
         input.disabled = true;
+
         try{
             if(raw === ""){
-                await BriMerchantDaily.remove({tanggal,cabangId});
+                await BriMerchantDaily.remove({ tanggal, cabangId });
             }else{
                 const value = Number(raw);
-                if(!Number.isFinite(value) || value < 0) throw new Error("Nominal BRI Merchant tidak valid.");
-                await BriMerchantDaily.save({tanggal,cabangId,value,userId});
+                if(!Number.isFinite(value) || value < 0){
+                    throw new Error("Nominal BRI Merchant harus 0 atau lebih.");
+                }
+                await BriMerchantDaily.save({ tanggal, cabangId, value, userId });
             }
             input.classList.add("is-saved");
-            setTimeout(()=>input.classList.remove("is-saved"),900);
-            document.dispatchEvent(new CustomEvent("erp:bri-merchant-daily-saved",{detail:{tanggal,cabangId}}));
+            setTimeout(() => input.classList.remove("is-saved"), 900);
+            document.dispatchEvent(new CustomEvent("erp:bri-merchant-daily-saved", {
+                detail: { tanggal, cabangId }
+            }));
         }catch(err){
             input.classList.add("is-error");
-            console.error("BRI Merchant Daily save gagal:",err);
+            console.error("BRI Merchant Daily save gagal:", err);
             alert(`BRI Merchant gagal disimpan: ${err?.message || err}`);
         }finally{
             input.classList.remove("is-saving");
@@ -194,46 +262,60 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
         }
     }
 
-    function bind(){
-        document.addEventListener("change", (e)=>{
+    function bindEvents(){
+        if(bound) return;
+        bound = true;
+
+        document.addEventListener("change", (e) => {
             const input = e.target.closest?.("#thcTable .thc-bri-daily-input");
             if(input) saveInput(input);
         });
-        document.addEventListener("keydown", (e)=>{
+
+        document.addEventListener("keydown", (e) => {
             const input = e.target.closest?.("#thcTable .thc-bri-daily-input");
             if(input && e.key === "Enter"){
                 e.preventDefault();
                 input.blur();
             }
         });
+
+        document.addEventListener("erp:components-ready", () => scheduleRefresh(0));
     }
 
-    function patchRender(){
-        if(patched || typeof TabelHarianCabang === "undefined" || typeof TabelHarianCabang.renderTable !== "function") return false;
-        patched = true;
-        const original = TabelHarianCabang.renderTable.bind(TabelHarianCabang);
-        TabelHarianCabang.renderTable = function(...args){
-            const out = original(...args);
-            queueMicrotask(()=>refresh());
-            return out;
-        };
-        return true;
+    function observeTable(){
+        const tbody = document.getElementById("thcTbody");
+        if(!tbody || observer) return;
+        observer = new MutationObserver(() => scheduleRefresh(10));
+        observer.observe(tbody, { childList: true });
     }
 
     async function boot(){
         ensureStyle();
-        bind();
+        bindEvents();
         await loadIdentity();
+
         let tries = 0;
-        const timer = setInterval(()=>{
+        const timer = setInterval(() => {
             tries += 1;
-            if(patchRender() || tries > 80){
+            observeTable();
+            ensureCells();
+            if(typeof TabelHarianCabang !== "undefined" && currentRows().length){
                 clearInterval(timer);
-                refresh();
+                scheduleRefresh(0);
+            }else if(tries >= 100){
+                clearInterval(timer);
             }
-        },50);
+        }, 50);
     }
 
-    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, {once:true});
-    else boot();
+    window.TabelHarianBriMerchant = {
+        refresh: () => refresh(),
+        ensureCells: () => ensureCells()
+    };
+
+    if(document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded", boot, { once: true });
+    }else{
+        boot();
+    }
 })();
