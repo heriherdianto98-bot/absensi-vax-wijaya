@@ -1,0 +1,36 @@
+/* Setoran 3 Harian — horizontal table scroll only.
+   UI-only override: keeps money/data logic untouched. */
+.s3sheet-table-wrap{
+  min-height:0;
+  overflow-x:auto !important;
+  overflow-y:hidden;
+  overscroll-behavior-x:contain;
+  scrollbar-gutter:stable;
+  -webkit-overflow-scrolling:touch;
+}
+
+.s3sheet-table{
+  width:max-content !important;
+  min-width:1540px;
+  height:100%;
+  table-layout:fixed;
+}
+
+/* Preserve readable column widths while allowing the whole worksheet to slide. */
+.s3sheet-table th:nth-child(1),.s3sheet-table td:nth-child(1){width:190px}
+.s3sheet-table th:nth-child(2),.s3sheet-table td:nth-child(2){width:150px}
+.s3sheet-table th:nth-child(3),.s3sheet-table td:nth-child(3){width:145px}
+.s3sheet-table th:nth-child(4),.s3sheet-table td:nth-child(4){width:115px}
+.s3sheet-table th:nth-child(5),.s3sheet-table td:nth-child(5){width:135px}
+.s3sheet-table th:nth-child(6),.s3sheet-table td:nth-child(6){width:135px}
+.s3sheet-table th:nth-child(7),.s3sheet-table td:nth-child(7){width:145px}
+.s3sheet-table th:nth-child(8),.s3sheet-table td:nth-child(8){width:130px}
+.s3sheet-table th:nth-child(9),.s3sheet-table td:nth-child(9){width:150px}
+.s3sheet-table th:nth-child(10),.s3sheet-table td:nth-child(10){width:90px}
+.s3sheet-table th:nth-child(11),.s3sheet-table td:nth-child(11){width:110px}
+.s3sheet-table th:nth-child(12),.s3sheet-table td:nth-child(12){width:75px}
+
+.s3sheet-table-wrap::-webkit-scrollbar{height:10px}
+.s3sheet-table-wrap::-webkit-scrollbar-track{background:rgba(255,255,255,.035)}
+.s3sheet-table-wrap::-webkit-scrollbar-thumb{background:rgba(216,165,59,.45);border-radius:999px}
+.s3sheet-table-wrap::-webkit-scrollbar-thumb:hover{background:rgba(216,165,59,.7)}
