@@ -21,27 +21,49 @@ Tidak mengubah data, formula, sync, atau source.
             #${TABLE_ID} tbody td:nth-child(2){
                 cursor:pointer;
             }
+
             #${TABLE_ID} tbody tr{
-                transition:background .16s ease, box-shadow .16s ease, filter .16s ease;
+                transition:filter .16s ease, opacity .16s ease;
             }
+
+            /*
+               Pulse ditempel ke TR (filter/brightness), bukan background TD.
+               Background beberapa cell Tabel Harian memakai !important,
+               sehingga animasi background sebelumnya tertimpa dan tidak terlihat.
+            */
+            #${TABLE_ID} tbody tr.thc-row-focus{
+                animation:thcRowFocusPulse 1.05s ease-in-out infinite !important;
+            }
+
             #${TABLE_ID} tbody tr.thc-row-focus > td{
-                animation:thcRowFocusPulse 1.05s ease-in-out infinite;
+                border-top:1px solid rgba(244,196,61,.75) !important;
+                border-bottom:1px solid rgba(244,196,61,.75) !important;
             }
+
             #${TABLE_ID} tbody tr.thc-row-focus > td:first-child{
                 box-shadow:inset 4px 0 0 #f4c43d !important;
             }
+
             #${TABLE_ID} tbody tr.thc-row-focus > td:nth-child(1),
             #${TABLE_ID} tbody tr.thc-row-focus > td:nth-child(2){
                 background:#27271f !important;
             }
+
             @keyframes thcRowFocusPulse{
-                0%,100%{background:rgba(244,196,61,.055)}
-                50%{background:rgba(244,196,61,.20)}
+                0%,100%{
+                    filter:brightness(1) saturate(1);
+                    opacity:1;
+                }
+                50%{
+                    filter:brightness(1.38) saturate(1.35);
+                    opacity:.86;
+                }
             }
+
             @media (prefers-reduced-motion: reduce){
-                #${TABLE_ID} tbody tr.thc-row-focus > td{
-                    animation:none;
-                    background:rgba(244,196,61,.16);
+                #${TABLE_ID} tbody tr.thc-row-focus{
+                    animation:none !important;
+                    filter:brightness(1.18) saturate(1.15);
                 }
             }
         `;
