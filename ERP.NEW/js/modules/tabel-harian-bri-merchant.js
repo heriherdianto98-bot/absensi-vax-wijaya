@@ -16,12 +16,14 @@ PENTING:
 
 (function(){
     const STYLE_ID = "thcBriDailyStyle";
+    const MODAL_ID = "thcBriDailyModal";
     let role = "";
     let userId = null;
     let loadSeq = 0;
     let refreshTimer = null;
     let observer = null;
     let bound = false;
+    let activeMeta = null;
 
     function ensureStyle(){
         if(document.getElementById(STYLE_ID)) return;
@@ -30,8 +32,9 @@ PENTING:
         s.textContent = `
             #thcTable th.thc-bri-daily-head,
             #thcTable td.thc-bri-daily-cell{
-                min-width:152px;
-                width:152px;
+                min-width:108px;
+                width:108px;
+                max-width:108px;
                 text-align:right;
             }
             #thcTable th.thc-bri-daily-head{
@@ -41,58 +44,76 @@ PENTING:
             }
             #thcTable td.thc-bri-daily-cell{
                 background:#151d27;
-                padding:5px 6px;
+                padding:5px 7px;
             }
-            #thcTable .thc-bri-wrap{
-                display:flex;
-                flex-direction:column;
-                align-items:stretch;
-                gap:4px;
-            }
-            #thcTable .thc-bri-daily-input{
+            #thcTable .thc-bri-cell-btn{
                 width:100%;
-                box-sizing:border-box;
-                border:1px solid rgba(190,120,255,.42);
+                border:1px solid rgba(190,120,255,.28);
                 border-radius:7px;
-                background:#101821;
-                color:#f2d7ff;
-                font:700 12.5px/1.1 "Source Sans 3",sans-serif;
-                text-align:right;
-                padding:6px 8px;
-                outline:none;
-            }
-            #thcTable .thc-bri-daily-input[readonly]{
-                cursor:default;
                 background:#111923;
                 color:#e9d8f4;
-            }
-            #thcTable .thc-bri-daily-input:focus{
-                border-color:#d28cff;
-                box-shadow:0 0 0 2px rgba(210,140,255,.14);
-            }
-            #thcTable .thc-bri-actions{
-                display:grid;
-                grid-template-columns:repeat(3,minmax(0,1fr));
-                gap:3px;
-            }
-            #thcTable .thc-bri-btn{
-                border:1px solid rgba(255,255,255,.12);
-                border-radius:6px;
-                background:#18222d;
-                color:#cbd5df;
-                font:700 9.5px/1 "Source Sans 3",sans-serif;
-                padding:5px 2px;
+                font:700 12.5px/1.1 "Source Sans 3",sans-serif;
+                text-align:right;
+                padding:7px 8px;
                 cursor:pointer;
+                white-space:nowrap;
             }
-            #thcTable .thc-bri-btn[data-action="save"]{color:#70e6b5;border-color:rgba(112,230,181,.35)}
-            #thcTable .thc-bri-btn[data-action="edit"]{color:#f0cf68;border-color:rgba(240,207,104,.35)}
-            #thcTable .thc-bri-btn[data-action="delete"]{color:#ff8a91;border-color:rgba(255,138,145,.35)}
-            #thcTable .thc-bri-btn:disabled{opacity:.32;cursor:not-allowed}
-            #thcTable .thc-bri-daily-input.is-saving{opacity:.55}
-            #thcTable .thc-bri-daily-input.is-saved{border-color:rgba(76,226,180,.9)}
-            #thcTable .thc-bri-daily-input.is-error{border-color:#ff5c66;color:#ff8f96}
+            #thcTable .thc-bri-cell-btn:hover,
+            #thcTable .thc-bri-cell-btn:focus{
+                border-color:#d28cff;
+                box-shadow:0 0 0 2px rgba(210,140,255,.10);
+                outline:none;
+            }
+            #thcTable .thc-bri-cell-btn.is-empty{color:#8290a3;font-weight:700}
+
+            .thc-bri-modal[hidden]{display:none!important}
+            .thc-bri-modal{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px}
+            .thc-bri-modal-backdrop{position:absolute;inset:0;background:rgba(2,7,12,.78);backdrop-filter:blur(5px)}
+            .thc-bri-modal-panel{position:relative;width:min(430px,calc(100vw - 32px));border:1px solid rgba(210,140,255,.35);border-radius:16px;background:#0f1721;box-shadow:0 24px 70px rgba(0,0,0,.5);overflow:hidden}
+            .thc-bri-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+            .thc-bri-modal-head h3{margin:0;color:#e6b8ff;font:800 20px/1.15 "Source Sans 3",sans-serif}
+            .thc-bri-modal-head p{margin:5px 0 0;color:#91a0b1;font:600 12px/1.3 "Source Sans 3",sans-serif}
+            .thc-bri-modal-x{width:36px;height:36px;border:1px solid rgba(255,255,255,.10);border-radius:10px;background:#172231;color:#fff;font-size:20px;cursor:pointer}
+            .thc-bri-modal-body{padding:20px}
+            .thc-bri-modal-label{display:block;margin-bottom:8px;color:#aeb9c7;font:700 12px/1 "Source Sans 3",sans-serif;text-transform:uppercase;letter-spacing:.08em}
+            .thc-bri-modal-input{width:100%;box-sizing:border-box;border:1px solid rgba(190,120,255,.42);border-radius:10px;background:#101821;color:#f2d7ff;font:800 22px/1.1 "Source Sans 3",sans-serif;text-align:right;padding:13px 14px;outline:none}
+            .thc-bri-modal-input:focus{border-color:#d28cff;box-shadow:0 0 0 3px rgba(210,140,255,.12)}
+            .thc-bri-modal-input[readonly]{cursor:default;color:#e9d8f4;background:#111923}
+            .thc-bri-modal-input.is-error{border-color:#ff5c66;color:#ff8f96}
+            .thc-bri-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+            .thc-bri-modal-btn{min-width:88px;border:1px solid rgba(255,255,255,.12);border-radius:9px;background:#18222d;color:#d8e0e8;font:800 12px/1 "Source Sans 3",sans-serif;padding:10px 14px;cursor:pointer}
+            .thc-bri-modal-btn[data-action="edit"]{color:#f0cf68;border-color:rgba(240,207,104,.35)}
+            .thc-bri-modal-btn[data-action="save"]{color:#70e6b5;border-color:rgba(112,230,181,.35)}
+            .thc-bri-modal-btn[data-action="delete"]{color:#ff8a91;border-color:rgba(255,138,145,.35)}
+            .thc-bri-modal-btn:disabled{opacity:.35;cursor:not-allowed}
         `;
         document.head.appendChild(s);
+    }
+
+    function ensureModal(){
+        if(document.getElementById(MODAL_ID)) return;
+        const modal = document.createElement("div");
+        modal.id = MODAL_ID;
+        modal.className = "thc-bri-modal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="thc-bri-modal-backdrop" data-bri-close></div>
+          <div class="thc-bri-modal-panel" role="dialog" aria-modal="true" aria-labelledby="thcBriModalTitle">
+            <div class="thc-bri-modal-head">
+              <div><h3 id="thcBriModalTitle">BRI Merchant</h3><p id="thcBriModalMeta">—</p></div>
+              <button type="button" class="thc-bri-modal-x" data-bri-close aria-label="Tutup">×</button>
+            </div>
+            <div class="thc-bri-modal-body">
+              <label class="thc-bri-modal-label" for="thcBriModalInput">Nominal BRI Merchant</label>
+              <input id="thcBriModalInput" class="thc-bri-modal-input" type="text" inputmode="numeric" autocomplete="off" placeholder="Rp 0">
+              <div class="thc-bri-modal-actions">
+                <button type="button" class="thc-bri-modal-btn" data-action="edit">Edit</button>
+                <button type="button" class="thc-bri-modal-btn" data-action="save">Simpan</button>
+                <button type="button" class="thc-bri-modal-btn" data-action="delete">Hapus</button>
+              </div>
+            </div>
+          </div>`;
+        document.body.appendChild(modal);
     }
 
     async function loadIdentity(){
@@ -103,148 +124,136 @@ PENTING:
             const { data, error } = await db.from("profiles").select("role,aktif").eq("id", userId).maybeSingle();
             if(error) throw error;
             if(data?.aktif !== false) role = String(data?.role || "").trim().toLowerCase();
-        }catch(err){
-            role = "";
-            console.warn("BRI Merchant identity tidak terbaca:", err);
-        }
+        }catch(err){ role = ""; console.warn("BRI Merchant identity tidak terbaca:", err); }
     }
 
     function canEdit(){ return role === "owner" || role === "svp" || role === "spv"; }
     function currentRows(){ return (typeof TabelHarianCabang !== "undefined" && Array.isArray(TabelHarianCabang.rows)) ? TabelHarianCabang.rows : []; }
-    function parseAmount(raw){
-        const cleaned = String(raw ?? "").replace(/[^0-9]/g, "");
-        if(cleaned === "") return null;
-        const n = Number(cleaned);
-        return Number.isFinite(n) ? n : NaN;
-    }
-    function formatAmount(value){
-        const n = Number(value);
-        if(!Number.isFinite(n)) return "";
-        return `Rp ${new Intl.NumberFormat("id-ID", {maximumFractionDigits:0}).format(n)}`;
-    }
-    function getBounds(rows){
-        const dates = rows.map(r=>String(r?.tanggal||"").slice(0,10)).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
-        return dates.length ? {start:dates[0],end:dates[dates.length-1]} : null;
-    }
-    function findHeaderIndex(table,label){
-        const wanted=String(label||"").trim().toUpperCase();
-        return [...table.querySelectorAll("thead th")].findIndex(th=>String(th.textContent||"").trim().toUpperCase()===wanted);
-    }
-    function ensureHeader(table){
-        const row=table.querySelector("thead tr"); if(!row) return -1;
-        const existing=row.querySelector("th.thc-bri-daily-head");
-        if(existing) return [...row.children].indexOf(existing);
-        const nonIdx=findHeaderIndex(table,"NON TUNAI"); if(nonIdx<0) return -1;
-        const th=document.createElement("th"); th.className="thc-bri-daily-head"; th.scope="col"; th.textContent="BRI MERCHANT";
-        row.children[nonIdx].insertAdjacentElement("afterend",th);
-        return [...row.children].indexOf(th);
-    }
+    function parseAmount(raw){ const cleaned=String(raw??"").replace(/[^0-9]/g,""); if(cleaned==="") return null; const n=Number(cleaned); return Number.isFinite(n)?n:NaN; }
+    function formatAmount(value){ const n=Number(value); if(!Number.isFinite(n)) return "Rp 0"; return `Rp ${new Intl.NumberFormat("id-ID",{maximumFractionDigits:0}).format(n)}`; }
+    function getBounds(rows){ const dates=rows.map(r=>String(r?.tanggal||"").slice(0,10)).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)).sort(); return dates.length?{start:dates[0],end:dates[dates.length-1]}:null; }
+    function findHeaderIndex(table,label){ const wanted=String(label||"").trim().toUpperCase(); return [...table.querySelectorAll("thead th")].findIndex(th=>String(th.textContent||"").trim().toUpperCase()===wanted); }
+    function ensureHeader(table){ const row=table.querySelector("thead tr"); if(!row)return-1; const existing=row.querySelector("th.thc-bri-daily-head"); if(existing)return[...row.children].indexOf(existing); const nonIdx=findHeaderIndex(table,"NON TUNAI"); if(nonIdx<0)return-1; const th=document.createElement("th"); th.className="thc-bri-daily-head"; th.scope="col"; th.textContent="BRI MERCHANT"; row.children[nonIdx].insertAdjacentElement("afterend",th); return[...row.children].indexOf(th); }
 
-    function makeCell(meta,saved){
-        const wrap=document.createElement("div"); wrap.className="thc-bri-wrap";
-        const input=document.createElement("input");
-        input.type="text"; input.inputMode="numeric"; input.autocomplete="off"; input.className="thc-bri-daily-input";
-        input.placeholder="Rp 0"; input.dataset.tanggal=String(meta.tanggal||"").slice(0,10); input.dataset.cabangId=String(Number(meta.cabang_id));
-        const hasSaved=!!saved; input.dataset.saved=hasSaved?"1":"0"; input.value=hasSaved?formatAmount(saved.bri_non_cash_actual):"";
-        input.readOnly=hasSaved || !canEdit();
-        const actions=document.createElement("div"); actions.className="thc-bri-actions";
-        actions.innerHTML='<button type="button" class="thc-bri-btn" data-action="edit">Edit</button><button type="button" class="thc-bri-btn" data-action="save">Simpan</button><button type="button" class="thc-bri-btn" data-action="delete">Hapus</button>';
-        wrap.append(input,actions); syncButtons(wrap);
-        return wrap;
-    }
-
-    function syncButtons(wrap){
-        const input=wrap?.querySelector(".thc-bri-daily-input"); if(!input) return;
-        const saved=input.dataset.saved==="1"; const editable=canEdit(); const editing=!input.readOnly;
-        const edit=wrap.querySelector('[data-action="edit"]'); const save=wrap.querySelector('[data-action="save"]'); const del=wrap.querySelector('[data-action="delete"]');
-        if(edit) edit.disabled=!editable || !saved || editing;
-        if(save) save.disabled=!editable || !editing;
-        if(del) del.disabled=!editable || !saved;
+    function makeCellButton(meta,saved){
+        const btn=document.createElement("button");
+        btn.type="button";
+        btn.className=`thc-bri-cell-btn${saved?"":" is-empty"}`;
+        btn.dataset.tanggal=String(meta.tanggal||"").slice(0,10);
+        btn.dataset.cabangId=String(Number(meta.cabang_id));
+        btn.dataset.cabangName=String(meta.cabang_name||"");
+        btn.textContent=saved?formatAmount(saved.bri_non_cash_actual):"Rp 0";
+        btn.title="Klik untuk input / edit BRI Merchant";
+        return btn;
     }
 
     function ensureCells(){
         const table=document.getElementById("thcTable"),tbody=document.getElementById("thcTbody"),rows=currentRows();
-        if(!table||!tbody||!rows.length) return false;
-        if(ensureHeader(table)<0) return false;
-        const trs=[...tbody.querySelectorAll("tr")]; if(!trs.length) return false;
+        if(!table||!tbody||!rows.length)return false;
+        if(ensureHeader(table)<0)return false;
+        const trs=[...tbody.querySelectorAll("tr")]; if(!trs.length)return false;
         trs.forEach((tr,i)=>{
-            const meta=rows[i]; if(!meta) return;
-            tr.dataset.tanggal=tr.dataset.tanggal||String(meta.tanggal||"").slice(0,10); tr.dataset.cabangId=String(Number(meta.cabang_id));
+            const meta=rows[i]; if(!meta)return;
+            tr.dataset.tanggal=tr.dataset.tanggal||String(meta.tanggal||"").slice(0,10);
+            tr.dataset.cabangId=String(Number(meta.cabang_id));
             let td=tr.querySelector("td.thc-bri-daily-cell");
-            if(!td){ const nonIdx=findHeaderIndex(table,"NON TUNAI"),nonCell=tr.children[nonIdx]; if(!nonCell) return; td=document.createElement("td"); td.className="thc-bri-daily-cell"; nonCell.insertAdjacentElement("afterend",td); }
+            if(!td){ const nonIdx=findHeaderIndex(table,"NON TUNAI"),nonCell=tr.children[nonIdx]; if(!nonCell)return; td=document.createElement("td"); td.className="thc-bri-daily-cell"; nonCell.insertAdjacentElement("afterend",td); }
             const saved=BriMerchantDaily.get(meta.tanggal,meta.cabang_id);
-            let input=td.querySelector(".thc-bri-daily-input");
-            if(!input){ td.replaceChildren(makeCell(meta,saved)); return; }
-            input.dataset.tanggal=String(meta.tanggal||"").slice(0,10); input.dataset.cabangId=String(Number(meta.cabang_id));
-            if(document.activeElement!==input){ input.dataset.saved=saved?"1":"0"; input.value=saved?formatAmount(saved.bri_non_cash_actual):""; input.readOnly=!!saved || !canEdit(); syncButtons(td.querySelector(".thc-bri-wrap")); }
+            td.replaceChildren(makeCellButton(meta,saved));
         });
         return true;
     }
 
     async function refresh(){
         const rows=currentRows(); if(!rows.length){ensureCells();return;}
-        const bounds=getBounds(rows); if(!bounds) return;
+        const bounds=getBounds(rows); if(!bounds)return;
         const ids=[...new Set(rows.map(r=>Number(r.cabang_id)).filter(Number.isFinite))],seq=++loadSeq;
         try{ await BriMerchantDaily.loadRange({start:bounds.start,end:bounds.end,cabangIds:ids}); if(seq!==loadSeq)return; ensureCells(); }
         catch(err){ console.error("BRI Merchant Daily load gagal:",err); ensureCells(); }
     }
     function scheduleRefresh(delay=20){ clearTimeout(refreshTimer); refreshTimer=setTimeout(()=>refresh(),delay); }
 
-    async function saveCell(wrap){
-        if(!canEdit()) return;
-        const input=wrap.querySelector(".thc-bri-daily-input"); if(!input) return;
-        const tanggal=String(input.dataset.tanggal||"").slice(0,10),cabangId=Number(input.dataset.cabangId),value=parseAmount(input.value);
-        if(value===null || !Number.isFinite(value) || value<0){ input.classList.add("is-error"); return; }
-        input.classList.remove("is-error","is-saved"); input.classList.add("is-saving");
-        try{
-            await BriMerchantDaily.save({tanggal,cabangId,value,userId});
-            input.dataset.saved="1"; input.value=formatAmount(value); input.readOnly=true; input.classList.add("is-saved");
-            setTimeout(()=>input.classList.remove("is-saved"),900); syncButtons(wrap);
-            document.dispatchEvent(new CustomEvent("erp:bri-merchant-daily-saved",{detail:{tanggal,cabangId}}));
-        }catch(err){ input.classList.add("is-error"); alert(`BRI Merchant gagal disimpan: ${err?.message||err}`); }
-        finally{ input.classList.remove("is-saving"); }
+    function modalEls(){
+        const modal=document.getElementById(MODAL_ID);
+        return {modal,input:modal?.querySelector("#thcBriModalInput"),meta:modal?.querySelector("#thcBriModalMeta"),edit:modal?.querySelector('[data-action="edit"]'),save:modal?.querySelector('[data-action="save"]'),del:modal?.querySelector('[data-action="delete"]')};
     }
 
-    async function deleteCell(wrap){
-        if(!canEdit()) return;
-        const input=wrap.querySelector(".thc-bri-daily-input"); if(!input) return;
-        const tanggal=String(input.dataset.tanggal||"").slice(0,10),cabangId=Number(input.dataset.cabangId);
+    function syncModal(){
+        const {input,edit,save,del}=modalEls(); if(!input||!activeMeta)return;
+        const saved=BriMerchantDaily.get(activeMeta.tanggal,activeMeta.cabangId);
+        const hasSaved=!!saved;
+        const editable=canEdit();
+        if(edit)edit.disabled=!editable||!hasSaved||!input.readOnly;
+        if(save)save.disabled=!editable||input.readOnly;
+        if(del)del.disabled=!editable||!hasSaved;
+    }
+
+    function openModal(btn){
+        ensureModal();
+        const tanggal=String(btn.dataset.tanggal||"").slice(0,10),cabangId=Number(btn.dataset.cabangId),cabangName=String(btn.dataset.cabangName||"");
+        activeMeta={tanggal,cabangId,cabangName};
+        const saved=BriMerchantDaily.get(tanggal,cabangId);
+        const {modal,input,meta}=modalEls(); if(!modal||!input)return;
+        if(meta)meta.textContent=`${cabangName||"Cabang"} · ${tanggal}`;
+        input.classList.remove("is-error");
+        input.value=saved?formatAmount(saved.bri_non_cash_actual):"";
+        input.readOnly=!!saved || !canEdit();
+        modal.hidden=false;
+        document.body.style.overflow="hidden";
+        syncModal();
+        if(!saved&&canEdit()){ requestAnimationFrame(()=>input.focus()); }
+    }
+
+    function closeModal(){ const {modal}=modalEls(); if(modal)modal.hidden=true; document.body.style.overflow=""; activeMeta=null; }
+
+    async function saveModal(){
+        if(!canEdit()||!activeMeta)return;
+        const {input}=modalEls(); if(!input)return;
+        const value=parseAmount(input.value);
+        if(value===null||!Number.isFinite(value)||value<0){ input.classList.add("is-error"); return; }
+        input.classList.remove("is-error");
         try{
-            await BriMerchantDaily.remove({tanggal,cabangId});
-            input.dataset.saved="0"; input.value=""; input.readOnly=false; syncButtons(wrap);
-            document.dispatchEvent(new CustomEvent("erp:bri-merchant-daily-saved",{detail:{tanggal,cabangId,deleted:true}}));
+            await BriMerchantDaily.save({tanggal:activeMeta.tanggal,cabangId:activeMeta.cabangId,value,userId});
+            input.value=formatAmount(value); input.readOnly=true; syncModal(); ensureCells();
+            document.dispatchEvent(new CustomEvent("erp:bri-merchant-daily-saved",{detail:{tanggal:activeMeta.tanggal,cabangId:activeMeta.cabangId}}));
+        }catch(err){ input.classList.add("is-error"); alert(`BRI Merchant gagal disimpan: ${err?.message||err}`); }
+    }
+
+    async function deleteModal(){
+        if(!canEdit()||!activeMeta)return;
+        try{
+            await BriMerchantDaily.remove({tanggal:activeMeta.tanggal,cabangId:activeMeta.cabangId});
+            const {input}=modalEls(); if(input){input.value="";input.readOnly=false;} syncModal(); ensureCells();
+            document.dispatchEvent(new CustomEvent("erp:bri-merchant-daily-saved",{detail:{tanggal:activeMeta.tanggal,cabangId:activeMeta.cabangId,deleted:true}}));
         }catch(err){ alert(`BRI Merchant gagal dihapus: ${err?.message||err}`); }
     }
 
     function bindEvents(){
-        if(bound) return; bound=true;
-        document.addEventListener("input",e=>{
-            const input=e.target.closest?.("#thcTable .thc-bri-daily-input"); if(!input||input.readOnly) return;
-            const n=parseAmount(input.value); input.value=n===null?"":formatAmount(n);
-        });
+        if(bound)return; bound=true;
         document.addEventListener("click",e=>{
-            const btn=e.target.closest?.("#thcTable .thc-bri-btn"); if(!btn) return;
-            const wrap=btn.closest(".thc-bri-wrap"),input=wrap?.querySelector(".thc-bri-daily-input"); if(!wrap||!input) return;
-            const action=btn.dataset.action;
-            if(action==="edit"){ input.readOnly=false; input.focus(); input.select(); syncButtons(wrap); }
-            else if(action==="save") saveCell(wrap);
-            else if(action==="delete") deleteCell(wrap);
+            const cellBtn=e.target.closest?.("#thcTable .thc-bri-cell-btn"); if(cellBtn){openModal(cellBtn);return;}
+            if(e.target.closest?.("[data-bri-close]")){closeModal();return;}
+            const actionBtn=e.target.closest?.(`#${MODAL_ID} [data-action]`); if(!actionBtn)return;
+            const {input}=modalEls();
+            if(actionBtn.dataset.action==="edit"&&input){input.readOnly=false;input.focus();input.select();syncModal();}
+            else if(actionBtn.dataset.action==="save")saveModal();
+            else if(actionBtn.dataset.action==="delete")deleteModal();
         });
+        document.addEventListener("input",e=>{ const input=e.target.closest?.(`#${MODAL_ID} .thc-bri-modal-input`); if(!input||input.readOnly)return; const n=parseAmount(input.value); input.value=n===null?"":formatAmount(n); });
         document.addEventListener("keydown",e=>{
-            const input=e.target.closest?.("#thcTable .thc-bri-daily-input"); if(input&&!input.readOnly&&e.key==="Enter"){ e.preventDefault(); saveCell(input.closest(".thc-bri-wrap")); }
+            const input=e.target.closest?.(`#${MODAL_ID} .thc-bri-modal-input`);
+            if(input&&!input.readOnly&&e.key==="Enter"){e.preventDefault();saveModal();}
+            if(e.key==="Escape"&&!document.getElementById(MODAL_ID)?.hidden)closeModal();
         });
         document.addEventListener("erp:components-ready",()=>scheduleRefresh(0));
     }
 
-    function observeTable(){
-        const tbody=document.getElementById("thcTbody"); if(!tbody||observer) return;
-        observer=new MutationObserver(()=>scheduleRefresh(10)); observer.observe(tbody,{childList:true});
-    }
+    function observeTable(){ const tbody=document.getElementById("thcTbody"); if(!tbody||observer)return; observer=new MutationObserver(()=>scheduleRefresh(10)); observer.observe(tbody,{childList:true}); }
     async function boot(){
-        ensureStyle(); bindEvents(); await loadIdentity();
-        let tries=0; const timer=setInterval(()=>{ tries+=1; observeTable(); ensureCells(); if(typeof TabelHarianCabang!=="undefined"&&currentRows().length){clearInterval(timer);scheduleRefresh(0);}else if(tries>=100)clearInterval(timer); },50);
+        ensureStyle(); ensureModal(); bindEvents(); await loadIdentity();
+        let tries=0; const timer=setInterval(()=>{tries+=1;observeTable();ensureCells();if(typeof TabelHarianCabang!=="undefined"&&currentRows().length){clearInterval(timer);scheduleRefresh(0);}else if(tries>=100)clearInterval(timer);},50);
     }
 
     window.TabelHarianBriMerchant={refresh:()=>refresh(),ensureCells:()=>ensureCells()};
-    if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot,{once:true}); else boot();
+    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
