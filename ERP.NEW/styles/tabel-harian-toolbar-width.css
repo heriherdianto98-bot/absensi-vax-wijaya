@@ -145,6 +145,19 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
 }
 
+/* Nama cabang dibuat lebih menonjol dan tidak putih. */
+.thc-page #thcTable tbody td:nth-child(2){
+    font-size:15px !important;
+    font-weight:800 !important;
+    color:#f4c43d !important;
+    letter-spacing:.01em;
+}
+
+.thc-page #thcTable tbody tr.thc-row-focus td:nth-child(2){
+    color:#ffe082 !important;
+    text-shadow:0 0 10px rgba(244,196,61,.20);
+}
+
 @media (max-width: 900px){
     .thc-page{
         --thc-freeze-sidebar-w: 0px;
