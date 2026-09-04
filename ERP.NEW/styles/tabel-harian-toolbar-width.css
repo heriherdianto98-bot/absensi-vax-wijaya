@@ -97,11 +97,12 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
 
 /*
    Freeze horizontal Tabel Harian — Tanggal + Cabang.
-   Dibuat di override terakhir supaya kolom tidak tertimpa kolom angka saat scroll horizontal.
-   UI ONLY, tidak menyentuh data/render/formula.
+   Karena horizontal scroll ada di level halaman, sticky left harus berhenti
+   di sisi kanan sidebar (bukan left:0 yang tertutup sidebar fixed).
 */
 @media screen{
     .thc-page{
+        --thc-freeze-sidebar-w: 212px;
         --thc-freeze-tanggal-w: 118px;
         --thc-freeze-cabang-w: 148px;
     }
@@ -109,7 +110,7 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     .thc-page #thcTable thead th:nth-child(1),
     .thc-page #thcTable tbody td:nth-child(1){
         position: sticky !important;
-        left: 0 !important;
+        left: var(--thc-freeze-sidebar-w) !important;
         width: var(--thc-freeze-tanggal-w) !important;
         min-width: var(--thc-freeze-tanggal-w) !important;
         max-width: var(--thc-freeze-tanggal-w) !important;
@@ -118,30 +119,35 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     .thc-page #thcTable thead th:nth-child(2),
     .thc-page #thcTable tbody td:nth-child(2){
         position: sticky !important;
-        left: var(--thc-freeze-tanggal-w) !important;
+        left: calc(var(--thc-freeze-sidebar-w) + var(--thc-freeze-tanggal-w)) !important;
         width: var(--thc-freeze-cabang-w) !important;
         min-width: var(--thc-freeze-cabang-w) !important;
         max-width: var(--thc-freeze-cabang-w) !important;
     }
 
-    /* Opaque layer: angka dari kolom kanan tidak boleh tembus/nabrak kolom freeze. */
     .thc-page #thcTable thead th:nth-child(1),
     .thc-page #thcTable thead th:nth-child(2){
-        z-index: 32 !important;
+        z-index: 72 !important;
         background: #11151B !important;
         background-clip: padding-box !important;
     }
 
     .thc-page #thcTable tbody td:nth-child(1),
     .thc-page #thcTable tbody td:nth-child(2){
-        z-index: 12 !important;
+        z-index: 52 !important;
         background: #1B222C !important;
         background-clip: padding-box !important;
     }
 
     .thc-page #thcTable thead th:nth-child(2),
     .thc-page #thcTable tbody td:nth-child(2){
-        box-shadow: 7px 0 12px -8px rgba(0,0,0,.95), 1px 0 0 rgba(212,175,55,.16) !important;
+        box-shadow: 8px 0 12px -8px rgba(0,0,0,.98), 1px 0 0 rgba(212,175,55,.20) !important;
+    }
+}
+
+@media (max-width: 900px){
+    .thc-page{
+        --thc-freeze-sidebar-w: 0px;
     }
 }
 
