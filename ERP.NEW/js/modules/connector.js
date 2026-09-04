@@ -21,7 +21,7 @@ const db = window.supabase.createClient(
     const path = String(window.location.pathname || "").toLowerCase();
     if(!path.endsWith("/tabel-harian-cabang.html")) return;
 
-    const PROTEKSI_ASSET_VERSION = "20260905-proteksi6";
+    const PROTEKSI_ASSET_VERSION = "20260905-proteksi7";
     const loadScript = (src) => new Promise((resolve, reject) => {
         const key = `${src}?v=${PROTEKSI_ASSET_VERSION}`;
         if(document.querySelector(`script[data-vax-src="${key}"]`)){
