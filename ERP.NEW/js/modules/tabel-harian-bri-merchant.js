@@ -30,8 +30,8 @@ PENTING:
         s.textContent = `
             #thcTable th.thc-bri-daily-head,
             #thcTable td.thc-bri-daily-cell{
-                min-width:145px;
-                width:145px;
+                min-width:118px;
+                width:118px;
                 text-align:right;
             }
             #thcTable th.thc-bri-daily-head{
@@ -41,10 +41,12 @@ PENTING:
             }
             #thcTable td.thc-bri-daily-cell{
                 background:#151d27;
+                padding-left:8px;
+                padding-right:8px;
             }
             #thcTable .thc-bri-daily-input{
-                width:120px;
-                min-width:120px;
+                width:96px;
+                min-width:96px;
                 box-sizing:border-box;
                 border:1px solid rgba(190,120,255,.42);
                 border-radius:8px;
@@ -114,7 +116,7 @@ PENTING:
         const row = table.querySelector("thead tr");
         if(!row) return -1;
 
-        let existing = row.querySelector("th.thc-bri-daily-head");
+        const existing = row.querySelector("th.thc-bri-daily-head");
         if(existing){
             return [...row.children].indexOf(existing);
         }
@@ -132,9 +134,7 @@ PENTING:
 
     function makeInput(meta, saved){
         const input = document.createElement("input");
-        input.type = "number";
-        input.step = "1000";
-        input.min = "0";
+        input.type = "text";
         input.inputMode = "numeric";
         input.autocomplete = "off";
         input.className = "thc-bri-daily-input";
@@ -144,7 +144,7 @@ PENTING:
         input.value = saved ? String(Number(saved.bri_non_cash_actual || 0)) : "";
         input.disabled = !canEdit();
         input.title = canEdit()
-            ? "Input manual BRI Merchant untuk tanggal + cabang ini"
+            ? "Input manual BRI Merchant. Enter/keluar kolom untuk simpan; kosongkan untuk hapus."
             : "Hanya Owner / SVP yang dapat mengubah BRI Merchant";
         return input;
     }
@@ -216,7 +216,6 @@ PENTING:
             ensureCells();
         }catch(err){
             console.error("BRI Merchant Daily load gagal:", err);
-            // UI kolom tetap wajib tampil walau query gagal.
             ensureCells();
         }
     }
@@ -224,6 +223,13 @@ PENTING:
     function scheduleRefresh(delay = 20){
         clearTimeout(refreshTimer);
         refreshTimer = setTimeout(() => refresh(), delay);
+    }
+
+    function parseAmount(raw){
+        const cleaned = String(raw ?? "").replace(/[^0-9]/g, "");
+        if(cleaned === "") return null;
+        const value = Number(cleaned);
+        return Number.isFinite(value) ? value : NaN;
     }
 
     async function saveInput(input){
@@ -238,14 +244,16 @@ PENTING:
         input.disabled = true;
 
         try{
-            if(raw === ""){
+            const value = parseAmount(raw);
+            if(value === null){
                 await BriMerchantDaily.remove({ tanggal, cabangId });
+                input.value = "";
             }else{
-                const value = Number(raw);
                 if(!Number.isFinite(value) || value < 0){
                     throw new Error("Nominal BRI Merchant harus 0 atau lebih.");
                 }
                 await BriMerchantDaily.save({ tanggal, cabangId, value, userId });
+                input.value = String(value);
             }
             input.classList.add("is-saved");
             setTimeout(() => input.classList.remove("is-saved"), 900);
@@ -265,6 +273,12 @@ PENTING:
     function bindEvents(){
         if(bound) return;
         bound = true;
+
+        document.addEventListener("input", (e) => {
+            const input = e.target.closest?.("#thcTable .thc-bri-daily-input");
+            if(!input) return;
+            input.value = String(input.value || "").replace(/[^0-9]/g, "");
+        });
 
         document.addEventListener("change", (e) => {
             const input = e.target.closest?.("#thcTable .thc-bri-daily-input");
