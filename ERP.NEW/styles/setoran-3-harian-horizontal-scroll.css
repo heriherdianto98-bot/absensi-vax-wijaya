@@ -30,6 +30,30 @@
 .s3sheet-table th:nth-child(11),.s3sheet-table td:nth-child(11){width:110px}
 .s3sheet-table th:nth-child(12),.s3sheet-table td:nth-child(12){width:75px}
 
+/* Freeze kolom Cabang saat geser horizontal. */
+.s3sheet-table th:first-child,
+.s3sheet-table td:first-child{
+  position:sticky;
+  left:0;
+  z-index:6;
+  background:#0d1722;
+  box-shadow:6px 0 12px rgba(0,0,0,.28), inset -1px 0 0 rgba(216,165,59,.18);
+}
+.s3sheet-table thead th:first-child{
+  z-index:9;
+  background:#121d28;
+}
+.s3sheet-table tbody tr:nth-child(even) td:first-child{
+  background:#0f1924;
+}
+.s3sheet-table tbody tr:hover td:first-child{
+  background:#14202c;
+}
+.s3sheet-table tbody tr.s3sheet-row-focus td:first-child,
+.s3sheet-table tbody tr.is-focused td:first-child{
+  background:#2a2718;
+}
+
 .s3sheet-table-wrap::-webkit-scrollbar{height:10px}
 .s3sheet-table-wrap::-webkit-scrollbar-track{background:rgba(255,255,255,.035)}
 .s3sheet-table-wrap::-webkit-scrollbar-thumb{background:rgba(216,165,59,.45);border-radius:999px}
