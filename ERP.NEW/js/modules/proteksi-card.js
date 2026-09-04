@@ -1,15 +1,15 @@
 /*
 =========================================================
-VAX ERP — PROTEKSI CARD BINDER + DRILLDOWN
+VAX ERP — PROTEKSI CARD BINDER + 2-LEVEL DRILLDOWN
 =========================================================
 UI consumer only.
 Canonical source: DailyDataEngine -> daily_recap_source.keterangan_cash_out
 Rule keyword: protek / proteksi / protect.
 
-Drilldown Owner:
-- Klik card Proteksi Capster membuka popup rincian.
-- Menampilkan tanggal, cabang, provider/capster, nominal.
-- Read-only, tidak mengubah Cash Out atau formula core.
+Owner flow:
+1. Klik card Proteksi Capster -> popup ringkas per cabang.
+2. Klik total proteksi cabang -> rincian tanggal, provider/capster, nominal.
+Read-only; tidak mengubah Cash Out atau formula core.
 =========================================================
 */
 "use strict";
@@ -32,6 +32,12 @@ Drilldown Owner:
         }).format(Number.isFinite(n) ? n : 0);
     }
 
+    function esc(value){
+        return String(value ?? "")
+            .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+            .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+
     function patchLegacyPresenter(){
         if(legacyPatched) return true;
         if(typeof TabelHarianShareCards === "undefined") return false;
@@ -42,7 +48,6 @@ Drilldown Owner:
                 .filter((item) => item.isProteksi && Number(item.nominal || 0) > 0)
                 .reduce((sum, item) => sum + Number(item.nominal || 0), 0);
         };
-
         legacyPatched = true;
         return true;
     }
@@ -52,7 +57,6 @@ Drilldown Owner:
         const start = DashboardEngine.lastRange?.start || null;
         const end = DashboardEngine.lastRange?.end || start;
         if(!start || !end) return null;
-
         const cabangId = typeof DashboardEngine.resolveCabangId === "function"
             ? DashboardEngine.resolveCabangId(DashboardEngine.lastCabangId)
             : null;
@@ -70,9 +74,9 @@ Drilldown Owner:
         card.setAttribute("role", "button");
         card.setAttribute("tabindex", "0");
         card.setAttribute("aria-label", "Buka rincian Proteksi Capster");
-        card.title = "Klik untuk lihat rincian Proteksi Capster per cabang dan provider";
+        card.title = "Klik untuk lihat total proteksi per cabang";
         const desc = card.querySelector(".thc-share-desc");
-        if(desc) desc.textContent = "Klik untuk lihat cabang, provider/capster, dan nominal proteksi";
+        if(desc) desc.textContent = "Klik untuk lihat total proteksi per cabang";
     }
 
     function providerFromRaw(raw){
@@ -90,14 +94,26 @@ Drilldown Owner:
             for(const item of (group.items || [])){
                 rows.push({
                     tanggal: group.tanggal || "—",
+                    cabangId: group.cabang_id ?? null,
                     cabang: group.nama_cabang || (group.cabang_id ? `Cabang #${group.cabang_id}` : "—"),
                     provider: providerFromRaw(item.raw),
-                    nominal: Number(item.nominal || 0),
-                    raw: item.raw || ""
+                    nominal: Number(item.nominal || 0)
                 });
             }
         }
-        return rows.sort((a,b) => String(a.tanggal).localeCompare(String(b.tanggal)) || String(a.cabang).localeCompare(String(b.cabang)));
+        return rows.sort((a,b) => String(a.cabang).localeCompare(String(b.cabang)) || String(a.tanggal).localeCompare(String(b.tanggal)));
+    }
+
+    function branchGroups(summary){
+        const map = new Map();
+        for(const row of flattenDetails(summary)){
+            const key = `${row.cabangId ?? "x"}|${row.cabang}`;
+            if(!map.has(key)) map.set(key, { key, cabang: row.cabang, total: 0, rows: [] });
+            const g = map.get(key);
+            g.total += row.nominal;
+            g.rows.push(row);
+        }
+        return [...map.values()].sort((a,b) => b.total - a.total || a.cabang.localeCompare(b.cabang));
     }
 
     function ensureModal(){
@@ -109,7 +125,7 @@ Drilldown Owner:
             #${MODAL_ID}[hidden]{display:none!important}
             #${MODAL_ID}{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px}
             #${MODAL_ID} .pc-backdrop{position:absolute;inset:0;background:rgba(2,6,12,.78);backdrop-filter:blur(3px)}
-            #${MODAL_ID} .pc-panel{position:relative;width:min(920px,96vw);max-height:82vh;overflow:hidden;border:1px solid rgba(245,158,11,.45);border-radius:16px;background:#0c131d;box-shadow:0 24px 80px rgba(0,0,0,.45);color:#eaf0f7}
+            #${MODAL_ID} .pc-panel{position:relative;width:min(820px,96vw);max-height:82vh;overflow:hidden;border:1px solid rgba(245,158,11,.45);border-radius:16px;background:#0c131d;box-shadow:0 24px 80px rgba(0,0,0,.45);color:#eaf0f7}
             #${MODAL_ID} .pc-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid rgba(245,158,11,.24)}
             #${MODAL_ID} .pc-head h3{margin:0;font-size:18px;color:#fdba74}
             #${MODAL_ID} .pc-head p{margin:3px 0 0;color:#9fb0c3;font-size:12px}
@@ -119,8 +135,10 @@ Drilldown Owner:
             #${MODAL_ID} .pc-wrap{max-height:58vh;overflow:auto}
             #${MODAL_ID} table{width:100%;border-collapse:collapse;font-size:13px}
             #${MODAL_ID} th{position:sticky;top:0;background:#111b27;color:#f7c65b;text-align:left;padding:11px 14px;border-bottom:1px solid #2b3948}
-            #${MODAL_ID} td{padding:11px 14px;border-bottom:1px solid #1c2936;vertical-align:top}
+            #${MODAL_ID} td{padding:11px 14px;border-bottom:1px solid #1c2936;vertical-align:middle}
             #${MODAL_ID} td:last-child,#${MODAL_ID} th:last-child{text-align:right;white-space:nowrap}
+            #${MODAL_ID} .pc-branch-btn{border:0;background:transparent;color:#fdba74;font:inherit;font-weight:800;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+            #${MODAL_ID} .pc-back{display:inline-flex;align-items:center;gap:7px;border:1px solid #344254;background:#172231;color:#dbe7f3;border-radius:9px;padding:7px 10px;cursor:pointer;margin:12px 14px 0}
             #${MODAL_ID} .pc-empty{padding:28px;text-align:center;color:#9fb0c3}
             #thcTotals .thc-tot-item.is-proteksi.is-link{cursor:pointer}
             #thcTotals .thc-tot-item.is-proteksi.is-link:hover{transform:translateY(-1px);filter:brightness(1.05)}
@@ -135,7 +153,7 @@ Drilldown Owner:
             <div class="pc-backdrop" data-pc-close></div>
             <section class="pc-panel" role="dialog" aria-modal="true" aria-labelledby="pcTitle">
                 <div class="pc-head">
-                    <div><h3 id="pcTitle">Rincian Proteksi Capster</h3><p id="pcPeriod">—</p></div>
+                    <div><h3 id="pcTitle">Proteksi Capster per Cabang</h3><p id="pcPeriod">—</p></div>
                     <button type="button" class="pc-close" data-pc-close aria-label="Tutup">×</button>
                 </div>
                 <div class="pc-total"><span>Total Proteksi</span><strong id="pcGrandTotal">Rp0</strong></div>
@@ -144,7 +162,10 @@ Drilldown Owner:
         document.body.appendChild(modal);
 
         modal.addEventListener("click", (e) => {
-            if(e.target.closest("[data-pc-close]")) closeModal();
+            if(e.target.closest("[data-pc-close]")) return closeModal();
+            const btn = e.target.closest("[data-pc-branch]");
+            if(btn) return renderBranchDetail(btn.dataset.pcBranch);
+            if(e.target.closest("[data-pc-back]")) return renderBranchSummary();
         });
         document.addEventListener("keydown", (e) => {
             if(e.key === "Escape" && !modal.hidden) closeModal();
@@ -152,18 +173,33 @@ Drilldown Owner:
         return modal;
     }
 
+    function renderBranchSummary(){
+        const modal = ensureModal();
+        const groups = branchGroups(lastSummary);
+        modal.querySelector("#pcTitle").textContent = "Proteksi Capster per Cabang";
+        const body = modal.querySelector("#pcBody");
+        if(!groups.length){
+            body.innerHTML = `<div class="pc-empty">Belum ada item proteksi pada periode aktif.</div>`;
+            return;
+        }
+        body.innerHTML = `<table><thead><tr><th>Cabang</th><th>Total Proteksi</th></tr></thead><tbody>${groups.map(g => `<tr><td>${esc(g.cabang)}</td><td><button type="button" class="pc-branch-btn" data-pc-branch="${esc(g.key)}">${rupiah(g.total)}</button></td></tr>`).join("")}</tbody></table>`;
+    }
+
+    function renderBranchDetail(key){
+        const modal = ensureModal();
+        const group = branchGroups(lastSummary).find(g => g.key === key);
+        if(!group) return renderBranchSummary();
+        modal.querySelector("#pcTitle").textContent = `Rincian ${group.cabang}`;
+        const body = modal.querySelector("#pcBody");
+        body.innerHTML = `<button type="button" class="pc-back" data-pc-back>← Kembali ke Cabang</button><table><thead><tr><th>Tanggal</th><th>Provider / Capster</th><th>Nominal</th></tr></thead><tbody>${group.rows.map(r => `<tr><td>${esc(r.tanggal)}</td><td>${esc(r.provider)}</td><td>${rupiah(r.nominal)}</td></tr>`).join("")}</tbody></table>`;
+    }
+
     function openModal(){
         const modal = ensureModal();
-        const rows = flattenDetails(lastSummary);
         const filter = activeFilter();
         modal.querySelector("#pcPeriod").textContent = filter ? `${filter.start} — ${filter.end}` : "Periode aktif";
         modal.querySelector("#pcGrandTotal").textContent = rupiah(lastSummary?.total || 0);
-        const body = modal.querySelector("#pcBody");
-        if(!rows.length){
-            body.innerHTML = `<div class="pc-empty">Belum ada item proteksi pada periode aktif.</div>`;
-        }else{
-            body.innerHTML = `<table><thead><tr><th>Tanggal</th><th>Cabang</th><th>Provider / Capster</th><th>Nominal</th></tr></thead><tbody>${rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.cabang}</td><td>${r.provider}</td><td>${rupiah(r.nominal)}</td></tr>`).join("")}</tbody></table>`;
-        }
+        renderBranchSummary();
         modal.hidden = false;
         modal.setAttribute("aria-hidden", "false");
         modal.querySelector(".pc-close")?.focus();
@@ -236,18 +272,14 @@ Drilldown Owner:
         });
 
         render();
-
         if(!subscribed){
             subscribed = true;
             DashboardEngine.subscribe((event) => {
                 if(event === "loaded" || event === "calculated") render();
             });
         }
-
         document.addEventListener("change", (e) => {
-            if(e.target?.id === "branchFilter" || e.target?.id === "periodFilter"){
-                setTimeout(render, 150);
-            }
+            if(e.target?.id === "branchFilter" || e.target?.id === "periodFilter") setTimeout(render, 150);
         });
     }
 
