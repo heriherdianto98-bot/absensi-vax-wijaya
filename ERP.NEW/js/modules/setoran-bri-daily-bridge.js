@@ -14,6 +14,25 @@ Fallback legacy: bila belum ada daily row, field lama setoran_3_harian tetap ber
 
 (function(){
     let patched = false;
+    let refreshedOnce = false;
+
+    function scheduleRefresh(flow){
+        if(refreshedOnce) return;
+        let tries = 0;
+        const timer = setInterval(async ()=>{
+            tries += 1;
+            if(refreshedOnce || tries > 40){
+                clearInterval(timer);
+                return;
+            }
+            if(flow?.dataset && Array.isArray(flow?.branches) && flow.branches.length){
+                refreshedOnce = true;
+                clearInterval(timer);
+                try{ await flow.reload(); }
+                catch(err){ console.error("Setoran BRI Daily bridge refresh gagal:",err); }
+            }
+        },100);
+    }
 
     function patch(){
         if(patched || typeof SetoranDirectFlow === "undefined" || typeof BriMerchantDaily === "undefined") return false;
@@ -72,6 +91,7 @@ Fallback legacy: bila belum ada daily row, field lama setoran_3_harian tetap ber
           }
         `;
         if(!document.getElementById(style.id)) document.head.appendChild(style);
+        scheduleRefresh(flow);
         return true;
     }
 
