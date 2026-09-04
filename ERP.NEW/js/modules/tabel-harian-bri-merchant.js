@@ -69,6 +69,12 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
         return role === "owner" || role === "svp" || role === "spv";
     }
 
+    function currentRows(){
+        return (typeof TabelHarianCabang !== "undefined" && Array.isArray(TabelHarianCabang.rows))
+            ? TabelHarianCabang.rows
+            : [];
+    }
+
     function bounds(rows){
         const dates = rows.map(r=>String(r?.tanggal||"").slice(0,10)).filter(Boolean).sort();
         return dates.length ? {start:dates[0], end:dates[dates.length-1]} : null;
@@ -114,7 +120,7 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
 
     function paintRows(){
         const table = document.getElementById("thcTable");
-        const rows = Array.isArray(window.TabelHarianCabang?.rows) ? window.TabelHarianCabang.rows : [];
+        const rows = currentRows();
         if(!table || !rows.length) return;
 
         const nonIdx = ensureColumn(table);
@@ -144,7 +150,7 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
     }
 
     async function refresh(){
-        const rows = Array.isArray(window.TabelHarianCabang?.rows) ? window.TabelHarianCabang.rows : [];
+        const rows = currentRows();
         if(!rows.length){ paintRows(); return; }
         const b = bounds(rows);
         if(!b) return;
@@ -203,7 +209,7 @@ Tidak mengubah DailyDataEngine / money formula / Minutes source.
     }
 
     function patchRender(){
-        if(patched || !window.TabelHarianCabang || typeof TabelHarianCabang.renderTable !== "function") return false;
+        if(patched || typeof TabelHarianCabang === "undefined" || typeof TabelHarianCabang.renderTable !== "function") return false;
         patched = true;
         const original = TabelHarianCabang.renderTable.bind(TabelHarianCabang);
         TabelHarianCabang.renderTable = function(...args){
