@@ -1,0 +1,21 @@
+/* Setoran 3 Harian — active row focus marker (UI only) */
+.s3sheet-table tbody tr.s3sheet-row-focus{
+  position:relative;
+  background:linear-gradient(90deg,rgba(216,165,59,.14),rgba(216,165,59,.045))!important;
+  box-shadow:inset 4px 0 0 #f0c45d,inset 0 1px 0 rgba(240,196,93,.38),inset 0 -1px 0 rgba(240,196,93,.25);
+  animation:s3RowFocusPulse 1.15s ease-in-out infinite;
+}
+.s3sheet-table tbody tr.s3sheet-row-focus td{
+  background:transparent!important;
+}
+.s3sheet-table tbody tr.s3sheet-row-focus .s3sheet-branch{
+  color:#ffe29a;
+  text-shadow:0 0 12px rgba(240,196,93,.24);
+}
+@keyframes s3RowFocusPulse{
+  0%,100%{filter:brightness(1);box-shadow:inset 4px 0 0 #f0c45d,inset 0 1px 0 rgba(240,196,93,.34),inset 0 -1px 0 rgba(240,196,93,.22)}
+  50%{filter:brightness(1.08);box-shadow:inset 4px 0 0 #ffd66b,inset 0 1px 0 rgba(255,214,107,.65),inset 0 -1px 0 rgba(255,214,107,.38),0 0 18px rgba(216,165,59,.10)}
+}
+@media (prefers-reduced-motion:reduce){
+  .s3sheet-table tbody tr.s3sheet-row-focus{animation:none}
+}
