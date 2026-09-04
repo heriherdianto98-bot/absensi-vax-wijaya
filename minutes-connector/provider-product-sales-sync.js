@@ -31,7 +31,12 @@ function resolveDate() {
       month: "short",
       year: "numeric"
     }).format(date);
-    return { db: value, recapDate: label };
+    const usDate = `${mo}/${d}/${y}`;
+    return {
+      db: value,
+      recapDate: label,
+      reportRange: `${usDate} - ${usDate}`
+    };
   };
 
   if (arg) return parse(arg);
@@ -46,7 +51,12 @@ function resolveDate() {
   return parse(`${get("year")}-${get("month")}-${get("day")}`);
 }
 
-const { db: activityDate, recapDate } = resolveDate();
+const {
+  db: activityDate,
+  recapDate,
+  reportRange
+} = resolveDate();
+
 console.log(`Provider Product Share Daily sync: ${activityDate}`);
 
 const { data: cabangs, error: cabErr } = await sb
@@ -76,41 +86,154 @@ function cariEmployee(providerName, cabangId) {
   return global.length === 1 ? global[0].id : null;
 }
 
-async function bacaProviderProductRecap(page) {
-  return page.evaluate(() => {
+async function bacaProviderProductReport(page) {
+  return page.evaluate(({ expectedRange, expectedPeriod }) => {
+    const clean = value => String(value || "")
+      .replace(/\u00a0/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const normalize = value => clean(value).toLowerCase();
+
     const parseNumber = value => {
       const raw = String(value || "").replace(/[^\d-]/g, "");
       return raw ? Number(raw) : 0;
     };
 
-    const hasil = [];
-    const anchors = [...document.querySelectorAll('a[href*="/providerreport/product/"]')];
+    const bodyText = clean(document.body?.innerText || "");
+    const titleOk = /provider sales report by product/i.test(bodyText);
+    const periodOk =
+      bodyText.includes(`Report Period ${expectedPeriod} - ${expectedPeriod}`) ||
+      bodyText.includes(expectedRange);
 
-    for (const a of anchors) {
-      const tr = a.closest("tr");
-      if (!tr) continue;
-
-      const cells = [...tr.querySelectorAll("td")].map(td => td.textContent.trim());
-      if (cells.length < 4) continue;
-
-      const href = a.getAttribute("href") || "";
-      const providerMinutesId = href.match(/\/providerreport\/product\/(\d+)\//i)?.[1] || null;
-      const providerName = (a.textContent || cells[0] || "").trim();
-      const qty = parseNumber(cells[1]);
-      const income = parseNumber(cells[2]);
-      const revenueShare = parseNumber(cells[3]);
-
-      if (!providerName || revenueShare <= 0) continue;
-      hasil.push({ providerName, providerMinutesId, qty, income, revenueShare, href });
+    if (!titleOk) {
+      return { ok: false, reason: "Halaman Provider Sales Report by Product tidak terbaca." };
     }
 
-    return hasil;
+    if (!periodOk) {
+      return {
+        ok: false,
+        reason: `Periode report tidak sesuai. Target ${expectedRange}.`
+      };
+    }
+
+    let headerShare = null;
+    const lines = String(document.body?.innerText || "")
+      .split(/\n+/)
+      .map(clean)
+      .filter(Boolean);
+
+    for (let i = 0; i < lines.length; i++) {
+      if (normalize(lines[i]) !== "total provider share") continue;
+      const candidate = lines[i + 1] || "";
+      if (/\d/.test(candidate)) {
+        headerShare = parseNumber(candidate);
+        break;
+      }
+    }
+
+    // Fallback untuk layout Minutes yang menaruh label+nilai di elemen yang sama.
+    if (headerShare == null) {
+      for (const el of document.querySelectorAll("li.sparks-info, ul#sparks li, h5")) {
+        const text = clean(el.textContent || "");
+        if (!/total provider share/i.test(text)) continue;
+        const m = text.match(/total provider share\s*(?:idr)?\s*([\d.,]+)/i);
+        if (m) {
+          headerShare = parseNumber(m[1]);
+          break;
+        }
+      }
+    }
+
+    if (headerShare == null) {
+      return { ok: false, reason: "TOTAL PROVIDER SHARE tidak terbaca." };
+    }
+
+    let reportTable = null;
+    let headerMap = null;
+
+    for (const table of document.querySelectorAll("table")) {
+      const headers = [...table.querySelectorAll("thead th")].map(th => normalize(th.textContent));
+      const idxProvider = headers.findIndex(h => h.includes("provider name"));
+      const idxTotal = headers.findIndex(h => h === "total" || h.includes("total"));
+      const idxRevenueShare = headers.findIndex(h => h.includes("revenue share"));
+      const idxIncome = headers.findIndex(h => h === "income" || h.includes("income"));
+
+      if (idxProvider < 0 || idxTotal < 0 || idxRevenueShare < 0 || idxIncome < 0) {
+        continue;
+      }
+
+      reportTable = table;
+      headerMap = { idxProvider, idxTotal, idxRevenueShare, idxIncome };
+      break;
+    }
+
+    if (!reportTable || !headerMap) {
+      if (headerShare === 0 && /no data available in table/i.test(bodyText)) {
+        return { ok: true, headerShare: 0, rows: [] };
+      }
+      return { ok: false, reason: "Tabel Provider Product tidak ditemukan." };
+    }
+
+    const rows = [];
+
+    for (const tr of reportTable.querySelectorAll("tbody tr")) {
+      const cells = [...tr.querySelectorAll("td")];
+      if (!cells.length) continue;
+
+      const providerCell = cells[headerMap.idxProvider];
+      const providerName = clean(providerCell?.textContent || "");
+      if (!providerName || /no data available/i.test(providerName)) continue;
+
+      const qty = parseNumber(cells[headerMap.idxTotal]?.textContent || "");
+      const revenueShare = parseNumber(cells[headerMap.idxRevenueShare]?.textContent || "");
+      const income = parseNumber(cells[headerMap.idxIncome]?.textContent || "");
+
+      const providerLink = providerCell?.querySelector('a[href*="/providerreport/product/"]');
+      const href = providerLink?.getAttribute("href") || "";
+      const providerMinutesId = href.match(/\/providerreport\/product\/(\d+)(?:\/|\?|$)/i)?.[1] || null;
+
+      if (revenueShare <= 0) continue;
+
+      rows.push({
+        providerName,
+        providerMinutesId,
+        qty,
+        income,
+        revenueShare,
+        href
+      });
+    }
+
+    const detailShare = rows.reduce(
+      (sum, row) => sum + Number(row.revenueShare || 0),
+      0
+    );
+
+    if (detailShare !== Number(headerShare || 0)) {
+      return {
+        ok: false,
+        reason: `INTEGRITY GAP: header share ${headerShare}, detail share ${detailShare}.`,
+        headerShare,
+        detailShare,
+        rows
+      };
+    }
+
+    return {
+      ok: true,
+      headerShare: Number(headerShare || 0),
+      rows
+    };
+  }, {
+    expectedRange: reportRange,
+    expectedPeriod: recapDate
   });
 }
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1500, height: 900 } });
-page.setDefaultTimeout(20000);
+page.setDefaultTimeout(25000);
 const hasil = [];
 
 try {
@@ -158,12 +281,28 @@ try {
         }, merchant)
       ]);
 
-      const recapUrl = `https://minutesapps.com/dashboard216a/report/recap/?date=${encodeURIComponent(recapDate)}`;
-      await page.goto(recapUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
-      await page.waitForTimeout(1200);
+      // SOURCE OF TRUTH Share Produk:
+      // gunakan report resmi Provider Sales Report by Product untuk SATU HARI,
+      // bukan tabel/anchor turunan Daily Recap. Ini mencegah row hilang/parsial.
+      const reportUrl =
+        `https://minutesapps.com/dashboard216a/providerreport/product` +
+        `?range=${encodeURIComponent(reportRange)}`;
 
-      const providerRows = await bacaProviderProductRecap(page);
+      await page.goto(reportUrl, {
+        waitUntil: "domcontentloaded",
+        timeout: 30000
+      });
+      await page.waitForTimeout(2500);
+
+      const report = await bacaProviderProductReport(page);
+      if (!report?.ok) {
+        throw new Error(report?.reason || "Provider Product Report gagal dibaca.");
+      }
+
+      const providerRows = report.rows || [];
+      const authoritativeShare = Number(report.headerShare || 0);
       const now = new Date().toISOString();
+
       const rowsToSave = providerRows.map(r => {
         const employeeId = cariEmployee(r.providerName, cabang.id);
         return {
@@ -190,7 +329,25 @@ try {
         0
       );
 
-      // Idempotent per tanggal+cabang. Source historis/snapshot lama tidak disentuh.
+      if (totalShareDetail !== authoritativeShare) {
+        throw new Error(
+          `INTEGRITY GAP ${cabang.nama_cabang}: Minutes header Rp${authoritativeShare.toLocaleString("id-ID")} != detail Rp${totalShareDetail.toLocaleString("id-ID")}. Tidak ada write.`
+        );
+      }
+
+      // Pastikan row canonical tersedia sebelum mengubah source detail.
+      const { data: recapRow, error: recapFindErr } = await sb
+        .from("daily_recap_source")
+        .select("id,share_produk")
+        .eq("tanggal", activityDate)
+        .eq("cabang_id", cabang.id)
+        .maybeSingle();
+      if (recapFindErr) throw recapFindErr;
+      if (!recapRow?.id) {
+        throw new Error(`daily_recap_source belum ada untuk ${activityDate}`);
+      }
+
+      // Idempotent per tanggal+cabang. Hanya source provider-product harian ini yang diganti.
       const { error: delErr } = await sb
         .from("product_sales_source")
         .delete()
@@ -205,35 +362,34 @@ try {
         if (insErr) throw insErr;
       }
 
-      // CANONICAL PROTECTION:
-      // share_produk pada daily_recap_source adalah source-of-truth harian.
-      // Presenter provider hanya RECONCILE, tidak boleh overwrite canonical.
-      const { data: recapRow, error: recapFindErr } = await sb
+      // AUTHORITATIVE CANONICAL WRITE:
+      // Minutes Provider Sales Report by Product adalah sumber resmi Share Produk.
+      // Setelah header == detail tervalidasi, sinkronkan daily_recap_source.share_produk.
+      // Nett Produk tidak ditulis di sini; DailyDataEngine tetap menghitung Produk - Share Produk.
+      const { error: recapUpdateErr } = await sb
         .from("daily_recap_source")
-        .select("id,share_produk")
-        .eq("tanggal", activityDate)
-        .eq("cabang_id", cabang.id)
-        .maybeSingle();
-      if (recapFindErr) throw recapFindErr;
-      if (!recapRow?.id) throw new Error(`daily_recap_source belum ada untuk ${activityDate}`);
+        .update({
+          share_produk: authoritativeShare,
+          updated_at: now
+        })
+        .eq("id", recapRow.id);
+      if (recapUpdateErr) throw recapUpdateErr;
 
-      const canonicalShare = Number(recapRow.share_produk || 0);
-      const selisih = canonicalShare - totalShareDetail;
-      const reconcileStatus = selisih === 0 ? "MATCH" : "GAP";
+      const beforeShare = Number(recapRow.share_produk || 0);
+      const delta = authoritativeShare - beforeShare;
 
       hasil.push({
         cabang: cabang.nama_cabang,
         status: "OK",
         rows: rowsToSave.length,
-        detail_share: totalShareDetail,
-        canonical_share: canonicalShare,
-        selisih,
-        reconcile: reconcileStatus
+        minutes_share: authoritativeShare,
+        before_share: beforeShare,
+        delta,
+        reconcile: "MATCH"
       });
 
-      const prefix = reconcileStatus === "MATCH" ? "✅" : "⚠️";
       console.log(
-        `${prefix} ${cabang.nama_cabang}: detail Rp${totalShareDetail.toLocaleString("id-ID")} / canonical Rp${canonicalShare.toLocaleString("id-ID")} / selisih Rp${selisih.toLocaleString("id-ID")} (${rowsToSave.length} row)`
+        `✅ ${cabang.nama_cabang}: Minutes Rp${authoritativeShare.toLocaleString("id-ID")} / detail Rp${totalShareDetail.toLocaleString("id-ID")} / ERP before Rp${beforeShare.toLocaleString("id-ID")} / delta Rp${delta.toLocaleString("id-ID")}`
       );
     } catch (error) {
       hasil.push({ cabang: cabang.nama_cabang, status: "ERROR", error: error.message });
