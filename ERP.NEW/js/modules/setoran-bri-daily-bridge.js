@@ -16,9 +16,9 @@ Fallback legacy: bila belum ada daily row, field lama setoran_3_harian tetap ber
     let patched = false;
 
     function patch(){
-        if(patched || !window.SetoranDirectFlow || !window.BriMerchantDaily) return false;
+        if(patched || typeof SetoranDirectFlow === "undefined" || typeof BriMerchantDaily === "undefined") return false;
         patched = true;
-        const flow = window.SetoranDirectFlow;
+        const flow = SetoranDirectFlow;
 
         const originalLoadSavedRows = flow.loadSavedRows.bind(flow);
         flow.loadSavedRows = async function(p){
