@@ -19,7 +19,7 @@ const db = window.supabase.createClient(
 /* Page-scoped helper autoload. Tidak menyentuh money engine / Minutes source. */
 (function(){
     const path = String(window.location.pathname || "").toLowerCase();
-    const ASSET_VERSION = "20260905-bri-daily3";
+    const ASSET_VERSION = "20260905-bri-daily4";
     const loadScript = (src) => new Promise((resolve, reject) => {
         const key = `${src}?v=${ASSET_VERSION}`;
         if(document.querySelector(`script[data-vax-src="${key}"]`)){
@@ -47,6 +47,17 @@ const db = window.supabase.createClient(
                 await loadScript("../js/modules/share-cukur-popup-ui.js");
                 await loadScript("../js/modules/share-cukur-provider-click-fix.js");
                 await loadScript("../js/modules/tabel-harian-row-focus.js");
+
+                // BRI Daily dipasang dengan fallback timer supaya pasti nempel
+                // walau event components-ready lewat terlalu cepat.
+                setTimeout(async () => {
+                    try{
+                        await loadScript("../js/modules/bri-merchant-daily.js");
+                        await loadScript("../js/modules/tabel-harian-bri-merchant.js");
+                    }catch(err){
+                        console.error("BRI Merchant Daily helper gagal dimuat:", err);
+                    }
+                }, 500);
                 return;
             }
 
@@ -58,17 +69,4 @@ const db = window.supabase.createClient(
             console.error("ERP helper autoload gagal:", err);
         }
     }, { once: true });
-
-    // Tabel Harian: tunggu core table benar-benar boot/render dulu.
-    // Ini menghindari race condition saat helper BRI dipasang terlalu awal.
-    if(path.endsWith("/tabel-harian-cabang.html")){
-        document.addEventListener("erp:components-ready", async () => {
-            try{
-                await loadScript("../js/modules/bri-merchant-daily.js");
-                await loadScript("../js/modules/tabel-harian-bri-merchant.js");
-            }catch(err){
-                console.error("BRI Merchant Daily helper gagal dimuat:", err);
-            }
-        }, { once: true });
-    }
 })();
