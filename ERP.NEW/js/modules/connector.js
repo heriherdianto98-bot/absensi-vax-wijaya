@@ -21,7 +21,7 @@ const db = window.supabase.createClient(
     const path = String(window.location.pathname || "").toLowerCase();
     if(!path.endsWith("/tabel-harian-cabang.html")) return;
 
-    const PROTEKSI_ASSET_VERSION = "20260905-proteksi9";
+    const PROTEKSI_ASSET_VERSION = "20260905-proteksi10";
     const loadScript = (src) => new Promise((resolve, reject) => {
         const key = `${src}?v=${PROTEKSI_ASSET_VERSION}`;
         if(document.querySelector(`script[data-vax-src="${key}"]`)){
@@ -47,6 +47,7 @@ const db = window.supabase.createClient(
             await loadScript("../js/modules/share-cukur-card.js");
             await loadScript("../js/modules/share-cukur-popup-ui.js");
             await loadScript("../js/modules/share-cukur-provider-click-fix.js");
+            await loadScript("../js/modules/tabel-harian-row-focus.js");
         }catch(err){
             console.error("Tabel Harian UI autoload gagal:", err);
         }
