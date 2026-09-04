@@ -154,7 +154,7 @@ async function bacaProviderProductReport(page) {
     let headerMap = null;
 
     for (const table of document.querySelectorAll("table")) {
-      const headers = [...table.querySelectorAll("thead th")].map(th => normalize(th.textContent));
+      const headers = [...table.querySelectorAll("thead th, thead td")].map(th => normalize(th.textContent));
       const idxProvider = headers.findIndex(h => h.includes("provider name"));
       const idxTotal = headers.findIndex(h => h === "total" || h.includes("total"));
       const idxRevenueShare = headers.findIndex(h => h.includes("revenue share"));
