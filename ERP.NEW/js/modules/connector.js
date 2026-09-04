@@ -16,14 +16,12 @@ const db = window.supabase.createClient(
     SUPABASE_KEY
 );
 
-/* Tabel Harian only: autoload canonical/read-only UI helpers without touching money logic. */
+/* Page-scoped helper autoload. Tidak menyentuh money engine / Minutes source. */
 (function(){
     const path = String(window.location.pathname || "").toLowerCase();
-    if(!path.endsWith("/tabel-harian-cabang.html")) return;
-
-    const PROTEKSI_ASSET_VERSION = "20260905-proteksi10";
+    const ASSET_VERSION = "20260905-bri-daily1";
     const loadScript = (src) => new Promise((resolve, reject) => {
-        const key = `${src}?v=${PROTEKSI_ASSET_VERSION}`;
+        const key = `${src}?v=${ASSET_VERSION}`;
         if(document.querySelector(`script[data-vax-src="${key}"]`)){
             resolve();
             return;
@@ -39,17 +37,27 @@ const db = window.supabase.createClient(
 
     window.addEventListener("DOMContentLoaded", async () => {
         try{
-            await loadScript("../js/modules/proteksi-engine.js");
-            await loadScript("../js/modules/proteksi-daily-bridge.js");
-            await loadScript("../js/modules/proteksi-card.js");
-            await loadScript("../js/modules/proteksi-card-click-hint.js");
-            await loadScript("../js/modules/tabel-harian-negative-values.js");
-            await loadScript("../js/modules/share-cukur-card.js");
-            await loadScript("../js/modules/share-cukur-popup-ui.js");
-            await loadScript("../js/modules/share-cukur-provider-click-fix.js");
-            await loadScript("../js/modules/tabel-harian-row-focus.js");
+            if(path.endsWith("/tabel-harian-cabang.html")){
+                await loadScript("../js/modules/proteksi-engine.js");
+                await loadScript("../js/modules/proteksi-daily-bridge.js");
+                await loadScript("../js/modules/proteksi-card.js");
+                await loadScript("../js/modules/proteksi-card-click-hint.js");
+                await loadScript("../js/modules/tabel-harian-negative-values.js");
+                await loadScript("../js/modules/share-cukur-card.js");
+                await loadScript("../js/modules/share-cukur-popup-ui.js");
+                await loadScript("../js/modules/share-cukur-provider-click-fix.js");
+                await loadScript("../js/modules/tabel-harian-row-focus.js");
+                await loadScript("../js/modules/bri-merchant-daily.js");
+                await loadScript("../js/modules/tabel-harian-bri-merchant.js");
+                return;
+            }
+
+            if(path.endsWith("/setoran-3-harian.html")){
+                await loadScript("../js/modules/bri-merchant-daily.js");
+                await loadScript("../js/modules/setoran-bri-daily-bridge.js");
+            }
         }catch(err){
-            console.error("Tabel Harian UI autoload gagal:", err);
+            console.error("ERP helper autoload gagal:", err);
         }
     }, { once: true });
 })();
