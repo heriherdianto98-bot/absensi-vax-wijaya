@@ -143,6 +143,18 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     .thc-page #thcTable tbody td:nth-child(2){
         box-shadow: 8px 0 12px -8px rgba(0,0,0,.98), 1px 0 0 rgba(212,175,55,.20) !important;
     }
+
+    /* UI only: Cash Out dibuat lebih compact. Selector mengikuti posisi
+       Cash Out yang selalu tepat setelah kolom BRI Merchant canonical. */
+    .thc-page #thcTable thead th.thc-bri-daily-head + th,
+    .thc-page #thcTable tbody td.thc-bri-daily-cell + td{
+        width: 112px !important;
+        min-width: 112px !important;
+        max-width: 112px !important;
+        box-sizing: border-box !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
 }
 
 /* Nama cabang dibuat lebih menonjol dan tidak putih. */
