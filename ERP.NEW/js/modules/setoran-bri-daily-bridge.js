@@ -6,33 +6,14 @@ Jika ada input BRI Merchant Daily pada periode aktif:
 - SUM per cabang untuk 1-3 hari
 - tampil sebagai BRI Merchant di Setoran 3 Harian
 - field periode menjadi read-only (hindari sumber ganda/bentrok)
-- saat Setoran disimpan/diambil, nilai periode hanya menjadi snapshot
-Fallback legacy: bila belum ada daily row, field lama setoran_3_harian tetap berlaku.
+Fallback legacy: bila BRI Daily belum tersedia / gagal dibaca,
+Setoran 3 Harian WAJIB tetap tampil dengan mekanisme lama.
 =========================================================
 */
 "use strict";
 
 (function(){
     let patched = false;
-    let refreshedOnce = false;
-
-    function scheduleRefresh(flow){
-        if(refreshedOnce) return;
-        let tries = 0;
-        const timer = setInterval(async ()=>{
-            tries += 1;
-            if(refreshedOnce || tries > 40){
-                clearInterval(timer);
-                return;
-            }
-            if(flow?.dataset && Array.isArray(flow?.branches) && flow.branches.length){
-                refreshedOnce = true;
-                clearInterval(timer);
-                try{ await flow.reload(); }
-                catch(err){ console.error("Setoran BRI Daily bridge refresh gagal:",err); }
-            }
-        },100);
-    }
 
     function patch(){
         if(patched || typeof SetoranDirectFlow === "undefined" || typeof BriMerchantDaily === "undefined") return false;
@@ -46,8 +27,10 @@ Fallback legacy: bila belum ada daily row, field lama setoran_3_harian tetap ber
             try{
                 await BriMerchantDaily.loadRange({start:p.start,end:p.end,cabangIds:ids});
             }catch(err){
-                console.error("Setoran BRI Daily bridge load gagal:",err);
-                throw err;
+                // FAIL-SAFE: BRI Daily tidak boleh membuat tabel Setoran hilang.
+                console.error("Setoran BRI Daily bridge load gagal; fallback legacy aktif:",err);
+                BriMerchantDaily.rows = [];
+                BriMerchantDaily.map = new Map();
             }
         };
 
@@ -91,7 +74,6 @@ Fallback legacy: bila belum ada daily row, field lama setoran_3_harian tetap ber
           }
         `;
         if(!document.getElementById(style.id)) document.head.appendChild(style);
-        scheduleRefresh(flow);
         return true;
     }
 
