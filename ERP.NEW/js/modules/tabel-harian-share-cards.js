@@ -157,6 +157,28 @@ const TabelHarianShareCards = {
             #thcTotals .thc-tot-item.is-proteksi > span,
             #thcTotals .thc-tot-item.is-proteksi > strong{ color:#fdba74; }
 
+            /* Bottom row: Avg Ticket + Share Produk + Share Cukur + Proteksi = tinggi identik card normal. */
+            #thcTotals .thc-tot-item.is-avgticket,
+            #thcTotals .thc-tot-item.is-share-produk,
+            #thcTotals .thc-tot-item.is-share-cukur,
+            #thcTotals .thc-tot-item.is-proteksi{
+                height:72px;
+                min-height:72px;
+                max-height:72px;
+                box-sizing:border-box;
+            }
+
+            #thcTotals .thc-tot-item.is-share-produk .thc-share-desc,
+            #thcTotals .thc-tot-item.is-share-cukur .thc-share-desc,
+            #thcTotals .thc-tot-item.is-proteksi .thc-share-desc{
+                margin-top:2px;
+                font-size:10px;
+                line-height:1.1;
+                white-space:nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+            }
+
             #thcTotals .thc-tot-item .thc-share-desc{
                 display:block;
                 margin-top:4px;
