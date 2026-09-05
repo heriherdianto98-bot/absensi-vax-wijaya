@@ -168,12 +168,17 @@ PENTING:
                 border-color:rgba(192,132,252,.58);
                 box-shadow:inset 3px 0 0 #a855f7,0 0 20px rgba(168,85,247,.08);
                 cursor:pointer;
+                height:72px;
+                min-height:72px;
+                max-height:72px;
+                box-sizing:border-box;
             }
             #thcTotals .thc-tot-item.is-bri-merchant > span,
             #thcTotals .thc-tot-item.is-bri-merchant > strong{color:#d8b4fe}
             #thcTotals .thc-tot-item.is-bri-merchant .bri-card-desc{
                 display:block;margin-top:4px;color:#aeb8c7;font-size:11px;line-height:1.25;
                 font-style:normal;font-weight:500;letter-spacing:0;text-transform:none;
+                white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
             }
             #thcTotals .thc-tot-item.is-bri-merchant .bri-card-hint{
                 position:absolute;top:10px;right:12px;display:inline-flex;align-items:center;gap:5px;
@@ -195,19 +200,11 @@ PENTING:
             #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item{grid-column:span 5}
             #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+5):nth-child(-n+9){grid-column:span 4}
 
-            /* Baris ke-4 (4 card paling bawah) harus setinggi card normal, tidak membesar karena teks detail. */
-            #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+14):nth-child(-n+17){
-                height:72px;
-                min-height:72px;
-                max-height:72px;
-                box-sizing:border-box;
-            }
-
             @media (max-width:1100px){
                 #thcTotals .thc-totals-grid.thc-grid-17{grid-template-columns:repeat(2,minmax(0,1fr))}
                 #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item,
                 #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+5):nth-child(-n+9){grid-column:span 1}
-                #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+14):nth-child(-n+17){
+                #thcTotals .thc-tot-item.is-bri-merchant{
                     height:auto;
                     min-height:72px;
                     max-height:none;
