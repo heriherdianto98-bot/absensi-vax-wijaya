@@ -193,6 +193,25 @@ PENTING:
                 outline:2px solid rgba(192,132,252,.78);outline-offset:2px;
             }
 
+            /* Penjelasan ringkas 3 card sumber omzet — UI only. */
+            #thcTotOmzet::after,
+            #thcTotGrossService::after,
+            #thcTotProduk::after{
+                display:block;
+                margin-top:3px;
+                color:#aeb8c7;
+                font-size:10px;
+                line-height:1.15;
+                font-weight:500;
+                letter-spacing:0;
+                white-space:nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+            }
+            #thcTotOmzet::after{content:"Total penjualan jasa + produk sebelum potongan";}
+            #thcTotGrossService::after{content:"Omzet jasa saja (Omzet / Gross − Product Terjual)";}
+            #thcTotProduk::after{content:"Total nilai penjualan produk pada periode aktif";}
+
             /* 17 card desktop: 4 + 5 + 4 + 4. */
             #thcTotals .thc-totals-grid.thc-grid-17{
                 grid-template-columns:repeat(20,minmax(0,1fr));
