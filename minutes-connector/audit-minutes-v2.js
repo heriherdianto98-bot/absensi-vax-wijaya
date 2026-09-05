@@ -4,344 +4,250 @@ import { createClient } from "@supabase/supabase-js";
 import { loadDailyDataEngine, readErpCanonical } from "./compare-erp-engine-v2.js";
 
 // ======================================================
-// VAX ERP — MINUTES AUDIT RUNNER V2 (READ ONLY)
-// Stage 1 coverage:
-// - TRANSACTION
-// - CUSTOMER
-// - SERVICES
-// - GROSS OMZET / Minutes "Gross Revenue"
-//
-// Canonical Gross Omzet:
-// Minutes #settlementrecap "Gross Revenue"
-// -> Supabase daily_recap_source: service + produk
-// -> ERP DailyDataEngine summary.omzet
+// VAX ERP — MINUTES AUDIT RUNNER V2 BULK (READ ONLY)
+// Satu kali buka Daily Recap per tanggal+cabang, lalu loop semua field.
+// Tidak mengubah Minutes, Supabase, DailyDataEngine, atau SetoranMoneyEngine.
 // ======================================================
 
 const email = process.env.MINUTES_EMAIL;
 const password = process.env.MINUTES_PASSWORD;
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
-
-if (!email || !password || !supabaseUrl || !supabaseServiceKey) {
-  throw new Error("Env Minutes/Supabase belum lengkap.");
-}
+if (!email || !password || !supabaseUrl || !supabaseServiceKey) throw new Error("Env Minutes/Supabase belum lengkap.");
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 const LOGIN_URL = "https://minutesapps.com/dashboard216a/user/login";
 const DASHBOARD_URL = "https://minutesapps.com/dashboard216a/";
 const DAILY_RECAP_URL = "https://minutesapps.com/dashboard216a/report/recap/";
 const HEADLESS = String(process.env.HEADLESS || "true").toLowerCase() !== "false";
-const ERP_DAILY_ENGINE_PATH = process.env.ERP_DAILY_ENGINE_PATH || "./daily-data-engine.audit.js";
+const ERP_DAILY_ENGINE_PATH = process.env.ERP_DAILY_ENGINE_PATH || "./daily-data-engine.audit-v2.js";
 
-function normalize(value = "") {
-  return String(value).trim().replace(/\s+/g, " ").toLowerCase();
-}
-
-function branchMatches(row, filter) {
-  const target = normalize(filter);
-  if (!target || target === "all") return true;
-  const candidates = [row?.nama_cabang, row?.nama_minutes, row?.kode_cabang]
-    .map(normalize)
-    .filter(Boolean);
-  return candidates.some((value) =>
-    value === target || value.includes(target) || target.includes(value)
-  );
-}
-
+const norm = (v = "") => String(v).trim().replace(/\s+/g, " ").toLowerCase();
+const num = (v) => Number(v || 0);
 function parseArgs(argv) {
   const out = {};
   for (let i = 0; i < argv.length; i++) {
-    const token = argv[i];
-    if (!token.startsWith("--")) continue;
-    const key = token.slice(2);
-    const value = argv[i + 1] && !argv[i + 1].startsWith("--") ? argv[++i] : "true";
-    out[key] = value;
+    if (!argv[i].startsWith("--")) continue;
+    const key = argv[i].slice(2);
+    out[key] = argv[i + 1] && !argv[i + 1].startsWith("--") ? argv[++i] : "true";
   }
   return out;
 }
-
 function formatDateMinutes(ymd) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(ymd || "")) throw new Error(`Tanggal tidak valid: ${ymd}`);
-  const [y, m, d] = ymd.split("-");
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const month = months[Number(m) - 1];
-  if (!month) throw new Error(`Bulan tidak valid: ${ymd}`);
-  return `${d} ${month} ${y}`;
+  const [y, m, d] = String(ymd || "").split("-");
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  if (!y || !months[Number(m)-1] || !d) throw new Error(`Tanggal tidak valid: ${ymd}`);
+  return `${d} ${months[Number(m)-1]} ${y}`;
 }
-
 function dateRange(start, end) {
-  const rows = [];
-  const cursor = new Date(`${start}T00:00:00Z`);
-  const last = new Date(`${end}T00:00:00Z`);
-  if (Number.isNaN(cursor.getTime()) || Number.isNaN(last.getTime()) || cursor > last) {
-    throw new Error("Range tanggal audit tidak valid.");
-  }
-  while (cursor <= last) {
-    rows.push(cursor.toISOString().slice(0, 10));
-    cursor.setUTCDate(cursor.getUTCDate() + 1);
-  }
+  const rows = [], cur = new Date(`${start}T00:00:00Z`), last = new Date(`${end}T00:00:00Z`);
+  if (Number.isNaN(cur.getTime()) || Number.isNaN(last.getTime()) || cur > last) throw new Error("Range tanggal audit tidak valid.");
+  while (cur <= last) { rows.push(cur.toISOString().slice(0,10)); cur.setUTCDate(cur.getUTCDate()+1); }
   return rows;
 }
-
-async function fetchBranches(branchFilter) {
-  const { data, error } = await supabase
-    .from("cabang")
+function branchMatches(row, filter) {
+  const target = norm(filter);
+  if (!target || target === "all") return true;
+  return [row?.nama_cabang,row?.nama_minutes,row?.kode_cabang].map(norm).filter(Boolean)
+    .some(v => v === target || v.includes(target) || target.includes(v));
+}
+async function fetchBranches(filter) {
+  const { data, error } = await supabase.from("cabang")
     .select("id,kode_cabang,nama_cabang,nama_minutes,urutan,aktif")
-    .eq("aktif", true)
-    .not("nama_minutes", "is", null)
-    .order("urutan", { ascending: true });
+    .eq("aktif", true).not("nama_minutes", "is", null).order("urutan", { ascending:true });
   if (error) throw error;
-
-  let rows = (data || []).filter((row) => row.id && row.nama_cabang && row.nama_minutes);
-  if (branchFilter && normalize(branchFilter) !== "all") {
-    rows = rows.filter((row) => branchMatches(row, branchFilter));
-    if (!rows.length) throw new Error(`Cabang tidak ditemukan: ${branchFilter}`);
-  }
+  let rows = (data || []).filter(r => r.id && r.nama_cabang && r.nama_minutes);
+  if (filter && norm(filter) !== "all") rows = rows.filter(r => branchMatches(r, filter));
+  if (!rows.length) throw new Error(`Cabang tidak ditemukan: ${filter}`);
   return rows;
 }
-
-async function fetchSupabaseRows(start, end, branchIds) {
-  const { data, error } = await supabase
-    .from("daily_recap_source")
-    .select("*")
-    .gte("tanggal", start)
-    .lte("tanggal", end)
-    .in("cabang_id", branchIds)
-    .order("tanggal", { ascending: true });
+async function fetchDailyRows(start, end, branchIds) {
+  const { data, error } = await supabase.from("daily_recap_source").select("*")
+    .gte("tanggal", start).lte("tanggal", end).in("cabang_id", branchIds).order("tanggal", { ascending:true });
   if (error) throw error;
-  return new Map((data || []).map((row) => [`${row.tanggal}|${row.cabang_id}`, row]));
+  return new Map((data || []).map(r => [`${r.tanggal}|${r.cabang_id}`, r]));
 }
-
+async function fetchMinutesDaily(start, end, branches) {
+  const names = branches.map(b => b.nama_minutes);
+  const { data, error } = await supabase.from("minutes_daily").select("*")
+    .gte("tanggal", start).lte("tanggal", end).in("cabang", names).order("tanggal", { ascending:true });
+  if (error) throw error;
+  return new Map((data || []).map(r => [`${r.tanggal}|${norm(r.cabang)}`, r]));
+}
 async function login(page) {
-  await page.goto(LOGIN_URL, { waitUntil: "domcontentloaded", timeout: 30000 });
-  await page.locator('input[name="email"]').waitFor({ state: "visible", timeout: 20000 });
+  await page.goto(LOGIN_URL, { waitUntil:"domcontentloaded", timeout:30000 });
   await page.locator('input[name="email"]').fill(email);
   await page.locator('input[name="password"]').fill(password);
-  await page.getByRole("button", { name: /sign in/i }).click();
+  await page.getByRole("button", { name:/sign in/i }).click();
   await page.waitForTimeout(4000);
   if (page.url().includes("/user/login")) throw new Error("Login Minutes gagal.");
 }
-
 async function switchToMerchant(page) {
-  const select = page.locator('select[name="switchrole"]');
-  await select.waitFor({ state: "attached", timeout: 20000 });
+  const el = page.locator('select[name="switchrole"]');
+  await el.waitFor({ state:"attached", timeout:20000 });
   await Promise.all([
-    page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 30000 }),
-    page.evaluate(() => {
-      const el = document.querySelector('select[name="switchrole"]');
-      if (!el || !el.form) throw new Error("switchrole tidak ditemukan");
-      el.value = "3";
-      el.form.submit();
-    })
+    page.waitForNavigation({ waitUntil:"domcontentloaded", timeout:30000 }),
+    page.evaluate(() => { const s=document.querySelector('select[name="switchrole"]'); s.value="3"; s.form.submit(); })
   ]);
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(2500);
 }
-
 async function selectBranch(page, branch) {
-  await page.goto(DASHBOARD_URL, { waitUntil: "domcontentloaded", timeout: 30000 });
-  await page.waitForTimeout(2000);
-  const select = page.locator('select[name="merchant"]');
-  await select.waitFor({ state: "attached", timeout: 20000 });
-
+  await page.goto(DASHBOARD_URL, { waitUntil:"domcontentloaded", timeout:30000 });
+  const sel = page.locator('select[name="merchant"]');
+  await sel.waitFor({ state:"attached", timeout:20000 });
   const option = await page.evaluate((name) => {
-    const norm = (v = "") => String(v).trim().replace(/\s+/g, " ").toLowerCase();
-    const el = document.querySelector('select[name="merchant"]');
-    if (!el) return null;
-    const target = norm(name);
-    const found = [...el.options].find((o) => norm(o.textContent) === target);
-    return found ? { value: found.value, name: found.textContent.trim() } : null;
+    const n = v => String(v||"").trim().replace(/\s+/g," ").toLowerCase();
+    const s = document.querySelector('select[name="merchant"]');
+    const o = [...s.options].find(x => n(x.textContent) === n(name));
+    return o ? o.value : null;
   }, branch.nama_minutes);
-
   if (!option) throw new Error(`Merchant Minutes tidak ditemukan: ${branch.nama_minutes}`);
-
   await Promise.all([
-    page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 30000 }),
-    page.evaluate((value) => {
-      const el = document.querySelector('select[name="merchant"]');
-      if (!el || !el.form) throw new Error("merchant select tidak ditemukan");
-      el.value = value;
-      el.form.submit();
-    }, option.value)
+    page.waitForNavigation({ waitUntil:"domcontentloaded", timeout:30000 }),
+    page.evaluate((value) => { const s=document.querySelector('select[name="merchant"]'); s.value=value; s.form.submit(); }, option)
   ]);
   await page.waitForTimeout(2200);
 }
 
-function rupiahToNumber(value = "") {
-  const cleaned = String(value).replace(/[^\d-]/g, "");
-  return cleaned ? Number(cleaned) : 0;
-}
-
-async function readDailyRecap(page, ymd) {
-  const url = `${DAILY_RECAP_URL}?date=${encodeURIComponent(formatDateMinutes(ymd))}`;
-  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+async function readAllMinutesDailyRecap(page, ymd) {
+  await page.goto(`${DAILY_RECAP_URL}?date=${encodeURIComponent(formatDateMinutes(ymd))}`, { waitUntil:"domcontentloaded", timeout:30000 });
   await page.waitForTimeout(5000);
+  return page.evaluate(() => {
+    const clean = (v="") => String(v).replace(/\u00a0/g," ").trim().replace(/\s+/g," ");
+    const upper = (v="") => clean(v).toUpperCase();
+    const money = (v="") => { const x=String(v).replace(/[^\d-]/g,""); return x ? Number(x) : 0; };
 
-  for (let attempt = 1; attempt <= 5; attempt++) {
-    const result = await page.evaluate(() => {
-      const clean = (v = "") => String(v).trim().replace(/\s+/g, " ");
-      const upper = (v = "") => clean(v).toUpperCase();
-      const money = (v = "") => {
-        const digits = String(v).replace(/[^\d-]/g, "");
-        return digits ? Number(digits) : 0;
-      };
+    const kpi = {};
+    const scope = document.querySelector("ul#sparks") || document.querySelector(".col-sm-10.on-mobile");
+    const lines = String(scope?.innerText || "").split(/\n+/).map(clean).filter(Boolean);
+    for (const label of ["TRANSACTION","CUSTOMER","SERVICES"]) {
+      const idx = lines.findIndex(x => upper(x) === label);
+      kpi[label] = idx >= 0 ? Number(String(lines[idx+1]||"").replace(/[^\d]/g,"")) : null;
+    }
 
-      const kpiScope = document.querySelector("ul#sparks") || document.querySelector(".col-sm-10.on-mobile");
-      if (!kpiScope) return null;
-      const lines = String(kpiScope.innerText || "").split(/\n+/).map(clean).filter(Boolean);
-      const getKpi = (label) => {
-        const idx = lines.findIndex((x) => upper(x) === label);
-        const raw = idx >= 0 ? lines[idx + 1] : "";
-        return /^\d{1,6}$/.test(raw || "") ? Number(raw) : null;
-      };
-
-      const transaction = getKpi("TRANSACTION");
-      const customer = getKpi("CUSTOMER");
-      const services = getKpi("SERVICES");
-      if (transaction == null || customer == null || services == null) return null;
-
-      const settlement = document.querySelector("#settlementrecap");
-      if (!settlement) return null;
-      let grossRevenue = null;
-
-      for (const row of settlement.querySelectorAll("tr")) {
-        const cells = [...row.querySelectorAll("th,td")].map((cell) => clean(cell.textContent));
-        if (!cells.length) continue;
-        const labelIndex = cells.findIndex((cell) => upper(cell) === "GROSS REVENUE");
-        if (labelIndex === -1) continue;
-
-        const candidates = cells
-          .filter((_, index) => index !== labelIndex)
-          .filter((cell) => /\d/.test(cell));
-        if (candidates.length) {
-          grossRevenue = money(candidates[candidates.length - 1]);
-          break;
+    const bodyLines = String(document.querySelector("#content")?.innerText || document.body?.innerText || "")
+      .split(/\n+/).map(clean).filter(Boolean);
+    function byLabel(label) {
+      const target = upper(label);
+      for (let i=0;i<bodyLines.length;i++) {
+        const u=upper(bodyLines[i]);
+        if (u === target || u.startsWith(target+" ") || u.startsWith(target+":")) {
+          const tail = clean(bodyLines[i].slice(label.length));
+          const cand = tail || bodyLines[i+1] || "";
+          if (/\d/.test(cand)) return money(cand);
         }
       }
+      return null;
+    }
 
-      // Fallback jika layout tabel Minutes berubah menjadi label/value di baris terpisah.
-      if (grossRevenue == null) {
-        const settlementLines = String(settlement.innerText || "").split(/\n+/).map(clean).filter(Boolean);
-        const idx = settlementLines.findIndex((x) => upper(x) === "GROSS REVENUE");
-        if (idx >= 0) {
-          const next = settlementLines.slice(idx + 1).find((x) => /\d/.test(x));
-          if (next) grossRevenue = money(next);
-        }
+    const settlement = {};
+    for (const row of document.querySelectorAll("#settlementrecap tbody tr")) {
+      const cells = row.querySelectorAll("td");
+      const label = clean(cells[0]?.textContent || "");
+      if (label) settlement[label] = money(cells[1]?.textContent || "");
+    }
+
+    const expenses = [];
+    const expenseTable = document.querySelector('table[data-dt-title="Expense Data"]');
+    if (expenseTable) {
+      for (const row of expenseTable.querySelectorAll("tbody tr")) {
+        const cells=row.querySelectorAll("td");
+        const description=clean(cells[0]?.textContent||"");
+        const amount=money(cells[1]?.textContent||"");
+        const cashier=clean(cells[2]?.textContent||"");
+        if (description && !description.toLowerCase().includes("opening cash") && amount>0) expenses.push({description,amount,cashier});
       }
+    }
 
-      if (grossRevenue == null) return null;
-      return { transaction, customer, services, grossOmzet: grossRevenue };
-    });
-
-    if (result) return result;
-    if (attempt < 5) await page.waitForTimeout(1200);
-  }
-
-  throw new Error(`Daily Recap V2 tidak terbaca lengkap untuk ${ymd}`);
+    const nonCash = ["Gopay","QRIS","QR / TF","Transfer","Visa"].reduce((t,k)=>t+Number(settlement[k]||0),0);
+    return {
+      transaction:kpi.TRANSACTION, customer:kpi.CUSTOMER, services:kpi.SERVICES,
+      netServicesSales:byLabel("NET SERVICES SALES"),
+      netProductsSales:byLabel("NET PRODUCTS SALES"),
+      grossRevenue:Number(settlement["Gross Revenue"]||0),
+      revenue:Number(settlement["Revenue"]||0),
+      cashPayment:Number(settlement["Cash Payment"]||0),
+      gopay:Number(settlement["Gopay"]||0), qris:Number(settlement["QRIS"]||0),
+      qrTf:Number(settlement["QR / TF"]||0), transfer:Number(settlement["Transfer"]||0), visa:Number(settlement["Visa"]||0),
+      nonCash, totalPayment:Number(settlement["Total Payment"]||0), totalShare:Number(settlement["Total Share"]||0),
+      cashIn:Number(settlement["Cash In"]||0), cashOut:Number(settlement["Cash Out"]||0),
+      productCost:Number(settlement["Product Cost"]||0), thirdPartyCharges:Number(settlement["3rd Party Charges"]||0),
+      netRevenue:Number(settlement["Net Revenue"]||0), expenses, settlement
+    };
+  });
 }
 
-function rawSupabaseCanonical(db) {
-  const service = Number(db?.service || 0);
-  const product = Number(db?.produk || 0);
-  return {
-    transaction: Number(db?.transaction_minutes || 0),
-    customer: Number(db?.customer_minutes || 0),
-    services: Number(db?.services_minutes || 0),
-    grossOmzet: service + product,
-    grossOmzetComponents: { service, product }
-  };
-}
+// Mapping loop: hanya field yang memang punya pasangan canonical dibandingkan otomatis.
+const FIELD_MAP = [
+  ["transaction", m=>m.transaction, d=>num(d?.transaction_minutes), e=>num(e?.transaction)],
+  ["customer", m=>m.customer, d=>num(d?.customer_minutes), e=>num(e?.customer)],
+  ["services", m=>m.services, d=>num(d?.services_minutes), e=>num(e?.services)],
+  ["netServicesSales", m=>m.netServicesSales, d=>num(d?.service), e=>num(e?.netServicesSales)],
+  ["netProductsSales", m=>m.netProductsSales, d=>num(d?.produk), e=>num(e?.netProductsSales)],
+  ["grossOmzet", m=>m.grossRevenue, d=>num(d?.service)+num(d?.produk), e=>num(e?.grossOmzet)],
+  ["cashPayment", m=>m.cashPayment, d=>num(d?.cash_payment), e=>num(e?.cashPayment)],
+  ["nonCash", m=>m.nonCash, d=>num(d?.non_cash), e=>num(e?.nonCash)],
+  ["cashOut", m=>m.cashOut, d=>num(d?.cash_out), e=>num(e?.cashOut)],
+  ["productCost", m=>m.productCost, d=>num(d?.product_cost), e=>num(e?.productCost)],
+  ["netRevenueMinutes", m=>m.netRevenue, d=>num(d?.nett_revenue), e=>num(e?.netRevenueMinutes)]
+];
+const MINUTES_DAILY_MAP = [
+  ["grossRevenue","gross_revenue"],["revenue","revenue"],["cashPayment","cash_payment"],["nonCash","non_cash"],
+  ["totalPayment","total_payment"],["totalShare","total_share"],["cashIn","cash_in"],["cashOut","cash_out"],
+  ["productCost","product_cost"],["thirdPartyCharges","third_party_charges"],["netRevenue","net_revenue"]
+];
 
-const AUDIT_FIELDS = ["transaction", "customer", "services", "grossOmzet"];
-
-function mismatchFields(left, right) {
-  return AUDIT_FIELDS.filter((field) => Number(left?.[field] || 0) !== Number(right?.[field] || 0));
-}
-
-const args = parseArgs(process.argv.slice(2));
-const start = args.start || process.env.AUDIT_START;
-const end = args.end || process.env.AUDIT_END || start;
-const branchFilter = args.branch || process.env.AUDIT_BRANCH || "all";
-if (!start || !end) throw new Error("Gunakan --start YYYY-MM-DD [--end YYYY-MM-DD] [--branch nama|all].");
-
-const dates = dateRange(start, end);
-const branches = await fetchBranches(branchFilter);
-const dbRows = await fetchSupabaseRows(start, end, branches.map((b) => b.id));
-const dailyDataEngine = loadDailyDataEngine(ERP_DAILY_ENGINE_PATH);
+const args=parseArgs(process.argv.slice(2));
+const start=args.start||process.env.AUDIT_START;
+const end=args.end||process.env.AUDIT_END||start;
+const branchFilter=args.branch||process.env.AUDIT_BRANCH||"all";
+if (!start || !end) throw new Error("Tanggal audit wajib.");
+const dates=dateRange(start,end);
+const branches=await fetchBranches(branchFilter);
+const dailyRows=await fetchDailyRows(start,end,branches.map(b=>b.id));
+const minutesDailyRows=await fetchMinutesDaily(start,end,branches);
+const engine=loadDailyDataEngine(ERP_DAILY_ENGINE_PATH);
 
 console.log("AUDIT_READ_ONLY=TRUE");
-console.log("AUDIT_VERSION=MINUTES_AUDIT_RUNNER_V2_STAGE_1_GROSS_OMZET");
+console.log("AUDIT_VERSION=MINUTES_AUDIT_RUNNER_V2_BULK");
 console.log(`AUDIT_RANGE=${start}..${end}`);
 console.log(`AUDIT_BRANCHES=${branches.length}`);
-console.log(`AUDIT_DAYS=${dates.length}`);
-console.log("AUDIT_LAYERS=MINUTES,SUPABASE,ERP_DAILY_DATA_ENGINE");
-console.log("AUDIT_FIELDS=TRANSACTION,CUSTOMER,SERVICES,GROSS_OMZET");
-console.log(`AUDIT_CHECKS=${branches.length * dates.length * AUDIT_FIELDS.length * 2}`);
+console.log(`AUDIT_FIELDS_3LAYER=${FIELD_MAP.map(x=>x[0]).join(",")}`);
+console.log(`AUDIT_FIELDS_MINUTES_DAILY=${MINUTES_DAILY_MAP.map(x=>x[0]).join(",")}`);
 
-const browser = await chromium.launch({ headless: HEADLESS });
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-const results = [];
-
+const browser=await chromium.launch({headless:HEADLESS});
+const page=await browser.newPage({viewport:{width:1440,height:900}});
+const results=[];
 try {
-  await login(page);
-  await switchToMerchant(page);
-
+  await login(page); await switchToMerchant(page);
   for (const branch of branches) {
-    await selectBranch(page, branch);
+    await selectBranch(page,branch);
     for (const date of dates) {
-      const minutes = await readDailyRecap(page, date);
-      const db = dbRows.get(`${date}|${branch.id}`) || null;
-      const supabaseCanonical = rawSupabaseCanonical(db);
-      const erp = readErpCanonical(dailyDataEngine, db, branch);
-
-      const minutesVsSupabase = mismatchFields(minutes, supabaseCanonical);
-      const supabaseVsErp = mismatchFields(supabaseCanonical, erp);
-      const minutesVsErp = mismatchFields(minutes, erp);
-      const match = minutesVsSupabase.length === 0 && supabaseVsErp.length === 0 && minutesVsErp.length === 0;
-
-      results.push({
-        tanggal: date,
-        cabang: branch.nama_cabang,
-        cabang_id: branch.id,
-        minutes,
-        supabase: supabaseCanonical,
-        erpDailyDataEngine: erp,
-        status: match ? "MATCH" : "MISMATCH",
-        mismatch: {
-          minutes_vs_supabase: minutesVsSupabase,
-          supabase_vs_erp: supabaseVsErp,
-          minutes_vs_erp: minutesVsErp
-        }
-      });
-
-      console.log(
-        `${match ? "✅" : "❌"} ${date} | ${branch.nama_cabang} | ` +
-        `Minutes T/C/S=${minutes.transaction}/${minutes.customer}/${minutes.services} Gross=${minutes.grossOmzet} | ` +
-        `Supabase T/C/S=${supabaseCanonical.transaction}/${supabaseCanonical.customer}/${supabaseCanonical.services} Gross=${supabaseCanonical.grossOmzet} ` +
-        `(service=${supabaseCanonical.grossOmzetComponents.service}+produk=${supabaseCanonical.grossOmzetComponents.product}) | ` +
-        `ERP T/C/S=${erp.transaction}/${erp.customer}/${erp.services} Gross=${erp.grossOmzet} | ` +
-        `${match ? "MATCH" : "MISMATCH"}`
-      );
+      const minutes=await readAllMinutesDailyRecap(page,date);
+      const db=dailyRows.get(`${date}|${branch.id}`)||null;
+      const md=minutesDailyRows.get(`${date}|${norm(branch.nama_minutes)}`)||null;
+      const erp=readErpCanonical(engine,db,branch);
+      const checks=[];
+      for (const [field,mf,df,ef] of FIELD_MAP) {
+        const mv=num(mf(minutes)), sv=num(df(db)), ev=num(ef(erp));
+        checks.push({field,minutes:mv,supabase:sv,erp:ev,status:(mv===sv&&sv===ev)?"MATCH":"MISMATCH"});
+      }
+      for (const [field,col] of MINUTES_DAILY_MAP) {
+        const mv=num(minutes[field]), stored=num(md?.[col]);
+        checks.push({field:`minutes_daily.${field}`,minutes:mv,supabaseMinutesDaily:stored,status:mv===stored?"MATCH":"MISMATCH"});
+      }
+      const mismatches=checks.filter(c=>c.status!=="MATCH");
+      results.push({tanggal:date,cabang:branch.nama_cabang,minutes,checks,status:mismatches.length?"MISMATCH":"MATCH",mismatches});
+      console.log(`${mismatches.length?"❌":"✅"} ${date} | ${branch.nama_cabang} | checked=${checks.length} | mismatch=${mismatches.length}`);
+      for (const c of mismatches) console.log(`  MISMATCH ${c.field}: ${JSON.stringify(c)}`);
     }
   }
-} finally {
-  await browser.close();
-}
+} finally { await browser.close(); }
 
-const mismatches = results.filter((row) => row.status === "MISMATCH");
+const mismatches=results.filter(r=>r.status==="MISMATCH");
 console.log("AUDIT_SUMMARY_BEGIN");
-console.log(JSON.stringify({
-  version: "V2_STAGE_1_GROSS_OMZET",
-  start,
-  end,
-  branchFilter,
-  fields: AUDIT_FIELDS,
-  branches: branches.length,
-  branchDays: results.length,
-  checks: results.length * AUDIT_FIELDS.length * 2,
-  matchBranchDays: results.length - mismatches.length,
-  mismatchBranchDays: mismatches.length,
-  mismatches
-}, null, 2));
+console.log(JSON.stringify({version:"V2_BULK",start,end,branchFilter,branches:branches.length,branchDays:results.length,
+  fieldsThreeLayer:FIELD_MAP.map(x=>x[0]),fieldsMinutesDaily:MINUTES_DAILY_MAP.map(x=>x[0]),
+  totalChecks:results.reduce((t,r)=>t+r.checks.length,0),mismatchBranchDays:mismatches.length,mismatches},null,2));
 console.log("AUDIT_SUMMARY_END");
-
-if (mismatches.length > 0) process.exitCode = 2;
+if (mismatches.length) process.exitCode=2;
