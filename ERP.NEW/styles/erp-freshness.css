@@ -270,8 +270,8 @@ html body.page-erp-dashboard .erp-wrapper #erpFreshness.erp-freshness{
 }
 
 /* =========================================================
-   OWNER HEADER EDGE PULSE — UI ONLY
-   Background remains stable; only top/bottom edge lines pulse.
+   OWNER HEADER GOLD EDGES — UI ONLY
+   Static gold accent lines only; no pulse / blinking.
    ========================================================= */
 html body.page-erp-dashboard .erp-wrapper #header .top-header,
 html body.page-erp-dashboard .erp-wrapper #header .erp-header,
@@ -297,29 +297,9 @@ html body.page-erp-dashboard .erp-wrapper #header .od-command-bar::before{
     z-index:2 !important;
     pointer-events:none !important;
     background:
-        linear-gradient(90deg,transparent 0%,rgba(242,194,48,.18) 12%,rgba(242,194,48,.92) 50%,rgba(242,194,48,.18) 88%,transparent 100%) top / 100% 2px no-repeat,
-        linear-gradient(90deg,transparent 0%,rgba(242,194,48,.14) 12%,rgba(242,194,48,.78) 50%,rgba(242,194,48,.14) 88%,transparent 100%) bottom / 100% 2px no-repeat !important;
-    opacity:.25;
-    filter:drop-shadow(0 0 3px rgba(242,194,48,.35));
-    animation:ownerHeaderEdgePulse 1.55s ease-in-out infinite !important;
-}
-
-@keyframes ownerHeaderEdgePulse{
-    0%,100%{
-        opacity:.18;
-        filter:drop-shadow(0 0 2px rgba(242,194,48,.18));
-    }
-    50%{
-        opacity:1;
-        filter:drop-shadow(0 0 8px rgba(242,194,48,.90));
-    }
-}
-
-@media (prefers-reduced-motion:reduce){
-    html body.page-erp-dashboard .erp-wrapper #header .top-header::before,
-    html body.page-erp-dashboard .erp-wrapper #header .erp-header::before,
-    html body.page-erp-dashboard .erp-wrapper #header .od-command-bar::before{
-        animation:none !important;
-        opacity:.55;
-    }
+        linear-gradient(90deg,transparent 0%,rgba(242,194,48,.20) 12%,rgba(242,194,48,.88) 50%,rgba(242,194,48,.20) 88%,transparent 100%) top / 100% 2px no-repeat,
+        linear-gradient(90deg,transparent 0%,rgba(242,194,48,.16) 12%,rgba(242,194,48,.72) 50%,rgba(242,194,48,.16) 88%,transparent 100%) bottom / 100% 2px no-repeat !important;
+    opacity:.72 !important;
+    filter:drop-shadow(0 0 3px rgba(242,194,48,.28)) !important;
+    animation:none !important;
 }
