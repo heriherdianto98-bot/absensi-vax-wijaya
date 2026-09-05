@@ -73,14 +73,16 @@
 }
 
 /* Card saldo utama: warna dibedakan sesuai konteks */
+/* Kas Besar = biru */
 .ak2-cards .ak2-card:nth-child(1){
-  background:linear-gradient(180deg,#2a2111,#15130f);
-  border-color:#b58a35;
-  box-shadow:inset 4px 0 0 #d6a74a,0 12px 26px rgba(181,138,53,.11);
+  background:linear-gradient(180deg,#142536,#111820);
+  border-color:#396f9e;
+  box-shadow:inset 4px 0 0 #4f96ce,0 12px 26px rgba(57,111,158,.12);
 }
-.ak2-cards .ak2-card:nth-child(1) span{color:#e7c679}
-.ak2-cards .ak2-card:nth-child(1) strong{color:#fff0bd}
+.ak2-cards .ak2-card:nth-child(1) span{color:#99c6e9}
+.ak2-cards .ak2-card:nth-child(1) strong{color:#d9efff}
 
+/* Dana Produk = ungu */
 .ak2-cards .ak2-card:nth-child(2){
   background:linear-gradient(180deg,#261a31,#17131d);
   border-color:#765398;
@@ -89,14 +91,16 @@
 .ak2-cards .ak2-card:nth-child(2) span{color:#c8a6e3}
 .ak2-cards .ak2-card:nth-child(2) strong{color:#f0dcff}
 
+/* Kas Denda = gold */
 .ak2-cards .ak2-card:nth-child(3){
-  background:linear-gradient(180deg,#302114,#19140f);
-  border-color:#a46d2c;
-  box-shadow:inset 4px 0 0 #df9a43,0 12px 26px rgba(164,109,44,.12);
+  background:linear-gradient(180deg,#2a2111,#15130f);
+  border-color:#b58a35;
+  box-shadow:inset 4px 0 0 #d6a74a,0 12px 26px rgba(181,138,53,.11);
 }
-.ak2-cards .ak2-card:nth-child(3) span{color:#e5b36e}
-.ak2-cards .ak2-card:nth-child(3) strong{color:#ffe2b5}
+.ak2-cards .ak2-card:nth-child(3) span{color:#e7c679}
+.ak2-cards .ak2-card:nth-child(3) strong{color:#fff0bd}
 
+/* Piutang Setoran = biru muda */
 .ak2-cards .ak2-card:nth-child(4){
   background:linear-gradient(180deg,#142536,#111820);
   border-color:#396f9e;
@@ -105,6 +109,7 @@
 .ak2-cards .ak2-card:nth-child(4) span{color:#99c6e9}
 .ak2-cards .ak2-card:nth-child(4) strong{color:#d9efff}
 
+/* Piutang Denda = merah */
 .ak2-cards .ak2-card:nth-child(5){
   background:linear-gradient(180deg,#321918,#1b1212);
   border-color:#9f5148;
@@ -113,9 +118,9 @@
 .ak2-cards .ak2-card:nth-child(5) span{color:#efaaa1}
 .ak2-cards .ak2-card:nth-child(5) strong{color:#ffd9d4}
 
-.ak2-cards .ak2-card:nth-child(1):hover{box-shadow:inset 4px 0 0 #e4ba5f,0 16px 34px rgba(181,138,53,.18)}
+.ak2-cards .ak2-card:nth-child(1):hover{box-shadow:inset 4px 0 0 #65a9dc,0 16px 34px rgba(57,111,158,.18)}
 .ak2-cards .ak2-card:nth-child(2):hover{box-shadow:inset 4px 0 0 #b98be0,0 16px 34px rgba(118,83,152,.18)}
-.ak2-cards .ak2-card:nth-child(3):hover{box-shadow:inset 4px 0 0 #efac59,0 16px 34px rgba(164,109,44,.18)}
+.ak2-cards .ak2-card:nth-child(3):hover{box-shadow:inset 4px 0 0 #e4ba5f,0 16px 34px rgba(181,138,53,.18)}
 .ak2-cards .ak2-card:nth-child(4):hover{box-shadow:inset 4px 0 0 #65a9dc,0 16px 34px rgba(57,111,158,.18)}
 .ak2-cards .ak2-card:nth-child(5):hover{box-shadow:inset 4px 0 0 #e88277,0 16px 34px rgba(159,81,72,.18)}
 
