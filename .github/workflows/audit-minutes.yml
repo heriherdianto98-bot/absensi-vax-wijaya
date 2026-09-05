@@ -7,6 +7,8 @@ on:
       - feature/minutes-audit-runner
     paths:
       - "minutes-connector/audit-minutes.js"
+      - "minutes-connector/compare-erp-engine.js"
+      - "ERP.NEW/js/modules/daily-data-engine.js"
       - "audit/requests/current.json"
       - ".github/workflows/audit-minutes.yml"
 
@@ -55,7 +57,7 @@ jobs:
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
           echo "Audit request: $START .. $END | branch=$BRANCH"
 
-      - name: Upload read-only audit runner
+      - name: Upload read-only audit runner and ERP engine source
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
@@ -63,9 +65,13 @@ jobs:
           set -euo pipefail
           rsync -az -e "ssh -i ~/.ssh/id_erp_vax_audit" \
             minutes-connector/audit-minutes.js \
-            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/audit-minutes.js"
+            minutes-connector/compare-erp-engine.js \
+            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/"
+          rsync -az -e "ssh -i ~/.ssh/id_erp_vax_audit" \
+            ERP.NEW/js/modules/daily-data-engine.js \
+            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/daily-data-engine.audit.js"
 
-      - name: Run Minutes audit read only
+      - name: Run Minutes Supabase ERP audit read only
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
@@ -81,5 +87,7 @@ jobs:
           END="$2"
           BRANCH="$3"
           cd /var/www/absensi-vax-wijaya/minutes-connector
-          HEADLESS=true node audit-minutes.js --start "$START" --end "$END" --branch "$BRANCH"
+          HEADLESS=true \
+          ERP_DAILY_ENGINE_PATH=./daily-data-engine.audit.js \
+          node audit-minutes.js --start "$START" --end "$END" --branch "$BRANCH"
           REMOTE
