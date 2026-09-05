@@ -328,3 +328,130 @@ function onDashboardReady(){
 }
 document.addEventListener("erp:dashboard-ready", onDashboardReady);
 document.addEventListener("erp:owner-ready", onDashboardReady);
+
+/* =========================================================
+   OWNER HEADER EMPHASIS — UI ONLY
+   Runtime style is injected after page inline locks so it
+   intentionally wins without touching engine/filter logic.
+   ========================================================= */
+function ensureOwnerHeaderEmphasisStyle(){
+    if(!isErpDashboardPage()) return;
+    if(document.getElementById("ownerHeaderEmphasisStyle")) return;
+
+    const style = document.createElement("style");
+    style.id = "ownerHeaderEmphasisStyle";
+    style.textContent = `
+        html body.page-erp-dashboard .erp-wrapper{
+            padding-top:68px !important;
+        }
+        html body.page-erp-dashboard #header .top-header,
+        html body.page-erp-dashboard #header .erp-header,
+        html body.page-erp-dashboard #header .od-command-bar{
+            height:68px !important;
+            min-height:68px !important;
+            max-height:68px !important;
+            padding:0 18px !important;
+            gap:12px !important;
+            animation:ownerHeaderBarPulse 2.2s ease-in-out infinite;
+            will-change:box-shadow,filter;
+        }
+        html body.page-erp-dashboard #header .header-context{
+            gap:10px !important;
+        }
+        html body.page-erp-dashboard #header .header-chip,
+        html body.page-erp-dashboard #header .od-chip{
+            min-height:48px !important;
+            padding:5px 16px !important;
+            gap:2px !important;
+            border:1px solid rgba(242,194,48,.30) !important;
+            border-radius:12px !important;
+            background:linear-gradient(180deg,rgba(242,194,48,.09),rgba(255,255,255,.02)) !important;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 0 1px rgba(242,194,48,.05) !important;
+            animation:ownerHeaderChipPulse 1.8s ease-in-out infinite;
+        }
+        html body.page-erp-dashboard #header .header-chip + .header-chip{
+            border-left:1px solid rgba(242,194,48,.30) !important;
+        }
+        html body.page-erp-dashboard #header .header-chip label{
+            font-size:11px !important;
+            line-height:1.12 !important;
+            font-weight:800 !important;
+            letter-spacing:.10em !important;
+            color:#AAB2BD !important;
+        }
+        html body.page-erp-dashboard #header .header-chip strong,
+        html body.page-erp-dashboard #header #erpHeaderCabang,
+        html body.page-erp-dashboard #header #erpHeaderPeriode{
+            font-size:17px !important;
+            line-height:1.15 !important;
+            font-weight:900 !important;
+            color:#F8FAFC !important;
+        }
+        html body.page-erp-dashboard #header .header-chip .material-symbols-rounded,
+        html body.page-erp-dashboard #header .header-context .material-symbols-rounded,
+        html body.page-erp-dashboard #header .header-chip-icon{
+            font-size:23px !important;
+            width:23px !important;
+            height:23px !important;
+        }
+        html body.page-erp-dashboard #header .header-minutes-status{
+            min-height:42px !important;
+            padding:0 10px !important;
+        }
+        html body.page-erp-dashboard #header .header-icon-btn{
+            width:38px !important;
+            height:38px !important;
+            min-height:38px !important;
+            flex-basis:38px !important;
+        }
+        html body.page-erp-dashboard #header .header-icon-btn .material-symbols-rounded{
+            font-size:22px !important;
+        }
+        html body.page-erp-dashboard #header .header-user-block{
+            min-height:42px !important;
+        }
+        html body.page-erp-dashboard #header #ownerAuthName,
+        html body.page-erp-dashboard #header .header-auth-meta strong{
+            font-size:15px !important;
+        }
+        html body.page-erp-dashboard #header #ownerAuthRole,
+        html body.page-erp-dashboard #header .header-auth-meta span{
+            font-size:10px !important;
+        }
+        html body.page-erp-dashboard #header .btn-owner-logout{
+            height:38px !important;
+            min-height:38px !important;
+            padding:0 15px !important;
+            font-size:13px !important;
+        }
+        @keyframes ownerHeaderBarPulse{
+            0%,100%{
+                filter:brightness(1);
+                box-shadow:0 1px 0 rgba(255,255,255,.03),0 0 10px rgba(242,194,48,.06) !important;
+            }
+            50%{
+                filter:brightness(1.08);
+                box-shadow:0 1px 0 rgba(255,255,255,.06),0 0 28px rgba(242,194,48,.24) !important;
+            }
+        }
+        @keyframes ownerHeaderChipPulse{
+            0%,100%{
+                filter:brightness(1);
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 8px rgba(242,194,48,.08) !important;
+            }
+            50%{
+                filter:brightness(1.14);
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 0 22px rgba(242,194,48,.34) !important;
+            }
+        }
+        @media (prefers-reduced-motion: reduce){
+            html body.page-erp-dashboard #header .top-header,
+            html body.page-erp-dashboard #header .erp-header,
+            html body.page-erp-dashboard #header .header-chip{animation:none !important;}
+        }
+    `;
+    document.head.appendChild(style);
+    document.documentElement.style.setProperty("--erp-top-header-h", "68px");
+}
+
+document.addEventListener("erp:components-ready", ensureOwnerHeaderEmphasisStyle);
