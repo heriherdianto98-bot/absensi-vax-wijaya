@@ -246,3 +246,42 @@ function formatJamAktivitas(waktu){
     });
 
 }
+
+/* =========================================================
+   CASH OUT WARNING — dashboard read-only bootstrap
+   Mounts below analytics / above AI Insight without changing
+   DashboardEngine or Cash Out calculation logic.
+   ========================================================= */
+(function mountCashOutWarning(){
+    if(!document.body?.classList?.contains("page-erp-dashboard")) return;
+
+    if(!document.getElementById("cashoutWarningCss")){
+        const link = document.createElement("link");
+        link.id = "cashoutWarningCss";
+        link.rel = "stylesheet";
+        link.href = "../styles/cashout-warning.css?v=20260906-1";
+        document.head.appendChild(link);
+    }
+
+    if(!document.getElementById("cashout-warning-section")){
+        const section = document.createElement("section");
+        section.id = "cashout-warning-section";
+        section.hidden = true;
+        section.setAttribute("aria-label", "Warning Cash Out besar semua cabang");
+        const widget = document.getElementById("widget-section");
+        const analytics = document.querySelector(".dashboard-main-analytics");
+        if(widget?.parentNode){
+            widget.parentNode.insertBefore(section, widget);
+        }else if(analytics?.parentNode){
+            analytics.insertAdjacentElement("afterend", section);
+        }
+    }
+
+    if(!document.getElementById("cashoutWarningScript")){
+        const script = document.createElement("script");
+        script.id = "cashoutWarningScript";
+        script.src = "../js/modules/cashout-warning.js?v=20260906-1";
+        script.defer = true;
+        document.body.appendChild(script);
+    }
+})();
