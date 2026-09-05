@@ -8,6 +8,7 @@ BRI Merchant di Setoran 3 Harian adalah output canonical:
 - tidak ada input manual/sumber ganda dari halaman Setoran
 - Selisih Non Tunai = 0 jika BRI Merchant masih 0/belum ada settlement
 - Jika BRI Merchant > 0, Selisih Non Tunai = BRI Merchant - Non Tunai Minutes
+- Cash Aktual = Cash Harus Diambil - Selisih Non Tunai - Biaya di luar Cashout
 Fallback fail-safe hanya menjaga tabel Setoran tetap tampil bila pembacaan
 BRI Daily gagal; kolom BRI tetap tidak dapat diedit.
 =========================================================
@@ -48,17 +49,34 @@ BRI Daily gagal; kolom BRI tetap tidak dapat diedit.
                     const daily = BriMerchantDaily.sumBranch(id,p.start,p.end);
                     const briTotal = this.money(daily.total);
                     const nonCash = this.money(m.s.nonCash);
+                    const outside = this.money(m.outside);
 
                     m.bri = briTotal;
                     // OWNER RULE:
                     // BRI Rp0 = belum ada settlement / belum dihitung selisih.
                     // Selisih baru dihitung ketika BRI Merchant sudah memiliki nilai > 0.
                     m.diff = briTotal <= 0 ? 0 : briTotal - nonCash;
+
+                    // Cash Harus Diambil / cashReference sudah dikurangi Non Tunai Minutes
+                    // oleh SetoranMoneyEngine. Maka Cash Aktual hanya dikoreksi oleh
+                    // selisih settlement aktual BRI dan biaya di luar Cashout.
+                    m.actual = this.money(m.s.cashReference) - this.money(m.diff) - outside;
+
                     m.briDailyCanonical = true;
                     m.briDailyCount = daily.count;
                 }
             }catch(_e){ /* fail-safe: pertahankan model lama, tetapi UI tetap read-only */ }
             return m;
+        };
+
+        const originalDraftFromRow = flow.draftFromRow.bind(flow);
+        flow.draftFromRow = function(tr){
+            const d = originalDraftFromRow(tr);
+            const bri = this.money(d.m?.bri);
+            const nonCash = this.money(d.m?.s?.nonCash);
+            const diff = bri <= 0 ? 0 : bri - nonCash;
+            const actual = this.money(d.m?.s?.cashReference) - diff - this.money(d.outside);
+            return { ...d, bri, diff, actual };
         };
 
         const originalRowHtml = flow.rowHtml.bind(flow);
