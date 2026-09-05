@@ -342,32 +342,57 @@ function ensureOwnerHeaderEmphasisStyle(){
     style.id = "ownerHeaderEmphasisStyle";
     style.textContent = `
         html body.page-erp-dashboard .erp-wrapper{
-            padding-top:68px !important;
+            padding-top:76px !important;
         }
         html body.page-erp-dashboard #header .top-header,
         html body.page-erp-dashboard #header .erp-header,
         html body.page-erp-dashboard #header .od-command-bar{
-            height:68px !important;
-            min-height:68px !important;
-            max-height:68px !important;
-            padding:0 18px !important;
+            position:relative !important;
+            isolation:isolate !important;
+            overflow:hidden !important;
+            height:76px !important;
+            min-height:76px !important;
+            max-height:76px !important;
+            padding:0 20px !important;
             gap:12px !important;
-            animation:ownerHeaderBarPulse 2.2s ease-in-out infinite;
-            will-change:box-shadow,filter;
+            background:linear-gradient(180deg,#131820 0%,#0D1117 100%) !important;
+            box-shadow:inset 0 -1px 0 rgba(242,194,48,.14),0 6px 20px rgba(0,0,0,.28) !important;
+        }
+        html body.page-erp-dashboard #header .top-header::after,
+        html body.page-erp-dashboard #header .erp-header::after,
+        html body.page-erp-dashboard #header .od-command-bar::after{
+            content:"";
+            position:absolute;
+            inset:0;
+            z-index:0;
+            pointer-events:none;
+            background:
+                radial-gradient(70% 120% at 18% 50%,rgba(242,194,48,.42) 0%,rgba(242,194,48,.08) 35%,transparent 72%),
+                radial-gradient(60% 120% at 82% 50%,rgba(34,211,238,.16) 0%,transparent 68%),
+                linear-gradient(90deg,rgba(242,194,48,.08),rgba(255,255,255,.015),rgba(242,194,48,.06));
+            opacity:.12;
+            animation:ownerHeaderBackgroundPulse 1.9s ease-in-out infinite;
+            will-change:opacity,filter;
+        }
+        html body.page-erp-dashboard #header .top-header > *,
+        html body.page-erp-dashboard #header .erp-header > *,
+        html body.page-erp-dashboard #header .od-command-bar > *{
+            position:relative;
+            z-index:1;
         }
         html body.page-erp-dashboard #header .header-context{
             gap:10px !important;
         }
         html body.page-erp-dashboard #header .header-chip,
         html body.page-erp-dashboard #header .od-chip{
-            min-height:48px !important;
-            padding:5px 16px !important;
+            min-height:50px !important;
+            padding:6px 16px !important;
             gap:2px !important;
             border:1px solid rgba(242,194,48,.30) !important;
             border-radius:12px !important;
             background:linear-gradient(180deg,rgba(242,194,48,.09),rgba(255,255,255,.02)) !important;
             box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 0 1px rgba(242,194,48,.05) !important;
-            animation:ownerHeaderChipPulse 1.8s ease-in-out infinite;
+            animation:none !important;
         }
         html body.page-erp-dashboard #header .header-chip + .header-chip{
             border-left:1px solid rgba(242,194,48,.30) !important;
@@ -395,20 +420,20 @@ function ensureOwnerHeaderEmphasisStyle(){
             height:23px !important;
         }
         html body.page-erp-dashboard #header .header-minutes-status{
-            min-height:42px !important;
+            min-height:44px !important;
             padding:0 10px !important;
         }
         html body.page-erp-dashboard #header .header-icon-btn{
-            width:38px !important;
-            height:38px !important;
-            min-height:38px !important;
-            flex-basis:38px !important;
+            width:40px !important;
+            height:40px !important;
+            min-height:40px !important;
+            flex-basis:40px !important;
         }
         html body.page-erp-dashboard #header .header-icon-btn .material-symbols-rounded{
-            font-size:22px !important;
+            font-size:23px !important;
         }
         html body.page-erp-dashboard #header .header-user-block{
-            min-height:42px !important;
+            min-height:44px !important;
         }
         html body.page-erp-dashboard #header #ownerAuthName,
         html body.page-erp-dashboard #header .header-auth-meta strong{
@@ -419,39 +444,32 @@ function ensureOwnerHeaderEmphasisStyle(){
             font-size:10px !important;
         }
         html body.page-erp-dashboard #header .btn-owner-logout{
-            height:38px !important;
-            min-height:38px !important;
+            height:40px !important;
+            min-height:40px !important;
             padding:0 15px !important;
             font-size:13px !important;
         }
-        @keyframes ownerHeaderBarPulse{
+        @keyframes ownerHeaderBackgroundPulse{
             0%,100%{
-                filter:brightness(1);
-                box-shadow:0 1px 0 rgba(255,255,255,.03),0 0 10px rgba(242,194,48,.06) !important;
+                opacity:.10;
+                filter:brightness(.9) saturate(.9);
             }
             50%{
-                filter:brightness(1.08);
-                box-shadow:0 1px 0 rgba(255,255,255,.06),0 0 28px rgba(242,194,48,.24) !important;
-            }
-        }
-        @keyframes ownerHeaderChipPulse{
-            0%,100%{
-                filter:brightness(1);
-                box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 8px rgba(242,194,48,.08) !important;
-            }
-            50%{
-                filter:brightness(1.14);
-                box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 0 22px rgba(242,194,48,.34) !important;
+                opacity:.48;
+                filter:brightness(1.35) saturate(1.35);
             }
         }
         @media (prefers-reduced-motion: reduce){
-            html body.page-erp-dashboard #header .top-header,
-            html body.page-erp-dashboard #header .erp-header,
-            html body.page-erp-dashboard #header .header-chip{animation:none !important;}
+            html body.page-erp-dashboard #header .top-header::after,
+            html body.page-erp-dashboard #header .erp-header::after,
+            html body.page-erp-dashboard #header .od-command-bar::after{
+                animation:none !important;
+                opacity:.18;
+            }
         }
     `;
     document.head.appendChild(style);
-    document.documentElement.style.setProperty("--erp-top-header-h", "68px");
+    document.documentElement.style.setProperty("--erp-top-header-h", "76px");
 }
 
 document.addEventListener("erp:components-ready", ensureOwnerHeaderEmphasisStyle);
