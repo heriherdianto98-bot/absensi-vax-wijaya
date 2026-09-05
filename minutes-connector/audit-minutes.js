@@ -22,6 +22,25 @@ function normalize(value = "") {
   return String(value).trim().replace(/\s+/g, " ").toLowerCase();
 }
 
+function branchMatches(row, filter) {
+  const target = normalize(filter);
+  if (!target || target === "all") return true;
+
+  const candidates = [
+    row?.nama_cabang,
+    row?.nama_minutes,
+    row?.kode_cabang
+  ]
+    .map(normalize)
+    .filter(Boolean);
+
+  return candidates.some((value) =>
+    value === target ||
+    value.includes(target) ||
+    target.includes(value)
+  );
+}
+
 function parseArgs(argv) {
   const out = {};
   for (let i = 0; i < argv.length; i++) {
@@ -70,13 +89,14 @@ async function fetchBranches(branchFilter) {
 
   let rows = (data || []).filter((row) => row.id && row.nama_cabang && row.nama_minutes);
   if (branchFilter && normalize(branchFilter) !== "all") {
-    const target = normalize(branchFilter);
-    rows = rows.filter((row) =>
-      normalize(row.nama_cabang) === target ||
-      normalize(row.nama_minutes) === target ||
-      normalize(row.kode_cabang) === target
-    );
-    if (!rows.length) throw new Error(`Cabang tidak ditemukan: ${branchFilter}`);
+    rows = rows.filter((row) => branchMatches(row, branchFilter));
+    if (!rows.length) {
+      const available = (data || [])
+        .filter((row) => row?.nama_cabang)
+        .map((row) => `${row.kode_cabang || "-"}:${row.nama_cabang}`)
+        .join(" | ");
+      throw new Error(`Cabang tidak ditemukan: ${branchFilter}. Tersedia: ${available}`);
+    }
   }
   return rows;
 }
