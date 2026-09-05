@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arus Kas V2 | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/arus-kas-v2.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="ak2-body">
+<main class="ak2-shell">
+  <header class="ak2-head">
+    <div>
+      <div class="ak2-eyebrow">FINANCE • LEDGER UANG BARBER</div>
+      <h1>ARUS KAS V2</h1>
+      <p>Format familiar seperti UANG BARBER · semi otomatis · Owner verified</p>
+    </div>
+    <div class="ak2-user">
+      <span id="ak2Role">—</span>
+      <strong id="ak2User">—</strong>
+    </div>
+  </header>
+
+  <section class="ak2-toolbar">
+    <div class="ak2-filter-group">
+      <label>Periode</label>
+      <input type="date" id="ak2Start">
+      <span>—</span>
+      <input type="date" id="ak2End">
+    </div>
+    <div class="ak2-filter-group">
+      <label>Status</label>
+      <select id="ak2StatusFilter">
+        <option value="ALL">Semua</option>
+        <option value="BELUM_DIVERIFIKASI">Belum Diverifikasi</option>
+        <option value="OWNER_VERIFIED">Owner Verified</option>
+        <option value="MINTA_KOREKSI">Minta Koreksi</option>
+      </select>
+    </div>
+    <button type="button" class="ak2-btn ak2-btn-primary" id="ak2Reload">Tampilkan</button>
+    <button type="button" class="ak2-btn ak2-btn-gold" id="ak2Input">+ Input Manual</button>
+  </section>
+
+  <div id="ak2Message" class="ak2-message" hidden></div>
+
+  <section class="ak2-cards" aria-label="Saldo Arus Kas V2">
+    <article class="ak2-card is-main"><span>Kas Besar</span><strong id="ak2KasBesar">Rp0</strong><small>Saldo ledger utama</small></article>
+    <article class="ak2-card is-product"><span>Dana Produk</span><strong id="ak2DanaProduk">Rp0</strong><small>Hak Nett Produk</small></article>
+    <article class="ak2-card is-fine"><span>Kas Denda</span><strong id="ak2KasDenda">Rp0</strong><small>Denda yang sudah ditarik</small></article>
+    <article class="ak2-card is-receivable"><span>Piutang Setoran</span><strong id="ak2PiutangSetoran">Rp0</strong><small>Belum diambil</small></article>
+    <article class="ak2-card is-receivable"><span>Piutang Denda</span><strong id="ak2PiutangDenda">Rp0</strong><small>Belum ditarik</small></article>
+  </section>
+
+  <section class="ak2-ledger-card">
+    <div class="ak2-section-head">
+      <div>
+        <strong>BUKU ARUS KAS</strong>
+        <small>Saldo berjalan seperti spreadsheet UANG BARBER</small>
+      </div>
+      <span id="ak2RowCount">0 transaksi</span>
+    </div>
+    <div class="ak2-table-wrap">
+      <table class="ak2-table">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Pemasukan</th>
+            <th>Ket. Pemasukan</th>
+            <th>Pengeluaran</th>
+            <th>Ket. Pengeluaran</th>
+            <th>Saldo</th>
+            <th>Sumber</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="ak2LedgerBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="ak2-qris-card">
+    <div class="ak2-section-head">
+      <div>
+        <strong>REKONSILIASI QRIS / GOPAY</strong>
+        <small>Selisih Arus Kas V2 · terpisah dari selisih Setoran 3 Harian</small>
+      </div>
+    </div>
+    <div class="ak2-qris-summary">
+      <div><span>Uang Rekening Sesuai Data</span><strong id="ak2QrisExpected">Rp0</strong></div>
+      <div><span>Sudah Ditransfer / Masuk Kas</span><strong id="ak2QrisActual">Rp0</strong></div>
+      <div><span>Selisih</span><strong id="ak2QrisDiff">Rp0</strong></div>
+    </div>
+    <div class="ak2-table-wrap">
+      <table class="ak2-table ak2-qris-table">
+        <thead><tr><th>Periode</th><th>Uang Rekening</th><th>Masuk Kas</th><th>Selisih</th><th>Keterangan</th></tr></thead>
+        <tbody id="ak2QrisBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div class="ak2-modal" id="ak2Modal" hidden>
+  <div class="ak2-backdrop" data-ak2-close></div>
+  <div class="ak2-panel" role="dialog" aria-modal="true" aria-labelledby="ak2ModalTitle">
+    <div class="ak2-modal-head">
+      <div><span class="ak2-eyebrow">TRANSAKSI MANUAL</span><h2 id="ak2ModalTitle">Input Arus Kas</h2></div>
+      <button type="button" class="ak2-close" data-ak2-close>×</button>
+    </div>
+
+    <input type="hidden" id="ak2EditId">
+    <div class="ak2-form-grid">
+      <label>Tanggal<input type="date" id="ak2Tanggal"></label>
+      <label>Jenis
+        <select id="ak2Jenis">
+          <option value="IN">Pemasukan</option>
+          <option value="OUT">Pengeluaran</option>
+        </select>
+      </label>
+      <label>Kategori
+        <select id="ak2Kategori">
+          <option value="PEMASUKAN_LAIN">Pemasukan Lain</option>
+          <option value="QRIS_TRANSFER">QRIS / GoPay Transfer</option>
+          <option value="BARBER">Pengeluaran Barber</option>
+          <option value="PRIBADI_OWNER">Pribadi Owner</option>
+          <option value="TRANSFER_INTERNAL">Transfer Internal</option>
+          <option value="DENDA">Kas Denda</option>
+          <option value="PRODUK">Dana Produk</option>
+        </select>
+      </label>
+      <label>Wallet
+        <select id="ak2Wallet">
+          <option value="KAS_BESAR">Kas Besar</option>
+          <option value="DANA_PRODUK">Dana Produk</option>
+          <option value="KAS_DENDA">Kas Denda</option>
+          <option value="PIUTANG_SETORAN">Piutang Setoran</option>
+          <option value="PIUTANG_DENDA">Piutang Denda</option>
+        </select>
+      </label>
+      <label class="ak2-span-2">Nominal
+        <input type="text" inputmode="numeric" autocomplete="off" id="ak2Nominal" placeholder="Rp0">
+      </label>
+      <label class="ak2-span-2">Keterangan
+        <input type="text" id="ak2Keterangan" placeholder="Contoh: Setoran QRIS 1–3 Sep / kebutuhan barber">
+      </label>
+      <div class="ak2-period-fields" id="ak2SourcePeriod" hidden>
+        <label>Periode Sumber<input type="date" id="ak2SourceStart"></label>
+        <label>s/d<input type="date" id="ak2SourceEnd"></label>
+      </div>
+    </div>
+
+    <div class="ak2-modal-actions">
+      <button type="button" class="ak2-btn" data-ak2-close>Batal</button>
+      <button type="button" class="ak2-btn ak2-btn-primary" id="ak2EditBtn" hidden>Edit</button>
+      <button type="button" class="ak2-btn ak2-btn-gold" id="ak2SaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="ak2-modal" id="ak2DetailModal" hidden>
+  <div class="ak2-backdrop" data-ak2-detail-close></div>
+  <div class="ak2-panel ak2-detail-panel">
+    <div class="ak2-modal-head"><div><span class="ak2-eyebrow">DETAIL TRANSAKSI</span><h2 id="ak2DetailTitle">—</h2></div><button type="button" class="ak2-close" data-ak2-detail-close>×</button></div>
+    <div id="ak2DetailBody" class="ak2-detail-body"></div>
+    <div class="ak2-modal-actions" id="ak2DetailActions"></div>
+  </div>
+</div>
+
+<div class="ak2-busy" id="ak2Busy" hidden>Memproses...</div>
+
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/setoran-money-engine.js"></script>
+<script src="../js/modules/daily-data-engine.js"></script>
+<script src="../js/modules/arus-kas-v2.js"></script>
+</body>
+</html>
