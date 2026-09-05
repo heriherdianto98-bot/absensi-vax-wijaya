@@ -1,0 +1,59 @@
+/* ARUS KAS V2 — FREEZE BUKU ARUS KAS · UI ONLY */
+
+/* Semua area di atas tetap ikut scroll normal. Buku Arus Kas akan menempel
+   di bagian atas viewport saat sudah mencapai posisinya. */
+.ak2-ledger-card{
+  position:sticky;
+  top:8px;
+  z-index:30;
+  max-height:calc(100vh - 16px);
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 18px 44px rgba(0,0,0,.38),0 0 0 1px rgba(73,111,151,.12);
+}
+
+/* Judul Buku Arus Kas tetap terlihat saat isi ledger panjang. */
+.ak2-ledger-card .ak2-section-head{
+  flex:0 0 auto;
+  position:sticky;
+  top:0;
+  z-index:32;
+}
+
+/* Header kolom tetap freeze; baris transaksi yang bergerak di dalam area ini. */
+.ak2-ledger-card .ak2-table-wrap{
+  flex:1 1 auto;
+  min-height:0;
+  max-height:calc(100vh - 104px);
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+.ak2-ledger-card .ak2-table thead th{
+  position:sticky;
+  top:0;
+  z-index:31;
+}
+
+/* Jangan gunakan freeze saat layar kecil agar tidak memakan seluruh viewport. */
+@media(max-width:760px){
+  .ak2-ledger-card{
+    position:relative;
+    top:auto;
+    max-height:none;
+  }
+  .ak2-ledger-card .ak2-table-wrap{max-height:none}
+}
+
+/* Freeze tidak berlaku untuk mode Print/PDF. */
+@media print{
+  .ak2-ledger-card{
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+    max-height:none!important;
+    display:block!important;
+  }
+  .ak2-ledger-card .ak2-section-head{position:static!important}
+  .ak2-ledger-card .ak2-table-wrap{max-height:none!important;overflow:visible!important}
+  .ak2-ledger-card .ak2-table thead th{position:static!important}
+}
