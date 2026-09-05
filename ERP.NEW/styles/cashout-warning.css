@@ -22,7 +22,7 @@ html body.page-erp-dashboard .cashout-warning-card{
         inset 0 -2px 10px rgba(0,0,0,.34),
         0 8px 18px rgba(0,0,0,.22),
         0 0 18px rgba(239,68,68,.10);
-    padding:10px 12px;
+    padding:12px 14px;
     color:#F8FAFC;
 }
 
@@ -58,43 +58,43 @@ html body.page-erp-dashboard .cashout-warning-icon{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    width:32px;
-    height:32px;
-    flex:0 0 32px;
+    width:34px;
+    height:34px;
+    flex:0 0 34px;
     border-radius:10px;
     border:1px solid rgba(248,113,113,.55);
     background:rgba(239,68,68,.14);
     color:#FCA5A5;
-    font-size:18px;
+    font-size:20px;
     font-weight:900;
     box-shadow:0 0 12px rgba(239,68,68,.14);
 }
 
 html body.page-erp-dashboard .cashout-warning-kicker{
-    margin:0 0 1px;
-    font-size:9px;
+    margin:0 0 2px;
+    font-size:10px;
     line-height:1.1;
-    font-weight:800;
+    font-weight:900;
     letter-spacing:.14em;
     color:#FCA5A5;
 }
 
 html body.page-erp-dashboard .cashout-warning-card h3{
     margin:0;
-    font-size:15px;
+    font-size:17px;
     line-height:1.15;
-    font-weight:800;
+    font-weight:900;
     color:#FFF1F2;
 }
 
 html body.page-erp-dashboard .cashout-warning-badge{
     flex:0 0 auto;
-    padding:4px 8px;
+    padding:5px 10px;
     border-radius:999px;
     border:1px solid rgba(248,113,113,.46);
     background:rgba(239,68,68,.12);
     color:#FCA5A5;
-    font-size:10px;
+    font-size:11px;
     font-weight:900;
     letter-spacing:.06em;
 }
@@ -102,37 +102,39 @@ html body.page-erp-dashboard .cashout-warning-badge{
 html body.page-erp-dashboard .cashout-warning-scope{
     position:relative;
     z-index:1;
-    margin:7px 0 8px;
+    margin:8px 0 10px;
     color:#CBD5E1;
-    font-size:10px;
-    line-height:1.25;
+    font-size:11px;
+    line-height:1.3;
+    font-weight:650;
 }
 
 html body.page-erp-dashboard .cashout-warning-table{
     position:relative;
     z-index:1;
     overflow:hidden;
-    border:1px solid rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.08);
     border-radius:10px;
-    background:rgba(0,0,0,.08);
+    background:rgba(0,0,0,.10);
 }
 
 html body.page-erp-dashboard .cashout-warning-columns,
 html body.page-erp-dashboard .cashout-warning-row{
     display:grid;
-    grid-template-columns:minmax(150px,1fr) minmax(120px,.72fr) minmax(240px,1.9fr) minmax(130px,.9fr);
-    gap:14px;
+    grid-template-columns:minmax(170px,1fr) minmax(140px,.72fr) minmax(260px,1.9fr) minmax(150px,.9fr);
+    gap:16px;
     align-items:center;
 }
 
 html body.page-erp-dashboard .cashout-warning-columns{
-    padding:6px 10px;
-    background:rgba(255,255,255,.035);
-    border-bottom:1px solid rgba(255,255,255,.07);
+    padding:9px 12px;
+    background:rgba(255,255,255,.05);
+    border-bottom:1px solid rgba(248,113,113,.18);
     color:#FCA5A5;
-    font-size:9px;
+    font-size:12px;
+    line-height:1.15;
     font-weight:900;
-    letter-spacing:.08em;
+    letter-spacing:.07em;
     text-transform:uppercase;
 }
 
@@ -142,9 +144,9 @@ html body.page-erp-dashboard .cashout-warning-list{
 
 html body.page-erp-dashboard .cashout-warning-row{
     min-width:0;
-    padding:7px 10px;
-    border-bottom:1px solid rgba(255,255,255,.055);
-    background:rgba(255,255,255,.015);
+    padding:10px 12px;
+    border-bottom:1px solid rgba(255,255,255,.065);
+    background:rgba(255,255,255,.018);
 }
 
 html body.page-erp-dashboard .cashout-warning-row:last-child{
@@ -162,7 +164,7 @@ html body.page-erp-dashboard .cashout-warning-cell{
 html body.page-erp-dashboard .cashout-warning-cabang{
     display:flex;
     flex-direction:column;
-    gap:1px;
+    gap:3px;
 }
 
 html body.page-erp-dashboard .cashout-warning-branch{
@@ -170,20 +172,25 @@ html body.page-erp-dashboard .cashout-warning-branch{
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
-    font-size:12px;
+    font-size:15px;
+    line-height:1.15;
+    font-weight:900;
     color:#F8FAFC;
     text-transform:capitalize;
 }
 
 html body.page-erp-dashboard .cashout-warning-date{
-    color:#8B939E;
-    font-size:9px;
-    font-weight:700;
+    color:#A6AFBC;
+    font-size:11px;
+    line-height:1.1;
+    font-weight:800;
 }
 
 html body.page-erp-dashboard .cashout-warning-amount{
-    font-size:13px;
-    color:#F87171;
+    font-size:16px;
+    line-height:1.15;
+    font-weight:900;
+    color:#FF7676;
     white-space:nowrap;
 }
 
@@ -192,13 +199,15 @@ html body.page-erp-dashboard .cashout-warning-kasir{
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
-    font-size:10px;
-    color:#E2E8F0;
-    font-weight:700;
+    font-size:14px;
+    line-height:1.2;
+    color:#EEF2F7;
+    font-weight:800;
 }
 
 html body.page-erp-dashboard .cashout-warning-kasir{
-    color:#F8FAFC;
+    color:#FFFFFF;
+    font-weight:900;
 }
 
 html body.page-erp-dashboard .cashout-warning-toggle{
@@ -207,14 +216,14 @@ html body.page-erp-dashboard .cashout-warning-toggle{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    margin:8px 0 0;
-    min-height:28px;
-    padding:5px 10px;
+    margin:10px 0 0;
+    min-height:32px;
+    padding:6px 12px;
     border-radius:8px;
     border:1px solid rgba(248,113,113,.36);
     background:rgba(239,68,68,.10);
     color:#FCA5A5;
-    font-size:10px;
+    font-size:11px;
     font-weight:900;
     cursor:pointer;
 }
@@ -245,12 +254,19 @@ html body.page-erp-dashboard .cashout-warning-toggle:hover{
     }
     html body.page-erp-dashboard .cashout-warning-row{
         grid-template-columns:1fr 1fr;
-        gap:6px 10px;
+        gap:8px 12px;
+    }
+    html body.page-erp-dashboard .cashout-warning-branch{
+        font-size:14px;
+    }
+    html body.page-erp-dashboard .cashout-warning-amount{
+        font-size:15px;
     }
     html body.page-erp-dashboard .cashout-warning-desc,
     html body.page-erp-dashboard .cashout-warning-kasir{
         grid-column:auto;
         white-space:normal;
+        font-size:13px;
     }
 }
 
