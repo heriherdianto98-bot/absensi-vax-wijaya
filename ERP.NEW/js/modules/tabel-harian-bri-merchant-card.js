@@ -195,10 +195,23 @@ PENTING:
             #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item{grid-column:span 5}
             #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+5):nth-child(-n+9){grid-column:span 4}
 
+            /* Baris ke-4 (4 card paling bawah) harus setinggi card normal, tidak membesar karena teks detail. */
+            #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+14):nth-child(-n+17){
+                height:72px;
+                min-height:72px;
+                max-height:72px;
+                box-sizing:border-box;
+            }
+
             @media (max-width:1100px){
                 #thcTotals .thc-totals-grid.thc-grid-17{grid-template-columns:repeat(2,minmax(0,1fr))}
                 #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item,
                 #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+5):nth-child(-n+9){grid-column:span 1}
+                #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+14):nth-child(-n+17){
+                    height:auto;
+                    min-height:72px;
+                    max-height:none;
+                }
             }
             @media (max-width:680px){
                 #thcTotals .thc-totals-grid.thc-grid-17{grid-template-columns:minmax(0,1fr)}
