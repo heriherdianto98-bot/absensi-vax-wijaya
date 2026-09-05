@@ -33,25 +33,30 @@
   filter:brightness(1.06);
 }
 
-/* Header Buku Arus Kas: lebih besar + pulse halus */
+/* Header Buku Arus Kas: lebih besar + pulse lebih tegas */
 .ak2-ledger-card .ak2-table th{
   font-size:14px;
   font-weight:900;
-  letter-spacing:.07em;
+  letter-spacing:.075em;
   padding-top:13px;
   padding-bottom:13px;
-  color:#f2f7ff;
-  animation:ak2LedgerHeaderPulse 2.8s ease-in-out infinite;
+  color:#f8fbff;
+  animation:ak2LedgerHeaderPulse 1.55s ease-in-out infinite;
 }
 
 @keyframes ak2LedgerHeaderPulse{
   0%,100%{
-    color:#eef6ff;
-    text-shadow:0 0 0 rgba(115,177,235,0);
+    color:#dbeaff;
+    text-shadow:0 0 2px rgba(99,170,235,.18);
+    filter:brightness(.92);
   }
-  50%{
+  45%,55%{
     color:#ffffff;
-    text-shadow:0 0 10px rgba(115,177,235,.48),0 0 18px rgba(115,177,235,.20);
+    text-shadow:
+      0 0 7px rgba(110,190,255,.95),
+      0 0 15px rgba(90,170,245,.72),
+      0 0 24px rgba(75,145,225,.42);
+    filter:brightness(1.22);
   }
 }
 
