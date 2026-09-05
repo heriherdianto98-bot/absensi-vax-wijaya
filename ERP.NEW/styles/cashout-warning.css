@@ -108,31 +108,61 @@ html body.page-erp-dashboard .cashout-warning-scope{
     line-height:1.25;
 }
 
-html body.page-erp-dashboard .cashout-warning-list{
+html body.page-erp-dashboard .cashout-warning-table{
     position:relative;
     z-index:1;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:10px;
+    background:rgba(0,0,0,.08);
+}
+
+html body.page-erp-dashboard .cashout-warning-columns,
+html body.page-erp-dashboard .cashout-warning-row{
     display:grid;
-    gap:5px;
+    grid-template-columns:minmax(150px,1fr) minmax(120px,.72fr) minmax(240px,1.9fr) minmax(130px,.9fr);
+    gap:14px;
+    align-items:center;
+}
+
+html body.page-erp-dashboard .cashout-warning-columns{
+    padding:6px 10px;
+    background:rgba(255,255,255,.035);
+    border-bottom:1px solid rgba(255,255,255,.07);
+    color:#FCA5A5;
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+
+html body.page-erp-dashboard .cashout-warning-list{
+    display:grid;
 }
 
 html body.page-erp-dashboard .cashout-warning-row{
-    display:grid;
-    grid-template-columns:minmax(160px,.7fr) minmax(0,1.6fr);
-    gap:10px;
-    align-items:center;
     min-width:0;
-    padding:6px 8px;
-    border-radius:10px;
-    border:1px solid rgba(255,255,255,.07);
-    background:rgba(255,255,255,.025);
+    padding:7px 10px;
+    border-bottom:1px solid rgba(255,255,255,.055);
+    background:rgba(255,255,255,.015);
 }
 
-html body.page-erp-dashboard .cashout-warning-main{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
+html body.page-erp-dashboard .cashout-warning-row:last-child{
+    border-bottom:0;
+}
+
+html body.page-erp-dashboard .cashout-warning-row[hidden]{
+    display:none !important;
+}
+
+html body.page-erp-dashboard .cashout-warning-cell{
     min-width:0;
+}
+
+html body.page-erp-dashboard .cashout-warning-cabang{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
 }
 
 html body.page-erp-dashboard .cashout-warning-branch{
@@ -142,44 +172,56 @@ html body.page-erp-dashboard .cashout-warning-branch{
     white-space:nowrap;
     font-size:12px;
     color:#F8FAFC;
+    text-transform:capitalize;
+}
+
+html body.page-erp-dashboard .cashout-warning-date{
+    color:#8B939E;
+    font-size:9px;
+    font-weight:700;
 }
 
 html body.page-erp-dashboard .cashout-warning-amount{
-    flex:0 0 auto;
     font-size:13px;
     color:#F87171;
-}
-
-html body.page-erp-dashboard .cashout-warning-meta{
-    display:flex;
-    align-items:center;
-    gap:6px 12px;
-    min-width:0;
-    color:#AAB2BD;
-    font-size:10px;
-    line-height:1.2;
-    overflow:hidden;
-}
-
-html body.page-erp-dashboard .cashout-warning-meta span{
-    min-width:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
     white-space:nowrap;
 }
 
-html body.page-erp-dashboard .cashout-warning-meta b{
+html body.page-erp-dashboard .cashout-warning-desc,
+html body.page-erp-dashboard .cashout-warning-kasir{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:10px;
     color:#E2E8F0;
     font-weight:700;
 }
 
-html body.page-erp-dashboard .cashout-warning-more{
+html body.page-erp-dashboard .cashout-warning-kasir{
+    color:#F8FAFC;
+}
+
+html body.page-erp-dashboard .cashout-warning-toggle{
     position:relative;
-    z-index:1;
-    margin:6px 0 0;
-    font-size:10px;
+    z-index:2;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin:8px 0 0;
+    min-height:28px;
+    padding:5px 10px;
+    border-radius:8px;
+    border:1px solid rgba(248,113,113,.36);
+    background:rgba(239,68,68,.10);
     color:#FCA5A5;
-    font-weight:700;
+    font-size:10px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+html body.page-erp-dashboard .cashout-warning-toggle:hover{
+    border-color:rgba(248,113,113,.62);
+    background:rgba(239,68,68,.16);
 }
 
 @keyframes cashoutWarningPulse{
@@ -198,11 +240,17 @@ html body.page-erp-dashboard .cashout-warning-more{
 }
 
 @media (max-width:899px){
-    html body.page-erp-dashboard .cashout-warning-row{
-        grid-template-columns:1fr;
+    html body.page-erp-dashboard .cashout-warning-columns{
+        display:none;
     }
-    html body.page-erp-dashboard .cashout-warning-meta{
-        flex-wrap:wrap;
+    html body.page-erp-dashboard .cashout-warning-row{
+        grid-template-columns:1fr 1fr;
+        gap:6px 10px;
+    }
+    html body.page-erp-dashboard .cashout-warning-desc,
+    html body.page-erp-dashboard .cashout-warning-kasir{
+        grid-column:auto;
+        white-space:normal;
     }
 }
 
