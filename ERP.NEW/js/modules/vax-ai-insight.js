@@ -33,25 +33,47 @@ const VaxAiInsight = {
         style.id = "vaxAiPredictionPulseStyle";
         style.textContent = `
             #vaxAiPredictSection.ai-predict-soft-pulse .ai-predict-hero__frame{
-                animation:vaxAiPredictSoftPulse 2.8s ease-in-out infinite;
-                will-change:box-shadow, filter;
+                animation:vaxAiPredictSoftPulse 1.8s ease-in-out infinite;
+                will-change:box-shadow, filter, transform;
+            }
+            #vaxAiPredictSection.ai-predict-soft-pulse .ai-predict-basis-grid{
+                gap:12px 18px;
+            }
+            #vaxAiPredictSection.ai-predict-soft-pulse .ai-predict-basis-item{
+                font-size:16px;
+                font-weight:800;
+                padding:8px 14px;
+            }
+            #vaxAiPredictSection.ai-predict-soft-pulse .ai-predict-basis-item strong{
+                font-size:17px;
+                font-weight:900;
+            }
+            #vaxAiPredictSection.ai-predict-soft-pulse .ai-predict-disclaimer{
+                font-size:15px;
+                font-weight:800;
+                line-height:1.55;
+                color:#cbd5e1;
             }
             @keyframes vaxAiPredictSoftPulse{
                 0%,100%{
                     filter:brightness(1);
+                    transform:translateY(0) scale(1);
                     box-shadow:
                         inset 0 1px 0 rgba(255,255,255,.16),
                         inset 0 -4px 14px rgba(0,0,0,.40),
                         0 6px 18px rgba(0,0,0,.28),
-                        0 0 20px rgba(242,194,48,.10);
+                        0 0 18px rgba(242,194,48,.16),
+                        0 0 0 1px rgba(242,194,48,.12);
                 }
                 50%{
-                    filter:brightness(1.035);
+                    filter:brightness(1.11);
+                    transform:translateY(-1px) scale(1.002);
                     box-shadow:
-                        inset 0 1px 0 rgba(255,255,255,.19),
-                        inset 0 -4px 14px rgba(0,0,0,.36),
-                        0 8px 22px rgba(0,0,0,.30),
-                        0 0 30px rgba(242,194,48,.24);
+                        inset 0 1px 0 rgba(255,255,255,.24),
+                        inset 0 -4px 14px rgba(0,0,0,.32),
+                        0 10px 26px rgba(0,0,0,.34),
+                        0 0 44px rgba(242,194,48,.52),
+                        0 0 0 2px rgba(242,194,48,.34);
                 }
             }
             @media (prefers-reduced-motion: reduce){
@@ -66,7 +88,7 @@ const VaxAiInsight = {
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
+            .replace(/\"/g, "&quot;")
             .replace(/'/g, "&#39;");
     },
 
