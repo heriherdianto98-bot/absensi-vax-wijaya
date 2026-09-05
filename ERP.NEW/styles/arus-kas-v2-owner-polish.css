@@ -1,0 +1,60 @@
+/* ARUS KAS V2 — OWNER POLISH ROUND 2 · UI ONLY */
+
+/* QRIS summary: beda warna sesuai konteks */
+.ak2-qris-summary>div:nth-child(1){
+  background:linear-gradient(180deg,#102131,#111820);
+  border-color:#2d668f;
+  box-shadow:inset 4px 0 0 #3f8fc5,0 10px 24px rgba(34,106,153,.10);
+}
+.ak2-qris-summary>div:nth-child(1) span{color:#8fc7ea}
+.ak2-qris-summary>div:nth-child(1) strong{color:#d9f2ff}
+
+.ak2-qris-summary>div:nth-child(2){
+  background:linear-gradient(180deg,#12261b,#111a16);
+  border-color:#367d52;
+  box-shadow:inset 4px 0 0 #4fa56f,0 10px 24px rgba(47,131,81,.10);
+}
+.ak2-qris-summary>div:nth-child(2) span{color:#9edbb3}
+.ak2-qris-summary>div:nth-child(2) strong{color:#ddffea}
+
+.ak2-qris-summary>div:nth-child(3){
+  background:linear-gradient(180deg,#301a18,#1b1414);
+  border-color:#965046;
+  box-shadow:inset 4px 0 0 #d66d5f,0 10px 24px rgba(180,73,60,.11);
+}
+.ak2-qris-summary>div:nth-child(3) span{color:#efaa9f}
+.ak2-qris-summary>div:nth-child(3) strong{color:#ffd9d2}
+
+.ak2-qris-summary>div{
+  transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
+}
+.ak2-qris-summary>div:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.06);
+}
+
+/* Header Buku Arus Kas: lebih besar + pulse halus */
+.ak2-ledger-card .ak2-table th{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.07em;
+  padding-top:13px;
+  padding-bottom:13px;
+  color:#f2f7ff;
+  animation:ak2LedgerHeaderPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes ak2LedgerHeaderPulse{
+  0%,100%{
+    color:#eef6ff;
+    text-shadow:0 0 0 rgba(115,177,235,0);
+  }
+  50%{
+    color:#ffffff;
+    text-shadow:0 0 10px rgba(115,177,235,.48),0 0 18px rgba(115,177,235,.20);
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .ak2-ledger-card .ak2-table th{animation:none}
+}
