@@ -1,1 +1,177 @@
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Source Sans 3",system-ui,sans-serif;background:#0b0d10;color:#f4f4f4}.ak2-body{background:radial-gradient(circle at top right,rgba(198,151,57,.08),transparent 28%),#0b0d10}.ak2-shell{width:min(1500px,calc(100% - 32px));margin:0 auto;padding:28px 0 48px}.ak2-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;padding:4px 2px 22px;border-bottom:1px solid rgba(218,170,74,.35)}.ak2-eyebrow{font-size:12px;letter-spacing:.16em;font-weight:800;color:#d7aa55}.ak2-head h1,.ak2-modal-head h2{margin:5px 0 3px}.ak2-head h1{font-size:30px}.ak2-head p{margin:0;color:#9ea3aa}.ak2-user{display:flex;flex-direction:column;align-items:flex-end;gap:3px}.ak2-user span{font-size:11px;color:#d7aa55;font-weight:800}.ak2-user strong{font-size:15px}.ak2-toolbar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;padding:18px 0}.ak2-filter-group{display:flex;align-items:center;gap:8px;background:#12161b;border:1px solid #252b33;border-radius:12px;padding:9px 11px}.ak2-filter-group label{font-size:11px;text-transform:uppercase;color:#8f969e;font-weight:800}.ak2-filter-group input,.ak2-filter-group select,.ak2-form-grid input,.ak2-form-grid select{background:#0d1116;color:#fff;border:1px solid #313843;border-radius:9px;padding:10px 12px;outline:none}.ak2-filter-group input:focus,.ak2-filter-group select:focus,.ak2-form-grid input:focus,.ak2-form-grid select:focus{border-color:#d1a44f;box-shadow:0 0 0 2px rgba(209,164,79,.12)}.ak2-btn{border:1px solid #333b46;background:#171c22;color:#fff;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.ak2-btn:hover{transform:translateY(-1px)}.ak2-btn-primary{background:#1b2a22;border-color:#2f6847;color:#d9ffe8}.ak2-btn-gold{background:#2b2111;border-color:#8c692c;color:#ffe4a8}.ak2-message{margin:0 0 14px;padding:10px 12px;border-radius:10px;background:#171c22;border:1px solid #343c47}.ak2-message.is-error{border-color:#8b3a3a;color:#ffbcbc}.ak2-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:18px}.ak2-card{background:#11151a;border:1px solid #252c34;border-radius:14px;padding:15px 16px;min-height:112px;display:flex;flex-direction:column;justify-content:center}.ak2-card span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9da3ab;font-weight:800}.ak2-card strong{font-size:24px;margin:4px 0}.ak2-card small{color:#787f88}.ak2-card.is-main{border-color:#9f762f;box-shadow:inset 0 2px #c99b45}.ak2-card.is-product{border-color:#6d4b88;box-shadow:inset 0 2px #9d6fc1}.ak2-card.is-fine{border-color:#7f5928;box-shadow:inset 0 2px #c78f3e}.ak2-card.is-receivable{border-color:#334961;box-shadow:inset 0 2px #4e7197}.ak2-ledger-card,.ak2-qris-card{background:#101419;border:1px solid #252c34;border-radius:15px;overflow:hidden;margin-top:15px}.ak2-section-head{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;border-bottom:1px solid #242a32}.ak2-section-head div{display:flex;flex-direction:column}.ak2-section-head strong{font-size:14px;letter-spacing:.05em}.ak2-section-head small,.ak2-section-head>span{color:#858c95}.ak2-table-wrap{overflow:auto;max-width:100%}.ak2-table{width:100%;border-collapse:collapse;min-width:1050px}.ak2-table th{position:sticky;top:0;background:#171c22;color:#b9bec4;font-size:11px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:11px 12px;border-bottom:1px solid #2a3139}.ak2-table td{padding:11px 12px;border-bottom:1px solid #1d232a;font-size:14px;vertical-align:middle}.ak2-table tbody tr{cursor:pointer;transition:.15s ease}.ak2-table tbody tr:hover{background:#151a20}.ak2-money-in{color:#a7e8bc;font-weight:800}.ak2-money-out{color:#ffb0a9;font-weight:800}.ak2-balance{font-weight:800;color:#f3d28d}.ak2-source{display:inline-flex;padding:3px 7px;border-radius:999px;font-size:10px;font-weight:800;background:#20262d;color:#c8cdd3}.ak2-source.is-auto{background:#182f24;color:#9ee0b6}.ak2-source.is-owner{background:#2d2414;color:#f2ce7b}.ak2-status{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}.ak2-status.is-pending{background:#332913;color:#f1cb78}.ak2-status.is-verified{background:#183122;color:#9de0b4}.ak2-status.is-correction{background:#381d1d;color:#ffabab}.ak2-qris-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px 16px}.ak2-qris-summary>div{background:#14191f;border:1px solid #262e37;border-radius:11px;padding:12px 14px}.ak2-qris-summary span{display:block;font-size:11px;color:#8d949d;text-transform:uppercase;font-weight:800}.ak2-qris-summary strong{font-size:20px}.ak2-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center}.ak2-modal[hidden]{display:none}.ak2-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}.ak2-panel{position:relative;width:min(620px,calc(100% - 28px));max-height:88vh;overflow:auto;background:#11161c;border:1px solid #343c46;border-radius:18px;box-shadow:0 22px 70px rgba(0,0,0,.55)}.ak2-detail-panel{width:min(720px,calc(100% - 28px))}.ak2-modal-head{display:flex;justify-content:space-between;align-items:flex-start;padding:18px;border-bottom:1px solid #272e36}.ak2-modal-head h2{font-size:22px}.ak2-close{border:0;background:transparent;color:#aaa;font-size:28px;cursor:pointer}.ak2-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:18px}.ak2-form-grid label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800;color:#aeb4bb}.ak2-span-2{grid-column:1/-1}.ak2-period-fields{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:13px}.ak2-modal-actions{display:flex;justify-content:flex-end;gap:9px;padding:15px 18px;border-top:1px solid #272e36}.ak2-detail-body{padding:18px}.ak2-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ak2-detail-item{background:#151a20;border:1px solid #252d35;border-radius:11px;padding:11px 12px}.ak2-detail-item span{display:block;color:#858c94;font-size:11px;text-transform:uppercase;font-weight:800}.ak2-detail-item strong{display:block;margin-top:2px}.ak2-busy{position:fixed;right:18px;bottom:18px;z-index:1200;background:#241b0e;border:1px solid #85652f;color:#f6d48e;padding:11px 14px;border-radius:10px;font-weight:800}.ak2-empty{text-align:center;color:#7d848d;padding:28px!important}.ak2-qris-diff{font-weight:800}.ak2-qris-diff.is-alert{color:#ffb0a9}.ak2-qris-diff.is-ok{color:#a7e8bc}@media(max-width:1100px){.ak2-cards{grid-template-columns:repeat(3,1fr)}}@media(max-width:760px){.ak2-shell{width:min(100% - 18px,1500px);padding-top:14px}.ak2-head{flex-direction:column}.ak2-user{align-items:flex-start}.ak2-cards{grid-template-columns:1fr 1fr}.ak2-qris-summary{grid-template-columns:1fr}.ak2-form-grid,.ak2-detail-grid,.ak2-period-fields{grid-template-columns:1fr}.ak2-span-2{grid-column:auto}}
+
+/* =========================================================
+   ARUS KAS V2 — OWNER UI POLISH 2026-09-06
+   UI only. Tidak mengubah engine / formula / data flow.
+   ========================================================= */
+
+.ak2-head h1{
+  font-size:34px;
+  font-weight:900;
+  letter-spacing:.015em;
+  text-shadow:0 0 22px rgba(217,169,78,.08);
+}
+.ak2-eyebrow{font-size:13px;font-weight:900}
+.ak2-user strong{font-size:17px;font-weight:900}
+
+.ak2-filter-group{
+  background:linear-gradient(180deg,#161b21,#11161b);
+  border-color:rgba(82,95,111,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 8px 22px rgba(0,0,0,.16);
+}
+.ak2-filter-group label{
+  color:#d6a94f;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.06em;
+}
+.ak2-filter-group input,.ak2-filter-group select{
+  background:linear-gradient(180deg,#121821,#0d1218);
+  border-color:#394450;
+  color:#f7f8fa;
+  font-weight:800;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);
+}
+.ak2-filter-group select:hover,.ak2-filter-group input:hover{border-color:#6f8194}
+.ak2-filter-group select:focus,.ak2-filter-group input:focus{
+  border-color:#d1a44f;
+  box-shadow:0 0 0 2px rgba(209,164,79,.12),0 0 20px rgba(209,164,79,.08);
+}
+
+.ak2-btn{
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease;
+  box-shadow:0 7px 18px rgba(0,0,0,.2);
+}
+.ak2-btn-primary{
+  background:linear-gradient(180deg,#24563a,#173823);
+  border-color:#4d996b;
+  color:#ecfff3;
+  box-shadow:0 8px 22px rgba(52,137,88,.18),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.ak2-btn-primary:hover{box-shadow:0 10px 28px rgba(52,137,88,.28)}
+.ak2-btn-gold{
+  background:linear-gradient(180deg,#5a4117,#2f210d);
+  border-color:#c18b2d;
+  color:#ffe5a8;
+  box-shadow:0 8px 24px rgba(191,137,43,.18),inset 0 1px 0 rgba(255,255,255,.07);
+}
+.ak2-btn-gold:hover{box-shadow:0 10px 30px rgba(191,137,43,.28)}
+
+.ak2-card{
+  position:relative;
+  overflow:hidden;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.ak2-card::after{
+  content:"";
+  position:absolute;
+  inset:auto -28% -65% auto;
+  width:145px;height:145px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.055),transparent 66%);
+  pointer-events:none;
+  transform:translate3d(0,0,0);
+}
+.ak2-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 32px rgba(0,0,0,.28);
+}
+.ak2-card span{font-size:12px;font-weight:900;color:#b8bec6}
+.ak2-card strong{font-size:26px;font-weight:900}
+.ak2-card small{font-size:14px;color:#89919b}
+.ak2-card.is-main:hover{box-shadow:0 16px 32px rgba(201,155,69,.10)}
+.ak2-card.is-product:hover{box-shadow:0 16px 32px rgba(157,111,193,.12)}
+.ak2-card.is-fine:hover{box-shadow:0 16px 32px rgba(199,143,62,.11)}
+.ak2-card.is-receivable:hover{box-shadow:0 16px 32px rgba(78,113,151,.12)}
+
+.ak2-ledger-card{
+  background:linear-gradient(180deg,#121923,#0f141a 35%);
+  border-color:#33485f;
+  box-shadow:0 14px 34px rgba(0,0,0,.22),inset 0 1px 0 rgba(82,125,170,.08);
+}
+.ak2-ledger-card .ak2-section-head{
+  background:linear-gradient(90deg,rgba(41,67,94,.36),rgba(17,21,26,.25));
+  border-bottom-color:#38516c;
+  box-shadow:inset 4px 0 0 #5c86b3;
+}
+.ak2-ledger-card .ak2-section-head strong{
+  font-size:19px;
+  font-weight:900;
+  color:#e9f3ff;
+  letter-spacing:.04em;
+}
+.ak2-ledger-card .ak2-section-head small{font-size:14px;color:#9fb0c3}
+.ak2-ledger-card .ak2-section-head>span{
+  color:#b8c8d9;
+  font-weight:800;
+}
+.ak2-ledger-card .ak2-table th{
+  background:linear-gradient(180deg,#233244,#1a2633);
+  color:#dce8f4;
+  border-bottom-color:#49617a;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.055em;
+}
+.ak2-ledger-card .ak2-table tbody tr:hover{background:#172330}
+
+.ak2-qris-card{
+  background:linear-gradient(180deg,#15151f,#101419 38%);
+  border-color:#4a3c67;
+  box-shadow:0 14px 34px rgba(0,0,0,.22),inset 0 1px 0 rgba(144,106,198,.08);
+}
+.ak2-qris-card .ak2-section-head{
+  background:linear-gradient(90deg,rgba(79,55,116,.35),rgba(16,20,25,.2));
+  border-bottom-color:#55456f;
+  box-shadow:inset 4px 0 0 #9c70c4;
+}
+.ak2-qris-card .ak2-section-head strong{
+  font-size:19px;
+  font-weight:900;
+  color:#f0e8ff;
+  letter-spacing:.04em;
+}
+.ak2-qris-card .ak2-section-head small{font-size:14px;color:#b5a7c9}
+.ak2-qris-summary>div{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,#181c24,#12171d);
+  border-color:#3a4250;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.ak2-qris-summary>div::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,#9b70c6,#5a7fa8);
+  opacity:.9;
+}
+.ak2-qris-summary>div:hover{
+  transform:translateY(-2px);
+  border-color:#65557f;
+  box-shadow:0 12px 25px rgba(0,0,0,.22);
+}
+.ak2-qris-summary span{font-size:12px;font-weight:900;color:#b8bec8}
+.ak2-qris-summary strong{font-size:23px;font-weight:900;color:#f7f8fb}
+.ak2-qris-card .ak2-table th{
+  background:linear-gradient(180deg,#2a2237,#211b2c);
+  color:#e5d9f3;
+  border-bottom-color:#58496f;
+  font-size:12px;
+  font-weight:900;
+}
+.ak2-qris-card .ak2-table tbody tr:hover{background:#1a1722}
+
+.ak2-section-head strong,.ak2-modal-head h2{font-weight:900}
+
+@keyframes ak2SoftLift{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-1px)}
+}
+.ak2-card{animation:ak2SoftLift 5.8s ease-in-out infinite}
+.ak2-card:nth-child(2){animation-delay:.45s}
+.ak2-card:nth-child(3){animation-delay:.9s}
+.ak2-card:nth-child(4){animation-delay:1.35s}
+.ak2-card:nth-child(5){animation-delay:1.8s}
+
+@media (prefers-reduced-motion:reduce){
+  .ak2-card{animation:none}
+  .ak2-card,.ak2-btn,.ak2-qris-summary>div{transition:none}
+}
