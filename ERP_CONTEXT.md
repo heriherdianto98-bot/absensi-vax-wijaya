@@ -180,6 +180,18 @@ Technical process:
 - No `.env` / secrets in GitHub.
 - Always stop for owner review before broad changes.
 
-Last updated: **2026-08-19**
+## 10. Canonical Transaction Source — Owner Decision 2026-09-05
+Audit Minutes membuktikan `Customer Transactions + Guest Transactions` adalah breakdown visitor dan tidak selalu sama dengan jumlah transaksi aktual. Contoh audit menunjukkan Daily Recap / tabel Transactions dapat lebih tinggi karena satu visitor bisa membuat lebih dari satu transaksi, termasuk transaksi produk/minuman.
+
+Aturan canonical:
+- `daily_recap_source.transaction_minutes` = angka **TRANSACTION** resmi pada **Minutes Daily Recap**.
+- `customer_minutes` tetap = angka **CUSTOMER** Daily Recap.
+- `services_minutes` tetap = angka **SERVICES** Daily Recap.
+- Jangan derive TRX dari `Customer Transactions + Guest Transactions`.
+- Perubahan ini hanya mengoreksi source count TRX; formula Tabel Harian, DailyDataEngine, SetoranMoneyEngine, Cash Out, dan modul LOCK lain tidak diubah.
+
+Implementation commit: `af19c6fc051a23aa813b560f2485e0ab2afafdc8` (`FIX TRX canonical from Minutes Daily Recap`).
+
+Last updated: **2026-09-05**
 
 Source of truth: GitHub HARD LOCK branches + verified Supabase / Minutes data.
