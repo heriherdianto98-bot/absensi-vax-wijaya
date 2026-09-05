@@ -241,11 +241,42 @@ const VaxAiInsight = {
         return `${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
     },
 
+    formatForecastMonth(date){
+        if(!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        return `${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+    },
+
     forecastHorizon(){
         if(typeof DashboardEngine === "undefined") return null;
-        const start = this.parseIsoDate(DashboardEngine.lastRange?.start);
-        const end = this.parseIsoDate(DashboardEngine.lastRange?.end || DashboardEngine.lastRange?.start);
+        const startRaw = DashboardEngine.lastRange?.start;
+        const endRaw = DashboardEngine.lastRange?.end || startRaw;
+        const start = this.parseIsoDate(startRaw);
+        const end = this.parseIsoDate(endRaw);
         if(!start || !end || end < start) return null;
+
+        const normalizedPeriode = typeof DashboardEngine.normalizePeriode === "function"
+            ? DashboardEngine.normalizePeriode(DashboardEngine.lastPeriode)
+            : String(DashboardEngine.lastPeriode || "").toLowerCase().replace(/\s+/g, "");
+        const isFullMonth = typeof DashboardEngine.isFullCalendarMonth === "function"
+            ? DashboardEngine.isFullCalendarMonth(startRaw, endRaw)
+            : false;
+        const isMonthMode = normalizedPeriode === "bulanini"
+            || DashboardEngine.lastCustomMode === "month"
+            || (normalizedPeriode === "customtanggal" && isFullMonth);
+
+        if(isMonthMode){
+            const nextMonthStart = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1));
+            const nextMonthEnd = new Date(Date.UTC(nextMonthStart.getUTCFullYear(), nextMonthStart.getUTCMonth() + 1, 0));
+            return {
+                mode: "month",
+                days: nextMonthEnd.getUTCDate(),
+                start: nextMonthStart,
+                end: nextMonthEnd,
+                monthLabel: this.formatForecastMonth(nextMonthStart),
+                rangeLabel: `${this.formatForecastDate(nextMonthStart)} – ${this.formatForecastDate(nextMonthEnd)}`
+            };
+        }
 
         const DAY_MS = 86400000;
         const days = Math.floor((end.getTime() - start.getTime()) / DAY_MS) + 1;
@@ -254,6 +285,7 @@ const VaxAiInsight = {
         const nextStart = new Date(end.getTime() + DAY_MS);
         const nextEnd = new Date(nextStart.getTime() + ((days - 1) * DAY_MS));
         return {
+            mode: "days",
             days,
             start: nextStart,
             end: nextEnd,
@@ -404,7 +436,9 @@ const VaxAiInsight = {
         const basis = result.basis;
         const horizon = this.forecastHorizon();
         const forecastTitle = horizon
-            ? `Prediksi ${horizon.days} Hari Berikutnya`
+            ? (horizon.mode === "month"
+                ? `Prediksi ${horizon.monthLabel}`
+                : `Prediksi ${horizon.days} Hari Berikutnya`)
             : "Prediksi Periode Berikutnya";
         const forecastRange = horizon?.rangeLabel || "";
         const confKey = String(result.confidence || "").toLowerCase();
@@ -414,6 +448,9 @@ const VaxAiInsight = {
                 ? "conf-rendah"
                 : "conf-sedang";
         const dirLabel = dir.charAt(0).toUpperCase() + dir.slice(1);
+        const disclaimer = horizon?.mode === "month"
+            ? "Estimasi omzet untuk bulan kalender di atas, berbasis periode aktif dan tren historis 7D/14D/30D."
+            : "Estimasi omzet untuk rentang tanggal di atas, berdurasi sama dengan periode aktif dan berbasis tren historis 7D/14D/30D.";
 
         el.innerHTML = `
             <div class="ai-predict-hero__body">
@@ -433,7 +470,7 @@ const VaxAiInsight = {
                 <span class="ai-predict-basis-item">14D <strong>${this.escapeHtml(this.formatSignedPct(basis.midTrend))}</strong></span>
                 <span class="ai-predict-basis-item">30D <strong>${this.escapeHtml(this.formatSignedPct(basis.longTrend))}</strong></span>
             </div>
-            <small class="ai-predict-disclaimer">Estimasi omzet untuk rentang tanggal di atas, berdurasi sama dengan periode aktif dan berbasis tren historis 7D/14D/30D.</small>
+            <small class="ai-predict-disclaimer">${this.escapeHtml(disclaimer)}</small>
         `;
     },
 
