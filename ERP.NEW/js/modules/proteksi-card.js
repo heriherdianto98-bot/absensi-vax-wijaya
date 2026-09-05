@@ -8,8 +8,8 @@ Rule keyword: protek / proteksi / protect.
 
 Owner flow:
 1. Klik card Proteksi Capster -> popup ringkas per cabang.
-2. Klik total proteksi cabang -> daftar Provider / Capster pada cabang itu.
-3. Klik Provider / Capster -> rincian tanggal + nominal proteksi provider tersebut.
+2. Klik total proteksi cabang -> daftar Provider / Capster + total proteksi provider.
+3. Klik total proteksi provider -> rincian tanggal + nominal proteksi provider tersebut.
 Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
 =========================================================
 */
@@ -43,7 +43,6 @@ Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
         if(legacyPatched) return true;
         if(typeof TabelHarianShareCards === "undefined") return false;
         if(typeof ProteksiEngine === "undefined") return false;
-
         TabelHarianShareCards.proteksiFromKeterangan = function(rawText){
             return ProteksiEngine.parseCashOutDetail(rawText)
                 .filter((item) => item.isProteksi && Number(item.nominal || 0) > 0)
@@ -150,9 +149,8 @@ Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
             #${MODAL_ID} th{position:sticky;top:0;background:#111b27;color:#f7c65b;text-align:left;padding:11px 14px;border-bottom:1px solid #2b3948}
             #${MODAL_ID} td{padding:11px 14px;border-bottom:1px solid #1c2936;vertical-align:middle}
             #${MODAL_ID} td:last-child,#${MODAL_ID} th:last-child{text-align:right;white-space:nowrap}
-            #${MODAL_ID} .pc-branch-btn,#${MODAL_ID} .pc-provider-btn{border:0;background:transparent;color:#fdba74;font:inherit;font-weight:800;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
-            #${MODAL_ID} .pc-provider-btn{font-size:15px;text-align:left}
-            #${MODAL_ID} .pc-provider-only td{text-align:left!important}
+            #${MODAL_ID} .pc-branch-btn,#${MODAL_ID} .pc-provider-total-btn{border:0;background:transparent;color:#fdba74;font:inherit;font-weight:800;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+            #${MODAL_ID} .pc-provider-name{font-size:15px;font-weight:800;color:#eaf0f7}
             #${MODAL_ID} .pc-back{display:inline-flex;align-items:center;gap:7px;border:1px solid #344254;background:#172231;color:#dbe7f3;border-radius:9px;padding:7px 10px;cursor:pointer;margin:12px 14px 0}
             #${MODAL_ID} .pc-empty{padding:28px;text-align:center;color:#9fb0c3}
             #thcTotals .thc-tot-item.is-proteksi.is-link{cursor:pointer}
@@ -217,7 +215,7 @@ Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
         const body = modal.querySelector("#pcBody");
         body.innerHTML = `<button type="button" class="pc-back" data-pc-back-summary>← Kembali ke Cabang</button>` +
             (providers.length
-                ? `<table class="pc-provider-only"><thead><tr><th>Provider / Capster</th></tr></thead><tbody>${providers.map(p => `<tr><td><button type="button" class="pc-provider-btn" data-pc-branch-key="${esc(group.key)}" data-pc-provider="${esc(p.key)}">${esc(p.provider)}</button></td></tr>`).join("")}</tbody></table>`
+                ? `<table><thead><tr><th>Provider / Capster</th><th>Total Proteksi</th></tr></thead><tbody>${providers.map(p => `<tr><td><span class="pc-provider-name">${esc(p.provider)}</span></td><td><button type="button" class="pc-provider-total-btn" data-pc-branch-key="${esc(group.key)}" data-pc-provider="${esc(p.key)}">${rupiah(p.total)}</button></td></tr>`).join("")}</tbody></table>`
                 : `<div class="pc-empty">Belum ada provider / capster pada cabang ini.</div>`);
     }
 
@@ -278,7 +276,6 @@ Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
         patchLegacyPresenter();
         const filter = activeFilter();
         if(!filter) return;
-
         const seq = ++renderSeq;
         try{
             const fresh = await ProteksiEngine.load({
