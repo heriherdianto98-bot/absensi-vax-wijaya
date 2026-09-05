@@ -153,12 +153,20 @@ Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
             #${MODAL_ID} .pc-branch-name{font-size:16px;font-weight:900;color:#f8fafc;cursor:pointer;display:inline-block;padding:4px 0}
             #${MODAL_ID} .pc-branch-btn{font-size:16px;font-weight:900}
             #${MODAL_ID} .pc-provider-name{font-size:15px;font-weight:800;color:#eaf0f7}
-            #${MODAL_ID} tr.pc-row-focus td{animation:pcRowFocusPulse 1.05s ease-in-out infinite}
-            #${MODAL_ID} tr.pc-row-focus td:first-child{box-shadow:inset 3px 0 0 #fdba74}
-            @keyframes pcRowFocusPulse{
-                0%,100%{background:rgba(245,158,11,.05)}
-                50%{background:rgba(245,158,11,.20)}
+
+            /* UI focus cabang: sengaja dibuat sangat terlihat saat nama cabang diklik. */
+            #${MODAL_ID} tr.pc-row-focus td{
+                animation:pcRowFocusPulse .78s step-end infinite !important;
+                box-shadow:inset 0 1px 0 rgba(253,186,116,.55), inset 0 -1px 0 rgba(253,186,116,.55) !important;
             }
+            #${MODAL_ID} tr.pc-row-focus td:first-child{
+                box-shadow:inset 5px 0 0 #f59e0b, inset 0 1px 0 rgba(253,186,116,.55), inset 0 -1px 0 rgba(253,186,116,.55) !important;
+            }
+            @keyframes pcRowFocusPulse{
+                0%,100%{background:#0c131d;color:#eaf0f7}
+                50%{background:#4a2d05;color:#fff7ed}
+            }
+
             #${MODAL_ID} .pc-back{display:inline-flex;align-items:center;gap:7px;border:1px solid #344254;background:#172231;color:#dbe7f3;border-radius:9px;padding:7px 10px;cursor:pointer;margin:12px 14px 0}
             #${MODAL_ID} .pc-empty{padding:28px;text-align:center;color:#9fb0c3}
             #thcTotals .thc-tot-item.is-proteksi.is-link{cursor:pointer}
@@ -184,20 +192,24 @@ Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
 
         modal.addEventListener("click", (e) => {
             if(e.target.closest("[data-pc-close]")) return closeModal();
-            const focusBranch = e.target.closest("[data-pc-focus-branch]");
-            if(focusBranch){
-                modal.querySelectorAll("tr.pc-row-focus").forEach((tr) => tr.classList.remove("pc-row-focus"));
-                focusBranch.closest("tr")?.classList.add("pc-row-focus");
-                return;
-            }
-            const providerBtn = e.target.closest("[data-pc-provider]");
-            if(providerBtn) return renderProviderDetail(providerBtn.dataset.pcBranchKey, providerBtn.dataset.pcProvider);
+
             const branchBtn = e.target.closest("[data-pc-branch]");
             if(branchBtn) return renderBranchDetail(branchBtn.dataset.pcBranch);
+
+            const focusRow = e.target.closest("tr[data-pc-branch-row]");
+            if(focusRow){
+                modal.querySelectorAll("tr.pc-row-focus").forEach((tr) => tr.classList.remove("pc-row-focus"));
+                focusRow.classList.add("pc-row-focus");
+                return;
+            }
+
+            const providerBtn = e.target.closest("[data-pc-provider]");
+            if(providerBtn) return renderProviderDetail(providerBtn.dataset.pcBranchKey, providerBtn.dataset.pcProvider);
             if(e.target.closest("[data-pc-back-summary]")) return renderBranchSummary();
             const backBranch = e.target.closest("[data-pc-back-branch]");
             if(backBranch) return renderBranchDetail(backBranch.dataset.pcBackBranch);
         });
+
         document.addEventListener("keydown", (e) => {
             if(e.key === "Escape" && !modal.hidden) closeModal();
         });
@@ -215,7 +227,7 @@ Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
             body.innerHTML = `<div class="pc-empty">Belum ada item proteksi pada periode aktif.</div>`;
             return;
         }
-        body.innerHTML = `<table><thead><tr><th>Cabang</th><th>Total Proteksi</th></tr></thead><tbody>${groups.map(g => `<tr><td><span class="pc-branch-name" data-pc-focus-branch>${esc(g.cabang)}</span></td><td><button type="button" class="pc-branch-btn" data-pc-branch="${esc(g.key)}">${rupiah(g.total)}</button></td></tr>`).join("")}</tbody></table>`;
+        body.innerHTML = `<table><thead><tr><th>Cabang</th><th>Total Proteksi</th></tr></thead><tbody>${groups.map(g => `<tr data-pc-branch-row><td><span class="pc-branch-name">${esc(g.cabang)}</span></td><td><button type="button" class="pc-branch-btn" data-pc-branch="${esc(g.key)}">${rupiah(g.total)}</button></td></tr>`).join("")}</tbody></table>`;
     }
 
     function renderBranchDetail(key){
