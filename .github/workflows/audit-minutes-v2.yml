@@ -1,0 +1,92 @@
+name: Audit Minutes V2 Read Only
+
+on:
+  push:
+    branches:
+      - feature/minutes-audit-runner-v2
+    paths:
+      - "minutes-connector/audit-minutes-v2.js"
+      - "minutes-connector/compare-erp-engine-v2.js"
+      - "ERP.NEW/js/modules/daily-data-engine.js"
+      - "audit/requests/current.json"
+      - ".github/workflows/audit-minutes-v2.yml"
+
+concurrency:
+  group: erp-vax-minutes-audit-v2
+  cancel-in-progress: false
+
+jobs:
+  audit-v2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare SSH with retry
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_erp_vax_audit_v2
+          chmod 600 ~/.ssh/id_erp_vax_audit_v2
+          : > ~/.ssh/known_hosts
+          ok=0
+          for i in 1 2 3 4 5; do
+            if ssh-keyscan -T 10 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null; then
+              ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$ok" = "1"
+
+      - name: Read audit request
+        id: request
+        run: |
+          set -euo pipefail
+          START=$(jq -r '.start' audit/requests/current.json)
+          END=$(jq -r '.end // .start' audit/requests/current.json)
+          BRANCH=$(jq -r '.branch // "all"' audit/requests/current.json)
+          test -n "$START" && test "$START" != "null"
+          test -n "$END" && test "$END" != "null"
+          echo "start=$START" >> "$GITHUB_OUTPUT"
+          echo "end=$END" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Audit V2 request: $START .. $END | branch=$BRANCH"
+
+      - name: Upload V2 audit runner and ERP engine source
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          rsync -az -e "ssh -i ~/.ssh/id_erp_vax_audit_v2" \
+            minutes-connector/audit-minutes-v2.js \
+            minutes-connector/compare-erp-engine-v2.js \
+            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/"
+          rsync -az -e "ssh -i ~/.ssh/id_erp_vax_audit_v2" \
+            ERP.NEW/js/modules/daily-data-engine.js \
+            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/daily-data-engine.audit-v2.js"
+
+      - name: Run Minutes V2 Gross Omzet audit read only
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          START: ${{ steps.request.outputs.start }}
+          END: ${{ steps.request.outputs.end }}
+          BRANCH: ${{ steps.request.outputs.branch }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/id_erp_vax_audit_v2 "$VPS_USER@$VPS_HOST" \
+            bash -s -- "$START" "$END" "$BRANCH" <<'REMOTE'
+          set -euo pipefail
+          START="$1"
+          END="$2"
+          BRANCH="$3"
+          cd /var/www/absensi-vax-wijaya/minutes-connector
+          HEADLESS=true \
+          ERP_DAILY_ENGINE_PATH=./daily-data-engine.audit-v2.js \
+          node audit-minutes-v2.js --start "$START" --end "$END" --branch "$BRANCH"
+          REMOTE
