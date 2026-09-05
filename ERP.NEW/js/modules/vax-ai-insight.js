@@ -27,6 +27,40 @@ const VaxAiInsight = {
             || document.querySelector("#widget-section .ai-card");
     },
 
+    ensurePredictionPulseStyle(){
+        if(document.getElementById("vaxAiPredictionPulseStyle")) return;
+        const style = document.createElement("style");
+        style.id = "vaxAiPredictionPulseStyle";
+        style.textContent = `
+            #vaxAiPredictSection.ai-predict-soft-pulse .ai-predict-hero__frame{
+                animation:vaxAiPredictSoftPulse 2.8s ease-in-out infinite;
+                will-change:box-shadow, filter;
+            }
+            @keyframes vaxAiPredictSoftPulse{
+                0%,100%{
+                    filter:brightness(1);
+                    box-shadow:
+                        inset 0 1px 0 rgba(255,255,255,.16),
+                        inset 0 -4px 14px rgba(0,0,0,.40),
+                        0 6px 18px rgba(0,0,0,.28),
+                        0 0 20px rgba(242,194,48,.10);
+                }
+                50%{
+                    filter:brightness(1.035);
+                    box-shadow:
+                        inset 0 1px 0 rgba(255,255,255,.19),
+                        inset 0 -4px 14px rgba(0,0,0,.36),
+                        0 8px 22px rgba(0,0,0,.30),
+                        0 0 30px rgba(242,194,48,.24);
+                }
+            }
+            @media (prefers-reduced-motion: reduce){
+                #vaxAiPredictSection.ai-predict-soft-pulse .ai-predict-hero__frame{animation:none}
+            }
+        `;
+        document.head.appendChild(style);
+    },
+
     escapeHtml(value){
         return String(value ?? "")
             .replace(/&/g, "&amp;")
@@ -310,10 +344,12 @@ const VaxAiInsight = {
         const section = document.getElementById("vaxAiPredictSection");
         if(!el) return;
 
+        this.ensurePredictionPulseStyle();
         const freshness = this.readFreshness();
         const stateClasses = ["ai-predict-state-up", "ai-predict-state-down", "ai-predict-state-neutral", "ai-predict-state-empty"];
         if(section){
             stateClasses.forEach((cls) => section.classList.remove(cls));
+            section.classList.remove("ai-predict-soft-pulse");
         }
 
         if(freshness.holdPrediction){
@@ -336,7 +372,10 @@ const VaxAiInsight = {
             : dir === "turun"
                 ? "ai-predict-state-down"
                 : "ai-predict-state-neutral";
-        if(section) section.classList.add(stateCls);
+        if(section){
+            section.classList.add(stateCls);
+            section.classList.add("ai-predict-soft-pulse");
+        }
 
         const symbol = this.trendDirectionSymbol(dir);
         const pctLabel = this.formatSignedPct(Math.round(result.estimatedPct * 10) / 10);
