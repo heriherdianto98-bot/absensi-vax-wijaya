@@ -172,6 +172,39 @@ const VaxAiInsight = {
         return "Rendah";
     },
 
+    parseIsoDate(value){
+        const m = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if(!m) return null;
+        const d = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
+        return Number.isNaN(d.getTime()) ? null : d;
+    },
+
+    formatForecastDate(date){
+        if(!(date instanceof Date) || Number.isNaN(date.getTime())) return "—";
+        const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+        return `${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+    },
+
+    forecastHorizon(){
+        if(typeof DashboardEngine === "undefined") return null;
+        const start = this.parseIsoDate(DashboardEngine.lastRange?.start);
+        const end = this.parseIsoDate(DashboardEngine.lastRange?.end || DashboardEngine.lastRange?.start);
+        if(!start || !end || end < start) return null;
+
+        const DAY_MS = 86400000;
+        const days = Math.floor((end.getTime() - start.getTime()) / DAY_MS) + 1;
+        if(!Number.isFinite(days) || days < 1) return null;
+
+        const nextStart = new Date(end.getTime() + DAY_MS);
+        const nextEnd = new Date(nextStart.getTime() + ((days - 1) * DAY_MS));
+        return {
+            days,
+            start: nextStart,
+            end: nextEnd,
+            rangeLabel: `${this.formatForecastDate(nextStart)} – ${this.formatForecastDate(nextEnd)}`
+        };
+    },
+
     computePrediction(insight){
         const { currentOmzet } = this.extractOmzetMetrics(insight);
         const { shortTrend, midTrend, longTrend } = this.extractPeriodTrends(insight);
@@ -308,6 +341,11 @@ const VaxAiInsight = {
         const symbol = this.trendDirectionSymbol(dir);
         const pctLabel = this.formatSignedPct(Math.round(result.estimatedPct * 10) / 10);
         const basis = result.basis;
+        const horizon = this.forecastHorizon();
+        const forecastTitle = horizon
+            ? `Prediksi ${horizon.days} Hari Berikutnya`
+            : "Prediksi Periode Berikutnya";
+        const forecastRange = horizon?.rangeLabel || "";
         const confKey = String(result.confidence || "").toLowerCase();
         const confCls = confKey === "tinggi"
             ? "conf-tinggi"
@@ -319,7 +357,8 @@ const VaxAiInsight = {
         el.innerHTML = `
             <div class="ai-predict-hero__body">
                 <div class="ai-predict-hero__main">
-                    <span class="ai-predict-label">Prediksi Periode Berikutnya</span>
+                    <span class="ai-predict-label" style="font-size:clamp(18px,2.2vw,26px);font-weight:900;letter-spacing:.055em;line-height:1.16;color:#f8fafc">${this.escapeHtml(forecastTitle)}</span>
+                    ${forecastRange ? `<span class="ai-predict-range" style="display:block;margin-top:1px;color:#fbbf24;font-size:clamp(17px,1.9vw,23px);font-weight:900;letter-spacing:.02em;line-height:1.2">${this.escapeHtml(forecastRange)}</span>` : ""}
                     <strong class="ai-predict-value">${this.escapeHtml(this.formatRupiah(result.projectedOmzet))}</strong>
                 </div>
                 <div class="ai-predict-hero__side">
@@ -333,7 +372,7 @@ const VaxAiInsight = {
                 <span class="ai-predict-basis-item">14D <strong>${this.escapeHtml(this.formatSignedPct(basis.midTrend))}</strong></span>
                 <span class="ai-predict-basis-item">30D <strong>${this.escapeHtml(this.formatSignedPct(basis.longTrend))}</strong></span>
             </div>
-            <small class="ai-predict-disclaimer">Estimasi berbasis tren historis, bukan angka pasti.</small>
+            <small class="ai-predict-disclaimer">Estimasi omzet untuk rentang tanggal di atas, berdurasi sama dengan periode aktif dan berbasis tren historis 7D/14D/30D.</small>
         `;
     },
 
