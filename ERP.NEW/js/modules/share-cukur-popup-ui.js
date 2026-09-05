@@ -7,6 +7,7 @@ UI ONLY.
 - Nama cabang/provider dan total share diperbesar agar mudah dibaca.
 - Klik nama memberi fokus kedip pada baris.
 - Scrollbar mengikuti tema dark/teal ERP.
+- Aktifkan fix drilldown provider: Cabang -> Provider/Capster -> Tanggal + Nominal Share.
 Tidak mengubah data, query, formula, atau drilldown source.
 =========================================================
 */
@@ -15,6 +16,17 @@ Tidak mengubah data, query, formula, atau drilldown source.
 (function(){
     const MODAL_ID = "thcShareCukurDrilldownModal";
     const STYLE_ID = "thcShareCukurPopupUiStyles";
+    const PROVIDER_FIX_ID = "thcShareCukurProviderClickFixScript";
+
+    function ensureProviderDrilldownFix(){
+        if(document.getElementById(PROVIDER_FIX_ID)) return;
+        const script = document.createElement("script");
+        script.id = PROVIDER_FIX_ID;
+        script.src = "../js/modules/share-cukur-provider-click-fix.js?v=20260905-providerdrill1";
+        script.async = false;
+        script.onerror = () => console.error("[ShareCukurPopupUI] gagal memuat provider drilldown fix");
+        document.head.appendChild(script);
+    }
 
     function ensureStyles(){
         if(document.getElementById(STYLE_ID)) return;
@@ -148,6 +160,7 @@ Tidak mengubah data, query, formula, atau drilldown source.
 
     function boot(){
         ensureStyles();
+        ensureProviderDrilldownFix();
         const existing = document.getElementById(MODAL_ID);
         if(existing) bindModal(existing);
 
