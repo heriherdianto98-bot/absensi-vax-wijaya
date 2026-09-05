@@ -1076,26 +1076,18 @@ async function prosesCabang(
     ringkasan.transaction || 0
   );
 
-  const salesSummaryTransaction =
-    await bacaTransactionSalesSummary(
-      page,
-      tanggalDatabase,
-      tanggalMinutes
-    );
+  // OWNER PASS rule 2026-09-05:
+// TRANSACTION canonical wajib mengikuti angka TRANSACTION resmi
+// pada Daily Recap Minutes. Customer/Guest adalah visitor breakdown,
+// bukan rumus jumlah transaksi; satu visitor bisa membuat >1 transaksi
+// (mis. transaksi produk/minuman terpisah).
+const transactionMinutes =
+  dailyRecapTransactionMinutes;
 
-  const transactionMinutes =
-    salesSummaryTransaction?.transactionMinutes ?? null;
-
-  if (salesSummaryTransaction) {
-    console.log(
-      `TRX Sales Summary = ${salesSummaryTransaction.customerTransactions} + ${salesSummaryTransaction.guestTransactions} = ${transactionMinutes}`
-    );
-  } else {
-    console.warn(
-      "⚠️ Sales Summary gagal; transaction_minutes existing tidak dioverwrite."
-    );
-  }
-  const customerMinutes = Number(
+console.log(
+  `TRX Daily Recap canonical = ${transactionMinutes}`
+);
+const customerMinutes = Number(
     ringkasan.customer || 0
   );
   const servicesMinutes = Number(
