@@ -1,0 +1,85 @@
+name: Audit Minutes Read Only
+
+on:
+  push:
+    branches:
+      - main
+      - feature/minutes-audit-runner
+    paths:
+      - "minutes-connector/audit-minutes.js"
+      - "audit/requests/current.json"
+      - ".github/workflows/audit-minutes.yml"
+
+concurrency:
+  group: erp-vax-minutes-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare SSH with retry
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_erp_vax_audit
+          chmod 600 ~/.ssh/id_erp_vax_audit
+          : > ~/.ssh/known_hosts
+          ok=0
+          for i in 1 2 3 4 5; do
+            if ssh-keyscan -T 10 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null; then
+              ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$ok" = "1"
+
+      - name: Read audit request
+        id: request
+        run: |
+          set -euo pipefail
+          START=$(jq -r '.start' audit/requests/current.json)
+          END=$(jq -r '.end // .start' audit/requests/current.json)
+          BRANCH=$(jq -r '.branch // "all"' audit/requests/current.json)
+          test -n "$START" && test "$START" != "null"
+          test -n "$END" && test "$END" != "null"
+          echo "start=$START" >> "$GITHUB_OUTPUT"
+          echo "end=$END" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Audit request: $START .. $END | branch=$BRANCH"
+
+      - name: Upload read-only audit runner
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          rsync -az -e "ssh -i ~/.ssh/id_erp_vax_audit" \
+            minutes-connector/audit-minutes.js \
+            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/audit-minutes.js"
+
+      - name: Run Minutes audit read only
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          START: ${{ steps.request.outputs.start }}
+          END: ${{ steps.request.outputs.end }}
+          BRANCH: ${{ steps.request.outputs.branch }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/id_erp_vax_audit "$VPS_USER@$VPS_HOST" \
+            bash -s -- "$START" "$END" "$BRANCH" <<'REMOTE'
+          set -euo pipefail
+          START="$1"
+          END="$2"
+          BRANCH="$3"
+          cd /var/www/absensi-vax-wijaya/minutes-connector
+          HEADLESS=true node audit-minutes.js --start "$START" --end "$END" --branch "$BRANCH"
+          REMOTE
