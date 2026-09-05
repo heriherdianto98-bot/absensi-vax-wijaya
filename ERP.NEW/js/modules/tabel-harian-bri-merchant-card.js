@@ -193,7 +193,7 @@ PENTING:
                 outline:2px solid rgba(192,132,252,.78);outline-offset:2px;
             }
 
-            /* 17 card desktop: 4 + 5 + 4 + 4. Baris lain tetap 4 card seperti layout existing. */
+            /* 17 card desktop: 4 + 5 + 4 + 4. */
             #thcTotals .thc-totals-grid.thc-grid-17{
                 grid-template-columns:repeat(20,minmax(0,1fr));
             }
@@ -236,9 +236,29 @@ PENTING:
         document.head.appendChild(style);
     }
 
+    function reorderPrimaryMetrics(){
+        const grid = document.querySelector("#thcTotals .thc-totals-grid");
+        if(!grid) return;
+
+        const ids = ["thcTotCustomer", "thcTotTransaksi", "thcTotServices", "thcTotAvgTicket"];
+        const cards = ids
+            .map(id => document.getElementById(id)?.closest(".thc-tot-item") || null)
+            .filter(Boolean);
+        if(cards.length !== ids.length) return;
+
+        const first = grid.firstElementChild;
+        const alreadyFirst = cards.every((card, index) => grid.children[index] === card);
+        if(alreadyFirst) return;
+
+        for(const card of cards){
+            grid.insertBefore(card, first);
+        }
+    }
+
     function applyGridLayout(){
         const grid = document.querySelector("#thcTotals .thc-totals-grid");
         if(!grid) return;
+        reorderPrimaryMetrics();
         const count = grid.querySelectorAll(":scope > .thc-tot-item").length;
         grid.classList.toggle("thc-grid-17", count === 17);
     }
