@@ -88,6 +88,7 @@
 <script src="../js/modules/vax-ai-insight.js?v=20260818-ai4"></script>
 <script src="../js/modules/tabel-harian-cabang.js"></script>
 <script src="../js/modules/tabel-harian-share-cards.js?v=20260902-sharecards1"></script>
+<script src="../js/modules/tabel-harian-bri-merchant-card.js?v=20260905-bricard1"></script>
 <script src="../js/modules/tabel-harian-print-full.js?v=20260903-printfull2"></script>
 <script src="../js/modules/kpi-ultimate.js"></script>
 <script src="../js/loader.js"></script>
@@ -102,6 +103,7 @@ document.addEventListener("erp:finance-ready", async () => {
     document.body.classList.add("has-bottom-nav");
     const widget = document.getElementById("widget-section"); if(widget && !widget.querySelector("#vaxAiInsight")) widget.innerHTML = await (await fetch("../components/ai-insight.html")).text();
     if(typeof TabelHarianShareCards !== "undefined") TabelHarianShareCards.boot();
+    if(typeof TabelHarianBriMerchantCard !== "undefined") TabelHarianBriMerchantCard.boot();
     TabelHarianCabang.boot();
     if(typeof KpiUltimate !== "undefined") KpiUltimate.boot();
     document.dispatchEvent(new CustomEvent("erp:components-ready"));
