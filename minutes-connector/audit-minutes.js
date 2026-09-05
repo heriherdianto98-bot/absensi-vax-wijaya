@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { chromium } from "playwright";
 import { createClient } from "@supabase/supabase-js";
+import { loadDailyDataEngine, readErpCanonicalKpi } from "./compare-erp-engine.js";
 
 const email = process.env.MINUTES_EMAIL;
 const password = process.env.MINUTES_PASSWORD;
@@ -17,6 +18,7 @@ const LOGIN_URL = "https://minutesapps.com/dashboard216a/user/login";
 const DASHBOARD_URL = "https://minutesapps.com/dashboard216a/";
 const DAILY_RECAP_URL = "https://minutesapps.com/dashboard216a/report/recap/";
 const HEADLESS = String(process.env.HEADLESS || "true").toLowerCase() !== "false";
+const ERP_DAILY_ENGINE_PATH = process.env.ERP_DAILY_ENGINE_PATH || "./daily-data-engine.audit.js";
 
 function normalize(value = "") {
   return String(value).trim().replace(/\s+/g, " ").toLowerCase();
@@ -104,7 +106,7 @@ async function fetchBranches(branchFilter) {
 async function fetchSupabaseRows(start, end, branchIds) {
   const { data, error } = await supabase
     .from("daily_recap_source")
-    .select("tanggal,cabang_id,transaction_minutes,customer_minutes,services_minutes")
+    .select("*")
     .gte("tanggal", start)
     .lte("tanggal", end)
     .in("cabang_id", branchIds)
@@ -196,15 +198,17 @@ async function readDailyKpi(page, ymd) {
   throw new Error(`KPI Daily Recap tidak terbaca untuk ${ymd}`);
 }
 
-function compare(minutes, db) {
-  const supabaseKpi = {
+function rawSupabaseKpi(db) {
+  return {
     transaction: Number(db?.transaction_minutes || 0),
     customer: Number(db?.customer_minutes || 0),
     services: Number(db?.services_minutes || 0)
   };
+}
+
+function mismatchFields(left, right) {
   const fields = ["transaction", "customer", "services"];
-  const mismatch = fields.filter((field) => Number(minutes[field]) !== Number(supabaseKpi[field]));
-  return { supabase: supabaseKpi, mismatch, match: mismatch.length === 0 };
+  return fields.filter((field) => Number(left?.[field] || 0) !== Number(right?.[field] || 0));
 }
 
 const args = parseArgs(process.argv.slice(2));
@@ -217,12 +221,14 @@ if (!start || !end) throw new Error("Gunakan --start YYYY-MM-DD [--end YYYY-MM-D
 const dates = dateRange(start, end);
 const branches = await fetchBranches(branchFilter);
 const dbRows = await fetchSupabaseRows(start, end, branches.map((b) => b.id));
+const dailyDataEngine = loadDailyDataEngine(ERP_DAILY_ENGINE_PATH);
 
 console.log(`AUDIT_READ_ONLY=TRUE`);
 console.log(`AUDIT_RANGE=${start}..${end}`);
 console.log(`AUDIT_BRANCHES=${branches.length}`);
 console.log(`AUDIT_DAYS=${dates.length}`);
-console.log(`AUDIT_CHECKS=${branches.length * dates.length * 3}`);
+console.log(`AUDIT_LAYERS=MINUTES,SUPABASE,ERP_DAILY_DATA_ENGINE`);
+console.log(`AUDIT_CHECKS=${branches.length * dates.length * 6}`);
 
 const browser = await chromium.launch({ headless: HEADLESS });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
@@ -237,17 +243,39 @@ try {
     for (const date of dates) {
       const minutes = await readDailyKpi(page, date);
       const db = dbRows.get(`${date}|${branch.id}`) || null;
-      const check = compare(minutes, db);
+      const supabaseKpi = rawSupabaseKpi(db);
+      const erpKpi = readErpCanonicalKpi(dailyDataEngine, db, branch);
+
+      const minutesVsSupabase = mismatchFields(minutes, supabaseKpi);
+      const supabaseVsErp = mismatchFields(supabaseKpi, erpKpi);
+      const minutesVsErp = mismatchFields(minutes, erpKpi);
+      const match =
+        minutesVsSupabase.length === 0 &&
+        supabaseVsErp.length === 0 &&
+        minutesVsErp.length === 0;
+
       results.push({
         tanggal: date,
         cabang: branch.nama_cabang,
         cabang_id: branch.id,
         minutes,
-        supabase: check.supabase,
-        status: check.match ? "MATCH" : "MISMATCH",
-        mismatch_fields: check.mismatch
+        supabase: supabaseKpi,
+        erpDailyDataEngine: erpKpi,
+        status: match ? "MATCH" : "MISMATCH",
+        mismatch: {
+          minutes_vs_supabase: minutesVsSupabase,
+          supabase_vs_erp: supabaseVsErp,
+          minutes_vs_erp: minutesVsErp
+        }
       });
-      console.log(`${check.match ? "✅" : "❌"} ${date} | ${branch.nama_cabang} | Minutes T/C/S=${minutes.transaction}/${minutes.customer}/${minutes.services} | Supabase T/C/S=${check.supabase.transaction}/${check.supabase.customer}/${check.supabase.services} | ${check.match ? "MATCH" : `MISMATCH:${check.mismatch.join(",")}`}`);
+
+      console.log(
+        `${match ? "✅" : "❌"} ${date} | ${branch.nama_cabang} | ` +
+        `Minutes T/C/S=${minutes.transaction}/${minutes.customer}/${minutes.services} | ` +
+        `Supabase T/C/S=${supabaseKpi.transaction}/${supabaseKpi.customer}/${supabaseKpi.services} | ` +
+        `ERP T/C/S=${erpKpi.transaction}/${erpKpi.customer}/${erpKpi.services} | ` +
+        `${match ? "MATCH" : "MISMATCH"}`
+      );
     }
   }
 } finally {
@@ -262,7 +290,7 @@ console.log(JSON.stringify({
   branchFilter,
   branches: branches.length,
   branchDays: results.length,
-  checks: results.length * 3,
+  checks: results.length * 6,
   matchBranchDays: results.length - mismatches.length,
   mismatchBranchDays: mismatches.length,
   mismatches
