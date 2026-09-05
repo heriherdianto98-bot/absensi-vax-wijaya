@@ -43,6 +43,17 @@ function formatChartAxisRupiah(nilai){
     return formatChartRupiah(n);
 }
 
+/* READ ONLY: rata-rata dihitung langsung dari titik data grafik aktif.
+   Termasuk nilai 0 bila tanggal tersebut memang tampil di periode grafik. */
+function getChartAverage(data){
+    const values = Array.isArray(data)
+        ? data.map((v) => Number(v || 0)).filter(Number.isFinite)
+        : [];
+    if(!values.length) return 0;
+    const total = values.reduce((sum, value) => sum + value, 0);
+    return Math.round(total / values.length);
+}
+
 function renderChart(key){
 
     const ctx = document.getElementById("omzetChart");
@@ -61,6 +72,7 @@ function renderChart(key){
     const labels = Array.isArray(pack.labels) ? pack.labels : [];
     const data = Array.isArray(pack.data) ? pack.data : [];
     const singleDay = data.length === 1;
+    const averageOmzet = getChartAverage(data);
 
     // Minutes-style: selalu line + marker + area fill.
     // 1 tanggal → marker besar (bukan bar, bukan fake second point).
@@ -93,6 +105,14 @@ function renderChart(key){
             plugins: {
                 legend: {
                     display: false
+                },
+                subtitle: {
+                    display: true,
+                    text: `Rata-rata Omzet: ${formatChartRupiah(averageOmzet)} / hari`,
+                    align: "start",
+                    color: "#F2C230",
+                    padding: { top: 0, bottom: 8 },
+                    font: { weight: "800", size: 12 }
                 },
                 tooltip: {
                     enabled: true,
