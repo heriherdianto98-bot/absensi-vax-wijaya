@@ -23,32 +23,17 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import re
 
           path = Path('minutes-connector/sync.js')
           text = path.read_text(encoding='utf-8')
 
-          old = '''  const salesSummaryTransaction =
-            await bacaTransactionSalesSummary(
-              page,
-              tanggalDatabase,
-              tanggalMinutes
-            );
+          pattern = re.compile(
+              r"  const salesSummaryTransaction =\n.*?\n  const customerMinutes = Number\(",
+              re.S,
+          )
 
-          const transactionMinutes =
-            salesSummaryTransaction?.transactionMinutes ?? null;
-
-          if (salesSummaryTransaction) {
-            console.log(
-              `TRX Sales Summary = ${salesSummaryTransaction.customerTransactions} + ${salesSummaryTransaction.guestTransactions} = ${transactionMinutes}`
-            );
-          } else {
-            console.warn(
-              "⚠️ Sales Summary gagal; transaction_minutes existing tidak dioverwrite."
-            );
-          }
-          '''
-
-          new = '''  // OWNER PASS rule 2026-09-05:
+          replacement = '''  // OWNER PASS rule 2026-09-05:
           // TRANSACTION canonical wajib mengikuti angka TRANSACTION resmi
           // pada Daily Recap Minutes. Customer/Guest adalah visitor breakdown,
           // bukan rumus jumlah transaksi; satu visitor bisa membuat >1 transaksi
@@ -59,12 +44,13 @@ jobs:
           console.log(
             `TRX Daily Recap canonical = ${transactionMinutes}`
           );
-          '''
+          const customerMinutes = Number('''
 
-          if old not in text:
-              raise SystemExit('Target block tidak ditemukan; abort tanpa perubahan.')
+          updated, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit(f'Target block count={count}; abort tanpa perubahan.')
 
-          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          path.write_text(updated, encoding='utf-8')
           PY
 
       - name: Remove one-time workflow
