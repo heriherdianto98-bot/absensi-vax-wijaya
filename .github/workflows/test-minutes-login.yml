@@ -1,0 +1,56 @@
+name: Test Minutes Login
+
+on:
+  push:
+    branches:
+      - feature/minutes-audit-runner
+    paths:
+      - 'minutes-connector/login-minutes-test.js'
+      - '.github/workflows/test-minutes-login.yml'
+  workflow_dispatch:
+
+jobs:
+  login-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare SSH with retry
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_erp_vax_login_test
+          chmod 600 ~/.ssh/id_erp_vax_login_test
+          : > ~/.ssh/known_hosts
+          ok=0
+          for i in 1 2 3 4 5; do
+            if ssh-keyscan -T 10 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null; then
+              ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$ok" = "1"
+
+      - name: Upload login test runner
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          rsync -az -e "ssh -i ~/.ssh/id_erp_vax_login_test" \
+            minutes-connector/login-minutes-test.js \
+            "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/minutes-connector/login-minutes-test.js"
+
+      - name: Run Minutes login test
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/id_erp_vax_login_test "$VPS_USER@$VPS_HOST" \
+            'cd /var/www/absensi-vax-wijaya/minutes-connector && HEADLESS=true node login-minutes-test.js'
