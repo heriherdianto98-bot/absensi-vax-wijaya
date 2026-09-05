@@ -1,6 +1,6 @@
 /*
 =========================================================
-VAX ERP — PROTEKSI CARD BINDER + 2-LEVEL DRILLDOWN
+VAX ERP — PROTEKSI CARD BINDER + 3-LEVEL DRILLDOWN
 =========================================================
 UI consumer only.
 Canonical source: DailyDataEngine -> daily_recap_source.keterangan_cash_out
@@ -8,8 +8,9 @@ Rule keyword: protek / proteksi / protect.
 
 Owner flow:
 1. Klik card Proteksi Capster -> popup ringkas per cabang.
-2. Klik total proteksi cabang -> rincian tanggal, provider/capster, nominal.
-Read-only; tidak mengubah Cash Out atau formula core.
+2. Klik total proteksi cabang -> daftar Provider / Capster pada cabang itu.
+3. Klik Provider / Capster -> rincian tanggal + nominal proteksi provider tersebut.
+Read-only; tidak mengubah Cash Out, engine, source, atau formula core.
 =========================================================
 */
 "use strict";
@@ -101,7 +102,7 @@ Read-only; tidak mengubah Cash Out atau formula core.
                 });
             }
         }
-        return rows.sort((a,b) => String(a.cabang).localeCompare(String(b.cabang)) || String(a.tanggal).localeCompare(String(b.tanggal)));
+        return rows.sort((a,b) => String(a.cabang).localeCompare(String(b.cabang)) || String(a.provider).localeCompare(String(b.provider)) || String(a.tanggal).localeCompare(String(b.tanggal)));
     }
 
     function branchGroups(summary){
@@ -114,6 +115,18 @@ Read-only; tidak mengubah Cash Out atau formula core.
             g.rows.push(row);
         }
         return [...map.values()].sort((a,b) => b.total - a.total || a.cabang.localeCompare(b.cabang));
+    }
+
+    function providerGroups(branchGroup){
+        const map = new Map();
+        for(const row of branchGroup?.rows || []){
+            const key = String(row.provider || "—");
+            if(!map.has(key)) map.set(key, { key, provider: row.provider, total: 0, rows: [] });
+            const g = map.get(key);
+            g.total += row.nominal;
+            g.rows.push(row);
+        }
+        return [...map.values()].sort((a,b) => b.total - a.total || a.provider.localeCompare(b.provider));
     }
 
     function ensureModal(){
@@ -137,7 +150,9 @@ Read-only; tidak mengubah Cash Out atau formula core.
             #${MODAL_ID} th{position:sticky;top:0;background:#111b27;color:#f7c65b;text-align:left;padding:11px 14px;border-bottom:1px solid #2b3948}
             #${MODAL_ID} td{padding:11px 14px;border-bottom:1px solid #1c2936;vertical-align:middle}
             #${MODAL_ID} td:last-child,#${MODAL_ID} th:last-child{text-align:right;white-space:nowrap}
-            #${MODAL_ID} .pc-branch-btn{border:0;background:transparent;color:#fdba74;font:inherit;font-weight:800;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+            #${MODAL_ID} .pc-branch-btn,#${MODAL_ID} .pc-provider-btn{border:0;background:transparent;color:#fdba74;font:inherit;font-weight:800;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+            #${MODAL_ID} .pc-provider-btn{font-size:15px;text-align:left}
+            #${MODAL_ID} .pc-provider-only td{text-align:left!important}
             #${MODAL_ID} .pc-back{display:inline-flex;align-items:center;gap:7px;border:1px solid #344254;background:#172231;color:#dbe7f3;border-radius:9px;padding:7px 10px;cursor:pointer;margin:12px 14px 0}
             #${MODAL_ID} .pc-empty{padding:28px;text-align:center;color:#9fb0c3}
             #thcTotals .thc-tot-item.is-proteksi.is-link{cursor:pointer}
@@ -156,16 +171,20 @@ Read-only; tidak mengubah Cash Out atau formula core.
                     <div><h3 id="pcTitle">Proteksi Capster per Cabang</h3><p id="pcPeriod">—</p></div>
                     <button type="button" class="pc-close" data-pc-close aria-label="Tutup">×</button>
                 </div>
-                <div class="pc-total"><span>Total Proteksi</span><strong id="pcGrandTotal">Rp0</strong></div>
+                <div class="pc-total"><span id="pcTotalLabel">Total Proteksi</span><strong id="pcGrandTotal">Rp0</strong></div>
                 <div class="pc-wrap"><div id="pcBody"></div></div>
             </section>`;
         document.body.appendChild(modal);
 
         modal.addEventListener("click", (e) => {
             if(e.target.closest("[data-pc-close]")) return closeModal();
-            const btn = e.target.closest("[data-pc-branch]");
-            if(btn) return renderBranchDetail(btn.dataset.pcBranch);
-            if(e.target.closest("[data-pc-back]")) return renderBranchSummary();
+            const providerBtn = e.target.closest("[data-pc-provider]");
+            if(providerBtn) return renderProviderDetail(providerBtn.dataset.pcBranchKey, providerBtn.dataset.pcProvider);
+            const branchBtn = e.target.closest("[data-pc-branch]");
+            if(branchBtn) return renderBranchDetail(branchBtn.dataset.pcBranch);
+            if(e.target.closest("[data-pc-back-summary]")) return renderBranchSummary();
+            const backBranch = e.target.closest("[data-pc-back-branch]");
+            if(backBranch) return renderBranchDetail(backBranch.dataset.pcBackBranch);
         });
         document.addEventListener("keydown", (e) => {
             if(e.key === "Escape" && !modal.hidden) closeModal();
@@ -177,6 +196,8 @@ Read-only; tidak mengubah Cash Out atau formula core.
         const modal = ensureModal();
         const groups = branchGroups(lastSummary);
         modal.querySelector("#pcTitle").textContent = "Proteksi Capster per Cabang";
+        modal.querySelector("#pcTotalLabel").textContent = "Total Proteksi";
+        modal.querySelector("#pcGrandTotal").textContent = rupiah(lastSummary?.total || 0);
         const body = modal.querySelector("#pcBody");
         if(!groups.length){
             body.innerHTML = `<div class="pc-empty">Belum ada item proteksi pada periode aktif.</div>`;
@@ -189,16 +210,45 @@ Read-only; tidak mengubah Cash Out atau formula core.
         const modal = ensureModal();
         const group = branchGroups(lastSummary).find(g => g.key === key);
         if(!group) return renderBranchSummary();
-        modal.querySelector("#pcTitle").textContent = `Rincian ${group.cabang}`;
+        const providers = providerGroups(group);
+        modal.querySelector("#pcTitle").textContent = `Provider / Capster — ${group.cabang}`;
+        modal.querySelector("#pcTotalLabel").textContent = `Total Proteksi ${group.cabang}`;
+        modal.querySelector("#pcGrandTotal").textContent = rupiah(group.total);
         const body = modal.querySelector("#pcBody");
-        body.innerHTML = `<button type="button" class="pc-back" data-pc-back>← Kembali ke Cabang</button><table><thead><tr><th>Tanggal</th><th>Provider / Capster</th><th>Nominal</th></tr></thead><tbody>${group.rows.map(r => `<tr><td>${esc(r.tanggal)}</td><td>${esc(r.provider)}</td><td>${rupiah(r.nominal)}</td></tr>`).join("")}</tbody></table>`;
+        body.innerHTML = `<button type="button" class="pc-back" data-pc-back-summary>← Kembali ke Cabang</button>` +
+            (providers.length
+                ? `<table class="pc-provider-only"><thead><tr><th>Provider / Capster</th></tr></thead><tbody>${providers.map(p => `<tr><td><button type="button" class="pc-provider-btn" data-pc-branch-key="${esc(group.key)}" data-pc-provider="${esc(p.key)}">${esc(p.provider)}</button></td></tr>`).join("")}</tbody></table>`
+                : `<div class="pc-empty">Belum ada provider / capster pada cabang ini.</div>`);
+    }
+
+    function renderProviderDetail(branchKey, providerKey){
+        const modal = ensureModal();
+        const group = branchGroups(lastSummary).find(g => g.key === branchKey);
+        if(!group) return renderBranchSummary();
+        const provider = providerGroups(group).find(p => p.key === providerKey);
+        if(!provider) return renderBranchDetail(branchKey);
+
+        const byDate = new Map();
+        for(const row of provider.rows || []){
+            const tanggal = String(row.tanggal || "—");
+            byDate.set(tanggal, (byDate.get(tanggal) || 0) + Number(row.nominal || 0));
+        }
+        const rows = [...byDate.entries()]
+            .map(([tanggal, nominal]) => ({ tanggal, nominal }))
+            .sort((a,b) => String(a.tanggal).localeCompare(String(b.tanggal)));
+
+        modal.querySelector("#pcTitle").textContent = `${provider.provider} — ${group.cabang}`;
+        modal.querySelector("#pcTotalLabel").textContent = `Total Proteksi ${provider.provider}`;
+        modal.querySelector("#pcGrandTotal").textContent = rupiah(provider.total);
+        const body = modal.querySelector("#pcBody");
+        body.innerHTML = `<button type="button" class="pc-back" data-pc-back-branch="${esc(group.key)}">← Kembali ke Provider</button>` +
+            `<table><thead><tr><th>Tanggal</th><th>Nominal Proteksi</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r.tanggal)}</td><td>${rupiah(r.nominal)}</td></tr>`).join("")}</tbody></table>`;
     }
 
     function openModal(){
         const modal = ensureModal();
         const filter = activeFilter();
         modal.querySelector("#pcPeriod").textContent = filter ? `${filter.start} — ${filter.end}` : "Periode aktif";
-        modal.querySelector("#pcGrandTotal").textContent = rupiah(lastSummary?.total || 0);
         renderBranchSummary();
         modal.hidden = false;
         modal.setAttribute("aria-hidden", "false");
