@@ -6,6 +6,8 @@ BRI Merchant di Setoran 3 Harian adalah output canonical:
 - SUM bri_merchant_daily per cabang untuk periode aktif 1-3 hari
 - selalu read-only di Setoran 3 Harian
 - tidak ada input manual/sumber ganda dari halaman Setoran
+- Selisih Non Tunai = 0 jika BRI Merchant masih 0/belum ada settlement
+- Jika BRI Merchant > 0, Selisih Non Tunai = BRI Merchant - Non Tunai Minutes
 Fallback fail-safe hanya menjaga tabel Setoran tetap tampil bila pembacaan
 BRI Daily gagal; kolom BRI tetap tidak dapat diedit.
 =========================================================
@@ -44,8 +46,14 @@ BRI Daily gagal; kolom BRI tetap tidak dapat diedit.
                 if(this.briDailyLoaded){
                     const p = this.period();
                     const daily = BriMerchantDaily.sumBranch(id,p.start,p.end);
-                    m.bri = daily.total;
-                    m.diff = daily.total - this.money(m.s.nonCash);
+                    const briTotal = this.money(daily.total);
+                    const nonCash = this.money(m.s.nonCash);
+
+                    m.bri = briTotal;
+                    // OWNER RULE:
+                    // BRI Rp0 = belum ada settlement / belum dihitung selisih.
+                    // Selisih baru dihitung ketika BRI Merchant sudah memiliki nilai > 0.
+                    m.diff = briTotal <= 0 ? 0 : briTotal - nonCash;
                     m.briDailyCanonical = true;
                     m.briDailyCount = daily.count;
                 }
