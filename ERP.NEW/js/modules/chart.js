@@ -109,7 +109,7 @@ function renderChart(key){
                 subtitle: {
                     display: true,
                     text: `Rata-rata Omzet: ${formatChartRupiah(averageOmzet)} / hari`,
-                    align: "start",
+                    align: "center",
                     color: "#F2C230",
                     padding: { top: 0, bottom: 8 },
                     font: { weight: "800", size: 12 }
