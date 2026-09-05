@@ -15,6 +15,7 @@ const CashOutWarning = {
     LIMIT: 205000,
     _loadSeq: 0,
     _bound: false,
+    _expanded: false,
 
     boot(){
         if(this._bound) return;
@@ -27,6 +28,17 @@ const CashOutWarning = {
         }
 
         document.addEventListener("erp:components-ready", () => this.load(), { once:true });
+        document.addEventListener("click", (event) => {
+            const btn = event.target.closest?.("#cashoutWarningToggle");
+            if(!btn) return;
+            const rows = document.querySelectorAll("#cashout-warning-section .cashout-warning-row.is-extra");
+            this._expanded = !this._expanded;
+            rows.forEach((row) => row.hidden = !this._expanded);
+            btn.textContent = this._expanded
+                ? "Ringkas kembali"
+                : `Lihat semua ${btn.dataset.total || ""} warning`.trim();
+            btn.setAttribute("aria-expanded", this._expanded ? "true" : "false");
+        });
     },
 
     parseRupiahToken(raw){
@@ -183,14 +195,13 @@ const CashOutWarning = {
         const host = document.getElementById("cashout-warning-section");
         if(!host) return;
         const rows = Array.isArray(warnings) ? warnings : [];
+        this._expanded = false;
         if(!rows.length){
             host.hidden = true;
             host.innerHTML = "";
             return;
         }
 
-        const visible = rows.slice(0, 5);
-        const more = Math.max(0, rows.length - visible.length);
         const rangeText = range?.start && range?.end
             ? (range.start === range.end ? this.formatDate(range.start) : `${this.formatDate(range.start)} – ${this.formatDate(range.end)}`)
             : "Periode aktif";
@@ -209,22 +220,32 @@ const CashOutWarning = {
                     <div class="cashout-warning-badge">${rows.length} WARNING</div>
                 </div>
                 <p class="cashout-warning-scope">Read only · ${this.escapeHtml(rangeText)} · berdasarkan nominal Cash Out individual, bukan total harian.</p>
-                <div class="cashout-warning-list">
-                    ${visible.map((w) => `
-                        <div class="cashout-warning-row">
-                            <div class="cashout-warning-main">
-                                <strong class="cashout-warning-branch">${this.escapeHtml(w.cabang)}</strong>
-                                <strong class="cashout-warning-amount">${this.formatRupiah(w.nominal)}</strong>
+                <div class="cashout-warning-table" role="table" aria-label="Daftar warning Cash Out">
+                    <div class="cashout-warning-columns" role="row">
+                        <span role="columnheader">Cabang</span>
+                        <span role="columnheader">Nominal</span>
+                        <span role="columnheader">Keterangan</span>
+                        <span role="columnheader">Kasir / User</span>
+                    </div>
+                    <div class="cashout-warning-list">
+                        ${rows.map((w, index) => `
+                            <div class="cashout-warning-row${index >= 5 ? " is-extra" : ""}" role="row" ${index >= 5 ? "hidden" : ""}>
+                                <div class="cashout-warning-cell cashout-warning-cabang" role="cell">
+                                    <strong class="cashout-warning-branch">${this.escapeHtml(w.cabang)}</strong>
+                                    <span class="cashout-warning-date">${this.escapeHtml(this.formatDate(w.tanggal))}</span>
+                                </div>
+                                <strong class="cashout-warning-cell cashout-warning-amount" role="cell">${this.formatRupiah(w.nominal)}</strong>
+                                <span class="cashout-warning-cell cashout-warning-desc" role="cell">${this.escapeHtml(w.keterangan)}</span>
+                                <span class="cashout-warning-cell cashout-warning-kasir" role="cell">${this.escapeHtml(w.kasir)}</span>
                             </div>
-                            <div class="cashout-warning-meta">
-                                <span>${this.escapeHtml(this.formatDate(w.tanggal))}</span>
-                                <span>Kasir/User: <b>${this.escapeHtml(w.kasir)}</b></span>
-                                <span>Keterangan: <b>${this.escapeHtml(w.keterangan)}</b></span>
-                            </div>
-                        </div>
-                    `).join("")}
+                        `).join("")}
+                    </div>
                 </div>
-                ${more ? `<p class="cashout-warning-more">+${more} warning lain pada periode aktif.</p>` : ""}
+                ${rows.length > 5 ? `
+                    <button type="button" id="cashoutWarningToggle" class="cashout-warning-toggle" data-total="${rows.length}" aria-expanded="false">
+                        Lihat semua ${rows.length} warning
+                    </button>
+                ` : ""}
             </article>
         `;
     }
