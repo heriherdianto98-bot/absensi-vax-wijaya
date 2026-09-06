@@ -278,10 +278,9 @@ body.sidebar-collapsed .erp-wrapper{
 }
 
 /* =========================================================
-   SIDEBAR VW BOOK LOGO — PREMIUM MOTION LOOP (UI ONLY)
-   The previous fake page layers are removed. The real logo
-   now floats, tilts, turns slightly in 3D and receives a
-   moving gold light sweep so it never feels static.
+   SIDEBAR VW BOOK LOGO — ENTER / LIVE / EXIT LOOP (UI ONLY)
+   No fake pages. The real logo enters, settles with a short
+   3D snap, exits completely, pauses, then repeats.
    ========================================================= */
 .sidebar .sidebar-logo{
     position:relative!important;
@@ -298,82 +297,74 @@ body.sidebar-collapsed .erp-wrapper{
     animation:none!important;
 }
 
-.sidebar .sidebar-logo .logo-mark{
-    position:relative!important;
-    z-index:2!important;
-    transform-origin:50% 55%!important;
-    transform-style:preserve-3d!important;
-    backface-visibility:hidden!important;
-    will-change:transform,filter!important;
-    animation:vaxLogoLivingMotion 5.6s cubic-bezier(.45,.05,.2,1) infinite!important;
-}
-
 .sidebar .sidebar-logo .brand-copy{
     position:relative!important;
     z-index:3!important;
 }
 
 .sidebar .sidebar-logo .logo-mark{
-    filter:drop-shadow(0 3px 5px rgba(0,0,0,.30));
+    position:relative!important;
+    z-index:2!important;
+    transform-origin:50% 55%!important;
+    transform-style:preserve-3d!important;
+    backface-visibility:hidden!important;
+    will-change:transform,filter,opacity!important;
+    animation:vaxLogoEnterLiveExit 6.4s cubic-bezier(.4,0,.2,1) infinite!important;
 }
 
-@keyframes vaxLogoLivingMotion{
-    0%,100%{
-        transform:translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
-        filter:drop-shadow(0 3px 5px rgba(0,0,0,.30)) drop-shadow(0 0 0 rgba(242,194,48,0));
+@keyframes vaxLogoEnterLiveExit{
+    0%,8%{
+        opacity:0;
+        transform:translate3d(-18px,4px,-28px) rotateY(34deg) rotateZ(-7deg) scale(.72);
+        filter:blur(4px) drop-shadow(0 0 0 rgba(242,194,48,0));
     }
-    12%{
-        transform:translate3d(0,-2px,8px) rotateX(5deg) rotateY(-10deg) rotateZ(-1.5deg) scale(1.025);
-        filter:drop-shadow(5px 7px 7px rgba(0,0,0,.34)) drop-shadow(0 0 7px rgba(242,194,48,.18));
+    15%{
+        opacity:.88;
+        transform:translate3d(4px,-1px,10px) rotateY(-10deg) rotateZ(2deg) scale(1.07);
+        filter:blur(.8px) drop-shadow(0 5px 7px rgba(0,0,0,.32)) drop-shadow(0 0 9px rgba(242,194,48,.26));
+    }
+    21%{
+        opacity:1;
+        transform:translate3d(0,0,5px) rotateY(5deg) rotateZ(-1deg) scale(.98);
+        filter:blur(0) drop-shadow(0 4px 6px rgba(0,0,0,.30)) drop-shadow(0 0 11px rgba(242,194,48,.30));
     }
     27%{
-        transform:translate3d(2px,-4px,16px) rotateX(-3deg) rotateY(14deg) rotateZ(1.2deg) scale(1.045);
-        filter:drop-shadow(-6px 9px 8px rgba(0,0,0,.38)) drop-shadow(0 0 11px rgba(242,194,48,.30));
+        opacity:1;
+        transform:translate3d(0,0,8px) rotateX(-4deg) rotateY(-7deg) rotateZ(0deg) scale(1.025);
+        filter:blur(0) drop-shadow(0 6px 8px rgba(0,0,0,.34)) drop-shadow(0 0 14px rgba(255,214,64,.36));
     }
-    42%{
-        transform:translate3d(0,-3px,22px) rotateX(-8deg) rotateY(-18deg) rotateZ(-1deg) scale(1.055);
-        filter:drop-shadow(7px 10px 10px rgba(0,0,0,.42)) drop-shadow(0 0 15px rgba(255,214,64,.38));
+    35%,58%{
+        opacity:1;
+        transform:translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+        filter:blur(0) drop-shadow(0 3px 5px rgba(0,0,0,.30)) drop-shadow(0 0 6px rgba(242,194,48,.16));
     }
-    55%{
-        transform:translate3d(-1px,-5px,26px) rotateX(7deg) rotateY(18deg) rotateZ(1deg) scale(1.06);
-        filter:drop-shadow(-7px 11px 10px rgba(0,0,0,.42)) drop-shadow(0 0 17px rgba(255,220,74,.44));
+    64%{
+        opacity:1;
+        transform:translate3d(1px,0,7px) rotateX(4deg) rotateY(10deg) rotateZ(1deg) scale(1.035);
+        filter:blur(0) drop-shadow(-4px 7px 8px rgba(0,0,0,.34)) drop-shadow(0 0 12px rgba(255,214,64,.30));
     }
-    69%{
-        transform:translate3d(1px,-3px,18px) rotateX(-5deg) rotateY(-12deg) rotateZ(-1deg) scale(1.045);
-        filter:drop-shadow(5px 8px 8px rgba(0,0,0,.36)) drop-shadow(0 0 10px rgba(242,194,48,.28));
+    72%{
+        opacity:.72;
+        transform:translate3d(15px,-2px,-8px) rotateY(-24deg) rotateZ(5deg) scale(.88);
+        filter:blur(1.5px) drop-shadow(0 3px 5px rgba(0,0,0,.26)) drop-shadow(0 0 6px rgba(242,194,48,.14));
     }
-    84%{
-        transform:translate3d(0,-1px,8px) rotateX(3deg) rotateY(8deg) rotateZ(.7deg) scale(1.02);
-        filter:drop-shadow(-3px 6px 6px rgba(0,0,0,.32)) drop-shadow(0 0 6px rgba(242,194,48,.16));
+    80%{
+        opacity:0;
+        transform:translate3d(28px,3px,-35px) rotateY(-46deg) rotateZ(9deg) scale(.64);
+        filter:blur(5px) drop-shadow(0 0 0 rgba(242,194,48,0));
     }
-}
-
-/* A subtle moving highlight over the logo zone. */
-.sidebar .sidebar-logo{
-    background-image:linear-gradient(115deg,
-        transparent 0%,
-        transparent 38%,
-        rgba(255,224,100,0) 42%,
-        rgba(255,224,100,.10) 48%,
-        rgba(255,244,190,.20) 50%,
-        rgba(255,224,100,.08) 52%,
-        rgba(255,224,100,0) 58%,
-        transparent 62%,
-        transparent 100%);
-    background-size:240% 100%!important;
-    animation:vaxLogoLightSweep 5.6s linear infinite!important;
-}
-
-@keyframes vaxLogoLightSweep{
-    0%,12%{background-position:135% 0;}
-    52%{background-position:35% 0;}
-    88%,100%{background-position:-90% 0;}
+    81%,100%{
+        opacity:0;
+        transform:translate3d(28px,3px,-35px) rotateY(-46deg) rotateZ(9deg) scale(.64);
+        filter:blur(5px) drop-shadow(0 0 0 rgba(242,194,48,0));
+    }
 }
 
 @media (prefers-reduced-motion:reduce){
-    .sidebar .sidebar-logo,
     .sidebar .sidebar-logo .logo-mark{
         animation:none!important;
         transform:none!important;
+        opacity:1!important;
+        filter:none!important;
     }
 }
