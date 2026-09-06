@@ -12,8 +12,9 @@ RULES:
   pada periode + cabang source tersebut.
 - BRI Merchant dari Setoran menjadi nilai "Uang Rekening Sesuai Data"
   untuk rekonsiliasi Arus Kas; transfer aktual tetap transaksi QRIS_TRANSFER.
-- Transaksi AUTO Arus Kas tetap BELUM_DIVERIFIKASI sampai Owner review
-  di modul Arus Kas (verifikasi Arus Kas berbeda dari verifikasi Setoran).
+- Transaksi AUTO yang berasal dari Setoran 3 Harian mewarisi verifikasi Owner
+  dari Setoran dan TIDAK memerlukan verifikasi ulang di Arus Kas.
+- Verifikasi Arus Kas hanya untuk transaksi MANUAL.
 =========================================================
 */
 "use strict";
@@ -23,6 +24,72 @@ RULES:
 
   const flow = ArusKasV2;
   flow.consumerCabangNames = flow.consumerCabangNames || new Map();
+
+  /*
+   * AUTO dari Setoran 3 Harian sudah melalui Owner Verification di modul sumber.
+   * Di Arus Kas status langsung OWNER_VERIFIED dan row lama yang masih pending
+   * ikut dinaikkan statusnya saat ditemukan kembali. Manual flow tidak disentuh.
+   */
+  flow.ensureAutoTransaction = async function(x){
+    if(!(x.amount > 0)) return;
+
+    const inheritedVerifiedBy = x?.metadata?.owner_verified_by || this.user?.id || null;
+    const inheritedVerifiedAt = x?.metadata?.owner_verified_at || new Date().toISOString();
+
+    const {data:found,error:fe}=await db
+      .from(this.TX_TABLE)
+      .select("*")
+      .eq("source_type","SETORAN_3_HARIAN")
+      .eq("source_key",x.source_key)
+      .maybeSingle();
+    if(fe) throw fe;
+
+    if(found){
+      if(found.entry_type === "AUTO" && found.verification_status !== "OWNER_VERIFIED"){
+        const now = new Date().toISOString();
+        const {data:updated,error:ue}=await db
+          .from(this.TX_TABLE)
+          .update({
+            verification_status:"OWNER_VERIFIED",
+            verified_by:inheritedVerifiedBy,
+            verified_at:inheritedVerifiedAt,
+            correction_note:null,
+            updated_by:this.user?.id || inheritedVerifiedBy,
+            updated_at:now,
+            metadata:{...(found.metadata||{}),...(x.metadata||{}),verification_inherited_from:"SETORAN_3_HARIAN"}
+          })
+          .eq("id",found.id)
+          .select("*")
+          .single();
+        if(ue) throw ue;
+        await this.audit(updated.id,"AUTO_INHERIT_SETORAN_VERIFICATION",updated);
+      }
+      return;
+    }
+
+    const payload={
+      tanggal:x.tanggal,
+      amount:Math.round(x.amount),
+      from_wallet:x.from_wallet,
+      to_wallet:x.to_wallet,
+      entry_type:"AUTO",
+      category:x.category,
+      description:x.description,
+      source_type:"SETORAN_3_HARIAN",
+      source_key:x.source_key,
+      source_period_start:x.start,
+      source_period_end:x.end,
+      verification_status:"OWNER_VERIFIED",
+      verified_by:inheritedVerifiedBy,
+      verified_at:inheritedVerifiedAt,
+      created_by:this.user.id,
+      updated_by:this.user.id,
+      metadata:{...(x.metadata||{}),verification_inherited_from:"SETORAN_3_HARIAN"}
+    };
+    const {data,error}=await db.from(this.TX_TABLE).insert(payload).select("*").single();
+    if(error) throw error;
+    await this.audit(data.id,"AUTO_CREATE_VERIFIED_FROM_SETORAN",data);
+  };
 
   flow.loadConsumerCabangNames = async function(){
     if(this.consumerCabangNames.size) return;
