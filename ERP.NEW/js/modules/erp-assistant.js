@@ -18,7 +18,7 @@ const ErpAssistant={
   },
 
   tokens(v){
-    const stop=new Set(["apa","apakah","itu","ini","yang","dan","di","ke","dari","untuk","saya","sy","mau","gimana","bagaimana","maksud","maksudnya","arti","jelasin","jelaskan","kenapa","kok","kalo","kalau","trs","terus","jadi"]);
+    const stop=new Set(["apa","apakah","itu","ini","yang","dan","di","ke","dari","untuk","saya","sy","mau","gimana","bagaimana","maksud","maksudnya","arti","jelasin","jelaskan","kenapa","kok","kalo","kalau","trs","terus","jadi","yg","mkst","mksd"]);
     return this.norm(v).split(" ").filter(x=>x.length>1&&!stop.has(x));
   },
 
@@ -50,24 +50,59 @@ const ErpAssistant={
     if(badge)badge.textContent=this.contextModule?`Konteks: ${this.contextModule.name}`:"Konteks: Semua modul LOCK";
   },
 
+  explicitModule(query){
+    const q=this.norm(query);
+    const modules=this.knowledge?.modules||[];
+    let best=null;
+    for(const m of modules){
+      const names=[m.name,...(m.aliases||[])].map(x=>this.norm(x)).filter(Boolean);
+      for(const n of names){
+        if(n.length<4)continue;
+        if(q.includes(n)){
+          const score=n.length + (this.norm(m.name)===n?50:0);
+          if(!best||score>best.score)best={m,score};
+        }
+      }
+    }
+    return best?.m||null;
+  },
+
+  intentModule(query){
+    const q=this.norm(query);
+    const byId=id=>(this.knowledge?.modules||[]).find(m=>m.id===id)||null;
+    const rules=[
+      [/(kas denda|piutang denda|kas besar|dana produk|uang rekening|masuk kas|selisih qris|qris transfer|gopay transfer)/,"ARUS_KAS_V2"],
+      [/(cash harus diambil|belum diambil|sudah diambil|verif owner|setoran 3 harian)/,"SETORAN_3_HARIAN"],
+      [/(cash bersih|tabel harian|daily recap)/,"TABEL_HARIAN"],
+      [/(gaji bersih|gaji pokok|bonus kpi|bonus produk|payroll|master gaji)/,"PAYROLL"],
+      [/(cash out|detail cash out)/,"CASH_OUT"]
+    ];
+    for(const [re,id] of rules)if(re.test(q))return byId(id);
+    return null;
+  },
+
   scoreModule(module,query){
     const q=this.norm(query),qt=this.tokens(query);
     let score=0;
     const name=this.norm(module.name);
     const aliases=(module.aliases||[]).map(x=>this.norm(x));
-    if(q.includes(name)||name.includes(q))score+=18;
-    aliases.forEach(a=>{if(q.includes(a))score+=12;});
+    if(q.includes(name)||name.includes(q))score+=28;
+    aliases.forEach(a=>{if(a.length>=4&&q.includes(a))score+=18;});
     const hay=this.norm([
       module.name,module.purpose,...(module.aliases||[]),...(module.rules||[]),
       ...Object.keys(module.fields||{}),...Object.values(module.fields||{}),
       ...(module.faq||[]).flatMap(x=>[x.q,x.a])
     ].join(" "));
     qt.forEach(t=>{if(hay.includes(t))score+=2;});
-    if(score>0&&this.contextModule?.id===module.id)score+=3;
+    if(score>0&&this.contextModule?.id===module.id)score+=5;
     return score;
   },
 
   bestModule(query){
+    const explicit=this.explicitModule(query);
+    if(explicit)return {m:explicit,s:100};
+    const intent=this.intentModule(query);
+    if(intent)return {m:intent,s:90};
     const scored=(this.knowledge?.modules||[]).map(m=>({m,s:this.scoreModule(m,query)})).sort((a,b)=>b.s-a.s);
     return scored[0]&&scored[0].s>=4?scored[0]:null;
   },
@@ -76,8 +111,8 @@ const ErpAssistant={
     const q=this.norm(query),qt=this.tokens(query);
     let best=null;
     (module.faq||[]).forEach(f=>{
-      const h=this.norm(`${f.q} ${f.a}`);
-      let s=q.includes(this.norm(f.q))?25:0;
+      const fq=this.norm(f.q),h=this.norm(`${f.q} ${f.a}`);
+      let s=q.includes(fq)||fq.includes(q)?30:0;
       qt.forEach(t=>{if(h.includes(t))s+=3;});
       if(!best||s>best.s)best={f,s};
     });
@@ -89,10 +124,15 @@ const ErpAssistant={
     return Object.entries(module.fields||{}).map(([k,v])=>{
       const label=this.norm(k.replace(/_/g," "));
       const h=this.norm(`${label} ${v}`);
-      let s=q.includes(label)?14:0;
-      qt.forEach(t=>{if(h.includes(t))s+=2;});
+      let s=0;
+      if(q.includes(label)||label.includes(q))s+=30;
+      const labelTokens=this.tokens(label);
+      const overlap=labelTokens.filter(t=>qt.includes(t)).length;
+      if(labelTokens.length&&overlap===labelTokens.length)s+=18;
+      else s+=overlap*5;
+      qt.forEach(t=>{if(h.includes(t))s+=1;});
       return {k,v,s};
-    }).filter(x=>x.s>=4).sort((a,b)=>b.s-a.s).slice(0,3);
+    }).filter(x=>x.s>=5).sort((a,b)=>b.s-a.s).slice(0,3);
   },
 
   matchingRules(module,query){
