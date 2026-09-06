@@ -126,6 +126,16 @@ const ErpAssistantScreenHelp={
 
   wireAssistant(){
     if(!window.ErpAssistant)return;
+
+    /* Screen Help hanya boleh aktif bila halaman dibuka khusus lewat ?screenHelp=1.
+       Context lama di sessionStorage tidak boleh bocor ke Global Help Desk atau chat biasa. */
+    let isScreenHelp=false;
+    try{isScreenHelp=new URLSearchParams(location.search).get("screenHelp")==="1"}catch(_e){}
+    if(!isScreenHelp){
+      this.context=null;
+      return;
+    }
+
     this.readContext();
     if(!this.context?.screen_id)return;
 
