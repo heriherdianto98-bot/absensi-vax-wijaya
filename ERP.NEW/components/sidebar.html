@@ -1,42 +1,157 @@
-<!-- ERP VAX canonical sidebar shell · Arus Kas V2 active target; Arus Kas V1 intentionally hidden -->
-<aside class="sidebar" id="erpSidebar">
-  <div class="sidebar-logo">
-    <div class="logo-icon"><img src="../assets/logo/logo.png" alt="VAX ERP"></div>
-    <div class="logo-text"><h2>VAX ERP</h2><small>Enterprise Management System</small></div>
-  </div>
-  <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Toggle sidebar">☰</button>
-  <nav class="sidebar-menu">
-    <span class="menu-title">DASHBOARD</span>
-    <a href="./erp-dashboard.html" class="menu-item" data-erp-nav="dashboard"><span class="icon">🏠</span><span class="text">Dashboard</span></a>
+<!--
+=========================================================
+ERP VAX WIJAYA
+Component : Sidebar
+Version   : UI-01
+=========================================================
+-->
 
-    <span class="menu-title">MASTER</span>
-    <a href="./karyawan.html" class="menu-item" data-erp-nav="karyawan"><span class="icon">👥</span><span class="text">Karyawan</span></a>
-    <a href="./cabang.html" class="menu-item" data-erp-nav="cabang"><span class="icon">🏢</span><span class="text">Cabang</span></a>
+<aside class="sidebar" id="sidebarPanel">
 
-    <span class="menu-title">OPERASIONAL</span>
-    <a href="./absensi.html" class="menu-item" data-erp-nav="absensi"><span class="icon">🕒</span><span class="text">Absensi</span></a>
-    <a href="./payroll-capster.html" class="menu-item" data-erp-nav="payroll"><span class="icon">💵</span><span class="text">Master Gaji</span></a>
-
-    <span class="menu-title">LAPORAN & KEUANGAN</span>
-    <div class="menu-group is-open" data-erp-menu-group="laporan">
-      <a href="#" class="menu-item menu-item-parent" data-erp-parent="laporan" aria-expanded="true"><span class="icon">▤</span><span class="text">Laporan</span></a>
-      <div class="menu-submenu">
-        <a href="./tabel-harian-cabang.html" class="menu-item" data-erp-nav="tabel-harian"><span class="icon">▦</span><span class="text">Tabel Harian</span></a>
-        <a href="./setoran-3-harian.html" class="menu-item" data-erp-nav="setoran"><span class="icon">⬡</span><span class="text">Setoran 3 Harian</span></a>
-        <a href="./cash-out.html" class="menu-item" data-erp-nav="cash-out"><span class="icon">↗</span><span class="text">Cash Out</span></a>
-        <a href="./arus-kas-v2.html" class="menu-item" data-erp-nav="arus-kas"><span class="icon">💰</span><span class="text">Arus Kas</span></a>
-      </div>
+    <div class="sidebar-logo" aria-label="ERP VAX WIJAYA">
+        <img
+            class="logo-mark"
+            src="../assets/brand/erp-vax-wijaya.png"
+            alt="ERP VAX WIJAYA"
+            width="92"
+            height="78"
+            decoding="async"
+        >
+        <div class="brand-copy">
+            <strong class="brand-title">ERP VAX WIJAYA</strong>
+            <span class="brand-subtitle">Enterprise Management System</span>
+        </div>
     </div>
 
-    <span class="menu-title">KOMUNIKASI</span>
-    <a href="./pengumuman.html" class="menu-item" data-erp-nav="pengumuman"><span class="icon">📣</span><span class="text">Pengumuman</span></a>
+    <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+        ☰
+    </button>
 
-    <span class="menu-title">SYSTEM</span>
-    <a href="./pengaturan.html" class="menu-item" data-erp-nav="settings"><span class="icon">⚙️</span><span class="text">Pengaturan ERP</span></a>
-  </nav>
-  <div class="sidebar-footer">
-    <div class="system-status"><span class="status-dot"></span><span>ONLINE</span></div>
-    <div class="sidebar-role-meta"><strong id="sidebarRoleName">—</strong><small id="sidebarRoleBranch"></small></div>
-    <div class="version">ERP.001</div>
-  </div>
+    <nav class="sidebar-menu">
+
+        <span class="menu-title">MENU UTAMA</span>
+
+        <a href="../pages/erp-dashboard.html" class="menu-item" data-erp-nav="dashboard">
+            <span class="icon">▣</span>
+            <span class="text">Dashboard</span>
+        </a>
+
+        <a href="../pages/cash-out.html" class="menu-item" data-erp-nav="cash-out">
+            <span class="icon">↗</span>
+            <span class="text">Cash Out</span>
+        </a>
+
+        <a href="../pages/arus-kas.html" class="menu-item" data-erp-nav="arus-kas">
+            <span class="icon">⇄</span>
+            <span class="text">Arus Kas</span>
+        </a>
+
+        <a href="../pages/finance.html?menu=cash-in" class="menu-item" data-erp-nav="cash-in">
+            <span class="icon">↙</span>
+            <span class="text">Cash In / Kasbon</span>
+        </a>
+
+        <a href="../pages/finance.html?menu=reimbursement" class="menu-item" data-erp-nav="reimbursement">
+            <span class="icon">◎</span>
+            <span class="text">Reimbursement</span>
+        </a>
+
+        <div class="menu-group" data-erp-menu-group="laporan">
+            <button type="button"
+                    class="menu-item menu-item-parent"
+                    data-erp-nav="laporan"
+                    data-erp-parent="laporan"
+                    aria-expanded="false"
+                    aria-controls="sidebarLaporanSub">
+                <span class="icon">▥</span>
+                <span class="text">Laporan</span>
+                <span class="menu-caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="menu-submenu" id="sidebarLaporanSub" hidden>
+                <a href="../pages/tabel-harian-cabang.html" class="menu-item menu-item-sub" data-erp-nav="tabel-harian">
+                    <span class="icon">▦</span>
+                    <span class="text">Tabel Harian Semua Cabang</span>
+                </a>
+                <a href="../pages/setoran-3-harian.html" class="menu-item menu-item-sub" data-erp-nav="setoran">
+                    <span class="icon">⬡</span>
+                    <span class="text">Setoran 3 Harian</span>
+                </a>
+                <a href="../pages/finance.html?menu=setoran-bulanan" class="menu-item menu-item-sub" data-erp-nav="setoran-bulanan">
+                    <span class="icon">▤</span>
+                    <span class="text">Setoran Rutin Bulanan</span>
+                </a>
+                <a href="../pages/finance.html?menu=qris" class="menu-item menu-item-sub" data-erp-nav="qris">
+                    <span class="icon">◈</span>
+                    <span class="text">QRIS Monitoring</span>
+                </a>
+            </div>
+        </div>
+
+        <a href="../pages/erp-dashboard.html#widget-section" class="menu-item" data-erp-nav="ai">
+            <span class="icon">✧</span>
+            <span class="text">AI Insight</span>
+        </a>
+
+        <span class="menu-title">MASTER DATA</span>
+
+        <a href="../pages/karyawan.html" class="menu-item" data-erp-nav="karyawan">
+            <span class="icon">👤</span>
+            <span class="text">Karyawan</span>
+        </a>
+
+        <a href="../pages/cabang.html" class="menu-item" data-erp-nav="cabang">
+            <span class="icon">⌂</span>
+            <span class="text">Cabang</span>
+        </a>
+
+        <span class="menu-title">OPERASIONAL</span>
+
+        <!-- Absensi Owner: halaman internal ERP shell (bukan standalone) -->
+        <a href="../pages/absensi.html" class="menu-item" data-erp-nav="absensi">
+            <span class="icon">◷</span>
+            <span class="text">Absensi</span>
+        </a>
+
+        <a href="../pages/pengumuman.html" class="menu-item" data-erp-nav="pengumuman">
+            <span class="icon">📢</span>
+            <span class="text">Pengumuman</span>
+        </a>
+
+        <!-- Payroll: belum ada di production — sengaja tidak ditampilkan (hindari 404) -->
+
+        <span class="menu-title">SISTEM</span>
+
+        <!-- Pengaturan existing: root pengaturan.html -->
+        <a href="../../pengaturan.html"
+           class="menu-item"
+           data-owner-only
+           data-erp-menu="settings"
+           data-erp-nav="settings">
+            <span class="icon">⚙</span>
+            <span class="text">Pengaturan</span>
+        </a>
+
+        <!-- Audit Trail: belum ada di production — sengaja tidak ditampilkan (hindari 404) -->
+
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="sidebar-role-meta">
+            <span class="role-label">Role aktif</span>
+            <span class="role-name" id="sidebarRoleName">—</span>
+            <span class="role-branch" id="sidebarRoleBranch"></span>
+        </div>
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            <span>ONLINE</span>
+        </div>
+
+        <div class="version">ERP VAX · UI-01</div>
+
+        <button type="button" id="btnSidebarLogout" class="logout-btn" data-erp-logout>
+            Logout
+        </button>
+    </div>
+
 </aside>

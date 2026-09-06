@@ -1,18 +1,320 @@
-<!-- ERP VAX canonical header shell -->
-<header class="top-header erp-header">
-  <div class="header-left">
-    <button type="button" class="icon-btn" id="erpMobileMenuBtn" aria-label="Buka menu">☰</button>
-    <div>
-      <h1 id="erpHeaderTitle">Dashboard</h1>
-      <span id="erpHeaderSub">Enterprise Resource Planning</span>
+﻿<style>
+.erp-header-vax{
+  width:100%!important;
+  min-height:76px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  padding:8px 18px!important;
+  background:#11161c!important;
+  border-bottom:2px solid rgba(212,168,38,.72)!important;
+}
+
+.erp-header-vax .vax-context{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+
+.erp-header-vax .vax-chip{
+  min-width:120px!important;
+  padding:8px 14px!important;
+  border:1px solid rgba(212,168,38,.28)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.025)!important;
+}
+
+.erp-header-vax .vax-chip label{
+  display:block!important;
+  margin-bottom:3px!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:1.4px!important;
+  color:#8f98a6!important;
+}
+
+.erp-header-vax .vax-chip strong{
+  display:block!important;
+  font-size:15px!important;
+  line-height:1.15!important;
+  color:#fff!important;
+  white-space:nowrap!important;
+}
+
+.erp-header-vax .vax-sync{
+  margin-left:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  white-space:nowrap!important;
+  color:#f3be25!important;
+}
+
+.erp-header-vax .vax-sync-copy strong{
+  display:block!important;
+  font-size:13px!important;
+  line-height:1.05!important;
+  color:#f3be25!important;
+}
+
+.erp-header-vax .vax-sync-copy span{
+  display:block!important;
+  margin-top:3px!important;
+  font-size:8px!important;
+  color:#9ba4b2!important;
+}
+
+.erp-header-vax .vax-utils{
+  display:flex!important;
+  align-items:center!important;
+  gap:16px!important;
+  margin-left:20px!important;
+  color:#87919f!important;
+  font-size:14px!important;
+}
+
+.erp-header-vax .vax-owner{
+  min-width:105px!important;
+  margin-left:22px!important;
+  text-align:right!important;
+}
+
+.erp-header-vax .vax-owner strong{
+  display:block!important;
+  font-size:13px!important;
+  color:#fff!important;
+}
+
+.erp-header-vax .vax-owner span{
+  display:block!important;
+  margin-top:4px!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.8px!important;
+  color:#e6b621!important;
+}
+
+.erp-header-vax .vax-logout{
+  height:42px!important;
+  margin-left:12px!important;
+  padding:0 18px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:#ef2c2c!important;
+  color:#fff!important;
+  font-weight:800!important;
+}
+</style>
+
+<header class="top-header erp-header erp-header-vax">
+  <div class="vax-context">
+    <div class="vax-chip">
+      <label>CABANG AKTIF</label>
+      <strong id="erpHeaderCabang">Semua Cabang</strong>
+    </div>
+
+    <div class="vax-chip">
+      <label>PERIODE AKTIF</label>
+      <strong id="erpHeaderPeriode">—</strong>
     </div>
   </div>
-  <div class="header-context">
-    <div class="header-status"><span>Cabang</span><strong id="erpHeaderCabang">Semua Cabang</strong></div>
-    <div class="header-status"><span>Periode</span><strong id="erpHeaderPeriode">—</strong></div>
+
+  <div class="vax-sync">
+    <span>◔</span>
+    <div class="vax-sync-copy">
+      <strong>Jam Sync Selesai</strong>
+      <span>Aktif kembali 07:00 WIB</span>
+    </div>
   </div>
-  <div class="header-user">
-    <span id="ownerAuthRole">—</span>
+
+  <div class="vax-utils">
+    <span>⌕</span>
+    <span>◷</span>
+  </div>
+
+  <div class="vax-owner">
     <strong id="ownerAuthName">—</strong>
+    <span id="ownerAuthRole">OWNER</span>
   </div>
+
+  <button type="button" id="btnOwnerLogout" class="vax-logout">Logout</button>
 </header>
+<style>
+.erp-header-vax .vax-sync > span{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:24px!important;
+  height:24px!important;
+  font-size:21px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  color:#f4c528!important;
+  text-shadow:
+    0 0 5px rgba(244,197,40,.85),
+    0 0 10px rgba(244,197,40,.45)!important;
+  margin-right:1px!important;
+  transform:translateY(-1px)!important;
+}
+
+.erp-header-vax .vax-sync{
+  gap:4px!important;
+}
+</style>
+<style>
+.erp-header-vax .vax-sync-copy span{
+  font-size:10px!important;
+  font-weight:700!important;
+  letter-spacing:.2px!important;
+  color:#b9c1cc!important;
+}
+</style>
+<style>
+@keyframes vaxHeaderChipPulse{
+  0%,100%{
+    border-color:rgba(212,168,38,.30);
+    box-shadow:
+      0 0 0 rgba(244,197,40,0),
+      inset 0 0 0 rgba(244,197,40,0);
+  }
+  50%{
+    border-color:rgba(244,197,40,.95);
+    box-shadow:
+      0 0 10px rgba(244,197,40,.60),
+      0 0 18px rgba(244,197,40,.28),
+      inset 0 0 8px rgba(244,197,40,.10);
+  }
+}
+
+.erp-header-vax .vax-chip{
+  animation:vaxHeaderChipPulse 1.6s ease-in-out infinite!important;
+}
+</style>
+<style>
+/* Perbesar tinggi filter Cabang + Periode */
+.erp-filter-bar,
+.dashboard-filter-bar,
+.filter-bar{
+  min-height:50px!important;
+}
+
+.erp-filter-bar select,
+.dashboard-filter-bar select,
+.filter-bar select,
+.erp-filter-bar .select,
+.dashboard-filter-bar .select,
+.filter-bar .select{
+  min-height:40px!important;
+  height:40px!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  display:flex!important;
+  align-items:center!important;
+  font-size:14px!important;
+}
+
+.erp-filter-bar label,
+.dashboard-filter-bar label,
+.filter-bar label{
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+</style>
+<style>
+html body.page-erp-dashboard .erp-wrapper .toolbar-wrapper,
+html body.page-erp-dashboard .od-filterbar{
+  height:56px!important;
+  min-height:56px!important;
+  max-height:56px!important;
+  padding:5px 2px!important;
+  align-items:center!important;
+}
+
+html body.page-erp-dashboard .erp-wrapper .toolbar-left select{
+  height:44px!important;
+  min-height:44px!important;
+  max-height:44px!important;
+  font-size:15px!important;
+  font-weight:700!important;
+  padding:0 42px 0 14px!important;
+  border-radius:10px!important;
+}
+
+html body.page-erp-dashboard .erp-wrapper .toolbar-left label,
+html body.page-erp-dashboard .erp-wrapper .toolbar-left .label,
+html body.page-erp-dashboard .erp-wrapper .toolbar-left small{
+  display:none!important;
+}
+
+html body.page-erp-dashboard .erp-wrapper .toolbar-left{
+  align-items:center!important;
+  gap:10px!important;
+}
+</style>
+<style>
+html body.page-erp-dashboard .erp-wrapper .toolbar-left label{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  font-size:0!important;
+}
+
+html body.page-erp-dashboard .erp-wrapper .toolbar-left label select{
+  display:block!important;
+  height:44px!important;
+  min-height:44px!important;
+  max-height:44px!important;
+  font-size:15px!important;
+  font-weight:700!important;
+  padding:0 42px 0 14px!important;
+  border-radius:10px!important;
+}
+</style>
+<style>
+/* Sedikit perbesar status sync bar */
+html body.page-erp-dashboard .erp-wrapper .freshness-label,
+html body.page-erp-dashboard .erp-wrapper .freshness-title,
+html body.page-erp-dashboard .erp-wrapper .sync-label{
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.5px!important;
+}
+
+html body.page-erp-dashboard .erp-wrapper .freshness-value,
+html body.page-erp-dashboard .erp-wrapper .freshness-status,
+html body.page-erp-dashboard .erp-wrapper .sync-value{
+  font-size:11px!important;
+  font-weight:800!important;
+}
+
+html body.page-erp-dashboard .erp-wrapper .freshness-item,
+html body.page-erp-dashboard .erp-wrapper .sync-item{
+  line-height:1.15!important;
+}
+</style>
+<style>
+/* Besarkan status GLOBAL / OPERASIONAL / PROVIDER / LAST SYNC */
+html body.page-erp-dashboard .erp-wrapper [class*="fresh"],
+html body.page-erp-dashboard .erp-wrapper [class*="sync-status"],
+html body.page-erp-dashboard .erp-wrapper [class*="provider-status"],
+html body.page-erp-dashboard .erp-wrapper [class*="operational-status"]{
+  font-size:11px!important;
+  line-height:1.2!important;
+}
+
+html body.page-erp-dashboard .erp-wrapper [class*="fresh"] strong,
+html body.page-erp-dashboard .erp-wrapper [class*="fresh"] span,
+html body.page-erp-dashboard .erp-wrapper [class*="sync-status"] strong,
+html body.page-erp-dashboard .erp-wrapper [class*="sync-status"] span{
+  font-size:11px!important;
+  font-weight:800!important;
+}
+
+html body.page-erp-dashboard .erp-wrapper [class*="fresh"] small,
+html body.page-erp-dashboard .erp-wrapper [class*="sync-status"] small{
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.4px!important;
+}
+</style>
