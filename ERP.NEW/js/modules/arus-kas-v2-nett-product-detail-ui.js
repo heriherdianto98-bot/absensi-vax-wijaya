@@ -49,7 +49,9 @@ const ArusKasV2NettProductDetailUI={
   },
 
   rowData(id){
-    return (window.ArusKasV2?.ledger||[]).find(x=>String(x.id)===String(id))||null;
+    return (window.ArusKasV2 && Array.isArray(window.ArusKasV2.ledger)
+      ? window.ArusKasV2.ledger.find(x=>String(x.id)===String(id))
+      : null) || null;
   },
 
   decorate(){
@@ -60,28 +62,37 @@ const ArusKasV2NettProductDetailUI={
       if(!data)return;
       const cells=row.querySelectorAll("td");
       if(cells.length<8)return;
-      const effect=typeof ArusKasV2?.kasEffect==="function"?ArusKasV2.kasEffect(data):0;
+      const effect=(window.ArusKasV2 && typeof window.ArusKasV2.kasEffect==="function")
+        ? window.ArusKasV2.kasEffect(data)
+        : 0;
       const amountCell=effect>0?cells[1]:effect<0?cells[3]:null;
       if(!amountCell)return;
       amountCell.classList.add("ak2-has-detail");
 
-      const existing=amountCell.querySelector(".ak2-ledger-detail-icon");
-      if(existing)existing.remove();
-
       const isAuto=data.entry_type==="AUTO";
       const pending=!isAuto&&data.verification_status!=="OWNER_VERIFIED";
-      const btn=document.createElement("button");
-      btn.type="button";
-      btn.className=`ak2-ledger-detail-icon ${isAuto?"is-auto":pending?"is-manual-pending":"is-manual-verified"}`;
-      btn.textContent="ⓘ";
+      const desiredClass=isAuto?"is-auto":pending?"is-manual-pending":"is-manual-verified";
+      let btn=amountCell.querySelector(".ak2-ledger-detail-icon");
+
+      if(!btn){
+        btn=document.createElement("button");
+        btn.type="button";
+        btn.className="ak2-ledger-detail-icon";
+        btn.textContent="ⓘ";
+        btn.addEventListener("click",e=>{
+          e.preventDefault();
+          e.stopPropagation();
+          if(window.ArusKasV2 && typeof window.ArusKasV2.openDetail==="function"){
+            window.ArusKasV2.openDetail(row.dataset.id);
+          }
+        });
+        amountCell.appendChild(btn);
+      }
+
+      btn.classList.remove("is-auto","is-manual-pending","is-manual-verified");
+      btn.classList.add(desiredClass);
       btn.title=isAuto?"Lihat detail transaksi otomatis":pending?"Wajib Owner cek · klik detail":"Lihat detail transaksi manual";
       btn.setAttribute("aria-label",btn.title);
-      btn.addEventListener("click",e=>{
-        e.preventDefault();
-        e.stopPropagation();
-        if(typeof ArusKasV2?.openDetail==="function")ArusKasV2.openDetail(row.dataset.id);
-      });
-      amountCell.appendChild(btn);
     });
   },
 
@@ -90,7 +101,12 @@ const ArusKasV2NettProductDetailUI={
     const body=document.getElementById("ak2LedgerBody");
     if(!body)return;
     this.decorate();
-    new MutationObserver(()=>this.decorate()).observe(body,{childList:true,subtree:true});
+    let scheduled=false;
+    new MutationObserver(()=>{
+      if(scheduled)return;
+      scheduled=true;
+      requestAnimationFrame(()=>{scheduled=false;this.decorate()});
+    }).observe(body,{childList:true,subtree:true});
   }
 };
 
