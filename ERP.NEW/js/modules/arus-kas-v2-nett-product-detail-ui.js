@@ -1,68 +1,85 @@
-/* ARUS KAS V2 — NETT PRODUCT DETAIL AFFORDANCE · UI ONLY
-   Menambahkan indikator detail/verifikasi pada row Nett Produk tanpa mengubah engine/logic Arus Kas.
+/* ARUS KAS V2 — LEDGER DETAIL INDICATOR · UI ONLY
+   Menambahkan affordance detail pada nominal AUTO dan penanda verifikasi untuk MANUAL.
+   Tidak mengubah engine, formula, query, save logic, atau status transaksi.
 */
 "use strict";
 
 const ArusKasV2NettProductDetailUI={
   installStyle(){
-    if(document.getElementById("ak2NettProductDetailStyle"))return;
+    if(document.getElementById("ak2LedgerDetailIndicatorStyle"))return;
     const s=document.createElement("style");
-    s.id="ak2NettProductDetailStyle";
+    s.id="ak2LedgerDetailIndicatorStyle";
     s.textContent=`
       #ak2LedgerBody tr[data-id]{cursor:pointer}
-      #ak2LedgerBody tr.ak2-nett-product-row{position:relative}
-      #ak2LedgerBody tr.ak2-nett-product-row td:nth-child(4){white-space:nowrap}
-      .ak2-nett-product-detail{
+      #ak2LedgerBody td.ak2-has-detail{white-space:nowrap}
+      .ak2-ledger-detail-icon{
         display:inline-flex;align-items:center;justify-content:center;
         width:20px;height:20px;margin-left:7px;vertical-align:middle;
-        border-radius:999px;border:1px solid rgba(216,170,80,.72);
+        border-radius:999px;font-size:12px;font-weight:900;line-height:1;
+        cursor:pointer;transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;
+      }
+      .ak2-ledger-detail-icon.is-auto{
+        border:1px solid rgba(216,170,80,.72);
         background:linear-gradient(180deg,#2a2112,#171109);
-        color:#f2cb73;font-size:11px;font-weight:900;line-height:1;
+        color:#f2cb73;
         box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,0 0 10px rgba(216,170,80,.16);
-        cursor:pointer;transition:.18s ease;
       }
-      .ak2-nett-product-detail:hover{
-        transform:translateY(-1px) scale(1.04);
-        border-color:#f0c565;color:#fff0bd;
-        box-shadow:0 0 0 2px rgba(216,170,80,.10),0 0 16px rgba(216,170,80,.26);
+      .ak2-ledger-detail-icon.is-manual-pending{
+        border:1px solid rgba(224,86,76,.82);
+        background:linear-gradient(180deg,#381918,#1c1010);
+        color:#ff9b91;
+        box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,0 0 10px rgba(218,73,63,.22);
+        animation:ak2ManualVerifyPulse 1.45s ease-in-out infinite;
       }
-      .ak2-nett-product-row.ak2-needs-verify .ak2-nett-product-detail{
-        animation:ak2NettProductVerifyPulse 1.7s ease-in-out infinite;
+      .ak2-ledger-detail-icon.is-manual-verified{
+        border:1px solid rgba(73,171,104,.78);
+        background:linear-gradient(180deg,#17301f,#0f1c14);
+        color:#8fe0aa;
+        box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,0 0 9px rgba(73,171,104,.16);
       }
-      @keyframes ak2NettProductVerifyPulse{
-        0%,100%{box-shadow:0 0 8px rgba(216,170,80,.14)}
-        50%{box-shadow:0 0 0 3px rgba(216,170,80,.08),0 0 18px rgba(216,170,80,.34)}
+      .ak2-ledger-detail-icon:hover{transform:translateY(-1px) scale(1.05);filter:brightness(1.12)}
+      @keyframes ak2ManualVerifyPulse{
+        0%,100%{box-shadow:0 0 7px rgba(218,73,63,.18)}
+        50%{box-shadow:0 0 0 3px rgba(218,73,63,.10),0 0 18px rgba(218,73,63,.46)}
       }
-      @media (prefers-reduced-motion: reduce){.ak2-nett-product-detail{animation:none!important}}
-      @media print{.ak2-nett-product-detail{display:none!important}}
+      @media (prefers-reduced-motion: reduce){.ak2-ledger-detail-icon{animation:none!important}}
+      @media print{.ak2-ledger-detail-icon{display:none!important}}
     `;
     document.head.appendChild(s);
+  },
+
+  rowData(id){
+    return (window.ArusKasV2?.ledger||[]).find(x=>String(x.id)===String(id))||null;
   },
 
   decorate(){
     const body=document.getElementById("ak2LedgerBody");
     if(!body)return;
     body.querySelectorAll("tr[data-id]").forEach(row=>{
+      const data=this.rowData(row.dataset.id);
+      if(!data)return;
       const cells=row.querySelectorAll("td");
       if(cells.length<8)return;
-      const desc=(cells[4]?.textContent||"").toLowerCase();
-      const status=(cells[7]?.textContent||"").toUpperCase();
-      const isNett=desc.includes("nett produk");
-      if(!isNett)return;
-      row.classList.add("ak2-nett-product-row");
-      if(status.includes("BELUM DIVERIFIKASI"))row.classList.add("ak2-needs-verify");
-      const amountCell=cells[3];
-      if(!amountCell||amountCell.querySelector(".ak2-nett-product-detail"))return;
+      const effect=typeof ArusKasV2?.kasEffect==="function"?ArusKasV2.kasEffect(data):0;
+      const amountCell=effect>0?cells[1]:effect<0?cells[3]:null;
+      if(!amountCell)return;
+      amountCell.classList.add("ak2-has-detail");
+
+      const existing=amountCell.querySelector(".ak2-ledger-detail-icon");
+      if(existing)existing.remove();
+
+      const isAuto=data.entry_type==="AUTO";
+      const pending=!isAuto&&data.verification_status!=="OWNER_VERIFIED";
       const btn=document.createElement("button");
       btn.type="button";
-      btn.className="ak2-nett-product-detail";
-      btn.textContent="i";
-      btn.title=status.includes("BELUM DIVERIFIKASI")?"Klik untuk detail & verifikasi Nett Produk":"Klik untuk detail Nett Produk";
+      btn.className=`ak2-ledger-detail-icon ${isAuto?"is-auto":pending?"is-manual-pending":"is-manual-verified"}`;
+      btn.textContent="ⓘ";
+      btn.title=isAuto?"Lihat detail transaksi otomatis":pending?"Wajib Owner cek · klik detail":"Lihat detail transaksi manual";
       btn.setAttribute("aria-label",btn.title);
       btn.addEventListener("click",e=>{
         e.preventDefault();
         e.stopPropagation();
-        row.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+        if(typeof ArusKasV2?.openDetail==="function")ArusKasV2.openDetail(row.dataset.id);
       });
       amountCell.appendChild(btn);
     });
