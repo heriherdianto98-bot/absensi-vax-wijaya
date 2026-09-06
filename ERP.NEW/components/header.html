@@ -138,6 +138,7 @@
   </div>
 
   <button type="button" id="btnOwnerLogout" class="vax-logout">Logout</button>
+  <img src="../__vax_header_sync_runtime__.gif" alt="" aria-hidden="true" style="display:none" onerror="(function(){var run=function(){var root=document.getElementById('vaxHeaderSync'),title=document.getElementById('vaxHeaderSyncTitle'),sub=document.getElementById('vaxHeaderSyncSub');if(!root||!title||!sub)return;var p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()),h=Number((p.find(function(x){return x.type==='hour';})||{}).value||0),active=h>=10&&h<22;root.classList.toggle('is-operational',active);if(active){title.textContent='Sinkronisasi aktif';sub.textContent='Operasional 10:00–22:00 WIB';}else if(h<10){title.textContent='Menunggu jam buka';sub.textContent='Aktif mulai 10:00 WIB';}else{title.textContent='Di luar jam operasional';sub.textContent='Aktif kembali 10:00 WIB';}};run();if(window.__vaxHeaderSyncTimer)clearInterval(window.__vaxHeaderSyncTimer);window.__vaxHeaderSyncTimer=setInterval(run,60000);}).call(this)">
 </header>
 <style>
 .erp-header-vax .vax-sync > span{
@@ -329,39 +330,3 @@ html body.page-erp-dashboard .erp-wrapper [class*="sync-status"] small{
   letter-spacing:.4px!important;
 }
 </style>
-<script>
-(function(){
-  function updateVaxHeaderSync(){
-    const root=document.getElementById('vaxHeaderSync');
-    const title=document.getElementById('vaxHeaderSyncTitle');
-    const sub=document.getElementById('vaxHeaderSyncSub');
-    if(!root||!title||!sub)return;
-
-    const parts=new Intl.DateTimeFormat('en-GB',{
-      timeZone:'Asia/Jakarta',
-      hour:'2-digit',
-      minute:'2-digit',
-      hour12:false
-    }).formatToParts(new Date());
-
-    const hour=Number((parts.find(part=>part.type==='hour')||{}).value||0);
-    const active=hour>=10&&hour<22;
-
-    root.classList.toggle('is-operational',active);
-
-    if(active){
-      title.textContent='Sinkronisasi aktif';
-      sub.textContent='Operasional 10:00–22:00 WIB';
-    }else if(hour<10){
-      title.textContent='Menunggu jam buka';
-      sub.textContent='Aktif mulai 10:00 WIB';
-    }else{
-      title.textContent='Di luar jam operasional';
-      sub.textContent='Aktif kembali 10:00 WIB';
-    }
-  }
-
-  updateVaxHeaderSync();
-  setInterval(updateVaxHeaderSync,60000);
-})();
-</script>
