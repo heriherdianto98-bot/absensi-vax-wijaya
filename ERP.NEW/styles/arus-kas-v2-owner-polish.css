@@ -249,3 +249,68 @@
   .ak2-head h1{font-size:22px}
   .ak2-user{align-items:flex-start}
 }
+
+/* ARUS KAS V2 — ANIMATED INTRO ACCENT · UI ONLY */
+.ak2-head{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  border-bottom:0;
+  background:
+    linear-gradient(105deg,
+      rgba(215,170,85,.08) 0%,
+      rgba(42,66,92,.13) 28%,
+      rgba(157,111,193,.10) 52%,
+      rgba(215,170,85,.09) 76%,
+      rgba(18,22,27,0) 100%);
+  background-size:220% 100%;
+  animation:ak2HeadGradientFlow 8s ease-in-out infinite;
+}
+
+.ak2-head::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:3px;
+  z-index:2;
+  background:linear-gradient(90deg,
+    rgba(118,82,22,.72) 0%,
+    #d7aa55 22%,
+    #f3cf7a 50%,
+    #d7aa55 78%,
+    rgba(118,82,22,.72) 100%);
+  background-size:180% 100%;
+  box-shadow:0 0 8px rgba(215,170,85,.24);
+  animation:ak2HeadGoldLineFlow 5.5s linear infinite;
+}
+
+.ak2-head>div{
+  position:relative;
+  z-index:1;
+}
+
+@keyframes ak2HeadGradientFlow{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+
+@keyframes ak2HeadGoldLineFlow{
+  from{background-position:0% 50%}
+  to{background-position:180% 50%}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .ak2-head,.ak2-head::after{animation:none}
+}
+
+@media print{
+  .ak2-head{
+    background:none!important;
+    animation:none!important;
+    overflow:visible!important;
+    border-bottom:2px solid #b58a35!important;
+  }
+  .ak2-head::after{display:none!important}
+}
