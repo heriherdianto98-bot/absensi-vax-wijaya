@@ -1,0 +1,131 @@
+/* ARUS KAS V2 — DETAIL MODAL THEME · UI ONLY */
+body.page-arus-kas #ak2DetailModal .ak2-backdrop{
+  background:rgba(4,7,10,.78);
+  backdrop-filter:blur(9px) saturate(112%);
+}
+
+body.page-arus-kas #ak2DetailModal .ak2-panel{
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 18% 0%,rgba(215,170,85,.10),transparent 30%),
+    radial-gradient(circle at 92% 12%,rgba(63,115,164,.10),transparent 28%),
+    linear-gradient(180deg,#141b23 0%,#0f141a 56%,#0c1116 100%);
+  border:1px solid rgba(215,170,85,.58);
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.66),
+    0 0 0 1px rgba(255,255,255,.025) inset,
+    0 0 34px rgba(215,170,85,.10),
+    0 0 40px rgba(74,132,184,.07);
+}
+
+body.page-arus-kas #ak2DetailModal .ak2-panel::before{
+  content:"";
+  display:block;
+  height:3px;
+  background:linear-gradient(90deg,#7f5b20,#d7aa55 28%,#f3cf7a 50%,#d7aa55 72%,#7f5b20);
+  box-shadow:0 0 12px rgba(215,170,85,.22);
+}
+
+body.page-arus-kas #ak2DetailModal .ak2-modal-head{
+  padding:16px 18px 15px;
+  background:linear-gradient(90deg,rgba(215,170,85,.08),rgba(33,54,76,.10),rgba(14,19,25,.20));
+  border-bottom:1px solid rgba(215,170,85,.20);
+}
+
+body.page-arus-kas #ak2DetailModal .ak2-eyebrow{
+  color:#e3b85e;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-shadow:0 0 12px rgba(215,170,85,.16);
+}
+
+body.page-arus-kas #ak2DetailModal .ak2-modal-head h2{
+  margin:6px 0 0;
+  color:#f8fafc;
+  font-size:22px;
+  line-height:1.2;
+  font-weight:900;
+}
+
+body.page-arus-kas #ak2DetailModal .ak2-close{
+  width:36px;
+  height:36px;
+  border:1px solid rgba(116,132,149,.38);
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(180deg,#18212a,#11171e);
+  color:#aeb8c2;
+  font-size:22px;
+  transition:.18s ease;
+}
+body.page-arus-kas #ak2DetailModal .ak2-close:hover{
+  color:#fff0c5;
+  border-color:#b88a35;
+  background:#21190e;
+  box-shadow:0 0 16px rgba(215,170,85,.16);
+}
+
+body.page-arus-kas #ak2DetailModal .ak2-detail-body{padding:18px}
+body.page-arus-kas #ak2DetailModal .ak2-detail-grid{gap:11px}
+body.page-arus-kas #ak2DetailModal .ak2-detail-item{
+  min-height:62px;
+  padding:12px 14px;
+  border:1px solid #28333e;
+  border-radius:12px;
+  background:linear-gradient(180deg,#171f28,#121920);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+body.page-arus-kas #ak2DetailModal .ak2-detail-item span{
+  color:#8995a1;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+body.page-arus-kas #ak2DetailModal .ak2-detail-item strong{
+  display:block;
+  margin-top:5px;
+  color:#f4f7fa;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:800;
+}
+
+body.page-arus-kas #ak2DetailModal .ak2-modal-actions{
+  padding:14px 18px 16px;
+  border-top:1px solid rgba(215,170,85,.16);
+  background:linear-gradient(180deg,rgba(14,19,25,.15),rgba(8,12,16,.45));
+}
+body.page-arus-kas #ak2DetailModal .ak2-modal-actions .ak2-btn{
+  min-width:88px;
+  border-radius:10px;
+  padding:10px 16px;
+}
+body.page-arus-kas #ak2DetailModal [data-detail-close-btn]{
+  background:linear-gradient(180deg,#1b222a,#131920);
+  border-color:#3a4652;
+  color:#d5dbe1;
+}
+body.page-arus-kas #ak2DetailModal [data-detail-correct]{
+  background:linear-gradient(180deg,#321b18,#211310);
+  border-color:#8f493f;
+  color:#f1ada4;
+}
+body.page-arus-kas #ak2DetailModal [data-detail-verify]{
+  background:linear-gradient(180deg,#1e5b36,#143d26);
+  border-color:#3d9960;
+  color:#ddffea;
+  box-shadow:0 9px 22px rgba(47,131,81,.16),inset 0 1px 0 rgba(255,255,255,.07);
+}
+body.page-arus-kas #ak2DetailModal [data-detail-verify]:hover{
+  filter:brightness(1.08);
+  box-shadow:0 11px 28px rgba(47,131,81,.24),0 0 16px rgba(79,165,111,.10);
+}
+
+@media(max-width:760px){
+  body.page-arus-kas #ak2DetailModal .ak2-panel{width:min(96vw,760px)}
+  body.page-arus-kas #ak2DetailModal .ak2-detail-body{padding:14px}
+  body.page-arus-kas #ak2DetailModal .ak2-modal-head{padding:14px}
+  body.page-arus-kas #ak2DetailModal .ak2-modal-actions{padding:12px 14px 14px}
+}
