@@ -124,28 +124,29 @@ const ErpAssistantScreenHelp={
     return null;
   },
 
-  async wireAssistant(){
+  wireAssistant(){
     if(!window.ErpAssistant)return;
-    await this.loadDefs();
     this.readContext();
-    if(!this.getScreen())return;
-
-    const baseCompose=window.ErpAssistant.compose.bind(window.ErpAssistant);
-    window.ErpAssistant.compose=(query)=>{
-      const html=this.answer(query);
-      if(html){
-        const screen=this.getScreen();
-        const module=window.ErpAssistant.getModule?.(screen.module_id)||null;
-        if(module)window.ErpAssistant.state={lastModuleId:module.id,lastFocus:"screen_help",lastIntent:"screen_help"};
-        return {unknown:false,module,html};
-      }
-      return baseCompose(query);
-    };
+    if(!this.context?.screen_id)return;
 
     const baseInit=window.ErpAssistant.init.bind(window.ErpAssistant);
     window.ErpAssistant.init=async()=>{
-      await baseInit();
+      await this.loadDefs();
       const screen=this.getScreen();
+      if(screen){
+        const baseCompose=window.ErpAssistant.compose.bind(window.ErpAssistant);
+        window.ErpAssistant.compose=(query)=>{
+          const html=this.answer(query);
+          if(html){
+            const module=window.ErpAssistant.getModule?.(screen.module_id)||null;
+            if(module)window.ErpAssistant.state={lastModuleId:module.id,lastFocus:"screen_help",lastIntent:"screen_help"};
+            return {unknown:false,module,html};
+          }
+          return baseCompose(query);
+        };
+      }
+
+      await baseInit();
       if(!screen)return;
       const badge=document.getElementById("eaContext");
       if(badge)badge.textContent=`Bantuan layar: ${screen.title}`;
@@ -154,8 +155,8 @@ const ErpAssistantScreenHelp={
     };
   },
 
-  async init(){
-    if(document.body.classList.contains("page-erp-assistant"))await this.wireAssistant();
+  init(){
+    if(document.body.classList.contains("page-erp-assistant"))this.wireAssistant();
     else this.bindSourcePage();
   }
 };
