@@ -1,0 +1,166 @@
+/* ARUS KAS V2 — INPUT MODAL THEME · UI ONLY */
+body.page-arus-kas .ak2-backdrop{
+  background:rgba(4,7,10,.76);
+  backdrop-filter:blur(9px) saturate(112%);
+}
+
+body.page-arus-kas #ak2Modal .ak2-panel{
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 18% 0%,rgba(215,170,85,.10),transparent 30%),
+    radial-gradient(circle at 92% 12%,rgba(63,115,164,.10),transparent 28%),
+    linear-gradient(180deg,#141b23 0%,#0f141a 55%,#0c1116 100%);
+  border:1px solid rgba(215,170,85,.58);
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.66),
+    0 0 0 1px rgba(255,255,255,.025) inset,
+    0 0 34px rgba(215,170,85,.10),
+    0 0 40px rgba(74,132,184,.07);
+}
+
+body.page-arus-kas #ak2Modal .ak2-panel::before{
+  content:"";
+  display:block;
+  height:3px;
+  background:linear-gradient(90deg,#7f5b20,#d7aa55 28%,#f3cf7a 50%,#d7aa55 72%,#7f5b20);
+  box-shadow:0 0 12px rgba(215,170,85,.22);
+}
+
+body.page-arus-kas #ak2Modal .ak2-modal-head{
+  padding:16px 18px 14px;
+  background:linear-gradient(90deg,rgba(215,170,85,.08),rgba(33,54,76,.10),rgba(14,19,25,.20));
+  border-bottom:1px solid rgba(215,170,85,.20);
+}
+
+body.page-arus-kas #ak2Modal .ak2-modal-head .ak2-eyebrow{
+  color:#e3b85e;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-shadow:0 0 12px rgba(215,170,85,.16);
+}
+
+body.page-arus-kas #ak2Modal .ak2-modal-head h2{
+  margin:5px 0 0;
+  font-size:24px;
+  line-height:1.1;
+  font-weight:900;
+  letter-spacing:.01em;
+  color:#f7f9fb;
+}
+
+body.page-arus-kas #ak2Modal .ak2-close{
+  width:36px;
+  height:36px;
+  border:1px solid rgba(116,132,149,.38);
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(180deg,#18212a,#11171e);
+  color:#aeb8c2;
+  font-size:22px;
+  line-height:1;
+  transition:.18s ease;
+}
+
+body.page-arus-kas #ak2Modal .ak2-close:hover{
+  color:#fff0c5;
+  border-color:#b88a35;
+  background:#21190e;
+  box-shadow:0 0 16px rgba(215,170,85,.16);
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid{
+  gap:14px;
+  padding:18px;
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid label{
+  gap:7px;
+  color:#d4dbe2;
+  font-size:11px;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+  font-weight:900;
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid input,
+body.page-arus-kas #ak2Modal .ak2-form-grid select{
+  min-height:42px;
+  background:linear-gradient(180deg,#1a2330,#131a22);
+  color:#f6f8fa;
+  border:1px solid #3c4855;
+  border-radius:10px;
+  padding:10px 12px;
+  font-weight:700;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid input:hover,
+body.page-arus-kas #ak2Modal .ak2-form-grid select:hover{
+  border-color:#5c6d7f;
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid input:focus,
+body.page-arus-kas #ak2Modal .ak2-form-grid select:focus{
+  outline:none;
+  border-color:#d2a44a;
+  background:linear-gradient(180deg,#1d2732,#151c24);
+  box-shadow:0 0 0 2px rgba(210,164,74,.11),0 0 18px rgba(210,164,74,.08);
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid input::placeholder{
+  color:#78838e;
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid select option{
+  background:#18212b;
+  color:#f4f6f8;
+}
+
+body.page-arus-kas #ak2Modal .ak2-period-fields{
+  gap:14px;
+  padding-top:2px;
+}
+
+body.page-arus-kas #ak2Modal .ak2-modal-actions{
+  padding:14px 18px 16px;
+  border-top:1px solid rgba(215,170,85,.16);
+  background:linear-gradient(180deg,rgba(14,19,25,.15),rgba(8,12,16,.45));
+}
+
+body.page-arus-kas #ak2Modal .ak2-modal-actions .ak2-btn{
+  min-width:82px;
+  border-radius:10px;
+  padding:10px 16px;
+}
+
+body.page-arus-kas #ak2Modal .ak2-modal-actions [data-ak2-close]{
+  background:linear-gradient(180deg,#1b222a,#131920);
+  border-color:#3a4652;
+  color:#d5dbe1;
+}
+
+body.page-arus-kas #ak2Modal .ak2-modal-actions [data-ak2-close]:hover{
+  border-color:#687787;
+  background:#202934;
+}
+
+body.page-arus-kas #ak2Modal #ak2SaveBtn{
+  background:linear-gradient(180deg,#6b4b18,#39280f);
+  border-color:#c99532;
+  color:#ffe7ad;
+  box-shadow:0 9px 22px rgba(189,133,38,.16),inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+body.page-arus-kas #ak2Modal #ak2SaveBtn:hover{
+  filter:brightness(1.08);
+  box-shadow:0 11px 28px rgba(189,133,38,.24),0 0 16px rgba(215,170,85,.10);
+}
+
+@media(max-width:760px){
+  body.page-arus-kas #ak2Modal .ak2-panel{width:min(96vw,620px)}
+  body.page-arus-kas #ak2Modal .ak2-form-grid{padding:14px;gap:12px}
+  body.page-arus-kas #ak2Modal .ak2-modal-head{padding:14px}
+  body.page-arus-kas #ak2Modal .ak2-modal-actions{padding:12px 14px 14px}
+}
