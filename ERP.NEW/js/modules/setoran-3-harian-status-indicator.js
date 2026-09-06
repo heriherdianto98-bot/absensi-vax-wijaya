@@ -97,13 +97,13 @@ Menampilkan indikator visual per cabang:
       .s3-warning-summary-list{
         display:flex;
         flex-wrap:wrap;
-        gap:4px 12px;
+        gap:5px 14px;
         color:#ffd7d7;
-        font-size:11px;
-        font-weight:700;
-        line-height:1.35;
+        font-size:13px;
+        font-weight:750;
+        line-height:1.45;
       }
-      .s3-warning-summary-item b{color:#fff;}
+      .s3-warning-summary-item b{color:#fff;font-weight:900;}
       @keyframes s3StatusDangerBlink{
         0%,100%{opacity:1;transform:scale(1);filter:brightness(1)}
         50%{opacity:.34;transform:scale(.84);filter:brightness(1.45)}
