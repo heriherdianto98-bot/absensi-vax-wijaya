@@ -123,6 +123,12 @@ body.page-arus-kas #ak2Modal .ak2-period-fields{
   padding-top:2px;
 }
 
+/* UI only: hormati visibility existing dari ArusKasV2.syncPopupFields().
+   Periode Sumber hanya muncul untuk QRIS / GoPay Transfer. */
+body.page-arus-kas #ak2Modal #ak2SourcePeriod[hidden]{
+  display:none!important;
+}
+
 body.page-arus-kas #ak2Modal .ak2-modal-actions{
   padding:14px 18px 16px;
   border-top:1px solid rgba(215,170,85,.16);
