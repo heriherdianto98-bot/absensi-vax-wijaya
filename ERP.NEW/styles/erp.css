@@ -300,6 +300,21 @@ body.sidebar-collapsed .erp-wrapper{
 .sidebar .sidebar-logo .brand-copy{
     position:relative!important;
     z-index:3!important;
+    min-width:0!important;
+    padding-right:7px!important;
+    transform-origin:left center!important;
+    will-change:transform,opacity,filter!important;
+    animation:vaxBrandCopyEnterExit 6.4s cubic-bezier(.4,0,.2,1) infinite!important;
+}
+
+.sidebar .sidebar-logo .brand-title{
+    font-size:15px!important;
+    letter-spacing:.2px!important;
+    white-space:nowrap!important;
+}
+
+.sidebar .sidebar-logo .brand-subtitle{
+    will-change:transform,opacity,filter!important;
 }
 
 .sidebar .sidebar-logo .logo-mark{
@@ -360,8 +375,42 @@ body.sidebar-collapsed .erp-wrapper{
     }
 }
 
+@keyframes vaxBrandCopyEnterExit{
+    0%,10%{
+        opacity:0;
+        transform:translate3d(18px,0,0) scale(.94);
+        filter:blur(4px);
+    }
+    18%{
+        opacity:.78;
+        transform:translate3d(-2px,0,0) scale(1.02);
+        filter:blur(.7px);
+    }
+    24%,58%{
+        opacity:1;
+        transform:translate3d(0,0,0) scale(1);
+        filter:blur(0);
+    }
+    65%{
+        opacity:1;
+        transform:translate3d(-1px,0,0) scale(1.01);
+        filter:blur(0);
+    }
+    73%{
+        opacity:.62;
+        transform:translate3d(14px,0,0) scale(.97);
+        filter:blur(1.2px);
+    }
+    80%,100%{
+        opacity:0;
+        transform:translate3d(24px,0,0) scale(.92);
+        filter:blur(4px);
+    }
+}
+
 @media (prefers-reduced-motion:reduce){
-    .sidebar .sidebar-logo .logo-mark{
+    .sidebar .sidebar-logo .logo-mark,
+    .sidebar .sidebar-logo .brand-copy{
         animation:none!important;
         transform:none!important;
         opacity:1!important;
