@@ -119,11 +119,11 @@
     </div>
   </div>
 
-  <div class="vax-sync">
-    <span>◔</span>
+  <div class="vax-sync" id="vaxHeaderSync">
+    <span id="vaxHeaderSyncIcon">◔</span>
     <div class="vax-sync-copy">
-      <strong>Menunggu jam buka</strong>
-      <span>Aktif mulai 10:00 WIB</span>
+      <strong id="vaxHeaderSyncTitle">Menunggu jam buka</strong>
+      <span id="vaxHeaderSyncSub">Aktif mulai 10:00 WIB</span>
     </div>
   </div>
 
@@ -154,11 +154,22 @@
     0 0 5px rgba(244,197,40,.85),
     0 0 10px rgba(244,197,40,.45)!important;
   margin-right:1px!important;
-  transform:translateY(-1px)!important;
+  position:relative!important;
+  top:-1px!important;
+  transform-origin:center!important;
 }
 
 .erp-header-vax .vax-sync{
   gap:4px!important;
+}
+
+@keyframes vaxHeaderSyncSpin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+.erp-header-vax .vax-sync.is-operational #vaxHeaderSyncIcon{
+  animation:vaxHeaderSyncSpin 1.15s linear infinite!important;
 }
 </style>
 <style>
@@ -318,4 +329,39 @@ html body.page-erp-dashboard .erp-wrapper [class*="sync-status"] small{
   letter-spacing:.4px!important;
 }
 </style>
+<script>
+(function(){
+  function updateVaxHeaderSync(){
+    const root=document.getElementById('vaxHeaderSync');
+    const title=document.getElementById('vaxHeaderSyncTitle');
+    const sub=document.getElementById('vaxHeaderSyncSub');
+    if(!root||!title||!sub)return;
 
+    const parts=new Intl.DateTimeFormat('en-GB',{
+      timeZone:'Asia/Jakarta',
+      hour:'2-digit',
+      minute:'2-digit',
+      hour12:false
+    }).formatToParts(new Date());
+
+    const hour=Number((parts.find(part=>part.type==='hour')||{}).value||0);
+    const active=hour>=10&&hour<22;
+
+    root.classList.toggle('is-operational',active);
+
+    if(active){
+      title.textContent='Sinkronisasi aktif';
+      sub.textContent='Operasional 10:00–22:00 WIB';
+    }else if(hour<10){
+      title.textContent='Menunggu jam buka';
+      sub.textContent='Aktif mulai 10:00 WIB';
+    }else{
+      title.textContent='Di luar jam operasional';
+      sub.textContent='Aktif kembali 10:00 WIB';
+    }
+  }
+
+  updateVaxHeaderSync();
+  setInterval(updateVaxHeaderSync,60000);
+})();
+</script>
