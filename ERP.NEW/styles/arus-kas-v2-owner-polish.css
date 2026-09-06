@@ -194,3 +194,58 @@
   .ak2-qris-summary strong{color:#111!important}
   tr{break-inside:avoid}
 }
+
+/* ARUS KAS V2 — COMPACT TOP INTRO · UI ONLY */
+.ak2-shell{
+  padding-top:14px;
+}
+
+.ak2-head{
+  align-items:center;
+  padding:2px 2px 10px;
+  gap:14px;
+}
+
+.ak2-head h1{
+  margin:2px 0 1px;
+  font-size:24px;
+  line-height:1.05;
+  letter-spacing:.01em;
+}
+
+.ak2-eyebrow{
+  font-size:10px;
+  line-height:1.1;
+  letter-spacing:.14em;
+}
+
+.ak2-head p{
+  font-size:12px;
+  line-height:1.25;
+}
+
+.ak2-user{
+  gap:1px;
+  line-height:1.1;
+}
+
+.ak2-user span{
+  font-size:9px;
+  line-height:1.1;
+}
+
+.ak2-user strong{
+  font-size:13px;
+  line-height:1.15;
+}
+
+.ak2-toolbar{
+  padding:12px 0;
+}
+
+@media(max-width:760px){
+  .ak2-shell{padding-top:10px}
+  .ak2-head{padding-bottom:8px;gap:8px}
+  .ak2-head h1{font-size:22px}
+  .ak2-user{align-items:flex-start}
+}
