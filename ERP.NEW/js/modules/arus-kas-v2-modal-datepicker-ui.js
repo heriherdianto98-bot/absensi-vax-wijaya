@@ -123,7 +123,26 @@ const ArusKasV2ModalDatepickerUI={
   }
 };
 
+function loadArusKasDetailUi(){
+  if(!document.querySelector('link[data-ak2-detail-theme]')){
+    const link=document.createElement("link");
+    link.rel="stylesheet";
+    link.href="../styles/arus-kas-v2-detail-ui.css";
+    link.dataset.ak2DetailTheme="1";
+    document.head.appendChild(link);
+  }
+  if(!document.querySelector('script[data-ak2-ledger-detail-ui]')){
+    const script=document.createElement("script");
+    script.src="../js/modules/arus-kas-v2-nett-product-detail-ui.js";
+    script.dataset.ak2LedgerDetailUi="1";
+    document.body.appendChild(script);
+  }
+}
+
 if(typeof window!=="undefined"){
   window.ArusKasV2ModalDatepickerUI=ArusKasV2ModalDatepickerUI;
-  document.addEventListener("DOMContentLoaded",()=>ArusKasV2ModalDatepickerUI.init(),{once:true});
+  document.addEventListener("DOMContentLoaded",()=>{
+    ArusKasV2ModalDatepickerUI.init();
+    loadArusKasDetailUi();
+  },{once:true});
 }
