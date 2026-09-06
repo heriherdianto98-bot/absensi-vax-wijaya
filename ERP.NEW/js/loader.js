@@ -473,3 +473,17 @@ function ensureOwnerHeaderEmphasisStyle(){
 }
 
 document.addEventListener("erp:components-ready", ensureOwnerHeaderEmphasisStyle);
+
+/* =========================================================
+   ERP ASSISTANT GLOBAL HELP DESK — UI/HELPER ONLY
+   Loads a separate context-help layer. No LOCK engine touched.
+   ========================================================= */
+(function loadErpGlobalHelpDesk(){
+    if(window.__ERP_GLOBAL_HELP_DESK_SCRIPT_REQUESTED__) return;
+    window.__ERP_GLOBAL_HELP_DESK_SCRIPT_REQUESTED__ = true;
+    const s = document.createElement("script");
+    s.src = "../js/modules/erp-assistant-global-help.js";
+    s.defer = true;
+    s.onerror = () => console.warn("ERP Help Desk UI layer failed to load");
+    document.head.appendChild(s);
+})();
