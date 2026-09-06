@@ -63,13 +63,13 @@ const ErpAssistant={
       ...(module.faq||[]).flatMap(x=>[x.q,x.a])
     ].join(" "));
     qt.forEach(t=>{if(hay.includes(t))score+=2;});
-    if(this.contextModule?.id===module.id)score+=3;
+    if(score>0&&this.contextModule?.id===module.id)score+=3;
     return score;
   },
 
   bestModule(query){
     const scored=(this.knowledge?.modules||[]).map(m=>({m,s:this.scoreModule(m,query)})).sort((a,b)=>b.s-a.s);
-    return scored[0]&&scored[0].s>=3?scored[0]:null;
+    return scored[0]&&scored[0].s>=4?scored[0]:null;
   },
 
   bestFaq(module,query){
@@ -108,7 +108,7 @@ const ErpAssistant={
 
   answer(query){
     const hit=this.bestModule(query);
-    if(!hit)return {unknown:true,html:this.knowledge?.policy?.unknown_answer||"Knowledge ERP belum cukup untuk menjawab pertanyaan ini."};
+    if(!hit)return {unknown:true,html:`<p>${this.knowledge?.policy?.unknown_answer||"Knowledge ERP belum cukup untuk menjawab pertanyaan ini."}</p>`};
     const m=hit.m;
     const faq=this.bestFaq(m,query);
     const fields=this.matchingFields(m,query);
