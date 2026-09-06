@@ -8,6 +8,7 @@
   window.__ERP_GLOBAL_HELP_DESK_LOADED__=true;
 
   const KEY="erpAssistantGlobalHelpContextV1";
+  const RETURN_KEY="erpAssistantGlobalHelpReturnV1";
   const ASSISTANT_PATH="erp-assistant.html";
 
   function clean(v){return String(v||"").trim()}
@@ -58,6 +59,9 @@
       source_path:location.pathname,
       source_search:location.search,
       source_hash:location.hash,
+      source_url:location.href,
+      scroll_x:Math.max(0,window.scrollX||document.documentElement.scrollLeft||0),
+      scroll_y:Math.max(0,window.scrollY||document.documentElement.scrollTop||0),
       cabang:cabang&&cabang!=="—"?cabang:"",
       periode:periode&&periode!=="—"?periode:"",
       captured_at:new Date().toISOString()
@@ -112,12 +116,34 @@
         font-size:13px!important;font-weight:900!important;
         box-shadow:0 0 8px rgba(242,201,99,.18)!important;
       }
+      .ea-help-return{
+        margin-right:10px!important;
+        min-height:34px!important;
+        padding:0 12px!important;
+        display:inline-flex!important;
+        align-items:center!important;
+        justify-content:center!important;
+        gap:7px!important;
+        border:1px solid rgba(242,201,99,.52)!important;
+        border-radius:999px!important;
+        background:rgba(242,201,99,.08)!important;
+        color:#f5cf67!important;
+        font:800 11px/1 "Source Sans 3",sans-serif!important;
+        cursor:pointer!important;
+        white-space:nowrap!important;
+      }
+      .ea-help-return:hover{
+        border-color:rgba(255,216,100,.9)!important;
+        background:rgba(242,201,99,.15)!important;
+      }
+      .ea-help-return .ea-help-return-arrow{font-size:16px!important;line-height:1!important}
       @media(max-width:1180px){
         .erp-header-vax .vax-help-desk{width:40px!important;padding:0!important;gap:0!important}
         .erp-header-vax .vax-help-desk .vax-help-text{display:none!important}
       }
       @media(max-width:760px){
         .erp-header-vax .vax-help-desk{margin-left:6px!important;width:36px!important;height:36px!important}
+        .ea-help-return{max-width:220px!important;overflow:hidden!important;text-overflow:ellipsis!important}
       }
     `;
     document.head.appendChild(s);
@@ -152,6 +178,47 @@
     return Number.isFinite(t)&&(Date.now()-t)<30*60*1000;
   }
 
+  function buildReturnUrl(ctx){
+    try{
+      if(ctx?.source_url)return new URL(ctx.source_url,location.href).href;
+      const u=new URL(ctx?.source_path||"./",location.href);
+      if(ctx?.source_search)u.search=ctx.source_search;
+      if(ctx?.source_hash)u.hash=ctx.source_hash;
+      return u.href;
+    }catch(_e){return null}
+  }
+
+  function goBackToSource(ctx){
+    const target=buildReturnUrl(ctx);
+    if(!target)return;
+    try{
+      sessionStorage.setItem(RETURN_KEY,JSON.stringify({
+        source_path:ctx.source_path,
+        source_search:ctx.source_search||"",
+        source_hash:ctx.source_hash||"",
+        scroll_x:Number(ctx.scroll_x)||0,
+        scroll_y:Number(ctx.scroll_y)||0,
+        created_at:new Date().toISOString()
+      }));
+    }catch(_e){}
+    location.href=target;
+  }
+
+  function injectAssistantReturn(ctx){
+    if(!ctx)return;
+    ensureStyle();
+    const badge=document.getElementById("eaContext");
+    if(!badge||document.getElementById("eaHelpReturn"))return;
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.id="eaHelpReturn";
+    btn.className="ea-help-return";
+    btn.title=`Kembali ke ${ctx.module_name||"modul sebelumnya"}`;
+    btn.innerHTML=`<span class="ea-help-return-arrow" aria-hidden="true">←</span><span>Kembali ke ${clean(ctx.module_name)||"modul sebelumnya"}</span>`;
+    btn.addEventListener("click",()=>goBackToSource(ctx));
+    badge.parentElement?.insertBefore(btn,badge);
+  }
+
   function bindAssistantContext(){
     if(!location.pathname.toLowerCase().includes("erp-assistant"))return;
     let tries=0;
@@ -172,6 +239,7 @@
 
       const badge=document.getElementById("eaContext");
       if(badge)badge.textContent=`Help Desk: ${ctx.module_name||module?.name||"Modul ERP"}`;
+      injectAssistantReturn(ctx);
 
       const extras=[ctx.cabang?`Cabang: ${ctx.cabang}`:"",ctx.periode?`Periode: ${ctx.periode}`:""].filter(Boolean).join(" • ");
       ea.addBubble?.("assistant",`<p>Bapak masuk dari <strong>${ea.escape(ctx.module_name||module?.name||"modul ERP")}</strong>. Silakan tanya bagian yang belum jelas di layar/modul ini.</p>${extras?`<p><small>${ea.escape(extras)}</small></p>`:""}<p>Contoh: <strong>angka ini dari mana?</strong>, <strong>cara pakainya bagaimana?</strong>, atau <strong>kolom ini maksudnya apa?</strong></p>`);
@@ -180,9 +248,27 @@
     },80);
   }
 
+  function restoreSourcePosition(){
+    if(location.pathname.toLowerCase().includes("erp-assistant"))return;
+    let data=null;
+    try{data=JSON.parse(sessionStorage.getItem(RETURN_KEY)||"null")}catch(_e){}
+    if(!data)return;
+    const samePath=String(data.source_path||"")===String(location.pathname||"");
+    const sameSearch=String(data.source_search||"")===String(location.search||"");
+    if(!samePath||!sameSearch)return;
+    try{sessionStorage.removeItem(RETURN_KEY)}catch(_e){}
+    const x=Number(data.scroll_x)||0,y=Number(data.scroll_y)||0;
+    const restore=()=>window.scrollTo({left:x,top:y,behavior:"auto"});
+    restore();
+    setTimeout(restore,120);
+    setTimeout(restore,420);
+    setTimeout(restore,900);
+  }
+
   function boot(){
     bindAssistantContext();
     if(location.pathname.toLowerCase().includes("erp-assistant"))return;
+    restoreSourcePosition();
     if(injectHeaderButton())return;
     const mo=new MutationObserver(()=>{if(injectHeaderButton())mo.disconnect()});
     mo.observe(document.documentElement,{childList:true,subtree:true});
