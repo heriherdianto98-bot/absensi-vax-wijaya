@@ -19,7 +19,7 @@
 .erp-header-vax .vax-chip{
   min-width:120px!important;
   padding:8px 14px!important;
-  border:1px solid rgba(212,168,38,.28)!important;
+  border:1px solid rgba(212,168,38,.42)!important;
   border-radius:12px!important;
   background:rgba(255,255,255,.025)!important;
 }
@@ -168,24 +168,11 @@
 }
 </style>
 <style>
-@keyframes vaxHeaderChipPulse{
-  0%,100%{
-    border-color:rgba(212,168,38,.30);
-    box-shadow:
-      0 0 0 rgba(244,197,40,0),
-      inset 0 0 0 rgba(244,197,40,0);
-  }
-  50%{
-    border-color:rgba(244,197,40,.95);
-    box-shadow:
-      0 0 10px rgba(244,197,40,.60),
-      0 0 18px rgba(244,197,40,.28),
-      inset 0 0 8px rgba(244,197,40,.10);
-  }
-}
-
+/* Global header chips: static thin gold border, no blinking/pulse. */
 .erp-header-vax .vax-chip{
-  animation:vaxHeaderChipPulse 1.6s ease-in-out infinite!important;
+  animation:none!important;
+  border-color:rgba(212,168,38,.42)!important;
+  box-shadow:none!important;
 }
 </style>
 <style>
