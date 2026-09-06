@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "2026-09-07",
+  "module_updates": [
+    {
+      "id": "ARUS_KAS_V2",
+      "aliases_add": ["kas denda", "piutang denda"],
+      "fields_add": {
+        "kas_denda": "Saldo uang denda yang sudah benar-benar ditarik atau diterima dan tercatat di wallet Kas Denda. Ini berbeda dari Piutang Denda.",
+        "piutang_denda": "Denda yang sudah menjadi hak/tagihan ERP tetapi uangnya belum ditarik atau belum diterima ke Kas Denda. Setelah benar-benar diterima, nilainya berpindah menjadi Kas Denda sesuai transaksi yang sah."
+      },
+      "faq_add": [
+        {
+          "q": "Apa yang dimaksud Kas Denda di Arus Kas?",
+          "a": "Kas Denda adalah wallet untuk uang denda yang sudah benar-benar ditarik atau diterima dan tercatat di Arus Kas. Jika dendanya masih belum ditarik, posisinya masih Piutang Denda, belum menjadi Kas Denda."
+        },
+        {
+          "q": "Apa bedanya Kas Denda dan Piutang Denda?",
+          "a": "Kas Denda adalah uang denda yang sudah diterima. Piutang Denda adalah denda yang masih harus ditarik atau belum diterima."
+        }
+      ]
+    }
+  ]
+}
