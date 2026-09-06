@@ -373,6 +373,74 @@ Version   : UI-01
     line-height:1.2!important;
 }
 
+/* Compact session footer — UI only. Keeps the same role/session data and IDs. */
+.sidebar .sidebar-footer{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:6px 8px!important;
+    padding:8px 9px 10px!important;
+    align-items:center!important;
+}
+.sidebar .sidebar-role-meta{
+    grid-column:1 / -1!important;
+    display:grid!important;
+    grid-template-columns:auto minmax(0,1fr)!important;
+    column-gap:8px!important;
+    row-gap:2px!important;
+    align-items:center!important;
+    padding:7px 9px!important;
+    min-height:0!important;
+    border-radius:10px!important;
+}
+.sidebar .sidebar-role-meta .role-label{
+    grid-column:1!important;
+    grid-row:1!important;
+    margin:0!important;
+    font-size:9px!important;
+    line-height:1!important;
+    letter-spacing:.9px!important;
+}
+.sidebar .sidebar-role-meta .role-name{
+    grid-column:2!important;
+    grid-row:1!important;
+    min-width:0!important;
+    margin:0!important;
+    font-size:12.5px!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+}
+.sidebar .sidebar-role-meta .role-branch{
+    grid-column:1 / -1!important;
+    grid-row:2!important;
+    margin:1px 0 0!important;
+    font-size:10.5px!important;
+    line-height:1.1!important;
+    color:#aab2bd!important;
+}
+.sidebar .sidebar-footer .system-status{
+    grid-column:1!important;
+    margin:0!important;
+    font-size:11px!important;
+    min-height:24px!important;
+}
+.sidebar .sidebar-footer .version{
+    grid-column:2!important;
+    margin:0!important;
+    font-size:10.5px!important;
+    white-space:nowrap!important;
+    text-align:right!important;
+}
+.sidebar .sidebar-footer .logout-btn{
+    grid-column:1 / -1!important;
+    margin:0!important;
+    min-height:38px!important;
+    padding:7px 12px!important;
+    font-size:13px!important;
+    border-radius:10px!important;
+}
+
 @media (prefers-reduced-motion:reduce){
     .sidebar .menu-item.active::after,
     .sidebar .menu-item-parent.is-active-parent::after{animation:none!important;}
