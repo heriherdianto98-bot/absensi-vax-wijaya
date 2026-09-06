@@ -1,6 +1,16 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "last_updated": "2026-09-07",
+  "lock_audit": {
+    "repo": "heriherdianto98-bot/ERP-VAX",
+    "audited_from": [
+      "ERP_LOCK_MANIFEST.md",
+      "ERP.NEW/LOCKS/CASH-OUT-WARNING.md",
+      "ERP.NEW/LOCKS/CHART-AVERAGE-OMZET.md",
+      "commit history with LOCK / OWNER PASS markers"
+    ],
+    "note": "Only repo-backed PASS/LOCK facts are imported here. Existing Arus Kas knowledge remains from current approved ERP state."
+  },
   "module_updates": [
     {
       "id": "ARUS_KAS_V2",
@@ -10,14 +20,201 @@
         "piutang_denda": "Denda yang sudah menjadi hak/tagihan ERP tetapi uangnya belum ditarik atau belum diterima ke Kas Denda. Setelah benar-benar diterima, nilainya berpindah menjadi Kas Denda sesuai transaksi yang sah."
       },
       "faq_add": [
-        {
-          "q": "Apa yang dimaksud Kas Denda di Arus Kas?",
-          "a": "Kas Denda adalah wallet untuk uang denda yang sudah benar-benar ditarik atau diterima dan tercatat di Arus Kas. Jika dendanya masih belum ditarik, posisinya masih Piutang Denda, belum menjadi Kas Denda."
-        },
-        {
-          "q": "Apa bedanya Kas Denda dan Piutang Denda?",
-          "a": "Kas Denda adalah uang denda yang sudah diterima. Piutang Denda adalah denda yang masih harus ditarik atau belum diterima."
-        }
+        {"q":"Apa yang dimaksud Kas Denda di Arus Kas?","a":"Kas Denda adalah wallet untuk uang denda yang sudah benar-benar ditarik atau diterima dan tercatat di Arus Kas. Jika dendanya masih belum ditarik, posisinya masih Piutang Denda, belum menjadi Kas Denda."},
+        {"q":"Apa bedanya Kas Denda dan Piutang Denda?","a":"Kas Denda adalah uang denda yang sudah diterima. Piutang Denda adalah denda yang masih harus ditarik atau belum diterima."}
+      ]
+    },
+    {
+      "id": "KPI_ULTIMATE",
+      "status_set": "FULL_PASS_HARD_LOCK",
+      "aliases_add": ["kpi 10 cabang", "kpi mtd", "kpi kasir"],
+      "rules_add": [
+        "KPI Ultimate tervalidasi PASS 10/10 cabang terhadap Minutes.",
+        "Scheduler tick tetap 1 menit dengan anti-overlap existing.",
+        "KPI MTD memakai DATE_FROM awal bulan WIB dan DATE_TO hari ini WIB.",
+        "Existing Service Sales Detail writer tetap dipakai dan tidak boleh diganti engine paralel."
+      ]
+    },
+    {
+      "id": "CASH_OUT",
+      "status_set": "FULL_PASS_HARD_LOCK",
+      "aliases_add": ["cash out bulanan", "rekonsiliasi bulanan cash out", "print cash out", "pdf cash out", "tanda tangan owner cash out"],
+      "rules_add": [
+        "Cash Out 10/10 cabang telah diverifikasi exact match terhadap Minutes/Supabase pada baseline lock.",
+        "Renderer/final UI Cash Out telah Owner PASS/LOCK.",
+        "Print/PDF Cash Out dan asset tanda tangan Owner telah LOCK.",
+        "Monthly reconciliation Cash Out dan automation-nya telah Owner PASS/LOCK.",
+        "Jika regresi, audit cabang/tanggal mismatch dan pulihkan jalur existing; jangan membangun parser atau formula paralel."
+      ]
+    },
+    {
+      "id": "TABEL_HARIAN",
+      "status_set": "FULL_PASS_HARD_LOCK",
+      "aliases_add": ["print tabel harian", "pdf tabel harian", "total cards tabel harian", "share produk tabel harian", "share cukur tabel harian", "lompat tanggal", "jump date", "freshness tabel harian"],
+      "rules_add": [
+        "Baseline Tabel Harian tervalidasi 180/180 row untuk 10 cabang x 18 hari pada delapan core metric.",
+        "Total cards Tabel Harian telah Owner PASS/LOCK.",
+        "Jump/Lompat Tanggal telah Owner PASS/LOCK.",
+        "Print/PDF Tabel Harian telah Owner PASS/LOCK.",
+        "Kolom detail Share Produk dan Share Cukur serta loader share columns telah Owner PASS/LOCK.",
+        "Freshness presentation dan hooks-nya telah Owner PASS/LOCK.",
+        "Title actions Tabel Harian telah Owner PASS/LOCK."
+      ]
+    },
+    {
+      "id": "SETORAN_3_HARIAN",
+      "status_set": "FULL_PASS_HARD_LOCK",
+      "aliases_add": ["setoran hard lock", "clear setoran", "done setoran", "bukti setoran", "receipt setoran"],
+      "rules_add": [
+        "Setoran 3 Harian memiliki branch hard-lock resmi locked/setoran-3-harian-2026-08-19.",
+        "CLEAR sebelum period_end adalah perilaku bisnis yang valid pada baseline hard lock.",
+        "Workflow CLEAR / DONE / receipt / proof merupakan bagian baseline yang tidak boleh diubah tanpa Owner unlock."
+      ]
+    },
+    {
+      "id": "SHARE_PROVIDER",
+      "status_set": "FULL_PASS_HARD_LOCK",
+      "aliases_add": ["provider sales daily source", "share provider 10 cabang", "provider share august"],
+      "rules_add": [
+        "Coverage historis Agustus 2026 telah lengkap 31/31 hari untuk 10 cabang operasional pada provider_sales_daily_source.",
+        "Rawabadak Agustus Provider Share final Rp11.891.000 exact match Minutes setelah stale row dibersihkan.",
+        "Share Produk tidak boleh dicampur ke Share Provider.",
+        "Jika ada gap, gunakan historical-date path existing provider-sales-sync.js; jangan redesign sync core."
+      ]
+    },
+    {
+      "id": "PAYROLL",
+      "status_set": "BUSINESS_RULE_LOCKED",
+      "aliases_add": ["unified payroll", "formula payroll lock", "salary master"],
+      "rules_add": [
+        "Yang terkunci adalah formula bisnis dan ownership source; implementasi file Payroll belum otomatis file-level HARD LOCK sampai Owner PASS.",
+        "Fixed salary non-Capster tidak boleh di-hardcode per jabatan karena nominal dapat berbeda per karyawan.",
+        "Perubahan gaji masa depan wajib menjaga histori melalui effective_from/effective_to."
+      ]
+    },
+    {
+      "id": "DASHBOARD_OWNER",
+      "status_set": "OWNER_PASS_LOCK",
+      "aliases_add": ["dashboard owner main", "cash out warning", "rata rata omzet", "grafik rata rata omzet", "freshness", "transaction source summary"],
+      "rules_add": [
+        "Dashboard Owner Main memiliki commit LOCK Dashboard Owner Main PASS.",
+        "AI Insight table dan prediction UI telah Owner PASS/LOCK.",
+        "Global Cash Out Warning dan Grafik Rata-rata Omzet memiliki dokumen LOCK tersendiri.",
+        "Freshness presentation pada dashboard telah Owner PASS/LOCK."
+      ]
+    },
+    {
+      "id": "MINUTES_SYNC",
+      "status_set": "OWNER_PASS_LOCK",
+      "aliases_add": ["scheduler minutes", "sync 1 menit", "anti overlap minutes", "sales summary transaction source"],
+      "rules_add": [
+        "Minutes Sync Production memiliki commit LOCK Minutes Sync Production PASS.",
+        "Transaction Source Sales Summary memiliki commit Owner PASS/LOCK dan menjadi source transaction_minutes ketika Sales Summary terbaca.",
+        "Jika Sales Summary gagal, existing transaction_minutes tidak dioverwrite.",
+        "Scheduler cadence dan anti-overlap tidak boleh berubah sebagai efek samping task lain."
+      ]
+    },
+    {
+      "id": "MINUTES_AUDIT",
+      "status_set": "OWNER_PASS_LOCK",
+      "aliases_add": ["minutes audit runner v1", "minutes audit runner v2", "audit runner v1", "audit runner v2"],
+      "rules_add": [
+        "Minutes Audit Runner V1 memiliki commit Owner PASS/LOCK.",
+        "Minutes Audit Runner V2 memiliki commit Owner PASS/LOCK dan menjadi runner audit terbaru.",
+        "Runner audit bersifat read-only dan tidak boleh mengubah data sumber."
+      ]
+    },
+    {
+      "id": "LOGIN_OWNER",
+      "status_set": "OWNER_PASS_LOCK",
+      "rules_add": ["Login Owner memiliki commit LOCK Login Owner PASS pada repo canonical."]
+    },
+    {
+      "id": "PRODUCT_SALES",
+      "status_set": "OWNER_PASS_LOCK",
+      "aliases_add": ["product sales qty", "detail qty produk"],
+      "rules_add": ["Product Sales detail quantity memiliki commit Owner PASS/LOCK."]
+    }
+  ],
+  "module_additions": [
+    {
+      "id": "TRANSACTION_SALES_SUMMARY",
+      "name": "Transaction Source Sales Summary",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["transaction sales summary", "sales summary", "customer transactions", "guest transactions", "transaction minutes", "sumber transaksi"],
+      "purpose": "Source resmi jumlah transaksi harian dari Minutes Sales Summary dengan menjumlahkan CUSTOMER TRANSACTIONS dan GUEST TRANSACTIONS untuk tanggal yang sama.",
+      "sources": ["Minutes Sales Summary", "minutes-connector/sync.js", "daily_recap_source.transaction_minutes"],
+      "rules": [
+        "Source ini memiliki commit LOCK Transaction Source Sales Summary owner pass.",
+        "transaction_minutes = customerTransactions + guestTransactions ketika Sales Summary berhasil dibaca.",
+        "Periode halaman Sales Summary harus cocok dengan tanggal target.",
+        "Jika Sales Summary gagal, transaction_minutes existing tidak dioverwrite.",
+        "Daily Recap transaction tetap dapat dipakai sebagai diagnostic compare, bukan pengganti source LOCK ini."
+      ],
+      "fields": {
+        "customer_transactions": "Jumlah CUSTOMER TRANSACTIONS dari Minutes Sales Summary untuk satu tanggal.",
+        "guest_transactions": "Jumlah GUEST TRANSACTIONS dari Minutes Sales Summary untuk satu tanggal.",
+        "transaction_minutes": "Penjumlahan Customer Transactions dan Guest Transactions yang disimpan sebagai source transaction_minutes ketika pembacaan Sales Summary berhasil."
+      },
+      "faq": [
+        {"q":"Transaction Minutes sumbernya dari mana?","a":"Pada source yang sudah Owner PASS/LOCK, transaction_minutes dibaca dari Minutes Sales Summary: CUSTOMER TRANSACTIONS + GUEST TRANSACTIONS untuk tanggal yang sama."}
+      ]
+    },
+    {
+      "id": "AI_INSIGHT",
+      "name": "AI Insight ERP",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["ai insight", "vax ai insight", "prediction ui", "tabel ai insight", "prediksi dashboard"],
+      "purpose": "Presenter insight dan prediction UI pada ERP yang memakai data engine ERP sebagai decision-support Owner tanpa mengubah source transaksi.",
+      "sources": ["Engine canonical ERP", "VaxAiInsight presenter", "Dashboard Owner", "Tabel Harian consumer"],
+      "rules": [
+        "AI Insight table dan prediction UI memiliki commit Owner PASS/LOCK.",
+        "AI Insight adalah consumer/presenter dari data ERP dan tidak boleh mengubah formula atau source canonical sebagai efek samping UI.",
+        "Baseline UI digunakan pada Dashboard dan dapat dipresentasikan pada Tabel Harian sebagai consumer."
+      ],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "CASH_OUT_WARNING",
+      "name": "Global Cash Out Warning",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["cash out warning", "warning cash out", "cashout warning", "pengeluaran lebih 205 ribu", "warning 205000"],
+      "purpose": "Monitoring read-only untuk menandai item Cash Out individual di atas Rp205.000 pada seluruh cabang operasional.",
+      "sources": ["daily_recap_source.keterangan_cash_out", "ERP.NEW/js/modules/cashout-warning.js"],
+      "rules": [
+        "Threshold LOCK adalah individual Cash Out > Rp205.000, bukan total cash_out harian.",
+        "Berlaku untuk semua cabang operasional.",
+        "Menampilkan Cabang, Nominal, Keterangan, Kasir/User, dan Tanggal.",
+        "Default compact view dengan aksi Lihat semua warning / Ringkas kembali.",
+        "Read-only monitoring; tidak memblokir transaksi dan tidak mengubah formula/engine."
+      ],
+      "fields": {
+        "threshold": "Item Cash Out individual harus lebih besar dari Rp205.000 untuk masuk warning."
+      },
+      "faq": [
+        {"q":"Kapan Cash Out masuk warning?","a":"Jika satu item Cash Out individual nilainya lebih dari Rp205.000. Yang dinilai bukan total Cash Out harian."}
+      ]
+    },
+    {
+      "id": "CHART_AVERAGE_OMZET",
+      "name": "Grafik Rata-rata Omzet",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["rata rata omzet", "average omzet", "grafik average omzet", "rata rata omzet per hari"],
+      "purpose": "Menampilkan rata-rata omzet read-only pada grafik utama Dashboard berdasarkan titik data grafik aktif.",
+      "sources": ["DashboardEngine.chartData.aktif", "ERP.NEW/js/modules/chart.js"],
+      "rules": [
+        "Formula LOCK: total seluruh nilai titik grafik aktif dibagi jumlah titik grafik.",
+        "Nilai 0 tetap dihitung bila tanggal itu termasuk periode aktif grafik.",
+        "Mengikuti filter cabang aktif dan periode aktif.",
+        "Label visual LOCK: Rata-rata Omzet: Rp... / hari, warna gold, posisi tengah atas grafik.",
+        "Tidak mengubah DashboardEngine, KPI, ranking, source data, atau formula bisnis lain."
+      ],
+      "fields": {
+        "rata_rata_omzet": "Total nilai seluruh titik grafik aktif dibagi jumlah titik grafik, termasuk titik bernilai 0 yang masih berada dalam periode aktif."
+      },
+      "faq": [
+        {"q":"Rata-rata omzet di grafik dihitung bagaimana?","a":"Total seluruh nilai titik grafik aktif dibagi jumlah titik grafik. Nilai 0 tetap ikut dihitung jika tanggalnya termasuk periode aktif."}
       ]
     }
   ]
