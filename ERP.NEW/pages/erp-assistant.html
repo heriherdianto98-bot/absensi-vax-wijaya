@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP Assistant | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/toolbar.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/erp-assistant.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="page-erp-assistant">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <div class="erp-content">
+    <main class="ea-shell">
+      <section class="ea-head">
+        <div>
+          <div class="ea-eyebrow">ERP VAX • KNOWLEDGE ASSISTANT</div>
+          <h1>ERP Assistant</h1>
+          <p>Tanya fungsi, arti angka, alur, status, atau cara kerja modul ERP yang sudah Owner PASS / LOCK.</p>
+        </div>
+        <div class="ea-context" id="eaContext">Konteks: Semua modul LOCK</div>
+      </section>
+
+      <div class="ea-grid">
+        <aside class="ea-side">
+          <div class="ea-side-title">Pertanyaan cepat</div>
+          <div class="ea-suggest">
+            <button class="ea-chip" type="button" data-ea-question="Apa maksud Uang Rekening, Masuk Kas, dan Selisih di Arus Kas?">Uang Rekening itu apa?</button>
+            <button class="ea-chip" type="button" data-ea-question="Siapa yang wajib diverifikasi Owner di Arus Kas?">Verifikasi Arus Kas</button>
+            <button class="ea-chip" type="button" data-ea-question="Cash Harus Diambil di Setoran 3 Harian berasal dari mana?">Cash Harus Diambil</button>
+            <button class="ea-chip" type="button" data-ea-question="Apakah Cash Out dikurangkan lagi di Setoran 3 Harian?">Cash Out & Setoran</button>
+            <button class="ea-chip" type="button" data-ea-question="Bagaimana formula Gaji Bersih Payroll?">Formula Payroll</button>
+            <button class="ea-chip" type="button" data-ea-question="Tabel Harian sumber datanya dari mana?">Sumber Tabel Harian</button>
+          </div>
+          <div class="ea-readonly"><strong>READ ONLY</strong><br>ERP Assistant hanya menjelaskan knowledge yang telah disetujui. Tidak bisa mengubah data, verifikasi transaksi, atau mengubah engine.</div>
+        </aside>
+
+        <section class="ea-main">
+          <div class="ea-chat-head">
+            <strong>Knowledge Chat</strong>
+            <span>Jawaban dibatasi ke Knowledge Base ERP resmi</span>
+          </div>
+          <div class="ea-error" id="eaError" hidden>Knowledge Base belum berhasil dimuat. Refresh halaman atau periksa file knowledge.</div>
+          <div class="ea-chat" id="eaChat" aria-live="polite"></div>
+          <div class="ea-input-wrap">
+            <div class="ea-input-row">
+              <textarea id="eaInput" rows="1" placeholder="Contoh: Kenapa selisih QRIS saya Rp230.000?"></textarea>
+              <button id="eaSend" type="button">Kirim</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../config/minutes.js"></script>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/modules/erp-header-sync.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/erp-assistant.js"></script>
+<script>
+(async()=>{
+  const sidebar=document.getElementById("sidebar");
+  const header=document.getElementById("header");
+  try{
+    if(sidebar){
+      sidebar.innerHTML=await (await fetch("../components/sidebar.html")).text();
+      if(typeof initSidebar==="function")initSidebar();
+      document.querySelectorAll(".sidebar .menu-item").forEach(a=>a.classList.toggle("active",a.dataset.erpNav==="erp-assistant"));
+    }
+    if(header){
+      header.innerHTML=await (await fetch("../components/header.html")).text();
+      if(typeof OwnerAuth!=="undefined"){
+        OwnerAuth.bindUi?.();
+        OwnerAuth.syncHeader?.();
+        OwnerAuth.applyAccessControl?.();
+      }
+      const title=document.getElementById("erpHeaderTitle");
+      const sub=document.getElementById("erpHeaderSub");
+      if(title)title.textContent="ERP Assistant";
+      if(sub)sub.textContent="Bantuan internal ERP VAX · Read only";
+      if(typeof initErpShellChrome==="function")initErpShellChrome();
+      if(typeof syncSidebarRoleMeta==="function")syncSidebarRoleMeta();
+    }
+    await ErpAssistant.init();
+  }catch(err){
+    console.error("ERP Assistant boot error",err);
+    document.getElementById("eaError")?.removeAttribute("hidden");
+  }
+})();
+</script>
+</body>
+</html>
