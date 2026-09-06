@@ -1,4 +1,4 @@
-/* ERP VAX — ERP Assistant Context Engine V2
+/* ERP VAX — ERP Assistant Context Engine V2.1
    Frontend-only, READ ONLY, typo tolerant, context + history aware.
    Answers are composed from approved ERP knowledge; no API/LLM/server dependency.
 */
@@ -30,18 +30,18 @@ const ErpAssistant={
     let s=` ${this.norm(v)} `;
     const map={
       " yg ":" yang "," sy ":" saya "," sya ":" saya "," km ":" kamu "," kmu ":" kamu ",
-      " gmn ":" bagaimana "," gimna ":" bagaimana "," mksd ":" maksud "," mkst ":" maksud ",
-      " d ":" di "," blm ":" belum "," udh ":" sudah "," trs ":" terus "," krn ":" karena ",
-      " sv p ":" svp "," qris ":" qris "," qriss ":" qris "," storan ":" setoran ",
-      " setorann ":" setoran "," dnda ":" denda "," dendaa ":" denda "," ksa ":" kas ",
-      " bku ":" buku "," aruskas ":" arus kas "," verif ":" verifikasi "," verifkasi ":" verifikasi "
+      " gmn ":" bagaimana "," gimna ":" bagaimana "," gmana ":" bagaimana "," mksd ":" maksud "," mkst ":" maksud ",
+      " d ":" di "," blm ":" belum "," udh ":" sudah "," trs ":" terus "," trus ":" terus "," krn ":" karena ",
+      " sv p ":" svp "," qris ":" qris "," qriss ":" qris "," storan ":" setoran "," setorann ":" setoran ",
+      " dnda ":" denda "," dendaa ":" denda "," ksa ":" kas "," bku ":" buku "," aruskas ":" arus kas ",
+      " verif ":" verifikasi "," verifkasi ":" verifikasi "," mncul ":" muncul "," ttp ":" tetap "," hrs ":" harus "
     };
     for(const [a,b] of Object.entries(map))s=s.split(a).join(b);
     return s.replace(/\s+/g," ").trim();
   },
 
   tokens(v){
-    const stop=new Set(["apa","apakah","itu","ini","yang","dan","di","ke","dari","untuk","saya","mau","bagaimana","maksud","maksudnya","arti","jelasin","jelaskan","kenapa","kok","kalau","terus","jadi","tolong","dong","ya","nya","yg"]);
+    const stop=new Set(["apa","apakah","itu","ini","yang","dan","di","ke","dari","untuk","saya","mau","bagaimana","maksud","maksudnya","arti","jelasin","jelaskan","kenapa","kok","kalau","kalo","terus","jadi","tolong","dong","ya","nya","yg"]);
     return this.expand(v).split(" ").filter(x=>x.length>1&&!stop.has(x));
   },
 
@@ -112,12 +112,15 @@ const ErpAssistant={
     return s;
   },
 
+  rankModules(query){
+    return (this.knowledge?.modules||[]).map(m=>({m,s:this.moduleScore(m,query)})).sort((a,b)=>b.s-a.s);
+  },
+
   resolveModule(query){
-    const mods=this.knowledge?.modules||[];
-    const ranked=mods.map(m=>({m,s:this.moduleScore(m,query)})).sort((a,b)=>b.s-a.s);
+    const ranked=this.rankModules(query);
     const best=ranked[0];
     const expanded=this.expand(query);
-    const followup=/^(kalau|kalo|terus|trs|yang|yg|nah|lalu|jadi|dan|trus)\b/.test(expanded)||this.tokens(query).length<=3;
+    const followup=/^(kalau|kalo|terus|yang|nah|lalu|jadi|dan)\b/.test(expanded)||this.tokens(query).length<=3;
 
     if(best&&best.s>=14)return best.m;
     if(followup&&this.state.lastModuleId)return this.getModule(this.state.lastModuleId);
@@ -129,12 +132,12 @@ const ErpAssistant={
 
   detectIntent(query){
     const q=this.expand(query);
+    if(/(isi|isinya|apa saja|apa aja|terdapat|catat apa|mencatat apa)/.test(q))return "contents";
     if(/(asal|sumber|dari mana|berasal)/.test(q))return "source";
     if(/(beda|perbedaan|dibanding)/.test(q))return "compare";
     if(/(siapa|verifikasi|verify|koreksi)/.test(q))return "verify";
     if(/(kenapa|mengapa|kok|selisih)/.test(q))return "why";
     if(/(cara|bagaimana|gimana|proses|alur)/.test(q))return "how";
-    if(/(isi|isinya|apa saja|apa aja)/.test(q))return "contents";
     if(/(arti|maksud|apa itu|apa yang dimaksud|definisi)/.test(q))return "definition";
     return "general";
   },
@@ -162,10 +165,59 @@ const ErpAssistant={
   },
 
   humanLabel(k){return String(k).replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase())},
-
   moneyHighlight(v){return String(v||"").replace(/(Rp\s?[\d\.]+)/g,'<strong class="ea-money">$1</strong>')},
 
+  relationAnswer(query){
+    const q=this.expand(query);
+    const last=this.getModule(this.state.lastModuleId);
+    if(!last)return null;
+
+    if(last.id==="ARUS_KAS_V2" && /setoran/.test(q)){
+      const setoran=this.getModule("SETORAN_3_HARIAN");
+      return {
+        module:last,
+        focus:"setoran_to_arus_kas",
+        html:`<p>Kalau yang berasal dari <strong>Setoran 3 Harian</strong>, alurnya masuk ke <strong>Arus Kas V2</strong> sebagai transaksi AUTO setelah cabang sudah Owner Verified.</p>
+        <div class="ea-rule-box"><strong>Alurnya</strong>
+          <p>• Transaksi AUTO dari Setoran tidak perlu diverifikasi ulang di Arus Kas.</p>
+          <p>• Cash Aktual/hasil setoran yang valid masuk ke Kas Besar.</p>
+          <p>• Nett Produk masuk ke Dana Produk.</p>
+        </div>
+        <div class="ea-source"><span>${this.escape(setoran?.name||"Setoran 3 Harian")} → ${this.escape(last.name)}</span><b>OWNER LOCKED</b></div>`
+      };
+    }
+
+    if(last.id==="ARUS_KAS_V2" && /svp/.test(q) && /(manual|input)/.test(q)){
+      return {
+        module:last,
+        focus:"manual_svp",
+        html:`<p>Kalau <strong>SVP input manual</strong> di Arus Kas, transaksi itu <strong>belum dianggap final</strong> sampai Owner memeriksanya.</p>
+        <div class="ea-rule-box"><strong>Yang dilakukan Owner</strong>
+          <p>• Cek detail dan nominal transaksi manual.</p>
+          <p>• Pilih Verifikasi jika benar, atau Minta Koreksi jika perlu diperbaiki.</p>
+          <p>• Berbeda dengan transaksi AUTO dari Setoran, transaksi manual SVP memang wajib review Owner.</p>
+        </div>
+        <div class="ea-source"><span>${this.escape(last.name)}</span><b>OWNER LOCKED</b></div>`
+      };
+    }
+    return null;
+  },
+
+  composeContents(m){
+    const fields=Object.keys(m.fields||{}).slice(0,8);
+    let html=`<p><strong>${this.escape(m.name)}</strong> ${this.escape(m.purpose.charAt(0).toLowerCase()+m.purpose.slice(1))}</p>`;
+    if(fields.length)html+=`<div class="ea-rule-box"><strong>Isi / bagian utama</strong><p>${fields.map(k=>this.humanLabel(k)).join(" • ")}</p></div>`;
+    if((m.rules||[]).length)html+=`<div class="ea-rule-box"><strong>Alur penting</strong>${m.rules.slice(0,4).map(r=>`<p>• ${this.moneyHighlight(r)}</p>`).join("")}</div>`;
+    return html;
+  },
+
   compose(query){
+    const relation=this.relationAnswer(query);
+    if(relation){
+      this.state={lastModuleId:relation.module.id,lastFocus:relation.focus,lastIntent:"followup"};
+      return {unknown:false,module:relation.module,html:relation.html};
+    }
+
     const m=this.resolveModule(query);
     if(!m)return {unknown:true,html:`<p>${this.knowledge?.policy?.unknown_answer||"Knowledge ERP belum cukup untuk menjawab pertanyaan ini."}</p>`};
 
@@ -176,7 +228,10 @@ const ErpAssistant={
     let html="";
     let focus=null;
 
-    if(field){
+    /* Intent isi harus menang atas field-match. Ini mencegah "buku arus kas isinya apa" salah dijawab sebagai "Masuk Kas". */
+    if(intent==="contents"){
+      html+=this.composeContents(m);
+    }else if(field){
       focus=field.k;
       const label=this.humanLabel(field.k);
       if(intent==="definition"||intent==="general"||intent==="why"){
@@ -185,16 +240,11 @@ const ErpAssistant={
         html+=`<p><strong>${label}</strong>: ${this.moneyHighlight(field.v)}</p>`;
       }
       if(rules.length)html+=`<div class="ea-rule-box"><strong>Yang perlu diketahui</strong>${rules.slice(0,2).map(x=>`<p>• ${this.moneyHighlight(x.r)}</p>`).join("")}</div>`;
-    }else if(faq&&intent!=="contents"){
+    }else if(faq){
       html+=`<p>${this.moneyHighlight(faq.f.a)}</p>`;
       focus=faq.f.q;
     }else if(intent==="source"){
       html+=`<p>${m.name} menggunakan sumber resmi berikut:</p><div class="ea-rule-box">${(m.sources||[]).map(x=>`<p>• ${this.escape(x)}</p>`).join("")||"<p>Sumber rinci belum terdokumentasi di knowledge.</p>"}</div>`;
-    }else if(intent==="contents"){
-      const fields=Object.keys(m.fields||{}).slice(0,6);
-      html+=`<p>Di <strong>${m.name}</strong>, fungsi utamanya ${this.escape(m.purpose.charAt(0).toLowerCase()+m.purpose.slice(1))}</p>`;
-      if(fields.length)html+=`<div class="ea-rule-box"><strong>Bagian/istilah utama yang tercatat</strong><p>${fields.map(k=>this.humanLabel(k)).join(" • ")}</p></div>`;
-      if((m.rules||[]).length)html+=`<div class="ea-rule-box"><strong>Alur penting</strong>${m.rules.slice(0,3).map(r=>`<p>• ${this.moneyHighlight(r)}</p>`).join("")}</div>`;
     }else if(intent==="verify"){
       const vr=(m.rules||[]).filter(r=>/(verif|owner|koreksi|manual|auto)/i.test(r)).slice(0,4);
       html+=`<p>Untuk <strong>${m.name}</strong>, aturan verifikasinya:</p><div class="ea-rule-box">${(vr.length?vr:m.rules||[]).slice(0,4).map(r=>`<p>• ${this.moneyHighlight(r)}</p>`).join("")}</div>`;
@@ -247,7 +297,7 @@ const ErpAssistant={
       await this.loadKnowledge();
       this.detectContext();
       this.bind();
-      this.addBubble("assistant",`<p>Halo Pak. Saya <strong>ERP Assistant</strong>. Saya menjawab dari Knowledge Base ERP resmi dengan Context Engine V2.</p><p>Saya memahami typo ringan, singkatan, konteks halaman, dan pertanyaan lanjutan. Tetap <strong>READ ONLY</strong>.</p>`);
+      this.addBubble("assistant",`<p>Halo Pak. Saya <strong>ERP Assistant</strong>. Saya menjawab dari Knowledge Base ERP resmi dengan Context Engine V2.1.</p><p>Saya memahami typo ringan, singkatan, konteks halaman, dan pertanyaan lanjutan. Tetap <strong>READ ONLY</strong>.</p>`);
       this.refs.input?.focus();
     }catch(err){
       console.error(err);
