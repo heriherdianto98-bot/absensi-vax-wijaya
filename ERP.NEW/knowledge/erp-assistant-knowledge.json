@@ -1,0 +1,219 @@
+{
+  "schema_version": "1.0",
+  "assistant_name": "ERP Assistant",
+  "mode": "READ_ONLY_HELP",
+  "last_updated": "2026-09-07",
+  "policy": {
+    "answer_only_from_approved_knowledge": true,
+    "allow_write_actions": false,
+    "unknown_answer": "Knowledge ERP belum cukup untuk menjawab pertanyaan ini. Modul atau rule tersebut perlu diperbarui di Knowledge Base setelah Owner menyetujuinya."
+  },
+  "modules": [
+    {
+      "id": "TABEL_HARIAN",
+      "name": "Tabel Harian",
+      "status": "FULL_PASS_HARD_LOCK",
+      "aliases": ["tabel harian", "daily recap", "harian", "cash bersih", "non tunai", "omzet", "nett"],
+      "purpose": "Fondasi data operasional harian seluruh cabang yang menjadi referensi downstream ERP.",
+      "sources": ["daily_recap_source", "DailyDataEngine", "Minutes Barber melalui sinkronisasi canonical"],
+      "rules": [
+        "Core metric yang telah diverifikasi meliputi Omzet, Nett, Non Tunai, Cash Out, Cash Bersih, Customer, Transaksi, dan Services.",
+        "Downstream tidak boleh membuat formula paralel yang menyimpang dari baseline canonical.",
+        "Cash Bersih Tabel Harian menjadi dasar Cash Harus Diambil pada Setoran 3 Harian.",
+        "Non Tunai Tabel Harian menjadi Non Tunai Minutes pada Setoran 3 Harian.",
+        "Nett Produk Tabel Harian menjadi Nett Produk pada Setoran 3 Harian."
+      ],
+      "fields": {
+        "cash_bersih": "Uang tunai bersih menurut data harian canonical yang menjadi basis Cash Harus Diambil di Setoran 3 Harian.",
+        "non_tunai": "Pembayaran non tunai dari Minutes untuk periode/cabang terkait.",
+        "cash_out": "Pengeluaran dari Minutes yang sudah tercermin pada perhitungan canonical dan tidak boleh dikurangkan dua kali.",
+        "nett_produk": "Nilai produk bersih setelah Share Produk sesuai engine canonical."
+      },
+      "faq": [
+        {"q":"Tabel Harian sumbernya dari mana?","a":"Tabel Harian membaca data canonical dari daily_recap_source melalui engine ERP yang sudah diverifikasi terhadap Minutes."},
+        {"q":"Apakah Cash Out dikurangkan lagi di Setoran?","a":"Tidak. Cash Out tidak boleh dikurangkan dua kali karena basis uang canonical sudah memperhitungkannya."}
+      ]
+    },
+    {
+      "id": "SETORAN_3_HARIAN",
+      "name": "Setoran 3 Harian",
+      "status": "FULL_PASS_HARD_LOCK",
+      "aliases": ["setoran", "setoran 3 harian", "cash harus diambil", "nett produk", "bri merchant", "belum diambil", "sudah diambil", "verif owner"],
+      "purpose": "Rekonsiliasi uang fisik dan non tunai per periode maksimal tiga hari sebelum dialirkan ke Arus Kas.",
+      "sources": ["Tabel Harian canonical", "BRI Merchant untuk rekonsiliasi non tunai"],
+      "rules": [
+        "Cash Harus Diambil mengikuti Cash Bersih dari Tabel Harian.",
+        "Non Tunai Minutes mengikuti Non Tunai dari Tabel Harian.",
+        "Nett Produk mengikuti Nett Produk dari Tabel Harian.",
+        "BELUM DIAMBIL berarti uang fisik masih berada pada kasir dan diperlakukan sebagai Piutang Setoran.",
+        "SUDAH DIAMBIL dicentang saat SVP sudah mengambil uang.",
+        "VERIF OWNER adalah verifikasi akhir Owner pada Setoran 3 Harian.",
+        "Setelah cabang Owner Verified, cabang itu boleh langsung mengalir ke Arus Kas tanpa menunggu semua cabang.",
+        "Arus Kas hanya mengonsumsi hasil Setoran dan tidak menghitung ulang formula Setoran."
+      ],
+      "fields": {
+        "cash_harus_diambil": "Jumlah uang tunai yang harus diambil untuk periode tersebut berdasarkan Cash Bersih Tabel Harian.",
+        "non_tunai_minutes": "Nilai transaksi non tunai menurut Minutes/Tabel Harian.",
+        "nett_produk": "Hak bersih produk yang akan dialirkan ke Dana Produk.",
+        "selisih_non_tunai": "Selisih hasil BRI aktual terhadap Non Tunai Minutes setelah data BRI settled."
+      },
+      "faq": [
+        {"q":"Kalau Owner sudah verifikasi Setoran apakah harus verifikasi lagi di Arus Kas?","a":"Tidak. Transaksi AUTO yang berasal dari Setoran 3 Harian mewarisi Owner Verification dari Setoran dan tidak perlu diverifikasi ulang di Arus Kas."}
+      ]
+    },
+    {
+      "id": "ARUS_KAS_V2",
+      "name": "Arus Kas V2",
+      "status": "OWNER_LOCKED",
+      "aliases": ["arus kas", "arus kas v2", "kas besar", "dana produk", "uang rekening", "masuk kas", "selisih qris", "qris transfer", "gopay transfer", "input manual", "manual svp"],
+      "purpose": "Ledger uang barber untuk mencatat arus masuk/keluar, menerima transaksi AUTO dari Setoran 3 Harian, dan merekonsiliasi uang rekening yang benar-benar masuk ke kas.",
+      "sources": ["Setoran 3 Harian Owner Verified", "Input Manual SVP/Owner sesuai hak akses"],
+      "rules": [
+        "Transaksi AUTO dari Setoran 3 Harian tidak perlu verifikasi ulang di Arus Kas.",
+        "Cash Aktual/hasil setoran yang valid masuk ke Kas Besar.",
+        "Nett Produk masuk ke Dana Produk.",
+        "Transaksi MANUAL yang diinput SVP berstatus belum diverifikasi sampai Owner melakukan Verifikasi atau Minta Koreksi.",
+        "Icon info gold pada transaksi AUTO hanya untuk melihat detail.",
+        "Icon info merah pada transaksi MANUAL belum diverifikasi menandakan wajib dicek Owner.",
+        "Rekonsiliasi QRIS/GoPay di Arus Kas adalah rekonsiliasi kedua dan tidak mengubah angka Setoran 3 Harian."
+      ],
+      "fields": {
+        "uang_rekening": "Nilai non tunai yang menurut hasil Setoran 3 Harian seharusnya tersedia di rekening untuk periode tersebut.",
+        "masuk_kas": "Jumlah uang rekening yang sudah benar-benar dicatat masuk ke Kas Besar melalui transaksi manual QRIS/GoPay Transfer untuk periode sumber yang sama.",
+        "selisih": "Uang Rekening dikurangi Masuk Kas. Jika Uang Rekening Rp230.000 dan Masuk Kas Rp0, selisihnya Rp230.000.",
+        "kas_besar": "Saldo ledger utama uang barber.",
+        "dana_produk": "Wallet khusus hak Nett Produk.",
+        "piutang_setoran": "Uang setoran yang belum diambil dan masih menjadi piutang setoran.",
+        "periode_sumber": "Periode asal yang dipakai terutama untuk mencocokkan transaksi QRIS/GoPay Transfer dengan Uang Rekening."
+      },
+      "faq": [
+        {"q":"Apa maksud Uang Rekening Rp230.000, Masuk Kas Rp0, Selisih Rp230.000?","a":"Untuk periode tersebut ERP mengetahui Rp230.000 seharusnya tersedia di rekening dari data Setoran, tetapi belum ada transaksi QRIS/GoPay Transfer yang dicatat masuk ke Kas Besar. Karena itu selisih masih Rp230.000."},
+        {"q":"Siapa yang harus diverifikasi di Arus Kas?","a":"Yang wajib Owner verifikasi di Arus Kas adalah transaksi MANUAL dari SVP. Transaksi AUTO dari Setoran 3 Harian tidak diverifikasi ulang."}
+      ]
+    },
+    {
+      "id": "CASH_OUT",
+      "name": "Cash Out",
+      "status": "FULL_PASS_HARD_LOCK",
+      "aliases": ["cash out", "pengeluaran minutes", "detail cash out", "rekonsiliasi cash out"],
+      "purpose": "Menampilkan dan merekonsiliasi detail Cash Out dari sumber Minutes/Supabase yang sudah diverifikasi.",
+      "sources": ["minutes_daily.detail_cash_out", "daily_recap_source.cash_out", "daily_recap_source.keterangan_cash_out"],
+      "rules": [
+        "Jika ada mismatch, audit cabang/tanggal/field yang tepat lalu perbaiki jalur existing; jangan membangun parser/formula paralel.",
+        "Print/PDF Cash Out dan owner signature telah memiliki baseline LOCK.",
+        "Monthly reconciliation Cash Out telah Owner PASS/LOCK."
+      ],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "KPI_ULTIMATE",
+      "name": "KPI Ultimate",
+      "status": "FULL_PASS_HARD_LOCK",
+      "aliases": ["kpi", "kpi ultimate", "target paket", "progress kpi", "bonus kpi"],
+      "purpose": "Mengukur KPI paket layanan MTD berdasarkan source Minutes yang telah tervalidasi 10 cabang.",
+      "sources": ["Minutes Service Sales Detail"],
+      "rules": [
+        "Periode KPI adalah MTD dari tanggal 1 bulan berjalan sampai hari ini WIB.",
+        "Paket yang dihitung hanya MAX, RELAX, REGULER, PLUS, dan ENAKIN KEPALA.",
+        "Formula, classifier paket, target, progress, selisih dan per-kasir tidak boleh diubah tanpa Owner unlock."
+      ],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "SHARE_PROVIDER",
+      "name": "Share Provider / Share Cukur",
+      "status": "FULL_PASS_HARD_LOCK",
+      "aliases": ["share provider", "share cukur", "provider share", "share capster"],
+      "purpose": "Source resmi Share Provider dari Minutes per provider per hari untuk Tabel Harian, payroll, dan histori pendapatan provider.",
+      "sources": ["provider_sales_daily_source", "Minutes Provider Sales"],
+      "rules": [
+        "Downstream harus membaca source Share Provider yang telah diverifikasi dan tidak membuat kalkulasi paralel.",
+        "Share Produk tidak boleh dicampurkan ke Share Provider."
+      ],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "PAYROLL",
+      "name": "Unified Payroll",
+      "status": "BUSINESS_RULE_LOCKED",
+      "aliases": ["payroll", "gaji", "master gaji", "gaji bersih", "kasbon", "bonus produk", "bonus kpi", "denda"],
+      "purpose": "Payroll terpadu dengan formula bisnis dan ownership source yang telah dikunci Owner.",
+      "sources": ["provider_sales_daily_source", "payroll_salary_master", "absensi.denda", "employee_cash_advances", "product_sales_source", "payroll_manual_adjustments"],
+      "rules": [
+        "Gaji Bersih = Gaji Pokok - Denda - Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk.",
+        "Gaji Pokok Capster berasal dari provider_sales_daily_source.provider_share.",
+        "Gaji Pokok non-Capster berasal dari payroll_salary_master dengan periode efektif.",
+        "Kasbon memakai employee_cash_advances dan tidak boleh ada input kasbon paralel di payroll.",
+        "Bonus Produk berasal dari product_sales_source.revenue_share yang matched ke employee_id.",
+        "Implementasi file Payroll tidak otomatis dianggap HARD LOCK hanya karena formula bisnisnya sudah LOCK."
+      ],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "DASHBOARD_OWNER",
+      "name": "Dashboard Owner",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["dashboard owner", "dashboard utama", "executive dashboard", "average omzet", "ai insight"],
+      "purpose": "Dashboard utama Owner untuk ringkasan operasional, KPI, tren, ranking, warning, dan insight ERP.",
+      "sources": ["Engine canonical ERP dan modul dashboard yang sudah Owner PASS/LOCK"],
+      "rules": [
+        "Dashboard Owner Main telah OWNER PASS/LOCK.",
+        "Chart Average Omzet dan Cash Out Warning telah OWNER PASS/LOCK.",
+        "AI Insight table/prediction UI telah OWNER PASS/LOCK."
+      ],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "MINUTES_SYNC",
+      "name": "Minutes Sync Production",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["minutes sync", "sinkronisasi minutes", "minutes barber", "sync production"],
+      "purpose": "Jalur sinkronisasi data operasional Minutes ke sumber canonical ERP.",
+      "sources": ["Minutes Barber", "VPS connector", "Supabase"],
+      "rules": [
+        "Minutes Sync Production telah PASS/LOCK.",
+        "Perubahan pada scheduler/sync core tidak boleh dilakukan sebagai efek samping task lain."
+      ],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "MINUTES_AUDIT",
+      "name": "Minutes Audit Runner V2",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["audit minutes", "minutes audit", "runner audit", "audit runner v2"],
+      "purpose": "Runner read-only untuk membandingkan dan mengaudit data Minutes melalui workflow audit canonical.",
+      "sources": ["Minutes live", "Supabase", "DailyDataEngine dalam workflow audit"],
+      "rules": ["Runner V2 telah OWNER PASS/LOCK dan digunakan secara read-only untuk audit."],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "LOGIN_OWNER",
+      "name": "Login Owner",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["login", "login owner", "masuk erp"],
+      "purpose": "Gerbang autentikasi Owner ke ERP VAX.",
+      "sources": [],
+      "rules": ["Login Owner telah OWNER PASS/LOCK."],
+      "fields": {},
+      "faq": []
+    },
+    {
+      "id": "PRODUCT_SALES",
+      "name": "Product Sales",
+      "status": "OWNER_PASS_LOCK",
+      "aliases": ["product sales", "penjualan produk", "qty produk", "share produk"],
+      "purpose": "Detail penjualan produk dan quantity yang menjadi salah satu source downstream ERP.",
+      "sources": ["Product Sales source canonical"],
+      "rules": ["Product Sales detail quantity telah OWNER PASS/LOCK."],
+      "fields": {},
+      "faq": []
+    }
+  ]
+}
