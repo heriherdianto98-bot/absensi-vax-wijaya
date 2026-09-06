@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "2026-09-07",
+  "screens": [
+    {
+      "id": "ARUS_KAS_MANUAL_INPUT",
+      "module_id": "ARUS_KAS_V2",
+      "title": "Input Arus Kas Manual",
+      "aliases": ["input arus kas", "transaksi manual arus kas", "form arus kas", "input manual"],
+      "summary": "Form untuk mencatat transaksi Arus Kas yang dibuat manual oleh Owner atau SVP. Ini berbeda dari transaksi AUTO yang berasal dari Setoran 3 Harian.",
+      "steps": [
+        "Tanggal: pilih tanggal transaksi yang benar-benar terjadi.",
+        "Jenis: pilih Pemasukan jika uang masuk ke wallet, atau Pengeluaran jika uang keluar dari wallet.",
+        "Kategori: pilih kategori yang paling sesuai dengan sumber atau tujuan transaksi.",
+        "Wallet: pilih wallet yang menjadi tujuan uang untuk Pemasukan, atau sumber uang untuk Pengeluaran.",
+        "Nominal: isi jumlah uang transaksi.",
+        "Keterangan: tulis sumber atau tujuan transaksi dengan jelas agar mudah diaudit dan diverifikasi.",
+        "Jika kategori QRIS / GoPay Transfer dipilih, isi Periode Sumber sesuai periode uang rekening yang sedang direkonsiliasi.",
+        "Klik Simpan setelah semua data benar. Jika transaksi manual dibuat oleh SVP, transaksi belum final sampai Owner melakukan Verifikasi atau Minta Koreksi."
+      ],
+      "fields": [
+        {
+          "key": "tanggal",
+          "label": "Tanggal",
+          "aliases": ["tgl", "tanggal transaksi"],
+          "help": "Tanggal transaksi yang benar-benar terjadi. Jangan memakai tanggal lain hanya untuk menyesuaikan laporan."
+        },
+        {
+          "key": "jenis",
+          "label": "Jenis",
+          "aliases": ["pemasukan", "pengeluaran", "in", "out"],
+          "help": "Pemasukan berarti uang masuk ke wallet yang dipilih. Pengeluaran berarti uang keluar dari wallet yang dipilih."
+        },
+        {
+          "key": "kategori",
+          "label": "Kategori",
+          "aliases": ["pemasukan lain", "qris transfer", "gopay transfer", "pengeluaran barber", "pribadi owner", "transfer internal", "kas denda", "dana produk"],
+          "help": "Kategori menjelaskan jenis transaksi. Pilih yang paling sesuai: Pemasukan Lain, QRIS / GoPay Transfer, Pengeluaran Barber, Pribadi Owner, Transfer Internal, Kas Denda, atau Dana Produk."
+        },
+        {
+          "key": "wallet",
+          "label": "Wallet",
+          "aliases": ["kas besar", "dana produk", "kas denda", "piutang setoran", "piutang denda"],
+          "help": "Wallet adalah kantong ledger yang terkena transaksi. Untuk Pemasukan, wallet yang dipilih menerima uang. Untuk Pengeluaran, wallet yang dipilih menjadi sumber uang."
+        },
+        {
+          "key": "nominal",
+          "label": "Nominal",
+          "aliases": ["jumlah", "uang", "rp"],
+          "help": "Jumlah uang transaksi. Isi nominal sesuai bukti atau kejadian sebenarnya."
+        },
+        {
+          "key": "keterangan",
+          "label": "Keterangan",
+          "aliases": ["catatan", "deskripsi"],
+          "help": "Penjelasan singkat tetapi jelas tentang asal atau tujuan uang agar transaksi mudah dicek kembali."
+        },
+        {
+          "key": "periode_sumber",
+          "label": "Periode Sumber",
+          "aliases": ["periode qris", "periode gopay", "sumber periode"],
+          "help": "Hanya dipakai untuk QRIS / GoPay Transfer agar uang yang benar-benar masuk ke Kas Besar bisa dicocokkan dengan Uang Rekening pada periode Setoran yang sama."
+        }
+      ],
+      "notes": [
+        "Transaksi AUTO dari Setoran 3 Harian tidak perlu diinput ulang lewat form ini.",
+        "Transaksi AUTO dari Setoran yang sudah Owner Verified tidak perlu diverifikasi ulang di Arus Kas.",
+        "Transaksi MANUAL yang dibuat SVP wajib direview Owner sebelum dianggap final."
+      ]
+    }
+  ]
+}
