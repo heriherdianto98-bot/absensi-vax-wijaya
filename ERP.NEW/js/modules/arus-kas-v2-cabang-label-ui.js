@@ -9,8 +9,8 @@ Tujuan:
   cabang + periode yang sama; baris berikutnya cukup tanda em dash.
 - Tanggal juga hanya tampil pada baris pertama bila cabang + tanggal sama.
 - Header SALDO diperjelas menjadi SALDO BERJALAN.
-- Detail transaksi hanya dibuka melalui icon detail pada nominal,
-  bukan dengan klik sembarang area baris.
+- Popup detail dinonaktifkan untuk transaksi AUTO.
+- Popup detail hanya boleh dibuka lewat icon detail pada transaksi MANUAL.
 - Data transaksi, saldo, engine, query, formula, status, dan alur AUTO /
   MANUAL tidak diubah.
 =========================================================
@@ -65,32 +65,6 @@ Tujuan:
         background:rgba(18,25,32,.78);
         color:#9eabb7;
       }
-      body.page-arus-kas .ak2-row-detail-trigger{
-        width:22px;
-        height:22px;
-        margin-left:7px;
-        padding:0;
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        vertical-align:middle;
-        border:1px solid rgba(230,177,46,.72);
-        border-radius:50%;
-        background:rgba(93,63,5,.20);
-        color:#f5c542;
-        font-size:12px;
-        font-weight:900;
-        line-height:1;
-        cursor:pointer;
-        box-shadow:0 0 0 1px rgba(246,196,70,.08),0 0 9px rgba(246,196,70,.10);
-      }
-      body.page-arus-kas .ak2-row-detail-trigger:hover,
-      body.page-arus-kas .ak2-row-detail-trigger:focus-visible{
-        background:rgba(128,84,4,.34);
-        border-color:#ffd85a;
-        color:#fff2ad;
-        outline:none;
-      }
       body.page-arus-kas #ak2LedgerBody tr[data-id]{
         cursor:default !important;
       }
@@ -101,7 +75,6 @@ Tujuan:
       }
       @media print{
         body.page-arus-kas .ak2-cabang-badge{box-shadow:none;background:transparent;color:#111;border-color:#999}
-        body.page-arus-kas .ak2-row-detail-trigger{display:none!important}
       }
     `;
     document.head.appendChild(style);
@@ -150,23 +123,6 @@ Tujuan:
     if(saldo) saldo.textContent = "Saldo Berjalan";
   }
 
-  function appendDetailTrigger(flow, row, tr){
-    tr.querySelectorAll(".ak2-row-detail-trigger").forEach(x => x.remove());
-    if(typeof flow.kasEffect !== "function") return;
-    const effect = flow.kasEffect(row);
-    const targetCell = effect > 0 ? tr.querySelector("td.ak2-money-in") : effect < 0 ? tr.querySelector("td.ak2-money-out") : null;
-    if(!targetCell) return;
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "ak2-row-detail-trigger";
-    btn.dataset.ak2DetailId = String(row.id);
-    btn.setAttribute("aria-label", "Lihat detail transaksi");
-    btn.title = "Lihat detail transaksi";
-    btn.textContent = "!";
-    targetCell.appendChild(btn);
-  }
-
   function decorateRows(){
     const flow = window.ArusKasV2;
     const body = document.getElementById("ak2LedgerBody");
@@ -181,6 +137,7 @@ Tujuan:
       if(!row) return;
 
       tr.querySelector("td.ak2-cabang-col")?.remove();
+      tr.querySelectorAll(".ak2-row-detail-trigger").forEach(x => x.remove());
 
       const groupKey = branchKeyFor(row);
       const repeated = previousGroupKey === groupKey;
@@ -189,10 +146,8 @@ Tujuan:
       const name = cabangNameFor(row);
 
       const dateCell = tr.children[0];
-      if(dateCell){
-        if(repeatedDate){
-          dateCell.innerHTML = '<span class="ak2-tanggal-repeat" title="Tanggal sama dengan transaksi cabang di atas">—</span>';
-        }
+      if(dateCell && repeatedDate){
+        dateCell.innerHTML = '<span class="ak2-tanggal-repeat" title="Tanggal sama dengan transaksi cabang di atas">—</span>';
       }
 
       const td = document.createElement("td");
@@ -216,8 +171,6 @@ Tujuan:
       if(first?.nextSibling) tr.insertBefore(td, first.nextSibling);
       else tr.appendChild(td);
 
-      appendDetailTrigger(flow,row,tr);
-
       previousGroupKey = groupKey;
       previousDateKey = dateKey;
     });
@@ -232,19 +185,21 @@ Tujuan:
     if(!body || !flow || body.dataset.ak2DetailGate === "1") return;
     body.dataset.ak2DetailGate = "1";
 
-    // Capture phase: hentikan click row sebelum listener engine menerima click.
-    // Hanya tombol detail (!) yang diizinkan membuka modal.
+    // Capture phase: cegah listener row bawaan membuka modal.
+    // AUTO tidak boleh membuka popup. MANUAL hanya lewat icon detail.
     body.addEventListener("click", e => {
-      const trigger = e.target.closest(".ak2-row-detail-trigger");
-      const row = e.target.closest("tr[data-id]");
-      if(!row) return;
+      const rowEl = e.target.closest("tr[data-id]");
+      if(!rowEl) return;
+
+      const row = (flow.ledger || []).find(x => String(x.id) === String(rowEl.dataset.id));
+      const manualIcon = e.target.closest(".ak2-ledger-detail-icon");
 
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
 
-      if(trigger && typeof flow.openDetail === "function"){
-        flow.openDetail(trigger.dataset.ak2DetailId || row.dataset.id);
+      if(row?.entry_type === "MANUAL" && manualIcon && typeof flow.openDetail === "function"){
+        flow.openDetail(rowEl.dataset.id);
       }
     }, true);
   }
