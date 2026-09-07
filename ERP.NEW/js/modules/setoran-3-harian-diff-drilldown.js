@@ -20,11 +20,11 @@ Tidak mengubah rumus, engine, data, query, penyimpanan, atau status.
     const style=document.createElement("style");
     style.id="s3DiffDrilldownStyle";
     style.textContent=`
-      .s3sheet-total.is-red.s3-diff-clickable{cursor:pointer;outline:none;position:relative;padding-right:134px!important}
+      .s3sheet-total.is-red.s3-diff-clickable{cursor:pointer;outline:none;position:relative;padding-right:36px!important}
       .s3sheet-total.is-red.s3-diff-clickable:hover{transform:translateY(-2px);border-color:rgba(255,112,112,.86);box-shadow:0 13px 28px rgba(0,0,0,.3),0 0 18px rgba(239,68,68,.16)}
       .s3sheet-total.is-red.s3-diff-clickable:focus-visible{box-shadow:0 0 0 2px rgba(255,255,255,.8),0 0 0 4px rgba(239,68,68,.65)}
-      .s3-diff-hint{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid rgba(255,112,112,.52);border-radius:999px;background:rgba(239,68,68,.12);box-shadow:0 0 0 1px rgba(239,68,68,.04) inset;color:#ffd4d4;font-size:10px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
-      .s3-diff-hint:before{content:"↗";display:inline-block;color:#ff5b5b;font-size:12px;line-height:1}
+      .s3-diff-hint{position:absolute;right:9px;bottom:8px;width:22px;height:22px;display:grid;place-items:center;padding:0;border:1px solid rgba(255,112,112,.58);border-radius:7px;background:rgba(239,68,68,.13);box-shadow:0 0 0 1px rgba(239,68,68,.04) inset;color:transparent;font-size:0;line-height:1;overflow:hidden}
+      .s3-diff-hint:before{content:"↗";display:block;color:#ff5b5b;font-size:12px;font-weight:900;line-height:1}
 
       .s3-diff-modal[hidden]{display:none!important}
       .s3-diff-modal{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:18px}
@@ -75,8 +75,9 @@ Tidak mengubah rumus, engine, data, query, penyimpanan, atau status.
         .s3-diff-table th,.s3-diff-table td{padding:12px 10px}
       }
       @media(max-width:700px){
-        .s3sheet-total.is-red.s3-diff-clickable{padding-right:116px!important}
-        .s3-diff-hint{font-size:9px;padding:5px 7px}
+        .s3sheet-total.is-red.s3-diff-clickable{padding-right:36px!important}
+        .s3-diff-hint{right:7px;bottom:7px;width:20px;height:20px}
+        .s3-diff-hint:before{font-size:11px}
         .s3-diff-head h3{font-size:19px}
         .s3-diff-summary strong{font-size:22px}
         .s3-diff-table{font-size:12px}
@@ -139,7 +140,7 @@ Tidak mengubah rumus, engine, data, query, penyimpanan, atau status.
   function decorateCard(){
     ensureStyle();const el=card();if(!el)return false;
     el.classList.add("s3-diff-clickable");el.setAttribute("role","button");el.setAttribute("tabindex","0");el.title="Klik untuk melihat sumber Selisih Non Tunai per cabang";
-    if(!el.querySelector(".s3-diff-hint")){const h=document.createElement("span");h.className="s3-diff-hint";h.textContent="Lihat rincian";el.appendChild(h);}
+    if(!el.querySelector(".s3-diff-hint")){const h=document.createElement("span");h.className="s3-diff-hint";h.setAttribute("aria-hidden","true");el.appendChild(h);}
     if(!bound){bound=true;el.addEventListener("click",open);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}});}
     return true;
   }
