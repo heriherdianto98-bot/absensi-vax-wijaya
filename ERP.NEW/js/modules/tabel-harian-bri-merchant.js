@@ -51,7 +51,7 @@ PENTING:
                 border:1px solid rgba(190,120,255,.28);
                 border-radius:7px;
                 background:#111923;
-                color:#e9d8f4;
+                color:#e6b8ff;
                 font:700 12.5px/1.1 "Source Sans 3",sans-serif;
                 text-align:right;
                 padding:7px 8px;
@@ -64,7 +64,7 @@ PENTING:
                 box-shadow:0 0 0 2px rgba(210,140,255,.10);
                 outline:none;
             }
-            #thcTable .thc-bri-cell-btn.is-empty{color:#8290a3;font-weight:700}
+            #thcTable .thc-bri-cell-btn.is-empty{color:#e6b8ff;font-weight:700}
 
             .thc-bri-modal[hidden]{display:none!important}
             .thc-bri-modal{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px}
