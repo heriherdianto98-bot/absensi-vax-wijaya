@@ -191,7 +191,17 @@ Tujuan:
     return true;
   }
 
+  function loadPrintUi(){
+    if(window.ArusKasV2PrintUI || document.getElementById("ak2PrintUiScript")) return;
+    const script=document.createElement("script");
+    script.id="ak2PrintUiScript";
+    script.src="../js/modules/arus-kas-v2-print-ui.js";
+    script.async=false;
+    document.head.appendChild(script);
+  }
+
   installStyle();
+  loadPrintUi();
   if(!install()){
     let attempts = 0;
     const timer = setInterval(function(){
