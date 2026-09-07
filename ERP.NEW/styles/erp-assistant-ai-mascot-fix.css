@@ -1,0 +1,30 @@
+/* ERP Assistant mascot visibility fix — UI ONLY */
+body.page-erp-assistant .ea-head{position:relative;overflow:hidden}
+body.page-erp-assistant .ea-head::after{
+  content:""!important;
+  position:absolute!important;
+  right:175px!important;
+  bottom:-10px!important;
+  width:200px!important;
+  height:138px!important;
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  background-image:url("../assets/erp-assistant-ai-robot.svg")!important;
+  background-repeat:no-repeat!important;
+  background-position:center bottom!important;
+  background-size:contain!important;
+  filter:drop-shadow(0 0 12px rgba(37,223,255,.46)) drop-shadow(0 0 26px rgba(126,70,255,.35))!important;
+  pointer-events:none!important;
+  z-index:2!important;
+}
+body.page-erp-assistant .ea-head>div,
+body.page-erp-assistant .ea-head .ea-context,
+body.page-erp-assistant .ea-head .ea-help-return{position:relative;z-index:3}
+
+@media(max-width:1180px){
+  body.page-erp-assistant .ea-head::after{right:150px!important;width:168px!important;height:122px!important}
+}
+@media(max-width:900px){
+  body.page-erp-assistant .ea-head::after{right:8px!important;width:118px!important;height:92px!important;opacity:.85!important}
+}
