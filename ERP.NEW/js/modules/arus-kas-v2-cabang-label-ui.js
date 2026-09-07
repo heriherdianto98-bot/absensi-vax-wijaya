@@ -12,7 +12,7 @@ Tujuan:
 - Popup detail dinonaktifkan untuk transaksi AUTO.
 - Popup detail hanya boleh dibuka lewat icon detail pada transaksi MANUAL.
 - Card saldo dipindahkan ke bawah Buku Arus Kas, tepat di atas Rekonsiliasi QRIS / GoPay.
-- Toolbar Arus Kas dibuat sticky/freeze saat halaman di-scroll.
+- Toolbar Arus Kas dibuat freeze secara UI di bawah header ERP.
 - Data transaksi, saldo, engine, query, formula, status, dan alur AUTO /
   MANUAL tidak diubah.
 =========================================================
@@ -27,16 +27,29 @@ Tujuan:
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
+      /* Toolbar: class freeze dipasang via scroll UI agar tidak bergantung
+         pada sticky ancestor/overflow dari shell ERP. */
       body.page-arus-kas .ak2-toolbar{
-        position:sticky !important;
-        top:0 !important;
-        z-index:40 !important;
         background:linear-gradient(180deg,rgba(12,18,24,.985),rgba(10,15,20,.97)) !important;
         border:1px solid rgba(79,102,126,.58) !important;
         border-radius:14px !important;
         box-shadow:0 10px 28px rgba(0,0,0,.34),0 1px 0 rgba(215,170,85,.16) inset !important;
         backdrop-filter:blur(10px) saturate(120%);
       }
+      body.page-arus-kas .ak2-toolbar.ak2-ui-frozen{
+        position:fixed !important;
+        z-index:1200 !important;
+        margin:0 !important;
+      }
+      body.page-arus-kas .ak2-toolbar-freeze-placeholder{
+        display:none;
+        width:100%;
+        pointer-events:none;
+      }
+      body.page-arus-kas .ak2-toolbar-freeze-placeholder.is-active{
+        display:block;
+      }
+
       body.page-arus-kas .ak2-table th.ak2-cabang-col,
       body.page-arus-kas .ak2-table td.ak2-cabang-col{
         min-width:170px;
@@ -86,7 +99,8 @@ Tujuan:
         body.page-arus-kas .ak2-cabang-badge{max-width:140px;font-size:11px}
       }
       @media print{
-        body.page-arus-kas .ak2-toolbar{position:static !important;box-shadow:none !important;backdrop-filter:none !important}
+        body.page-arus-kas .ak2-toolbar{position:static !important;left:auto!important;top:auto!important;width:auto!important;box-shadow:none !important;backdrop-filter:none !important}
+        body.page-arus-kas .ak2-toolbar-freeze-placeholder{display:none!important}
         body.page-arus-kas .ak2-cabang-badge{box-shadow:none;background:transparent;color:#111;border-color:#999}
       }
     `;
@@ -200,14 +214,69 @@ Tujuan:
     qris.parentNode?.insertBefore(cards, qris);
   }
 
+  function freezeToolbar(){
+    const toolbar = document.querySelector(".ak2-toolbar");
+    if(!toolbar || toolbar.dataset.ak2FreezeUi === "1") return;
+    toolbar.dataset.ak2FreezeUi = "1";
+
+    const placeholder = document.createElement("div");
+    placeholder.className = "ak2-toolbar-freeze-placeholder";
+    toolbar.parentNode?.insertBefore(placeholder, toolbar);
+
+    let raf = 0;
+    const headerBottom = () => {
+      const header = document.getElementById("header");
+      const rect = header?.getBoundingClientRect?.();
+      if(rect && Number.isFinite(rect.bottom) && rect.bottom > 0) return Math.round(rect.bottom);
+      const css = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--erp-top-header-h"));
+      return Number.isFinite(css) ? css : 72;
+    };
+
+    const sync = () => {
+      raf = 0;
+      const top = headerBottom();
+      const anchor = placeholder.classList.contains("is-active") ? placeholder : toolbar;
+      const rect = anchor.getBoundingClientRect();
+      const shouldFreeze = rect.top <= top;
+
+      if(shouldFreeze){
+        if(!placeholder.classList.contains("is-active")){
+          placeholder.style.height = `${Math.ceil(toolbar.getBoundingClientRect().height)}px`;
+          placeholder.classList.add("is-active");
+        }
+        const pRect = placeholder.getBoundingClientRect();
+        toolbar.classList.add("ak2-ui-frozen");
+        toolbar.style.top = `${top}px`;
+        toolbar.style.left = `${Math.round(pRect.left)}px`;
+        toolbar.style.width = `${Math.round(pRect.width)}px`;
+      }else{
+        toolbar.classList.remove("ak2-ui-frozen");
+        toolbar.style.top = "";
+        toolbar.style.left = "";
+        toolbar.style.width = "";
+        placeholder.classList.remove("is-active");
+        placeholder.style.height = "";
+      }
+    };
+
+    const schedule = () => {
+      if(raf) return;
+      raf = requestAnimationFrame(sync);
+    };
+
+    window.addEventListener("scroll", schedule, {passive:true});
+    window.addEventListener("resize", schedule, {passive:true});
+    document.addEventListener("erp:finance-ready", schedule);
+    setTimeout(schedule, 0);
+    setTimeout(schedule, 250);
+  }
+
   function installDetailClickGate(){
     const body = document.getElementById("ak2LedgerBody");
     const flow = window.ArusKasV2;
     if(!body || !flow || body.dataset.ak2DetailGate === "1") return;
     body.dataset.ak2DetailGate = "1";
 
-    // Capture phase: cegah listener row bawaan membuka modal.
-    // AUTO tidak boleh membuka popup. MANUAL hanya lewat icon detail.
     body.addEventListener("click", e => {
       const rowEl = e.target.closest("tr[data-id]");
       if(!rowEl) return;
@@ -244,6 +313,7 @@ Tujuan:
     ensureHeader();
     decorateRows();
     moveSummaryCards();
+    freezeToolbar();
     installDetailClickGate();
     return true;
   }
