@@ -314,3 +314,51 @@
   }
   .ak2-head::after{display:none!important}
 }
+
+/* =========================================================
+   ARUS KAS V2 — LEDGER FULL WIDTH + CLEAR ROWS · UI ONLY
+   2026-09-08
+   ========================================================= */
+body.page-arus-kas .ak2-shell{
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding-left:0 !important;
+  padding-right:0 !important;
+}
+
+body.page-arus-kas .ak2-ledger-card{
+  width:100% !important;
+  max-width:none !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  border-color:rgba(84,119,153,.72) !important;
+}
+
+body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
+  background:#101821;
+}
+body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr:nth-child(even){
+  background:#0d141c;
+}
+body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr:hover{
+  background:#182635 !important;
+}
+
+body.page-arus-kas .ak2-ledger-card .ak2-table td{
+  border-bottom:1px solid rgba(93,125,157,.40) !important;
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.018);
+}
+body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr+tr td{
+  border-top:1px solid rgba(53,76,99,.28);
+}
+
+/* Tanggal dibuat sedikit lebih tegas sebagai jangkar visual setiap baris. */
+body.page-arus-kas .ak2-ledger-card .ak2-table td:first-child{
+  color:#eef5ff;
+  font-weight:800;
+}
+
+@media(max-width:760px){
+  body.page-arus-kas .ak2-shell{width:100% !important}
+}
