@@ -211,3 +211,40 @@ body.page-arus-kas #ak2DetailModal [data-detail-verify]:hover{
   body.page-arus-kas #ak2DetailModal .ak2-modal-head{padding:14px}
   body.page-arus-kas #ak2DetailModal .ak2-modal-actions{padding:12px 14px 14px}
 }
+
+/* =========================================================
+   ARUS KAS V2 — FREEZE LEDGER COLUMN HEADER · UI ONLY
+   2026-09-08
+   ========================================================= */
+body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{
+  max-height:calc(100vh - 220px);
+  overflow:auto;
+  scrollbar-gutter:stable;
+}
+
+body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
+  position:sticky !important;
+  top:0 !important;
+  z-index:12 !important;
+  background:linear-gradient(180deg,#233244 0%,#1a2633 100%) !important;
+  box-shadow:
+    0 2px 0 rgba(92,134,179,.62),
+    0 8px 16px rgba(3,8,13,.34);
+}
+
+@media(max-width:760px){
+  body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{
+    max-height:calc(100vh - 190px);
+  }
+}
+
+@media print{
+  body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{
+    max-height:none !important;
+    overflow:visible !important;
+  }
+  body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
+    position:static !important;
+    box-shadow:none !important;
+  }
+}
