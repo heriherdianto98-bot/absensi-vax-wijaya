@@ -23,53 +23,25 @@ UI / NAVIGATION ONLY.
         style.id = STYLE_ID;
         style.textContent = `
             #thcTable td.thc-cashout .thc-cashout-row-link{
-                position:relative;
-                display:inline-flex;
-                align-items:center;
-                justify-content:center;
-                width:100%;
-                max-width:100%;
-                min-height:34px;
+                display:inline;
                 margin:0;
-                padding:4px 14px 4px 6px;
+                padding:0;
                 border:0;
-                border-radius:7px;
                 background:transparent;
                 color:inherit;
                 font:inherit;
                 font-weight:inherit;
-                line-height:1.1;
+                line-height:inherit;
                 cursor:pointer;
                 white-space:nowrap;
-                box-sizing:border-box;
-                transition:background .15s ease, color .15s ease, box-shadow .15s ease;
-            }
-            #thcTable td.thc-cashout .thc-cashout-row-value{
-                display:block;
-                width:100%;
-                text-align:center;
+                text-align:inherit;
             }
             #thcTable td.thc-cashout .thc-cashout-row-link:hover,
             #thcTable td.thc-cashout .thc-cashout-row-link:focus-visible{
-                background:rgba(220,38,38,.08);
-                box-shadow:0 0 0 1px rgba(239,68,68,.18);
+                color:#ff7b82;
+                text-decoration:underline;
+                text-underline-offset:2px;
                 outline:none;
-            }
-            #thcTable td.thc-cashout .thc-cashout-row-icon{
-                position:absolute;
-                right:4px;
-                bottom:3px;
-                display:inline-block;
-                width:auto;
-                height:auto;
-                border:0;
-                border-radius:0;
-                color:#ef4444;
-                font-size:8px;
-                line-height:1;
-                font-weight:800;
-                opacity:.95;
-                pointer-events:none;
             }
             #thcTable td.thc-cashout .thc-cashout-row-link.is-zero{
                 opacity:.58;
@@ -99,7 +71,8 @@ UI / NAVIGATION ONLY.
             const cabangId = Number(meta.cabang_id);
             const cabangName = String(meta.cabang_name || "").trim();
             const nominal = Number(meta.cash_out || 0);
-            const label = String(cell.textContent || "").trim() || "Rp 0";
+            const existingValue = cell.querySelector(".thc-cashout-row-value")?.textContent;
+            const label = String(existingValue || cell.textContent || "").trim() || "Rp 0";
 
             let btn = cell.querySelector(".thc-cashout-row-link");
             if(!btn){
@@ -115,8 +88,8 @@ UI / NAVIGATION ONLY.
             btn.dataset.cabangName = cabangName;
             btn.dataset.nominal = Number.isFinite(nominal) ? String(nominal) : "0";
             btn.setAttribute("aria-label", `Buka rincian Cash Out ${cabangName || "cabang"} tanggal ${tanggal}`);
-            btn.title = `Lihat rincian Cash Out · ${cabangName || "Cabang"} · ${tanggal}`;
-            btn.innerHTML = `<span class="thc-cashout-row-value"></span><span class="thc-cashout-row-icon" aria-hidden="true">↗</span>`;
+            btn.title = `Klik nominal untuk lihat rincian Cash Out · ${cabangName || "Cabang"} · ${tanggal}`;
+            btn.innerHTML = `<span class="thc-cashout-row-value"></span>`;
             btn.querySelector(".thc-cashout-row-value").textContent = label;
         });
         return true;
