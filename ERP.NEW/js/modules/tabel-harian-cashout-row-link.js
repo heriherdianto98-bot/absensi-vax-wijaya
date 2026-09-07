@@ -7,10 +7,11 @@ UI / NAVIGATION ONLY.
 - Navigasi ke modul Cash Out dengan cabang yang sama.
 - Cash Out dibuka untuk 1 bulan penuh dari tanggal yang diklik.
 - Tanggal asal dikirim sebagai focusDate untuk highlight presenter.
-- Saat kembali dari Cash Out, cabang asal dipulihkan dan row tanggal asal
-  di-scroll + diberi highlight sementara sebagai penanda.
+- Saat kembali dari Cash Out, cabang asal dipulihkan SEKALI dari URL,
+  lalu pengelolaan filter kembali ke dashboard.js canonical.
 - Menampilkan panel petunjuk Cash Out di atas tabel untuk semua cabang.
-- Menjaga pilihan cabang Tabel Harian saat browser di-refresh/reload.
+- Tidak memiliki persistence cabang sendiri agar tidak bentrok dengan
+  erp.dashboard.filters milik dashboard.js.
 - Tidak mengubah DailyDataEngine, DashboardEngine, SetoranMoneyEngine,
   Cash Out engine, formula Tabel Harian, atau sumber data.
 =========================================================
@@ -21,12 +22,11 @@ UI / NAVIGATION ONLY.
     const STYLE_ID = "thcCashOutRowLinkStyle";
     const HINT_ID = "thcCashOutHintPanel";
     const RETURN_FOCUS_CLASS = "thc-return-focus-flash";
-    const BRANCH_UI_KEY = "erp.tabel-harian.ui.branch";
-    const DASHBOARD_FILTER_KEY = "erp.dashboard.filters";
     let observer = null;
     let bound = false;
     let refreshTimer = null;
     let returnDone = false;
+    let returnBranchApplied = false;
 
     function returnParams(){
         const q = new URLSearchParams(window.location.search || "");
@@ -193,59 +193,22 @@ UI / NAVIGATION ONLY.
         }) || null;
     }
 
-    function writeSharedBranch(value){
-        const cabang = String(value || "").trim();
-        if(!cabang) return;
-        try{
-            const current = JSON.parse(localStorage.getItem(DASHBOARD_FILTER_KEY) || "{}") || {};
-            localStorage.setItem(DASHBOARD_FILTER_KEY, JSON.stringify({ ...current, cabang }));
-        }catch(_e){ /* UI state only */ }
-    }
-
-    function rememberBranchSelection(){
-        const select = document.getElementById("branchFilter");
-        const value = String(select?.value || "").trim();
-        if(!value) return false;
-        try{ sessionStorage.setItem(BRANCH_UI_KEY, value); }catch(_e){ /* UI state only */ }
-        writeSharedBranch(value);
-        return true;
-    }
-
-    function savedBranchSelection(){
-        const returned = returnParams();
-        if(returned?.cabang) return returned.cabang;
-        try{
-            const pageValue = String(sessionStorage.getItem(BRANCH_UI_KEY) || "").trim();
-            if(pageValue) return pageValue;
-        }catch(_e){ /* ignore */ }
-        try{
-            const current = JSON.parse(localStorage.getItem(DASHBOARD_FILTER_KEY) || "{}") || {};
-            const shared = String(current?.cabang || "").trim();
-            if(shared) return shared;
-        }catch(_e){ /* ignore */ }
-        return "";
-    }
-
-    function restoreBranchSelection(){
+    function applyReturnBranchOnce(){
+        if(returnBranchApplied) return false;
+        const p = returnParams();
+        if(!p?.cabang) return false;
         const select = document.getElementById("branchFilter");
         if(!select) return false;
-        const wanted = savedBranchSelection();
-        if(!wanted) return false;
-        const hit = findBranchOption(select, wanted);
-        if(!hit) return false;
-        if(select.value !== hit.value) select.value = hit.value;
-        try{ sessionStorage.setItem(BRANCH_UI_KEY, hit.value); }catch(_e){ /* UI state only */ }
-        writeSharedBranch(hit.value);
-        return true;
-    }
-
-    function restoreReturnBranch(){
-        const p = returnParams();
-        if(!p?.cabang) return;
-        const select = document.getElementById("branchFilter");
         const hit = findBranchOption(select, p.cabang);
-        if(select && hit) select.value = hit.value;
-        rememberBranchSelection();
+        if(!hit) return false;
+
+        returnBranchApplied = true;
+        if(select.value !== hit.value){
+            select.value = hit.value;
+            // Serahkan persistence + reload ke handler canonical dashboard.js.
+            select.dispatchEvent(new Event("change", { bubbles:true }));
+        }
+        return true;
     }
 
     function rows(){
@@ -345,7 +308,6 @@ UI / NAVIGATION ONLY.
         const range = monthRange(tanggal);
         if(!range || !cabangId) return;
 
-        rememberBranchSelection();
         const url = new URL("./cash-out.html", window.location.href);
         url.searchParams.set("cabangId", cabangId);
         if(cabangName) url.searchParams.set("cabangName", cabangName);
@@ -360,22 +322,19 @@ UI / NAVIGATION ONLY.
     function bindEvents(){
         if(bound) return;
         bound = true;
-        document.addEventListener("change", (e) => {
-            if(e.target?.id === "branchFilter") rememberBranchSelection();
-        }, true);
+
         document.addEventListener("click", (e) => {
-            if(e.target?.closest?.("#btnRefresh, #btnSync")) rememberBranchSelection();
             const btn = e.target.closest?.("#thcTable .thc-cashout-row-link");
             if(!btn) return;
             e.preventDefault();
             e.stopPropagation();
             openCashOut(btn);
-        }, true);
+        });
+
         document.addEventListener("erp:components-ready", () => {
-            restoreBranchSelection();
+            applyReturnBranchOnce();
             scheduleDecorate(0);
         });
-        window.addEventListener("beforeunload", rememberBranchSelection);
     }
 
     function observe(){
@@ -388,15 +347,11 @@ UI / NAVIGATION ONLY.
     function boot(){
         ensureStyle();
         ensureHintPanel();
-        restoreBranchSelection();
-        restoreReturnBranch();
         bindEvents();
         let tries = 0;
         const timer = setInterval(() => {
             tries += 1;
             ensureHintPanel();
-            restoreBranchSelection();
-            restoreReturnBranch();
             observe();
             const decorated = decorate();
             const focused = focusReturnedRow();
@@ -406,9 +361,7 @@ UI / NAVIGATION ONLY.
 
     window.TabelHarianCashOutRowLink = {
         refresh: () => decorate(),
-        focusReturnedRow: () => focusReturnedRow(),
-        rememberBranch: () => rememberBranchSelection(),
-        restoreBranch: () => restoreBranchSelection()
+        focusReturnedRow: () => focusReturnedRow()
     };
 
     if(document.readyState === "loading"){
