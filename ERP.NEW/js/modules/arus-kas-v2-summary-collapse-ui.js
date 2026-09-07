@@ -6,6 +6,7 @@ UI / presentation only.
 Tujuan:
 - 5 card ringkasan saldo default tertutup agar Buku Arus Kas lebih clean.
 - Card hanya tampil saat Owner menekan tombol Tampilkan.
+- Menjaga card tetap berada di body collapse walau renderLedger UI lain memindahkannya.
 - Tidak mengubah data, saldo, query, engine, transaksi, atau formula.
 =========================================================
 */
@@ -86,10 +87,10 @@ Tujuan:
         transform:rotate(180deg);
       }
       body.page-arus-kas .ak2-summary-collapse-body{
-        display:none;
+        display:none !important;
       }
       body.page-arus-kas .ak2-summary-collapse-wrap.is-ui-expanded .ak2-summary-collapse-body{
-        display:block;
+        display:block !important;
       }
       body.page-arus-kas .ak2-summary-collapse-body > .ak2-cards{
         margin:0;
@@ -111,50 +112,84 @@ Tujuan:
     const cards = document.querySelector(".ak2-cards");
     const qris = document.querySelector(".ak2-qris-card");
     if(!cards || !qris) return false;
-    if(cards.closest(".ak2-summary-collapse-wrap")) return true;
 
-    const wrap = document.createElement("section");
-    wrap.className = "ak2-summary-collapse-wrap";
-    wrap.dataset.ak2SummaryCollapseUi = "1";
+    let wrap = document.querySelector(".ak2-summary-collapse-wrap");
+    let body = wrap?.querySelector(".ak2-summary-collapse-body");
+    let button = wrap?.querySelector(".ak2-summary-toggle");
 
-    const head = document.createElement("div");
-    head.className = "ak2-summary-collapse-head";
-    head.innerHTML = `
-      <div class="ak2-summary-collapse-copy">
-        <strong>RINGKASAN SALDO</strong>
-        <small>Kas Besar, Dana Produk, Kas Denda, Piutang Setoran, dan Piutang Denda</small>
-      </div>
-    `;
+    if(!wrap){
+      wrap = document.createElement("section");
+      wrap.className = "ak2-summary-collapse-wrap";
+      wrap.dataset.ak2SummaryCollapseUi = "1";
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "ak2-summary-toggle";
-    button.setAttribute("aria-expanded", "false");
-    button.innerHTML = '<span class="ak2-summary-toggle-icon">⌄</span><span class="ak2-summary-toggle-label">Tampilkan</span>';
-    head.appendChild(button);
+      const head = document.createElement("div");
+      head.className = "ak2-summary-collapse-head";
+      head.innerHTML = `
+        <div class="ak2-summary-collapse-copy">
+          <strong>RINGKASAN SALDO</strong>
+          <small>Kas Besar, Dana Produk, Kas Denda, Piutang Setoran, dan Piutang Denda</small>
+        </div>
+      `;
 
-    const body = document.createElement("div");
-    body.className = "ak2-summary-collapse-body";
+      button = document.createElement("button");
+      button.type = "button";
+      button.className = "ak2-summary-toggle";
+      button.setAttribute("aria-expanded", "false");
+      button.innerHTML = '<span class="ak2-summary-toggle-icon">⌄</span><span class="ak2-summary-toggle-label">Tampilkan</span>';
+      head.appendChild(button);
 
-    qris.parentNode.insertBefore(wrap, qris);
-    wrap.appendChild(head);
-    wrap.appendChild(body);
-    body.appendChild(cards);
+      body = document.createElement("div");
+      body.className = "ak2-summary-collapse-body";
 
-    function sync(){
-      const expanded = wrap.classList.contains("is-ui-expanded");
-      button.setAttribute("aria-expanded", expanded ? "true" : "false");
-      const label = button.querySelector(".ak2-summary-toggle-label");
-      if(label) label.textContent = expanded ? "Sembunyikan" : "Tampilkan";
+      qris.parentNode.insertBefore(wrap, qris);
+      wrap.appendChild(head);
+      wrap.appendChild(body);
     }
 
-    button.addEventListener("click", function(){
-      wrap.classList.toggle("is-ui-expanded");
-      sync();
-    });
+    const keepCardsInside = () => {
+      const currentCards = document.querySelector(".ak2-cards");
+      if(currentCards && body && currentCards.parentNode !== body){
+        body.appendChild(currentCards);
+      }
+    };
 
+    keepCardsInside();
+
+    const sync = () => {
+      const expanded = wrap.classList.contains("is-ui-expanded");
+      button?.setAttribute("aria-expanded", expanded ? "true" : "false");
+      const label = button?.querySelector(".ak2-summary-toggle-label");
+      if(label) label.textContent = expanded ? "Sembunyikan" : "Tampilkan";
+    };
+
+    if(button && button.dataset.ak2SummaryBound !== "1"){
+      button.dataset.ak2SummaryBound = "1";
+      button.addEventListener("click", function(){
+        wrap.classList.toggle("is-ui-expanded");
+        sync();
+      });
+    }
+
+    // Default selalu collapse pada load.
     wrap.classList.remove("is-ui-expanded");
     sync();
+
+    // Guard UI: modul cabang menjalankan moveSummaryCards() setiap renderLedger.
+    // Observer ini mengembalikan 5 card ke dalam body collapse tanpa menyentuh logic/data.
+    if(wrap.dataset.ak2SummaryGuard !== "1"){
+      wrap.dataset.ak2SummaryGuard = "1";
+      const parent = qris.parentNode;
+      const observer = new MutationObserver(() => {
+        keepCardsInside();
+      });
+      observer.observe(parent, {childList:true, subtree:false});
+
+      document.addEventListener("erp:finance-ready", () => {
+        setTimeout(keepCardsInside, 0);
+        setTimeout(keepCardsInside, 150);
+      });
+    }
+
     return true;
   }
 
