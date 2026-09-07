@@ -1,65 +1,124 @@
 /* =========================================================
-   KPI Ultimate — Bright Red Accent
+   Tabel Harian Semua Cabang — KPI Ultimate Bright Red Accent
    UI ONLY.
    Mengganti aksen merah muda/pink menjadi merah menyala.
-   Tidak mengubah data, formula, engine, target, progress, atau logic.
+   Tidak mengubah data, formula, engine, target, progress, query, atau logic.
+   Scope hanya #thcKpiuSection pada tabel-harian-cabang.html.
    ========================================================= */
 
 #thcKpiuSection{
     --kpiu-red-bright:#ff2d2d;
     --kpiu-red-bright-2:#e31f26;
+    --kpiu-red-deep:#b91c1c;
     --kpiu-red-soft:rgba(255,45,45,.18);
-    --kpiu-red-border:rgba(255,45,45,.48);
+    --kpiu-red-border:rgba(255,45,45,.52);
+
+    /* Alias defensif untuk stylesheet KPI lokal/legacy. */
+    --kpiu-danger:var(--kpiu-red-bright);
+    --kpiu-danger-color:var(--kpiu-red-bright);
+    --kpiu-danger-bg:var(--kpiu-red-soft);
+    --kpiu-danger-border:var(--kpiu-red-border);
+    --kpiu-red:var(--kpiu-red-bright);
+    --kpiu-bad:var(--kpiu-red-bright);
+    --kpiu-alert:var(--kpiu-red-bright);
 }
 
 /* Angka negatif / selisih. */
 #thcKpiuSection #thcKpiuSelisihVal,
 #thcKpiuSection #thcKpiuSelisihCard strong,
 #thcKpiuSection .thc-kpiu-card.is-negative strong,
-#thcKpiuSection .thc-kpiu-card.is-danger strong{
+#thcKpiuSection .thc-kpiu-card.is-danger strong,
+#thcKpiuSection .thc-kpiu-card.is-bad strong,
+#thcKpiuSection [class*="negative"] strong,
+#thcKpiuSection [class*="danger"] strong,
+#thcKpiuSection [class*="selisih"] strong{
     color:var(--kpiu-red-bright) !important;
-    text-shadow:0 0 10px rgba(255,45,45,.18);
+    text-shadow:0 0 10px rgba(255,45,45,.18) !important;
 }
 
 /* Persentase/progress utama yang sebelumnya pink. */
 #thcKpiuSection .thc-kpiu-progress-pct,
+#thcKpiuSection .thc-kpiu-progress-value,
 #thcKpiuSection .thc-kpiu-progress.is-negative .thc-kpiu-progress-pct,
-#thcKpiuSection .thc-kpiu-progress.is-danger .thc-kpiu-progress-pct{
+#thcKpiuSection .thc-kpiu-progress.is-danger .thc-kpiu-progress-pct,
+#thcKpiuSection [class*="progress"].is-negative strong,
+#thcKpiuSection [class*="progress"].is-danger strong,
+#thcKpiuSection [class*="progress"].is-bad strong{
     color:var(--kpiu-red-bright) !important;
 }
 
-/* Progress bar utama + progress bar per kasir. */
+/*
+   Progress bar utama + per kasir.
+   Selector dibuat kompatibel dengan class KPI legacy/lokal yang masih dipakai
+   oleh semua cabang, tanpa menyentuh JS/render/data.
+*/
 #thcKpiuSection .thc-kpiu-bar > span,
 #thcKpiuSection .thc-kpiu-bar > i,
 #thcKpiuSection .thc-kpiu-bar > b,
 #thcKpiuSection .thc-kpiu-bar-fill,
+#thcKpiuSection .thc-kpiu-progress-fill,
+#thcKpiuSection .thc-kpiu-progress-bar > span,
+#thcKpiuSection .thc-kpiu-progress-track > span,
 #thcKpiuSection [class*="progress-bar"] > span,
 #thcKpiuSection [class*="progress-track"] > span,
 #thcKpiuSection [class*="progress-fill"],
+#thcKpiuSection [class*="bar-fill"],
 #thcKpiuSection .thc-kpiu-table [class*="bar"] > span,
 #thcKpiuSection .thc-kpiu-table [class*="fill"]{
     background:linear-gradient(90deg,var(--kpiu-red-bright-2),var(--kpiu-red-bright)) !important;
-    box-shadow:0 0 10px rgba(255,45,45,.22) !important;
+    background-color:var(--kpiu-red-bright) !important;
+    box-shadow:0 0 10px rgba(255,45,45,.26) !important;
 }
 
-/* Badge/status merah muda -> merah menyala, tetap dark premium. */
+/* Badge/status BELUM TERCAPAI / danger — tetap dark premium, tapi merah menyala. */
 #thcKpiuSection [class*="status"].is-negative,
 #thcKpiuSection [class*="status"].is-danger,
 #thcKpiuSection [class*="status"].is-bad,
+#thcKpiuSection [class*="status"].is-fail,
 #thcKpiuSection [class*="badge"].is-negative,
 #thcKpiuSection [class*="badge"].is-danger,
-#thcKpiuSection .thc-kpiu-progress [class*="status"],
-#thcKpiuSection .thc-kpiu-table [class*="status"]{
+#thcKpiuSection [class*="badge"].is-bad,
+#thcKpiuSection [class*="badge"].is-fail,
+#thcKpiuSection .thc-kpiu-status.is-below,
+#thcKpiuSection .thc-kpiu-badge.is-below{
     color:#fff !important;
-    background:linear-gradient(180deg,rgba(227,31,38,.32),rgba(143,18,23,.28)) !important;
+    background:linear-gradient(180deg,rgba(255,45,45,.34),rgba(185,28,28,.30)) !important;
     border-color:var(--kpiu-red-border) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 10px rgba(255,45,45,.12) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 10px rgba(255,45,45,.16) !important;
 }
 
 /* Icon/marker negatif bila ada. */
 #thcKpiuSection .is-negative [class*="icon"],
 #thcKpiuSection .is-danger [class*="icon"],
+#thcKpiuSection .is-bad [class*="icon"],
 #thcKpiuSection [class*="negative"] .material-symbols-rounded,
-#thcKpiuSection [class*="danger"] .material-symbols-rounded{
+#thcKpiuSection [class*="danger"] .material-symbols-rounded,
+#thcKpiuSection [class*="bad"] .material-symbols-rounded{
     color:var(--kpiu-red-bright) !important;
+    fill:var(--kpiu-red-bright) !important;
+}
+
+/*
+   Fallback untuk markup legacy yang menyimpan pink sebagai inline style.
+   Hanya menyasar elemen di KPI Ultimate dan hanya warna pink legacy.
+*/
+#thcKpiuSection [style*="#fb7185" i],
+#thcKpiuSection [style*="#f87171" i],
+#thcKpiuSection [style*="#fda4af" i],
+#thcKpiuSection [style*="rgb(251, 113, 133)" i],
+#thcKpiuSection [style*="rgb(248, 113, 113)" i],
+#thcKpiuSection [style*="rgb(253, 164, 175)" i]{
+    color:var(--kpiu-red-bright) !important;
+    border-color:var(--kpiu-red-border) !important;
+}
+
+/* Inline background pink pada fill/bar legacy. */
+#thcKpiuSection [class*="fill"][style*="#fb7185" i],
+#thcKpiuSection [class*="fill"][style*="#f87171" i],
+#thcKpiuSection [class*="fill"][style*="#fda4af" i],
+#thcKpiuSection [class*="bar"][style*="#fb7185" i],
+#thcKpiuSection [class*="bar"][style*="#f87171" i],
+#thcKpiuSection [class*="bar"][style*="#fda4af" i]{
+    background:linear-gradient(90deg,var(--kpiu-red-bright-2),var(--kpiu-red-bright)) !important;
+    background-color:var(--kpiu-red-bright) !important;
 }
