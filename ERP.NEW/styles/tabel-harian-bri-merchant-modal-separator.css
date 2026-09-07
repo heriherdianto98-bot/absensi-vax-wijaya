@@ -172,6 +172,36 @@
     content:"Rata-rata nilai transaksi per struk pada periode aktif";
 }
 
+/* AVG Ticket: ringkas label + nilai dalam satu baris agar tidak terpotong. */
+#thcTotals .thc-tot-item.is-avgticket{
+    flex-direction:row !important;
+    flex-wrap:wrap !important;
+    align-items:baseline !important;
+    column-gap:6px !important;
+    row-gap:0 !important;
+}
+
+#thcTotals .thc-tot-item.is-avgticket > span{
+    display:none !important;
+}
+
+#thcTotals .thc-tot-item.is-avgticket > strong{
+    display:block !important;
+    width:100% !important;
+    white-space:nowrap !important;
+}
+
+#thcTotals .thc-tot-item.is-avgticket > strong::before{
+    content:"AVG ";
+    font:inherit;
+    font-weight:900;
+}
+
+#thcTotals .thc-tot-item.is-avgticket::after{
+    flex:0 0 100%;
+    width:100%;
+}
+
 /* =========================================================
    Tabel Harian — Rotating Info Panel Readability
    UI ONLY.
