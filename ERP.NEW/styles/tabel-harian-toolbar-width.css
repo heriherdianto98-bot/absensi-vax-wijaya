@@ -174,15 +174,18 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
    Header tepat sebelum BRI Merchant adalah kolom Non Tunai Minutes. */
 .thc-page #thcTable thead th:has(+ th.thc-bri-daily-head){
     font-size:0 !important;
+    text-align:center !important;
 }
 .thc-page #thcTable thead th:has(+ th.thc-bri-daily-head)::after{
-    content:"NON TUNAI MINUTES";
+    content:"NON TUNAI\A MINUTES";
+    display:inline-block;
     font-size:12px;
     font-weight:800;
     line-height:1.15;
     letter-spacing:.02em;
     color:inherit;
-    white-space:normal;
+    white-space:pre-line;
+    text-align:center;
 }
 
 /* Samakan label card total agar istilah tetap konsisten di halaman yang sama. */
