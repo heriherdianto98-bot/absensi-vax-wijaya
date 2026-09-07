@@ -1,0 +1,90 @@
+/* =========================================================
+   Tabel Harian — AI Insight Summary Focus
+   UI ONLY: keterbacaan + penanda visual summary utama.
+   Tidak mengubah AI engine, data, formula, atau perhitungan.
+   ========================================================= */
+
+#widget-section .ai-summary-row{
+    position:relative;
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px 10px;
+    min-height:48px;
+    padding:10px 14px;
+    font-size:16px;
+    line-height:1.45;
+    border-color:rgba(250,204,21,.34);
+    background:
+        linear-gradient(180deg, rgba(250,204,21,.08) 0%, rgba(255,255,255,.035) 45%, rgba(8,12,18,.70) 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.10),
+        0 0 0 1px rgba(250,204,21,.08),
+        0 4px 16px rgba(0,0,0,.22);
+    animation:vaxAiSummaryCriticalPulse 1.55s ease-in-out infinite;
+}
+
+#widget-section .ai-summary-row .ai-sum-chip{
+    font-size:17px;
+    font-weight:900;
+    letter-spacing:.01em;
+}
+
+#widget-section .ai-summary-row .ai-sum-finding{
+    flex:1 1 330px;
+    min-width:260px;
+    overflow:visible;
+    text-overflow:clip;
+    white-space:normal;
+    color:#E2E8F0;
+    font-size:16px;
+    font-weight:800;
+}
+
+#widget-section .ai-summary-row .ai-sum-sep{
+    font-size:15px;
+    color:rgba(226,232,240,.72);
+}
+
+#widget-section .ai-summary-row .ai-sum-prev-period{
+    flex:1 0 100%;
+    display:block;
+    margin-top:1px;
+    padding-top:7px;
+    border-top:1px solid rgba(250,204,21,.20);
+    color:#FDE68A;
+    font-size:15px;
+    font-weight:900;
+    line-height:1.4;
+    letter-spacing:.012em;
+}
+
+#widget-section .ai-summary-row .ai-sum-prev-period strong{
+    color:#FFFFFF;
+    font-weight:900;
+}
+
+@keyframes vaxAiSummaryCriticalPulse{
+    0%,100%{
+        filter:brightness(1);
+        border-color:rgba(250,204,21,.28);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.10),
+            0 0 0 1px rgba(250,204,21,.08),
+            0 4px 16px rgba(0,0,0,.22),
+            0 0 8px rgba(250,204,21,.08);
+    }
+    50%{
+        filter:brightness(1.10);
+        border-color:rgba(250,204,21,.62);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.16),
+            0 0 0 1px rgba(250,204,21,.28),
+            0 6px 20px rgba(0,0,0,.28),
+            0 0 24px rgba(250,204,21,.24);
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    #widget-section .ai-summary-row{ animation:none; }
+}
