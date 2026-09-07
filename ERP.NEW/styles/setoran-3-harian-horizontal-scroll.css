@@ -17,10 +17,12 @@
   height:auto !important;
   min-height:100%;
   table-layout:fixed;
+  border-collapse:separate !important;
+  border-spacing:0 !important;
 }
 
 /* Preserve readable column widths while allowing the whole worksheet to slide. */
-.s3sheet-table th:nth-child(1),.s3sheet-table td:nth-child(1){width:190px}
+.s3sheet-table th:nth-child(1),.s3sheet-table td:nth-child(1){width:220px;min-width:220px;max-width:220px}
 .s3sheet-table th:nth-child(2),.s3sheet-table td:nth-child(2){width:150px}
 .s3sheet-table th:nth-child(3),.s3sheet-table td:nth-child(3){width:145px}
 .s3sheet-table th:nth-child(4),.s3sheet-table td:nth-child(4){width:115px}
@@ -40,59 +42,37 @@
   z-index:22;
 }
 
-/* Freeze kolom Cabang saat geser horizontal. */
-.s3sheet-table th:first-child,
-.s3sheet-table td:first-child{
-  position:sticky;
-  left:0;
-  z-index:30;
-  background-color:#0d1722 !important;
-  background-image:none !important;
-  opacity:1 !important;
-  filter:none !important;
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-  mix-blend-mode:normal !important;
-  box-shadow:12px 0 18px rgba(0,0,0,.68), inset -2px 0 0 rgba(216,165,59,.42);
+/* Freeze kolom CABANG saat geser horizontal. UI ONLY. */
+body.s3sheet-erp-integrated .s3sheet-table th:first-child,
+body.s3sheet-erp-integrated .s3sheet-table td:first-child{
+  position:sticky !important;
+  left:0 !important;
+  z-index:40 !important;
+  background:#0d1722 !important;
+  border-right:1px solid rgba(216,165,59,.42) !important;
+  box-shadow:10px 0 18px rgba(0,0,0,.50), inset -1px 0 0 rgba(216,165,59,.24) !important;
   overflow:hidden !important;
   text-overflow:ellipsis !important;
-  white-space:nowrap;
+  white-space:nowrap !important;
+  background-clip:padding-box !important;
 }
-.s3sheet-table thead th:first-child{
-  z-index:40;
-  background-color:#121d28 !important;
-  background-image:none !important;
+body.s3sheet-erp-integrated .s3sheet-table thead th:first-child{
+  z-index:60 !important;
+  background:#121d28 !important;
 }
-.s3sheet-table tbody tr:nth-child(even) td:first-child{
-  background-color:#0f1924 !important;
-  background-image:none !important;
+body.s3sheet-erp-integrated .s3sheet-table tbody tr:nth-child(even) td:first-child{
+  background:#0f1924 !important;
 }
-.s3sheet-table tbody tr:hover td:first-child{
-  background-color:#14202c !important;
-  background-image:none !important;
+body.s3sheet-erp-integrated .s3sheet-table tbody tr:hover td:first-child{
+  background:#14202c !important;
 }
-.s3sheet-table tbody tr.s3sheet-row-focus td:first-child,
-.s3sheet-table tbody tr.is-focused td:first-child{
-  background-color:#2a2718 !important;
-  background-image:none !important;
-  z-index:35;
+body.s3sheet-erp-integrated .s3sheet-table tbody tr.s3sheet-row-focus td:first-child,
+body.s3sheet-erp-integrated .s3sheet-table tbody tr.is-focused td:first-child{
+  background:#2a2718 !important;
+  z-index:45 !important;
 }
-.s3sheet-table tbody tr.s3sheet-row-warn td:first-child{
-  background-color:#17171f !important;
-  background-image:none !important;
-}
-
-/* Block any bleed-through from scrolling columns behind the frozen first column. */
-.s3sheet-table th:first-child::after,
-.s3sheet-table td:first-child::after{
-  content:"";
-  position:absolute;
-  top:0;
-  right:-1px;
-  bottom:0;
-  width:2px;
-  background:rgba(216,165,59,.32);
-  pointer-events:none;
+body.s3sheet-erp-integrated .s3sheet-table tbody tr.s3sheet-row-warn td:first-child{
+  background:#171821 !important;
 }
 
 /* Jangan biarkan angka/kolom yang discroll terlihat menembus area freeze. */
