@@ -1,0 +1,51 @@
+/* ARUS KAS V2 — SCROLLBAR THEME · UI ONLY */
+
+/* Firefox */
+body.page-arus-kas,
+body.page-arus-kas .erp-content,
+body.page-arus-kas .ak2-ledger-card .ak2-table-wrap,
+body.page-arus-kas .ak2-qris-card .ak2-table-wrap{
+  scrollbar-width:thin;
+  scrollbar-color:#b78a2f #0d141b;
+}
+
+/* Chromium / Edge */
+body.page-arus-kas::-webkit-scrollbar,
+body.page-arus-kas .erp-content::-webkit-scrollbar,
+body.page-arus-kas .ak2-ledger-card .ak2-table-wrap::-webkit-scrollbar,
+body.page-arus-kas .ak2-qris-card .ak2-table-wrap::-webkit-scrollbar{
+  width:11px;
+  height:11px;
+}
+
+body.page-arus-kas::-webkit-scrollbar-track,
+body.page-arus-kas .erp-content::-webkit-scrollbar-track,
+body.page-arus-kas .ak2-ledger-card .ak2-table-wrap::-webkit-scrollbar-track,
+body.page-arus-kas .ak2-qris-card .ak2-table-wrap::-webkit-scrollbar-track{
+  background:#0d141b;
+  border-left:1px solid rgba(69,91,112,.28);
+}
+
+body.page-arus-kas::-webkit-scrollbar-thumb,
+body.page-arus-kas .erp-content::-webkit-scrollbar-thumb,
+body.page-arus-kas .ak2-ledger-card .ak2-table-wrap::-webkit-scrollbar-thumb,
+body.page-arus-kas .ak2-qris-card .ak2-table-wrap::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#d0a33f 0%,#9b7122 100%);
+  border:2px solid #0d141b;
+  border-radius:999px;
+  box-shadow:0 0 8px rgba(208,163,63,.20);
+}
+
+body.page-arus-kas::-webkit-scrollbar-thumb:hover,
+body.page-arus-kas .erp-content::-webkit-scrollbar-thumb:hover,
+body.page-arus-kas .ak2-ledger-card .ak2-table-wrap::-webkit-scrollbar-thumb:hover,
+body.page-arus-kas .ak2-qris-card .ak2-table-wrap::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,#e2ba5b 0%,#b8872d 100%);
+}
+
+body.page-arus-kas::-webkit-scrollbar-corner,
+body.page-arus-kas .erp-content::-webkit-scrollbar-corner,
+body.page-arus-kas .ak2-ledger-card .ak2-table-wrap::-webkit-scrollbar-corner,
+body.page-arus-kas .ak2-qris-card .ak2-table-wrap::-webkit-scrollbar-corner{
+  background:#0d141b;
+}
