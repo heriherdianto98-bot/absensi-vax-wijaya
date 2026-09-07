@@ -1,0 +1,54 @@
+/*
+=========================================================
+VAX ERP — CASH OUT DATE ROW SEPARATOR
+=========================================================
+UI ONLY.
+- Memperjelas batas antar tanggal pada tabel Cash Out.
+- Tidak mengubah data, query, formula, filter, atau engine Cash Out.
+=========================================================
+*/
+
+/* Baris tanggal utama: summary, single transaction, dan hari kosong */
+#cashOutTable tbody tr.cashout-sum-row > td,
+#cashOutTable tbody tr.cashout-single-day > td,
+#cashOutTable tbody tr.cashout-empty-day > td{
+    border-top: 1px solid rgba(201,162,39,.34) !important;
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+    background: linear-gradient(180deg, rgba(33,30,22,.94) 0%, rgba(20,19,16,.94) 100%) !important;
+}
+
+/* Tanggal dibuat lebih cepat terbaca */
+#cashOutTable tbody tr.cashout-sum-row > td:first-child,
+#cashOutTable tbody tr.cashout-single-day > td:first-child,
+#cashOutTable tbody tr.cashout-empty-day > td:first-child{
+    color: #f3f4f6;
+    font-weight: 800;
+    box-shadow: inset 3px 0 0 rgba(201,162,39,.62);
+}
+
+/* Hari tanpa Cash Out tetap jelas sebagai blok tanggal, tapi lebih redup */
+#cashOutTable tbody tr.cashout-empty-day > td{
+    background: linear-gradient(180deg, rgba(25,25,25,.88) 0%, rgba(15,15,15,.9) 100%) !important;
+}
+
+#cashOutTable tbody tr.cashout-empty-day > td:first-child{
+    color: #8b93a1;
+    box-shadow: inset 3px 0 0 rgba(201,162,39,.28);
+}
+
+/* Detail transaksi yang sedang dibuka terlihat sebagai isi dari tanggal di atasnya */
+#cashOutTable tbody tr.cashout-detail-row > td{
+    background: rgba(255,255,255,.018) !important;
+    border-bottom: 1px solid rgba(255,255,255,.045) !important;
+}
+
+#cashOutTable tbody tr.cashout-detail-row > td:first-child{
+    box-shadow: inset 3px 0 0 rgba(201,162,39,.16);
+}
+
+/* Hover tetap terasa tanpa menghilangkan pembatas tanggal */
+#cashOutTable tbody tr.cashout-sum-row:hover > td,
+#cashOutTable tbody tr.cashout-single-day:hover > td,
+#cashOutTable tbody tr.cashout-empty-day:hover > td{
+    background: linear-gradient(180deg, rgba(49,43,26,.96) 0%, rgba(27,24,18,.96) 100%) !important;
+}
