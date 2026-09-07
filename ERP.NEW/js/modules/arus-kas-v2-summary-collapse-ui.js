@@ -113,8 +113,15 @@ Tujuan:
     document.querySelectorAll("body.page-arus-kas .ak2-cabang-badge").forEach(label => {
       const original = String(label.textContent || "").trim();
       if(!original || original === "—" || /MANUAL\s*\/\s*UMUM/i.test(original)) return;
+
+      // Alias UI eksplisit: seluruh variasi/typo label Pamanukan ditampilkan singkat.
+      if(/PAMANUKAN/i.test(original)){
+        label.textContent = "PAMANUKAN";
+        return;
+      }
+
       const cleaned = original
-        .replace(/^(?:(?:VAX|WIJAYA|SPBU)\s+)+/i, "")
+        .replace(/^(?:(?:VAX|WIJAYA|WIJIAYA|SPBU)\s+)+/i, "")
         .replace(/\s+/g, " ")
         .trim()
         .toUpperCase();
