@@ -1,20 +1,76 @@
-/* ERP VAX — Setoran 3 Harian viewport fill + larger table text */
+/* ERP VAX — Setoran 3 Harian viewport fill + readable compact 10-branch table
+   UI ONLY. Tidak mengubah engine, formula, data, query, atau status. */
 body.s3sheet-erp-integrated .erp-content{padding-bottom:0}
-body.s3sheet-erp-integrated .s3sheet-table th{height:56px;font-size:13px!important;line-height:1.15}
-body.s3sheet-erp-integrated .s3sheet-table td{height:49px;font-size:15px!important}
-body.s3sheet-erp-integrated .s3sheet-branch{font-size:15.5px!important;font-weight:800}
+
+/* Compact worksheet so 10/10 cabang can be seen in one normal desktop viewport. */
+body.s3sheet-erp-integrated .s3sheet-table th{
+  height:44px;
+  padding-top:7px!important;
+  padding-bottom:7px!important;
+  font-size:12px!important;
+  line-height:1.12;
+}
+body.s3sheet-erp-integrated .s3sheet-table td{
+  height:38px;
+  padding-top:4px!important;
+  padding-bottom:4px!important;
+  font-size:13.5px!important;
+}
+body.s3sheet-erp-integrated .s3sheet-branch{
+  font-size:14px!important;
+  font-weight:800;
+}
 body.s3sheet-erp-integrated .s3sheet-auto,
 body.s3sheet-erp-integrated .s3sheet-actual,
-body.s3sheet-erp-integrated .s3sheet-diff{font-size:15px!important;font-weight:800}
-body.s3sheet-erp-integrated .s3sheet-input{height:36px;font-size:14.5px!important}
-body.s3sheet-erp-integrated .s3sheet-note{font-size:14px!important}
+body.s3sheet-erp-integrated .s3sheet-diff{
+  font-size:13.5px!important;
+  font-weight:800;
+}
+body.s3sheet-erp-integrated .s3sheet-input{
+  height:30px;
+  min-height:30px;
+  padding-top:3px!important;
+  padding-bottom:3px!important;
+  font-size:13px!important;
+}
+body.s3sheet-erp-integrated .s3sheet-note{font-size:12.5px!important}
 body.s3sheet-erp-integrated .s3sheet-proof-btn,
-body.s3sheet-erp-integrated .s3sheet-history-btn{height:34px;font-size:12.5px!important}
-body.s3sheet-erp-integrated .s3sheet-check{height:34px;font-size:11px!important}
-body.s3sheet-erp-integrated .s3sheet-total{height:102px}
+body.s3sheet-erp-integrated .s3sheet-history-btn{
+  height:29px;
+  min-height:29px;
+  font-size:11.5px!important;
+}
+body.s3sheet-erp-integrated .s3sheet-check{
+  height:29px;
+  min-height:29px;
+  font-size:10px!important;
+}
+
+/* Keep totals visible without stealing vertical space from the 10 branch rows. */
+body.s3sheet-erp-integrated .s3sheet-total{height:88px}
 body.s3sheet-erp-integrated .s3sheet-shell{height:100%;align-content:stretch}
+
+/* On shorter screens compact a little more, still presentation only. */
 @media(max-height:820px){
-  body.s3sheet-erp-integrated .s3sheet-table th{height:48px;font-size:12px!important}
-  body.s3sheet-erp-integrated .s3sheet-table td{height:42px;font-size:13.5px!important}
-  body.s3sheet-erp-integrated .s3sheet-total{height:88px}
+  body.s3sheet-erp-integrated .s3sheet-table th{
+    height:40px;
+    padding-top:5px!important;
+    padding-bottom:5px!important;
+    font-size:11.5px!important;
+  }
+  body.s3sheet-erp-integrated .s3sheet-table td{
+    height:34px;
+    padding-top:3px!important;
+    padding-bottom:3px!important;
+    font-size:12.5px!important;
+  }
+  body.s3sheet-erp-integrated .s3sheet-branch{font-size:13px!important}
+  body.s3sheet-erp-integrated .s3sheet-auto,
+  body.s3sheet-erp-integrated .s3sheet-actual,
+  body.s3sheet-erp-integrated .s3sheet-diff{font-size:12.5px!important}
+  body.s3sheet-erp-integrated .s3sheet-input{height:27px;min-height:27px;font-size:12px!important}
+  body.s3sheet-erp-integrated .s3sheet-proof-btn,
+  body.s3sheet-erp-integrated .s3sheet-history-btn,
+  body.s3sheet-erp-integrated .s3sheet-check{height:26px;min-height:26px}
+  body.s3sheet-erp-integrated .s3sheet-total{height:80px}
 }
