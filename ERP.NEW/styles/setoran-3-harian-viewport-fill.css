@@ -1,76 +1,103 @@
-/* ERP VAX — Setoran 3 Harian viewport fill + readable compact 10-branch table
-   UI ONLY. Tidak mengubah engine, formula, data, query, atau status. */
-body.s3sheet-erp-integrated .erp-content{padding-bottom:0}
+/* ERP VAX — Setoran 3 Harian natural page flow + readable worksheet
+   UI ONLY. Tidak mengubah engine, formula, data, query, atau status.
 
-/* Compact worksheet so 10/10 cabang can be seen in one normal desktop viewport. */
+   Tujuan:
+   - ukuran tabel tetap nyaman dibaca (tidak diperkecil)
+   - 10/10 cabang tetap dapat dilihat dengan scroll halaman
+   - card total berada setelah tabel, ikut turun ke bawah (tidak freeze)
+   - horizontal worksheet scroll tetap aktif
+*/
+
+/* Lepaskan layout 1-viewport/freeze vertikal dari shell ERP khusus halaman ini. */
+body.s3sheet-body.s3sheet-erp-integrated{
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+}
+body.s3sheet-erp-integrated .erp-wrapper{
+  height:auto !important;
+  min-height:100vh;
+  overflow:visible !important;
+}
+body.s3sheet-erp-integrated .erp-content{
+  height:auto !important;
+  min-height:calc(100vh - var(--erp-top-header-h,64px));
+  overflow:visible !important;
+  padding-bottom:16px !important;
+}
+body.s3sheet-erp-integrated .s3sheet-shell{
+  height:auto !important;
+  min-height:0 !important;
+  align-content:start !important;
+  grid-template-rows:auto auto auto auto !important;
+}
+
+/* Tabel tumbuh sesuai seluruh baris cabang. Vertical scroll memakai halaman,
+   sedangkan horizontal scroll tetap berada di worksheet. */
+body.s3sheet-erp-integrated .s3sheet-table-card{
+  min-height:0 !important;
+  height:auto !important;
+  grid-template-rows:auto auto !important;
+}
+body.s3sheet-erp-integrated .s3sheet-table-wrap{
+  height:auto !important;
+  max-height:none !important;
+  min-height:0 !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+}
+body.s3sheet-erp-integrated .s3sheet-table{
+  height:auto !important;
+  min-height:0 !important;
+}
+
+/* Kembalikan ukuran nyaman dibaca — jangan dipadatkan untuk mengejar 1 viewport. */
 body.s3sheet-erp-integrated .s3sheet-table th{
-  height:44px;
-  padding-top:7px!important;
-  padding-bottom:7px!important;
-  font-size:12px!important;
-  line-height:1.12;
+  height:56px;
+  padding-top:9px !important;
+  padding-bottom:9px !important;
+  font-size:13px !important;
+  line-height:1.15;
 }
 body.s3sheet-erp-integrated .s3sheet-table td{
-  height:38px;
-  padding-top:4px!important;
-  padding-bottom:4px!important;
-  font-size:13.5px!important;
+  height:49px;
+  padding-top:6px !important;
+  padding-bottom:6px !important;
+  font-size:15px !important;
 }
 body.s3sheet-erp-integrated .s3sheet-branch{
-  font-size:14px!important;
+  font-size:15.5px !important;
   font-weight:800;
 }
 body.s3sheet-erp-integrated .s3sheet-auto,
 body.s3sheet-erp-integrated .s3sheet-actual,
 body.s3sheet-erp-integrated .s3sheet-diff{
-  font-size:13.5px!important;
+  font-size:15px !important;
   font-weight:800;
 }
 body.s3sheet-erp-integrated .s3sheet-input{
-  height:30px;
-  min-height:30px;
-  padding-top:3px!important;
-  padding-bottom:3px!important;
-  font-size:13px!important;
+  height:36px;
+  min-height:36px;
+  font-size:14.5px !important;
 }
-body.s3sheet-erp-integrated .s3sheet-note{font-size:12.5px!important}
+body.s3sheet-erp-integrated .s3sheet-note{font-size:14px !important}
 body.s3sheet-erp-integrated .s3sheet-proof-btn,
 body.s3sheet-erp-integrated .s3sheet-history-btn{
-  height:29px;
-  min-height:29px;
-  font-size:11.5px!important;
+  height:34px;
+  min-height:34px;
+  font-size:12.5px !important;
 }
 body.s3sheet-erp-integrated .s3sheet-check{
-  height:29px;
-  min-height:29px;
-  font-size:10px!important;
+  height:34px;
+  min-height:34px;
+  font-size:11px !important;
 }
 
-/* Keep totals visible without stealing vertical space from the 10 branch rows. */
-body.s3sheet-erp-integrated .s3sheet-total{height:88px}
-body.s3sheet-erp-integrated .s3sheet-shell{height:100%;align-content:stretch}
-
-/* On shorter screens compact a little more, still presentation only. */
-@media(max-height:820px){
-  body.s3sheet-erp-integrated .s3sheet-table th{
-    height:40px;
-    padding-top:5px!important;
-    padding-bottom:5px!important;
-    font-size:11.5px!important;
-  }
-  body.s3sheet-erp-integrated .s3sheet-table td{
-    height:34px;
-    padding-top:3px!important;
-    padding-bottom:3px!important;
-    font-size:12.5px!important;
-  }
-  body.s3sheet-erp-integrated .s3sheet-branch{font-size:13px!important}
-  body.s3sheet-erp-integrated .s3sheet-auto,
-  body.s3sheet-erp-integrated .s3sheet-actual,
-  body.s3sheet-erp-integrated .s3sheet-diff{font-size:12.5px!important}
-  body.s3sheet-erp-integrated .s3sheet-input{height:27px;min-height:27px;font-size:12px!important}
-  body.s3sheet-erp-integrated .s3sheet-proof-btn,
-  body.s3sheet-erp-integrated .s3sheet-history-btn,
-  body.s3sheet-erp-integrated .s3sheet-check{height:26px;min-height:26px}
-  body.s3sheet-erp-integrated .s3sheet-total{height:80px}
+/* Card total kembali ke ukuran normal dan mengikuti flow setelah tabel. */
+body.s3sheet-erp-integrated .s3sheet-totals{
+  position:static !important;
+  inset:auto !important;
+  margin-top:7px;
+}
+body.s3sheet-erp-integrated .s3sheet-total{
+  height:102px;
 }
