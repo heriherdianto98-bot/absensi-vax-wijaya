@@ -1,0 +1,65 @@
+/* =========================================================
+   Tabel Harian — BRI Merchant Modal Row Separator
+   UI ONLY.
+   Memperjelas batas antar cabang dan antar tanggal pada modal.
+   Tidak mengubah data, query, engine, formula, atau perhitungan.
+   ========================================================= */
+
+#thcBriMerchantCardModal .bmc-wrap{
+    background:#0b121b;
+}
+
+#thcBriMerchantCardModal table{
+    border-collapse:separate;
+    border-spacing:0;
+}
+
+/* Header tabel lebih tegas agar blok data langsung terbaca. */
+#thcBriMerchantCardModal th{
+    background:linear-gradient(180deg,#172233 0%,#111a27 100%) !important;
+    border-bottom:2px solid rgba(192,132,252,.52) !important;
+    color:#e3c5ff !important;
+    box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+
+/* Setiap baris punya pembatas jelas, tidak lagi menyatu gelap. */
+#thcBriMerchantCardModal tbody tr > td{
+    background:rgba(255,255,255,.018);
+    border-bottom:1px solid rgba(192,132,252,.24) !important;
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,.025);
+}
+
+#thcBriMerchantCardModal tbody tr:nth-child(even) > td{
+    background:rgba(192,132,252,.045);
+}
+
+#thcBriMerchantCardModal tbody tr:hover > td{
+    background:rgba(192,132,252,.095) !important;
+    border-bottom-color:rgba(216,180,254,.48) !important;
+}
+
+/* Kolom pertama jadi anchor visual untuk nama cabang / tanggal. */
+#thcBriMerchantCardModal tbody tr > td:first-child{
+    border-left:3px solid rgba(192,132,252,.32);
+    font-weight:700;
+}
+
+#thcBriMerchantCardModal tbody tr:nth-child(even) > td:first-child{
+    border-left-color:rgba(216,180,254,.5);
+}
+
+/* Nilai BRI Merchant lebih mudah dipindai. */
+#thcBriMerchantCardModal tbody tr > td:last-child{
+    font-weight:800;
+    color:#e2c2ff;
+}
+
+/* Saat level per-cabang dibuka, tanggal dibuat lebih tegas lagi. */
+#thcBriMerchantCardModal .bmc-back + table tbody tr > td,
+#thcBriMerchantCardModal .bmc-back ~ .bmc-wrap table tbody tr > td{
+    border-bottom-color:rgba(192,132,252,.3) !important;
+}
+
+#thcBriMerchantCardModal .bmc-back{
+    margin-bottom:10px;
+}
