@@ -63,3 +63,43 @@
 #thcBriMerchantCardModal .bmc-back{
     margin-bottom:10px;
 }
+
+/* =========================================================
+   Tabel Harian — Rincian Penjualan Produk Card Contrast
+   UI ONLY.
+   Membuat tiap card tanggal lebih gelap dan batas 4 sisi lebih tegas.
+   Tidak mengubah data produk, perhitungan, engine, atau render logic.
+   ========================================================= */
+
+#thcProdukList .thc-produk-day{
+    background:linear-gradient(180deg,#121821 0%,#0d131a 100%) !important;
+    border:2px solid rgba(242,194,48,.52) !important;
+    border-radius:10px;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.035),
+        0 4px 12px rgba(0,0,0,.34) !important;
+}
+
+#thcProdukList .thc-produk-day:hover{
+    background:linear-gradient(180deg,#151c25 0%,#10161e 100%) !important;
+    border-color:rgba(242,194,48,.78) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 5px 16px rgba(0,0,0,.40),
+        0 0 12px rgba(242,194,48,.10) !important;
+}
+
+#thcProdukList .thc-produk-day-date{
+    border-bottom:2px solid rgba(242,194,48,.30) !important;
+}
+
+#thcProdukList .thc-produk-day-total{
+    border-left:2px solid rgba(242,194,48,.34) !important;
+}
+
+@media (max-width:640px){
+    #thcProdukList .thc-produk-day-total{
+        border-left:0 !important;
+        border-top:2px solid rgba(242,194,48,.34) !important;
+    }
+}
