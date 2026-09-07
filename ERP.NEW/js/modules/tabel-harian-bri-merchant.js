@@ -38,7 +38,7 @@ PENTING:
                 text-align:right;
             }
             #thcTable th.thc-bri-daily-head{
-                color:#e6b8ff !important;
+                color:#c084fc !important;
                 background:#0f151d !important;
                 white-space:nowrap;
             }
