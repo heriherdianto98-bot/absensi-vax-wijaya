@@ -8,7 +8,7 @@ Tujuan:
 - Nama cabang hanya tampil pada baris pertama dari rangkaian transaksi
   cabang + periode yang sama; baris berikutnya cukup tanda em dash.
 - Nama cabang dipendekkan untuk kebutuhan UI Owner (contoh: KALIJATI,
-  CINANGSI, SPBU PAGADEN) tanpa mengubah data sumber.
+  CINANGSI, PAGADEN, PAMANUKAN) tanpa mengubah data sumber.
 - Tanggal juga hanya tampil pada baris pertama bila cabang + tanggal sama.
 - Header SALDO diperjelas menjadi SALDO BERJALAN.
 - Keterangan transaksi AUTO dipadatkan agar row tidak terlalu tinggi.
@@ -51,33 +51,31 @@ Tujuan:
 
       body.page-arus-kas .ak2-table th.ak2-cabang-col,
       body.page-arus-kas .ak2-table td.ak2-cabang-col{
-        min-width:138px;
-        width:138px;
+        min-width:124px;
+        width:124px;
       }
       body.page-arus-kas .ak2-table td.ak2-cabang-col{
         font-weight:900;
         color:#f0c969;
-        letter-spacing:.015em;
+        letter-spacing:.02em;
       }
       body.page-arus-kas .ak2-cabang-badge{
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        max-width:132px;
-        min-height:30px;
-        padding:6px 10px;
-        border:1px solid rgba(218,170,76,.34);
-        border-radius:9px;
-        background:linear-gradient(180deg,rgba(72,52,18,.26),rgba(20,25,31,.72));
+        display:inline;
+        max-width:none;
+        min-height:0;
+        padding:0;
+        border:0;
+        border-radius:0;
+        background:transparent;
         color:#f4d27c;
-        font-size:14px;
+        font-size:15px;
         font-weight:900;
-        line-height:1.1;
+        line-height:1.15;
         letter-spacing:.025em;
         text-transform:uppercase;
-        white-space:normal;
-        text-align:center;
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+        white-space:nowrap;
+        text-align:left;
+        box-shadow:none;
       }
       body.page-arus-kas .ak2-cabang-repeat,
       body.page-arus-kas .ak2-tanggal-repeat{
@@ -89,8 +87,8 @@ Tujuan:
         font-weight:700;
       }
       body.page-arus-kas .ak2-cabang-badge.is-manual{
-        border-color:rgba(94,111,128,.34);
-        background:rgba(18,25,32,.78);
+        border:0;
+        background:transparent;
         color:#9eabb7;
       }
       body.page-arus-kas .ak2-ledger-card .ak2-table td.ak2-compact-desc{
@@ -100,13 +98,13 @@ Tujuan:
       body.page-arus-kas #ak2LedgerBody tr[data-id]{cursor:default !important}
       @media(max-width:900px){
         body.page-arus-kas .ak2-table th.ak2-cabang-col,
-        body.page-arus-kas .ak2-table td.ak2-cabang-col{min-width:120px;width:120px}
-        body.page-arus-kas .ak2-cabang-badge{max-width:114px;font-size:12px}
+        body.page-arus-kas .ak2-table td.ak2-cabang-col{min-width:112px;width:112px}
+        body.page-arus-kas .ak2-cabang-badge{font-size:13px}
       }
       @media print{
         body.page-arus-kas .ak2-toolbar{position:static !important;left:auto!important;top:auto!important;width:auto!important;box-shadow:none !important;backdrop-filter:none !important}
         body.page-arus-kas .ak2-toolbar-freeze-placeholder{display:none!important}
-        body.page-arus-kas .ak2-cabang-badge{box-shadow:none;background:transparent;color:#111;border-color:#999}
+        body.page-arus-kas .ak2-cabang-badge{box-shadow:none;background:transparent;color:#111;border:0}
       }
     `;
     document.head.appendChild(style);
@@ -132,8 +130,10 @@ Tujuan:
     const raw = String(name || "").trim();
     if(!raw || raw === "—") return "—";
     return raw
-      .replace(/^vax\s+wijaya\s+/i, "")
       .replace(/^vax\s+/i, "")
+      .replace(/^wijaya\s+/i, "")
+      .replace(/^spbu\s+/i, "")
+      .replace(/^wijaya\s+/i, "")
       .replace(/\s+/g, " ")
       .trim()
       .toUpperCase();
