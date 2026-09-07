@@ -11,8 +11,8 @@ Tujuan:
 - Header SALDO diperjelas menjadi SALDO BERJALAN.
 - Popup detail dinonaktifkan untuk transaksi AUTO.
 - Popup detail hanya boleh dibuka lewat icon detail pada transaksi MANUAL.
-- Card ringkasan saldo diposisikan setelah Buku Arus Kas dan tepat sebelum
-  Rekonsiliasi QRIS / GoPay.
+- Card saldo dipindahkan ke bawah Buku Arus Kas, tepat di atas Rekonsiliasi QRIS / GoPay.
+- Toolbar Arus Kas dibuat sticky/freeze saat halaman di-scroll.
 - Data transaksi, saldo, engine, query, formula, status, dan alur AUTO /
   MANUAL tidak diubah.
 =========================================================
@@ -27,6 +27,16 @@ Tujuan:
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
+      body.page-arus-kas .ak2-toolbar{
+        position:sticky !important;
+        top:0 !important;
+        z-index:40 !important;
+        background:linear-gradient(180deg,rgba(12,18,24,.985),rgba(10,15,20,.97)) !important;
+        border:1px solid rgba(79,102,126,.58) !important;
+        border-radius:14px !important;
+        box-shadow:0 10px 28px rgba(0,0,0,.34),0 1px 0 rgba(215,170,85,.16) inset !important;
+        backdrop-filter:blur(10px) saturate(120%);
+      }
       body.page-arus-kas .ak2-table th.ak2-cabang-col,
       body.page-arus-kas .ak2-table td.ak2-cabang-col{
         min-width:170px;
@@ -70,16 +80,13 @@ Tujuan:
       body.page-arus-kas #ak2LedgerBody tr[data-id]{
         cursor:default !important;
       }
-      body.page-arus-kas .ak2-ledger-card + .ak2-cards{
-        margin-top:16px;
-        margin-bottom:16px;
-      }
       @media(max-width:900px){
         body.page-arus-kas .ak2-table th.ak2-cabang-col,
         body.page-arus-kas .ak2-table td.ak2-cabang-col{min-width:145px;width:145px}
         body.page-arus-kas .ak2-cabang-badge{max-width:140px;font-size:11px}
       }
       @media print{
+        body.page-arus-kas .ak2-toolbar{position:static !important;box-shadow:none !important;backdrop-filter:none !important}
         body.page-arus-kas .ak2-cabang-badge{box-shadow:none;background:transparent;color:#111;border-color:#999}
       }
     `;
@@ -127,14 +134,6 @@ Tujuan:
     const cells = [...headRow.children];
     const saldo = cells.find(th => String(th.textContent || "").trim().toUpperCase() === "SALDO");
     if(saldo) saldo.textContent = "Saldo Berjalan";
-  }
-
-  function moveSummaryCards(){
-    const cards = document.querySelector(".ak2-cards");
-    const qris = document.querySelector(".ak2-qris-card");
-    if(!cards || !qris || !qris.parentNode) return;
-    if(cards.nextElementSibling === qris) return;
-    qris.parentNode.insertBefore(cards, qris);
   }
 
   function decorateRows(){
@@ -193,6 +192,14 @@ Tujuan:
     if(empty) empty.colSpan = 9;
   }
 
+  function moveSummaryCards(){
+    const cards = document.querySelector(".ak2-cards");
+    const qris = document.querySelector(".ak2-qris-card");
+    if(!cards || !qris) return;
+    if(qris.previousElementSibling === cards) return;
+    qris.parentNode?.insertBefore(cards, qris);
+  }
+
   function installDetailClickGate(){
     const body = document.getElementById("ak2LedgerBody");
     const flow = window.ArusKasV2;
@@ -228,16 +235,16 @@ Tujuan:
       const result = baseRenderLedger.apply(this, arguments);
       ensureHeader();
       decorateRows();
-      installDetailClickGate();
       moveSummaryCards();
+      installDetailClickGate();
       return result;
     };
 
     installStyle();
     ensureHeader();
     decorateRows();
-    installDetailClickGate();
     moveSummaryCards();
+    installDetailClickGate();
     return true;
   }
 
