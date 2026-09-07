@@ -21,26 +21,32 @@ const ArusKasV2PeriodUI = {
     style.id="ak2PeriodUiStyle";
     style.textContent=`
       .ak2-native-date-hidden{display:none!important}
-      .ak2-toolbar .ak2-filter-group:first-child{position:relative;min-width:330px}
+      body.page-arus-kas .ak2-toolbar{position:relative!important;z-index:2600!important;overflow:visible!important}
+      body.page-arus-kas .ak2-toolbar .ak2-filter-group:first-child{position:relative!important;z-index:2610!important;min-width:330px;overflow:visible!important}
+      body.page-arus-kas .ak2-ledger-card,
+      body.page-arus-kas .ak2-table-wrap,
+      body.page-arus-kas .ak2-table,
+      body.page-arus-kas .ak2-table thead{position:relative;z-index:auto!important}
       .ak2-period-trigger{width:100%;min-width:270px;display:flex;align-items:center;gap:10px;border:1px solid #465361;background:linear-gradient(180deg,#17202a,#10161d);color:#f7f9fb;border-radius:10px;padding:10px 12px;font:inherit;font-weight:800;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
       .ak2-period-trigger:hover,.ak2-period-trigger.is-open{border-color:#c69a43;box-shadow:0 0 0 2px rgba(198,154,67,.10),0 8px 24px rgba(0,0,0,.22)}
       .ak2-period-icon{color:#e2b555;font-size:16px}.ak2-period-caret{margin-left:auto;color:#d7aa55}
-      .ak2-period-popover{position:absolute;left:0;top:calc(100% + 10px);z-index:2300;width:360px;padding:14px;background:linear-gradient(180deg,#151c24,#0f141a);border:1px solid #5a4724;border-radius:16px;box-shadow:0 22px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.03)}
+      body.page-arus-kas .ak2-period-popover{position:absolute;left:0;top:calc(100% + 10px);z-index:9999!important;width:384px;padding:16px;background:linear-gradient(180deg,#151c24,#0f141a);border:1px solid #6b542b;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.72),inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden}
       .ak2-period-popover[hidden]{display:none!important}
       .ak2-period-pop-head{display:grid;grid-template-columns:38px 1fr 38px;gap:10px;align-items:center;padding-bottom:11px;border-bottom:1px solid rgba(210,164,74,.22)}
       .ak2-period-pop-head>div{text-align:center}.ak2-period-pop-head strong{display:block;font-size:16px;text-transform:capitalize}.ak2-period-pop-head small{display:block;margin-top:2px;color:#8f98a3;font-size:11px}
       .ak2-period-nav{width:36px;height:36px;border-radius:10px;border:1px solid #39434e;background:#111820;color:#e9c06b;font-size:24px;cursor:pointer}
       .ak2-period-nav:hover{border-color:#b98a35;background:#1c1a13}
-      .ak2-period-week,.ak2-period-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-      .ak2-period-week{padding:12px 2px 6px}.ak2-period-week span{text-align:center;color:#9ba3ad;font-size:10px;font-weight:900;text-transform:uppercase}
-      .ak2-period-day{height:36px;border:0;border-radius:9px;background:transparent;color:#e9edf1;font-weight:800;cursor:pointer;position:relative}
+      .ak2-period-week,.ak2-period-days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+      .ak2-period-week{padding:12px 2px 7px}.ak2-period-week span{text-align:center;color:#9ba3ad;font-size:10px;font-weight:900;text-transform:uppercase}
+      .ak2-period-days{position:relative;z-index:1}
+      .ak2-period-day{height:38px;border:0;border-radius:9px;background:transparent;color:#e9edf1;font-weight:800;cursor:pointer;position:relative;z-index:1}
       .ak2-period-day:hover{background:#202832;color:#fff}.ak2-period-day.is-muted{color:#515b66}.ak2-period-day.is-range{background:rgba(210,164,74,.15);color:#ffe2a0;border-radius:5px}
       .ak2-period-day.is-start,.ak2-period-day.is-end{background:linear-gradient(180deg,#e0b04f,#9b6d1f);color:#111;box-shadow:0 0 18px rgba(218,170,74,.28)}
       .ak2-period-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;padding-top:11px;border-top:1px solid rgba(210,164,74,.22)}
       .ak2-period-foot>div{display:flex;flex-direction:column;min-width:0}.ak2-period-foot span{font-size:9px;color:#8e97a2;text-transform:uppercase;font-weight:900;letter-spacing:.08em}.ak2-period-foot strong{margin-top:2px;font-size:11px;color:#f2d28b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:245px}
       .ak2-period-today{border:1px solid #62502b;background:#221b0f;color:#f2ce7b;border-radius:9px;padding:7px 10px;font-weight:800;cursor:pointer}
       #ak2Reload[hidden]{display:none!important}
-      @media(max-width:760px){.ak2-toolbar .ak2-filter-group:first-child{min-width:100%;width:100%}.ak2-period-trigger{min-width:0}.ak2-period-popover{position:fixed;left:12px;right:12px;top:150px;width:auto;max-width:420px;margin:auto}}
+      @media(max-width:760px){.ak2-toolbar .ak2-filter-group:first-child{min-width:100%;width:100%}.ak2-period-trigger{min-width:0}.ak2-period-popover{position:fixed!important;left:12px!important;right:12px!important;top:150px!important;width:auto!important;max-width:420px;margin:auto}}
       @media print{.ak2-period-popover{display:none!important}.ak2-period-trigger{border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important;color:#111!important}.ak2-period-icon,.ak2-period-caret{display:none!important}}
     `;
     document.head.appendChild(style);
