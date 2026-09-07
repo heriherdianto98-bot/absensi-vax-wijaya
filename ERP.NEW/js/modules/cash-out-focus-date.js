@@ -5,7 +5,8 @@ VAX ERP — CASH OUT FOCUS DATE PRESENTER
 UI / NAVIGATION ONLY.
 - Membaca focusDate dari URL jika datang dari Tabel Harian.
 - Tidak mengubah filter engine / data / formula Cash Out.
-- Setelah tabel selesai render, scroll ke tanggal target dan beri highlight berkedip sementara.
+- Setelah tabel selesai render, scroll ke tanggal target dan beri highlight berkedip terus.
+- Saat datang dari Tabel Harian, link kembali diarahkan ke Tabel Harian Semua Cabang.
 =========================================================
 */
 "use strict";
@@ -36,7 +37,7 @@ UI / NAVIGATION ONLY.
                 50%{ background:rgba(239,68,68,.22); box-shadow:inset 4px 0 0 #ef4444,0 0 18px rgba(239,68,68,.20); }
             }
             #cashOutTbody tr.${FOCUS_CLASS} > td{
-                animation:cashOutFocusPulse .58s ease-in-out 6;
+                animation:cashOutFocusPulse .72s ease-in-out infinite;
             }
             #cashOutTbody tr.${FOCUS_CLASS} > td:first-child{
                 color:#ff777d;
@@ -44,6 +45,26 @@ UI / NAVIGATION ONLY.
             }
         `;
         document.head.appendChild(style);
+    }
+
+    function configureBackLink(){
+        if(!params()) return false;
+        const link = document.querySelector(".cashout-back-link");
+        if(!link) return false;
+
+        let href = "./tabel-harian-cabang.html";
+        try{
+            const ref = String(document.referrer || "");
+            if(ref && /\/tabel-harian-cabang\.html(?:[?#]|$)/i.test(ref)){
+                href = ref;
+            }
+        }catch(_e){ /* ignore */ }
+
+        link.href = href;
+        link.textContent = "← Tabel Harian Semua Cabang";
+        link.setAttribute("aria-label", "Kembali ke Tabel Harian Semua Cabang");
+        link.title = "Kembali ke Tabel Harian Semua Cabang";
+        return true;
     }
 
     function formatTarget(iso){
@@ -88,19 +109,25 @@ UI / NAVIGATION ONLY.
             row.scrollIntoView({ behavior:"smooth", block:"center", inline:"nearest" });
         });
 
-        setTimeout(() => row.classList.remove(FOCUS_CLASS), 4200);
         return true;
     }
 
     function schedule(delay = 40){
         clearTimeout(retryTimer);
-        retryTimer = setTimeout(() => focusRow(), delay);
+        retryTimer = setTimeout(() => {
+            configureBackLink();
+            focusRow();
+        }, delay);
     }
 
     function observe(){
         const body = document.getElementById("cashOutTbody");
         if(!body || observer) return false;
-        observer = new MutationObserver(() => schedule(30));
+        observer = new MutationObserver(() => {
+            // Jika tabel di-render ulang karena Refresh/Terapkan, pasang fokus lagi.
+            done = false;
+            schedule(30);
+        });
         observer.observe(body, { childList:true });
         return true;
     }
@@ -113,6 +140,7 @@ UI / NAVIGATION ONLY.
         let tries = 0;
         const timer = setInterval(() => {
             tries += 1;
+            configureBackLink();
             observe();
             if(focusRow() || tries >= 160){
                 clearInterval(timer);
@@ -120,7 +148,10 @@ UI / NAVIGATION ONLY.
         }, 50);
     }
 
-    window.CashOutFocusDate = { focus: () => focusRow() };
+    window.CashOutFocusDate = {
+        focus: () => focusRow(),
+        syncBackLink: () => configureBackLink()
+    };
 
     if(document.readyState === "loading"){
         document.addEventListener("DOMContentLoaded", boot, { once:true });
