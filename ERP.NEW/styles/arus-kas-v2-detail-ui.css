@@ -1,3 +1,5 @@
+@import url("./arus-kas-v2-scrollbar-ui.css");
+
 /* ARUS KAS V2 — DETAIL MODAL THEME · UI ONLY */
 body.page-arus-kas #ak2DetailModal .ak2-backdrop{
   background:rgba(3,6,9,.82);
@@ -71,7 +73,6 @@ body.page-arus-kas #ak2DetailModal .ak2-close:hover{
   box-shadow:0 0 16px rgba(215,170,85,.18);
 }
 
-/* Detail cards */
 body.page-arus-kas #ak2DetailModal .ak2-detail-body{
   padding:18px 19px 19px;
   background:linear-gradient(180deg,rgba(9,14,19,.10),rgba(6,10,14,.24));
@@ -89,11 +90,8 @@ body.page-arus-kas #ak2DetailModal .ak2-detail-item{
   padding:12px 14px 12px 16px;
   border:1px solid rgba(54,69,82,.78);
   border-radius:13px;
-  background:
-    linear-gradient(180deg,rgba(25,35,45,.96),rgba(15,22,29,.98));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.025),
-    0 8px 18px rgba(0,0,0,.14);
+  background:linear-gradient(180deg,rgba(25,35,45,.96),rgba(15,22,29,.98));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 8px 18px rgba(0,0,0,.14);
   overflow:hidden;
   transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease;
 }
@@ -113,10 +111,7 @@ body.page-arus-kas #ak2DetailModal .ak2-detail-item::before{
 body.page-arus-kas #ak2DetailModal .ak2-detail-item:hover{
   border-color:rgba(200,155,67,.52);
   transform:translateY(-1px);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.03),
-    0 10px 22px rgba(0,0,0,.20),
-    0 0 14px rgba(199,153,64,.06);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 10px 22px rgba(0,0,0,.20),0 0 14px rgba(199,153,64,.06);
 }
 
 body.page-arus-kas #ak2DetailModal .ak2-detail-item span{
@@ -139,29 +134,19 @@ body.page-arus-kas #ak2DetailModal .ak2-detail-item strong{
   word-break:break-word;
 }
 
-/* Highlight selected business-critical cards without changing data/logic */
 body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(2){
   border-color:rgba(64,132,181,.55);
   background:linear-gradient(180deg,rgba(20,42,59,.90),rgba(13,26,36,.96));
 }
-body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(2)::before{
-  background:linear-gradient(180deg,#66b6ea,#2e6f99);
-}
-body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(2) strong{
-  color:#d9f1ff;
-  font-size:14px;
-}
+body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(2)::before{background:linear-gradient(180deg,#66b6ea,#2e6f99)}
+body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(2) strong{color:#d9f1ff;font-size:14px}
 
 body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(7){
   border-color:rgba(59,140,84,.55);
   background:linear-gradient(180deg,rgba(18,49,30,.88),rgba(11,29,18,.96));
 }
-body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(7)::before{
-  background:linear-gradient(180deg,#5ec77e,#287746);
-}
-body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(7) strong{
-  color:#a7e9bb;
-}
+body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(7)::before{background:linear-gradient(180deg,#5ec77e,#287746)}
+body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(7) strong{color:#a7e9bb}
 
 body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(9),
 body.page-arus-kas #ak2DetailModal .ak2-detail-item:nth-child(10){
@@ -174,35 +159,12 @@ body.page-arus-kas #ak2DetailModal .ak2-modal-actions{
   border-top:1px solid rgba(215,170,85,.16);
   background:linear-gradient(180deg,rgba(14,19,25,.12),rgba(7,11,15,.48));
 }
-body.page-arus-kas #ak2DetailModal .ak2-modal-actions .ak2-btn{
-  min-width:88px;
-  border-radius:10px;
-  padding:10px 16px;
-}
-body.page-arus-kas #ak2DetailModal [data-detail-close-btn]{
-  background:linear-gradient(180deg,#1b222a,#131920);
-  border-color:#3a4652;
-  color:#d5dbe1;
-}
-body.page-arus-kas #ak2DetailModal [data-detail-close-btn]:hover{
-  border-color:#687787;
-  background:#202934;
-}
-body.page-arus-kas #ak2DetailModal [data-detail-correct]{
-  background:linear-gradient(180deg,#321b18,#211310);
-  border-color:#8f493f;
-  color:#f1ada4;
-}
-body.page-arus-kas #ak2DetailModal [data-detail-verify]{
-  background:linear-gradient(180deg,#1e5b36,#143d26);
-  border-color:#3d9960;
-  color:#ddffea;
-  box-shadow:0 9px 22px rgba(47,131,81,.16),inset 0 1px 0 rgba(255,255,255,.07);
-}
-body.page-arus-kas #ak2DetailModal [data-detail-verify]:hover{
-  filter:brightness(1.08);
-  box-shadow:0 11px 28px rgba(47,131,81,.24),0 0 16px rgba(79,165,111,.10);
-}
+body.page-arus-kas #ak2DetailModal .ak2-modal-actions .ak2-btn{min-width:88px;border-radius:10px;padding:10px 16px}
+body.page-arus-kas #ak2DetailModal [data-detail-close-btn]{background:linear-gradient(180deg,#1b222a,#131920);border-color:#3a4652;color:#d5dbe1}
+body.page-arus-kas #ak2DetailModal [data-detail-close-btn]:hover{border-color:#687787;background:#202934}
+body.page-arus-kas #ak2DetailModal [data-detail-correct]{background:linear-gradient(180deg,#321b18,#211310);border-color:#8f493f;color:#f1ada4}
+body.page-arus-kas #ak2DetailModal [data-detail-verify]{background:linear-gradient(180deg,#1e5b36,#143d26);border-color:#3d9960;color:#ddffea;box-shadow:0 9px 22px rgba(47,131,81,.16),inset 0 1px 0 rgba(255,255,255,.07)}
+body.page-arus-kas #ak2DetailModal [data-detail-verify]:hover{filter:brightness(1.08);box-shadow:0 11px 28px rgba(47,131,81,.24),0 0 16px rgba(79,165,111,.10)}
 
 @media(max-width:760px){
   body.page-arus-kas #ak2DetailModal .ak2-panel{width:min(96vw,760px)}
@@ -212,10 +174,7 @@ body.page-arus-kas #ak2DetailModal [data-detail-verify]:hover{
   body.page-arus-kas #ak2DetailModal .ak2-modal-actions{padding:12px 14px 14px}
 }
 
-/* =========================================================
-   ARUS KAS V2 — FREEZE LEDGER COLUMN HEADER · UI ONLY
-   2026-09-08
-   ========================================================= */
+/* ARUS KAS V2 — FREEZE LEDGER COLUMN HEADER · UI ONLY */
 body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{
   max-height:calc(100vh - 220px);
   overflow:auto;
@@ -227,24 +186,14 @@ body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
   top:0 !important;
   z-index:12 !important;
   background:linear-gradient(180deg,#233244 0%,#1a2633 100%) !important;
-  box-shadow:
-    0 2px 0 rgba(92,134,179,.62),
-    0 8px 16px rgba(3,8,13,.34);
+  box-shadow:0 2px 0 rgba(92,134,179,.62),0 8px 16px rgba(3,8,13,.34);
 }
 
 @media(max-width:760px){
-  body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{
-    max-height:calc(100vh - 190px);
-  }
+  body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{max-height:calc(100vh - 190px)}
 }
 
 @media print{
-  body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{
-    max-height:none !important;
-    overflow:visible !important;
-  }
-  body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
-    position:static !important;
-    box-shadow:none !important;
-  }
+  body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{max-height:none !important;overflow:visible !important}
+  body.page-arus-kas .ak2-ledger-card .ak2-table thead th{position:static !important;box-shadow:none !important}
 }
