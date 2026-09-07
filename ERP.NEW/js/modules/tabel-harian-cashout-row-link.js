@@ -3,8 +3,10 @@
 VAX ERP — TABEL HARIAN CASH OUT ROW LINK
 =========================================================
 UI / NAVIGATION ONLY.
-- Menambahkan affordance klik pada nominal Cash Out per baris.
-- Navigasi ke modul Cash Out dengan cabang + tanggal baris yang sama.
+- Nominal Cash Out per baris dapat diklik.
+- Navigasi ke modul Cash Out dengan cabang yang sama.
+- Cash Out dibuka untuk 1 bulan penuh dari tanggal yang diklik.
+- Tanggal asal dikirim sebagai focusDate untuk highlight presenter.
 - Tidak mengubah DailyDataEngine, SetoranMoneyEngine, Cash Out engine,
   formula Tabel Harian, atau sumber data.
 =========================================================
@@ -100,18 +102,34 @@ UI / NAVIGATION ONLY.
         refreshTimer = setTimeout(decorate, delay);
     }
 
+    function monthRange(iso){
+        const tanggal = String(iso || "").slice(0, 10);
+        const m = tanggal.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if(!m) return null;
+        const year = Number(m[1]);
+        const month = Number(m[2]);
+        if(!year || month < 1 || month > 12) return null;
+        const lastDay = new Date(Date.UTC(year, month, 0, 12, 0, 0)).getUTCDate();
+        return {
+            start: `${m[1]}-${m[2]}-01`,
+            end: `${m[1]}-${m[2]}-${String(lastDay).padStart(2, "0")}`
+        };
+    }
+
     function openCashOut(btn){
         const tanggal = String(btn?.dataset?.tanggal || "").slice(0, 10);
         const cabangId = String(btn?.dataset?.cabangId || "").trim();
         const cabangName = String(btn?.dataset?.cabangName || "").trim();
-        if(!/^\d{4}-\d{2}-\d{2}$/.test(tanggal) || !cabangId) return;
+        const range = monthRange(tanggal);
+        if(!range || !cabangId) return;
 
         const url = new URL("./cash-out.html", window.location.href);
         url.searchParams.set("cabangId", cabangId);
         if(cabangName) url.searchParams.set("cabangName", cabangName);
         url.searchParams.set("periode", "customtanggal");
-        url.searchParams.set("start", tanggal);
-        url.searchParams.set("end", tanggal);
+        url.searchParams.set("start", range.start);
+        url.searchParams.set("end", range.end);
+        url.searchParams.set("focusDate", tanggal);
         url.searchParams.set("from", "tabel-harian-row");
         window.location.href = url.href;
     }
