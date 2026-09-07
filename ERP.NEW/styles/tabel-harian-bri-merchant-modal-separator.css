@@ -244,3 +244,57 @@
         font-size:15px !important;
     }
 }
+
+/* =========================================================
+   Tabel Harian — Rotating Info Panel Orbit Accent
+   UI ONLY.
+   Titik kecil bergerak mengelilingi tepi panel secara berulang.
+   Tidak menyentuh isi pesan, rotasi, data, engine, formula, atau query.
+   ========================================================= */
+
+#thcCashOutHintPanel{
+    --thc-orbit-color:#F2C230;
+    isolation:isolate;
+}
+
+#thcCashOutHintPanel::after{
+    content:"";
+    position:absolute;
+    left:8px;
+    top:0;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--thc-orbit-color);
+    box-shadow:0 0 7px var(--thc-orbit-color),0 0 13px color-mix(in srgb,var(--thc-orbit-color) 70%,transparent);
+    z-index:4;
+    pointer-events:none;
+    animation:thcHintOrbit 7.5s linear infinite;
+}
+
+#thcCashOutHintPanel[data-hint-kind="audit"]{
+    --thc-orbit-color:#38BDF8;
+}
+
+#thcCashOutHintPanel[data-hint-kind="wisdom"]{
+    --thc-orbit-color:#C084FC;
+}
+
+@keyframes thcHintOrbit{
+    0%{left:8px;top:0;transform:translate(-50%,-50%)}
+    28%{left:calc(100% - 8px);top:0;transform:translate(-50%,-50%)}
+    34%{left:100%;top:8px;transform:translate(-50%,-50%)}
+    50%{left:100%;top:calc(100% - 8px);transform:translate(-50%,-50%)}
+    56%{left:calc(100% - 8px);top:100%;transform:translate(-50%,-50%)}
+    78%{left:8px;top:100%;transform:translate(-50%,-50%)}
+    84%{left:0;top:calc(100% - 8px);transform:translate(-50%,-50%)}
+    94%{left:0;top:8px;transform:translate(-50%,-50%)}
+    100%{left:8px;top:0;transform:translate(-50%,-50%)}
+}
+
+@media (prefers-reduced-motion:reduce){
+    #thcCashOutHintPanel::after{
+        animation:none;
+        display:none;
+    }
+}
