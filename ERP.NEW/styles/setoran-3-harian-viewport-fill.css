@@ -6,12 +6,26 @@
    - 10/10 cabang tetap dapat dilihat dengan scroll halaman
    - card total berada setelah tabel, ikut turun ke bawah (tidak freeze)
    - horizontal worksheet scroll tetap aktif
+   - mouse wheel / touchpad langsung menggulir halaman
+   - scrollbar vertikal mengikuti tema ERP dark-gold
 */
 
-/* Lepaskan layout 1-viewport/freeze vertikal dari shell ERP khusus halaman ini. */
-body.s3sheet-body.s3sheet-erp-integrated{
+/* Jadikan document/root sebagai vertical scroller natural supaya wheel/touchpad
+   bekerja saat pointer berada di area tabel, bukan harus drag scrollbar. */
+html{
+  height:auto !important;
+  min-height:100%;
   overflow-x:hidden !important;
   overflow-y:auto !important;
+  overscroll-behavior-y:auto;
+  scrollbar-color:#9a772b #08111b;
+  scrollbar-width:thin;
+}
+body.s3sheet-body.s3sheet-erp-integrated{
+  height:auto !important;
+  min-height:100vh;
+  overflow:visible !important;
+  overscroll-behavior-y:auto;
 }
 body.s3sheet-erp-integrated .erp-wrapper{
   height:auto !important;
@@ -31,7 +45,7 @@ body.s3sheet-erp-integrated .s3sheet-shell{
   grid-template-rows:auto auto auto auto !important;
 }
 
-/* Tabel tumbuh sesuai seluruh baris cabang. Vertical scroll memakai halaman,
+/* Tabel tumbuh sesuai seluruh baris cabang. Vertical wheel dibiarkan naik ke page,
    sedangkan horizontal scroll tetap berada di worksheet. */
 body.s3sheet-erp-integrated .s3sheet-table-card{
   min-height:0 !important;
@@ -43,7 +57,10 @@ body.s3sheet-erp-integrated .s3sheet-table-wrap{
   max-height:none !important;
   min-height:0 !important;
   overflow-x:auto !important;
-  overflow-y:hidden !important;
+  overflow-y:visible !important;
+  overscroll-behavior-x:contain;
+  overscroll-behavior-y:auto !important;
+  touch-action:pan-x pan-y;
 }
 body.s3sheet-erp-integrated .s3sheet-table{
   height:auto !important;
@@ -100,4 +117,31 @@ body.s3sheet-erp-integrated .s3sheet-totals{
 }
 body.s3sheet-erp-integrated .s3sheet-total{
   height:102px;
+}
+
+/* Scrollbar vertical halaman — dark/gold, bukan putih default browser. */
+html::-webkit-scrollbar,
+body.s3sheet-body.s3sheet-erp-integrated::-webkit-scrollbar{
+  width:12px;
+  height:12px;
+}
+html::-webkit-scrollbar-track,
+body.s3sheet-body.s3sheet-erp-integrated::-webkit-scrollbar-track{
+  background:#08111b;
+  border-left:1px solid rgba(216,165,59,.10);
+}
+html::-webkit-scrollbar-thumb,
+body.s3sheet-body.s3sheet-erp-integrated::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#6f561f 0%,#b58b30 55%,#d8a53b 100%);
+  border:2px solid #08111b;
+  border-radius:999px;
+  min-height:44px;
+}
+html::-webkit-scrollbar-thumb:hover,
+body.s3sheet-body.s3sheet-erp-integrated::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,#8a6925 0%,#d8a53b 58%,#f0c45d 100%);
+}
+html::-webkit-scrollbar-corner,
+body.s3sheet-body.s3sheet-erp-integrated::-webkit-scrollbar-corner{
+  background:#08111b;
 }
