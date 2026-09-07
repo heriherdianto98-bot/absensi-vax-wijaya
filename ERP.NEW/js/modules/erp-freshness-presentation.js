@@ -354,3 +354,103 @@ UI/navigation only:
     });
     setTimeout(install, 1200);
 })();
+
+/*
+=========================================================
+TABEL HARIAN — HEADER FRESHNESS VISUAL FIX (UI ONLY)
+=========================================================
+- Memperbesar strip GLOBAL / OPERASIONAL / PROVIDER / LAST SYNC.
+- LAST SYNC membaca state display hasil ErpFreshness, bukan field syncRow mentah.
+- Tidak menulis data dan tidak mengubah engine freshness/sync.
+=========================================================
+*/
+(function(){
+    "use strict";
+    if(!String(location.pathname || "").toLowerCase().includes("tabel-harian-cabang")) return;
+
+    const style = document.createElement("style");
+    style.id = "thcHeaderFreshnessVisualFix";
+    style.textContent = `
+      .erp-header-vax .vax-sync.vax-thc-freshness{
+        min-width:500px!important;
+        min-height:48px!important;
+        grid-template-columns:30px minmax(80px,auto) minmax(128px,auto) minmax(128px,auto) minmax(145px,auto)!important;
+        gap:10px!important;
+        padding:7px 12px!important;
+        border-radius:13px!important;
+      }
+      .erp-header-vax .vax-thc-live-icon{
+        width:24px!important;
+        height:24px!important;
+        font-size:21px!important;
+      }
+      .erp-header-vax .vax-thc-fresh-item{
+        min-width:0!important;
+        padding-left:10px!important;
+        line-height:1.08!important;
+      }
+      .erp-header-vax .vax-thc-fresh-item small{
+        margin-bottom:4px!important;
+        font-size:9px!important;
+        font-weight:900!important;
+        letter-spacing:1px!important;
+      }
+      .erp-header-vax .vax-thc-fresh-item strong{
+        font-size:11px!important;
+        font-weight:900!important;
+        line-height:1.12!important;
+      }
+      .erp-header-vax .vax-thc-fresh-item.is-last strong{
+        font-size:10.5px!important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    function fmtIso(iso){
+        if(!iso) return "—";
+        try{
+            return new Date(iso).toLocaleString("id-ID",{
+                timeZone:"Asia/Jakarta",
+                day:"2-digit",
+                month:"short",
+                year:"numeric",
+                hour:"2-digit",
+                minute:"2-digit"
+            }).replace(" pukul ", ", ");
+        }catch(_){ return "—"; }
+    }
+
+    async function paintLastSync(){
+        const target = document.getElementById("vaxThcLast");
+        if(!target) return false;
+        try{
+            if(typeof ErpFreshness !== "undefined" && typeof ErpFreshness.load === "function"){
+                const state = await ErpFreshness.load();
+                const value = state?.lastDisplay || fmtIso(state?.lastSyncIso);
+                if(value && value !== "—"){
+                    target.textContent = value;
+                    return true;
+                }
+            }
+        }catch(err){
+            console.warn("[THC Header Last Sync UI]", err);
+        }
+        const toolbar = String(document.getElementById("toolbarLastSync")?.textContent || "").trim();
+        if(toolbar && toolbar !== "—") target.textContent = toolbar;
+        return true;
+    }
+
+    function boot(){
+        paintLastSync();
+        setTimeout(paintLastSync, 500);
+        setTimeout(paintLastSync, 1500);
+        if(window.__thcHeaderLastSyncUiTimer) clearInterval(window.__thcHeaderLastSyncUiTimer);
+        window.__thcHeaderLastSyncUiTimer = setInterval(paintLastSync, 5000);
+        document.getElementById("btnRefresh")?.addEventListener("click", () => setTimeout(paintLastSync, 800));
+        document.getElementById("btnSync")?.addEventListener("click", () => setTimeout(paintLastSync, 1400));
+    }
+
+    document.addEventListener("erp:components-ready", () => setTimeout(boot, 50));
+    document.addEventListener("DOMContentLoaded", () => setTimeout(boot, 700));
+    setTimeout(boot, 1600);
+})();
