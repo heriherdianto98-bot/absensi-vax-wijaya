@@ -125,6 +125,7 @@
 
   <button type="button" id="btnOwnerLogout" class="vax-logout">Logout</button>
   <img src="../__vax_header_sync_runtime__.gif" alt="" aria-hidden="true" style="display:none" onerror="(function(){var run=function(){var root=document.getElementById('vaxHeaderSync'),title=document.getElementById('vaxHeaderSyncTitle'),sub=document.getElementById('vaxHeaderSyncSub');if(!root||!title||!sub)return;var p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()),h=Number((p.find(function(x){return x.type==='hour';})||{}).value||0),active=h>=10&&h<22;root.classList.toggle('is-operational',active);if(active){title.textContent='Sinkronisasi aktif';sub.textContent='Operasional 10:00–22:00 WIB';}else if(h<10){title.textContent='Menunggu jam buka';sub.textContent='Aktif mulai 10:00 WIB';}else{title.textContent='Di luar jam operasional';sub.textContent='Aktif kembali 10:00 WIB';}};run();if(window.__vaxHeaderSyncTimer)clearInterval(window.__vaxHeaderSyncTimer);window.__vaxHeaderSyncTimer=setInterval(run,60000);}).call(this)">
+  <img src="../__vax_thc_freshness_runtime__.gif" alt="" aria-hidden="true" style="display:none" onerror="(function(){if(!String(location.pathname||'').toLowerCase().includes('tabel-harian-cabang'))return;var root=document.getElementById('vaxHeaderSync');if(!root)return;root.classList.add('vax-thc-freshness');root.innerHTML='<span class=&quot;vax-thc-live-icon&quot;>◉</span><div class=&quot;vax-thc-fresh-item&quot;><small>GLOBAL</small><strong id=&quot;vaxThcGlobal&quot;>—</strong></div><div class=&quot;vax-thc-fresh-item&quot;><small>OPERASIONAL</small><strong id=&quot;vaxThcOps&quot;>—</strong></div><div class=&quot;vax-thc-fresh-item&quot;><small>PROVIDER</small><strong id=&quot;vaxThcProvider&quot;>—</strong></div><div class=&quot;vax-thc-fresh-item is-last&quot;><small>LAST SYNC</small><strong id=&quot;vaxThcLast&quot;>—</strong></div>';var esc=function(v){return String(v==null?'—':v)};var fmtLong=function(iso){if(!iso)return '—';try{return new Date(iso).toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(' pukul ', ', ')}catch(e){return '—'}};var paint=function(s){if(!s)return;var g=document.getElementById('vaxThcGlobal'),o=document.getElementById('vaxThcOps'),p=document.getElementById('vaxThcProvider'),l=document.getElementById('vaxThcLast');if(g)g.textContent=String(s.global&&s.global.key||'').toLowerCase()==='live'?'LIVE':esc(s.global&&s.global.label);if(o)o.textContent=esc(s.operational&&s.operational.label);if(p)p.textContent=esc(s.provider&&s.provider.label);if(l)l.textContent=fmtLong(s.syncRow&&s.syncRow.last_sync_at);root.dataset.freshTone=esc(s.global&&s.global.tone||'gold')};var run=async function(){try{if(typeof ErpFreshness!=='undefined'&&typeof ErpFreshness.load==='function'){var s=await ErpFreshness.load();paint(s)}else{var tb=document.getElementById('toolbarLastSync');var o=document.getElementById('vaxThcOps');if(o&&tb)o.textContent='✅ Tersinkron '+String(tb.textContent||'—').split(',').pop().trim()}}catch(e){console.warn('[THC Header Freshness]',e)}};setTimeout(run,0);setTimeout(run,600);if(window.__vaxThcFreshTimer)clearInterval(window.__vaxThcFreshTimer);window.__vaxThcFreshTimer=setInterval(run,60000);document.getElementById('btnRefresh')?.addEventListener('click',function(){setTimeout(run,700)});document.getElementById('btnSync')?.addEventListener('click',function(){setTimeout(run,1200)});}).call(this)">
 </header>
 <style>
 .erp-header-vax .vax-sync > span{
@@ -301,5 +302,52 @@ html body.page-erp-dashboard .erp-wrapper [class*="sync-status"] small{
   font-size:9px!important;
   font-weight:800!important;
   letter-spacing:.4px!important;
+}
+</style>
+<style>
+/* Tabel Harian Semua Cabang — live freshness strip in global header. UI/read-only only. */
+.erp-header-vax .vax-sync.vax-thc-freshness{
+  margin-left:auto!important;
+  display:grid!important;
+  grid-template-columns:22px auto auto auto auto!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:5px 8px!important;
+  border:1px solid rgba(74,222,128,.16)!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,rgba(20,30,38,.78),rgba(10,16,22,.56))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+.erp-header-vax .vax-thc-live-icon{
+  width:18px!important;height:18px!important;font-size:16px!important;top:0!important;
+  color:#45e38a!important;text-shadow:0 0 8px rgba(69,227,138,.6)!important;
+}
+.erp-header-vax .vax-thc-fresh-item{
+  min-width:78px!important;
+  padding-left:8px!important;
+  border-left:1px solid rgba(255,255,255,.08)!important;
+  line-height:1.05!important;
+}
+.erp-header-vax .vax-thc-fresh-item small{
+  display:block!important;
+  margin-bottom:3px!important;
+  color:#8994a3!important;
+  font-size:7.5px!important;
+  font-weight:900!important;
+  letter-spacing:.9px!important;
+}
+.erp-header-vax .vax-thc-fresh-item strong{
+  display:block!important;
+  color:#f4f7fb!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+.erp-header-vax .vax-thc-fresh-item:first-of-type strong{color:#55df8f!important;}
+.erp-header-vax .vax-thc-fresh-item.is-last{min-width:116px!important;}
+@media(max-width:1250px){
+  .erp-header-vax .vax-sync.vax-thc-freshness{grid-template-columns:18px auto auto!important;}
+  .erp-header-vax .vax-thc-fresh-item:nth-of-type(3),
+  .erp-header-vax .vax-thc-fresh-item:nth-of-type(4){display:none!important;}
 }
 </style>
