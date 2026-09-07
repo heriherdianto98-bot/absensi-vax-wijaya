@@ -7,8 +7,11 @@ Tujuan:
 - Ledger tetap 1 transaksi = 1 baris seperti engine asli.
 - Nama cabang hanya tampil pada baris pertama dari rangkaian transaksi
   cabang + periode yang sama; baris berikutnya cukup tanda em dash.
+- Nama cabang dipendekkan untuk kebutuhan UI Owner (contoh: KALIJATI,
+  CINANGSI, SPBU PAGADEN) tanpa mengubah data sumber.
 - Tanggal juga hanya tampil pada baris pertama bila cabang + tanggal sama.
 - Header SALDO diperjelas menjadi SALDO BERJALAN.
+- Keterangan transaksi AUTO dipadatkan agar row tidak terlalu tinggi.
 - Popup detail dinonaktifkan untuk transaksi AUTO.
 - Popup detail hanya boleh dibuka lewat icon detail pada transaksi MANUAL.
 - Card saldo dipindahkan ke bawah Buku Arus Kas, tepat di atas Rekonsiliasi QRIS / GoPay.
@@ -27,8 +30,6 @@ Tujuan:
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
-      /* Toolbar: class freeze dipasang via scroll UI agar tidak bergantung
-         pada sticky ancestor/overflow dari shell ERP. */
       body.page-arus-kas .ak2-toolbar{
         background:linear-gradient(180deg,rgba(12,18,24,.985),rgba(10,15,20,.97)) !important;
         border:1px solid rgba(79,102,126,.58) !important;
@@ -46,34 +47,36 @@ Tujuan:
         width:100%;
         pointer-events:none;
       }
-      body.page-arus-kas .ak2-toolbar-freeze-placeholder.is-active{
-        display:block;
-      }
+      body.page-arus-kas .ak2-toolbar-freeze-placeholder.is-active{display:block}
 
       body.page-arus-kas .ak2-table th.ak2-cabang-col,
       body.page-arus-kas .ak2-table td.ak2-cabang-col{
-        min-width:170px;
-        width:170px;
+        min-width:138px;
+        width:138px;
       }
       body.page-arus-kas .ak2-table td.ak2-cabang-col{
-        font-weight:800;
+        font-weight:900;
         color:#f0c969;
-        letter-spacing:.01em;
+        letter-spacing:.015em;
       }
       body.page-arus-kas .ak2-cabang-badge{
         display:inline-flex;
         align-items:center;
-        max-width:165px;
-        min-height:28px;
-        padding:5px 9px;
+        justify-content:center;
+        max-width:132px;
+        min-height:30px;
+        padding:6px 10px;
         border:1px solid rgba(218,170,76,.34);
         border-radius:9px;
         background:linear-gradient(180deg,rgba(72,52,18,.26),rgba(20,25,31,.72));
         color:#f4d27c;
-        font-size:12px;
-        font-weight:850;
-        line-height:1.2;
+        font-size:14px;
+        font-weight:900;
+        line-height:1.1;
+        letter-spacing:.025em;
+        text-transform:uppercase;
         white-space:normal;
+        text-align:center;
         box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
       }
       body.page-arus-kas .ak2-cabang-repeat,
@@ -90,13 +93,15 @@ Tujuan:
         background:rgba(18,25,32,.78);
         color:#9eabb7;
       }
-      body.page-arus-kas #ak2LedgerBody tr[data-id]{
-        cursor:default !important;
+      body.page-arus-kas .ak2-ledger-card .ak2-table td.ak2-compact-desc{
+        line-height:1.25 !important;
+        white-space:normal;
       }
+      body.page-arus-kas #ak2LedgerBody tr[data-id]{cursor:default !important}
       @media(max-width:900px){
         body.page-arus-kas .ak2-table th.ak2-cabang-col,
-        body.page-arus-kas .ak2-table td.ak2-cabang-col{min-width:145px;width:145px}
-        body.page-arus-kas .ak2-cabang-badge{max-width:140px;font-size:11px}
+        body.page-arus-kas .ak2-table td.ak2-cabang-col{min-width:120px;width:120px}
+        body.page-arus-kas .ak2-cabang-badge{max-width:114px;font-size:12px}
       }
       @media print{
         body.page-arus-kas .ak2-toolbar{position:static !important;left:auto!important;top:auto!important;width:auto!important;box-shadow:none !important;backdrop-filter:none !important}
@@ -122,6 +127,18 @@ Tujuan:
     return "—";
   }
 
+  function shortCabangName(name, row){
+    if(row?.entry_type === "MANUAL") return "MANUAL / UMUM";
+    const raw = String(name || "").trim();
+    if(!raw || raw === "—") return "—";
+    return raw
+      .replace(/^vax\s+wijaya\s+/i, "")
+      .replace(/^vax\s+/i, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toUpperCase();
+  }
+
   function branchKeyFor(row){
     const metadata = row?.metadata || {};
     const id = row?.cabang_id ?? metadata.cabang_id ?? metadata.branch_id;
@@ -130,6 +147,60 @@ Tujuan:
     if(row?.entry_type === "MANUAL") return `MANUAL:${row?.id || ""}`;
     if(id != null && id !== "") return `AUTO:${id}:${start}:${end}`;
     return `AUTO:${cabangNameFor(row).toLowerCase()}:${start}:${end}`;
+  }
+
+  function parseDateOnly(value){
+    if(!value) return null;
+    const s = String(value).slice(0,10);
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!m) return null;
+    return {y:Number(m[1]),m:Number(m[2]),d:Number(m[3])};
+  }
+
+  const MONTHS = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+
+  function compactPeriodFor(row){
+    const metadata = row?.metadata || {};
+    const startRaw = row?.source_period_start || metadata.period_start || metadata.source_period_start || row?.tanggal;
+    const endRaw = row?.source_period_end || metadata.period_end || metadata.source_period_end || row?.tanggal;
+    const a = parseDateOnly(startRaw);
+    const b = parseDateOnly(endRaw);
+    if(!a || !b) return "";
+    if(a.y === b.y && a.m === b.m){
+      if(a.d === b.d) return `${String(a.d).padStart(2,"0")} ${MONTHS[a.m-1]} ${a.y}`;
+      return `${String(a.d).padStart(2,"0")} sd ${String(b.d).padStart(2,"0")} ${MONTHS[b.m-1]} ${b.y}`;
+    }
+    if(a.y === b.y){
+      return `${String(a.d).padStart(2,"0")} ${MONTHS[a.m-1]} sd ${String(b.d).padStart(2,"0")} ${MONTHS[b.m-1]} ${b.y}`;
+    }
+    return `${String(a.d).padStart(2,"0")} ${MONTHS[a.m-1]} ${a.y} sd ${String(b.d).padStart(2,"0")} ${MONTHS[b.m-1]} ${b.y}`;
+  }
+
+  function compactAutoDescriptions(tr, row){
+    if(row?.entry_type !== "AUTO") return;
+    const period = compactPeriodFor(row);
+    if(!period) return;
+
+    const inDesc = tr.children[3];
+    const outDesc = tr.children[5];
+
+    if(inDesc){
+      const text = String(inDesc.textContent || "").trim();
+      if(/^setoran\b/i.test(text)){
+        inDesc.textContent = `Setoran ${period}`;
+        inDesc.classList.add("ak2-compact-desc");
+      }
+    }
+    if(outDesc){
+      const text = String(outDesc.textContent || "").trim();
+      if(/^nett\s+produk\b/i.test(text)){
+        outDesc.textContent = `Nett Produk ${period}`;
+        outDesc.classList.add("ak2-compact-desc");
+      }else if(/^koreksi\s+setoran\b/i.test(text)){
+        outDesc.textContent = `Koreksi Setoran ${period}`;
+        outDesc.classList.add("ak2-compact-desc");
+      }
+    }
   }
 
   function ensureHeader(){
@@ -170,7 +241,8 @@ Tujuan:
       const repeated = previousGroupKey === groupKey;
       const dateKey = `${groupKey}:${row?.tanggal || ""}`;
       const repeatedDate = previousDateKey === dateKey;
-      const name = cabangNameFor(row);
+      const fullName = cabangNameFor(row);
+      const shortName = shortCabangName(fullName, row);
 
       const dateCell = tr.children[0];
       if(dateCell && repeatedDate){
@@ -184,19 +256,21 @@ Tujuan:
         const repeat = document.createElement("span");
         repeat.className = "ak2-cabang-repeat";
         repeat.textContent = "—";
-        repeat.title = `Masih transaksi cabang ${name}`;
+        repeat.title = `Masih transaksi cabang ${shortName}`;
         td.appendChild(repeat);
       }else{
         const badge = document.createElement("span");
         badge.className = `ak2-cabang-badge${row?.entry_type === "MANUAL" ? " is-manual" : ""}`;
-        badge.textContent = name;
-        badge.title = name === "—" ? "Nama cabang tidak tersedia pada metadata transaksi" : `Cabang: ${name}`;
+        badge.textContent = shortName;
+        badge.title = fullName === "—" ? "Nama cabang tidak tersedia pada metadata transaksi" : `Cabang: ${fullName}`;
         td.appendChild(badge);
       }
 
       const first = tr.children[0];
       if(first?.nextSibling) tr.insertBefore(td, first.nextSibling);
       else tr.appendChild(td);
+
+      compactAutoDescriptions(tr, row);
 
       previousGroupKey = groupKey;
       previousDateKey = dateKey;
