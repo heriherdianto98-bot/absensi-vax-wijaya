@@ -123,3 +123,51 @@
 #thcTable tbody td .thc-bri-cell-btn{
     font-weight:800 !important;
 }
+
+/* =========================================================
+   Tabel Harian — Deskripsi KPI ringkas
+   UI ONLY.
+   Menjelaskan arti Customer, Transaksi, Services, dan Avg Ticket
+   tanpa mengubah angka, perhitungan, engine, atau sumber data.
+   ========================================================= */
+
+#thcTotals .thc-tot-item.is-customer,
+#thcTotals .thc-tot-item.is-transaksi,
+#thcTotals .thc-tot-item.is-services,
+#thcTotals .thc-tot-item.is-avgticket{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+}
+
+#thcTotals .thc-tot-item.is-customer::after,
+#thcTotals .thc-tot-item.is-transaksi::after,
+#thcTotals .thc-tot-item.is-services::after,
+#thcTotals .thc-tot-item.is-avgticket::after{
+    display:block;
+    margin-top:5px;
+    color:#94A3B8;
+    font-size:11.5px;
+    font-weight:600;
+    line-height:1.25;
+    font-style:normal;
+    letter-spacing:0;
+    text-transform:none;
+}
+
+#thcTotals .thc-tot-item.is-customer::after{
+    content:"Jumlah customer yang tercatat pada periode aktif";
+}
+
+#thcTotals .thc-tot-item.is-transaksi::after{
+    content:"Jumlah transaksi / struk yang tercatat pada periode aktif";
+}
+
+#thcTotals .thc-tot-item.is-services::after{
+    content:"Total layanan yang terjual; 1 transaksi dapat berisi beberapa layanan";
+}
+
+#thcTotals .thc-tot-item.is-avgticket::after{
+    content:"Rata-rata nilai transaksi per struk pada periode aktif";
+}
