@@ -7,6 +7,8 @@ UI / NAVIGATION ONLY.
 - Navigasi ke modul Cash Out dengan cabang yang sama.
 - Cash Out dibuka untuk 1 bulan penuh dari tanggal yang diklik.
 - Tanggal asal dikirim sebagai focusDate untuk highlight presenter.
+- Saat kembali dari Cash Out, cabang asal dipulihkan dan row tanggal asal
+  di-scroll + diberi highlight sementara sebagai penanda.
 - Tidak mengubah DailyDataEngine, SetoranMoneyEngine, Cash Out engine,
   formula Tabel Harian, atau sumber data.
 =========================================================
@@ -15,9 +17,21 @@ UI / NAVIGATION ONLY.
 
 (function(){
     const STYLE_ID = "thcCashOutRowLinkStyle";
+    const RETURN_FOCUS_CLASS = "thc-return-focus-flash";
     let observer = null;
     let bound = false;
     let refreshTimer = null;
+    let returnDone = false;
+
+    function returnParams(){
+        const q = new URLSearchParams(window.location.search || "");
+        const from = String(q.get("from") || "").trim().toLowerCase();
+        const focusDate = String(q.get("focusDate") || "").trim().slice(0, 10);
+        const cabang = String(q.get("cabang") || "").trim();
+        if(from !== "cash-out-row") return null;
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(focusDate)) return null;
+        return { focusDate, cabang };
+    }
 
     function ensureStyle(){
         if(document.getElementById(STYLE_ID)) return;
@@ -48,8 +62,42 @@ UI / NAVIGATION ONLY.
             #thcTable td.thc-cashout .thc-cashout-row-link.is-zero{
                 opacity:.58;
             }
+            @keyframes thcReturnFocusPulse{
+                0%,100%{ background:rgba(234,179,8,.04); box-shadow:inset 3px 0 0 rgba(234,179,8,.28); }
+                50%{ background:rgba(234,179,8,.18); box-shadow:inset 4px 0 0 #facc15,0 0 16px rgba(234,179,8,.16); }
+            }
+            #thcTbody tr.${RETURN_FOCUS_CLASS} > td{
+                animation:thcReturnFocusPulse .62s ease-in-out 7;
+            }
+            #thcTbody tr.${RETURN_FOCUS_CLASS} > td:first-child,
+            #thcTbody tr.${RETURN_FOCUS_CLASS} > td:nth-child(2){
+                color:#facc15;
+                font-weight:800;
+            }
         `;
         document.head.appendChild(style);
+    }
+
+    function restoreReturnBranch(){
+        const p = returnParams();
+        if(!p?.cabang) return;
+        const select = document.getElementById("branchFilter");
+        if(select){
+            const want = p.cabang.toLowerCase();
+            const hit = [...select.options].find((o) => {
+                const v = String(o.value || "").trim().toLowerCase();
+                const t = String(o.textContent || "").trim().toLowerCase();
+                return v === want || t === want || v.includes(want) || want.includes(v);
+            });
+            if(hit) select.value = hit.value;
+        }
+        try{
+            const current = JSON.parse(localStorage.getItem("erp.dashboard.filters") || "{}") || {};
+            localStorage.setItem("erp.dashboard.filters", JSON.stringify({
+                ...current,
+                cabang: select?.value || p.cabang
+            }));
+        }catch(_e){ /* ignore */ }
     }
 
     function rows(){
@@ -97,9 +145,34 @@ UI / NAVIGATION ONLY.
         return true;
     }
 
+    function focusReturnedRow(){
+        if(returnDone) return true;
+        const p = returnParams();
+        if(!p) return false;
+        const body = document.getElementById("thcTbody");
+        if(!body) return false;
+        const row = body.querySelector(`tr[data-tanggal="${p.focusDate}"]`)
+            || [...body.querySelectorAll("tr[data-tanggal]")].find((tr) =>
+                String(tr.getAttribute("data-tanggal") || "").slice(0, 10) === p.focusDate
+            );
+        if(!row) return false;
+
+        returnDone = true;
+        document.querySelectorAll(`#thcTbody tr.${RETURN_FOCUS_CLASS}`).forEach((tr) => tr.classList.remove(RETURN_FOCUS_CLASS));
+        row.classList.add(RETURN_FOCUS_CLASS);
+        requestAnimationFrame(() => {
+            row.scrollIntoView({ behavior:"smooth", block:"center", inline:"nearest" });
+        });
+        setTimeout(() => row.classList.remove(RETURN_FOCUS_CLASS), 4800);
+        return true;
+    }
+
     function scheduleDecorate(delay = 20){
         clearTimeout(refreshTimer);
-        refreshTimer = setTimeout(decorate, delay);
+        refreshTimer = setTimeout(() => {
+            decorate();
+            focusReturnedRow();
+        }, delay);
     }
 
     function monthRange(iso){
@@ -156,17 +229,22 @@ UI / NAVIGATION ONLY.
 
     function boot(){
         ensureStyle();
+        restoreReturnBranch();
         bindEvents();
         let tries = 0;
         const timer = setInterval(() => {
             tries += 1;
+            restoreReturnBranch();
             observe();
-            if(decorate() || tries >= 100) clearInterval(timer);
+            const decorated = decorate();
+            const focused = focusReturnedRow();
+            if((decorated && (!returnParams() || focused)) || tries >= 120) clearInterval(timer);
         }, 50);
     }
 
     window.TabelHarianCashOutRowLink = {
-        refresh: () => decorate()
+        refresh: () => decorate(),
+        focusReturnedRow: () => focusReturnedRow()
     };
 
     if(document.readyState === "loading"){
