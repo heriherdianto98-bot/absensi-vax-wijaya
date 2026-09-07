@@ -8,9 +8,10 @@ Makna Selisih Non Tunai tetap mengikuti engine:
   BRI Merchant - Non Tunai Minutes
 
 Presentasi status:
-- MERAH berkedip = kekurangan masuk / Cash Aktual negatif
+- MERAH berkedip = kekurangan masuk / Cash Aktual negatif (sebelum Owner Verified)
 - HIJAU "+" = uang lebih masuk (contoh tip non-tunai), bukan error
 - HIJAU "✓" = rekonsiliasi sesuai / sudah verified
+- OWNER VERIFIED = warning merah dianggap sudah diperiksa Owner dan tidak ditampilkan lagi
 - TANPA indikator = data belum cukup untuk dinilai
 =========================================================
 */
@@ -58,6 +59,15 @@ Presentasi status:
     const actual=flow.money(m?.actual);
     const verified=saved.owner_verified===true;
 
+    /*
+      UI ONLY: begitu Owner sudah verifikasi, indikator merah tidak boleh terus
+      memberi kesan data masih salah. Nilai canonical tetap apa adanya; yang
+      berubah hanya presentasi status menjadi tanda selesai diperiksa Owner.
+    */
+    if(verified){
+      return {type:"ok",icon:"✓",reasons:[],title:"Sudah diverifikasi Owner"};
+    }
+
     const dangerReasons=[];
     if(actual<0) dangerReasons.push(`Cash Aktual negatif ${flow.rupiah(actual)}`);
     if(bri>0 && diff < -EPS) dangerReasons.push(`Kurang Masuk ${flow.rupiah(Math.abs(diff))}`);
@@ -70,9 +80,8 @@ Presentasi status:
     }
 
     const reconciledOk=bri>0 && Math.abs(diff)<=EPS && actual>=0;
-    const ownerOk=verified && actual>=0 && Math.abs(diff)<=EPS;
-    if(reconciledOk || ownerOk){
-      return {type:"ok",icon:"✓",reasons:[],title:verified?"Sesuai · sudah diverifikasi Owner":"Sesuai · BRI Merchant sama dengan Non Tunai Minutes"};
+    if(reconciledOk){
+      return {type:"ok",icon:"✓",reasons:[],title:"Sesuai · BRI Merchant sama dengan Non Tunai Minutes"};
     }
 
     return null;
