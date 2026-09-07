@@ -218,6 +218,7 @@ body.page-arus-kas #ak2Print{position:relative;top:-8px}
 <script src="../js/modules/arus-kas-v2-qris-collapse-ui.js"></script>
 <script src="../js/modules/arus-kas-v2-summary-collapse-ui.js"></script>
 <script src="../js/modules/arus-kas-v2-period-ui.js"></script>
+<script src="../js/modules/arus-kas-v2-header-period-ui.js"></script>
 <script src="../js/modules/arus-kas-v2-modal-datepicker-ui.js"></script>
 <script src="../js/modules/arus-kas-v2-nett-product-detail-ui.js"></script>
 <script src="../js/modules/erp-assistant-screen-help.js"></script>
@@ -257,10 +258,18 @@ document.addEventListener("erp:finance-ready", async () => {
         ErpHeaderSync.refresh();
     }
 
+    if(window.ArusKasV2HeaderPeriodUI?.sync){
+        ArusKasV2HeaderPeriodUI.sync();
+    }
+
     document.body.classList.add("has-bottom-nav");
 
     if(typeof ArusKasV2 !== "undefined" && ArusKasV2.init){
         await ArusKasV2.init();
+    }
+
+    if(window.ArusKasV2HeaderPeriodUI?.sync){
+        ArusKasV2HeaderPeriodUI.sync();
     }
 });
 </script>
