@@ -87,7 +87,15 @@ body.s3sheet-erp-integrated .s3sheet-table tbody tr.s3sheet-row-warn td:first-ch
   z-index:22;
 }
 
-.s3sheet-table-wrap::-webkit-scrollbar{width:10px;height:10px}
+/*
+   UI ONLY — scrollbar native table-wrap:
+   vertical tetap terlihat, horizontal disembunyikan.
+   Horizontal movement tetap aktif via scrollLeft dan dikendalikan scrollbar bawah card total.
+*/
+.s3sheet-table-wrap::-webkit-scrollbar{
+  width:10px;
+  height:0 !important;
+}
 .s3sheet-table-wrap::-webkit-scrollbar-track{background:rgba(255,255,255,.035)}
 .s3sheet-table-wrap::-webkit-scrollbar-thumb{background:rgba(216,165,59,.45);border-radius:999px}
 .s3sheet-table-wrap::-webkit-scrollbar-thumb:hover{background:rgba(216,165,59,.7)}
