@@ -171,3 +171,76 @@
 #thcTotals .thc-tot-item.is-avgticket::after{
     content:"Rata-rata nilai transaksi per struk pada periode aktif";
 }
+
+/* =========================================================
+   Tabel Harian — Rotating Info Panel Readability
+   UI ONLY.
+   Memperbesar panel informasi agar memanfaatkan lebar panel dan mudah dibaca.
+   Tidak menyentuh rotasi, data omzet, engine, formula, atau query.
+   ========================================================= */
+
+#thcCashOutHintPanel{
+    min-height:58px !important;
+    padding:13px 18px !important;
+    gap:14px !important;
+}
+
+#thcCashOutHintPanel .thc-cashout-hint-icon{
+    width:36px !important;
+    height:36px !important;
+    border-radius:10px !important;
+    font-size:18px !important;
+}
+
+#thcCashOutHintPanel .thc-cashout-hint-copy{
+    flex:1 1 auto !important;
+    width:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    flex-wrap:nowrap !important;
+    gap:10px !important;
+    line-height:1.4 !important;
+}
+
+#thcCashOutHintPanel .thc-cashout-hint-title{
+    flex:0 0 auto !important;
+    font-size:14px !important;
+    font-weight:900 !important;
+    letter-spacing:.075em !important;
+}
+
+#thcCashOutHintPanel .thc-cashout-hint-text{
+    flex:1 1 auto !important;
+    width:100% !important;
+    font-size:16px !important;
+    line-height:1.45 !important;
+    font-weight:750 !important;
+    color:#F8FAFC !important;
+}
+
+#thcCashOutHintPanel .thc-cashout-hint-text strong{
+    font-weight:900 !important;
+    color:#FFFFFF !important;
+}
+
+@media (max-width:900px){
+    #thcCashOutHintPanel{
+        min-height:64px !important;
+        padding:12px 14px !important;
+    }
+
+    #thcCashOutHintPanel .thc-cashout-hint-copy{
+        display:block !important;
+    }
+
+    #thcCashOutHintPanel .thc-cashout-hint-title{
+        display:block !important;
+        margin-bottom:4px !important;
+        font-size:13px !important;
+    }
+
+    #thcCashOutHintPanel .thc-cashout-hint-text{
+        font-size:15px !important;
+    }
+}
