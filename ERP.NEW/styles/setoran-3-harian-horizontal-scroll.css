@@ -1,11 +1,12 @@
-/* Setoran 3 Harian — horizontal table scroll only.
-   UI-only override: keeps money/data logic untouched. */
+/* Setoran 3 Harian — table scroll only.
+   UI-only override: keeps money/data logic untouched.
+   Horizontal scroll tetap aktif, vertical scroll ditambahkan agar 10/10 cabang selalu bisa diakses. */
 .s3sheet-table-wrap{
   min-height:0;
   overflow-x:auto !important;
-  overflow-y:hidden;
-  overscroll-behavior-x:contain;
-  scrollbar-gutter:stable;
+  overflow-y:auto !important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable both-edges;
   -webkit-overflow-scrolling:touch;
   isolation:isolate;
 }
@@ -13,7 +14,8 @@
 .s3sheet-table{
   width:max-content !important;
   min-width:1540px;
-  height:100%;
+  height:auto !important;
+  min-height:100%;
   table-layout:fixed;
 }
 
@@ -31,6 +33,13 @@
 .s3sheet-table th:nth-child(11),.s3sheet-table td:nth-child(11){width:110px}
 .s3sheet-table th:nth-child(12),.s3sheet-table td:nth-child(12){width:75px}
 
+/* Freeze header saat scroll vertikal supaya nama kolom tetap terbaca. */
+.s3sheet-table thead th{
+  position:sticky;
+  top:0;
+  z-index:22;
+}
+
 /* Freeze kolom Cabang saat geser horizontal. */
 .s3sheet-table th:first-child,
 .s3sheet-table td:first-child{
@@ -44,7 +53,7 @@
   white-space:nowrap;
 }
 .s3sheet-table thead th:first-child{
-  z-index:30;
+  z-index:32;
   background:#121d28 !important;
 }
 .s3sheet-table tbody tr:nth-child(even) td:first-child{
@@ -65,8 +74,13 @@
   position:relative;
   z-index:1;
 }
+.s3sheet-table thead th:not(:first-child){
+  position:sticky;
+  top:0;
+  z-index:22;
+}
 
-.s3sheet-table-wrap::-webkit-scrollbar{height:10px}
+.s3sheet-table-wrap::-webkit-scrollbar{width:10px;height:10px}
 .s3sheet-table-wrap::-webkit-scrollbar-track{background:rgba(255,255,255,.035)}
 .s3sheet-table-wrap::-webkit-scrollbar-thumb{background:rgba(216,165,59,.45);border-radius:999px}
 .s3sheet-table-wrap::-webkit-scrollbar-thumb:hover{background:rgba(216,165,59,.7)}
