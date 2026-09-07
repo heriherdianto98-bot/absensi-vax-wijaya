@@ -1,0 +1,98 @@
+/* =========================================================
+   VAX ERP — Tabel Harian AI Insight Readability
+   UI ONLY — scoped to #widget-section on Tabel Harian.
+   Tidak mengubah AI engine, insight logic, data, formula, atau keputusan.
+   ========================================================= */
+
+#widget-section .ai-title h3{
+    font-size:14px;
+    line-height:1.3;
+    letter-spacing:.08em;
+}
+
+#widget-section .ai-title small{
+    font-size:12.5px;
+    line-height:1.35;
+}
+
+#widget-section .ai-status{
+    font-size:11.5px;
+    padding:5px 10px;
+}
+
+#widget-section .ai-summary-row{
+    font-size:13.5px;
+    line-height:1.5;
+    padding:7px 10px;
+}
+
+#widget-section .ai-sum-chip{
+    font-size:14px;
+}
+
+#widget-section .ai-sum-finding{
+    font-size:13px;
+}
+
+#widget-section .ai-grid .ai-section{
+    padding:9px 11px 10px;
+}
+
+#widget-section .ai-grid .ai-section h4{
+    margin-bottom:7px;
+    font-size:11.5px;
+    line-height:1.35;
+    letter-spacing:.08em;
+}
+
+#widget-section .ai-section-mark{
+    width:7px;
+    height:7px;
+    margin-right:7px;
+}
+
+#widget-section .ai-grid .ai-section ul{
+    padding-left:17px;
+    font-size:13.5px;
+    line-height:1.55;
+    font-weight:600;
+}
+
+#widget-section .ai-grid .ai-section li + li{
+    margin-top:5px;
+}
+
+/* Card yang memang memakai internal scroll diberi ruang lebih agar font besar tetap nyaman. */
+#widget-section .ai-grid .ai-section--scroll ul{
+    max-height:104px;
+    padding-right:5px;
+}
+
+#widget-section .ai-grid .ai-section--promo ul{
+    font-size:13.5px;
+    line-height:1.6;
+}
+
+#widget-section .ai-grid .ai-section--promo li + li{
+    margin-top:8px;
+}
+
+/* Prediction area mengikuti skala keterbacaan yang sama. */
+#widget-section .ai-predict-hero,
+#widget-section .ai-predict-hero p,
+#widget-section .ai-predict-hero li,
+#widget-section .ai-predict-hero span{
+    font-size:13.5px;
+    line-height:1.55;
+}
+
+@media (max-width:900px){
+    #widget-section .ai-grid .ai-section ul,
+    #widget-section .ai-grid .ai-section--promo ul,
+    #widget-section .ai-predict-hero,
+    #widget-section .ai-predict-hero p,
+    #widget-section .ai-predict-hero li,
+    #widget-section .ai-predict-hero span{
+        font-size:13px;
+    }
+}
