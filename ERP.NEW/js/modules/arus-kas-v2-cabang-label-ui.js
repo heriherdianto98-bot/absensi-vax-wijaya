@@ -129,6 +129,7 @@ Tujuan:
     if(row?.entry_type === "MANUAL") return "MANUAL / UMUM";
     const raw = String(name || "").trim();
     if(!raw || raw === "—") return "—";
+    if(/pamanukan/i.test(raw)) return "PAMANUKAN";
     return raw
       .replace(/^vax\s+/i, "")
       .replace(/^wijaya\s+/i, "")
