@@ -1,7 +1,9 @@
-/* ERP VAX — ERP Assistant Semantic Resolver V4
+/* ERP VAX — ERP Assistant Semantic Resolver V4.2
    Help Desk/knowledge layer only. No LOCK engine/formula/query mutation.
    Resolution order is semantic: active-screen topic and global UI topics are ranked together.
    Generic global labels are never allowed to steal a more specific active-module question.
+   Approved module fields are promoted automatically into semantic topics so Help Desk can answer
+   field-level questions without sentence-by-sentence hardcoding.
 */
 "use strict";
 
@@ -13,6 +15,7 @@
   function esc(ea,v){return ea.escape?ea.escape(String(v||"")):String(v||"")}
   function money(ea,v){return ea.moneyHighlight?ea.moneyHighlight(String(v||"")):esc(ea,v)}
   function norm(ea,v){return (ea.normalize?.(String(v||""))||String(v||"").toLowerCase()).replace(/\s+/g," ").trim()}
+  function titleFromKey(k){return String(k||"").replace(/_/g," ").replace(/\b\w/g,m=>m.toUpperCase())}
 
   function addTopic(mod,key,t){
     if(!mod)return;
@@ -20,7 +23,24 @@
     mod.assistant_topics[key]=Object.assign({},mod.assistant_topics[key]||{},t);
   }
 
+  function promoteApprovedFields(ea){
+    const modules=arr(ea.knowledge?.modules);
+    for(const mod of modules){
+      const fields=mod?.fields||{};
+      for(const [key,value] of Object.entries(fields)){
+        if(!value)continue;
+        addTopic(mod,key,{
+          label:titleFromKey(key),
+          aliases:[key.replace(/_/g," ")],
+          definition:String(value)
+        });
+      }
+    }
+  }
+
   function patchKnowledge(ea){
+    promoteApprovedFields(ea);
+
     const setoran=ea.getModule?.("SETORAN_3_HARIAN");
     addTopic(setoran,"cash_harus_diambil",{
       label:"Cash Harus Diambil",aliases:["cash harus diambil","uang harus diambil","cash diambil"],
@@ -58,6 +78,13 @@
       label:"Barber Aktif",aliases:["barber aktif","jumlah barber aktif","capster aktif"],
       definition:"Ringkasan jumlah barber/capster yang dihitung aktif pada konteks/filter Dashboard Owner yang sedang digunakan.",
       effect:"Dipakai sebagai KPI operasional untuk melihat ketersediaan tenaga barber pada konteks dashboard."
+    });
+    addTopic(dash,"avg_ticket",{
+      label:"AVG Ticket",aliases:["avg ticket","average ticket","rata rata ticket","rata rata transaksi"],
+      definition:"KPI rata-rata nilai transaksi pada konteks/periode aktif Dashboard Owner.",
+      effect:"Dipakai Owner untuk membaca besarnya nilai transaksi rata-rata pada periode yang sedang dipilih.",
+      rules:["ERP Assistant menjelaskan fungsi KPI ini secara read-only. Detail formula hanya boleh dijelaskan jika formula tersebut sudah tersedia di Knowledge Base resmi."
+      ]
     });
     addTopic(dash,"forecast_1_day",{
       label:"Prediksi 1 Hari Berikutnya",aliases:["prediksi 1 hari berikutnya","forecast 1 hari","prediksi besok","angka prediksi","prediksi berikutnya"],
@@ -118,51 +145,34 @@
     const nq=norm(ea,q);
     const phrases=[t.label,...arr(t.aliases)].map(v=>norm(ea,v)).filter(Boolean);
     let exact=0;
-    for(const p of phrases){
-      if(p.length>=4 && nq.includes(p)) exact=Math.max(exact,p.length);
-    }
+    for(const p of phrases){if(p.length>=4&&nq.includes(p))exact=Math.max(exact,p.length)}
     return exact;
   }
 
   function scoreTopic(ea,key,t,q,scope){
     const phrases=[t.label,key.replace(/_/g," "),...arr(t.aliases)];
     let s=0;
-    for(const p of phrases){
-      if(!p)continue;
-      const ps=ea.phraseScore?.(q,p)||0;
-      s=Math.max(s,ps*2.2);
-    }
+    for(const p of phrases){if(p){const ps=ea.phraseScore?.(q,p)||0;s=Math.max(s,ps*2.2)}}
     const qt=ea.tokens?.(q)||[];
     const corpus=ea.tokens?.([t.label,t.definition,t.source,t.effect,t.why,t.when,t.formula,...arr(t.how),...arr(t.rules)].join(" "))||[];
     let hits=0;
     for(const a of qt)if(corpus.some(b=>ea.tokenMatch?.(a,b)))hits++;
     s+=hits*1.25;
-
     const exactLen=phraseEvidence(ea,t,q);
-    if(exactLen) s+=Math.min(18,6+exactLen/3);
-    if(scope==="active") s+=2.5;
-
-    /* Generic global topics may only win when the user actually mentions their label/alias.
-       This prevents "periode aktif" from stealing "vs periode sebelumnya". */
-    if(scope==="global" && !exactLen) s-=20;
+    if(exactLen)s+=Math.min(18,6+exactLen/3);
+    if(scope==="active")s+=2.5;
+    if(scope==="global"&&!exactLen)s-=20;
     return {s,exactLen};
   }
 
   function rankTopics(ea,topics,q,scope){
-    return Object.entries(topics||{}).map(([k,t])=>{
-      const ev=scoreTopic(ea,k,t,q,scope);
-      return {k,t,s:ev.s,exactLen:ev.exactLen,scope};
-    }).sort((a,b)=>b.s-a.s);
+    return Object.entries(topics||{}).map(([k,t])=>{const ev=scoreTopic(ea,k,t,q,scope);return {k,t,s:ev.s,exactLen:ev.exactLen,scope}}).sort((a,b)=>b.s-a.s);
   }
 
   function chooseTopic(ea,active,q){
-    const candidates=[
-      ...rankTopics(ea,active?.assistant_topics,q,"active"),
-      ...rankTopics(ea,ea.knowledge?.global_assistant_topics,q,"global")
-    ].sort((a,b)=>b.s-a.s || b.exactLen-a.exactLen);
+    const candidates=[...rankTopics(ea,active?.assistant_topics,q,"active"),...rankTopics(ea,ea.knowledge?.global_assistant_topics,q,"global")].sort((a,b)=>b.s-a.s||b.exactLen-a.exactLen);
     const top=candidates[0];
-    if(!top || top.s<10)return null;
-    return top;
+    return (!top||top.s<10)?null:top;
   }
 
   function box(ea,title,items){
@@ -172,7 +182,7 @@
   }
 
   function composeTopic(ea,module,hit,q){
-    const t=hit.t, i=intent(ea,q), label=t.label||hit.k.replace(/_/g," ");
+    const t=hit.t,i=intent(ea,q),label=t.label||hit.k.replace(/_/g," ");
     let lead="";
     if(i==="why"&&t.why)lead=t.why;
     else if(i==="when"&&t.when)lead=t.when;
@@ -182,7 +192,6 @@
     else if(i==="how"&&arr(t.how).length)lead=`Untuk ${label}, langkahnya:`;
     else if(i==="compare"&&t.effect)lead=t.effect;
     else lead=t.definition||t.effect||t.source||`Knowledge ${label} tersedia pada modul ini.`;
-
     let html=`<p>${money(ea,lead)}</p>`;
     if(i==="how")html+=box(ea,"Cara / langkahnya",t.how);
     if(i==="source"&&t.definition)html+=box(ea,"Artinya",[t.definition]);
@@ -192,7 +201,7 @@
     if(i!=="why"&&t.why)html+=box(ea,"Kenapa bisa muncul",[t.why]);
     html+=box(ea,"Yang perlu diketahui",arr(t.rules).slice(0,3));
     const name=module?.name||"ERP Global";
-    html+=`<div class="ea-source"><span>${esc(ea,name)}</span><b>SEMANTIC CONTEXT V4.1</b></div>`;
+    html+=`<div class="ea-source"><span>${esc(ea,name)}</span><b>SEMANTIC CONTEXT V4.2</b></div>`;
     return {unknown:false,module:module||null,html};
   }
 
