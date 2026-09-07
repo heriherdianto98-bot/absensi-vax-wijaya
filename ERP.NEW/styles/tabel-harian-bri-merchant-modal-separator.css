@@ -103,3 +103,23 @@
         border-top:2px solid rgba(242,194,48,.34) !important;
     }
 }
+
+/* =========================================================
+   Tabel Harian Semua Cabang — DATA FONT LOCK
+   UI ONLY.
+   Data utama harus tetap besar, konsisten, dan jelas dibaca.
+   Tidak menyentuh engine, rumus, query, maupun nilai data.
+   ========================================================= */
+
+#thcTable tbody td,
+#thcTable tbody td .thc-bri-cell-btn{
+    font-size:14px !important;
+    line-height:1.25 !important;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+}
+
+#thcTable tbody td.thc-num,
+#thcTable tbody td .thc-bri-cell-btn{
+    font-weight:800 !important;
+}
