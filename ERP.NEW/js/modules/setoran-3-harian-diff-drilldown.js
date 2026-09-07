@@ -27,15 +27,42 @@ Tidak mengubah rumus, engine, data, query, penyimpanan, atau status.
       .s3-diff-hint:before{content:"↗";display:block;color:#ff5b5b;font-size:12px;font-weight:900;line-height:1}
 
       .s3-diff-modal[hidden]{display:none!important}
-      .s3-diff-modal{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:18px}
-      .s3-diff-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(4px)}
-      .s3-diff-panel{position:relative;width:min(1180px,calc(100vw - 42px));max-height:min(88vh,860px);overflow:hidden;border:1.5px solid rgba(216,165,59,.42);border-radius:17px;background:linear-gradient(180deg,#0c1622 0%,#08111b 100%);box-shadow:0 30px 78px rgba(0,0,0,.68),0 0 0 1px rgba(216,165,59,.06) inset;color:#f4f7fb}
-      .s3-diff-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:19px 21px;border-bottom:1px solid rgba(216,165,59,.22);background:linear-gradient(180deg,#172230,#0d1722)}
-      .s3-diff-head h3{margin:0 0 5px;font-size:23px;line-height:1.1}
+      .s3-diff-modal{
+        position:fixed;
+        inset:0;
+        z-index:99999;
+        display:flex;
+        align-items:stretch;
+        justify-content:stretch;
+        padding:8px;
+        box-sizing:border-box;
+      }
+      .s3-diff-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.84);backdrop-filter:blur(5px)}
+      .s3-diff-panel{
+        position:relative;
+        z-index:1;
+        width:100%;
+        height:calc(100vh - 16px);
+        max-width:none;
+        max-height:none;
+        min-width:0;
+        min-height:0;
+        display:flex;
+        flex-direction:column;
+        overflow:hidden;
+        border:1.5px solid rgba(216,165,59,.48);
+        border-radius:18px;
+        background:linear-gradient(180deg,#0c1622 0%,#08111b 100%);
+        box-shadow:0 30px 78px rgba(0,0,0,.72),0 0 0 1px rgba(216,165,59,.08) inset;
+        color:#f4f7fb;
+        box-sizing:border-box;
+      }
+      .s3-diff-head{flex:0 0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid rgba(216,165,59,.22);background:linear-gradient(180deg,#172230,#0d1722)}
+      .s3-diff-head h3{margin:0 0 5px;font-size:24px;line-height:1.1}
       .s3-diff-head p{margin:0;color:#b8c5d4;font-size:14px;font-weight:700}
-      .s3-diff-close{width:42px;height:42px;border:1px solid rgba(255,255,255,.16);border-radius:10px;background:#14202d;color:#fff;font-size:24px;cursor:pointer}
+      .s3-diff-close{flex:0 0 auto;width:44px;height:44px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:#14202d;color:#fff;font-size:25px;cursor:pointer}
 
-      .s3-diff-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:16px 18px;border-bottom:1px solid rgba(216,165,59,.18);background:rgba(8,16,26,.42)}
+      .s3-diff-summary{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:16px 18px;border-bottom:1px solid rgba(216,165,59,.18);background:rgba(8,16,26,.42)}
       .s3-diff-summary div{padding:15px 16px;border:1.6px solid rgba(216,165,59,.4);border-radius:13px;background:linear-gradient(180deg,rgba(15,25,38,.98),rgba(9,17,28,.98));box-shadow:0 10px 22px rgba(0,0,0,.22),0 0 0 1px rgba(216,165,59,.05) inset}
       .s3-diff-summary span{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#c5d1df;font-weight:900}
       .s3-diff-summary strong{display:block;margin-top:7px;font-size:27px;line-height:1.05}
@@ -44,8 +71,16 @@ Tidak mengubah rumus, engine, data, query, penyimpanan, atau status.
       .s3-diff-summary .is-plus strong{color:#63e6a7}
       .s3-diff-summary .is-minus strong{color:#ff5b5b}
 
-      .s3-diff-table-wrap{max-height:56vh;overflow:auto;background:#08111b;scrollbar-color:#b4882d #0a131d;scrollbar-width:thin}
-      .s3-diff-table{width:100%;border-collapse:separate;border-spacing:0;font-size:15px;background:#08111b}
+      .s3-diff-table-wrap{
+        flex:1 1 auto;
+        min-height:0;
+        max-height:none;
+        overflow:auto;
+        background:#08111b;
+        scrollbar-color:#b4882d #0a131d;
+        scrollbar-width:thin;
+      }
+      .s3-diff-table{width:100%;min-width:920px;border-collapse:separate;border-spacing:0;font-size:15px;background:#08111b}
       .s3-diff-table th{position:sticky;top:0;z-index:2;padding:14px 15px;background:linear-gradient(180deg,#172331,#101b27);color:#f2bf3e;border-bottom:1.5px solid rgba(216,165,59,.46);text-align:right;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
       .s3-diff-table th:first-child{text-align:left}
       .s3-diff-table td{padding:15px 15px;border-bottom:1.2px solid rgba(216,165,59,.18);text-align:right;font-variant-numeric:tabular-nums;color:#eaf0f7;background:rgba(8,17,27,.96)}
@@ -60,7 +95,7 @@ Tidak mengubah rumus, engine, data, query, penyimpanan, atau status.
       .s3-diff-status.is-plus{color:#9ff0c7;background:rgba(34,197,94,.12);border:1px solid rgba(74,222,128,.36)}
       .s3-diff-status.is-minus{color:#ffd0d0;background:rgba(239,68,68,.13);border:1px solid rgba(255,92,92,.38)}
       .s3-diff-status.is-zero{color:#d4dce6;background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.2)}
-      .s3-diff-note{padding:13px 18px 17px;border-top:1px solid rgba(216,165,59,.13);color:#afbdcc;font-size:13px;line-height:1.5;background:#0a131d}
+      .s3-diff-note{flex:0 0 auto;padding:12px 18px 14px;border-top:1px solid rgba(216,165,59,.13);color:#afbdcc;font-size:13px;line-height:1.45;background:#0a131d}
       .s3-diff-empty{padding:32px;text-align:center;color:#aebdcd;font-size:14px}
 
       .s3-diff-table-wrap::-webkit-scrollbar{width:11px;height:11px}
@@ -69,8 +104,11 @@ Tidak mengubah rumus, engine, data, query, penyimpanan, atau status.
       .s3-diff-table-wrap::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#a67c26,#e0b84c)}
 
       @media(max-width:900px){
-        .s3-diff-panel{width:calc(100vw - 24px)}
-        .s3-diff-summary{grid-template-columns:1fr}
+        .s3-diff-modal{padding:5px}
+        .s3-diff-panel{height:calc(100vh - 10px);border-radius:14px}
+        .s3-diff-summary{grid-template-columns:1fr;gap:8px;padding:10px}
+        .s3-diff-summary div{padding:10px 12px}
+        .s3-diff-summary strong{font-size:22px}
         .s3-diff-table{font-size:13px}
         .s3-diff-table th,.s3-diff-table td{padding:12px 10px}
       }
@@ -78,9 +116,9 @@ Tidak mengubah rumus, engine, data, query, penyimpanan, atau status.
         .s3sheet-total.is-red.s3-diff-clickable{padding-right:36px!important}
         .s3-diff-hint{right:7px;bottom:7px;width:20px;height:20px}
         .s3-diff-hint:before{font-size:11px}
+        .s3-diff-head{padding:14px}
         .s3-diff-head h3{font-size:19px}
-        .s3-diff-summary strong{font-size:22px}
-        .s3-diff-table{font-size:12px}
+        .s3-diff-note{font-size:12px;padding:10px 12px}
       }
     `;
     document.head.appendChild(style);
