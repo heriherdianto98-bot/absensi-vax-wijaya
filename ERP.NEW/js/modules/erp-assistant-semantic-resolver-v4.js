@@ -1,7 +1,7 @@
 /* ERP VAX — ERP Assistant Semantic Resolver V4
    Help Desk/knowledge layer only. No LOCK engine/formula/query mutation.
-   Resolution order: global UI topic -> active module topic -> explicit other module -> existing router.
-   Answers are composed from topic facts according to question intent, not exact sentence templates.
+   Resolution order is semantic: active-screen topic and global UI topics are ranked together.
+   Generic global labels are never allowed to steal a more specific active-module question.
 */
 "use strict";
 
@@ -12,6 +12,7 @@
   function arr(v){return Array.isArray(v)?v:(v?[v]:[])}
   function esc(ea,v){return ea.escape?ea.escape(String(v||"")):String(v||"")}
   function money(ea,v){return ea.moneyHighlight?ea.moneyHighlight(String(v||"")):esc(ea,v)}
+  function norm(ea,v){return (ea.normalize?.(String(v||""))||String(v||"").toLowerCase()).replace(/\s+/g," ").trim()}
 
   function addTopic(mod,key,t){
     if(!mod)return;
@@ -65,6 +66,7 @@
       effect:"Angka yang tampil adalah estimasi untuk membantu Owner membaca arah performa, bukan transaksi aktual dan bukan angka yang ditulis kembali ke source canonical.",
       rules:["Prediction UI adalah decision-support/read-only dan tidak mengubah source transaksi."]
     });
+
     const warning=ea.getModule?.("CASH_OUT_WARNING");
     const warningFacts={
       label:"Control Cash Out / Warning Cash Out",aliases:["control cash out","warning cash out","cash out warning","cashout warning","warning di atas rp205000","warning rp205000"],
@@ -85,6 +87,12 @@
         effect:"Jika tertulis “Menunggu jam buka” dan “Aktif mulai 10:00 WIB”, artinya saat itu masih sebelum jam aktif operasional dan status akan masuk waktu aktif mulai 10:00 WIB.",
         rules:["Ini adalah informasi status operasional pada header ERP, bukan error modul yang sedang dibuka."]
       },
+      sync_status:{
+        label:"Status Sinkronisasi",aliases:["menunggu sync","menunggu sinkronisasi","syncing","sedang sync","last sync","sinkronisasi data"],
+        definition:"Status yang menjelaskan kondisi proses sinkronisasi data ERP pada saat itu.",
+        effect:"Jika tertulis “Menunggu sync”, ERP sedang menunggu proses sinkronisasi berikutnya; data yang tampil tetap memakai hasil sync terakhir sampai sync baru selesai.",
+        rules:["Status menunggu sync bukan otomatis berarti error. Jika proses gagal, indikator/error sinkronisasi harus dibaca terpisah."]
+      },
       cabang_aktif:{label:"Cabang Aktif",aliases:["cabang aktif"],definition:"Cabang/filter cabang yang sedang menjadi konteks aktif ERP."},
       periode_aktif:{label:"Periode Aktif",aliases:["periode aktif"],definition:"Rentang tanggal/periode yang sedang menjadi konteks aktif pada halaman ERP."}
     });
@@ -99,14 +107,24 @@
       ["when",/(kapan|saat apa|waktu apa|muncul)/],
       ["formula",/(rumus|formula|hitung|dihitung|perhitungan)/],
       ["effect",/(pengaruh|dampak|efek|jadi apa|masuk ke|kalau ada)/],
-      ["compare",/(beda|perbedaan|dibanding|\bvs\b|versus)/],
+      ["compare",/(beda|perbedaan|dibanding|\bvs\b|versus|periode sebelumnya)/],
       ["definition",/(apa itu|artinya apa|arti|maksud|fungsi|buat apa|ini apa)/]
     ];
     for(const [k,re] of tests)if(re.test(x))return k;
     return ea.detectIntent?.(q)||"general";
   }
 
-  function scoreTopic(ea,key,t,q){
+  function phraseEvidence(ea,t,q){
+    const nq=norm(ea,q);
+    const phrases=[t.label,...arr(t.aliases)].map(v=>norm(ea,v)).filter(Boolean);
+    let exact=0;
+    for(const p of phrases){
+      if(p.length>=4 && nq.includes(p)) exact=Math.max(exact,p.length);
+    }
+    return exact;
+  }
+
+  function scoreTopic(ea,key,t,q,scope){
     const phrases=[t.label,key.replace(/_/g," "),...arr(t.aliases)];
     let s=0;
     for(const p of phrases){
@@ -119,12 +137,32 @@
     let hits=0;
     for(const a of qt)if(corpus.some(b=>ea.tokenMatch?.(a,b)))hits++;
     s+=hits*1.25;
-    return s;
+
+    const exactLen=phraseEvidence(ea,t,q);
+    if(exactLen) s+=Math.min(18,6+exactLen/3);
+    if(scope==="active") s+=2.5;
+
+    /* Generic global topics may only win when the user actually mentions their label/alias.
+       This prevents "periode aktif" from stealing "vs periode sebelumnya". */
+    if(scope==="global" && !exactLen) s-=20;
+    return {s,exactLen};
   }
 
-  function bestTopic(ea,topics,q,min=10){
-    const ranked=Object.entries(topics||{}).map(([k,t])=>({k,t,s:scoreTopic(ea,k,t,q)})).sort((a,b)=>b.s-a.s);
-    return ranked[0]&&ranked[0].s>=min?ranked[0]:null;
+  function rankTopics(ea,topics,q,scope){
+    return Object.entries(topics||{}).map(([k,t])=>{
+      const ev=scoreTopic(ea,k,t,q,scope);
+      return {k,t,s:ev.s,exactLen:ev.exactLen,scope};
+    }).sort((a,b)=>b.s-a.s);
+  }
+
+  function chooseTopic(ea,active,q){
+    const candidates=[
+      ...rankTopics(ea,active?.assistant_topics,q,"active"),
+      ...rankTopics(ea,ea.knowledge?.global_assistant_topics,q,"global")
+    ].sort((a,b)=>b.s-a.s || b.exactLen-a.exactLen);
+    const top=candidates[0];
+    if(!top || top.s<10)return null;
+    return top;
   }
 
   function box(ea,title,items){
@@ -154,7 +192,7 @@
     if(i!=="why"&&t.why)html+=box(ea,"Kenapa bisa muncul",[t.why]);
     html+=box(ea,"Yang perlu diketahui",arr(t.rules).slice(0,3));
     const name=module?.name||"ERP Global";
-    html+=`<div class="ea-source"><span>${esc(ea,name)}</span><b>SEMANTIC CONTEXT V4</b></div>`;
+    html+=`<div class="ea-source"><span>${esc(ea,name)}</span><b>SEMANTIC CONTEXT V4.1</b></div>`;
     return {unknown:false,module:module||null,html};
   }
 
@@ -167,17 +205,11 @@
     const baseCompose=ea.compose.bind(ea);
     ea.compose=function(q){
       const active=ctx.module_id?ea.getModule?.(ctx.module_id):null;
-      const globalHit=bestTopic(ea,ea.knowledge?.global_assistant_topics,q,12);
-      if(globalHit){
-        ea.state={lastModuleId:active?.id||null,lastFocus:`global:${globalHit.k}`,lastIntent:intent(ea,q)};
-        return composeTopic(ea,null,globalHit,q);
-      }
-      if(active){
-        const hit=bestTopic(ea,active.assistant_topics,q,10);
-        if(hit){
-          ea.state={lastModuleId:active.id,lastFocus:hit.k,lastIntent:intent(ea,q)};
-          return composeTopic(ea,active,hit,q);
-        }
+      const hit=chooseTopic(ea,active,q);
+      if(hit){
+        const module=hit.scope==="active"?active:null;
+        ea.state={lastModuleId:active?.id||null,lastFocus:`${hit.scope}:${hit.k}`,lastIntent:intent(ea,q)};
+        return composeTopic(ea,module,hit,q);
       }
       return baseCompose(q);
     };
