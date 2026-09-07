@@ -1,5 +1,6 @@
 /* ARUS KAS V2 — LEDGER DETAIL INDICATOR · UI ONLY
-   Menambahkan affordance detail pada nominal AUTO dan penanda verifikasi untuk MANUAL.
+   Detail popup hanya untuk transaksi MANUAL.
+   Transaksi AUTO tidak menampilkan icon detail dan tidak membuka popup.
    Tidak mengubah engine, formula, query, save logic, atau status transaksi.
 */
 "use strict";
@@ -10,19 +11,13 @@ const ArusKasV2NettProductDetailUI={
     const s=document.createElement("style");
     s.id="ak2LedgerDetailIndicatorStyle";
     s.textContent=`
-      #ak2LedgerBody tr[data-id]{cursor:pointer}
+      #ak2LedgerBody tr[data-id]{cursor:default}
       #ak2LedgerBody td.ak2-has-detail{white-space:nowrap}
       .ak2-ledger-detail-icon{
         display:inline-flex;align-items:center;justify-content:center;
         width:20px;height:20px;margin-left:7px;vertical-align:middle;
         border-radius:999px;font-size:12px;font-weight:900;line-height:1;
         cursor:pointer;transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;
-      }
-      .ak2-ledger-detail-icon.is-auto{
-        border:1px solid rgba(216,170,80,.72);
-        background:linear-gradient(180deg,#2a2112,#171109);
-        color:#f2cb73;
-        box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,0 0 10px rgba(216,170,80,.16);
       }
       .ak2-ledger-detail-icon.is-manual-pending{
         border:1px solid rgba(224,86,76,.82);
@@ -65,13 +60,21 @@ const ArusKasV2NettProductDetailUI={
       const effect=(window.ArusKasV2 && typeof window.ArusKasV2.kasEffect==="function")
         ? window.ArusKasV2.kasEffect(data)
         : 0;
-      const amountCell=effect>0?cells[1]:effect<0?cells[3]:null;
+      const amountCell=effect>0?row.querySelector("td.ak2-money-in"):effect<0?row.querySelector("td.ak2-money-out"):null;
       if(!amountCell)return;
-      amountCell.classList.add("ak2-has-detail");
 
-      const isAuto=data.entry_type==="AUTO";
-      const pending=!isAuto&&data.verification_status!=="OWNER_VERIFIED";
-      const desiredClass=isAuto?"is-auto":pending?"is-manual-pending":"is-manual-verified";
+      // AUTO: tidak ada popup/detail icon. Bersihkan sisa dekorasi lama bila ada.
+      if(data.entry_type==="AUTO"){
+        amountCell.classList.remove("ak2-has-detail");
+        amountCell.querySelectorAll(".ak2-ledger-detail-icon,.ak2-row-detail-trigger").forEach(x=>x.remove());
+        row.style.cursor="default";
+        return;
+      }
+
+      // MANUAL saja yang memiliki icon detail.
+      amountCell.classList.add("ak2-has-detail");
+      const pending=data.verification_status!=="OWNER_VERIFIED";
+      const desiredClass=pending?"is-manual-pending":"is-manual-verified";
       let btn=amountCell.querySelector(".ak2-ledger-detail-icon");
 
       if(!btn){
@@ -89,9 +92,9 @@ const ArusKasV2NettProductDetailUI={
         amountCell.appendChild(btn);
       }
 
-      btn.classList.remove("is-auto","is-manual-pending","is-manual-verified");
+      btn.classList.remove("is-manual-pending","is-manual-verified");
       btn.classList.add(desiredClass);
-      btn.title=isAuto?"Lihat detail transaksi otomatis":pending?"Wajib Owner cek · klik detail":"Lihat detail transaksi manual";
+      btn.title=pending?"Wajib Owner cek · klik detail":"Lihat detail transaksi manual";
       btn.setAttribute("aria-label",btn.title);
     });
   },
