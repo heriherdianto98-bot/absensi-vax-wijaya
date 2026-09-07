@@ -43,6 +43,15 @@
 .s3sheet-bottom-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,.035);border-radius:999px}
 .s3sheet-bottom-scroll::-webkit-scrollbar-thumb{background:rgba(216,165,59,.58);border-radius:999px}
 .s3sheet-bottom-scroll::-webkit-scrollbar-thumb:hover{background:rgba(216,165,59,.82)}
+
+/* UI ONLY — penegasan pemilih periode tanggal */
+.s3sheet-period-picker-emphasis{display:flex;flex-direction:column;gap:5px;min-width:0}
+.s3sheet-period-picker-title{font-size:10px;font-weight:900;letter-spacing:.12em;color:#f2c94c;text-transform:uppercase;line-height:1;text-align:left;padding-left:2px;text-shadow:0 0 10px rgba(242,201,76,.22)}
+.s3sheet-period-picker-emphasis .s3sheet-period-open{position:relative;border-width:2px!important;border-style:solid!important;border-color:rgba(242,201,76,.88)!important;box-shadow:0 0 0 1px rgba(242,201,76,.12),0 0 18px rgba(242,201,76,.24)!important;font-weight:900!important;animation:s3PeriodPulse 1.35s ease-in-out infinite}
+.s3sheet-period-picker-emphasis .s3sheet-period-open::after{content:"";position:absolute;inset:-4px;border:1px solid rgba(242,201,76,.22);border-radius:inherit;pointer-events:none;animation:s3PeriodHalo 1.35s ease-in-out infinite}
+@keyframes s3PeriodPulse{0%,100%{border-color:rgba(242,201,76,.62);box-shadow:0 0 0 1px rgba(242,201,76,.08),0 0 8px rgba(242,201,76,.13)}50%{border-color:rgba(255,220,92,1);box-shadow:0 0 0 2px rgba(242,201,76,.16),0 0 22px rgba(242,201,76,.42)}}
+@keyframes s3PeriodHalo{0%,100%{opacity:.22;transform:scale(1)}50%{opacity:.8;transform:scale(1.015)}}
+@media (prefers-reduced-motion:reduce){.s3sheet-period-picker-emphasis .s3sheet-period-open,.s3sheet-period-picker-emphasis .s3sheet-period-open::after{animation:none!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -67,7 +76,10 @@
           <div class="s3sheet-period-fields">
             <input type="date" id="s3v2Start" hidden>
             <input type="date" id="s3v2End" hidden>
-            <button type="button" class="s3sheet-period-open" id="s3v2PeriodOpen"><span>📅</span><b id="s3v2PeriodLabel">PILIH PERIODE</b></button>
+            <div class="s3sheet-period-picker-emphasis">
+              <div class="s3sheet-period-picker-title">PILIH PERIODE TANGGAL</div>
+              <button type="button" class="s3sheet-period-open" id="s3v2PeriodOpen"><span>📅</span><b id="s3v2PeriodLabel">PILIH PERIODE</b></button>
+            </div>
             <button type="button" id="s3v2Apply">TAMPILKAN</button>
           </div>
         </div>
