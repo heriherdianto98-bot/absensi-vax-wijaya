@@ -379,6 +379,25 @@ Version   : UI-01
     line-height:1.2!important;
 }
 
+/* Owner request: brand/logo must stay fully static in every module. UI only. */
+.sidebar .sidebar-logo,
+.sidebar .sidebar-logo *,
+.sidebar .sidebar-logo::before,
+.sidebar .sidebar-logo::after,
+.sidebar .sidebar-logo .logo-mark,
+.sidebar .sidebar-logo .logo-mark::before,
+.sidebar .sidebar-logo .logo-mark::after,
+.sidebar .sidebar-logo .brand-copy,
+.sidebar .sidebar-logo .brand-title,
+.sidebar .sidebar-logo .brand-subtitle{
+    animation:none!important;
+    transition:none!important;
+    transform:none!important;
+}
+.sidebar .sidebar-logo .logo-mark{
+    filter:none!important;
+}
+
 /* Compact session footer — UI only. Keeps the same role/session data and IDs. */
 .sidebar .sidebar-footer{
     display:grid!important;
