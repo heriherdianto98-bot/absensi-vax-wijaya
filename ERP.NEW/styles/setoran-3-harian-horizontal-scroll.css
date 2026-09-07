@@ -1,14 +1,16 @@
 /* Setoran 3 Harian — table scroll only.
    UI-only override: keeps money/data logic untouched.
-   Horizontal scroll tetap aktif, vertical scroll ditambahkan agar 10/10 cabang selalu bisa diakses. */
+   Horizontal scroll tetap aktif, vertical scroll tetap bisa dipakai lewat wheel/touchpad. */
 .s3sheet-table-wrap{
   min-height:0;
   overflow-x:auto !important;
   overflow-y:auto !important;
   overscroll-behavior:contain;
-  scrollbar-gutter:stable both-edges;
   -webkit-overflow-scrolling:touch;
   isolation:isolate;
+  /* Native scrollbar disembunyikan total agar tidak dobel dengan scrollbar controller di bawah card total. */
+  scrollbar-width:none !important;
+  -ms-overflow-style:none !important;
 }
 
 .s3sheet-table{
@@ -87,15 +89,9 @@ body.s3sheet-erp-integrated .s3sheet-table tbody tr.s3sheet-row-warn td:first-ch
   z-index:22;
 }
 
-/*
-   UI ONLY — scrollbar native table-wrap:
-   vertical tetap terlihat, horizontal disembunyikan.
-   Horizontal movement tetap aktif via scrollLeft dan dikendalikan scrollbar bawah card total.
-*/
+/* UI ONLY — hilangkan scrollbar native sepenuhnya. Scrolling tetap aktif secara fungsi. */
 .s3sheet-table-wrap::-webkit-scrollbar{
-  width:10px;
+  display:none !important;
+  width:0 !important;
   height:0 !important;
 }
-.s3sheet-table-wrap::-webkit-scrollbar-track{background:rgba(255,255,255,.035)}
-.s3sheet-table-wrap::-webkit-scrollbar-thumb{background:rgba(216,165,59,.45);border-radius:999px}
-.s3sheet-table-wrap::-webkit-scrollbar-thumb:hover{background:rgba(216,165,59,.7)}
