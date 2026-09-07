@@ -11,6 +11,8 @@ Tujuan:
 - Header SALDO diperjelas menjadi SALDO BERJALAN.
 - Popup detail dinonaktifkan untuk transaksi AUTO.
 - Popup detail hanya boleh dibuka lewat icon detail pada transaksi MANUAL.
+- Card ringkasan saldo diposisikan setelah Buku Arus Kas dan tepat sebelum
+  Rekonsiliasi QRIS / GoPay.
 - Data transaksi, saldo, engine, query, formula, status, dan alur AUTO /
   MANUAL tidak diubah.
 =========================================================
@@ -68,6 +70,10 @@ Tujuan:
       body.page-arus-kas #ak2LedgerBody tr[data-id]{
         cursor:default !important;
       }
+      body.page-arus-kas .ak2-ledger-card + .ak2-cards{
+        margin-top:16px;
+        margin-bottom:16px;
+      }
       @media(max-width:900px){
         body.page-arus-kas .ak2-table th.ak2-cabang-col,
         body.page-arus-kas .ak2-table td.ak2-cabang-col{min-width:145px;width:145px}
@@ -121,6 +127,14 @@ Tujuan:
     const cells = [...headRow.children];
     const saldo = cells.find(th => String(th.textContent || "").trim().toUpperCase() === "SALDO");
     if(saldo) saldo.textContent = "Saldo Berjalan";
+  }
+
+  function moveSummaryCards(){
+    const cards = document.querySelector(".ak2-cards");
+    const qris = document.querySelector(".ak2-qris-card");
+    if(!cards || !qris || !qris.parentNode) return;
+    if(cards.nextElementSibling === qris) return;
+    qris.parentNode.insertBefore(cards, qris);
   }
 
   function decorateRows(){
@@ -215,6 +229,7 @@ Tujuan:
       ensureHeader();
       decorateRows();
       installDetailClickGate();
+      moveSummaryCards();
       return result;
     };
 
@@ -222,6 +237,7 @@ Tujuan:
     ensureHeader();
     decorateRows();
     installDetailClickGate();
+    moveSummaryCards();
     return true;
   }
 
