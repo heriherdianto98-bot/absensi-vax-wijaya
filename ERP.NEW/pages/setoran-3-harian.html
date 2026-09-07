@@ -23,6 +23,25 @@
 <link rel="stylesheet" href="../styles/setoran-3-harian-horizontal-scroll.css">
 <link rel="stylesheet" href="../styles/setoran-3-harian-row-focus.css">
 <link rel="stylesheet" href="../styles/setoran-3-harian-period-active.css">
+<style>
+/* Setoran 3 Harian — bottom horizontal scrollbar. UI ONLY. */
+.s3sheet-table-wrap::-webkit-scrollbar:horizontal{height:0!important}
+.s3sheet-bottom-scroll{
+  width:100%;
+  height:14px;
+  margin-top:8px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-color:rgba(216,165,59,.72) rgba(255,255,255,.035);
+  scrollbar-width:auto;
+  overscroll-behavior-x:contain;
+}
+.s3sheet-bottom-scroll-inner{height:1px;min-width:100%}
+.s3sheet-bottom-scroll::-webkit-scrollbar{height:10px}
+.s3sheet-bottom-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,.035);border-radius:999px}
+.s3sheet-bottom-scroll::-webkit-scrollbar-thumb{background:rgba(216,165,59,.58);border-radius:999px}
+.s3sheet-bottom-scroll::-webkit-scrollbar-thumb:hover{background:rgba(216,165,59,.82)}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="setoran-dark s3sheet-body s3sheet-erp-integrated">
@@ -78,6 +97,9 @@
         <div class="s3sheet-total is-red"><span>Total Selisih Non Tunai</span><strong id="s3totDiff">Rp0</strong></div>
         <div class="s3sheet-total is-actual"><span>Total Cash Aktual</span><strong id="s3totActual">Rp0</strong></div>
       </section>
+      <div class="s3sheet-bottom-scroll" id="s3sheetBottomScroll" aria-label="Geser tabel Setoran 3 Harian ke kiri atau kanan">
+        <div class="s3sheet-bottom-scroll-inner" id="s3sheetBottomScrollInner"></div>
+      </div>
     </main>
   </div>
 </div>
@@ -124,6 +146,40 @@
 <script src="../js/loader.js"></script>
 <script src="../js/modules/setoran-3-harian-header-period-sync.js"></script>
 <script>
+function initSetoranBottomScroll(){
+  const tableWrap=document.querySelector('.s3sheet-table-wrap');
+  const table=document.querySelector('.s3sheet-table');
+  const bottom=document.getElementById('s3sheetBottomScroll');
+  const inner=document.getElementById('s3sheetBottomScrollInner');
+  if(!tableWrap||!table||!bottom||!inner)return;
+  let syncing=false;
+  const syncWidth=()=>{
+    const width=Math.max(table.scrollWidth,tableWrap.scrollWidth,tableWrap.clientWidth);
+    inner.style.width=width+'px';
+    bottom.scrollLeft=tableWrap.scrollLeft;
+  };
+  tableWrap.addEventListener('scroll',()=>{
+    if(syncing)return;
+    syncing=true;
+    bottom.scrollLeft=tableWrap.scrollLeft;
+    syncing=false;
+  },{passive:true});
+  bottom.addEventListener('scroll',()=>{
+    if(syncing)return;
+    syncing=true;
+    tableWrap.scrollLeft=bottom.scrollLeft;
+    syncing=false;
+  },{passive:true});
+  if(window.ResizeObserver){
+    const ro=new ResizeObserver(syncWidth);
+    ro.observe(tableWrap);ro.observe(table);
+  }
+  new MutationObserver(syncWidth).observe(document.getElementById('s3sheetBody'),{childList:true,subtree:true});
+  window.addEventListener('resize',syncWidth,{passive:true});
+  requestAnimationFrame(syncWidth);
+  setTimeout(syncWidth,250);
+}
+
 async function loadSetoranShell(){
   const sidebar=document.getElementById('sidebar');
   const header=document.getElementById('header');
@@ -146,7 +202,7 @@ async function loadSetoranShell(){
   }
   document.dispatchEvent(new CustomEvent('erp:components-ready'));
 }
-window.addEventListener('DOMContentLoaded',()=>{loadSetoranShell();},{once:true});
+window.addEventListener('DOMContentLoaded',()=>{loadSetoranShell();initSetoranBottomScroll();},{once:true});
 </script>
 </body>
 </html>
