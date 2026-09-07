@@ -9,6 +9,7 @@ UI / NAVIGATION ONLY.
 - Tanggal asal dikirim sebagai focusDate untuk highlight presenter.
 - Saat kembali dari Cash Out, cabang asal dipulihkan dan row tanggal asal
   di-scroll + diberi highlight sementara sebagai penanda.
+- Menampilkan panel petunjuk Cash Out di atas tabel untuk semua cabang.
 - Tidak mengubah DailyDataEngine, SetoranMoneyEngine, Cash Out engine,
   formula Tabel Harian, atau sumber data.
 =========================================================
@@ -17,6 +18,7 @@ UI / NAVIGATION ONLY.
 
 (function(){
     const STYLE_ID = "thcCashOutRowLinkStyle";
+    const HINT_ID = "thcCashOutHintPanel";
     const RETURN_FOCUS_CLASS = "thc-return-focus-flash";
     let observer = null;
     let bound = false;
@@ -62,6 +64,85 @@ UI / NAVIGATION ONLY.
             #thcTable td.thc-cashout .thc-cashout-row-link.is-zero{
                 opacity:.58;
             }
+            #${HINT_ID}{
+                display:flex;
+                align-items:center;
+                gap:12px;
+                width:100%;
+                box-sizing:border-box;
+                margin:0;
+                padding:11px 16px;
+                border-top:1px solid rgba(212,175,55,.30);
+                border-bottom:1px solid rgba(212,175,55,.34);
+                background:linear-gradient(90deg,rgba(242,194,48,.10) 0%,rgba(23,28,35,.96) 24%,rgba(17,21,27,.98) 100%);
+                color:#E2E8F0;
+                box-shadow:inset 4px 0 0 #F2C230,0 6px 18px rgba(0,0,0,.18);
+                position:relative;
+                z-index:2;
+            }
+            #${HINT_ID} .thc-cashout-hint-icon{
+                flex:0 0 auto;
+                width:30px;
+                height:30px;
+                border-radius:9px;
+                display:grid;
+                place-items:center;
+                border:1px solid rgba(242,194,48,.42);
+                background:rgba(242,194,48,.10);
+                color:#F2C230;
+                font-size:16px;
+                font-weight:900;
+                line-height:1;
+                box-shadow:0 0 12px rgba(242,194,48,.10);
+            }
+            #${HINT_ID} .thc-cashout-hint-copy{
+                min-width:0;
+                display:flex;
+                flex-wrap:wrap;
+                align-items:baseline;
+                gap:5px 8px;
+                line-height:1.35;
+            }
+            #${HINT_ID} .thc-cashout-hint-title{
+                color:#F2C230;
+                font-size:12px;
+                font-weight:900;
+                letter-spacing:.07em;
+                text-transform:uppercase;
+                white-space:nowrap;
+            }
+            #${HINT_ID} .thc-cashout-hint-text{
+                margin:0;
+                color:#E2E8F0;
+                font-size:13.5px;
+                font-weight:650;
+            }
+            #${HINT_ID} .thc-cashout-hint-text strong{
+                color:#FFFFFF;
+                font-weight:900;
+            }
+            @media (max-width:700px){
+                #${HINT_ID}{
+                    align-items:flex-start;
+                    padding:10px 12px;
+                    gap:10px;
+                }
+                #${HINT_ID} .thc-cashout-hint-icon{
+                    width:28px;
+                    height:28px;
+                    font-size:14px;
+                }
+                #${HINT_ID} .thc-cashout-hint-copy{
+                    display:block;
+                }
+                #${HINT_ID} .thc-cashout-hint-title{
+                    display:block;
+                    margin-bottom:3px;
+                }
+                #${HINT_ID} .thc-cashout-hint-text{
+                    font-size:13px;
+                }
+            }
             @keyframes thcReturnFocusPulse{
                 0%,100%{ background:rgba(234,179,8,.04); box-shadow:inset 3px 0 0 rgba(234,179,8,.28); }
                 50%{ background:rgba(234,179,8,.18); box-shadow:inset 4px 0 0 #facc15,0 0 16px rgba(234,179,8,.16); }
@@ -76,6 +157,26 @@ UI / NAVIGATION ONLY.
             }
         `;
         document.head.appendChild(style);
+    }
+
+    function ensureHintPanel(){
+        if(document.getElementById(HINT_ID)) return true;
+        const tableScroll = document.getElementById("thcScroll");
+        if(!tableScroll || !tableScroll.parentElement) return false;
+
+        const panel = document.createElement("div");
+        panel.id = HINT_ID;
+        panel.setAttribute("role", "note");
+        panel.setAttribute("aria-label", "Petunjuk rincian Cash Out");
+        panel.innerHTML = `
+            <span class="thc-cashout-hint-icon" aria-hidden="true">↗</span>
+            <div class="thc-cashout-hint-copy">
+                <span class="thc-cashout-hint-title">Petunjuk Cash Out</span>
+                <p class="thc-cashout-hint-text"><strong>Klik nominal Cash Out</strong> pada tabel untuk melihat rincian pengeluaran sesuai cabang dan tanggal yang diperiksa.</p>
+            </div>
+        `;
+        tableScroll.parentElement.insertBefore(panel, tableScroll);
+        return true;
     }
 
     function restoreReturnBranch(){
@@ -170,6 +271,7 @@ UI / NAVIGATION ONLY.
     function scheduleDecorate(delay = 20){
         clearTimeout(refreshTimer);
         refreshTimer = setTimeout(() => {
+            ensureHintPanel();
             decorate();
             focusReturnedRow();
         }, delay);
@@ -229,11 +331,13 @@ UI / NAVIGATION ONLY.
 
     function boot(){
         ensureStyle();
+        ensureHintPanel();
         restoreReturnBranch();
         bindEvents();
         let tries = 0;
         const timer = setInterval(() => {
             tries += 1;
+            ensureHintPanel();
             restoreReturnBranch();
             observe();
             const decorated = decorate();
