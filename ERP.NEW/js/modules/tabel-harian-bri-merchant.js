@@ -217,6 +217,7 @@ PENTING:
             await BriMerchantDaily.save({tanggal:activeMeta.tanggal,cabangId:activeMeta.cabangId,value,userId});
             input.value=formatAmount(value); input.readOnly=true; syncModal(); ensureCells();
             document.dispatchEvent(new CustomEvent("erp:bri-merchant-daily-saved",{detail:{tanggal:activeMeta.tanggal,cabangId:activeMeta.cabangId}}));
+            closeModal();
         }catch(err){ input.classList.add("is-error"); alert(`BRI Merchant gagal disimpan: ${err?.message||err}`); }
     }
 
