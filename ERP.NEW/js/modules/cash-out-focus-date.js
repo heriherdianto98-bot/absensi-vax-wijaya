@@ -6,7 +6,7 @@ UI / NAVIGATION ONLY.
 - Membaca focusDate dari URL jika datang dari Tabel Harian.
 - Tidak mengubah filter engine / data / formula Cash Out.
 - Setelah tabel selesai render, scroll ke tanggal target dan beri highlight berkedip terus.
-- Saat datang dari Tabel Harian, link kembali diarahkan ke Tabel Harian Semua Cabang.
+- Link kembali diarahkan ke Tabel Harian dan membawa tanggal target sebagai penanda balik.
 =========================================================
 */
 "use strict";
@@ -15,16 +15,16 @@ UI / NAVIGATION ONLY.
     const STYLE_ID = "cashOutFocusDateStyle";
     const FOCUS_CLASS = "cashout-focus-date-flash";
     let observer = null;
-    let done = false;
     let retryTimer = null;
 
     function params(){
         const q = new URLSearchParams(window.location.search || "");
         const from = String(q.get("from") || "").trim().toLowerCase();
         const focusDate = String(q.get("focusDate") || "").trim().slice(0, 10);
+        const cabangName = String(q.get("cabangName") || "").trim();
         if(from !== "tabel-harian-row") return null;
         if(!/^\d{4}-\d{2}-\d{2}$/.test(focusDate)) return null;
-        return { focusDate };
+        return { focusDate, cabangName };
     }
 
     function ensureStyle(){
@@ -43,28 +43,33 @@ UI / NAVIGATION ONLY.
                 color:#ff777d;
                 font-weight:800;
             }
+            .cashout-back-link.cashout-back-table{
+                display:inline-flex;
+                align-items:center;
+                justify-content:center;
+                min-height:38px;
+                padding:8px 14px;
+                border:1px solid rgba(234,179,8,.55);
+                border-radius:9px;
+                background:rgba(234,179,8,.08);
+                color:#facc15;
+                font-size:13px;
+                font-weight:800;
+                line-height:1.1;
+                text-decoration:none;
+                white-space:nowrap;
+                box-shadow:0 0 0 1px rgba(234,179,8,.06) inset;
+                transition:background .15s ease,border-color .15s ease,transform .15s ease;
+            }
+            .cashout-back-link.cashout-back-table:hover,
+            .cashout-back-link.cashout-back-table:focus-visible{
+                background:rgba(234,179,8,.16);
+                border-color:rgba(250,204,21,.82);
+                transform:translateY(-1px);
+                outline:none;
+            }
         `;
         document.head.appendChild(style);
-    }
-
-    function configureBackLink(){
-        if(!params()) return false;
-        const link = document.querySelector(".cashout-back-link");
-        if(!link) return false;
-
-        let href = "./tabel-harian-cabang.html";
-        try{
-            const ref = String(document.referrer || "");
-            if(ref && /\/tabel-harian-cabang\.html(?:[?#]|$)/i.test(ref)){
-                href = ref;
-            }
-        }catch(_e){ /* ignore */ }
-
-        link.href = href;
-        link.textContent = "← Tabel Harian Semua Cabang";
-        link.setAttribute("aria-label", "Kembali ke Tabel Harian Semua Cabang");
-        link.title = "Kembali ke Tabel Harian Semua Cabang";
-        return true;
     }
 
     function formatTarget(iso){
@@ -95,27 +100,47 @@ UI / NAVIGATION ONLY.
     }
 
     function focusRow(){
-        if(done) return true;
         const p = params();
         if(!p) return false;
         const row = findRow(p.focusDate);
         if(!row) return false;
 
-        done = true;
-        document.querySelectorAll(`#cashOutTbody tr.${FOCUS_CLASS}`).forEach((tr) => tr.classList.remove(FOCUS_CLASS));
+        document.querySelectorAll(`#cashOutTbody tr.${FOCUS_CLASS}`).forEach((tr) => {
+            if(tr !== row) tr.classList.remove(FOCUS_CLASS);
+        });
         row.classList.add(FOCUS_CLASS);
 
-        requestAnimationFrame(() => {
-            row.scrollIntoView({ behavior:"smooth", block:"center", inline:"nearest" });
-        });
+        if(row.dataset.cashoutFocusScrolled !== "1"){
+            row.dataset.cashoutFocusScrolled = "1";
+            requestAnimationFrame(() => {
+                row.scrollIntoView({ behavior:"smooth", block:"center", inline:"nearest" });
+            });
+        }
+        return true;
+    }
 
+    function mountBackButton(){
+        const p = params();
+        if(!p) return false;
+        const link = document.querySelector(".cashout-back-link");
+        if(!link) return false;
+
+        const url = new URL("./tabel-harian-cabang.html", window.location.href);
+        url.searchParams.set("from", "cash-out-row");
+        url.searchParams.set("focusDate", p.focusDate);
+        if(p.cabangName) url.searchParams.set("cabang", p.cabangName);
+
+        link.href = url.href;
+        link.textContent = "← Tabel Harian Semua Cabang";
+        link.classList.add("cashout-back-table");
+        link.title = `Kembali ke Tabel Harian pada ${p.focusDate}`;
         return true;
     }
 
     function schedule(delay = 40){
         clearTimeout(retryTimer);
         retryTimer = setTimeout(() => {
-            configureBackLink();
+            mountBackButton();
             focusRow();
         }, delay);
     }
@@ -123,26 +148,22 @@ UI / NAVIGATION ONLY.
     function observe(){
         const body = document.getElementById("cashOutTbody");
         if(!body || observer) return false;
-        observer = new MutationObserver(() => {
-            // Jika tabel di-render ulang karena Refresh/Terapkan, pasang fokus lagi.
-            done = false;
-            schedule(30);
-        });
+        observer = new MutationObserver(() => schedule(30));
         observer.observe(body, { childList:true });
         return true;
     }
 
     function boot(){
-        const p = params();
-        if(!p) return;
+        if(!params()) return;
         ensureStyle();
 
         let tries = 0;
         const timer = setInterval(() => {
             tries += 1;
-            configureBackLink();
+            const backReady = mountBackButton();
             observe();
-            if(focusRow() || tries >= 160){
+            const focusReady = focusRow();
+            if((backReady && focusReady) || tries >= 160){
                 clearInterval(timer);
             }
         }, 50);
@@ -150,7 +171,7 @@ UI / NAVIGATION ONLY.
 
     window.CashOutFocusDate = {
         focus: () => focusRow(),
-        syncBackLink: () => configureBackLink()
+        mountBack: () => mountBackButton()
     };
 
     if(document.readyState === "loading"){
