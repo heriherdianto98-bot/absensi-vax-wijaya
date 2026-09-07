@@ -178,7 +178,14 @@ body.page-arus-kas #ak2DetailModal [data-detail-verify]:hover{filter:brightness(
 body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{
   max-height:calc(100vh - 220px);
   overflow:auto;
-  scrollbar-gutter:stable;
+  scrollbar-gutter:auto;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+body.page-arus-kas .ak2-ledger-card .ak2-table-wrap::-webkit-scrollbar{
+  width:0 !important;
+  height:0 !important;
+  display:none;
 }
 
 body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
