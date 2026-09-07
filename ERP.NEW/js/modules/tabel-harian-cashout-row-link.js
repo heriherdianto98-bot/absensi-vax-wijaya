@@ -23,13 +23,15 @@ UI / NAVIGATION ONLY.
         style.id = STYLE_ID;
         style.textContent = `
             #thcTable td.thc-cashout .thc-cashout-row-link{
+                position:relative;
                 display:inline-flex;
                 align-items:center;
-                justify-content:flex-end;
-                gap:5px;
+                justify-content:center;
+                width:100%;
                 max-width:100%;
-                margin-left:auto;
-                padding:4px 6px;
+                min-height:34px;
+                margin:0;
+                padding:4px 14px 4px 6px;
                 border:0;
                 border-radius:7px;
                 background:transparent;
@@ -39,27 +41,35 @@ UI / NAVIGATION ONLY.
                 line-height:1.1;
                 cursor:pointer;
                 white-space:nowrap;
+                box-sizing:border-box;
                 transition:background .15s ease, color .15s ease, box-shadow .15s ease;
+            }
+            #thcTable td.thc-cashout .thc-cashout-row-value{
+                display:block;
+                width:100%;
+                text-align:center;
             }
             #thcTable td.thc-cashout .thc-cashout-row-link:hover,
             #thcTable td.thc-cashout .thc-cashout-row-link:focus-visible{
-                background:rgba(220,38,38,.10);
-                color:#ff7b82;
-                box-shadow:0 0 0 1px rgba(239,68,68,.20);
+                background:rgba(220,38,38,.08);
+                box-shadow:0 0 0 1px rgba(239,68,68,.18);
                 outline:none;
             }
             #thcTable td.thc-cashout .thc-cashout-row-icon{
-                display:inline-flex;
-                align-items:center;
-                justify-content:center;
-                width:17px;
-                height:17px;
-                border:1px solid rgba(239,68,68,.34);
-                border-radius:5px;
-                color:#ff6b72;
-                font-size:10px;
+                position:absolute;
+                right:4px;
+                bottom:3px;
+                display:inline-block;
+                width:auto;
+                height:auto;
+                border:0;
+                border-radius:0;
+                color:#ef4444;
+                font-size:8px;
                 line-height:1;
-                flex:0 0 auto;
+                font-weight:800;
+                opacity:.95;
+                pointer-events:none;
             }
             #thcTable td.thc-cashout .thc-cashout-row-link.is-zero{
                 opacity:.58;
