@@ -7,6 +7,7 @@ Tujuan:
 - 5 card ringkasan saldo default tertutup agar Buku Arus Kas lebih clean.
 - Card hanya tampil saat Owner menekan tombol Tampilkan.
 - Menjaga card tetap berada di body collapse walau renderLedger UI lain memindahkannya.
+- Memberi jarak visual dari Buku Arus Kas dan merapikan label cabang UI.
 - Tidak mengubah data, saldo, query, engine, transaksi, atau formula.
 =========================================================
 */
@@ -26,7 +27,7 @@ Tujuan:
         overflow:hidden;
         background:linear-gradient(180deg,rgba(13,19,25,.97),rgba(9,14,20,.98));
         box-shadow:0 8px 24px rgba(0,0,0,.22);
-        margin:0 0 14px;
+        margin:18px 0 14px;
       }
       body.page-arus-kas .ak2-summary-collapse-head{
         display:flex;
@@ -102,10 +103,32 @@ Tujuan:
       @media print{
         body.page-arus-kas .ak2-summary-collapse-head{display:none!important}
         body.page-arus-kas .ak2-summary-collapse-body{display:block!important}
-        body.page-arus-kas .ak2-summary-collapse-wrap{border:0!important;box-shadow:none!important;background:transparent!important}
+        body.page-arus-kas .ak2-summary-collapse-wrap{border:0!important;box-shadow:none!important;background:transparent!important;margin:0!important}
       }
     `;
     document.head.appendChild(style);
+  }
+
+  function normalizeCabangLabels(){
+    document.querySelectorAll("body.page-arus-kas .ak2-cabang-badge").forEach(label => {
+      const original = String(label.textContent || "").trim();
+      if(!original || original === "—" || /MANUAL\s*\/\s*UMUM/i.test(original)) return;
+      const cleaned = original
+        .replace(/^(?:(?:VAX|WIJAYA|SPBU)\s+)+/i, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toUpperCase();
+      if(cleaned && cleaned !== original) label.textContent = cleaned;
+    });
+  }
+
+  function installCabangLabelGuard(){
+    const ledger = document.getElementById("ak2LedgerBody");
+    if(!ledger || ledger.dataset.ak2CabangNormalizeGuard === "1") return;
+    ledger.dataset.ak2CabangNormalizeGuard = "1";
+    normalizeCabangLabels();
+    const observer = new MutationObserver(() => normalizeCabangLabels());
+    observer.observe(ledger, {childList:true, subtree:true});
   }
 
   function install(){
@@ -154,6 +177,8 @@ Tujuan:
     };
 
     keepCardsInside();
+    installCabangLabelGuard();
+    normalizeCabangLabels();
 
     const sync = () => {
       const expanded = wrap.classList.contains("is-ui-expanded");
@@ -181,12 +206,14 @@ Tujuan:
       const parent = qris.parentNode;
       const observer = new MutationObserver(() => {
         keepCardsInside();
+        installCabangLabelGuard();
+        normalizeCabangLabels();
       });
       observer.observe(parent, {childList:true, subtree:false});
 
       document.addEventListener("erp:finance-ready", () => {
-        setTimeout(keepCardsInside, 0);
-        setTimeout(keepCardsInside, 150);
+        setTimeout(() => { keepCardsInside(); installCabangLabelGuard(); normalizeCabangLabels(); }, 0);
+        setTimeout(() => { keepCardsInside(); installCabangLabelGuard(); normalizeCabangLabels(); }, 150);
       });
     }
 
@@ -198,6 +225,7 @@ Tujuan:
     let attempts = 0;
     const timer = setInterval(function(){
       attempts += 1;
+      normalizeCabangLabels();
       if(install() || attempts >= 100) clearInterval(timer);
     }, 50);
   }
