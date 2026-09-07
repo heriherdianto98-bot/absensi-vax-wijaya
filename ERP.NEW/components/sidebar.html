@@ -343,7 +343,7 @@ Version   : UI-01
 .sidebar .sidebar-footer .version{font-size:12px!important;font-weight:700!important;}
 .sidebar .sidebar-footer .logout-btn{font-size:14px!important;font-weight:900!important;}
 
-/* Brand block layout: stack copy below logo so every word stays readable. */
+/* Brand block layout: keep existing brand copy exactly visible below the logo. */
 .sidebar .sidebar-logo{
     display:flex!important;
     flex-direction:column!important;
@@ -356,8 +356,15 @@ Version   : UI-01
 .sidebar .sidebar-logo .logo-mark{
     flex:0 0 auto!important;
     margin:0 auto!important;
+    animation:none!important;
+    transition:none!important;
+    transform:none!important;
+    filter:none!important;
 }
 .sidebar .sidebar-logo .brand-copy{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
     width:100%!important;
     max-width:190px!important;
     margin:-2px auto 0!important;
@@ -365,37 +372,24 @@ Version   : UI-01
     text-align:center!important;
 }
 .sidebar .sidebar-logo .brand-title{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
     font-size:15px!important;
     white-space:nowrap!important;
     text-align:center!important;
     line-height:1.1!important;
 }
 .sidebar .sidebar-logo .brand-subtitle{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
     max-width:184px!important;
     margin:3px auto 0!important;
     font-size:11.5px!important;
     white-space:normal!important;
     text-align:center!important;
     line-height:1.2!important;
-}
-
-/* Owner request: brand/logo must stay fully static in every module. UI only. */
-.sidebar .sidebar-logo,
-.sidebar .sidebar-logo *,
-.sidebar .sidebar-logo::before,
-.sidebar .sidebar-logo::after,
-.sidebar .sidebar-logo .logo-mark,
-.sidebar .sidebar-logo .logo-mark::before,
-.sidebar .sidebar-logo .logo-mark::after,
-.sidebar .sidebar-logo .brand-copy,
-.sidebar .sidebar-logo .brand-title,
-.sidebar .sidebar-logo .brand-subtitle{
-    animation:none!important;
-    transition:none!important;
-    transform:none!important;
-}
-.sidebar .sidebar-logo .logo-mark{
-    filter:none!important;
 }
 
 /* Compact session footer — UI only. Keeps the same role/session data and IDs. */
