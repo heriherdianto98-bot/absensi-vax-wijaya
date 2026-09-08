@@ -109,12 +109,13 @@ body.s3sheet-erp-integrated .s3sheet-check{
   font-size:11px !important;
 }
 
-/* UI ONLY — kolom Biaya di luar Cashout dan Koreksi sudah tidak dipakai.
-   Sembunyikan visualnya saja; engine/data/formula tetap utuh. */
+/* UI ONLY — Biaya di luar Cashout tidak dipakai di worksheet.
+   KOREKSI lama juga tidak dipakai, tetapi jangan pakai nth-child untuk KOREKSI
+   karena posisi kolom dinamis dan dapat mengenai VERIF OWNER. */
 body.s3sheet-erp-integrated .s3sheet-table th:nth-child(7),
 body.s3sheet-erp-integrated .s3sheet-table td:nth-child(7),
-body.s3sheet-erp-integrated .s3sheet-table th:nth-child(12),
-body.s3sheet-erp-integrated .s3sheet-table td:nth-child(12){
+body.s3sheet-erp-integrated .s3sheet-table th[data-s3-correction-head],
+body.s3sheet-erp-integrated .s3sheet-table td[data-s3-correction-cell]{
   display:none !important;
 }
 
