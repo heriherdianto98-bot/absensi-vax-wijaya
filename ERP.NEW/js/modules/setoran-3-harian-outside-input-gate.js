@@ -16,7 +16,15 @@
   let busy=false;
 
   function isSvp(){return typeof flow.isSvp==="function" && flow.isSvp();}
-  function money(v){const n=Number(v);return Number.isFinite(n)?n:0;}
+  function money(v){
+    if(typeof v==="string") v=v.replace(/[^0-9-]/g,"");
+    const n=Number(v);
+    return Number.isFinite(n)?n:0;
+  }
+  function rupiahInput(v){
+    const n=money(v);
+    return n>0?`Rp ${new Intl.NumberFormat("id-ID",{maximumFractionDigits:0}).format(n)}`:"";
+  }
   function key(id){return flow.key(id);}
   function branchName(id){return flow.canonicalName(flow.branches.find(b=>Number(b.id)===Number(id))?.nama_cabang||"");}
   function outsideProofReady(saved){return Boolean(saved?._proofByKind?.OUTSIDE_CASHOUT);}
@@ -45,7 +53,8 @@
       .s3-outside-field{display:flex;flex-direction:column;gap:7px}
       .s3-outside-field.is-note,.s3-outside-field.is-proof{grid-column:1/-1}
       .s3-outside-field label{font-size:11px;font-weight:1000;letter-spacing:.08em;color:#d8a53b;text-transform:uppercase}
-      .s3-outside-field input[type="number"],.s3-outside-field textarea{width:100%;box-sizing:border-box;border:1px solid rgba(216,165,59,.30);border-radius:10px;background:#09131c;color:#f4f7fa;padding:11px 12px;font:800 14px/1.3 "Source Sans 3",sans-serif;outline:none}
+      #s3OutsideAmount,.s3-outside-field textarea{width:100%;box-sizing:border-box;border:1px solid rgba(216,165,59,.30);border-radius:10px;background:#09131c;color:#f4f7fa;padding:11px 12px;font:800 14px/1.3 "Source Sans 3",sans-serif;outline:none}
+      #s3OutsideAmount{font-size:16px;letter-spacing:.01em}
       .s3-outside-field textarea{min-height:104px;resize:vertical}
       .s3-outside-field input:focus,.s3-outside-field textarea:focus{border-color:#d8a53b;box-shadow:0 0 0 2px rgba(216,165,59,.10)}
       .s3-outside-proof-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 12px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:#0b151f}
@@ -90,7 +99,7 @@
           <div class="s3-outside-form">
             <div class="s3-outside-field">
               <label for="s3OutsideAmount">Nominal Biaya</label>
-              <input id="s3OutsideAmount" type="number" min="0" step="1000" placeholder="0">
+              <input id="s3OutsideAmount" type="text" inputmode="numeric" autocomplete="off" placeholder="Rp 0">
             </div>
             <div class="s3-outside-field">
               <label>Status Bukti</label>
@@ -119,6 +128,10 @@
     m.querySelectorAll('[data-outside-cancel]').forEach(x=>x.addEventListener('click',closeModal));
     m.querySelector('[data-outside-pick]').addEventListener('click',()=>m.querySelector('#s3OutsideFile').click());
     m.querySelector('#s3OutsideFile').addEventListener('change',syncFileLabel);
+    m.querySelector('#s3OutsideAmount').addEventListener('input',e=>{
+      const n=money(e.target.value);
+      e.target.value=n?rupiahInput(n):'';
+    });
     m.querySelector('[data-outside-save]').addEventListener('click',savePopup);
     return m;
   }
@@ -198,7 +211,7 @@
     const m=ensureModal();
     m.dataset.branchId=String(id);
     m.querySelector('#s3OutsideMeta').textContent=`${branchName(id)} · khusus biaya di luar Cashout`;
-    m.querySelector('#s3OutsideAmount').value=money(saved.outside_cashout_cost)||'';
+    m.querySelector('#s3OutsideAmount').value=rupiahInput(saved.outside_cashout_cost);
     m.querySelector('#s3OutsideNote').value=String(saved.outside_cashout_note||'');
     m.querySelector('#s3OutsideFile').value='';
     const hasProof=outsideProofReady(saved);
