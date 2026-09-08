@@ -26,21 +26,49 @@ Fungsi:
   const digits=v=>String(v??"").replace(/\D/g,"");
   const rowById=id=>flow.ledger?.find(x=>String(x.id)===String(id))||null;
 
-  function applySearch(){
+  function rowSearchText(tr){
+    const row=rowById(tr.dataset.id)||{};
+    return norm([
+      tr.textContent,
+      row.tanggal,
+      row.branch_name,
+      row.cabang_name,
+      row.description,
+      row.category,
+      row.entry_type,
+      row.source,
+      row.verification_status,
+      row.amount,
+      flow.rupiah?.(row.amount)
+    ].filter(Boolean).join(" "));
+  }
+
+  function applySearch(forceValue){
     if(applying) return;
     applying=true;
     try{
       const body=document.getElementById("ak2LedgerBody");
+      const input=document.getElementById("ak2QuickSearch");
       if(!body) return;
-      const q=norm(query), qDigits=digits(query);
+      if(typeof forceValue==="string") query=forceValue;
+      else if(input) query=input.value;
+
+      const q=norm(query);
+      const qDigits=digits(query);
       let visible=0;
-      body.querySelectorAll("tr[data-id]").forEach(tr=>{
-        const hit=!q || norm(tr.textContent).includes(q) || (!!qDigits && digits(tr.textContent).includes(qDigits));
+      const rows=[...body.querySelectorAll("tr[data-id]")];
+
+      rows.forEach(tr=>{
+        const text=rowSearchText(tr);
+        const hit=!q || text.includes(q) || (!!qDigits && digits(text).includes(qDigits));
         tr.hidden=!hit;
+        tr.style.display=hit?"":"none";
         if(hit) visible++;
       });
+
       const count=document.getElementById("ak2SearchCount");
-      if(count) count.textContent=q?`${visible} hasil`:"";
+      if(count) count.textContent=q?`${visible} hasil dari ${rows.length}`:"";
+      document.querySelector(".ak2-quick-search")?.classList.toggle("is-active",!!q);
     }finally{applying=false}
   }
 
@@ -50,11 +78,39 @@ Fungsi:
     const right=head.querySelector(":scope > span");
     const wrap=document.createElement("div");
     wrap.className="ak2-quick-search-wrap";
-    wrap.innerHTML=`<div class="ak2-quick-search"><span class="ak2-quick-search-icon" aria-hidden="true">⌕</span><input id="ak2QuickSearch" type="search" autocomplete="off" placeholder="Cari nominal / kata..." aria-label="Cari transaksi Arus Kas"><button type="button" id="ak2QuickSearchClear" title="Bersihkan pencarian" aria-label="Bersihkan pencarian">×</button></div><small id="ak2SearchCount" class="ak2-search-count"></small>`;
+    wrap.innerHTML=`
+      <div class="ak2-quick-search">
+        <button type="button" id="ak2QuickSearchBtn" class="ak2-quick-search-icon" title="Cari transaksi" aria-label="Cari transaksi">⌕</button>
+        <input id="ak2QuickSearch" type="search" autocomplete="off" placeholder="Cari nominal / kata..." aria-label="Cari transaksi Arus Kas">
+        <button type="button" id="ak2QuickSearchClear" title="Bersihkan pencarian" aria-label="Bersihkan pencarian">×</button>
+      </div>
+      <small id="ak2SearchCount" class="ak2-search-count"></small>`;
     if(right) right.insertAdjacentElement("beforebegin",wrap); else head.appendChild(wrap);
+
     const input=wrap.querySelector("#ak2QuickSearch");
-    input.addEventListener("input",()=>{query=input.value;applySearch()});
-    wrap.querySelector("#ak2QuickSearchClear").addEventListener("click",()=>{input.value="";query="";applySearch();input.focus()});
+    const searchBtn=wrap.querySelector("#ak2QuickSearchBtn");
+    const clear=wrap.querySelector("#ak2QuickSearchClear");
+
+    input.addEventListener("input",()=>applySearch(input.value));
+    input.addEventListener("keydown",e=>{
+      if(e.key==="Enter"){
+        e.preventDefault();
+        applySearch(input.value);
+      }
+      if(e.key==="Escape"){
+        input.value="";
+        applySearch("");
+      }
+    });
+    searchBtn.addEventListener("click",()=>{
+      input.focus();
+      applySearch(input.value);
+    });
+    clear.addEventListener("click",()=>{
+      input.value="";
+      applySearch("");
+      input.focus();
+    });
     return true;
   }
 
@@ -139,10 +195,6 @@ Fungsi:
     });
   }
 
-  /*
-   * Capture-phase delegated click: icon AKSI harus menang sebelum handler klik row/detail.
-   * Ini hanya routing UI ke openInput(row) existing; tidak mengubah save/update engine.
-   */
   document.addEventListener("click",e=>{
     const btn=e.target.closest?.("[data-ak2-manual-edit]");
     if(!btn) return;
@@ -182,14 +234,15 @@ Fungsi:
     s.textContent=`
       body.page-arus-kas .ak2-ledger-card .ak2-section-head{gap:14px}
       body.page-arus-kas .ak2-quick-search-wrap{margin-left:auto;display:flex;align-items:center;gap:8px}
-      body.page-arus-kas .ak2-quick-search{height:42px;min-width:300px;display:flex;align-items:center;gap:8px;padding:0 10px;border:1px solid #3d536b;border-radius:11px;background:linear-gradient(180deg,#182331,#111923);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.16)}
-      body.page-arus-kas .ak2-quick-search:focus-within{border-color:#d3a54b;box-shadow:0 0 0 2px rgba(211,165,75,.10),0 8px 22px rgba(0,0,0,.22)}
-      body.page-arus-kas .ak2-quick-search-icon{color:#e0b45a;font-size:22px;line-height:1;transform:rotate(-18deg)}
-      body.page-arus-kas #ak2QuickSearch{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#f4f8fc;font:inherit;font-size:14px;font-weight:800}
+      body.page-arus-kas .ak2-quick-search{height:44px;min-width:320px;display:flex;align-items:center;gap:8px;padding:0 9px;border:1px solid #3d536b;border-radius:11px;background:linear-gradient(180deg,#182331,#111923);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.16)}
+      body.page-arus-kas .ak2-quick-search:focus-within,body.page-arus-kas .ak2-quick-search.is-active{border-color:#d3a54b;box-shadow:0 0 0 2px rgba(211,165,75,.10),0 8px 22px rgba(0,0,0,.22)}
+      body.page-arus-kas .ak2-quick-search-icon{width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:8px;background:rgba(211,165,75,.08);color:#e0b45a;font-size:22px;line-height:1;cursor:pointer}
+      body.page-arus-kas .ak2-quick-search-icon:hover{background:rgba(211,165,75,.16);color:#ffe09a}
+      body.page-arus-kas #ak2QuickSearch{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;color:#f4f8fc;font:inherit;font-size:15px;font-weight:800}
       body.page-arus-kas #ak2QuickSearch::placeholder{color:#7f8c99;font-weight:700}
-      body.page-arus-kas #ak2QuickSearchClear{width:26px;height:26px;border:0;border-radius:7px;background:transparent;color:#82909e;font-size:20px;cursor:pointer}
+      body.page-arus-kas #ak2QuickSearchClear{width:28px;height:28px;border:0;border-radius:7px;background:transparent;color:#82909e;font-size:20px;cursor:pointer}
       body.page-arus-kas #ak2QuickSearchClear:hover{background:#252f3a;color:#fff0c8}
-      body.page-arus-kas .ak2-search-count{color:#91a5b9;font-weight:800;white-space:nowrap}
+      body.page-arus-kas .ak2-search-count{color:#d7b86a;font-weight:800;white-space:nowrap}
 
       body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{overflow-x:auto!important;overflow-y:auto;-webkit-overflow-scrolling:touch}
       body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1420px;width:max-content}
