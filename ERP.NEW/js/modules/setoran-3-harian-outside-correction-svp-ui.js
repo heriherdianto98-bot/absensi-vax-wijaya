@@ -12,7 +12,7 @@
   flow.__outsideCorrectionSvpUiInstalled=true;
 
   const statusOf=s=>String(s?.outside_correction_status||"NONE").toUpperCase();
-  const isSvp=()=>typeof flow.isSvp==="function" && flow.isSvp();
+  const isSvp=()=>["svp","spv"].includes(String(flow.role||"").toLowerCase());
   const proofReadyCache=new Map();
 
   function ts(v){const n=Date.parse(v||"");return Number.isFinite(n)?n:0;}
