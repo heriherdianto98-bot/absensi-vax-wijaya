@@ -120,3 +120,13 @@
   s.src=new URL('setoran-3-harian-proof-replace-ui.js',current.src).href;
   document.head.appendChild(s);
 })();
+
+/* Trial UI: dedicated Ket. Biaya + Upload Foto inline, TANPA popup/modal. */
+(function(){
+  const current=document.currentScript;
+  if(!current||document.querySelector('script[data-s3-outside-inline-ui]')) return;
+  const s=document.createElement('script');
+  s.dataset.s3OutsideInlineUi='1';
+  s.src=new URL('setoran-3-harian-outside-inline-ui.js',current.src).href;
+  document.head.appendChild(s);
+})();
