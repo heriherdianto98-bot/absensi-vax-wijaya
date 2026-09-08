@@ -18,9 +18,9 @@
       .s3sheet-table th[data-s3-correction-head]{min-width:102px;text-align:center;color:#ffd34f}
       .s3-correction-cell{min-width:102px;text-align:center;vertical-align:middle}
       .s3-corr-empty{color:#5f6d79;font-weight:800}
-      .s3-corr-alert{width:38px;height:38px;border-radius:50%;border:2px solid #ff5252;background:rgba(127,29,29,.22);color:#ff6b6b;font-size:21px;font-weight:1000;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 10px rgba(255,70,70,.45);animation:s3CorrBlink .55s steps(2,end) infinite}
-      .s3-corr-alert:hover{transform:scale(1.07);background:rgba(127,29,29,.34)}
-      @keyframes s3CorrBlink{0%,100%{opacity:1;box-shadow:0 0 6px rgba(255,70,70,.35),0 0 0 0 rgba(255,70,70,.55)}50%{opacity:.28;box-shadow:0 0 24px rgba(255,70,70,.95),0 0 0 7px rgba(255,70,70,.10)}}
+      .s3-corr-alert{border:0!important;background:transparent!important;color:#ffd34f!important;padding:0!important;margin:0!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;border-radius:0!important;font-size:25px;font-weight:1000;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;text-shadow:0 0 7px rgba(255,211,79,.55);box-shadow:none!important;animation:s3CorrBlink .5s steps(2,end) infinite}
+      .s3-corr-alert:hover{transform:scale(1.12);color:#ffe46f!important;background:transparent!important}
+      @keyframes s3CorrBlink{0%,100%{opacity:1;filter:drop-shadow(0 0 2px rgba(255,211,79,.55))}50%{opacity:.24;filter:drop-shadow(0 0 9px rgba(255,211,79,1))}}
       .s3-corr-state{display:inline-flex;align-items:center;justify-content:center;min-height:31px;padding:5px 8px;border-radius:8px;font-size:9px;font-weight:1000;line-height:1.1;text-align:center;max-width:96px}
       .s3-corr-state.req{border:1px solid rgba(248,113,113,.58);background:rgba(127,29,29,.20);color:#fca5a5}
       .s3-corr-state.sent{border:1px solid rgba(251,191,36,.60);background:rgba(120,53,15,.18);color:#fde68a}
@@ -114,7 +114,6 @@
     ensureHeader();
     document.querySelectorAll("#s3sheetBody tr[data-cabang-id]").forEach(tr=>{
       tr.querySelector("[data-s3-correction-cell]")?.remove();
-      /* cleanup old inline correction UI from Biaya di luar Cashout */
       tr.querySelector("[data-outside-correction-ui]")?.remove();
 
       const id=Number(tr.dataset.cabangId);
