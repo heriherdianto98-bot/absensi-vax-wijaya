@@ -1,38 +1,39 @@
 /* ERP VAX — Setoran 3 Harian history modal polish */
 #s3sheetHistoryModal .s3sheet-modal-panel{
-  width:min(760px,calc(100vw - 56px));
-  max-height:72vh;
+  width:min(1120px,calc(100vw - 72px));
+  max-height:84vh;
   padding:0;
   overflow:hidden;
   border:1px solid rgba(216,165,59,.34);
-  border-radius:14px;
+  border-radius:16px;
   background:linear-gradient(180deg,#101923 0%,#0b141d 100%);
-  box-shadow:0 24px 70px rgba(0,0,0,.56),0 0 0 1px rgba(255,255,255,.02) inset;
+  box-shadow:0 28px 86px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.02) inset;
 }
 #s3sheetHistoryModal .s3sheet-modal-head{
   position:sticky;
   top:0;
   z-index:2;
-  min-height:72px;
-  padding:14px 16px 12px;
-  border-bottom:1px solid rgba(216,165,59,.22);
-  background:linear-gradient(180deg,#131f2b 0%,#101923 100%);
+  min-height:78px;
+  padding:16px 20px 13px;
+  border-bottom:1px solid rgba(216,165,59,.28);
+  background:linear-gradient(180deg,#152230 0%,#101923 100%);
 }
 #s3sheetHistoryModal .s3sheet-modal-head strong{
-  font-size:18px;
+  font-size:21px;
   line-height:1.2;
-  font-weight:800;
+  font-weight:900;
   color:#f6f8fb;
+  letter-spacing:.01em;
 }
 #s3sheetHistoryModal .s3sheet-modal-head small{
-  margin-top:4px;
-  font-size:12px;
-  color:#96a7b8;
+  margin-top:5px;
+  font-size:13px;
+  color:#9fb0c0;
 }
 #s3sheetHistoryModal .s3sheet-modal-head button{
-  width:36px;
-  height:36px;
-  border-radius:9px;
+  width:38px;
+  height:38px;
+  border-radius:10px;
   color:#dce4ec;
   font-size:24px;
   line-height:1;
@@ -42,10 +43,10 @@
   color:#f2c45b;
 }
 #s3sheetHistoryList{
-  max-height:calc(72vh - 72px);
+  max-height:calc(84vh - 78px);
   overflow-y:auto;
   overflow-x:hidden;
-  padding:6px 16px 14px;
+  padding:14px 18px 18px;
   scrollbar-width:thin;
   scrollbar-color:#526170 #111a23;
 }
@@ -57,61 +58,91 @@
   border-radius:999px;
 }
 #s3sheetHistoryList::-webkit-scrollbar-thumb:hover{background:#6d7d8b}
+
+/* Setiap record histori dibuat seperti satu baris yang jelas dan terpisah. */
 #s3sheetHistoryList .s3sheet-history-item{
-  padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,.075);
+  position:relative;
+  margin:0 0 10px;
+  padding:15px 16px 14px;
+  border:1px solid rgba(149,168,187,.18);
+  border-left:3px solid rgba(216,165,59,.34);
+  border-radius:11px;
+  background:linear-gradient(180deg,rgba(15,27,38,.96),rgba(11,21,30,.96));
+  box-shadow:0 1px 0 rgba(255,255,255,.02) inset;
 }
-#s3sheetHistoryList .s3sheet-history-item:last-child{border-bottom:0}
+#s3sheetHistoryList .s3sheet-history-item:nth-child(even){
+  background:linear-gradient(180deg,rgba(18,31,43,.98),rgba(12,22,32,.98));
+}
+#s3sheetHistoryList .s3sheet-history-item:last-child{margin-bottom:0}
 #s3sheetHistoryList .s3sheet-history-item>div:first-child{
   align-items:center;
+  min-height:24px;
+  padding-bottom:8px;
+  margin-bottom:8px;
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
 #s3sheetHistoryList .s3sheet-history-item strong{
-  font-size:13px;
-  font-weight:800;
+  font-size:14px;
+  font-weight:900;
   color:#f3c453;
-  letter-spacing:.015em;
+  letter-spacing:.02em;
 }
 #s3sheetHistoryList .s3sheet-history-item span{
   flex:0 0 auto;
-  font-size:11px;
-  color:#8fa1b2;
+  font-size:12px;
+  color:#9aabba;
 }
 #s3sheetHistoryList .s3sheet-history-item p{
-  margin:8px 0 5px;
-  font-size:13px;
-  line-height:1.45;
-  color:#eef3f7;
+  margin:8px 0 6px;
+  font-size:14px;
+  line-height:1.5;
+  color:#f1f5f8;
   white-space:normal;
   word-break:break-word;
 }
 #s3sheetHistoryList .s3sheet-history-item small{
   display:block;
-  font-size:11px;
-  line-height:1.4;
-  color:#91a1b0;
+  font-size:12px;
+  line-height:1.45;
+  color:#9aaab8;
   white-space:normal;
   word-break:break-word;
 }
+
+/* Blok perubahan nilai dibuat lebih lega agar mudah dibaca. */
 #s3sheetHistoryList .s3sheet-history-item [style*="display:flex"]{
   max-width:100%;
-  overflow:hidden;
+  overflow:visible;
+  gap:10px!important;
+  flex-wrap:wrap!important;
 }
 #s3sheetHistoryList .s3sheet-history-item [style*="display:flex"] > *{
   min-width:0;
+  flex:1 1 230px;
 }
 #s3sheetHistoryList .s3sheet-history-item [style*="border"]{
-  border-color:rgba(216,165,59,.18)!important;
+  border-color:rgba(216,165,59,.22)!important;
   background:#0d1721!important;
-  border-radius:9px!important;
+  border-radius:10px!important;
 }
+
 #s3sheetHistoryList .s3sheet-muted{
-  padding:22px 4px;
+  padding:26px 6px;
   margin:0;
   text-align:center;
   color:#94a5b5;
-  font-size:13px;
+  font-size:14px;
 }
-@media (max-width:900px){
-  #s3sheetHistoryModal .s3sheet-modal-panel{width:calc(100vw - 24px);max-height:82vh}
-  #s3sheetHistoryList{max-height:calc(82vh - 72px);padding-left:12px;padding-right:12px}
+
+@media (max-width:1100px){
+  #s3sheetHistoryModal .s3sheet-modal-panel{width:calc(100vw - 36px);max-height:86vh}
+  #s3sheetHistoryList{max-height:calc(86vh - 78px);padding-left:12px;padding-right:12px}
+}
+@media (max-width:720px){
+  #s3sheetHistoryModal .s3sheet-modal-panel{width:calc(100vw - 18px);max-height:88vh;border-radius:12px}
+  #s3sheetHistoryModal .s3sheet-modal-head{padding:13px 14px 11px;min-height:70px}
+  #s3sheetHistoryModal .s3sheet-modal-head strong{font-size:18px}
+  #s3sheetHistoryList{max-height:calc(88vh - 70px);padding:10px}
+  #s3sheetHistoryList .s3sheet-history-item{padding:12px 12px 11px}
+  #s3sheetHistoryList .s3sheet-history-item [style*="display:flex"] > *{flex-basis:100%}
 }
