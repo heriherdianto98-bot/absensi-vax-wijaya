@@ -177,13 +177,40 @@ Tujuan:
         white-space:nowrap;
         color:#e6edf4;
         font-weight:700;
-        line-height:1.2;
+        line-height:1.15;
       }
+
+      /* UI ONLY — ledger lebih rapat untuk audit satu layar. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
+        padding-top:4px!important;
+        padding-bottom:4px!important;
+        padding-left:10px!important;
+        padding-right:10px!important;
+        line-height:1.12!important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
+        height:40px!important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
+        padding-top:10px!important;
+        padding-bottom:10px!important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-source,
+      body.page-arus-kas .ak2-ledger-card .ak2-status{
+        min-height:28px!important;
+        padding:4px 10px!important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-ledger-edit-icon{
+        width:30px!important;
+        height:30px!important;
+        font-size:15px!important;
+      }
+
       body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(4),
       body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(6){
-        width:230px!important;
-        min-width:230px!important;
-        max-width:230px!important;
+        width:215px!important;
+        min-width:215px!important;
+        max-width:215px!important;
         overflow:hidden!important;
       }
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc{
@@ -192,9 +219,18 @@ Tujuan:
       @media(max-width:1200px){
         body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(4),
         body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(6){
-          width:205px!important;
-          min-width:205px!important;
-          max-width:205px!important;
+          width:190px!important;
+          min-width:190px!important;
+          max-width:190px!important;
+        }
+        body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
+          padding-top:3px!important;
+          padding-bottom:3px!important;
+          padding-left:8px!important;
+          padding-right:8px!important;
+        }
+        body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
+          height:38px!important;
         }
       }
     `;
