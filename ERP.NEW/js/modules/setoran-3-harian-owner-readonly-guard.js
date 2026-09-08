@@ -11,7 +11,11 @@
   if(flow.__ownerReadonlyGuardInstalled) return;
   flow.__ownerReadonlyGuardInstalled=true;
 
-  const isOwner=()=>String(flow.profile?.role||flow.role||"").toLowerCase()==="owner";
+  const canonicalRole=()=>String(
+    (typeof OwnerAuth!=="undefined" && OwnerAuth?.profile?.role) ||
+    flow.profile?.role || flow.role || ""
+  ).toLowerCase();
+  const isOwner=()=>canonicalRole()==="owner";
   const statusOf=s=>String(s?.outside_correction_status||"NONE").toUpperCase();
 
   function forceOwnerCorrectionState(tr,saved){
@@ -20,8 +24,7 @@
     const st=statusOf(saved);
     const resend=corr.querySelector('[data-corr-resubmit]');
 
-    /* Owner tidak pernah boleh mendapat tombol KIRIM ULANG.
-       Jika modul SVP sempat merender tombol itu, paksa ganti sesuai state koreksi aktual. */
+    /* Owner tidak pernah boleh mendapat tombol KIRIM ULANG. */
     if(resend){
       resend.remove();
       const state=document.createElement('span');
@@ -38,7 +41,6 @@
       return;
     }
 
-    /* Normalisasi juga jika cell sudah ada tetapi labelnya salah/stale. */
     if(st==="REQUESTED"){
       const current=corr.querySelector('.s3-corr-state');
       if(!current || current.textContent.trim()!=="⚠ PERLU KOREKSI"){
@@ -65,17 +67,31 @@
   function enforce(){
     if(!isOwner()) return;
     document.querySelectorAll('#s3sheetBody tr[data-cabang-id]').forEach(tr=>{
+      const id=Number(tr.dataset.cabangId||0);
+      const saved=flow.savedRows.get(flow.key(id))||{};
+
       tr.querySelectorAll('[data-field="bri"],[data-field="outside"],[data-field="note"],[data-field="taken"],[data-file-input]').forEach(el=>{
         if(!el.disabled) el.disabled=true;
         if(el.getAttribute('aria-disabled')!=='true') el.setAttribute('aria-disabled','true');
       });
 
+      /* Owner READ ONLY tetapi tetap WAJIB bisa melihat bukti yang sudah disimpan SVP. */
       const proof=tr.querySelector('[data-action="proof"]');
       if(proof){
-        const hasSaved=String(proof.textContent||'').trim().toLowerCase().includes('lihat') || proof.classList.contains('has-proof');
-        if(!hasSaved){
-          if(!proof.disabled) proof.disabled=true;
-          if(proof.getAttribute('aria-disabled')!=='true') proof.setAttribute('aria-disabled','true');
+        const hasSaved=Boolean(
+          saved._proofLatest || saved.proof_path ||
+          (saved._proofByKind && Object.keys(saved._proofByKind).length)
+        );
+        if(hasSaved){
+          proof.disabled=false;
+          proof.removeAttribute('aria-disabled');
+          proof.classList.add('has-proof');
+          proof.textContent='Lihat';
+          proof.title='Lihat foto bukti SVP';
+        }else{
+          proof.disabled=true;
+          proof.setAttribute('aria-disabled','true');
+          proof.title='Belum ada bukti tersimpan';
         }
       }
 
@@ -92,8 +108,6 @@
         outsideOpen.title='Owner read only. Review melalui kolom KOREKSI.';
       }
 
-      const id=Number(tr.dataset.cabangId||0);
-      const saved=flow.savedRows.get(flow.key(id))||{};
       forceOwnerCorrectionState(tr,saved);
     });
   }
@@ -111,11 +125,11 @@
   flow.renderTable=function(){
     const r=baseRender(...arguments);
     setTimeout(enforce,0);
-    setTimeout(enforce,60);
+    setTimeout(enforce,80);
+    setTimeout(enforce,220);
     return r;
   };
 
-  /* Observe hanya perubahan struktur row. Jangan observe atribut disabled/data-note-popup. */
   const obs=new MutationObserver(()=>setTimeout(enforce,0));
   function bind(){
     const body=document.getElementById('s3sheetBody');
