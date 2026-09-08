@@ -7,7 +7,7 @@ Safety: UI only. Tidak mengubah engine, rumus, query, validasi, atau data.
 Prioritas tampilan:
 1. Warning/error aksi pengguna (mis. bukti wajib sebelum Sudah Diambil)
 2. Warning ringkasan data (mis. Cash Aktual negatif / Kurang Masuk)
-3. Panduan singkat SVP untuk Biaya di luar Cashout
+3. Panel panduan SVP tetap dipertahankan sebagai elemen UI kosong
 Hanya satu panel prioritas yang terlihat pada satu waktu.
 =========================================================
 */
@@ -32,13 +32,9 @@ Hanya satu panel prioritas yang terlihat pada satu waktu.
       #${SUMMARY_ID}.is-urgent-merged{display:flex!important;}
       #${SUMMARY_ID}.is-urgent-merged .s3-warning-summary-list{display:block!important;}
       #${SUMMARY_ID}.is-urgent-merged .s3-warning-summary-item{display:block!important;}
-      #${HELP_ID}{display:none;align-items:flex-start;gap:10px;margin:0 0 8px;padding:9px 12px;border:1px solid rgba(216,165,59,.48);border-left:4px solid #d8a53b;border-radius:9px;background:linear-gradient(90deg,rgba(120,82,20,.18),rgba(120,82,20,.06));color:#f7e7b0;box-shadow:0 0 14px rgba(216,165,59,.06)}
+      #${HELP_ID}{display:none;align-items:flex-start;gap:10px;min-height:38px;margin:0 0 8px;padding:9px 12px;border:1px solid rgba(216,165,59,.48);border-left:4px solid #d8a53b;border-radius:9px;background:linear-gradient(90deg,rgba(120,82,20,.18),rgba(120,82,20,.06));color:#f7e7b0;box-shadow:0 0 14px rgba(216,165,59,.06)}
       #${HELP_ID}.is-visible{display:flex}
       #${HELP_ID} .s3-outside-help-icon{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;margin-top:1px;border-radius:50%;background:#d8a53b;color:#111827;font-size:12px;font-weight:1000;box-shadow:0 0 8px rgba(216,165,59,.35)}
-      #${HELP_ID} .s3-outside-help-copy{min-width:0}
-      #${HELP_ID} .s3-outside-help-copy strong{display:block;margin-bottom:3px;color:#f4c85b;font-size:10px;font-weight:1000;letter-spacing:.7px;text-transform:uppercase}
-      #${HELP_ID} .s3-outside-help-copy span{display:block;color:#f7e7b0;font-size:12px;font-weight:750;line-height:1.45}
-      #${HELP_ID} .s3-outside-help-copy b{color:#fff;font-weight:1000}
     `;
     document.head.appendChild(style);
   }
@@ -69,7 +65,7 @@ Hanya satu panel prioritas yang terlihat pada satu waktu.
     help=document.createElement('div');
     help.id=HELP_ID;
     help.setAttribute('role','note');
-    help.innerHTML=`<span class="s3-outside-help-icon">i</span><div class="s3-outside-help-copy"><strong>Cara isi Biaya di luar Cashout</strong><span>Klik ikon <b>🧾</b> pada kolom <b>Biaya di luar Cashout</b> → isi <b>nominal</b> → isi <b>keterangan biaya</b> → upload <b>foto bukti biaya</b> → klik <b>SIMPAN</b>.</span></div>`;
+    help.innerHTML=`<span class="s3-outside-help-icon">i</span>`;
     tableCard.parentNode.insertBefore(help,tableCard);
     return help;
   }
