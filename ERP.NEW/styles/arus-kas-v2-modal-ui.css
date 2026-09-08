@@ -218,6 +218,30 @@ body.page-arus-kas #ak2Modal #ak2Tanggal:focus{
   box-shadow:0 0 0 2px rgba(215,170,85,.13),0 0 22px rgba(215,170,85,.10);
 }
 
+/* =========================================================
+   UI ONLY — Quick Search: cegah icon clear dobel di Edge/Chrome
+   Native search cancel disembunyikan; hanya tombol × custom yang dipakai.
+   ========================================================= */
+body.page-arus-kas #ak2QuickSearch::-webkit-search-cancel-button,
+body.page-arus-kas #ak2QuickSearch::-webkit-search-decoration,
+body.page-arus-kas #ak2QuickSearch::-webkit-search-results-button,
+body.page-arus-kas #ak2QuickSearch::-webkit-search-results-decoration{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  display:none!important;
+}
+body.page-arus-kas .ak2-quick-search{
+  position:relative!important;
+}
+body.page-arus-kas #ak2QuickSearchClear{
+  flex:0 0 28px!important;
+  position:relative!important;
+  inset:auto!important;
+  display:grid!important;
+  place-items:center!important;
+  line-height:1!important;
+}
+
 @media(max-width:760px){
   body.page-arus-kas #ak2Modal .ak2-panel{width:min(96vw,680px);max-height:92vh}
   body.page-arus-kas #ak2Modal .ak2-form-grid{padding:16px;gap:13px}
