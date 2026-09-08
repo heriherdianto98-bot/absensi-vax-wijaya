@@ -4,7 +4,16 @@ body.page-arus-kas .ak2-backdrop{
   backdrop-filter:blur(9px) saturate(112%);
 }
 
+/* UI ONLY: saat Input Manual terbuka, toolbar utama tidak ikut terlihat di atas modal.
+   Layout halaman tetap utuh; hanya disembunyikan sementara selama modal aktif. */
+body.page-arus-kas:has(#ak2Modal:not([hidden])) .ak2-toolbar{
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
 body.page-arus-kas #ak2Modal .ak2-panel{
+  width:min(820px,calc(100vw - 48px));
+  max-height:92vh;
   overflow:hidden;
   background:
     radial-gradient(circle at 18% 0%,rgba(215,170,85,.10),transparent 30%),
@@ -27,21 +36,21 @@ body.page-arus-kas #ak2Modal .ak2-panel::before{
 }
 
 body.page-arus-kas #ak2Modal .ak2-modal-head{
-  padding:16px 18px 14px;
+  padding:20px 24px 18px;
   background:linear-gradient(90deg,rgba(215,170,85,.08),rgba(33,54,76,.10),rgba(14,19,25,.20));
   border-bottom:1px solid rgba(215,170,85,.20);
 }
 
 body.page-arus-kas #ak2Modal .ak2-modal-head .ak2-eyebrow{
   color:#e3b85e;
-  font-size:10px;
+  font-size:11px;
   letter-spacing:.18em;
   text-shadow:0 0 12px rgba(215,170,85,.16);
 }
 
 body.page-arus-kas #ak2Modal .ak2-modal-head h2{
-  margin:5px 0 0;
-  font-size:24px;
+  margin:6px 0 0;
+  font-size:29px;
   line-height:1.1;
   font-weight:900;
   letter-spacing:.01em;
@@ -49,15 +58,15 @@ body.page-arus-kas #ak2Modal .ak2-modal-head h2{
 }
 
 body.page-arus-kas #ak2Modal .ak2-close{
-  width:36px;
-  height:36px;
+  width:42px;
+  height:42px;
   border:1px solid rgba(116,132,149,.38);
-  border-radius:10px;
+  border-radius:11px;
   display:grid;
   place-items:center;
   background:linear-gradient(180deg,#18212a,#11171e);
   color:#aeb8c2;
-  font-size:22px;
+  font-size:25px;
   line-height:1;
   transition:.18s ease;
 }
@@ -70,14 +79,14 @@ body.page-arus-kas #ak2Modal .ak2-close:hover{
 }
 
 body.page-arus-kas #ak2Modal .ak2-form-grid{
-  gap:14px;
-  padding:18px;
+  gap:18px;
+  padding:24px;
 }
 
 body.page-arus-kas #ak2Modal .ak2-form-grid label{
-  gap:7px;
+  gap:8px;
   color:#d4dbe2;
-  font-size:11px;
+  font-size:13px;
   letter-spacing:.055em;
   text-transform:uppercase;
   font-weight:900;
@@ -85,13 +94,14 @@ body.page-arus-kas #ak2Modal .ak2-form-grid label{
 
 body.page-arus-kas #ak2Modal .ak2-form-grid input,
 body.page-arus-kas #ak2Modal .ak2-form-grid select{
-  min-height:42px;
+  min-height:50px;
   background:linear-gradient(180deg,#1a2330,#131a22);
   color:#f6f8fa;
   border:1px solid #3c4855;
-  border-radius:10px;
-  padding:10px 12px;
-  font-weight:700;
+  border-radius:11px;
+  padding:12px 14px;
+  font-size:16px;
+  font-weight:800;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
   transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
 }
@@ -119,7 +129,7 @@ body.page-arus-kas #ak2Modal .ak2-form-grid select option{
 }
 
 body.page-arus-kas #ak2Modal .ak2-period-fields{
-  gap:14px;
+  gap:16px;
   padding-top:2px;
 }
 
@@ -130,15 +140,17 @@ body.page-arus-kas #ak2Modal #ak2SourcePeriod[hidden]{
 }
 
 body.page-arus-kas #ak2Modal .ak2-modal-actions{
-  padding:14px 18px 16px;
+  padding:17px 24px 20px;
   border-top:1px solid rgba(215,170,85,.16);
   background:linear-gradient(180deg,rgba(14,19,25,.15),rgba(8,12,16,.45));
 }
 
 body.page-arus-kas #ak2Modal .ak2-modal-actions .ak2-btn{
-  min-width:82px;
+  min-width:96px;
+  min-height:44px;
   border-radius:10px;
-  padding:10px 16px;
+  padding:11px 18px;
+  font-size:14px;
 }
 
 body.page-arus-kas #ak2Modal .ak2-modal-actions [data-ak2-close]{
@@ -165,8 +177,11 @@ body.page-arus-kas #ak2Modal #ak2SaveBtn:hover{
 }
 
 @media(max-width:760px){
-  body.page-arus-kas #ak2Modal .ak2-panel{width:min(96vw,620px)}
-  body.page-arus-kas #ak2Modal .ak2-form-grid{padding:14px;gap:12px}
-  body.page-arus-kas #ak2Modal .ak2-modal-head{padding:14px}
-  body.page-arus-kas #ak2Modal .ak2-modal-actions{padding:12px 14px 14px}
+  body.page-arus-kas #ak2Modal .ak2-panel{width:min(96vw,680px);max-height:92vh}
+  body.page-arus-kas #ak2Modal .ak2-form-grid{padding:16px;gap:13px}
+  body.page-arus-kas #ak2Modal .ak2-modal-head{padding:15px}
+  body.page-arus-kas #ak2Modal .ak2-modal-head h2{font-size:24px}
+  body.page-arus-kas #ak2Modal .ak2-form-grid input,
+  body.page-arus-kas #ak2Modal .ak2-form-grid select{min-height:46px;font-size:15px}
+  body.page-arus-kas #ak2Modal .ak2-modal-actions{padding:13px 15px 15px}
 }
