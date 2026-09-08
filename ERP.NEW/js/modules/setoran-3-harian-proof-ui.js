@@ -89,7 +89,7 @@
     if(i){await db.storage.from(this.PROOF_BUCKET).remove([path]).catch(()=>{});throw i;}
     saved.proof_path=path;
     saved._proofLatest=inserted||proofRow;
-    saved._proofCompression={originalBytes:packed.originalBytes,compressedBytes:blob?.size||packed.compressedBytes};
+    saved._proofCompression={originalBytes:packed.originalBytes,compressedBytes:packed.compressedBytes};
     return inserted||proofRow;
   };
 
