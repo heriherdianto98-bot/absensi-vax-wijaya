@@ -1,7 +1,7 @@
 /* ERP VAX — Setoran 3 Harian proof guard + keep latest proof per kind + dark viewer scrollbar */
 "use strict";
 (function(){
-  if(typeof SetoranDirectFlow==="undefined") return;
+  if(typeof SetoranDirectFlow === "undefined") return;
   const flow=SetoranDirectFlow;
 
   function money(v){
@@ -136,5 +136,15 @@
   const s=document.createElement('script');
   s.dataset.s3ProofReplaceUi='1';
   s.src=new URL('setoran-3-harian-proof-replace-ui.js',current.src).href;
+  document.head.appendChild(s);
+})();
+
+/* Additive SVP UI gate: nominal Biaya di luar Cashout baru aktif setelah keterangan + foto bukti biaya. */
+(function(){
+  const current=document.currentScript;
+  if(!current||document.querySelector('script[data-s3-outside-input-gate]')) return;
+  const s=document.createElement('script');
+  s.dataset.s3OutsideInputGate='1';
+  s.src=new URL('setoran-3-harian-outside-input-gate.js',current.src).href;
   document.head.appendChild(s);
 })();
