@@ -189,8 +189,6 @@ Fungsi:
     if(!row){flow.fail?.("Transaksi manual tidak ditemukan.");return}
     if(row.entry_type!=="MANUAL"){flow.fail?.("Transaksi AUTO tidak boleh dihapus manual.");return}
     if(row.verification_status==="OWNER_VERIFIED"){flow.fail?.("Transaksi OWNER VERIFIED tidak boleh dihapus.");return}
-    const label=`${flow.fmtDate?.(row.tanggal)||row.tanggal} · ${flow.rupiah?.(row.amount)||row.amount} · ${row.description||flow.categoryName?.(row.category)||"Transaksi manual"}`;
-    if(!window.confirm(`Hapus transaksi manual ini?\n\n${label}\n\nTindakan ini tidak dapat dibatalkan.`)) return;
     try{
       flow.busy?.(true); flow.clearMessage?.();
       try{await flow.audit?.(row.id,"DELETE_MANUAL",{before:row,deleted_by:flow.user?.id||null})}catch(_e){}
@@ -223,14 +221,9 @@ Fungsi:
       body.page-arus-kas .ak2-ledger-card .ak2-table th,body.page-arus-kas .ak2-ledger-card .ak2-table td{white-space:normal}
       body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-last-child(-n+3),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-last-child(-n+3){white-space:nowrap}
 
-      /* UI audit: nominal SALDO KAS BESAR lebih besar dan tegas. */
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:nth-child(7){font-size:18px!important;font-weight:950!important;color:#ffd36b!important;letter-spacing:.01em;text-shadow:0 0 10px rgba(255,196,74,.08)}
-
-      /* UI audit: pembatas awal tanggal dibuat jelas. */
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr.ak2-date-start td{border-top:2px solid rgba(215,170,85,.62)!important;box-shadow:inset 0 1px 0 rgba(255,234,182,.06)}
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr.ak2-date-start td:first-child{color:#ffe39b!important;background:#17212b!important}
-
-      /* UI audit: kolom TANGGAL freeze saat tabel digeser horizontal. */
       body.page-arus-kas .ak2-ledger-card .ak2-table thead th:first-child{position:sticky;left:0;z-index:12;min-width:112px;background:#203247!important;box-shadow:3px 0 0 rgba(215,170,85,.34),8px 0 18px rgba(0,0,0,.22)}
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:first-child{position:sticky;left:0;z-index:7;min-width:112px;background:#0f1922!important;color:#f5f7fa;font-size:15px;font-weight:900;box-shadow:3px 0 0 rgba(215,170,85,.20),8px 0 18px rgba(0,0,0,.16)}
 
