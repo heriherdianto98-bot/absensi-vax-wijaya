@@ -136,15 +136,31 @@
       if(!tr||!this.isSvp()) return;
       const file=e.target.files?.[0];
       if(!file) return;
-      this.pendingFiles.set(this.key(tr.dataset.cabangId),file);
+      const key=this.key(tr.dataset.cabangId);
+      this.pendingFiles.set(key,file);
       try{
-        await this.saveRow(tr,{taken:null,quiet:true});
-        const saved=this.savedRows.get(this.key(tr.dataset.cabangId));
+        /*
+          Bukti foto harus bisa tersimpan walau keterangan belum diisi.
+          Validasi keterangan tetap milik flow LOCK dan tetap berlaku saat data/Status Diambil disimpan.
+          Jika row sudah ada, upload langsung ke row tersebut agar foto tidak hilang hanya karena
+          validasi field lain belum lengkap.
+        */
+        let saved=this.savedRows.get(key);
+        const draft=this.draftFromRow(tr);
+        if(saved?.id){
+          const kind=draft.diff!=null&&Math.abs(draft.diff)>.5?"NON_CASH_DIFF":draft.outside>0?"OUTSIDE_CASHOUT":"SETORAN";
+          await this.uploadProof(saved,file,kind);
+          this.pendingFiles.delete(key);
+          this.renderTable();
+        }else{
+          await this.saveRow(tr,{taken:null,quiet:true});
+          saved=this.savedRows.get(key);
+        }
         const c=saved?._proofCompression;
         const info=c&&c.originalBytes?` (${Math.round(c.originalBytes/1024)} KB → ${Math.round(c.compressedBytes/1024)} KB)`:"";
         this.ok(`Bukti foto tersimpan dan dikompres${info}.`);
       }catch(err){
-        this.pendingFiles.delete(this.key(tr.dataset.cabangId));
+        this.pendingFiles.delete(key);
         this.fail(err?.message||String(err));
       }
       return;
