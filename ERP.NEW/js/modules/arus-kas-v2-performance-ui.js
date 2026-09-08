@@ -252,6 +252,15 @@ Tujuan:
     document.body.appendChild(s);
   }
 
+  function loadLedgerOrderUi(){
+    if(document.querySelector('script[data-ak2-ledger-order-ui]')) return;
+    const s=document.createElement("script");
+    s.src="../js/modules/arus-kas-v2-ledger-order-ui.js";
+    s.async=false;
+    s.dataset.ak2LedgerOrderUi="1";
+    document.body.appendChild(s);
+  }
+
   installStyle();
   if(!installRefreshButton()){
     let tries=0;
@@ -261,4 +270,5 @@ Tujuan:
     },50);
   }
   loadManualTools();
+  loadLedgerOrderUi();
 })();
