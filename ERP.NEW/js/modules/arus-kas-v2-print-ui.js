@@ -40,18 +40,40 @@
     .section-sub{margin:-3px 0 8px;color:#6a6454;font-size:8pt}
 
     table{width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid var(--line)}
-    thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
-    th{background:var(--head)!important;color:#fff!important;padding:7px 6px;border-right:1px solid #333;border-bottom:2px solid var(--gold-line);font-size:7.2pt;text-transform:uppercase;letter-spacing:.035em;text-align:left;line-height:1.2}
-    td{padding:7px 6px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:8.5pt;vertical-align:top;overflow-wrap:anywhere;color:#181818!important;background:#fff!important;line-height:1.28}
+    thead{display:table-header-group}
+    tbody{display:table-row-group}
+    tr{break-inside:avoid;page-break-inside:avoid}
+    th{background:var(--head)!important;color:#fff!important;padding:6px 5px;border-right:1px solid #333;border-bottom:2px solid var(--gold-line);font-size:6.9pt;text-transform:uppercase;letter-spacing:.028em;text-align:left;line-height:1.12;vertical-align:middle}
+    td{padding:5px 5px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:7.9pt;vertical-align:top;overflow-wrap:normal;word-break:normal;color:#181818!important;background:#fff!important;line-height:1.18}
     tbody tr:nth-child(even) td{background:#fafaf8!important}
-    td:nth-child(1){font-weight:700;white-space:nowrap}td:nth-child(2){font-weight:900}td:nth-child(3),td:nth-child(5),td:nth-child(7){font-weight:800;white-space:nowrap}
-    td:nth-child(3){color:#0f766e!important}td:nth-child(5){color:#b42318!important}td:nth-child(7){color:#8a6810!important}
+    td:nth-child(1){font-weight:700;white-space:nowrap}
+    td:nth-child(2){font-weight:900}
+    td:nth-child(3),td:nth-child(5),td:nth-child(7){font-weight:800;white-space:nowrap}
+    td:nth-child(3){color:#0f766e!important}
+    td:nth-child(5){color:#b42318!important}
+    td:nth-child(7){color:#8a6810!important}
     td:nth-child(8),td:nth-child(9){text-align:center;white-space:nowrap}
-    th:nth-child(1){width:8%}th:nth-child(2){width:9%}th:nth-child(3){width:9%}th:nth-child(4){width:17%}th:nth-child(5){width:9%}th:nth-child(6){width:17%}th:nth-child(7){width:10%}th:nth-child(8){width:8%}th:nth-child(9){width:13%}
+    th:nth-child(1){width:8%}
+    th:nth-child(2){width:9%}
+    th:nth-child(3){width:9%}
+    th:nth-child(4){width:16%}
+    th:nth-child(5){width:9%}
+    th:nth-child(6){width:16%}
+    th:nth-child(7){width:10%}
+    th:nth-child(8){width:8%}
+    th:nth-child(9){width:15%}
 
-    .ak2-source,.ak2-status{display:inline-block!important;padding:3px 7px!important;border-radius:999px!important;border:1px solid #c7c7c7!important;background:#f5f5f5!important;color:#222!important;font-size:6.7pt!important;font-weight:800!important;box-shadow:none!important;text-shadow:none!important}
+    .ak2-wallet-route{display:block!important;width:100%!important;max-width:100%!important;overflow:visible!important;line-height:1.08!important}
+    .ak2-wallet-route-main,.ak2-wallet-route-sub{display:block!important;max-width:100%!important;overflow:visible!important;text-overflow:clip!important;white-space:normal!important;word-break:normal!important}
+    .ak2-wallet-route-main{font-size:7.7pt!important;font-weight:800!important;line-height:1.08!important;color:#222!important}
+    .ak2-wallet-route-sub{margin-top:2px!important;font-size:6.7pt!important;font-weight:600!important;line-height:1.08!important;color:#676767!important}
+    .ak2-deleted-history-text,.ak2-deleted-desc,.ak2-deleted-desc .ak2-wallet-route-main,.ak2-deleted-desc .ak2-wallet-route-sub{color:#b42318!important;text-decoration-line:line-through!important;text-decoration-thickness:1.5px!important;text-decoration-color:#b42318!important}
+
+    .ak2-source,.ak2-status{display:inline-block!important;padding:2px 6px!important;border-radius:999px!important;border:1px solid #c7c7c7!important;background:#f5f5f5!important;color:#222!important;font-size:6.2pt!important;font-weight:800!important;box-shadow:none!important;text-shadow:none!important;max-width:100%!important}
     .ak2-status.is-verified{border-color:#9fc9b9!important;background:#eef8f4!important;color:#0f6b52!important}
-    .ak2-cabang-badge{color:#171717!important;background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important;font-size:8.5pt!important;font-weight:900!important}
+    .ak2-status.is-pending{border-color:#d9bc70!important;background:#fff8df!important;color:#71520d!important}
+    .ak2-status.is-correction{border-color:#d9a1a1!important;background:#fff0f0!important;color:#9d2323!important}
+    .ak2-cabang-badge{color:#171717!important;background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important;font-size:7.9pt!important;font-weight:900!important;white-space:normal!important}
     .ak2-cabang-repeat,.ak2-tanggal-repeat{color:#8b8b8b!important}
     button,.ak2-row-detail-trigger{display:none!important}
 
@@ -100,7 +122,28 @@
     return clone;
   }
 
-  function cleanTableClone(){return cleanClone(".ak2-ledger-card .ak2-table");}
+  function cleanTableClone(){
+    const table=cleanClone(".ak2-ledger-card .ak2-table");
+    if(!table) return null;
+
+    /* AKSI adalah kontrol interaktif, bukan data ledger. Hilangkan dari cetak
+       supaya seluruh data transaksi muat rapi dalam A4 landscape. */
+    const head=[...table.querySelectorAll("thead th")];
+    const actionIndex=head.findIndex(th=>String(th.textContent||"").replace(/\s+/g," ").trim().toUpperCase()==="AKSI");
+    if(actionIndex>=0){
+      table.querySelectorAll("tr").forEach(tr=>{
+        const cell=tr.children[actionIndex];
+        if(cell) cell.remove();
+      });
+    }
+
+    /* Pastikan semua baris ledger yang sudah dirender ikut tercetak. */
+    table.querySelectorAll("tbody tr").forEach(tr=>{
+      tr.removeAttribute("hidden");
+      tr.style.display="";
+    });
+    return table;
+  }
 
   async function printArusKas(preopenedWindow){
     const table=cleanTableClone();
