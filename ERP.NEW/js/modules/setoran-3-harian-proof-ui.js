@@ -89,7 +89,7 @@
     if(i){await db.storage.from(this.PROOF_BUCKET).remove([path]).catch(()=>{});throw i;}
     saved.proof_path=path;
     saved._proofLatest=inserted||proofRow;
-    saved._proofCompression={originalBytes:packed.originalBytes,compressedBytes:packed.compressedBytes};
+    saved._proofCompression={originalBytes:packed.originalBytes,compressedBytes:blob?.size||packed.compressedBytes};
     return inserted||proofRow;
   };
 
@@ -139,12 +139,6 @@
       const key=this.key(tr.dataset.cabangId);
       this.pendingFiles.set(key,file);
       try{
-        /*
-          Bukti foto harus bisa tersimpan walau keterangan belum diisi.
-          Validasi keterangan tetap milik flow LOCK dan tetap berlaku saat data/Status Diambil disimpan.
-          Jika row sudah ada, upload langsung ke row tersebut agar foto tidak hilang hanya karena
-          validasi field lain belum lengkap.
-        */
         let saved=this.savedRows.get(key);
         const draft=this.draftFromRow(tr);
         if(saved?.id){
@@ -209,7 +203,43 @@
     }
 
     document.getElementById("s3proofViewMeta").textContent=`${valid.length} bukti tersimpan`;
-    body.innerHTML=valid.map(({pr,url})=>`<div style="margin:0 0 14px"><img src="${url}" alt="Bukti setoran" style="max-width:100%;max-height:62vh;border-radius:12px;border:1px solid rgba(216,165,59,.28);object-fit:contain"><div style="margin-top:6px;color:#93a2b3;font-size:11px">${this.esc(pr.proof_kind||"BUKTI")} · ${pr.uploaded_at?new Date(pr.uploaded_at).toLocaleString("id-ID"):""}</div></div>`).join("");
+    body.innerHTML=valid.map(({pr,url})=>`<div style="margin:0 0 14px"><img src="${url}" alt="Bukti setoran" style="max-width:100%;max-height:62vh;border-radius:12px;border:1px solid rgba(216,165,59,.28);object-fit:contain"><div style="margin-top:6px;color:#93a2b3;font-size:11px">${this.esc(pr.proof_kind||"BUKTI")} · ${pr.uploaded_at?new Date(pr.uploaded_at).toLocaleString("id-ID"):""}</div><button type="button" data-s3proof-replace="${this.esc(pr.proof_kind||"SETORAN")}" data-branch-id="${branchId}" style="margin-top:9px;padding:7px 12px;border:1px solid rgba(216,165,59,.52);border-radius:8px;background:rgba(216,165,59,.12);color:#f4c85b;font-weight:800;cursor:pointer">GANTI FOTO</button></div>`).join("");
+
+    body.querySelectorAll("[data-s3proof-replace]").forEach(btn=>btn.addEventListener("click",()=>{
+      const row=document.querySelector(`tr[data-cabang-id="${btn.dataset.branchId}"]`);
+      const input=row?.querySelector("[data-file-input]");
+      if(!input) return;
+      input.dataset.replaceProofKind=btn.dataset.s3proofReplace||"SETORAN";
+      input.click();
+    }));
+  };
+
+  const originalOnChange=flow.onTableChange.bind(flow);
+  flow.onTableChange=async function(e){
+    const tr=e.target.closest("tr[data-cabang-id]");
+    if(e.target.matches?.('[data-file-input]')&&e.target.dataset.replaceProofKind){
+      if(!tr||!this.isSvp()) return;
+      const file=e.target.files?.[0];
+      if(!file) return;
+      const key=this.key(tr.dataset.cabangId);
+      const saved=this.savedRows.get(key);
+      if(!saved?.id) return this.fail("Data setoran belum tersimpan.");
+      const kind=String(e.target.dataset.replaceProofKind||"SETORAN").toUpperCase();
+      try{
+        await this.uploadProof(saved,file,kind);
+        delete e.target.dataset.replaceProofKind;
+        e.target.value="";
+        document.getElementById("s3proofViewModal").hidden=true;
+        this.renderTable();
+        this.ok("Foto bukti berhasil diganti.");
+      }catch(err){
+        delete e.target.dataset.replaceProofKind;
+        e.target.value="";
+        this.fail(err?.message||String(err));
+      }
+      return;
+    }
+    return originalOnChange(e);
   };
 
   const baseOnClick=flow.onTableClick.bind(flow);
