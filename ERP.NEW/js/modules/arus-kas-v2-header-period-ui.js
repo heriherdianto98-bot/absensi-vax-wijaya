@@ -1,10 +1,36 @@
 /* ARUS KAS V2 — HEADER PERIOD SYNC UI ONLY
    Sinkronkan chip PERIODE AKTIF di header global dengan periode Arus Kas.
+   Juga memasang runtime guard agar ArusKasV2.init() tidak berjalan ganda.
    Tidak mengubah engine, query, formula, transaksi, saldo, atau data flow.
 */
 "use strict";
 
 (function(){
+  /* Runtime guard UI-layer: cegah bind ganda dari DOMContentLoaded + erp:finance-ready. */
+  const flow=window.ArusKasV2;
+  if(flow && typeof flow.init==="function" && !flow.__uiInitGuardInstalled){
+    flow.__uiInitGuardInstalled=true;
+    const baseInit=flow.init;
+    let initPromise=null;
+    flow.init=function(){
+      if(initPromise) return initPromise;
+      const ctx=this,args=arguments;
+      initPromise=Promise.resolve()
+        .then(()=>baseInit.apply(ctx,args))
+        .catch(err=>{initPromise=null;throw err;});
+      return initPromise;
+    };
+  }
+
+  /* Muat additive mutation-view module. Tidak memblokir engine dan tidak query sendiri. */
+  if(!document.querySelector('script[data-ak2-ledger-mutation-ui]')){
+    const s=document.createElement("script");
+    s.src="../js/modules/arus-kas-v2-ledger-mutation-ui.js";
+    s.async=false;
+    s.dataset.ak2LedgerMutationUi="1";
+    document.head.appendChild(s);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
