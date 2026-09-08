@@ -224,24 +224,54 @@ Prinsip tampilan:
         line-height:1;
       }
 
-      /* UI ONLY — tetap rapat meskipun keterangan 2 baris. */
+      /* UI ONLY — semua kolom dirapatkan agar ledger muat satu pandangan. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table{
+        width:100%!important;
+        min-width:1120px!important;
+        table-layout:fixed!important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
+        white-space:normal!important;
+        overflow-wrap:normal!important;
+        word-break:normal!important;
+        line-height:1.05!important;
+        padding:7px 6px!important;
+        text-align:left;
+        vertical-align:middle;
+      }
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
         padding-top:3px!important;
         padding-bottom:3px!important;
-        padding-left:9px!important;
-        padding-right:9px!important;
+        padding-left:6px!important;
+        padding-right:6px!important;
         line-height:1.08!important;
+        overflow:hidden;
       }
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
         height:40px!important;
       }
-      body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(4),
-      body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(6){
-        width:185px!important;
-        min-width:185px!important;
-        max-width:185px!important;
-        overflow:hidden!important;
-      }
+
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(1),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(1){width:108px!important;min-width:108px!important;max-width:108px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(2),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(2){width:120px!important;min-width:120px!important;max-width:120px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(3),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(3){width:104px!important;min-width:104px!important;max-width:104px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(4),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(4){width:158px!important;min-width:158px!important;max-width:158px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(5),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(5){width:106px!important;min-width:106px!important;max-width:106px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(6),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(6){width:158px!important;min-width:158px!important;max-width:158px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(7),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(7){width:140px!important;min-width:140px!important;max-width:140px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(8),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(8){width:88px!important;min-width:88px!important;max-width:88px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(9),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(9){width:146px!important;min-width:146px!important;max-width:146px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(10),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(10){width:56px!important;min-width:56px!important;max-width:56px!important}
+
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc{
         color:#d9b7b7!important;
       }
@@ -249,15 +279,13 @@ Prinsip tampilan:
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc .ak2-wallet-route-sub{
         color:#d9a1a1!important;
       }
+
       @media(max-width:1200px){
-        body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(4),
-        body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(6){
-          width:170px!important;
-          min-width:170px!important;
-          max-width:170px!important;
-        }
+        body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1060px!important}
         body.page-arus-kas .ak2-wallet-route-main{font-size:12px}
         body.page-arus-kas .ak2-wallet-route-sub{font-size:9.5px}
+        body.page-arus-kas .ak2-ledger-card .ak2-table thead th{font-size:11px!important;padding-left:5px!important;padding-right:5px!important}
+        body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{padding-left:5px!important;padding-right:5px!important}
       }
     `;
     document.head.appendChild(s);
