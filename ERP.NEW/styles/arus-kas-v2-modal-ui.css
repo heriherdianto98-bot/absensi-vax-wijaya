@@ -176,6 +176,48 @@ body.page-arus-kas #ak2Modal #ak2SaveBtn:hover{
   box-shadow:0 11px 28px rgba(189,133,38,.24),0 0 16px rgba(215,170,85,.10);
 }
 
+/* =========================================================
+   UI ONLY — native select/theme polish + tanggal lebih jelas
+   ========================================================= */
+body.page-arus-kas #ak2Modal .ak2-form-grid select{
+  color-scheme:dark;
+  accent-color:#d7aa55;
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid select option{
+  background-color:#141c25;
+  color:#f6f8fa;
+  font-weight:700;
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid select option:checked{
+  background:#6a4a18 linear-gradient(180deg,#7b571d,#4a3412);
+  color:#ffe8ad;
+  font-weight:900;
+}
+
+body.page-arus-kas #ak2Modal .ak2-form-grid select option:hover,
+body.page-arus-kas #ak2Modal .ak2-form-grid select option:focus{
+  background:#26384a;
+  color:#ffffff;
+}
+
+body.page-arus-kas #ak2Modal #ak2Tanggal{
+  min-height:56px;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:.01em;
+  color:#fff1c5;
+  border-color:#8b692b;
+  background:linear-gradient(180deg,#1b2530,#131a22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 0 0 1px rgba(215,170,85,.03);
+}
+
+body.page-arus-kas #ak2Modal #ak2Tanggal:focus{
+  border-color:#d7aa55;
+  box-shadow:0 0 0 2px rgba(215,170,85,.13),0 0 22px rgba(215,170,85,.10);
+}
+
 @media(max-width:760px){
   body.page-arus-kas #ak2Modal .ak2-panel{width:min(96vw,680px);max-height:92vh}
   body.page-arus-kas #ak2Modal .ak2-form-grid{padding:16px;gap:13px}
@@ -183,5 +225,6 @@ body.page-arus-kas #ak2Modal #ak2SaveBtn:hover{
   body.page-arus-kas #ak2Modal .ak2-modal-head h2{font-size:24px}
   body.page-arus-kas #ak2Modal .ak2-form-grid input,
   body.page-arus-kas #ak2Modal .ak2-form-grid select{min-height:46px;font-size:15px}
+  body.page-arus-kas #ak2Modal #ak2Tanggal{min-height:50px;font-size:17px}
   body.page-arus-kas #ak2Modal .ak2-modal-actions{padding:13px 15px 15px}
 }
