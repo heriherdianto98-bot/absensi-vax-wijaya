@@ -12,27 +12,29 @@
   flow.__outsideCorrectionSvpUiInstalled=true;
 
   const statusOf=s=>String(s?.outside_correction_status||"NONE").toUpperCase();
-  /* Flow profile adalah role canonical halaman ini setelah loadIdentity().
-     OwnerAuth.profile bisa stale dari shell/session sebelumnya, jadi hanya fallback terakhir. */
   const canonicalRole=()=>String(
     flow.profile?.role || flow.role ||
     ((typeof OwnerAuth!=="undefined" && OwnerAuth?.profile?.role) || "")
   ).toLowerCase();
   const isSvp=()=>["svp","spv"].includes(canonicalRole());
-  const proofReadyCache=new Map();
-  let decorating=false;
-  let decorateQueued=false;
+  const key=id=>flow.key(id);
+  const ts=v=>{const n=Date.parse(v||"");return Number.isFinite(n)?n:0;};
 
-  function ts(v){const n=Date.parse(v||"");return Number.isFinite(n)?n:0;}
-  function key(id){return flow.key(id);}
-  function setText(el,text){ if(el && el.textContent!==text) el.textContent=text; }
+  /* Cache readiness per correction request. Keyed by branch + requested_at supaya
+     query proof hanya sekali untuk satu request, bukan setiap render tabel. */
+  const readyCache=new Map();
+  const checkedRequest=new Set();
+  let decorating=false;
+  let queued=false;
+
+  function requestKey(id,saved){
+    return `${id}:${saved?.outside_correction_requested_at||""}`;
+  }
+  function setText(el,text){if(el&&el.textContent!==text) el.textContent=text;}
   function scheduleDecorate(){
-    if(decorateQueued) return;
-    decorateQueued=true;
-    requestAnimationFrame(()=>{
-      decorateQueued=false;
-      decorateAttention();
-    });
+    if(queued) return;
+    queued=true;
+    requestAnimationFrame(()=>{queued=false;decorateAttention();});
   }
 
   function ensureStyle(){
@@ -54,19 +56,48 @@
     document.head.appendChild(s);
   }
 
-  async function freshCorrectionReady(id,saved){
-    if(!saved?.id || statusOf(saved)!=="REQUESTED") return false;
+  async function checkReadyOnce(id,saved,{force=false}={}){
+    if(!saved?.id||statusOf(saved)!=="REQUESTED") return false;
+    const rk=requestKey(id,saved);
+    if(!force&&checkedRequest.has(rk)) return readyCache.get(rk)===true;
+    checkedRequest.add(rk);
+
     const requestedAt=ts(saved.outside_correction_requested_at);
-    if(!requestedAt) return false;
+    if(!requestedAt){readyCache.set(rk,false);return false;}
     const editedAfterRequest=ts(saved.updated_at)>requestedAt;
-    if(!editedAfterRequest) return false;
+    if(!editedAfterRequest){readyCache.set(rk,false);return false;}
+
     try{
       const proofs=await flow.getProofRows(saved.id);
       const latestOutside=(proofs||[])
         .filter(p=>String(p.proof_kind||"").toUpperCase()==="OUTSIDE_CASHOUT")
         .sort((a,b)=>ts(b.uploaded_at)-ts(a.uploaded_at))[0];
-      return Boolean(latestOutside && ts(latestOutside.uploaded_at)>requestedAt);
-    }catch(_e){return false;}
+      const ready=Boolean(latestOutside&&ts(latestOutside.uploaded_at)>requestedAt);
+      readyCache.set(rk,ready);
+      return ready;
+    }catch(_e){
+      readyCache.set(rk,false);
+      return false;
+    }
+  }
+
+  function applyResendState(tr,id,saved){
+    const resend=tr.querySelector('[data-corr-resubmit]');
+    if(!resend||statusOf(saved)!=="REQUESTED") return;
+    const rk=requestKey(id,saved);
+    const ready=readyCache.get(rk)===true;
+    resend.disabled=!ready;
+    resend.title=ready
+      ? 'Perbaikan + foto terbaru sudah lengkap. Klik untuk kirim ulang ke Owner.'
+      : 'Buka ikon Biaya di luar Cashout yang berkedip merah, perbaiki data lalu upload foto terbaru.';
+    let hint=resend.parentElement?.querySelector('[data-corr-ready-hint]');
+    if(!hint&&resend.parentElement){
+      hint=document.createElement('span');
+      hint.className='s3-corr-ready-hint';
+      hint.dataset.corrReadyHint='1';
+      resend.parentElement.appendChild(hint);
+    }
+    setText(hint,ready?'Siap dikirim ulang':'Perbaiki via ikon merah dulu');
   }
 
   function decorateAttention(){
@@ -87,46 +118,30 @@
             btn.setAttribute('aria-label','Koreksi Owner — buka Biaya di luar Cashout');
           }
         }
-
-        const resend=tr.querySelector('[data-corr-resubmit]');
-        if(resend && requested){
-          const ready=proofReadyCache.get(id)===true;
-          resend.disabled=!ready;
-          resend.title=ready
-            ? 'Perbaikan + foto terbaru sudah lengkap. Klik untuk kirim ulang ke Owner.'
-            : 'Klik ikon Biaya di luar Cashout yang berkedip merah. Edit data dan upload foto terbaru terlebih dahulu.';
-          let hint=resend.parentElement?.querySelector('[data-corr-ready-hint]');
-          if(!hint && resend.parentElement){
-            hint=document.createElement('span');
-            hint.className='s3-corr-ready-hint';
-            hint.dataset.corrReadyHint='1';
-            resend.parentElement.appendChild(hint);
+        if(requested){
+          applyResendState(tr,id,saved);
+          const rk=requestKey(id,saved);
+          if(!checkedRequest.has(rk)){
+            checkReadyOnce(id,saved).then(()=>{
+              if(tr.isConnected) applyResendState(tr,id,flow.savedRows.get(key(id))||saved);
+            });
           }
-          setText(hint,ready?'Siap dikirim ulang':'Perbaiki via ikon merah dulu');
-
-          freshCorrectionReady(id,saved).then(v=>{
-            proofReadyCache.set(id,v);
-            if(resend.isConnected){
-              resend.disabled=!v;
-              resend.title=v?'Perbaikan + foto terbaru sudah lengkap. Klik untuk kirim ulang ke Owner.':'Klik ikon Biaya di luar Cashout yang berkedip merah. Edit data dan upload foto terbaru terlebih dahulu.';
-              const h=resend.parentElement?.querySelector('[data-corr-ready-hint]');
-              setText(h,v?'Siap dikirim ulang':'Perbaiki via ikon merah dulu');
-            }
-          });
         }
       });
-    }finally{
-      decorating=false;
-    }
+    }finally{decorating=false;}
   }
 
-  function decoratePopup(id){
+  function decoratePopupFromOpenModal(){
     if(!isSvp()) return;
+    const modal=document.getElementById('s3OutsideCostModal');
+    if(!modal||modal.hidden) return;
+    const id=Number(modal.dataset.branchId||0);
+    if(!id) return;
     const saved=flow.savedRows.get(key(id))||{};
     if(statusOf(saved)!=="REQUESTED") return;
-    const modal=document.getElementById('s3OutsideCostModal');
-    const form=modal?.querySelector('.s3-outside-form');
-    if(!modal||!form) return;
+    const form=modal.querySelector('.s3-outside-form');
+    if(!form) return;
+
     let box=form.querySelector('[data-s3-corr-owner-note]');
     if(!box){
       box=document.createElement('div');
@@ -141,14 +156,16 @@
     setText(st,'Koreksi Owner aktif — upload foto bukti terbaru wajib.');
   }
 
-  document.addEventListener('click',e=>{
-    const open=e.target.closest?.('[data-s3-outside-open]');
-    if(open){
-      const id=Number(open.dataset.s3OutsideOpen||0);
-      setTimeout(()=>decoratePopup(id),40);
-      return;
-    }
+  /* PENTING: tidak ada handler klik kedua pada ikon merah.
+     Popup dibuka hanya oleh modul popup utama. Saat field popup menerima focus,
+     kita hanya menempel panel koreksi ke popup yang SUDAH terbuka. */
+  document.addEventListener('focusin',e=>{
+    if(e.target?.id==='s3OutsideAmount') decoratePopupFromOpenModal();
+  });
 
+  /* Saat SIMPAN koreksi: validasi foto terbaru. Setelah save selesai, cek proof sekali lagi.
+     Tidak query proof pada setiap render. */
+  document.addEventListener('click',e=>{
     const save=e.target.closest?.('#s3OutsideCostModal [data-outside-save]');
     if(!save||!isSvp()) return;
     const modal=document.getElementById('s3OutsideCostModal');
@@ -160,7 +177,17 @@
       e.preventDefault();
       e.stopImmediatePropagation();
       flow.fail?.('Koreksi Owner: wajib upload foto bukti TERBARU sebelum SIMPAN.');
+      return;
     }
+
+    const rk=requestKey(id,saved);
+    checkedRequest.delete(rk);
+    readyCache.delete(rk);
+    setTimeout(async()=>{
+      const latest=flow.savedRows.get(key(id))||saved;
+      await checkReadyOnce(id,latest,{force:true});
+      scheduleDecorate();
+    },700);
   },true);
 
   const baseRender=flow.renderTable.bind(flow);
@@ -170,9 +197,7 @@
     return r;
   };
 
-  /* Hanya observe pergantian row langsung di tbody. Pada versi sebelumnya observer memakai subtree:true,
-     lalu decorateAttention menambah/mengubah hint di dalam cell. Perubahan hint itu memicu observer lagi
-     tanpa henti khusus pada periode yang punya status REQUESTED (contoh 04–06 Sep), sehingga UI SVP macet. */
+  /* Hanya pergantian row langsung. Tidak subtree observer, tidak atribut observer. */
   const observer=new MutationObserver(()=>scheduleDecorate());
   function bind(){
     ensureStyle();
