@@ -261,6 +261,15 @@ Tujuan:
     document.body.appendChild(s);
   }
 
+  function loadWalletTransferUi(){
+    if(document.querySelector('script[data-ak2-wallet-transfer-ui]')) return;
+    const s=document.createElement("script");
+    s.src="../js/modules/arus-kas-v2-wallet-transfer-ui.js";
+    s.async=false;
+    s.dataset.ak2WalletTransferUi="1";
+    document.body.appendChild(s);
+  }
+
   installStyle();
   if(!installRefreshButton()){
     let tries=0;
@@ -271,4 +280,5 @@ Tujuan:
   }
   loadManualTools();
   loadLedgerOrderUi();
+  loadWalletTransferUi();
 })();
