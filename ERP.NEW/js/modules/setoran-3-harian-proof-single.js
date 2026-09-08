@@ -1,8 +1,13 @@
-/* ERP VAX — keep only latest Setoran 3 Harian proof + dark viewer scrollbar */
+/* ERP VAX — Setoran 3 Harian proof guard + keep latest proof per kind + dark viewer scrollbar */
 "use strict";
 (function(){
   if(typeof SetoranDirectFlow==="undefined") return;
   const flow=SetoranDirectFlow;
+
+  function money(v){
+    const n=Number(v);
+    return Number.isFinite(n)?n:0;
+  }
 
   async function prune(saved){
     if(!saved?.id) return null;
@@ -11,7 +16,22 @@
       .eq("setoran_id",saved.id)
       .order("uploaded_at",{ascending:false});
     if(error) throw error;
-    const proofs=data||[], latest=proofs[0]||null, old=proofs.slice(1);
+
+    const proofs=data||[];
+    const keepKinds=new Set();
+    const keep=[];
+    const old=[];
+
+    for(const proof of proofs){
+      const kind=String(proof.proof_kind||"SETORAN").toUpperCase();
+      if(!keepKinds.has(kind)){
+        keepKinds.add(kind);
+        keep.push(proof);
+      }else{
+        old.push(proof);
+      }
+    }
+
     if(old.length){
       const paths=old.map(x=>x.storage_path).filter(Boolean);
       if(paths.length){
@@ -24,7 +44,10 @@
         if(de) throw de;
       }
     }
+
+    const latest=keep[0]||null;
     saved._proofLatest=latest;
+    saved._proofByKind=Object.fromEntries(keep.map(x=>[String(x.proof_kind||"SETORAN").toUpperCase(),x]));
     saved.proof_path=latest?.storage_path||null;
     return latest;
   }
@@ -39,9 +62,53 @@
 
   const baseUpload=flow.uploadProof.bind(flow);
   flow.uploadProof=async function(saved,file,kind){
-    const result=await baseUpload(saved,file,kind);
+    let effectiveKind=String(kind||"SETORAN").toUpperCase();
+
+    /* Jika dalam satu baris ada selisih non tunai + biaya di luar Cashout,
+       foto pertama disimpan sebagai bukti BRI Merchant, foto berikutnya sebagai bukti biaya. */
+    if(effectiveKind==="NON_CASH_DIFF" && Math.abs(money(saved?.non_cash_difference))>.5 && money(saved?.outside_cashout_cost)>0 && saved?.id){
+      const proofs=await this.getProofRows(saved.id);
+      const hasDiff=proofs.some(p=>String(p.proof_kind||"").toUpperCase()==="NON_CASH_DIFF");
+      const hasOutside=proofs.some(p=>String(p.proof_kind||"").toUpperCase()==="OUTSIDE_CASHOUT");
+      if(hasDiff && !hasOutside) effectiveKind="OUTSIDE_CASHOUT";
+    }
+
+    const result=await baseUpload(saved,file,effectiveKind);
     await prune(saved);
     return result;
+  };
+
+  /* Guard SUDAH DIAMBIL:
+     - selisih non tunai wajib foto bukti uang masuk BRI Merchant (NON_CASH_DIFF)
+     - biaya di luar Cashout wajib foto bukti biaya (OUTSIDE_CASHOUT)
+     - bukti jenis lain tidak boleh dianggap memenuhi syarat. */
+  const baseSave=flow.saveRow.bind(flow);
+  flow.saveRow=async function(tr,options={}){
+    if(options?.taken===true){
+      const d=this.draftFromRow(tr);
+      const needsDiff=d.diff!=null && Math.abs(money(d.diff))>.5;
+      const needsOutside=money(d.outside)>0;
+
+      if(needsDiff || needsOutside){
+        const existing=this.savedRows.get(this.key(d.id));
+        const proofs=existing?.id ? await this.getProofRows(existing.id) : [];
+        const hasDiff=proofs.some(p=>String(p.proof_kind||"").toUpperCase()==="NON_CASH_DIFF");
+        const hasOutside=proofs.some(p=>String(p.proof_kind||"").toUpperCase()==="OUTSIDE_CASHOUT");
+        const hasPending=this.pendingFiles.has(this.key(d.id));
+
+        if(needsDiff && !hasDiff && !hasPending){
+          throw new Error("Ada selisih Non Tunai. Wajib lampirkan foto bukti uang masuk BRI Merchant sebelum centang Sudah Diambil.");
+        }
+        if(needsOutside && !hasOutside && !hasPending){
+          throw new Error("Ada biaya di luar Cashout. Wajib isi keterangan dan lampirkan foto bukti biaya sebelum centang Sudah Diambil.");
+        }
+        if(needsDiff && needsOutside && !hasDiff && !hasOutside && hasPending){
+          throw new Error("Ada selisih Non Tunai dan biaya di luar Cashout. Dibutuhkan 2 bukti: foto uang masuk BRI Merchant dan foto bukti biaya.");
+        }
+      }
+    }
+
+    return baseSave(tr,options);
   };
 
   const baseOpen=flow.openProof.bind(flow);
