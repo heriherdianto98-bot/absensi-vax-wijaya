@@ -9,6 +9,7 @@ Fungsi:
 - Edit tetap memakai flow existing ArusKasV2.openInput(row).
 - Saat edit MANUAL (belum OWNER VERIFIED), tampil tombol Hapus + Simpan Perubahan.
 - Hapus hanya MANUAL non-verified; AUTO dan OWNER VERIFIED tidak disentuh.
+- Tabel boleh horizontal scroll bila kolom tidak cukup; tidak memaksa viewport.
 =========================================================
 */
 "use strict";
@@ -20,6 +21,7 @@ Fungsi:
 
   let query="";
   let applying=false;
+  let decorateQueued=false;
 
   function norm(v){return String(v??"").toLowerCase().replace(/\s+/g," ").trim()}
   function digits(v){return String(v??"").replace(/\D/g,"")}
@@ -107,22 +109,24 @@ Fungsi:
     ensureActionHeader();
 
     body.querySelectorAll("tr[data-id]").forEach(tr=>{
-      tr.querySelectorAll(".ak2-ledger-edit-btn").forEach(btn=>{
-        if(!btn.closest(".ak2-action-cell")) btn.remove();
-      });
-      tr.querySelectorAll(".ak2-manual-status-cell").forEach(td=>td.classList.remove("ak2-manual-status-cell"));
+      const row=flow.ledger?.find(x=>String(x.id)===String(tr.dataset.id));
+      const editable=!!row && row.entry_type==="MANUAL" && row.verification_status!=="OWNER_VERIFIED";
 
-      let cell=tr.querySelector(".ak2-action-cell");
+      let cell=tr.querySelector(":scope > .ak2-action-cell");
       if(!cell){
         cell=document.createElement("td");
         cell.className="ak2-action-cell";
         tr.appendChild(cell);
       }
-      cell.innerHTML="";
 
-      const row=flow.ledger?.find(x=>String(x.id)===String(tr.dataset.id));
-      const editable=!!row && row.entry_type==="MANUAL" && row.verification_status!=="OWNER_VERIFIED";
-      if(!editable) return;
+      const existing=cell.querySelector("[data-ak2-manual-edit]");
+      if(!editable){
+        if(existing) existing.remove();
+        return;
+      }
+
+      if(existing && String(existing.dataset.ak2ManualEdit)===String(row.id)) return;
+      if(existing) existing.remove();
 
       const btn=document.createElement("button");
       btn.type="button";
@@ -140,6 +144,16 @@ Fungsi:
     });
   }
 
+  function scheduleDecorate(){
+    if(decorateQueued) return;
+    decorateQueued=true;
+    requestAnimationFrame(()=>{
+      decorateQueued=false;
+      decorateManualRows();
+      applySearch();
+    });
+  }
+
   async function deleteCurrentManual(){
     const row=currentEditRow();
     if(!row){flow.fail?.("Transaksi manual tidak ditemukan.");return}
@@ -154,7 +168,7 @@ Fungsi:
       if(error) throw error;
       flow.closeInput?.();flow.ok?.("Transaksi manual berhasil dihapus.");
       if(typeof flow.fastReload==="function") await flow.fastReload({loadSetoran:false}); else await flow.reload?.();
-      decorateManualRows();applySearch();
+      scheduleDecorate();
     }catch(e){flow.fail?.(e?.message||String(e))}
     finally{flow.busy?.(false)}
   }
@@ -175,6 +189,14 @@ Fungsi:
       body.page-arus-kas #ak2QuickSearchClear:hover{background:#252f3a;color:#fff0c8}
       body.page-arus-kas .ak2-search-count{color:#91a5b9;font-weight:800;white-space:nowrap}
 
+      /* Jangan paksa semua kolom masuk viewport: tabel boleh scroll horizontal. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{overflow-x:auto!important;overflow-y:auto;-webkit-overflow-scrolling:touch}
+      body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1420px;width:max-content}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th,
+      body.page-arus-kas .ak2-ledger-card .ak2-table td{white-space:normal}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-last-child(-n+3),
+      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-last-child(-n+3){white-space:nowrap}
+
       body.page-arus-kas .ak2-action-head,
       body.page-arus-kas .ak2-action-cell{width:66px;min-width:66px;max-width:66px;text-align:center!important;padding-left:8px!important;padding-right:8px!important}
       body.page-arus-kas .ak2-action-cell{vertical-align:middle}
@@ -190,6 +212,7 @@ Fungsi:
         body.page-arus-kas .ak2-ledger-card .ak2-section-head{align-items:flex-start;flex-wrap:wrap}
         body.page-arus-kas .ak2-quick-search-wrap{order:3;width:100%;margin-left:0}
         body.page-arus-kas .ak2-quick-search{min-width:0;flex:1}
+        body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1320px}
         body.page-arus-kas .ak2-action-head,body.page-arus-kas .ak2-action-cell{width:56px;min-width:56px;max-width:56px}
         body.page-arus-kas .ak2-ledger-edit-icon{width:32px;height:32px;font-size:16px}
       }
@@ -219,7 +242,8 @@ Fungsi:
 
   const body=document.getElementById("ak2LedgerBody");
   if(body){
-    new MutationObserver(()=>{decorateManualRows();applySearch()}).observe(body,{childList:true,subtree:true});
+    /* Hanya pantau pergantian row hasil render; jangan subtree agar decorator tidak memicu dirinya sendiri. */
+    new MutationObserver(()=>scheduleDecorate()).observe(body,{childList:true,subtree:false});
   }
 
   if(!document.getElementById("ak2QuickSearch")){
