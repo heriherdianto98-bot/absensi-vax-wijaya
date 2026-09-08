@@ -4,12 +4,10 @@ VAX ERP — ARUS KAS V2 SOFT DELETE / OWNER VERIFY
 Additive runtime/UI layer. Core ArusKasV2 / engine Setoran tidak diubah.
 
 Alur:
-- Hanya SVP yang dapat mengajukan hapus transaksi MANUAL non-verified.
-- Klik Hapus -> konfirmasi -> transaksi dinonaktifkan dari perhitungan saldo,
-  tetapi row tetap ada sebagai history Buku Arus Kas.
-- Owner melihat icon ! merah pada row pending delete.
-- Owner klik icon ! -> konfirmasi -> delete resmi terverifikasi Owner.
-- Row tetap tersimpan permanen sebagai history mutasi.
+- Hanya SVP dapat mengajukan hapus transaksi MANUAL non-verified.
+- Pending delete langsung dikeluarkan dari perhitungan saldo tetapi row tetap di history.
+- Owner mendapat tombol ! merah LANGSUNG di kolom STATUS agar selalu terlihat/clickable.
+- Owner klik ! -> konfirmasi -> status hapus resmi OWNER VERIFIED.
 =========================================================
 */
 "use strict";
@@ -37,7 +35,6 @@ Alur:
   flow.isDeleteInactive=isDeleteInactive;
   flow.originalKasEffect=row=>baseKasEffect?baseKasEffect(row):0;
 
-  /* Pending/verified delete tidak lagi memengaruhi saldo wallet. */
   flow.walletBalance=function(wallet){
     if(!Array.isArray(this.ledger)) return baseWalletBalance?baseWalletBalance(wallet):0;
     return this.ledger.reduce((t,row)=>{
@@ -47,7 +44,6 @@ Alur:
     },0);
   };
 
-  /* Saldo berjalan Kas Besar juga mengecualikan row yang sudah diminta hapus. */
   flow.kasEffect=function(row){
     if(isDeleteInactive(row)) return 0;
     return baseKasEffect?baseKasEffect(row):0;
@@ -78,19 +74,10 @@ Alur:
     if(!window.confirm(`Hapus transaksi manual ini?\n\n${label}\n\nTransaksi akan dinonaktifkan dari saldo dan menunggu verifikasi Owner.`)) return false;
 
     const now=new Date().toISOString();
-    const metadata={
-      ...(row.metadata||{}),
-      delete_status:DELETE_PENDING,
-      delete_requested_by:flow.user?.id||null,
-      delete_requested_at:now,
-      delete_verified_by:null,
-      delete_verified_at:null
-    };
+    const metadata={...(row.metadata||{}),delete_status:DELETE_PENDING,delete_requested_by:flow.user?.id||null,delete_requested_at:now,delete_verified_by:null,delete_verified_at:null};
     const {data,error}=await db.from(flow.TX_TABLE)
       .update({metadata,updated_by:flow.user?.id||null,updated_at:now})
-      .eq("id",row.id)
-      .eq("entry_type","MANUAL")
-      .select("*").single();
+      .eq("id",row.id).eq("entry_type","MANUAL").select("*").single();
     if(error) throw error;
     await flow.audit?.(row.id,"DELETE_REQUEST",{before:row,after:data});
     return data;
@@ -105,16 +92,10 @@ Alur:
     if(!window.confirm(`Verifikasi hapus transaksi ini?\n\n${label}\n\nSetelah OK, status hapus menjadi resmi dan tetap tersimpan di history Buku Arus Kas.`)) return false;
 
     const now=new Date().toISOString();
-    const metadata={
-      ...(row.metadata||{}),
-      delete_status:DELETE_VERIFIED,
-      delete_verified_by:flow.user?.id||null,
-      delete_verified_at:now
-    };
+    const metadata={...(row.metadata||{}),delete_status:DELETE_VERIFIED,delete_verified_by:flow.user?.id||null,delete_verified_at:now};
     const {data,error}=await db.from(flow.TX_TABLE)
       .update({metadata,updated_by:flow.user?.id||null,updated_at:now})
-      .eq("id",row.id)
-      .select("*").single();
+      .eq("id",row.id).select("*").single();
     if(error) throw error;
     await flow.audit?.(row.id,"DELETE_OWNER_VERIFY",{before:row,after:data});
     return data;
@@ -123,13 +104,12 @@ Alur:
   async function handleDeleteButton(){
     const row=currentEditRow();
     try{
-      flow.busy?.(true); flow.clearMessage?.();
+      flow.busy?.(true);flow.clearMessage?.();
       const saved=await requestDelete(row);
       if(!saved) return;
       flow.closeInput?.();
       flow.ok?.("Pengajuan hapus tersimpan · menunggu verifikasi Owner.");
-      if(typeof flow.fastReload==="function") await flow.fastReload({loadSetoran:false});
-      else await flow.reload?.();
+      if(typeof flow.fastReload==="function") await flow.fastReload({loadSetoran:false}); else await flow.reload?.();
       scheduleDecorate();
     }catch(e){flow.fail?.(e?.message||String(e))}
     finally{flow.busy?.(false)}
@@ -138,33 +118,29 @@ Alur:
   async function handleOwnerVerify(id){
     const row=rowById(id);
     try{
-      flow.busy?.(true); flow.clearMessage?.();
+      flow.busy?.(true);flow.clearMessage?.();
       const saved=await verifyDelete(row);
       if(!saved) return;
       flow.ok?.("Hapus transaksi sudah diverifikasi Owner dan tersimpan di history.");
-      if(typeof flow.fastReload==="function") await flow.fastReload({loadSetoran:false});
-      else await flow.reload?.();
+      if(typeof flow.fastReload==="function") await flow.fastReload({loadSetoran:false}); else await flow.reload?.();
       scheduleDecorate();
     }catch(e){flow.fail?.(e?.message||String(e))}
     finally{flow.busy?.(false)}
   }
 
-  /* Intercept tombol Hapus lama sebelum handler hard-delete berjalan. */
   document.addEventListener("click",e=>{
-    const btn=e.target.closest?.("#ak2DeleteManualBtn");
-    if(!btn) return;
-    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-    handleDeleteButton();
+    const del=e.target.closest?.("#ak2DeleteManualBtn");
+    if(del){
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      handleDeleteButton();return;
+    }
+    const verify=e.target.closest?.("[data-ak2-delete-verify]");
+    if(verify){
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      if(isOwner()) handleOwnerVerify(verify.dataset.ak2DeleteVerify);
+    }
   },true);
 
-  document.addEventListener("click",e=>{
-    const btn=e.target.closest?.("[data-ak2-delete-verify]");
-    if(!btn) return;
-    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-    if(isOwner()) handleOwnerVerify(btn.dataset.ak2DeleteVerify);
-  },true);
-
-  /* Bila Owner menekan Verifikasi dari detail row pending-delete, arahkan ke verifikasi hapus. */
   if(baseVerifyRow){
     flow.verifyRow=function(id){
       const row=rowById(id);
@@ -188,14 +164,7 @@ Alur:
   function findLedgerCells(tr){
     const hasCabang=!!tr.querySelector(":scope > td.ak2-cabang-col");
     const o=hasCabang?1:0;
-    return {
-      masuk:tr.children[1+o],
-      ketMasuk:tr.children[2+o],
-      keluar:tr.children[3+o],
-      ketKeluar:tr.children[4+o],
-      saldo:tr.children[5+o],
-      status:tr.children[7+o]
-    };
+    return {masuk:tr.children[1+o],ketMasuk:tr.children[2+o],keluar:tr.children[3+o],ketKeluar:tr.children[4+o],saldo:tr.children[5+o],status:tr.children[7+o]};
   }
 
   function restoreHistoryMutation(tr,row){
@@ -205,67 +174,54 @@ Alur:
     const effect=baseKasEffect?baseKasEffect(row):0;
     const desc=row.description||flow.categoryName?.(row.category)||"Transaksi manual";
     const money=flow.rupiah?.(amount)||String(amount);
-
     let direction=effect>0?"IN":effect<0?"OUT":"";
     if(!direction){
-      if(row.from_wallet==="EXTERNAL" && row.to_wallet!=="EXTERNAL") direction="IN";
-      else if(row.to_wallet==="EXTERNAL" && row.from_wallet!=="EXTERNAL") direction="OUT";
+      if(row.from_wallet==="EXTERNAL"&&row.to_wallet!=="EXTERNAL") direction="IN";
+      else if(row.to_wallet==="EXTERNAL"&&row.from_wallet!=="EXTERNAL") direction="OUT";
       else direction="IN";
     }
-
     if(direction==="IN"){
-      if(c.masuk) c.masuk.innerHTML=`<span class="ak2-deleted-amount">${money}</span>`;
-      if(c.ketMasuk) c.ketMasuk.textContent=desc;
-      if(c.keluar) c.keluar.textContent="—";
-      if(c.ketKeluar) c.ketKeluar.textContent="—";
+      if(c.masuk)c.masuk.innerHTML=`<span class="ak2-deleted-amount">${money}</span>`;
+      if(c.ketMasuk)c.ketMasuk.textContent=desc;
+      if(c.keluar)c.keluar.textContent="—";
+      if(c.ketKeluar)c.ketKeluar.textContent="—";
     }else{
-      if(c.keluar) c.keluar.innerHTML=`<span class="ak2-deleted-amount">${money}</span>`;
-      if(c.ketKeluar) c.ketKeluar.textContent=desc;
-      if(c.masuk) c.masuk.textContent="—";
-      if(c.ketMasuk) c.ketMasuk.textContent="—";
+      if(c.keluar)c.keluar.innerHTML=`<span class="ak2-deleted-amount">${money}</span>`;
+      if(c.ketKeluar)c.ketKeluar.textContent=desc;
+      if(c.masuk)c.masuk.textContent="—";
+      if(c.ketMasuk)c.ketMasuk.textContent="—";
     }
   }
 
   function decorateRows(){
     const body=document.getElementById("ak2LedgerBody");
-    if(!body) return;
+    if(!body)return;
     body.querySelectorAll("tr[data-id]").forEach(tr=>{
-      const row=rowById(tr.dataset.id);
-      if(!row) return;
-      const state=deleteStatus(row);
-      const pending=state===DELETE_PENDING;
-      const verified=state===DELETE_VERIFIED;
+      const row=rowById(tr.dataset.id);if(!row)return;
+      const state=deleteStatus(row),pending=state===DELETE_PENDING,verified=state===DELETE_VERIFIED;
       tr.classList.toggle("ak2-delete-pending",pending);
       tr.classList.toggle("ak2-delete-verified",verified);
+      if(!(pending||verified))return;
 
-      const cell=tr.querySelector(":scope > .ak2-action-cell");
-      if(cell && (pending||verified)){
-        cell.textContent="";
+      restoreHistoryMutation(tr,row);
+      const c=findLedgerCells(tr);
+      if(c.status){
         if(pending){
-          const btn=document.createElement("button");
-          btn.type="button";
-          btn.className="ak2-delete-state-icon is-pending";
-          btn.textContent="!";
-          btn.title=isOwner()?"Verifikasi hapus transaksi":"Menunggu verifikasi Owner";
-          btn.dataset.ak2DeleteVerify=row.id;
-          if(!isOwner()) btn.disabled=true;
-          cell.appendChild(btn);
+          c.status.innerHTML=isOwner()
+            ? `<button type="button" class="ak2-status ak2-delete-status is-delete-pending ak2-delete-owner-action" data-ak2-delete-verify="${row.id}" title="Klik untuk verifikasi hapus"><span class="ak2-delete-alert">!</span> HAPUS · MENUNGGU OWNER</button>`
+            : '<span class="ak2-status ak2-delete-status is-delete-pending"><span class="ak2-delete-alert">!</span> HAPUS · MENUNGGU OWNER</span>';
         }else{
-          const done=document.createElement("span");
-          done.className="ak2-delete-state-icon is-verified";
-          done.textContent="✓";
-          done.title="Hapus sudah diverifikasi Owner";
-          cell.appendChild(done);
+          c.status.innerHTML='<span class="ak2-status ak2-delete-status is-delete-verified"><span class="ak2-delete-check">✓</span> HAPUS · OWNER VERIFIED</span>';
         }
       }
 
-      if(pending||verified){
-        restoreHistoryMutation(tr,row);
-        const status=findLedgerCells(tr).status;
-        if(status){
-          status.innerHTML=pending
-            ? '<span class="ak2-status ak2-delete-status is-delete-pending">HAPUS · MENUNGGU OWNER</span>'
-            : '<span class="ak2-status ak2-delete-status is-delete-verified">HAPUS · OWNER VERIFIED</span>';
+      const action=tr.querySelector(":scope > .ak2-action-cell");
+      if(action){
+        action.textContent="";
+        if(pending&&isOwner()){
+          const btn=document.createElement("button");btn.type="button";btn.className="ak2-delete-state-icon is-pending";btn.textContent="!";btn.title="Verifikasi hapus transaksi";btn.dataset.ak2DeleteVerify=row.id;action.appendChild(btn);
+        }else if(verified){
+          const done=document.createElement("span");done.className="ak2-delete-state-icon is-verified";done.textContent="✓";done.title="Hapus sudah diverifikasi Owner";action.appendChild(done);
         }
       }
     });
@@ -273,40 +229,35 @@ Alur:
   }
 
   function scheduleDecorate(){
-    if(decorateQueued) return;
+    if(decorateQueued)return;
     decorateQueued=true;
-    requestAnimationFrame(()=>{
-      decorateQueued=false;
-      decorateRows();
-      setTimeout(decorateRows,0);
-    });
+    requestAnimationFrame(()=>{decorateQueued=false;decorateRows();setTimeout(decorateRows,0)});
   }
 
   function installStyle(){
-    if(document.getElementById("ak2SoftDeleteUiStyle")) return;
-    const s=document.createElement("style");
-    s.id="ak2SoftDeleteUiStyle";
+    if(document.getElementById("ak2SoftDeleteUiStyle"))return;
+    const s=document.createElement("style");s.id="ak2SoftDeleteUiStyle";
     s.textContent=`
       body.page-arus-kas #ak2LedgerBody tr.ak2-delete-pending>td{background-color:rgba(109,28,28,.08)!important}
       body.page-arus-kas #ak2LedgerBody tr.ak2-delete-verified>td{background-color:rgba(52,63,72,.10)!important}
       body.page-arus-kas .ak2-deleted-amount{text-decoration:line-through;text-decoration-thickness:1.5px;opacity:.72}
       body.page-arus-kas .ak2-delete-state-icon{width:30px;height:30px;display:inline-grid;place-items:center;border-radius:50%;font-weight:950;font-size:17px;line-height:1}
       body.page-arus-kas button.ak2-delete-state-icon{cursor:pointer}
-      body.page-arus-kas .ak2-delete-state-icon.is-pending{border:1px solid #b94c4c;background:linear-gradient(180deg,#7b2b2b,#4a1919);color:#ffd1d1;box-shadow:0 0 0 2px rgba(185,76,76,.08)}
-      body.page-arus-kas .ak2-delete-state-icon.is-pending:disabled{cursor:default;opacity:.76}
-      body.page-arus-kas .ak2-delete-state-icon.is-verified{border:1px solid #3f7d58;background:linear-gradient(180deg,#214d35,#173524);color:#b8f1cb}
-      body.page-arus-kas .ak2-delete-status{min-width:164px!important;font-size:11px!important}
+      body.page-arus-kas .ak2-delete-state-icon.is-pending,.ak2-delete-alert{border:1px solid #b94c4c;background:#611f1f;color:#ffd1d1}
+      body.page-arus-kas .ak2-delete-state-icon.is-verified{border:1px solid #3f7d58;background:#173524;color:#b8f1cb}
+      body.page-arus-kas .ak2-delete-status{min-width:186px!important;font-size:11px!important;gap:7px!important}
       body.page-arus-kas .ak2-delete-status.is-delete-pending{background:linear-gradient(180deg,#612727,#381818)!important;border-color:#9a4444!important;color:#ffc5c5!important}
       body.page-arus-kas .ak2-delete-status.is-delete-verified{background:linear-gradient(180deg,#34414c,#222b32)!important;border-color:#566875!important;color:#d7e1e8!important}
-    `;
-    document.head.appendChild(s);
+      body.page-arus-kas .ak2-delete-owner-action{cursor:pointer!important;pointer-events:auto!important;position:relative;z-index:30}
+      body.page-arus-kas .ak2-delete-owner-action:hover{filter:brightness(1.16);box-shadow:0 0 0 2px rgba(185,76,76,.14)!important}
+      body.page-arus-kas .ak2-delete-alert{width:20px;height:20px;display:inline-grid;place-items:center;border-radius:50%;font-weight:950;line-height:1}
+      body.page-arus-kas .ak2-delete-check{font-size:15px;font-weight:950;color:#b8f1cb}
+    `;document.head.appendChild(s);
   }
 
   installStyle();
   const body=document.getElementById("ak2LedgerBody");
-  if(body) new MutationObserver(()=>scheduleDecorate()).observe(body,{childList:true,subtree:false});
-  document.addEventListener("change",e=>{
-    if(e.target?.id==="ak2Kategori") setTimeout(syncModalDeleteButton,0);
-  });
+  if(body)new MutationObserver(()=>scheduleDecorate()).observe(body,{childList:true,subtree:false});
+  document.addEventListener("change",e=>{if(e.target?.id==="ak2Kategori")setTimeout(syncModalDeleteButton,0)});
   scheduleDecorate();
 })();
