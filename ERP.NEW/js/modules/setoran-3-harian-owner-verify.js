@@ -234,3 +234,13 @@ IMPORTANT:
         decorate();
     }
 })();
+
+/* Additive loader: correction workflow ONLY for Biaya di luar Cashout. */
+(function(){
+  if(document.querySelector('script[data-s3-outside-correction]')) return;
+  const s=document.createElement('script');
+  s.src='../js/modules/setoran-3-harian-outside-correction.js';
+  s.defer=true;
+  s.setAttribute('data-s3-outside-correction','1');
+  document.head.appendChild(s);
+})();
