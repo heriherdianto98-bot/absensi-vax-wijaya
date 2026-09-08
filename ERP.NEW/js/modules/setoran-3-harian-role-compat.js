@@ -37,3 +37,13 @@
     if(userEl) userEl.textContent=data.nama||this.role.toUpperCase();
   };
 })();
+
+/* Additive owner read-only hard guard loaded after all format/editor compatibility layers. */
+(function(){
+  const current=document.currentScript;
+  if(!current||document.querySelector('script[data-s3-owner-readonly-guard]')) return;
+  const s=document.createElement('script');
+  s.dataset.s3OwnerReadonlyGuard='1';
+  s.src=new URL('setoran-3-harian-owner-readonly-guard.js',current.src).href;
+  document.head.appendChild(s);
+})();
