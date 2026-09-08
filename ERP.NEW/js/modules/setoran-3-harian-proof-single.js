@@ -46,8 +46,6 @@
   flow.uploadProof=async function(saved,file,kind){
     let effectiveKind=String(kind||"SETORAN").toUpperCase();
 
-    /* Jika satu baris memiliki selisih Non Tunai + biaya di luar Cashout,
-       bukti tetap dipisahkan berdasarkan proof_kind. */
     if(effectiveKind==="NON_CASH_DIFF" && Math.abs(money(saved?.non_cash_difference))>.5 && money(saved?.outside_cashout_cost)>0 && saved?.id){
       const proofs=await this.getProofRows(saved.id);
       const hasDiff=proofs.some(p=>String(p.proof_kind||"").toUpperCase()==="NON_CASH_DIFF");
@@ -60,10 +58,6 @@
     return result;
   };
 
-  /* Guard SUDAH DIAMBIL:
-     - selisih non tunai wajib bukti NON_CASH_DIFF
-     - biaya di luar Cashout wajib bukti OUTSIDE_CASHOUT
-     - bukti jenis lain tidak memenuhi syarat. */
   const baseSave=flow.saveRow.bind(flow);
   flow.saveRow=async function(tr,options={}){
     if(options?.taken===true){
@@ -118,15 +112,5 @@
   const s=document.createElement('script');
   s.dataset.s3ProofReplaceUi='1';
   s.src=new URL('setoran-3-harian-proof-replace-ui.js',current.src).href;
-  document.head.appendChild(s);
-})();
-
-/* Trial UI: dedicated Ket. Biaya + Upload Foto inline, TANPA popup/modal. */
-(function(){
-  const current=document.currentScript;
-  if(!current||document.querySelector('script[data-s3-outside-inline-ui]')) return;
-  const s=document.createElement('script');
-  s.dataset.s3OutsideInlineUi='1';
-  s.src=new URL('setoran-3-harian-outside-inline-ui.js',current.src).href;
   document.head.appendChild(s);
 })();
