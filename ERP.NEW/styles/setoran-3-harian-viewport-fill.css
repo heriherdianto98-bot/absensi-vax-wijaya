@@ -155,3 +155,114 @@ html::-webkit-scrollbar-corner,
 body.s3sheet-body.s3sheet-erp-integrated::-webkit-scrollbar-corner{
   background:#08111b;
 }
+
+/* =========================================================
+   OWNER NOTE VIEWER — ARUS KAS V2 VISUAL LANGUAGE
+   UI ONLY. Tidak mengubah isi catatan, permission, query, atau workflow.
+   ========================================================= */
+#s3OwnerNoteViewModal .s3sheet-modal-backdrop{
+  background:rgba(0,0,0,.74) !important;
+  backdrop-filter:blur(4px);
+}
+#s3OwnerNoteViewModal .s3sheet-modal-panel{
+  width:min(650px,calc(100vw - 36px)) !important;
+  max-height:88vh;
+  overflow:hidden !important;
+  background:linear-gradient(180deg,#12181f 0%,#10151b 100%) !important;
+  border:1px solid #343c46 !important;
+  border-radius:18px !important;
+  box-shadow:0 22px 70px rgba(0,0,0,.58),inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+#s3OwnerNoteViewModal .s3sheet-modal-head{
+  position:relative;
+  padding:18px 20px 16px !important;
+  background:linear-gradient(90deg,rgba(93,67,25,.24),rgba(18,24,31,.08)) !important;
+  border-bottom:1px solid #272e36 !important;
+  box-shadow:inset 4px 0 0 #c99b45;
+}
+#s3OwnerNoteViewModal .s3sheet-modal-head strong{
+  display:block;
+  color:#f7f8fa !important;
+  font-size:20px !important;
+  font-weight:900 !important;
+  letter-spacing:.02em;
+}
+#s3OwnerNoteViewModal .s3sheet-modal-head small{
+  display:block;
+  margin-top:5px;
+  color:#d7aa55 !important;
+  font-size:12px !important;
+  font-weight:800 !important;
+  letter-spacing:.03em;
+}
+#s3OwnerNoteViewModal .s3sheet-modal-head button[data-owner-note-close]{
+  width:34px;
+  height:34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #333b46 !important;
+  border-radius:10px !important;
+  background:#171c22 !important;
+  color:#aeb4bb !important;
+  font-size:22px !important;
+  line-height:1;
+  cursor:pointer;
+}
+#s3OwnerNoteViewModal .s3sheet-modal-head button[data-owner-note-close]:hover{
+  color:#fff !important;
+  border-color:#6b7785 !important;
+  background:#1d242c !important;
+}
+#s3OwnerNoteViewModal .s3-owner-note-body{
+  padding:18px 20px 20px !important;
+}
+#s3OwnerNoteViewModal .s3-owner-note-copy{
+  min-height:112px !important;
+  padding:17px 18px !important;
+  white-space:pre-wrap;
+  word-break:break-word;
+  background:linear-gradient(180deg,#151a20,#11161c) !important;
+  border:1px solid #2b333c !important;
+  border-radius:12px !important;
+  color:#f1f4f7 !important;
+  font-size:16px !important;
+  font-weight:700 !important;
+  line-height:1.6 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.018);
+}
+#s3OwnerNoteViewModal .s3-owner-note-actions{
+  display:flex !important;
+  justify-content:flex-end !important;
+  margin-top:16px !important;
+  padding-top:15px;
+  border-top:1px solid #272e36;
+}
+#s3OwnerNoteViewModal .s3-owner-note-actions button{
+  min-height:40px !important;
+  padding:9px 16px !important;
+  border:1px solid #8c692c !important;
+  border-radius:10px !important;
+  background:linear-gradient(180deg,#4b3715,#2d210e) !important;
+  color:#ffe4a8 !important;
+  font-size:12px !important;
+  font-weight:900 !important;
+  letter-spacing:.035em;
+  cursor:pointer;
+  box-shadow:0 8px 22px rgba(191,137,43,.12),inset 0 1px 0 rgba(255,255,255,.055);
+}
+#s3OwnerNoteViewModal .s3-owner-note-actions button:hover{
+  border-color:#c18b2d !important;
+  filter:brightness(1.08);
+}
+
+body.s3sheet-erp-integrated .s3-owner-note-view{
+  border-color:#8c692c !important;
+  background:linear-gradient(180deg,#2f2413,#21180c) !important;
+  color:#f5d384 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+body.s3sheet-erp-integrated .s3-owner-note-view:hover{
+  border-color:#c18b2d !important;
+  background:linear-gradient(180deg,#3a2b15,#281d0d) !important;
+}
