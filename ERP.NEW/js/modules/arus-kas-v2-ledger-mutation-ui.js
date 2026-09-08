@@ -41,63 +41,54 @@ Tidak mengubah engine, formula, query, payload transaksi, atau wallet balance.
     });
   }
 
-  flow.renderLedger = function(){
-    const r = this.range();
-    const status = document.getElementById("ak2StatusFilter")?.value || "ALL";
-
-    let running = 0;
-    const balanceAt = new Map();
-    for(const row of this.ledger){
-      running += this.kasEffect(row);
-      balanceAt.set(row.id,running);
-    }
-
-    const rows = this.ledger.filter(x =>
-      x.tanggal >= r.start &&
-      x.tanggal <= r.end &&
-      (status === "ALL" || x.verification_status === status)
-    );
-
+  function patchRenderedRows(){
     const body = document.getElementById("ak2LedgerBody");
     if(!body) return;
 
-    if(!rows.length){
-      body.innerHTML = '<tr><td colspan="8" class="ak2-empty">Belum ada transaksi pada periode ini.</td></tr>';
-      const count = document.getElementById("ak2RowCount");
-      if(count) count.textContent = "0 transaksi";
-      markSaldoHeader();
-      return;
-    }
+    const rowById = new Map((flow.ledger || []).map(row => [String(row.id),row]));
+    body.querySelectorAll("tr[data-id]").forEach(tr => {
+      const row = rowById.get(String(tr.dataset.id));
+      if(!row) return;
 
-    body.innerHTML = rows.map(row => {
-      const amount = this.money(row.amount);
+      const cells = [...tr.children];
+      const hasCabangColumn = cells.length >= 9;
+      const inIdx = hasCabangColumn ? 2 : 1;
+      const inDescIdx = hasCabangColumn ? 3 : 2;
+      const outIdx = hasCabangColumn ? 4 : 3;
+      const outDescIdx = hasCabangColumn ? 5 : 4;
+
+      const amount = flow.money(row.amount);
       const move = movementFor(row,amount);
-      const baseDesc = row.description || this.categoryName(row.category);
-      const inDesc = move.incoming ? baseDesc : "";
-      const outDesc = move.outgoing ? baseDesc : "";
-      const route = `${this.categoryName(row.from_wallet)} → ${this.categoryName(row.to_wallet)}`;
+      const baseDesc = row.description || flow.categoryName(row.category);
+      const route = `${flow.categoryName(row.from_wallet)} → ${flow.categoryName(row.to_wallet)}`;
 
-      return `<tr data-id="${row.id}" title="${this.esc(route)}">
-        <td>${this.fmtDate(row.tanggal)}</td>
-        <td class="ak2-money-in">${move.incoming ? this.rupiah(move.incoming) : "—"}</td>
-        <td>${this.esc(inDesc) || "—"}</td>
-        <td class="ak2-money-out">${move.outgoing ? this.rupiah(move.outgoing) : "—"}</td>
-        <td>${this.esc(outDesc) || "—"}</td>
-        <td class="ak2-balance">${this.rupiah(balanceAt.get(row.id) || 0)}</td>
-        <td>${this.sourceBadge(row)}</td>
-        <td>${this.statusBadge(row.verification_status)}</td>
-      </tr>`;
-    }).join("");
+      const inCell = cells[inIdx];
+      const inDescCell = cells[inDescIdx];
+      const outCell = cells[outIdx];
+      const outDescCell = cells[outDescIdx];
 
-    const count = document.getElementById("ak2RowCount");
-    if(count) count.textContent = `${rows.length} transaksi`;
+      if(inCell) inCell.innerHTML = move.incoming ? flow.rupiah(move.incoming) : "—";
+      if(inDescCell) inDescCell.textContent = move.incoming ? baseDesc : "—";
+      if(outCell) outCell.innerHTML = move.outgoing ? flow.rupiah(move.outgoing) : "—";
+      if(outDescCell) outDescCell.textContent = move.outgoing ? baseDesc : "—";
+
+      tr.title = route;
+    });
+
     markSaldoHeader();
+  }
+
+  const baseRenderLedger = flow.renderLedger;
+  flow.renderLedger = function(){
+    const result = baseRenderLedger.apply(this,arguments);
+    patchRenderedRows();
+    return result;
   };
 
-  /* Jika modul dimuat setelah render awal, refresh tampilan sekali tanpa query baru. */
+  /* Jika modul dimuat setelah render awal, patch DOM existing tanpa query / reload. */
   if(Array.isArray(flow.ledger) && flow.ledger.length){
     setTimeout(() => {
-      try{ flow.renderLedger(); }catch(_e){}
+      try{ patchRenderedRows(); }catch(_e){}
     },0);
   }
 })();
