@@ -167,6 +167,15 @@ Alur:
     return {masuk:tr.children[1+o],ketMasuk:tr.children[2+o],keluar:tr.children[3+o],ketKeluar:tr.children[4+o],saldo:tr.children[5+o],status:tr.children[7+o]};
   }
 
+  function setDeletedHistoryCell(cell,text,className){
+    if(!cell) return;
+    cell.textContent="";
+    const span=document.createElement("span");
+    span.className=className;
+    span.textContent=text;
+    cell.appendChild(span);
+  }
+
   function restoreHistoryMutation(tr,row){
     if(!isDeleteInactive(row)) return;
     const c=findLedgerCells(tr);
@@ -181,19 +190,24 @@ Alur:
       else direction="IN";
     }
     if(direction==="IN"){
-      if(c.masuk)c.masuk.innerHTML=`<span class="ak2-deleted-amount">${money}</span>`;
-      if(c.ketMasuk)c.ketMasuk.textContent=desc;
+      setDeletedHistoryCell(c.masuk,money,"ak2-deleted-history-text ak2-deleted-amount");
+      setDeletedHistoryCell(c.ketMasuk,desc,"ak2-deleted-history-text ak2-deleted-desc");
       if(c.keluar)c.keluar.textContent="—";
       if(c.ketKeluar)c.ketKeluar.textContent="—";
     }else{
-      if(c.keluar)c.keluar.innerHTML=`<span class="ak2-deleted-amount">${money}</span>`;
-      if(c.ketKeluar)c.ketKeluar.textContent=desc;
+      setDeletedHistoryCell(c.keluar,money,"ak2-deleted-history-text ak2-deleted-amount");
+      setDeletedHistoryCell(c.ketKeluar,desc,"ak2-deleted-history-text ak2-deleted-desc");
       if(c.masuk)c.masuk.textContent="—";
       if(c.ketMasuk)c.ketMasuk.textContent="—";
     }
   }
 
+  function syncOwnerActionVisibility(){
+    document.body.classList.toggle("ak2-owner-no-action",isOwner());
+  }
+
   function decorateRows(){
+    syncOwnerActionVisibility();
     const body=document.getElementById("ak2LedgerBody");
     if(!body)return;
     body.querySelectorAll("tr[data-id]").forEach(tr=>{
@@ -218,10 +232,10 @@ Alur:
       const action=tr.querySelector(":scope > .ak2-action-cell");
       if(action){
         action.textContent="";
-        if(pending&&isOwner()){
-          const btn=document.createElement("button");btn.type="button";btn.className="ak2-delete-state-icon is-pending";btn.textContent="!";btn.title="Verifikasi hapus transaksi";btn.dataset.ak2DeleteVerify=row.id;action.appendChild(btn);
-        }else if(verified){
-          const done=document.createElement("span");done.className="ak2-delete-state-icon is-verified";done.textContent="✓";done.title="Hapus sudah diverifikasi Owner";action.appendChild(done);
+        if(!isOwner()){
+          if(verified){
+            const done=document.createElement("span");done.className="ak2-delete-state-icon is-verified";done.textContent="✓";done.title="Hapus sudah diverifikasi Owner";action.appendChild(done);
+          }
         }
       }
     });
@@ -240,7 +254,18 @@ Alur:
     s.textContent=`
       body.page-arus-kas #ak2LedgerBody tr.ak2-delete-pending>td{background-color:rgba(109,28,28,.08)!important}
       body.page-arus-kas #ak2LedgerBody tr.ak2-delete-verified>td{background-color:rgba(52,63,72,.10)!important}
-      body.page-arus-kas .ak2-deleted-amount{text-decoration:line-through;text-decoration-thickness:1.5px;opacity:.72}
+
+      /* UI ONLY — history hapus: nominal + keterangan dicoret merah tebal. */
+      body.page-arus-kas .ak2-deleted-history-text{
+        display:inline-block;
+        text-decoration-line:line-through!important;
+        text-decoration-color:#ff4545!important;
+        text-decoration-thickness:3px!important;
+        text-decoration-skip-ink:none!important;
+        opacity:.84;
+      }
+      body.page-arus-kas .ak2-deleted-desc{color:#d9b7b7!important}
+
       body.page-arus-kas .ak2-delete-state-icon{width:30px;height:30px;display:inline-grid;place-items:center;border-radius:50%;font-weight:950;font-size:17px;line-height:1}
       body.page-arus-kas button.ak2-delete-state-icon{cursor:pointer}
       body.page-arus-kas .ak2-delete-state-icon.is-pending,.ak2-delete-alert{border:1px solid #b94c4c;background:#611f1f;color:#ffd1d1}
@@ -252,10 +277,17 @@ Alur:
       body.page-arus-kas .ak2-delete-owner-action:hover{filter:brightness(1.16);box-shadow:0 0 0 2px rgba(185,76,76,.14)!important}
       body.page-arus-kas .ak2-delete-alert{width:20px;height:20px;display:inline-grid;place-items:center;border-radius:50%;font-weight:950;line-height:1}
       body.page-arus-kas .ak2-delete-check{font-size:15px;font-weight:950;color:#b8f1cb}
+
+      /* UI ONLY — akun Owner tidak membutuhkan kolom/tombol AKSI. */
+      body.page-arus-kas.ak2-owner-no-action .ak2-action-head,
+      body.page-arus-kas.ak2-owner-no-action .ak2-action-cell{
+        display:none!important;
+      }
     `;document.head.appendChild(s);
   }
 
   installStyle();
+  syncOwnerActionVisibility();
   const body=document.getElementById("ak2LedgerBody");
   if(body)new MutationObserver(()=>scheduleDecorate()).observe(body,{childList:true,subtree:false});
   document.addEventListener("change",e=>{if(e.target?.id==="ak2Kategori")setTimeout(syncModalDeleteButton,0)});
