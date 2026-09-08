@@ -1,15 +1,15 @@
 /*
 =========================================================
-VAX ERP — ARUS KAS V2 WALLET ROUTE LABEL UI
+VAX ERP — ARUS KAS V2 WALLET SOURCE LABEL UI
 UI / presentation only. Tidak mengubah engine, data, formula, query,
 wallet balance, source of truth, ataupun workflow transaksi.
 
-Tujuan:
-- Setiap nominal di Buku Arus Kas punya petunjuk sumber/tujuan yang jelas.
-- Tampilan dibuat sederhana 2 baris dalam kolom keterangan yang sama.
-- AUTO: baris 1 "Auto", baris 2 jenis/periode transaksi.
-- MANUAL: baris 1 wallet asal ke wallet tujuan, baris 2 keterangan kecil.
-- Berlaku untuk akun Owner dan SVP tanpa menambah kolom baru.
+Prinsip tampilan:
+- Semua KET. menjawab dulu: uang ini DIAMBIL / BERASAL DARI mana.
+- Baris 1 selalu: "Dari [sumber uang]".
+- Baris 2 kecil: kebutuhan / jenis transaksi / periode.
+- Berlaku untuk pemasukan dan pengeluaran, akun Owner dan SVP.
+- Tidak menambah kolom baru dan tetap rapat untuk audit satu layar.
 =========================================================
 */
 "use strict";
@@ -22,7 +22,7 @@ Tujuan:
   let decorateQueued=false;
 
   const WALLET_LABELS={
-    EXTERNAL:"Luar",
+    EXTERNAL:"Eksternal",
     KAS_BESAR:"Kas Besar",
     DANA_PRODUK:"Dana Produk",
     KAS_DENDA:"Kas Denda",
@@ -96,45 +96,47 @@ Tujuan:
     return periodFromMetadata(row)||periodFromDescription(row);
   }
 
-  function cleanManualDescription(row){
-    let desc=String(row?.description||flow.categoryName?.(row?.category)||"Transaksi").trim();
-    desc=desc.replace(/^setoran\s+/i,"Setoran ");
-    return desc;
+  function cleanDescription(row){
+    return String(row?.description||flow.categoryName?.(row?.category)||"Transaksi")
+      .replace(/\s+/g," ")
+      .trim();
   }
 
-  function autoSecondLine(row){
+  function secondLine(row){
     const category=String(row?.category||"").toUpperCase();
     const period=periodLabel(row);
+    const desc=cleanDescription(row);
+
     if(category==="SETORAN_3_HARIAN"){
-      const correction=/^koreksi\s+setoran/i.test(String(row?.description||""));
+      const correction=/^koreksi\s+setoran/i.test(desc);
       return `${correction?"Koreksi setoran":"Setoran"}${period?` ${period}`:""}`;
     }
     if(category==="TRANSFER_DANA_PRODUK"){
-      return `Nett Produk${period?` ${period}`:""}`;
+      return `Dana Produk${period?` ${period}`:""}`;
     }
-    const desc=cleanManualDescription(row);
-    return period && !desc.toLowerCase().includes(period.toLowerCase()) ? `${desc} ${period}` : desc;
+    return desc;
+  }
+
+  function sourceLabel(row){
+    const category=String(row?.category||"").toUpperCase();
+    const from=String(row?.from_wallet||"").toUpperCase();
+
+    /* AUTO Setoran berasal dari uang setoran operasional. Label ini lebih
+       mudah dipahami Owner/SVP daripada istilah teknis EXTERNAL. */
+    if(category==="SETORAN_3_HARIAN" && from==="EXTERNAL") return "Setoran";
+    return walletLabel(row?.from_wallet);
   }
 
   function labelParts(row){
-    const isAuto=String(row?.entry_type||"").toUpperCase()==="AUTO";
-    if(isAuto){
-      return {primary:"Auto",secondary:autoSecondLine(row)};
-    }
-
-    const from=walletLabel(row?.from_wallet);
-    const to=walletLabel(row?.to_wallet);
     return {
-      primary:`${from} ke ${to}`,
-      secondary:`(${cleanManualDescription(row)})`
+      primary:`Dari ${sourceLabel(row)}`,
+      secondary:secondLine(row)
     };
   }
 
-  function fullRouteText(row){
-    const from=walletLabel(row?.from_wallet);
-    const to=walletLabel(row?.to_wallet);
-    const desc=String(row?.description||flow.categoryName?.(row?.category)||"Transaksi").trim();
-    return `${from} ke ${to} · ${desc}`;
+  function fullText(row){
+    const parts=labelParts(row);
+    return `${parts.primary} · ${parts.secondary}`;
   }
 
   function setDescription(cell,row){
@@ -157,9 +159,9 @@ Tujuan:
     secondary.textContent=parts.secondary;
 
     wrap.append(primary,secondary);
-    wrap.title=fullRouteText(row);
+    wrap.title=fullText(row);
     cell.appendChild(wrap);
-    cell.title=fullRouteText(row);
+    cell.title=fullText(row);
   }
 
   function decorateRows(){
