@@ -58,6 +58,7 @@ Tujuan:
         font-weight:900;
         color:#f0c969;
         letter-spacing:.02em;
+        border-bottom:1px solid rgba(76,101,126,.44)!important;
       }
       body.page-arus-kas .ak2-cabang-badge{
         display:inline;
