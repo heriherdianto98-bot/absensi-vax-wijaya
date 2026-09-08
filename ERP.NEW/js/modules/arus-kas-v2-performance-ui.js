@@ -281,6 +281,15 @@ Tujuan:
     document.body.appendChild(s);
   }
 
+  function loadOwnerReviewUi(){
+    if(document.querySelector('script[data-ak2-owner-review-ui]')) return;
+    const s=document.createElement("script");
+    s.src="../js/modules/arus-kas-v2-owner-review-ui.js";
+    s.async=false;
+    s.dataset.ak2OwnerReviewUi="1";
+    document.body.appendChild(s);
+  }
+
   installStyle();
   if(!installRefreshButton()){
     let tries=0;
@@ -294,4 +303,5 @@ Tujuan:
   loadWalletTransferUi();
   loadSoftDeleteUi();
   loadWalletRouteUi();
+  loadOwnerReviewUi();
 })();
