@@ -50,6 +50,15 @@ Tidak mengubah engine, formula, query, payload transaksi, atau wallet balance.
       const row = rowById.get(String(tr.dataset.id));
       if(!row) return;
 
+      const from = String(row?.from_wallet || "").toUpperCase();
+      const to = String(row?.to_wallet || "").toUpperCase();
+      const route = `${flow.categoryName(row.from_wallet)} → ${flow.categoryName(row.to_wallet)}`;
+      tr.title = route;
+
+      /* Transaksi yang menyentuh KAS_BESAR sudah benar di renderer existing.
+         Jangan disentuh agar compact description / cabang UI existing tetap utuh. */
+      if(from === "KAS_BESAR" || to === "KAS_BESAR") return;
+
       const cells = [...tr.children];
       const hasCabangColumn = cells.length >= 9;
       const inIdx = hasCabangColumn ? 2 : 1;
@@ -60,7 +69,6 @@ Tidak mengubah engine, formula, query, payload transaksi, atau wallet balance.
       const amount = flow.money(row.amount);
       const move = movementFor(row,amount);
       const baseDesc = row.description || flow.categoryName(row.category);
-      const route = `${flow.categoryName(row.from_wallet)} → ${flow.categoryName(row.to_wallet)}`;
 
       const inCell = cells[inIdx];
       const inDescCell = cells[inDescIdx];
@@ -71,8 +79,6 @@ Tidak mengubah engine, formula, query, payload transaksi, atau wallet balance.
       if(inDescCell) inDescCell.textContent = move.incoming ? baseDesc : "—";
       if(outCell) outCell.innerHTML = move.outgoing ? flow.rupiah(move.outgoing) : "—";
       if(outDescCell) outDescCell.textContent = move.outgoing ? baseDesc : "—";
-
-      tr.title = route;
     });
 
     markSaldoHeader();
@@ -85,7 +91,6 @@ Tidak mengubah engine, formula, query, payload transaksi, atau wallet balance.
     return result;
   };
 
-  /* Jika modul dimuat setelah render awal, patch DOM existing tanpa query / reload. */
   if(Array.isArray(flow.ledger) && flow.ledger.length){
     setTimeout(() => {
       try{ patchRenderedRows(); }catch(_e){}
