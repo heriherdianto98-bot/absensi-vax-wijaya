@@ -18,24 +18,30 @@
     if(!isOwner()) return;
     document.querySelectorAll('#s3sheetBody tr[data-cabang-id]').forEach(tr=>{
       tr.querySelectorAll('[data-field="bri"],[data-field="outside"],[data-field="note"],[data-field="taken"],[data-file-input]').forEach(el=>{
-        el.disabled=true;
-        el.setAttribute('aria-disabled','true');
+        if(!el.disabled) el.disabled=true;
+        if(el.getAttribute('aria-disabled')!=='true') el.setAttribute('aria-disabled','true');
       });
+
       const proof=tr.querySelector('[data-action="proof"]');
       if(proof){
         /* Owner boleh LIHAT bukti yang sudah ada, tetapi tidak boleh membuka file picker/upload baru. */
         const hasSaved=String(proof.textContent||'').trim().toLowerCase().includes('lihat') || proof.classList.contains('has-proof');
-        if(!hasSaved){proof.disabled=true;proof.setAttribute('aria-disabled','true');}
+        if(!hasSaved){
+          if(!proof.disabled) proof.disabled=true;
+          if(proof.getAttribute('aria-disabled')!=='true') proof.setAttribute('aria-disabled','true');
+        }
       }
+
       const note=tr.querySelector('[data-note-popup="1"]');
       if(note){
         note.removeAttribute('data-note-popup');
         note.title='Owner read only';
       }
+
       const outsideOpen=tr.querySelector('[data-s3-outside-open]');
       if(outsideOpen){
-        outsideOpen.disabled=true;
-        outsideOpen.setAttribute('aria-disabled','true');
+        if(!outsideOpen.disabled) outsideOpen.disabled=true;
+        if(outsideOpen.getAttribute('aria-disabled')!=='true') outsideOpen.setAttribute('aria-disabled','true');
         outsideOpen.title='Owner read only. Review melalui kolom KOREKSI.';
       }
 
@@ -70,14 +76,16 @@
   const baseRender=flow.renderTable.bind(flow);
   flow.renderTable=function(){
     const r=baseRender(...arguments);
-    queueMicrotask(enforce);
+    setTimeout(enforce,0);
     return r;
   };
 
+  /* Observe hanya perubahan struktur row. Jangan observe atribut disabled/data-note-popup,
+     karena enforce sendiri mengubah atribut tersebut dan sebelumnya memicu loop MutationObserver. */
   const obs=new MutationObserver(()=>enforce());
   function bind(){
     const body=document.getElementById('s3sheetBody');
-    if(body) obs.observe(body,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','data-note-popup']});
+    if(body) obs.observe(body,{childList:true,subtree:true});
     enforce();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(bind,180),{once:true});
