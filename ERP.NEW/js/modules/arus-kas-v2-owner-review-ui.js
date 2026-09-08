@@ -9,6 +9,8 @@ Tujuan:
 - Klik badge membuka detail transaksi existing, lalu Owner memakai tombol
   Verifikasi / Minta Koreksi yang sudah ada di ArusKasV2.
 - Di akun SVP, transaksi OWNER VERIFIED diberi ikon ceklis hijau.
+- Di kolom AKSI akun SVP, transaksi OWNER VERIFIED menampilkan ikon ceklis
+  hijau non-clickable agar kolom tidak kosong.
 - Header TANGGAL tetap sticky saat scroll vertikal, tetapi isi kolom tanggal
   tetap tidak freeze horizontal.
 - Tidak berlaku untuk history hapus; alur hapus tetap ditangani layer soft-delete.
@@ -31,6 +33,23 @@ Tujuan:
     const hasCabang=!!tr.querySelector(":scope > td.ak2-cabang-col");
     const o=hasCabang?1:0;
     return tr.children[7+o]||null;
+  }
+
+  function ensureSvpVerifiedAction(tr,row){
+    if(!isSvp() || String(row?.verification_status||"")!=="OWNER_VERIFIED") return;
+    let cell=tr.querySelector(":scope > .ak2-action-cell");
+    if(!cell){
+      cell=document.createElement("td");
+      cell.className="ak2-action-cell";
+      tr.appendChild(cell);
+    }
+    if(cell.querySelector(".ak2-svp-action-verified")) return;
+    const icon=document.createElement("span");
+    icon.className="ak2-svp-action-verified";
+    icon.textContent="✓";
+    icon.title="Sudah diverifikasi Owner";
+    icon.setAttribute("aria-label","Sudah diverifikasi Owner");
+    cell.appendChild(icon);
   }
 
   function decorate(){
@@ -61,6 +80,7 @@ Tujuan:
           badge.classList.add("ak2-svp-verified-check");
           badge.title="Sudah diverifikasi Owner";
         }
+        ensureSvpVerifiedAction(tr,row);
       }
     });
   }
@@ -135,6 +155,24 @@ Tujuan:
         font-weight:950;
         line-height:1;
         flex:0 0 17px;
+      }
+
+      /* UI ONLY — icon status final di kolom AKSI SVP, non-clickable. */
+      body.page-arus-kas .ak2-svp-action-verified{
+        width:28px;
+        height:28px;
+        display:inline-grid;
+        place-items:center;
+        border-radius:50%;
+        border:1px solid #3f7d58;
+        background:linear-gradient(180deg,#214d35,#173524);
+        color:#b8f1cb;
+        font-size:16px;
+        font-weight:950;
+        line-height:1;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 10px rgba(0,0,0,.14);
+        pointer-events:none;
+        user-select:none;
       }
 
       /* UI ONLY — hanya JUDUL TANGGAL yang sticky saat scroll vertikal.
