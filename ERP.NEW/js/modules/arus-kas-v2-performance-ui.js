@@ -272,6 +272,15 @@ Tujuan:
     document.body.appendChild(s);
   }
 
+  function loadWalletRouteUi(){
+    if(document.querySelector('script[data-ak2-wallet-route-ui]')) return;
+    const s=document.createElement("script");
+    s.src="../js/modules/arus-kas-v2-wallet-route-ui.js";
+    s.async=false;
+    s.dataset.ak2WalletRouteUi="1";
+    document.body.appendChild(s);
+  }
+
   installStyle();
   if(!installRefreshButton()){
     let tries=0;
@@ -284,4 +293,5 @@ Tujuan:
   loadLedgerOrderUi();
   loadWalletTransferUi();
   loadSoftDeleteUi();
+  loadWalletRouteUi();
 })();
