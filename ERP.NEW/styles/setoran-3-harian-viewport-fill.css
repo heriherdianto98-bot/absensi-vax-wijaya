@@ -109,6 +109,15 @@ body.s3sheet-erp-integrated .s3sheet-check{
   font-size:11px !important;
 }
 
+/* UI ONLY — kolom Biaya di luar Cashout dan Koreksi sudah tidak dipakai.
+   Sembunyikan visualnya saja; engine/data/formula tetap utuh. */
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(7),
+body.s3sheet-erp-integrated .s3sheet-table td:nth-child(7),
+body.s3sheet-erp-integrated .s3sheet-table th:nth-child(12),
+body.s3sheet-erp-integrated .s3sheet-table td:nth-child(12){
+  display:none !important;
+}
+
 /* Card total kembali ke ukuran normal dan mengikuti flow setelah tabel. */
 body.s3sheet-erp-integrated .s3sheet-totals{
   position:static !important;
