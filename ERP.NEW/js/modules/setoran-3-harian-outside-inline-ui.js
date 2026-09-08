@@ -22,17 +22,22 @@
     const s=document.createElement("style");
     s.id="s3OutsideInlineStyle";
     s.textContent=`
-      .s3-outside-inline-cell{overflow:visible!important;white-space:normal!important;text-overflow:clip!important;height:auto!important;padding-top:5px!important;padding-bottom:5px!important}
-      .s3-outside-inline-wrap{display:grid;gap:4px;min-width:138px}
-      .s3-outside-inline-sub{display:flex;gap:4px;align-items:center;min-width:0}
-      .s3-outside-inline-note{width:100%;min-width:0;height:22px;border:1px solid rgba(216,165,59,.22);border-radius:5px;background:#0a141e;color:#dce5ee;padding:0 6px;font-size:9px;outline:none}
+      .s3-outside-inline-cell{overflow:visible!important;white-space:normal!important;text-overflow:clip!important;height:auto!important;padding-top:4px!important;padding-bottom:4px!important}
+      .s3-outside-inline-wrap{display:grid;gap:3px;min-width:0;width:100%}
+      .s3-outside-inline-sub{display:grid;grid-template-columns:minmax(72px,1fr) auto;gap:3px;align-items:center;min-width:0}
+      .s3-outside-inline-note{width:100%;min-width:0;height:20px;border:1px solid rgba(216,165,59,.22);border-radius:5px;background:#0a141e;color:#dce5ee;padding:0 5px;font-size:8px;outline:none}
       .s3-outside-inline-note:focus{border-color:rgba(216,165,59,.68);box-shadow:0 0 0 1px rgba(216,165,59,.10)}
-      .s3-outside-inline-proof{flex:0 0 auto;height:22px;padding:0 6px;border:1px solid rgba(216,165,59,.34);border-radius:5px;background:rgba(216,165,59,.07);color:#f0c45d;font-size:8px;font-weight:900;cursor:pointer;white-space:nowrap}
+      .s3-outside-inline-proof,.s3-outside-inline-view{height:20px;padding:0 5px;border-radius:5px;font-size:7px;font-weight:900;cursor:pointer;white-space:nowrap}
+      .s3-outside-inline-proof{border:1px solid rgba(216,165,59,.34);background:rgba(216,165,59,.07);color:#f0c45d}
       .s3-outside-inline-proof.has-proof{border-color:rgba(72,207,141,.42);background:rgba(72,207,141,.09);color:#8ce7bc}
-      .s3-outside-inline-proof[disabled]{opacity:.52;cursor:not-allowed}
-      .s3-outside-inline-meta{display:block;color:#7f91a3;font-size:8px;line-height:1.15;text-align:left}
-      .s3-outside-inline-view{height:22px;padding:0 6px;border:1px solid rgba(114,170,247,.30);border-radius:5px;background:rgba(114,170,247,.07);color:#a7c8f8;font-size:8px;font-weight:900;cursor:pointer;white-space:nowrap}
-      .s3-outside-inline-view[disabled]{opacity:.5;cursor:not-allowed}
+      .s3-outside-inline-view{border:1px solid rgba(114,170,247,.30);background:rgba(114,170,247,.07);color:#a7c8f8}
+      .s3-outside-inline-proof[disabled],.s3-outside-inline-view[disabled]{opacity:.52;cursor:not-allowed}
+      .s3-outside-inline-meta{display:block;color:#7f91a3;font-size:7px;line-height:1.1;text-align:left}
+      .s3-outside-inline-wrap.is-empty .s3-outside-inline-sub,
+      .s3-outside-inline-wrap.is-empty .s3-outside-inline-meta{display:none!important}
+      .s3-outside-inline-wrap.is-empty{gap:0}
+      .s3-outside-inline-wrap.has-outside .s3-outside-inline-sub{grid-template-columns:minmax(72px,1fr) auto}
+      .s3-outside-inline-wrap.has-proof .s3-outside-inline-sub{grid-template-columns:minmax(64px,1fr) auto auto}
     `;
     document.head.appendChild(s);
   }
@@ -96,14 +101,20 @@
     const meta=wrap.querySelector('[data-outside-inline-meta]');
     if(document.activeElement!==note) note.value=noteFor(id,saved);
 
+    const amount=money(outside.value);
+    const hasOutside=amount>0||Boolean(note.value.trim())||Boolean(proof);
+    wrap.classList.toggle("is-empty",!hasOutside);
+    wrap.classList.toggle("has-outside",hasOutside);
+    wrap.classList.toggle("has-proof",Boolean(proof));
+
     const svp=isSvp();
     note.disabled=!svp;
     upload.disabled=!svp||busyUpload.has(key(id));
     upload.classList.toggle("has-proof",Boolean(proof));
-    upload.textContent=proof?"Ganti Foto":"Upload Foto";
+    upload.textContent=proof?"Ganti":"Foto";
     view.disabled=!proof;
     view.hidden=!proof;
-    meta.textContent=proof?"✓ Bukti biaya tersimpan":"Bukti biaya belum ada";
+    meta.textContent=proof?"✓ Bukti biaya":"Belum ada bukti";
   }
 
   function decorate(){
