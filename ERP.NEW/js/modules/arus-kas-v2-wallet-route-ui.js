@@ -276,6 +276,29 @@ Prinsip tampilan:
       body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(9),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(9){width:126px!important;min-width:126px!important;max-width:126px!important}
       body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(10),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(10){width:48px!important;min-width:48px!important;max-width:48px!important}
 
+      /* UI ONLY — tanggal tidak freeze, semua tanggal putih, saldo Kas Besar ukuran normal. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table thead th:first-child,
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:first-child{
+        position:static!important;
+        left:auto!important;
+        z-index:auto!important;
+        box-shadow:none!important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:first-child,
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr.ak2-date-start td:first-child{
+        color:#f5f7fa!important;
+        background:transparent!important;
+        font-size:inherit!important;
+        font-weight:800!important;
+        text-shadow:none!important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:nth-child(7){
+        font-size:inherit!important;
+        font-weight:800!important;
+        letter-spacing:normal!important;
+        text-shadow:none!important;
+      }
+
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc{color:#d9b7b7!important}
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc .ak2-wallet-route-main,
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc .ak2-wallet-route-sub{color:#d9a1a1!important}
