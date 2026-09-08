@@ -16,7 +16,9 @@
   if(flow.__ownerReadonlyGuardInstalled) return;
   flow.__ownerReadonlyGuardInstalled=true;
 
-  const role=()=>String(window.OwnerAuth?.profile?.role||flow.profile?.role||flow.role||"").toLowerCase();
+  /* Flow profile adalah identitas canonical halaman Setoran setelah loadIdentity().
+     Jangan prioritaskan OwnerAuth.profile karena shell/header dapat masih membawa state sesi sebelumnya. */
+  const role=()=>String(flow.profile?.role||flow.role||window.OwnerAuth?.profile?.role||"").toLowerCase();
   const isOwner=()=>role()==="owner";
 
   function enforce(){
