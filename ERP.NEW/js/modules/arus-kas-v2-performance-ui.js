@@ -141,6 +141,27 @@ Tujuan:
       }
       body.page-arus-kas #ak2RefreshAll:hover{filter:brightness(1.08)}
 
+      /* UI ONLY — compact ledger rows agar pemeriksaan bulanan lebih padat. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
+        padding-top:8px !important;
+        padding-bottom:8px !important;
+        line-height:1.2 !important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
+        height:48px !important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-source,
+      body.page-arus-kas .ak2-ledger-card .ak2-status{
+        min-height:30px !important;
+        padding-top:5px !important;
+        padding-bottom:5px !important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-ledger-edit-icon{
+        width:32px !important;
+        height:32px !important;
+        font-size:16px !important;
+      }
+
       /* UI ONLY — perjelas badge SUMBER dan STATUS pada Buku Arus Kas. */
       body.page-arus-kas .ak2-ledger-card .ak2-source,
       body.page-arus-kas .ak2-ledger-card .ak2-status{
@@ -204,6 +225,13 @@ Tujuan:
           font-size:11px !important;
         }
         body.page-arus-kas .ak2-ledger-card .ak2-status{min-width:116px}
+        body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
+          padding-top:7px !important;
+          padding-bottom:7px !important;
+        }
+        body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
+          height:44px !important;
+        }
       }
     `;
     document.head.appendChild(style);
