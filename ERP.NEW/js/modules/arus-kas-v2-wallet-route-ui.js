@@ -10,6 +10,8 @@ Tujuan:
 - Berlaku untuk akun Owner dan SVP.
 - Tidak menambah kolom baru; rute wallet ditampilkan di kolom keterangan
   pemasukan / pengeluaran yang sudah ada.
+- Label dibuat ringkas agar tabel tetap muat dalam 1 pandangan dan tidak
+  melebar hanya karena keterangan rute wallet.
 =========================================================
 */
 "use strict";
@@ -22,12 +24,12 @@ Tujuan:
   let decorateQueued=false;
 
   const WALLET_LABELS={
-    EXTERNAL:"Eksternal",
-    KAS_BESAR:"Kas Besar",
-    DANA_PRODUK:"Dana Produk",
-    KAS_DENDA:"Kas Denda",
-    PIUTANG_SETORAN:"Piutang Setoran",
-    PIUTANG_DENDA:"Piutang Denda"
+    EXTERNAL:"Ext",
+    KAS_BESAR:"Besar",
+    DANA_PRODUK:"Produk",
+    KAS_DENDA:"Denda",
+    PIUTANG_SETORAN:"P.Setoran",
+    PIUTANG_DENDA:"P.Denda"
   };
 
   const rowById=id=>flow.ledger?.find(x=>String(x.id)===String(id))||null;
@@ -42,6 +44,19 @@ Tujuan:
       .filter(Boolean)
       .map(x=>x.charAt(0).toUpperCase()+x.slice(1))
       .join(" ");
+  }
+
+  function fullWalletLabel(value){
+    const key=String(value||"").trim().toUpperCase();
+    const full={
+      EXTERNAL:"Eksternal",
+      KAS_BESAR:"Kas Besar",
+      DANA_PRODUK:"Dana Produk",
+      KAS_DENDA:"Kas Denda",
+      PIUTANG_SETORAN:"Piutang Setoran",
+      PIUTANG_DENDA:"Piutang Denda"
+    };
+    return full[key]||walletLabel(value);
   }
 
   function findLedgerCells(tr){
@@ -61,9 +76,50 @@ Tujuan:
     return !!text && text!=="—" && text!=="-";
   }
 
+  const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+
+  function parseDateOnly(value){
+    const m=String(value||"").slice(0,10).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!m) return null;
+    return {y:Number(m[1]),m:Number(m[2]),d:Number(m[3])};
+  }
+
+  function compactPeriod(row){
+    const md=row?.metadata||{};
+    const a=parseDateOnly(row?.source_period_start||md.period_start||md.source_period_start);
+    const b=parseDateOnly(row?.source_period_end||md.period_end||md.source_period_end);
+    if(!a||!b) return "";
+    if(a.y===b.y&&a.m===b.m){
+      if(a.d===b.d) return `${String(a.d).padStart(2,"0")} ${MONTHS[a.m-1]}`;
+      return `${String(a.d).padStart(2,"0")}–${String(b.d).padStart(2,"0")} ${MONTHS[b.m-1]}`;
+    }
+    return `${String(a.d).padStart(2,"0")} ${MONTHS[a.m-1]}–${String(b.d).padStart(2,"0")} ${MONTHS[b.m-1]}`;
+  }
+
+  function compactDescription(row){
+    const desc=String(row?.description||flow.categoryName?.(row?.category)||"Transaksi").trim();
+    const period=compactPeriod(row);
+    const category=String(row?.category||"").toUpperCase();
+
+    if(category==="SETORAN_3_HARIAN"){
+      if(/^koreksi\s+setoran/i.test(desc)) return period?`Koreksi Setoran ${period}`:"Koreksi Setoran";
+      return period?`Setoran ${period}`:"Setoran";
+    }
+    if(category==="TRANSFER_DANA_PRODUK") return period?`Nett Produk ${period}`:"Nett Produk";
+
+    return desc;
+  }
+
   function routeText(row){
     const from=walletLabel(row?.from_wallet);
     const to=walletLabel(row?.to_wallet);
+    const desc=compactDescription(row);
+    return `${from}→${to} · ${desc}`;
+  }
+
+  function fullRouteText(row){
+    const from=fullWalletLabel(row?.from_wallet);
+    const to=fullWalletLabel(row?.to_wallet);
     const desc=String(row?.description||flow.categoryName?.(row?.category)||"Transaksi").trim();
     return `${from} → ${to} · ${desc}`;
   }
@@ -77,8 +133,9 @@ Tujuan:
       ? "ak2-wallet-route ak2-deleted-history-text ak2-deleted-desc"
       : "ak2-wallet-route";
     span.textContent=text;
+    span.title=fullRouteText(row);
     cell.appendChild(span);
-    cell.title=text;
+    cell.title=fullRouteText(row);
   }
 
   function decorateRows(){
@@ -91,14 +148,8 @@ Tujuan:
       const c=findLedgerCells(tr);
       const text=routeText(row);
 
-      /* Ikuti kolom nominal yang benar-benar tampil agar UI tetap sesuai
-         presentasi ledger existing, termasuk transfer internal. */
-      if(hasNominal(c.masuk)){
-        setDescription(c.ketMasuk,text,row);
-      }
-      if(hasNominal(c.keluar)){
-        setDescription(c.ketKeluar,text,row);
-      }
+      if(hasNominal(c.masuk)) setDescription(c.ketMasuk,text,row);
+      if(hasNominal(c.keluar)) setDescription(c.ketKeluar,text,row);
     });
   }
 
@@ -118,17 +169,33 @@ Tujuan:
     s.id="ak2WalletRouteUiStyle";
     s.textContent=`
       body.page-arus-kas .ak2-wallet-route{
-        display:inline;
+        display:block;
+        width:100%;
+        max-width:100%;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
         color:#e6edf4;
         font-weight:700;
-        line-height:1.25;
+        line-height:1.2;
       }
       body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(4),
       body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(6){
-        min-width:220px;
+        width:230px!important;
+        min-width:230px!important;
+        max-width:230px!important;
+        overflow:hidden!important;
       }
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc{
         color:#d9b7b7!important;
+      }
+      @media(max-width:1200px){
+        body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(4),
+        body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(6){
+          width:205px!important;
+          min-width:205px!important;
+          max-width:205px!important;
+        }
       }
     `;
     document.head.appendChild(s);
