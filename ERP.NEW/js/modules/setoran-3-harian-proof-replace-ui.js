@@ -19,8 +19,7 @@
     const {error:u}=await db.storage.from(flow.PROOF_BUCKET).upload(path,packed.blob,{upsert:false,contentType:packed.contentType,cacheControl:"3600"});
     if(u) throw u;
 
-    /* Ganti foto = update record bukti yang sama, bukan hapus record lama.
-       Ini menghindari policy delete SPV dan tetap menjaga satu bukti aktif per jenis. */
+    /* Ganti foto = update record bukti yang sama, bukan hapus record lama. */
     const {data:rows,error:r}=await db.from(flow.PROOF_TABLE)
       .select("id,setoran_id,storage_path,proof_kind,uploaded_at,uploaded_by")
       .eq("setoran_id",saved.id)
@@ -100,6 +99,7 @@
       return this.fail("Belum ada bukti tersimpan untuk cabang ini.");
     }
 
+    /* UI hanya tampilkan bukti terbaru untuk tiap jenis. */
     const latestByKind=new Map();
     for(const pr of all){
       const k=String(pr.proof_kind||"SETORAN").toUpperCase();
@@ -159,8 +159,9 @@
         await uploadReplacement(current,file,kind);
         pending.delete(token);
         this.renderTable();
+        const modal=document.getElementById("s3proofViewModal");
+        if(modal) modal.hidden=true;
         this.ok("Foto bukti baru berhasil disimpan.");
-        await this.openProof(branch);
       }catch(err){
         btn.disabled=false;
         btn.textContent="💾 SIMPAN FOTO";
