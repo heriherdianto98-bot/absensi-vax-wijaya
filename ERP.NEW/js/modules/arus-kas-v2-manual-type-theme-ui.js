@@ -1,6 +1,6 @@
 /* ARUS KAS V2 — MANUAL INPUT TYPE THEME UI ONLY
    Visual safety cue: Pemasukan = biru, Pengeluaran = merah.
-   Warning besar berkedip di sisi kanan header dengan warna kontras independen dari tema transaksi.
+   Warning besar berkedip di sisi kanan header, text-only kontras tanpa background.
    Tidak mengubah engine, save logic, validation, formula, query, wallet, atau data.
 */
 "use strict";
@@ -41,26 +41,26 @@
       body.page-arus-kas #ak2Modal.ak2-type-in .ak2-type-visual-badge{color:#ccecff;background:rgba(38,141,213,.18);border:1px solid rgba(76,174,239,.42)}
       body.page-arus-kas #ak2Modal.ak2-type-out .ak2-type-visual-badge{color:#ffd7d7;background:rgba(193,53,53,.18);border:1px solid rgba(227,86,86,.44)}
 
-      /* Warning sengaja tidak mengikuti tema transaksi: neon kuning agar selalu kontras. */
+      /* Warning text-only: besar, kontras, tanpa kotak/background. */
       body.page-arus-kas #ak2Modal .ak2-input-safety-warning{
-        position:absolute;right:72px;top:50%;transform:translateY(-50%);
-        width:min(430px,48%);padding:12px 16px;border-radius:11px;text-align:right;
-        font-size:18px;font-weight:1000;line-height:1.24;letter-spacing:.028em;text-transform:uppercase;
-        color:#171207!important;
-        background:linear-gradient(180deg,#fff36a,#ffc928)!important;
-        border:2px solid #fff7b0!important;
-        text-shadow:0 1px 0 rgba(255,255,255,.45)!important;
-        box-shadow:0 0 0 2px rgba(255,198,24,.22),0 0 26px rgba(255,216,46,.58),inset 0 1px 0 rgba(255,255,255,.66)!important;
+        position:absolute;right:74px;top:50%;transform:translateY(-50%);
+        width:min(455px,50%);padding:0;margin:0;text-align:right;
+        font-family:Arial Black,Impact,system-ui,sans-serif;
+        font-size:20px;font-weight:1000;line-height:1.15;letter-spacing:.045em;text-transform:uppercase;
+        color:#ffe34f!important;
+        background:transparent!important;border:0!important;box-shadow:none!important;
+        -webkit-text-stroke:.35px rgba(35,24,0,.25);
+        text-shadow:0 0 8px rgba(255,220,55,.78),0 0 18px rgba(255,183,0,.42),0 2px 2px rgba(0,0,0,.82)!important;
         animation:ak2SafetyBlink 1.15s ease-in-out infinite;
         pointer-events:none
       }
       @keyframes ak2SafetyBlink{
-        0%,100%{filter:brightness(1.08);box-shadow:0 0 0 2px rgba(255,198,24,.26),0 0 30px rgba(255,216,46,.72),inset 0 1px 0 rgba(255,255,255,.70)}
-        50%{filter:brightness(.82);box-shadow:0 0 0 1px rgba(255,198,24,.14),0 0 10px rgba(255,216,46,.24),inset 0 1px 0 rgba(255,255,255,.38)}
+        0%,100%{opacity:1;filter:brightness(1.18)}
+        50%{opacity:.32;filter:brightness(.78)}
       }
       @media(max-width:900px){
-        body.page-arus-kas #ak2Modal .ak2-modal-head{padding-bottom:82px!important}
-        body.page-arus-kas #ak2Modal .ak2-input-safety-warning{left:22px;right:22px;top:auto;bottom:12px;transform:none;width:auto;text-align:center;font-size:16px}
+        body.page-arus-kas #ak2Modal .ak2-modal-head{padding-bottom:78px!important}
+        body.page-arus-kas #ak2Modal .ak2-input-safety-warning{left:22px;right:22px;top:auto;bottom:14px;transform:none;width:auto;text-align:center;font-size:17px}
       }
       @media (prefers-reduced-motion:reduce){body.page-arus-kas #ak2Modal .ak2-input-safety-warning{animation:none}}
     `;
