@@ -8,6 +8,9 @@ Tujuan:
 - Di akun Owner, badge BELUM DIVERIFIKASI menjadi target klik yang jelas.
 - Klik badge membuka detail transaksi existing, lalu Owner memakai tombol
   Verifikasi / Minta Koreksi yang sudah ada di ArusKasV2.
+- Di akun SVP, transaksi OWNER VERIFIED diberi ikon ceklis hijau.
+- Header TANGGAL tetap sticky saat scroll vertikal, tetapi isi kolom tanggal
+  tetap tidak freeze horizontal.
 - Tidak berlaku untuk history hapus; alur hapus tetap ditangani layer soft-delete.
 =========================================================
 */
@@ -20,6 +23,7 @@ Tujuan:
 
   let queued=false;
   const isOwner=()=>String(flow.role||"").toLowerCase()==="owner";
+  const isSvp=()=>String(flow.role||"").toLowerCase()==="svp";
   const rowById=id=>flow.ledger?.find(x=>String(x.id)===String(id))||null;
   const isDeleteInactive=row=>typeof flow.isDeleteInactive==="function" && flow.isDeleteInactive(row);
 
@@ -30,23 +34,34 @@ Tujuan:
   }
 
   function decorate(){
-    if(!isOwner()) return;
     const body=document.getElementById("ak2LedgerBody");
     if(!body) return;
 
     body.querySelectorAll("tr[data-id]").forEach(tr=>{
       const row=rowById(tr.dataset.id);
       if(!row || isDeleteInactive(row)) return;
-      if(String(row.verification_status||"")!=="BELUM_DIVERIFIKASI") return;
-
+      const state=String(row.verification_status||"");
       const cell=statusCell(tr);
-      const badge=cell?.querySelector(".ak2-status.is-pending");
-      if(!badge) return;
-      badge.dataset.ak2OwnerReview=row.id;
-      badge.setAttribute("role","button");
-      badge.setAttribute("tabindex","0");
-      badge.title="Klik untuk review transaksi";
-      badge.classList.add("ak2-owner-review-action");
+      if(!cell) return;
+
+      if(isOwner() && state==="BELUM_DIVERIFIKASI"){
+        const badge=cell.querySelector(".ak2-status.is-pending");
+        if(badge){
+          badge.dataset.ak2OwnerReview=row.id;
+          badge.setAttribute("role","button");
+          badge.setAttribute("tabindex","0");
+          badge.title="Klik untuk review transaksi";
+          badge.classList.add("ak2-owner-review-action");
+        }
+      }
+
+      if(isSvp() && state==="OWNER_VERIFIED"){
+        const badge=cell.querySelector(".ak2-status.is-verified");
+        if(badge){
+          badge.classList.add("ak2-svp-verified-check");
+          badge.title="Sudah diverifikasi Owner";
+        }
+      }
     });
   }
 
@@ -102,6 +117,38 @@ Tujuan:
       body.page-arus-kas .ak2-owner-review-action:focus-visible{
         outline:2px solid #d8ae4d;
         outline-offset:2px;
+      }
+
+      /* UI ONLY — ceklis hijau jelas di akun SVP untuk OWNER VERIFIED. */
+      body.page-arus-kas .ak2-status.ak2-svp-verified-check::before{
+        content:"✓";
+        display:inline-grid;
+        place-items:center;
+        width:17px;
+        height:17px;
+        margin-right:6px;
+        border-radius:50%;
+        border:1px solid rgba(116,238,157,.55);
+        background:rgba(36,111,67,.42);
+        color:#8ff0ad;
+        font-size:12px;
+        font-weight:950;
+        line-height:1;
+        flex:0 0 17px;
+      }
+
+      /* UI ONLY — hanya JUDUL TANGGAL yang sticky saat scroll vertikal.
+         Isi kolom tanggal tetap normal/tidak freeze horizontal. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table thead th:first-child{
+        position:sticky!important;
+        left:auto!important;
+        z-index:24!important;
+        box-shadow:none!important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:first-child{
+        position:static!important;
+        left:auto!important;
+        z-index:auto!important;
       }
     `;
     document.head.appendChild(s);
