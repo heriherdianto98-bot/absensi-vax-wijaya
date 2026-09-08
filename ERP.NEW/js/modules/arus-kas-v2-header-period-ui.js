@@ -67,6 +67,15 @@
     document.head.appendChild(d);
   }
 
+  /* UI only: klik 5 card saldo membuka popup mutasi read-only per wallet. */
+  if(!document.querySelector('script[data-ak2-wallet-mutation-ui]')){
+    const m=document.createElement("script");
+    m.src="../js/modules/arus-kas-v2-wallet-mutation-ui.js";
+    m.async=false;
+    m.dataset.ak2WalletMutationUi="1";
+    document.head.appendChild(m);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
