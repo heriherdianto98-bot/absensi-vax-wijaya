@@ -49,6 +49,15 @@
     document.head.appendChild(t);
   }
 
+  /* UI only: orbit halus berulang di garis bawah header Buku Arus Kas. */
+  if(!document.querySelector('script[data-ak2-ledger-header-orbit-ui]')){
+    const o=document.createElement("script");
+    o.src="../js/modules/arus-kas-v2-ledger-header-orbit-ui.js";
+    o.async=false;
+    o.dataset.ak2LedgerHeaderOrbitUi="1";
+    document.head.appendChild(o);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
