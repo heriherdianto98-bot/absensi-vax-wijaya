@@ -5,7 +5,10 @@
   if(typeof SetoranDirectFlow==="undefined") return;
   const flow=SetoranDirectFlow;
   let busy=false;
-  const role=()=>String(window.OwnerAuth?.profile?.role||flow.profile?.role||flow.role||"").toLowerCase();
+  /* IMPORTANT: gunakan identity canonical halaman Setoran lebih dulu.
+     OwnerAuth bisa stale dari shell/session sebelumnya (mis. sidebar masih OWNER,
+     sementara flow/profile aktual adalah SPV). */
+  const role=()=>String(flow.profile?.role||flow.role||window.OwnerAuth?.profile?.role||"").toLowerCase();
   const isOwner=()=>role()==="owner";
   const isSvp=()=>["svp","spv"].includes(role());
   const statusOf=s=>String(s?.outside_correction_status||"NONE").toUpperCase();
@@ -135,7 +138,6 @@
       if(outside<=0||!saved.id){
         td.innerHTML='<span class="s3-corr-empty">—</span>';
       }else if(isOwner()){
-        /* OWNER: kolom KOREKSI hanya pintu gerbang popup review. Tidak pernah render KIRIM ULANG. */
         ownerGateway(td,id,saved,st);
       }else if(isSvp()&&st==="REQUESTED"){
         const btn=document.createElement("button");btn.type="button";btn.className="s3-corr-state svp";btn.dataset.corrResubmit=String(id);btn.textContent="↥ KIRIM ULANG";btn.title=saved.outside_correction_note||"Koreksi diminta Owner";td.appendChild(btn);
