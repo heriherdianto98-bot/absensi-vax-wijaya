@@ -12,9 +12,11 @@
   flow.__outsideCorrectionSvpUiInstalled=true;
 
   const statusOf=s=>String(s?.outside_correction_status||"NONE").toUpperCase();
+  /* Flow profile adalah role canonical halaman ini setelah loadIdentity().
+     OwnerAuth.profile bisa stale dari shell/session sebelumnya, jadi hanya fallback terakhir. */
   const canonicalRole=()=>String(
-    (typeof OwnerAuth!=="undefined" && OwnerAuth?.profile?.role) ||
-    flow.profile?.role || flow.role || ""
+    flow.profile?.role || flow.role ||
+    ((typeof OwnerAuth!=="undefined" && OwnerAuth?.profile?.role) || "")
   ).toLowerCase();
   const isSvp=()=>["svp","spv"].includes(canonicalRole());
   const proofReadyCache=new Map();
