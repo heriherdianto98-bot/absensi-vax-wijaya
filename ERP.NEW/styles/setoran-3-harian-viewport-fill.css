@@ -129,6 +129,27 @@ body.s3sheet-erp-integrated .s3sheet-total{
   height:102px;
 }
 
+/* UI ONLY — tujuh card rangkuman tetap satu baris pada desktop,
+   termasuk TOTAL CASH OUT agar tidak turun sendirian ke baris kedua. */
+@media (min-width:1100px){
+  body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout{
+    grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+  body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total{
+    min-width:0 !important;
+    padding-left:11px !important;
+    padding-right:30px !important;
+  }
+  body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total span{
+    font-size:8.5px !important;
+    letter-spacing:.055em !important;
+  }
+  body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total strong{
+    font-size:18px !important;
+  }
+}
+
 /* Scrollbar vertical halaman — dark/gold, bukan putih default browser. */
 html::-webkit-scrollbar,
 body.s3sheet-body.s3sheet-erp-integrated::-webkit-scrollbar{
