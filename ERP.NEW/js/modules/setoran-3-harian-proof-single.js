@@ -139,12 +139,19 @@
   document.head.appendChild(s);
 })();
 
-/* Additive SVP UI gate: nominal Biaya di luar Cashout baru aktif setelah keterangan + foto bukti biaya. */
+/* Additive popup khusus Biaya di luar Cashout, lalu sync ulang state bukti setelah popup save. */
 (function(){
   const current=document.currentScript;
   if(!current||document.querySelector('script[data-s3-outside-input-gate]')) return;
   const s=document.createElement('script');
   s.dataset.s3OutsideInputGate='1';
   s.src=new URL('setoran-3-harian-outside-input-gate.js',current.src).href;
+  s.onload=()=>{
+    if(document.querySelector('script[data-s3-outside-proof-state-fix]')) return;
+    const fix=document.createElement('script');
+    fix.dataset.s3OutsideProofStateFix='1';
+    fix.src=new URL('setoran-3-harian-outside-proof-state-fix.js',current.src).href;
+    document.head.appendChild(fix);
+  };
   document.head.appendChild(s);
 })();
