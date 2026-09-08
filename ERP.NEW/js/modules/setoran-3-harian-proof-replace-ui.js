@@ -18,15 +18,34 @@
     const path=`${saved.id}/${Date.now()}-${Math.random().toString(36).slice(2,10)}.${packed.ext}`;
     const {error:u}=await db.storage.from(flow.PROOF_BUCKET).upload(path,packed.blob,{upsert:false,contentType:packed.contentType,cacheControl:"3600"});
     if(u) throw u;
-    const proofRow={setoran_id:saved.id,request_no:saved.proof_request_no||1,storage_path:path,uploaded_by:flow.user.id,proof_kind:kind};
-    const {data:inserted,error:i}=await db.from(flow.PROOF_TABLE).insert(proofRow).select("*").single();
-    if(i){
+
+    /* Ganti foto = update record bukti yang sama, bukan hapus record lama.
+       Ini menghindari policy delete SPV dan tetap menjaga satu bukti aktif per jenis. */
+    const {data:rows,error:r}=await db.from(flow.PROOF_TABLE)
+      .select("id,setoran_id,storage_path,proof_kind,uploaded_at,uploaded_by")
+      .eq("setoran_id",saved.id)
+      .eq("proof_kind",kind)
+      .order("uploaded_at",{ascending:false})
+      .limit(1);
+    if(r){await db.storage.from(flow.PROOF_BUCKET).remove([path]).catch(()=>{});throw r;}
+    const current=rows?.[0];
+    if(!current?.id){
       await db.storage.from(flow.PROOF_BUCKET).remove([path]).catch(()=>{});
-      throw i;
+      throw new Error("Bukti lama tidak ditemukan. Tutup popup lalu upload bukti dari tombol Foto.");
     }
-    const row=inserted||proofRow;
+
+    const now=new Date().toISOString();
+    const {data:updated,error:up}=await db.from(flow.PROOF_TABLE)
+      .update({storage_path:path,uploaded_by:flow.user.id,uploaded_at:now})
+      .eq("id",current.id)
+      .select("*")
+      .single();
+    if(up){await db.storage.from(flow.PROOF_BUCKET).remove([path]).catch(()=>{});throw up;}
+
+    const row=updated||{...current,storage_path:path,uploaded_by:flow.user.id,uploaded_at:now};
     saved.proof_path=row.storage_path;
     saved._proofLatest=row;
+    if(saved._proofByKind) saved._proofByKind[kind]=row;
     saved._proofCompression={originalBytes:packed.originalBytes,compressedBytes:packed.compressedBytes};
     return row;
   }
@@ -81,8 +100,6 @@
       return this.fail("Belum ada bukti tersimpan untuk cabang ini.");
     }
 
-    /* Tampilkan hanya bukti TERBARU per jenis. Bukti lama tetap menjadi histori backend,
-       sehingga UI ganti foto tidak perlu menghapus bukti dan tidak memicu policy hapus SPV. */
     const latestByKind=new Map();
     for(const pr of all){
       const k=String(pr.proof_kind||"SETORAN").toUpperCase();
@@ -117,7 +134,7 @@
         <div data-s3replace-preview="${esc(token)}" style="margin-top:10px"></div>
         <div style="display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:10px">
           <button type="button" data-s3replace-pick="${esc(token)}" data-branch-id="${branchId}" data-kind="${esc(kind)}" style="padding:8px 13px;border:1px solid rgba(216,165,59,.52);border-radius:8px;background:rgba(216,165,59,.12);color:#f4c85b;font-weight:800;cursor:pointer">GANTI FOTO</button>
-          <button type="button" data-s3replace-save="${esc(token)}" data-branch-id="${branchId}" data-kind="${esc(kind)}" hidden style="padding:8px 14px;border:1px solid rgba(74,222,128,.58);border-radius:8px;background:rgba(22,101,52,.35);color:#86efac;font-weight:900;cursor:pointer">✓ SIMPAN FOTO</button>
+          <button type="button" data-s3replace-save="${esc(token)}" data-branch-id="${branchId}" data-kind="${esc(kind)}" hidden style="padding:8px 14px;border:1px solid rgba(74,222,128,.58);border-radius:8px;background:rgba(22,101,52,.35);color:#86efac;font-weight:900;cursor:pointer">💾 SIMPAN FOTO</button>
         </div>
       </div>`;
     }).join("");
@@ -146,7 +163,7 @@
         await this.openProof(branch);
       }catch(err){
         btn.disabled=false;
-        btn.textContent="✓ SIMPAN FOTO";
+        btn.textContent="💾 SIMPAN FOTO";
         this.fail(err?.message||String(err));
       }
     }));
