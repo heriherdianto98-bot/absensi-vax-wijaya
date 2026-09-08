@@ -85,6 +85,15 @@
     document.head.appendChild(m);
   }
 
+  /* UI only: safety cue modal input manual — Pemasukan biru, Pengeluaran merah. */
+  if(!document.querySelector('script[data-ak2-manual-type-theme-ui]')){
+    const c=document.createElement("script");
+    c.src="../js/modules/arus-kas-v2-manual-type-theme-ui.js";
+    c.async=false;
+    c.dataset.ak2ManualTypeThemeUi="1";
+    document.head.appendChild(c);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
