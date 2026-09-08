@@ -139,7 +139,7 @@
   document.head.appendChild(s);
 })();
 
-/* Additive popup khusus Biaya di luar Cashout, lalu sync ulang state bukti setelah popup save. */
+/* Additive popup khusus Biaya di luar Cashout, lalu sync state/viewer/correction SVP. */
 (function(){
   const current=document.currentScript;
   if(!current||document.querySelector('script[data-s3-outside-input-gate]')) return;
@@ -158,6 +158,12 @@
       viewer.dataset.s3OutsideProofViewer='1';
       viewer.src=new URL('setoran-3-harian-outside-proof-viewer.js',current.src).href;
       document.head.appendChild(viewer);
+    }
+    if(!document.querySelector('script[data-s3-outside-correction-svp-ui]')){
+      const corr=document.createElement('script');
+      corr.dataset.s3OutsideCorrectionSvpUi='1';
+      corr.src=new URL('setoran-3-harian-outside-correction-svp-ui.js',current.src).href;
+      document.head.appendChild(corr);
     }
   };
   document.head.appendChild(s);
