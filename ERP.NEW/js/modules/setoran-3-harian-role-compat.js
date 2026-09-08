@@ -1,14 +1,15 @@
 /* ERP VAX — Setoran 3 Harian role compatibility
-   Owner and SPV/SVP may perform direct manual verification entry.
-   Owner remains visually identified as Owner, but is no longer read-only. */
+   Owner = review/verification only. SVP/SPV = manual entry workflow.
+   Tidak mengubah engine canonical; hanya memisahkan permission role pada halaman Setoran 3 Harian. */
 (function(){
   "use strict";
   if(typeof SetoranDirectFlow === "undefined") return;
 
-  // Legacy workflow uses isSvp() as the edit-permission gate.
-  // Direct-flow decision: Owner has the same manual entry permission as SPV/SVP.
+  // Legacy direct-flow memakai isSvp() sebagai gate untuk input/edit manual.
+  // Owner harus READ ONLY pada tabel, kecuali aksi Owner khusus yang ditangani modul terpisah:
+  // VERIF OWNER, review/lihat bukti, dan minta koreksi.
   SetoranDirectFlow.isSvp = function(){
-    return ["owner","svp","spv"].includes(String(this.role||"").toLowerCase());
+    return ["svp","spv"].includes(String(this.role||"").toLowerCase());
   };
 
   SetoranDirectFlow.loadIdentity = async function(){
@@ -32,7 +33,7 @@
 
     const roleEl=document.getElementById("s3v2Role");
     const userEl=document.getElementById("s3v2User");
-    if(roleEl) roleEl.textContent=this.role==="owner"?"OWNER · VERIFIKASI":"SPV · VERIFIKASI";
+    if(roleEl) roleEl.textContent=this.role==="owner"?"OWNER · REVIEW":"SPV · VERIFIKASI";
     if(userEl) userEl.textContent=data.nama||this.role.toUpperCase();
   };
 })();
