@@ -58,10 +58,6 @@ Tujuan:
     return baseReload();
   };
 
-  /*
-   * Default reload dari init / perubahan periode dibuat ringan.
-   * Sync AUTO penuh tetap tersedia lewat tombol Refresh Semua.
-   */
   flow.reload = async function(){
     return this.fastReload({loadSetoran:true});
   };
@@ -141,7 +137,6 @@ Tujuan:
       }
       body.page-arus-kas #ak2RefreshAll:hover{filter:brightness(1.08)}
 
-      /* UI ONLY — compact ledger rows agar pemeriksaan bulanan lebih padat. */
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
         padding-top:8px !important;
         padding-bottom:8px !important;
@@ -162,13 +157,11 @@ Tujuan:
         font-size:16px !important;
       }
 
-      /* UI ONLY — hilangkan pembatas gold antar tanggal; kembali ke divider netral. */
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody#ak2LedgerBody tr.ak2-date-start > td{
         border-top:1px solid rgba(61,83,107,.42) !important;
         box-shadow:none !important;
       }
 
-      /* UI ONLY — perjelas badge SUMBER dan STATUS pada Buku Arus Kas. */
       body.page-arus-kas .ak2-ledger-card .ak2-source,
       body.page-arus-kas .ak2-ledger-card .ak2-status{
         display:inline-flex !important;
@@ -270,6 +263,15 @@ Tujuan:
     document.body.appendChild(s);
   }
 
+  function loadSoftDeleteUi(){
+    if(document.querySelector('script[data-ak2-soft-delete-ui]')) return;
+    const s=document.createElement("script");
+    s.src="../js/modules/arus-kas-v2-soft-delete-ui.js";
+    s.async=false;
+    s.dataset.ak2SoftDeleteUi="1";
+    document.body.appendChild(s);
+  }
+
   installStyle();
   if(!installRefreshButton()){
     let tries=0;
@@ -281,4 +283,5 @@ Tujuan:
   loadManualTools();
   loadLedgerOrderUi();
   loadWalletTransferUi();
+  loadSoftDeleteUi();
 })();
