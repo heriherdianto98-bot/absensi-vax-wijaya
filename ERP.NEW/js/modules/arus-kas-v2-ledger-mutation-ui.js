@@ -24,16 +24,11 @@ Tidak mengubah engine, formula, query, payload transaksi, atau wallet balance.
     const from = String(row?.from_wallet || "").toUpperCase();
     const to = String(row?.to_wallet || "").toUpperCase();
 
-    /* Pertahankan arah existing bila KAS_BESAR terlibat. */
     if(to === "KAS_BESAR") return {incoming:amount,outgoing:0};
     if(from === "KAS_BESAR") return {incoming:0,outgoing:amount};
-
-    /* Untuk wallet lain, baca arah mutasi terhadap dunia luar. */
     if(from === "EXTERNAL") return {incoming:amount,outgoing:0};
     if(to === "EXTERNAL") return {incoming:0,outgoing:amount};
 
-    /* Transfer internal yang tidak menyentuh KAS_BESAR tetap dicatat sebagai
-       pengeluaran dari wallet sumber; detail Dari/Ke tetap tersedia di popup. */
     return {incoming:0,outgoing:amount};
   }
 
@@ -98,4 +93,11 @@ Tidak mengubah engine, formula, query, payload transaksi, atau wallet balance.
     if(count) count.textContent = `${rows.length} transaksi`;
     markSaldoHeader();
   };
+
+  /* Jika modul dimuat setelah render awal, refresh tampilan sekali tanpa query baru. */
+  if(Array.isArray(flow.ledger) && flow.ledger.length){
+    setTimeout(() => {
+      try{ flow.renderLedger(); }catch(_e){}
+    },0);
+  }
 })();
