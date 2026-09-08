@@ -131,6 +131,8 @@ Tujuan:
     style.id="ak2PerformanceUiStyle";
     style.textContent=`
       body.page-arus-kas #ak2RefreshAll{
+        position:relative;
+        top:-8px;
         min-width:154px;
         border-color:rgba(72,141,198,.72);
         background:linear-gradient(180deg,rgba(31,82,122,.95),rgba(21,57,86,.95));
