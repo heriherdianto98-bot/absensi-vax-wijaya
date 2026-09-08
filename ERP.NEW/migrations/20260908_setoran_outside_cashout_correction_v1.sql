@@ -121,5 +121,9 @@ begin
 end
 $$;
 
+revoke all on function public.vax_request_outside_cashout_correction(uuid,text) from public;
+revoke all on function public.vax_request_outside_cashout_correction(uuid,text) from anon;
+revoke all on function public.vax_resubmit_outside_cashout_correction(uuid) from public;
+revoke all on function public.vax_resubmit_outside_cashout_correction(uuid) from anon;
 grant execute on function public.vax_request_outside_cashout_correction(uuid,text) to authenticated;
 grant execute on function public.vax_resubmit_outside_cashout_correction(uuid) to authenticated;
