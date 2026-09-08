@@ -40,6 +40,15 @@
     document.head.appendChild(p);
   }
 
+  /* UI only: samakan dropdown bulan/tahun dengan tema dark-gold ERP. */
+  if(!document.querySelector('script[data-ak2-period-theme-ui]')){
+    const t=document.createElement("script");
+    t.src="../js/modules/arus-kas-v2-period-theme-ui.js";
+    t.async=false;
+    t.dataset.ak2PeriodThemeUi="1";
+    document.head.appendChild(t);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
