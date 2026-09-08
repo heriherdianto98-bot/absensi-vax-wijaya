@@ -120,9 +120,6 @@ Prinsip tampilan:
   function sourceLabel(row){
     const category=String(row?.category||"").toUpperCase();
     const from=String(row?.from_wallet||"").toUpperCase();
-
-    /* AUTO Setoran berasal dari uang setoran operasional. Label ini lebih
-       mudah dipahami Owner/SVP daripada istilah teknis EXTERNAL. */
     if(category==="SETORAN_3_HARIAN" && from==="EXTERNAL") return "Setoran";
     return walletLabel(row?.from_wallet);
   }
@@ -164,7 +161,25 @@ Prinsip tampilan:
     cell.title=fullText(row);
   }
 
+  function compactHeaders(){
+    const th=[...document.querySelectorAll(".ak2-ledger-card .ak2-table thead th")];
+    if(!th.length) return;
+    const twoLine={
+      "KET. PEMASUKAN":"KET.<br>PEMASUKAN",
+      "KET. PENGELUARAN":"KET.<br>PENGELUARAN",
+      "SALDO KAS BESAR":"SALDO KAS<br>BESAR"
+    };
+    th.forEach(cell=>{
+      const key=String(cell.textContent||"").replace(/\s+/g," ").trim().toUpperCase();
+      if(twoLine[key] && cell.dataset.ak2CompactHead!=="1"){
+        cell.innerHTML=twoLine[key];
+        cell.dataset.ak2CompactHead="1";
+      }
+    });
+  }
+
   function decorateRows(){
+    compactHeaders();
     const body=document.getElementById("ak2LedgerBody");
     if(!body) return;
 
@@ -224,74 +239,59 @@ Prinsip tampilan:
         line-height:1;
       }
 
-      /* UI ONLY — semua kolom dirapatkan agar ledger muat satu pandangan. */
+      /* UI ONLY — override min-width 1420px layer lama supaya tabel benar-benar rapat. */
       body.page-arus-kas .ak2-ledger-card .ak2-table{
         width:100%!important;
-        min-width:1120px!important;
+        min-width:1000px!important;
+        max-width:none!important;
         table-layout:fixed!important;
       }
       body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
         white-space:normal!important;
         overflow-wrap:normal!important;
-        word-break:normal!important;
-        line-height:1.05!important;
-        padding:7px 6px!important;
+        word-break:keep-all!important;
+        line-height:1.02!important;
+        padding:6px 4px!important;
         text-align:left;
         vertical-align:middle;
       }
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
         padding-top:3px!important;
         padding-bottom:3px!important;
-        padding-left:6px!important;
-        padding-right:6px!important;
-        line-height:1.08!important;
+        padding-left:5px!important;
+        padding-right:5px!important;
+        line-height:1.06!important;
         overflow:hidden;
       }
-      body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
-        height:40px!important;
-      }
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{height:40px!important}
 
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(1),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(1){width:108px!important;min-width:108px!important;max-width:108px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(2),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(2){width:120px!important;min-width:120px!important;max-width:120px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(3),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(3){width:104px!important;min-width:104px!important;max-width:104px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(4),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(4){width:158px!important;min-width:158px!important;max-width:158px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(5),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(5){width:106px!important;min-width:106px!important;max-width:106px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(6),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(6){width:158px!important;min-width:158px!important;max-width:158px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(7),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(7){width:140px!important;min-width:140px!important;max-width:140px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(8),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(8){width:88px!important;min-width:88px!important;max-width:88px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(9),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(9){width:146px!important;min-width:146px!important;max-width:146px!important}
-      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(10),
-      body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(10){width:56px!important;min-width:56px!important;max-width:56px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(1),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(1){width:100px!important;min-width:100px!important;max-width:100px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(2),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(2){width:100px!important;min-width:100px!important;max-width:100px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(3),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(3){width:88px!important;min-width:88px!important;max-width:88px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(4),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(4){width:135px!important;min-width:135px!important;max-width:135px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(5),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(5){width:92px!important;min-width:92px!important;max-width:92px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(6),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(6){width:135px!important;min-width:135px!important;max-width:135px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(7),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(7){width:122px!important;min-width:122px!important;max-width:122px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(8),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(8){width:72px!important;min-width:72px!important;max-width:72px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(9),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(9){width:126px!important;min-width:126px!important;max-width:126px!important}
+      body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(10),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(10){width:48px!important;min-width:48px!important;max-width:48px!important}
 
-      body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc{
-        color:#d9b7b7!important;
-      }
+      body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc{color:#d9b7b7!important}
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc .ak2-wallet-route-main,
-      body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc .ak2-wallet-route-sub{
-        color:#d9a1a1!important;
-      }
+      body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc .ak2-wallet-route-sub{color:#d9a1a1!important}
 
       @media(max-width:1200px){
-        body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1060px!important}
+        body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:960px!important}
         body.page-arus-kas .ak2-wallet-route-main{font-size:12px}
         body.page-arus-kas .ak2-wallet-route-sub{font-size:9.5px}
-        body.page-arus-kas .ak2-ledger-card .ak2-table thead th{font-size:11px!important;padding-left:5px!important;padding-right:5px!important}
-        body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{padding-left:5px!important;padding-right:5px!important}
+        body.page-arus-kas .ak2-ledger-card .ak2-table thead th{font-size:11px!important}
       }
     `;
     document.head.appendChild(s);
   }
 
   installStyle();
+  compactHeaders();
   const body=document.getElementById("ak2LedgerBody");
   if(body) new MutationObserver(()=>scheduleDecorate()).observe(body,{childList:true,subtree:false});
   document.addEventListener("erp:finance-ready",scheduleDecorate);
