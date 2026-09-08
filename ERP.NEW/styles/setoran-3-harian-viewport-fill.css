@@ -138,15 +138,31 @@ body.s3sheet-erp-integrated .s3sheet-total{
   }
   body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total{
     min-width:0 !important;
-    padding-left:11px !important;
-    padding-right:30px !important;
+    padding:10px 30px 10px 11px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:8px !important;
+    text-align:center !important;
   }
-  body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total span{
-    font-size:8.5px !important;
+  body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total > span:not(.s3-cashout-card-hint){
+    width:100%;
+    margin:0 !important;
+    font-size:10px !important;
+    line-height:1.15 !important;
     letter-spacing:.055em !important;
+    text-align:center !important;
+    white-space:normal !important;
   }
   body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total strong{
-    font-size:18px !important;
+    width:100%;
+    margin:0 !important;
+    font-size:21px !important;
+    line-height:1.05 !important;
+    text-align:center !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
   }
 }
 
