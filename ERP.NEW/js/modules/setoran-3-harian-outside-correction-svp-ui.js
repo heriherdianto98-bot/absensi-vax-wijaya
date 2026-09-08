@@ -12,7 +12,11 @@
   flow.__outsideCorrectionSvpUiInstalled=true;
 
   const statusOf=s=>String(s?.outside_correction_status||"NONE").toUpperCase();
-  const isSvp=()=>["svp","spv"].includes(String(flow.role||"").toLowerCase());
+  const canonicalRole=()=>String(
+    (typeof OwnerAuth!=="undefined" && OwnerAuth?.profile?.role) ||
+    flow.profile?.role || flow.role || ""
+  ).toLowerCase();
+  const isSvp=()=>["svp","spv"].includes(canonicalRole());
   const proofReadyCache=new Map();
 
   function ts(v){const n=Date.parse(v||"");return Number.isFinite(n)?n:0;}
@@ -118,7 +122,6 @@
     if(st) st.textContent='Koreksi Owner aktif — upload foto bukti terbaru wajib.';
   }
 
-  /* Saat REQUESTED, SIMPAN popup wajib memakai foto BARU. Foto lama tidak cukup. */
   document.addEventListener('click',e=>{
     const open=e.target.closest?.('[data-s3-outside-open]');
     if(open){
