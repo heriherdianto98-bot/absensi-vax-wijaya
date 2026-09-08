@@ -58,6 +58,15 @@
     document.head.appendChild(o);
   }
 
+  /* UI only: pulihkan pembatas horizontal pada kolom Cabang. */
+  if(!document.querySelector('script[data-ak2-cabang-divider-ui]')){
+    const d=document.createElement("script");
+    d.src="../js/modules/arus-kas-v2-cabang-divider-ui.js";
+    d.async=false;
+    d.dataset.ak2CabangDividerUi="1";
+    document.head.appendChild(d);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
