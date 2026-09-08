@@ -85,6 +85,15 @@
     document.head.appendChild(m);
   }
 
+  /* UI only: klik 3 card Rekonsiliasi QRIS / GoPay membuka popup mutasi read-only. */
+  if(!document.querySelector('script[data-ak2-qris-mutation-ui]')){
+    const q=document.createElement("script");
+    q.src="../js/modules/arus-kas-v2-qris-mutation-ui.js";
+    q.async=false;
+    q.dataset.ak2QrisMutationUi="1";
+    document.head.appendChild(q);
+  }
+
   /* UI only: safety cue modal input manual — Pemasukan biru, Pengeluaran merah. */
   if(!document.querySelector('script[data-ak2-manual-type-theme-ui]')){
     const c=document.createElement("script");
