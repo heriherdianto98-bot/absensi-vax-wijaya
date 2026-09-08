@@ -5,7 +5,8 @@ Additive UI/runtime layer. Tidak mengubah engine LOCK.
 
 Fungsi:
 - Search cepat Buku Arus Kas berdasarkan teks/nominal/status/sumber/cabang.
-- Manual transaction: Edit tetap memakai flow existing.
+- Transaksi MANUAL non-verified diberi tombol Edit yang terlihat langsung di ledger.
+- Edit tetap memakai flow existing ArusKasV2.openInput(row).
 - Saat edit MANUAL (belum OWNER VERIFIED), tampil tombol Hapus + Simpan Perubahan.
 - Hapus hanya MANUAL non-verified; AUTO dan OWNER VERIFIED tidak disentuh.
 =========================================================
@@ -114,6 +115,34 @@ Fungsi:
     save.classList.toggle("is-edit-save",editable);
   }
 
+  function decorateManualRows(){
+    const body=document.getElementById("ak2LedgerBody");
+    if(!body) return;
+
+    body.querySelectorAll("tr[data-id]").forEach(tr=>{
+      if(tr.querySelector("[data-ak2-manual-edit]")) return;
+      const row=flow.ledger?.find(x=>String(x.id)===String(tr.dataset.id));
+      if(!row || row.entry_type!=="MANUAL" || row.verification_status==="OWNER_VERIFIED") return;
+
+      const statusCell=tr.lastElementChild;
+      if(!statusCell) return;
+      statusCell.classList.add("ak2-manual-status-cell");
+
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="ak2-ledger-edit-btn";
+      btn.dataset.ak2ManualEdit=row.id;
+      btn.innerHTML="✎ <span>Edit</span>";
+      btn.title="Edit transaksi manual";
+      btn.addEventListener("click",e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        flow.openInput?.(row);
+      });
+      statusCell.appendChild(btn);
+    });
+  }
+
   async function deleteCurrentManual(){
     const row=currentEditRow();
     if(!row){ flow.fail?.("Transaksi manual tidak ditemukan."); return; }
@@ -137,6 +166,7 @@ Fungsi:
       flow.ok?.("Transaksi manual berhasil dihapus.");
       if(typeof flow.fastReload==="function") await flow.fastReload({loadSetoran:false});
       else await flow.reload?.();
+      decorateManualRows();
       applySearch();
     }catch(e){
       flow.fail?.(e?.message||String(e));
@@ -150,72 +180,31 @@ Fungsi:
     const s=document.createElement("style");
     s.id="ak2ManualToolsUiStyle";
     s.textContent=`
-      body.page-arus-kas .ak2-ledger-card .ak2-section-head{
-        gap:14px;
-      }
-      body.page-arus-kas .ak2-quick-search-wrap{
-        margin-left:auto;
-        display:flex;
-        align-items:center;
-        gap:8px;
-      }
-      body.page-arus-kas .ak2-quick-search{
-        height:42px;
-        min-width:300px;
-        display:flex;
-        align-items:center;
-        gap:8px;
-        padding:0 10px;
-        border:1px solid #3d536b;
-        border-radius:11px;
-        background:linear-gradient(180deg,#182331,#111923);
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.16);
-      }
-      body.page-arus-kas .ak2-quick-search:focus-within{
-        border-color:#d3a54b;
-        box-shadow:0 0 0 2px rgba(211,165,75,.10),0 8px 22px rgba(0,0,0,.22);
-      }
-      body.page-arus-kas .ak2-quick-search-icon{
-        color:#e0b45a;
-        font-size:22px;
-        line-height:1;
-        transform:rotate(-18deg);
-      }
-      body.page-arus-kas #ak2QuickSearch{
-        width:100%;
-        min-width:0;
-        border:0;
-        outline:0;
-        background:transparent;
-        color:#f4f8fc;
-        font:inherit;
-        font-size:14px;
-        font-weight:800;
-      }
+      body.page-arus-kas .ak2-ledger-card .ak2-section-head{gap:14px}
+      body.page-arus-kas .ak2-quick-search-wrap{margin-left:auto;display:flex;align-items:center;gap:8px}
+      body.page-arus-kas .ak2-quick-search{height:42px;min-width:300px;display:flex;align-items:center;gap:8px;padding:0 10px;border:1px solid #3d536b;border-radius:11px;background:linear-gradient(180deg,#182331,#111923);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.16)}
+      body.page-arus-kas .ak2-quick-search:focus-within{border-color:#d3a54b;box-shadow:0 0 0 2px rgba(211,165,75,.10),0 8px 22px rgba(0,0,0,.22)}
+      body.page-arus-kas .ak2-quick-search-icon{color:#e0b45a;font-size:22px;line-height:1;transform:rotate(-18deg)}
+      body.page-arus-kas #ak2QuickSearch{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#f4f8fc;font:inherit;font-size:14px;font-weight:800}
       body.page-arus-kas #ak2QuickSearch::placeholder{color:#7f8c99;font-weight:700}
-      body.page-arus-kas #ak2QuickSearchClear{
-        width:26px;height:26px;border:0;border-radius:7px;background:transparent;color:#82909e;font-size:20px;cursor:pointer;
-      }
+      body.page-arus-kas #ak2QuickSearchClear{width:26px;height:26px;border:0;border-radius:7px;background:transparent;color:#82909e;font-size:20px;cursor:pointer}
       body.page-arus-kas #ak2QuickSearchClear:hover{background:#252f3a;color:#fff0c8}
       body.page-arus-kas .ak2-search-count{color:#91a5b9;font-weight:800;white-space:nowrap}
 
-      body.page-arus-kas #ak2Modal .ak2-btn-delete{
-        background:linear-gradient(180deg,#6a2828,#3c1717);
-        border-color:#a94a4a;
-        color:#ffd0d0;
-        box-shadow:0 8px 22px rgba(154,54,54,.18),inset 0 1px 0 rgba(255,255,255,.06);
-      }
-      body.page-arus-kas #ak2Modal .ak2-btn-delete:hover{
-        filter:brightness(1.08);
-        box-shadow:0 10px 28px rgba(154,54,54,.25);
-      }
-      body.page-arus-kas #ak2Modal #ak2SaveBtn.is-edit-save{
-        min-width:150px;
-      }
+      body.page-arus-kas .ak2-manual-status-cell{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+      body.page-arus-kas .ak2-ledger-edit-btn{min-height:34px;padding:7px 12px;border-radius:9px;border:1px solid #9a752d;background:linear-gradient(180deg,#5b4318,#34260f);color:#ffe39b;font:inherit;font-size:12px;font-weight:900;letter-spacing:.03em;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 5px 14px rgba(0,0,0,.16)}
+      body.page-arus-kas .ak2-ledger-edit-btn:hover{filter:brightness(1.1);border-color:#d0a34b;box-shadow:0 0 0 2px rgba(208,163,75,.08),0 7px 18px rgba(0,0,0,.2)}
+      body.page-arus-kas .ak2-ledger-edit-btn span{margin-left:3px}
+
+      body.page-arus-kas #ak2Modal .ak2-btn-delete{background:linear-gradient(180deg,#6a2828,#3c1717);border-color:#a94a4a;color:#ffd0d0;box-shadow:0 8px 22px rgba(154,54,54,.18),inset 0 1px 0 rgba(255,255,255,.06)}
+      body.page-arus-kas #ak2Modal .ak2-btn-delete:hover{filter:brightness(1.08);box-shadow:0 10px 28px rgba(154,54,54,.25)}
+      body.page-arus-kas #ak2Modal #ak2SaveBtn.is-edit-save{min-width:150px}
+
       @media(max-width:900px){
         body.page-arus-kas .ak2-ledger-card .ak2-section-head{align-items:flex-start;flex-wrap:wrap}
         body.page-arus-kas .ak2-quick-search-wrap{order:3;width:100%;margin-left:0}
         body.page-arus-kas .ak2-quick-search{min-width:0;flex:1}
+        body.page-arus-kas .ak2-ledger-edit-btn{min-height:31px;padding:6px 9px;font-size:11px}
       }
     `;
     document.head.appendChild(s);
@@ -243,10 +232,14 @@ Fungsi:
   installSearch();
   ensureDeleteButton();
   syncManualActions();
+  decorateManualRows();
 
   const body=document.getElementById("ak2LedgerBody");
   if(body){
-    new MutationObserver(()=>applySearch()).observe(body,{childList:true,subtree:true});
+    new MutationObserver(()=>{
+      decorateManualRows();
+      applySearch();
+    }).observe(body,{childList:true,subtree:true});
   }
 
   if(!document.getElementById("ak2QuickSearch")){
