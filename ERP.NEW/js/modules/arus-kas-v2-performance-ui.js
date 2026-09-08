@@ -290,6 +290,15 @@ Tujuan:
     document.body.appendChild(s);
   }
 
+  function loadCorrectionNoteUi(){
+    if(document.querySelector('script[data-ak2-correction-note-ui]')) return;
+    const s=document.createElement("script");
+    s.src="../js/modules/arus-kas-v2-correction-note-ui.js";
+    s.async=false;
+    s.dataset.ak2CorrectionNoteUi="1";
+    document.body.appendChild(s);
+  }
+
   installStyle();
   if(!installRefreshButton()){
     let tries=0;
@@ -304,4 +313,5 @@ Tujuan:
   loadSoftDeleteUi();
   loadWalletRouteUi();
   loadOwnerReviewUi();
+  loadCorrectionNoteUi();
 })();
