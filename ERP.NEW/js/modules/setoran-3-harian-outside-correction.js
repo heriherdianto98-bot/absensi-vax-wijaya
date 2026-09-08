@@ -5,9 +5,10 @@
   if(typeof SetoranDirectFlow==="undefined") return;
   const flow=SetoranDirectFlow;
   let busy=false;
-  const role=()=>String(flow.role||"").toLowerCase();
+  /* Use authenticated profile as primary role source. Some legacy UI compatibility layers may mutate flow.role. */
+  const role=()=>String(flow.profile?.role||flow.role||"").toLowerCase();
   const isOwner=()=>role()==="owner";
-  const isSvp=()=>role()==="svp";
+  const isSvp=()=>["svp","spv"].includes(role());
   const statusOf=s=>String(s?.outside_correction_status||"NONE").toUpperCase();
 
   function style(){
@@ -127,11 +128,22 @@
       if(outside<=0 || !saved.id){
         td.innerHTML='<span class="s3-corr-empty">—</span>';
       }else if(st==="REQUESTED"){
-        if(isSvp()){
+        if(isOwner()){
+          const state=document.createElement("span");
+          state.className="s3-corr-state req";
+          state.textContent="⚠ PERLU KOREKSI";
+          state.title=saved.outside_correction_note||"Menunggu koreksi SVP";
+          td.appendChild(state);
+        }else if(isSvp()){
           const btn=document.createElement("button");
-          btn.type="button";btn.className="s3-corr-state svp";btn.dataset.corrResubmit=String(id);btn.textContent="↥ KIRIM ULANG";btn.title=saved.outside_correction_note||"Koreksi diminta Owner";td.appendChild(btn);
+          btn.type="button";
+          btn.className="s3-corr-state svp";
+          btn.dataset.corrResubmit=String(id);
+          btn.textContent="↥ KIRIM ULANG";
+          btn.title=saved.outside_correction_note||"Koreksi diminta Owner";
+          td.appendChild(btn);
         }else{
-          const state=document.createElement("span");state.className="s3-corr-state req";state.textContent="⚠ PERLU KOREKSI";state.title=saved.outside_correction_note||"Menunggu koreksi SVP";td.appendChild(state);
+          td.innerHTML='<span class="s3-corr-empty">—</span>';
         }
       }else if(st==="RESUBMITTED"){
         const state=document.createElement("span");state.className="s3-corr-state sent";state.textContent="✓ DIKIRIM ULANG";state.title="SVP sudah mengirim ulang koreksi. Siap direview Owner.";td.appendChild(state);
@@ -167,7 +179,8 @@
 
     const m=modal();
     const branch=branchName(id);
-    const period=flow.period?`${flow.period.start} — ${flow.period.end}`:"—";
+    const p=typeof flow.period==="function"?flow.period():null;
+    const period=p?`${p.start} — ${p.end}`:"—";
     const note=saved.outside_cashout_note||saved.non_cash_note||saved.spv_note||"—";
     m.dataset.branchId=String(id);
     document.getElementById("s3CorrMeta").textContent=`${branch} · REVIEW OWNER`;
@@ -210,15 +223,10 @@
 
   async function resubmit(id){
     if(busy||!isSvp()) return;
-    const tr=document.querySelector(`#s3sheetBody tr[data-cabang-id="${id}"]`);
-    if(!tr) return;
+    const saved=flow.savedRows.get(flow.key(id));
+    if(!saved?.id) return;
+    busy=true;flow.busy?.(true);
     try{
-      await flow.saveRow(tr,{taken:null,quiet:true});
-      const saved=flow.savedRows.get(flow.key(id));
-      if(!saved?.id) throw new Error("Data setoran belum tersimpan.");
-      const proofs=await flow.getProofRows(saved.id);
-      if(!proofs.some(p=>String(p.proof_kind||"").toUpperCase()==="OUTSIDE_CASHOUT")) throw new Error("Foto bukti biaya di luar Cashout wajib dilampirkan sebelum Kirim Ulang.");
-      busy=true;flow.busy?.(true);
       const {data,error}=await db.rpc("vax_resubmit_outside_cashout_correction",{p_setoran_id:saved.id});
       if(error) throw error;
       flow.savedRows.set(flow.key(id),Array.isArray(data)?data[0]:data);
@@ -230,8 +238,8 @@
   document.addEventListener("click",e=>{
     const req=e.target.closest?.("[data-corr-request]");
     if(req){openRequest(Number(req.dataset.corrRequest));return;}
-    const res=e.target.closest?.("[data-corr-resubmit]");
-    if(res){resubmit(Number(res.dataset.corrResubmit));}
+    const resend=e.target.closest?.("[data-corr-resubmit]");
+    if(resend){resubmit(Number(resend.dataset.corrResubmit));}
   });
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",decorate,{once:true}); else decorate();
