@@ -162,6 +162,12 @@ Tujuan:
         font-size:16px !important;
       }
 
+      /* UI ONLY — hilangkan pembatas gold antar tanggal; kembali ke divider netral. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody#ak2LedgerBody tr.ak2-date-start > td{
+        border-top:1px solid rgba(61,83,107,.42) !important;
+        box-shadow:none !important;
+      }
+
       /* UI ONLY — perjelas badge SUMBER dan STATUS pada Buku Arus Kas. */
       body.page-arus-kas .ak2-ledger-card .ak2-source,
       body.page-arus-kas .ak2-ledger-card .ak2-status{
