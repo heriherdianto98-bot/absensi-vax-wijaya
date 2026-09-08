@@ -99,9 +99,12 @@ Tujuan:
     btn.type = "button";
     btn.id = "ak2RefreshAll";
     btn.className = "ak2-btn ak2-btn-primary";
-    btn.innerHTML = "↻ Refresh Semua";
+    btn.innerHTML = '<span class="ak2-refresh-icon" aria-hidden="true">↻</span><span>Refresh Semua</span>';
     btn.title = "Reload semua data Arus Kas dan sinkronisasi AUTO untuk periode aktif";
     btn.addEventListener("click", async () => {
+      if(btn.classList.contains("is-refreshing")) return;
+      btn.classList.add("is-refreshing");
+      btn.setAttribute("aria-busy","true");
       try{
         flow.busy?.(true);
         flow.clearMessage?.();
@@ -112,6 +115,8 @@ Tujuan:
         flow.fail?.(e?.message || String(e));
       }finally{
         flow.busy?.(false);
+        btn.classList.remove("is-refreshing");
+        btn.removeAttribute("aria-busy");
       }
     });
 
@@ -134,8 +139,28 @@ Tujuan:
         background:linear-gradient(180deg,rgba(31,82,122,.95),rgba(21,57,86,.95));
         color:#eaf6ff;
         font-weight:800;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:7px;
       }
       body.page-arus-kas #ak2RefreshAll:hover{filter:brightness(1.08)}
+      body.page-arus-kas #ak2RefreshAll .ak2-refresh-icon{
+        display:inline-block;
+        width:1em;
+        height:1em;
+        line-height:1em;
+        transform-origin:50% 50%;
+      }
+      body.page-arus-kas #ak2RefreshAll.is-refreshing .ak2-refresh-icon{
+        animation:ak2RefreshSpin .82s linear infinite;
+      }
+      body.page-arus-kas #ak2RefreshAll.is-refreshing{
+        cursor:progress;
+      }
+      @keyframes ak2RefreshSpin{
+        to{transform:rotate(360deg)}
+      }
 
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
         padding-top:8px !important;
