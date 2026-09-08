@@ -163,20 +163,7 @@
       const corr=document.createElement('script');
       corr.dataset.s3OutsideCorrectionSvpUi='1';
       corr.src=new URL('setoran-3-harian-outside-correction-svp-ui.js',current.src).href;
-      corr.onload=()=>{
-        if(!document.querySelector('script[data-s3-outside-cancel-correction]')){
-          const cancel=document.createElement('script');
-          cancel.dataset.s3OutsideCancelCorrection='1';
-          cancel.src=new URL('setoran-3-harian-outside-cancel-correction.js',current.src).href;
-          document.head.appendChild(cancel);
-        }
-      };
       document.head.appendChild(corr);
-    }else if(!document.querySelector('script[data-s3-outside-cancel-correction]')){
-      const cancel=document.createElement('script');
-      cancel.dataset.s3OutsideCancelCorrection='1';
-      cancel.src=new URL('setoran-3-harian-outside-cancel-correction.js',current.src).href;
-      document.head.appendChild(cancel);
     }
   };
   document.head.appendChild(s);
