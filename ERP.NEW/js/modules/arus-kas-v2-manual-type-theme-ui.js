@@ -1,6 +1,6 @@
 /* ARUS KAS V2 — MANUAL INPUT TYPE THEME UI ONLY
    Visual safety cue: Pemasukan = biru, Pengeluaran = merah.
-   Warning kedip mengikuti warna jenis transaksi.
+   Warning besar berkedip di sisi kanan header mengikuti warna jenis transaksi.
    Tidak mengubah engine, save logic, validation, formula, query, wallet, atau data.
 */
 "use strict";
@@ -15,7 +15,7 @@
     s.id="ak2ManualTypeThemeUiStyle";
     s.textContent=`
       body.page-arus-kas #ak2Modal .ak2-panel{transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
-      body.page-arus-kas #ak2Modal .ak2-modal-head{transition:background .2s ease,border-color .2s ease,box-shadow .2s ease}
+      body.page-arus-kas #ak2Modal .ak2-modal-head{position:relative;transition:background .2s ease,border-color .2s ease,box-shadow .2s ease}
 
       body.page-arus-kas #ak2Modal.ak2-type-in .ak2-panel{
         border-color:rgba(57,155,235,.88)!important;
@@ -42,13 +42,25 @@
       body.page-arus-kas #ak2Modal.ak2-type-out .ak2-type-visual-badge{color:#ffd7d7;background:rgba(193,53,53,.18);border:1px solid rgba(227,86,86,.44)}
 
       body.page-arus-kas #ak2Modal .ak2-input-safety-warning{
-        margin:10px 0 0;padding:8px 12px;border-radius:9px;text-align:center;
-        font-size:12px;font-weight:950;letter-spacing:.035em;text-transform:uppercase;
-        animation:ak2SafetyBlink 1.25s ease-in-out infinite;
+        position:absolute;right:72px;top:50%;transform:translateY(-50%);
+        width:min(410px,46%);padding:10px 14px;border-radius:10px;text-align:right;
+        font-size:17px;font-weight:1000;line-height:1.25;letter-spacing:.025em;text-transform:uppercase;
+        animation:ak2SafetyBlink 1.15s ease-in-out infinite;
+        pointer-events:none
       }
-      body.page-arus-kas #ak2Modal.ak2-type-in .ak2-input-safety-warning{color:#d8f1ff;background:rgba(37,141,211,.12);border:1px solid rgba(78,176,242,.36);text-shadow:0 0 10px rgba(86,184,247,.28)}
-      body.page-arus-kas #ak2Modal.ak2-type-out .ak2-input-safety-warning{color:#ffe1e1;background:rgba(193,53,53,.12);border:1px solid rgba(230,86,86,.38);text-shadow:0 0 10px rgba(235,92,92,.28)}
-      @keyframes ak2SafetyBlink{0%,100%{opacity:1}50%{opacity:.38}}
+      body.page-arus-kas #ak2Modal.ak2-type-in .ak2-input-safety-warning{
+        color:#e7f7ff;background:rgba(37,141,211,.16);border:1px solid rgba(78,176,242,.52);
+        text-shadow:0 0 12px rgba(86,184,247,.52);box-shadow:0 0 18px rgba(52,154,224,.10)
+      }
+      body.page-arus-kas #ak2Modal.ak2-type-out .ak2-input-safety-warning{
+        color:#ffe8e8;background:rgba(193,53,53,.16);border:1px solid rgba(230,86,86,.55);
+        text-shadow:0 0 12px rgba(235,92,92,.54);box-shadow:0 0 18px rgba(207,64,64,.10)
+      }
+      @keyframes ak2SafetyBlink{0%,100%{opacity:1}50%{opacity:.30}}
+      @media(max-width:900px){
+        body.page-arus-kas #ak2Modal .ak2-modal-head{padding-bottom:76px!important}
+        body.page-arus-kas #ak2Modal .ak2-input-safety-warning{left:22px;right:22px;top:auto;bottom:12px;transform:none;width:auto;text-align:center;font-size:15px}
+      }
       @media (prefers-reduced-motion:reduce){body.page-arus-kas #ak2Modal .ak2-input-safety-warning{animation:none}}
     `;
     document.head.appendChild(s);
@@ -70,8 +82,8 @@
       warning=document.createElement("div");
       warning.className="ak2-input-safety-warning";
       warning.textContent="Pastikan input data dengan benar, mohon cek kembali !!!";
-      const info=head.querySelector(":scope > div");
-      if(info) info.appendChild(warning); else head.appendChild(warning);
+      const close=head.querySelector(".ak2-close");
+      if(close) head.insertBefore(warning,close); else head.appendChild(warning);
     }
     return warning;
   }
