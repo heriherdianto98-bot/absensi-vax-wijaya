@@ -21,11 +21,11 @@ const ArusKasV2ModalDatepickerUI={
     s.textContent=`
       #ak2Modal label.ak2-date-ui{position:relative}
       #ak2Modal label.ak2-date-ui>input[type="date"]{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;left:0!important;bottom:0!important}
-      .ak2-date-trigger{width:100%;min-height:42px;display:flex;align-items:center;gap:10px;padding:0 13px;border-radius:10px;border:1px solid #33404e;background:linear-gradient(180deg,#1b2632,#151d26);color:#f4f7fa;font:inherit;font-weight:800;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
-      .ak2-date-trigger:hover,.ak2-date-trigger.is-open{border-color:#c89b43;background:linear-gradient(180deg,#202b36,#171e26);box-shadow:0 0 0 2px rgba(200,155,67,.10),0 8px 22px rgba(0,0,0,.22)}
-      .ak2-date-trigger .ak2-date-icon{color:#e0b254;font-size:15px}
-      .ak2-date-trigger .ak2-date-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .ak2-date-trigger .ak2-date-caret{margin-left:auto;color:#d7aa55;font-size:12px}
+      .ak2-date-trigger{width:100%;min-height:56px;display:flex;align-items:center;gap:12px;padding:0 15px;border-radius:11px;border:1px solid #8b692b;background:linear-gradient(180deg,#1b2632,#151d26);color:#fff1c5;font:inherit;font-weight:900;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 0 0 1px rgba(215,170,85,.03);transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
+      .ak2-date-trigger:hover,.ak2-date-trigger.is-open{border-color:#d7aa55;background:linear-gradient(180deg,#202b36,#171e26);box-shadow:0 0 0 2px rgba(200,155,67,.10),0 8px 22px rgba(0,0,0,.22)}
+      .ak2-date-trigger .ak2-date-icon{color:#e0b254;font-size:18px;flex:0 0 auto}
+      .ak2-date-trigger .ak2-date-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:21px!important;line-height:1.1;font-weight:900;letter-spacing:.01em;text-transform:none;color:#fff1c5}
+      .ak2-date-trigger .ak2-date-caret{margin-left:auto;color:#d7aa55;font-size:14px;flex:0 0 auto}
       .ak2-date-pop{position:absolute;left:0;top:calc(100% + 7px);z-index:2605;width:310px;padding:12px;border-radius:15px;border:1px solid #765a27;background:radial-gradient(circle at 15% 0%,rgba(211,165,78,.10),transparent 34%),linear-gradient(180deg,#151d26,#0d1319);box-shadow:0 22px 55px rgba(0,0,0,.60),0 0 24px rgba(205,159,70,.09),inset 0 1px 0 rgba(255,255,255,.035)}
       .ak2-date-pop[hidden]{display:none!important}
       .ak2-date-pop-head{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid rgba(213,170,84,.20)}
@@ -42,7 +42,11 @@ const ArusKasV2ModalDatepickerUI={
       .ak2-date-foot small{color:#8d98a3;font-size:10px}.ak2-date-foot strong{display:block;color:#f1cf83;font-size:11px;margin-top:1px}
       .ak2-date-today{border:1px solid #66512b;border-radius:8px;background:#211a0f;color:#f2ce7a;padding:6px 9px;font:inherit;font-size:11px;font-weight:900;cursor:pointer}
       .ak2-date-today:hover{border-color:#c7973f;background:#2a2010}
-      @media(max-width:760px){.ak2-date-pop{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(330px,calc(100vw - 28px))}}
+      @media(max-width:760px){
+        .ak2-date-trigger{min-height:52px;padding:0 13px}
+        .ak2-date-trigger .ak2-date-text{font-size:19px!important}
+        .ak2-date-pop{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(330px,calc(100vw - 28px))}
+      }
     `;
     document.head.appendChild(s);
   },
