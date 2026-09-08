@@ -29,16 +29,8 @@ Fungsi:
   function rowSearchText(tr){
     const row=rowById(tr.dataset.id)||{};
     return norm([
-      tr.textContent,
-      row.tanggal,
-      row.branch_name,
-      row.cabang_name,
-      row.description,
-      row.category,
-      row.entry_type,
-      row.source,
-      row.verification_status,
-      row.amount,
+      tr.textContent,row.tanggal,row.branch_name,row.cabang_name,row.description,
+      row.category,row.entry_type,row.source,row.verification_status,row.amount,
       flow.rupiah?.(row.amount)
     ].filter(Boolean).join(" "));
   }
@@ -81,15 +73,13 @@ Fungsi:
     wrap.innerHTML=`
       <div class="ak2-quick-search">
         <button type="button" id="ak2QuickSearchBtn" class="ak2-quick-search-icon" title="Cari transaksi" aria-label="Cari transaksi">⌕</button>
-        <input id="ak2QuickSearch" type="search" autocomplete="off" placeholder="Cari nominal / kata..." aria-label="Cari transaksi Arus Kas">
-        <button type="button" id="ak2QuickSearchClear" title="Bersihkan pencarian" aria-label="Bersihkan pencarian">×</button>
+        <input id="ak2QuickSearch" type="text" autocomplete="off" placeholder="Cari nominal / kata..." aria-label="Cari transaksi Arus Kas">
       </div>
       <small id="ak2SearchCount" class="ak2-search-count"></small>`;
     if(right) right.insertAdjacentElement("beforebegin",wrap); else head.appendChild(wrap);
 
     const input=wrap.querySelector("#ak2QuickSearch");
     const searchBtn=wrap.querySelector("#ak2QuickSearchBtn");
-    const clear=wrap.querySelector("#ak2QuickSearchClear");
 
     input.addEventListener("input",()=>applySearch(input.value));
     input.addEventListener("keydown",e=>{
@@ -106,17 +96,10 @@ Fungsi:
       input.focus();
       applySearch(input.value);
     });
-    clear.addEventListener("click",()=>{
-      input.value="";
-      applySearch("");
-      input.focus();
-    });
     return true;
   }
 
-  function currentEditRow(){
-    return rowById(document.getElementById("ak2EditId")?.value);
-  }
+  function currentEditRow(){ return rowById(document.getElementById("ak2EditId")?.value); }
 
   function ensureDeleteButton(){
     const actions=document.querySelector("#ak2Modal .ak2-modal-actions");
@@ -124,10 +107,7 @@ Fungsi:
     let btn=document.getElementById("ak2DeleteManualBtn");
     if(btn) return btn;
     btn=document.createElement("button");
-    btn.type="button";
-    btn.id="ak2DeleteManualBtn";
-    btn.className="ak2-btn ak2-btn-delete";
-    btn.textContent="Hapus";
+    btn.type="button"; btn.id="ak2DeleteManualBtn"; btn.className="ak2-btn ak2-btn-delete"; btn.textContent="Hapus";
     const save=document.getElementById("ak2SaveBtn");
     if(save) actions.insertBefore(btn,save); else actions.appendChild(btn);
     btn.addEventListener("click",deleteCurrentManual);
@@ -135,10 +115,7 @@ Fungsi:
   }
 
   function syncManualActions(){
-    const row=currentEditRow();
-    const del=ensureDeleteButton();
-    const save=document.getElementById("ak2SaveBtn");
-    const modal=document.getElementById("ak2Modal");
+    const row=currentEditRow(),del=ensureDeleteButton(),save=document.getElementById("ak2SaveBtn"),modal=document.getElementById("ak2Modal");
     if(!del || !save) return;
     const editable=!!row && row.entry_type==="MANUAL" && row.verification_status!=="OWNER_VERIFIED";
     del.hidden=!editable;
@@ -151,10 +128,7 @@ Fungsi:
     const tr=document.querySelector(".ak2-ledger-card .ak2-table thead tr");
     if(!tr || tr.querySelector("th[data-ak2-action-head]")) return;
     const th=document.createElement("th");
-    th.dataset.ak2ActionHead="1";
-    th.className="ak2-action-head";
-    th.textContent="AKSI";
-    tr.appendChild(th);
+    th.dataset.ak2ActionHead="1"; th.className="ak2-action-head"; th.textContent="AKSI"; tr.appendChild(th);
   }
 
   function decorateManualRows(){
@@ -165,22 +139,14 @@ Fungsi:
       const row=rowById(tr.dataset.id);
       const editable=!!row && row.entry_type==="MANUAL" && row.verification_status!=="OWNER_VERIFIED";
       let cell=tr.querySelector(":scope > .ak2-action-cell");
-      if(!cell){
-        cell=document.createElement("td");
-        cell.className="ak2-action-cell";
-        tr.appendChild(cell);
-      }
+      if(!cell){ cell=document.createElement("td"); cell.className="ak2-action-cell"; tr.appendChild(cell); }
       let btn=cell.querySelector("[data-ak2-manual-edit]");
       if(!editable){ if(btn) btn.remove(); return; }
       if(btn && String(btn.dataset.ak2ManualEdit)===String(row.id)) return;
       cell.textContent="";
       btn=document.createElement("button");
-      btn.type="button";
-      btn.className="ak2-ledger-edit-icon";
-      btn.dataset.ak2ManualEdit=row.id;
-      btn.textContent="✎";
-      btn.title="Edit transaksi manual";
-      btn.setAttribute("aria-label","Edit transaksi manual");
+      btn.type="button"; btn.className="ak2-ledger-edit-icon"; btn.dataset.ak2ManualEdit=row.id; btn.textContent="✎";
+      btn.title="Edit transaksi manual"; btn.setAttribute("aria-label","Edit transaksi manual");
       cell.appendChild(btn);
     });
   }
@@ -188,19 +154,13 @@ Fungsi:
   function scheduleDecorate(){
     if(decorateQueued) return;
     decorateQueued=true;
-    requestAnimationFrame(()=>{
-      decorateQueued=false;
-      decorateManualRows();
-      applySearch();
-    });
+    requestAnimationFrame(()=>{ decorateQueued=false; decorateManualRows(); applySearch(); });
   }
 
   document.addEventListener("click",e=>{
     const btn=e.target.closest?.("[data-ak2-manual-edit]");
     if(!btn) return;
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
     const row=rowById(btn.dataset.ak2ManualEdit);
     if(!row || row.entry_type!=="MANUAL" || row.verification_status==="OWNER_VERIFIED") return;
     flow.openInput?.(row);
@@ -214,13 +174,11 @@ Fungsi:
     const label=`${flow.fmtDate?.(row.tanggal)||row.tanggal} · ${flow.rupiah?.(row.amount)||row.amount} · ${row.description||flow.categoryName?.(row.category)||"Transaksi manual"}`;
     if(!window.confirm(`Hapus transaksi manual ini?\n\n${label}\n\nTindakan ini tidak dapat dibatalkan.`)) return;
     try{
-      flow.busy?.(true);
-      flow.clearMessage?.();
+      flow.busy?.(true); flow.clearMessage?.();
       try{await flow.audit?.(row.id,"DELETE_MANUAL",{before:row,deleted_by:flow.user?.id||null})}catch(_e){}
       const {error}=await db.from(flow.TX_TABLE).delete().eq("id",row.id).eq("entry_type","MANUAL");
       if(error) throw error;
-      flow.closeInput?.();
-      flow.ok?.("Transaksi manual berhasil dihapus.");
+      flow.closeInput?.(); flow.ok?.("Transaksi manual berhasil dihapus.");
       if(typeof flow.fastReload==="function") await flow.fastReload({loadSetoran:false}); else await flow.reload?.();
       scheduleDecorate();
     }catch(e){flow.fail?.(e?.message||String(e))}
@@ -233,16 +191,14 @@ Fungsi:
     s.id="ak2ManualToolsUiStyle";
     s.textContent=`
       body.page-arus-kas .ak2-ledger-card .ak2-section-head{gap:14px}
-      body.page-arus-kas .ak2-quick-search-wrap{margin-left:auto;display:flex;align-items:center;gap:8px}
-      body.page-arus-kas .ak2-quick-search{height:44px;min-width:320px;display:flex;align-items:center;gap:8px;padding:0 9px;border:1px solid #3d536b;border-radius:11px;background:linear-gradient(180deg,#182331,#111923);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.16)}
+      body.page-arus-kas .ak2-quick-search-wrap{margin-left:auto;display:grid;grid-template-columns:minmax(280px,320px);grid-template-rows:auto auto;justify-items:stretch;align-items:center;gap:4px}
+      body.page-arus-kas .ak2-quick-search{height:44px;min-width:0;width:100%;display:grid;grid-template-columns:38px 1fr;align-items:center;gap:8px;padding:0 10px;border:1px solid #3d536b;border-radius:11px;background:linear-gradient(180deg,#182331,#111923);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.16)}
       body.page-arus-kas .ak2-quick-search:focus-within,body.page-arus-kas .ak2-quick-search.is-active{border-color:#d3a54b;box-shadow:0 0 0 2px rgba(211,165,75,.10),0 8px 22px rgba(0,0,0,.22)}
       body.page-arus-kas .ak2-quick-search-icon{width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:8px;background:rgba(211,165,75,.08);color:#e0b45a;font-size:22px;line-height:1;cursor:pointer}
       body.page-arus-kas .ak2-quick-search-icon:hover{background:rgba(211,165,75,.16);color:#ffe09a}
-      body.page-arus-kas #ak2QuickSearch{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;color:#f4f8fc;font:inherit;font-size:15px;font-weight:800}
+      body.page-arus-kas #ak2QuickSearch{width:100%;min-width:0;height:38px;border:0!important;outline:0!important;background:transparent!important;color:#f4f8fc;font:inherit;font-size:15px;font-weight:800;padding:0!important;box-shadow:none!important;border-radius:0!important}
       body.page-arus-kas #ak2QuickSearch::placeholder{color:#7f8c99;font-weight:700}
-      body.page-arus-kas #ak2QuickSearchClear{width:28px;height:28px;border:0;border-radius:7px;background:transparent;color:#82909e;font-size:20px;cursor:pointer}
-      body.page-arus-kas #ak2QuickSearchClear:hover{background:#252f3a;color:#fff0c8}
-      body.page-arus-kas .ak2-search-count{color:#d7b86a;font-weight:800;white-space:nowrap}
+      body.page-arus-kas .ak2-search-count{display:block;min-height:16px;color:#d7b86a;font-size:12px;font-weight:800;line-height:16px;text-align:center;white-space:nowrap}
 
       body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{overflow-x:auto!important;overflow-y:auto;-webkit-overflow-scrolling:touch}
       body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1420px;width:max-content}
@@ -260,8 +216,7 @@ Fungsi:
 
       @media(max-width:900px){
         body.page-arus-kas .ak2-ledger-card .ak2-section-head{align-items:flex-start;flex-wrap:wrap}
-        body.page-arus-kas .ak2-quick-search-wrap{order:3;width:100%;margin-left:0}
-        body.page-arus-kas .ak2-quick-search{min-width:0;flex:1}
+        body.page-arus-kas .ak2-quick-search-wrap{order:3;width:100%;margin-left:0;grid-template-columns:1fr}
         body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1320px}
         body.page-arus-kas .ak2-action-head,body.page-arus-kas .ak2-action-cell{width:56px;min-width:56px;max-width:56px}
         body.page-arus-kas .ak2-ledger-edit-icon{width:32px;height:32px;font-size:16px}
@@ -281,24 +236,13 @@ Fungsi:
 
   const baseCloseInput=flow.closeInput?.bind(flow);
   if(baseCloseInput){
-    flow.closeInput=function(){
-      const r=baseCloseInput(...arguments);
-      setTimeout(syncManualActions,0);
-      return r;
-    };
+    flow.closeInput=function(){ const r=baseCloseInput(...arguments); setTimeout(syncManualActions,0); return r; };
   }
 
-  installStyle();
-  installSearch();
-  ensureDeleteButton();
-  syncManualActions();
-  decorateManualRows();
-
+  installStyle(); installSearch(); ensureDeleteButton(); syncManualActions(); decorateManualRows();
   const body=document.getElementById("ak2LedgerBody");
   if(body) new MutationObserver(()=>scheduleDecorate()).observe(body,{childList:true,subtree:false});
-
   if(!document.getElementById("ak2QuickSearch")){
-    let tries=0;
-    const t=setInterval(()=>{tries++;if(installSearch()||tries>=80)clearInterval(t)},50);
+    let tries=0; const t=setInterval(()=>{tries++;if(installSearch()||tries>=80)clearInterval(t)},50);
   }
 })();
