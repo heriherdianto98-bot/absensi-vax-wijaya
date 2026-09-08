@@ -128,3 +128,13 @@
   `;
   document.head.appendChild(style);
 })();
+
+/* UI-only enhancement loaded after the proof guard so its popup UX wins last. */
+(function(){
+  const current=document.currentScript;
+  if(!current||document.querySelector('script[data-s3-proof-replace-ui]')) return;
+  const s=document.createElement('script');
+  s.dataset.s3ProofReplaceUi='1';
+  s.src=new URL('setoran-3-harian-proof-replace-ui.js',current.src).href;
+  document.head.appendChild(s);
+})();
