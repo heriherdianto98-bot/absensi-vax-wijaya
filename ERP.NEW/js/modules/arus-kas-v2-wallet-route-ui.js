@@ -276,7 +276,7 @@ Prinsip tampilan:
       body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(9),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(9){width:126px!important;min-width:126px!important;max-width:126px!important}
       body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-child(10),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-child(10){width:48px!important;min-width:48px!important;max-width:48px!important}
 
-      /* UI ONLY — tanggal tidak freeze, semua tanggal putih, saldo Kas Besar ukuran normal. */
+      /* UI ONLY — tanggal tidak freeze, semua tanggal putih. */
       body.page-arus-kas .ak2-ledger-card .ak2-table thead th:first-child,
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:first-child{
         position:static!important;
@@ -292,9 +292,11 @@ Prinsip tampilan:
         font-weight:800!important;
         text-shadow:none!important;
       }
+
+      /* UI ONLY — Saldo Kas Besar sedikit lebih besar agar mudah dipindai. */
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:nth-child(7){
-        font-size:inherit!important;
-        font-weight:800!important;
+        font-size:15px!important;
+        font-weight:850!important;
         letter-spacing:normal!important;
         text-shadow:none!important;
       }
