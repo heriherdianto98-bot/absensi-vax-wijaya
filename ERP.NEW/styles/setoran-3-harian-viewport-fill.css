@@ -87,7 +87,7 @@ body.s3sheet-erp-integrated .s3sheet-branch{
 }
 body.s3sheet-erp-integrated .s3sheet-auto,
 body.s3sheet-erp-integrated .s3sheet-actual,
-body.s3sheet-erp-integrated .s3sheet-diff{
+body.s3sheet--erp-integrated .s3sheet-diff{
   font-size:15px !important;
   font-weight:800;
 }
@@ -146,7 +146,7 @@ body.s3sheet-erp-integrated .s3sheet-total{
     gap:8px !important;
     text-align:center !important;
   }
-  body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total > span:not(.s3-cashout-card-hint){
+  body.s3sheet-erp-integrated .s3sheet-totals.s3-has-cashout .s3sheet-total > span:not(.s3-cashout-card-hint):not(.s3-diff-hint){
     width:100%;
     margin:0 !important;
     font-size:10px !important;
@@ -163,6 +163,13 @@ body.s3sheet-erp-integrated .s3sheet-total{
     text-align:center !important;
     overflow:visible !important;
     text-overflow:clip !important;
+  }
+  body.s3sheet-erp-integrated .s3sheet-total .s3-diff-hint{
+    width:22px !important;
+    height:22px !important;
+    min-width:22px !important;
+    margin:0 !important;
+    flex:0 0 22px !important;
   }
 }
 
