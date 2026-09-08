@@ -1,4 +1,5 @@
-/* ERP VAX — Setoran 3 Harian proof guard + keep latest proof per kind + dark viewer scrollbar */
+/* ERP VAX — Setoran 3 Harian proof guard + latest proof state per kind.
+   Non-destructive: READ/view/upload tidak pernah menghapus bukti lama. */
 "use strict";
 (function(){
   if(typeof SetoranDirectFlow==="undefined") return;
@@ -9,7 +10,9 @@
     return Number.isFinite(n)?n:0;
   }
 
-  async function prune(saved){
+  /* Sinkronkan state proof terbaru per jenis TANPA delete Storage/DB.
+     Bukti adalah audit trail; cleanup tidak boleh terjadi saat load/view/upload biasa. */
+  async function syncProofState(saved){
     if(!saved?.id) return null;
     const {data,error}=await db.from(flow.PROOF_TABLE)
       .select("id,storage_path,proof_kind,uploaded_at,uploaded_by")
@@ -18,36 +21,15 @@
     if(error) throw error;
 
     const proofs=data||[];
-    const keepKinds=new Set();
-    const keep=[];
-    const old=[];
-
+    const byKind={};
     for(const proof of proofs){
       const kind=String(proof.proof_kind||"SETORAN").toUpperCase();
-      if(!keepKinds.has(kind)){
-        keepKinds.add(kind);
-        keep.push(proof);
-      }else{
-        old.push(proof);
-      }
+      if(!byKind[kind]) byKind[kind]=proof;
     }
 
-    if(old.length){
-      const paths=old.map(x=>x.storage_path).filter(Boolean);
-      if(paths.length){
-        const {error:se}=await db.storage.from(flow.PROOF_BUCKET).remove(paths);
-        if(se) throw se;
-      }
-      const ids=old.map(x=>x.id).filter(Boolean);
-      if(ids.length){
-        const {error:de}=await db.from(flow.PROOF_TABLE).delete().in("id",ids);
-        if(de) throw de;
-      }
-    }
-
-    const latest=keep[0]||null;
+    const latest=proofs[0]||null;
     saved._proofLatest=latest;
-    saved._proofByKind=Object.fromEntries(keep.map(x=>[String(x.proof_kind||"SETORAN").toUpperCase(),x]));
+    saved._proofByKind=byKind;
     saved.proof_path=latest?.storage_path||null;
     return latest;
   }
@@ -56,7 +38,7 @@
   flow.loadSavedRows=async function(p){
     await baseLoad(p);
     for(const saved of this.savedRows.values()){
-      try{await prune(saved);}catch(err){console.warn("[Setoran3Harian] proof cleanup",err);}
+      try{await syncProofState(saved);}catch(err){console.warn("[Setoran3Harian] proof state sync",err);}
     }
   };
 
@@ -64,8 +46,8 @@
   flow.uploadProof=async function(saved,file,kind){
     let effectiveKind=String(kind||"SETORAN").toUpperCase();
 
-    /* Jika dalam satu baris ada selisih non tunai + biaya di luar Cashout,
-       foto pertama disimpan sebagai bukti BRI Merchant, foto berikutnya sebagai bukti biaya. */
+    /* Jika satu baris memiliki selisih Non Tunai + biaya di luar Cashout,
+       bukti tetap dipisahkan berdasarkan proof_kind. */
     if(effectiveKind==="NON_CASH_DIFF" && Math.abs(money(saved?.non_cash_difference))>.5 && money(saved?.outside_cashout_cost)>0 && saved?.id){
       const proofs=await this.getProofRows(saved.id);
       const hasDiff=proofs.some(p=>String(p.proof_kind||"").toUpperCase()==="NON_CASH_DIFF");
@@ -74,14 +56,14 @@
     }
 
     const result=await baseUpload(saved,file,effectiveKind);
-    await prune(saved);
+    await syncProofState(saved);
     return result;
   };
 
   /* Guard SUDAH DIAMBIL:
-     - selisih non tunai wajib foto bukti uang masuk BRI Merchant (NON_CASH_DIFF)
-     - biaya di luar Cashout wajib foto bukti biaya (OUTSIDE_CASHOUT)
-     - bukti jenis lain tidak boleh dianggap memenuhi syarat. */
+     - selisih non tunai wajib bukti NON_CASH_DIFF
+     - biaya di luar Cashout wajib bukti OUTSIDE_CASHOUT
+     - bukti jenis lain tidak memenuhi syarat. */
   const baseSave=flow.saveRow.bind(flow);
   flow.saveRow=async function(tr,options={}){
     if(options?.taken===true){
@@ -99,11 +81,11 @@
         if(needsDiff && !hasDiff && !hasPending){
           throw new Error("Ada selisih Non Tunai. Wajib lampirkan foto bukti uang masuk BRI Merchant sebelum centang Sudah Diambil.");
         }
-        if(needsOutside && !hasOutside && !hasPending){
-          throw new Error("Ada biaya di luar Cashout. Wajib isi keterangan dan lampirkan foto bukti biaya sebelum centang Sudah Diambil.");
+        if(needsOutside && !hasOutside){
+          throw new Error("Ada biaya di luar Cashout. Wajib lampirkan foto bukti biaya sebelum centang Sudah Diambil.");
         }
         if(needsDiff && needsOutside && !hasDiff && !hasOutside && hasPending){
-          throw new Error("Ada selisih Non Tunai dan biaya di luar Cashout. Dibutuhkan 2 bukti: foto uang masuk BRI Merchant dan foto bukti biaya.");
+          throw new Error("Ada selisih Non Tunai dan biaya di luar Cashout. Dibutuhkan 2 bukti terpisah.");
         }
       }
     }
@@ -114,7 +96,7 @@
   const baseOpen=flow.openProof.bind(flow);
   flow.openProof=async function(branchId){
     const saved=this.savedRows.get(this.key(branchId));
-    if(saved?.id) await prune(saved);
+    if(saved?.id) await syncProofState(saved);
     return baseOpen(branchId);
   };
 
@@ -129,7 +111,7 @@
   document.head.appendChild(style);
 })();
 
-/* UI-only enhancement loaded after the proof guard so its popup UX wins last. */
+/* UI-only enhancement loaded after the proof guard so its existing proof UX remains intact. */
 (function(){
   const current=document.currentScript;
   if(!current||document.querySelector('script[data-s3-proof-replace-ui]')) return;
