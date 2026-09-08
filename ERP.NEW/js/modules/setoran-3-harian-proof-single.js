@@ -1,7 +1,7 @@
 /* ERP VAX — Setoran 3 Harian proof guard + keep latest proof per kind + dark viewer scrollbar */
 "use strict";
 (function(){
-  if(typeof SetoranDirectFlow === "undefined") return;
+  if(typeof SetoranDirectFlow==="undefined") return;
   const flow=SetoranDirectFlow;
 
   function money(v){
@@ -136,35 +136,5 @@
   const s=document.createElement('script');
   s.dataset.s3ProofReplaceUi='1';
   s.src=new URL('setoran-3-harian-proof-replace-ui.js',current.src).href;
-  document.head.appendChild(s);
-})();
-
-/* Additive popup khusus Biaya di luar Cashout, lalu sync state/viewer/correction SVP. */
-(function(){
-  const current=document.currentScript;
-  if(!current||document.querySelector('script[data-s3-outside-input-gate]')) return;
-  const s=document.createElement('script');
-  s.dataset.s3OutsideInputGate='1';
-  s.src=new URL('setoran-3-harian-outside-input-gate.js',current.src).href;
-  s.onload=()=>{
-    if(!document.querySelector('script[data-s3-outside-proof-state-fix]')){
-      const fix=document.createElement('script');
-      fix.dataset.s3OutsideProofStateFix='1';
-      fix.src=new URL('setoran-3-harian-outside-proof-state-fix.js',current.src).href;
-      document.head.appendChild(fix);
-    }
-    if(!document.querySelector('script[data-s3-outside-proof-viewer]')){
-      const viewer=document.createElement('script');
-      viewer.dataset.s3OutsideProofViewer='1';
-      viewer.src=new URL('setoran-3-harian-outside-proof-viewer.js',current.src).href;
-      document.head.appendChild(viewer);
-    }
-    if(!document.querySelector('script[data-s3-outside-correction-svp-ui]')){
-      const corr=document.createElement('script');
-      corr.dataset.s3OutsideCorrectionSvpUi='1';
-      corr.src=new URL('setoran-3-harian-outside-correction-svp-ui.js',current.src).href;
-      document.head.appendChild(corr);
-    }
-  };
   document.head.appendChild(s);
 })();
