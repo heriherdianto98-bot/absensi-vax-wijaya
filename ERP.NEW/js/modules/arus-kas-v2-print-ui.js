@@ -28,8 +28,8 @@
     @page{size:A4 landscape;margin:8mm 9mm 13mm 9mm}
     html,body{margin:0;background:#fff;color:var(--ink);font-family:Arial,"Segoe UI",sans-serif;font-size:10pt;line-height:1.38}
     .sheet{width:100%;max-width:279mm;margin:0 auto}
-    .head{display:flex;justify-content:space-between;align-items:center;gap:14px}.brand{display:flex;align-items:center;gap:12px}.brand img{width:54px;height:54px;object-fit:contain}
-    .brand h1{margin:0;font-size:15pt;letter-spacing:.04em}.brand .doc{font-size:10pt;font-weight:800;letter-spacing:.08em}.brand .sys{font-size:7.5pt;color:var(--muted);letter-spacing:.1em}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:14px}.brand{display:flex;align-items:center;gap:14px}.brand img{width:68px;height:68px;object-fit:contain}
+    .brand h1{margin:0;font-size:18pt;letter-spacing:.04em}.brand .doc{font-size:12pt;font-weight:800;letter-spacing:.08em}.brand .sys{font-size:8.5pt;color:var(--muted);letter-spacing:.1em}
     .right{text-align:right}.right .mark{font-size:7.5pt;font-weight:800;letter-spacing:.12em}.right .mark em{display:block;color:var(--gold);font-style:normal}
     .rule{height:2px;margin:8px 0 10px;background:linear-gradient(90deg,var(--gold-line),#e7d7a4 58%,transparent)}
     .title{margin-bottom:9px}.title h2{margin:0;font-size:16pt}.title p{margin:3px 0 0;color:#665f50;font-size:9pt}
