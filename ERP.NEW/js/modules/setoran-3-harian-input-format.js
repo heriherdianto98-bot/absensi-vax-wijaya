@@ -1,12 +1,14 @@
-/* ERP VAX — Setoran 3 Harian money input + owner editor compatibility */
+/* ERP VAX — Setoran 3 Harian money input + role-safe editor UI */
 "use strict";
 (function(){
   if (typeof SetoranDirectFlow === "undefined") return;
   const flow = SetoranDirectFlow;
 
+  /* Owner wajib READ ONLY untuk input operasional Setoran 3 Harian.
+     Hanya SVP/SPV yang boleh masuk editor/input flow. */
   flow.isSvp = function(){
     const r = String(this.role || "").toLowerCase();
-    return ["svp","spv","owner"].includes(r);
+    return ["svp","spv"].includes(r);
   };
 
   flow.parseMoneyInput = function(v){
@@ -150,6 +152,8 @@
 
   let activeNoteInput = null;
   function openNote(input){
+    /* Owner hanya boleh melihat data, bukan membuka editor Keterangan. */
+    if(String(flow.role||"").toLowerCase()==="owner") return;
     ensureNoteModal();
     activeNoteInput = input;
     const tr = input.closest("tr[data-cabang-id]");
@@ -176,6 +180,7 @@
       document.getElementById("s3noteCount").textContent = `${e.target.value.length} / 1200`;
     });
     document.getElementById("s3noteSave")?.addEventListener("click", () => {
+      if(String(flow.role||"").toLowerCase()==="owner") return closeNote();
       if (!activeNoteInput) return closeNote();
       activeNoteInput.value = document.getElementById("s3noteText").value.trim();
       activeNoteInput.dispatchEvent(new Event("input", { bubbles:true }));
