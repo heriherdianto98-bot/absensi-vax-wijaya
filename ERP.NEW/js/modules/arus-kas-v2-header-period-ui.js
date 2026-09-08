@@ -31,6 +31,15 @@
     document.head.appendChild(s);
   }
 
+  /* Muat additive performance orchestration + tombol Refresh Semua. */
+  if(!document.querySelector('script[data-ak2-performance-ui]')){
+    const p=document.createElement("script");
+    p.src="../js/modules/arus-kas-v2-performance-ui.js";
+    p.async=false;
+    p.dataset.ak2PerformanceUi="1";
+    document.head.appendChild(p);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
