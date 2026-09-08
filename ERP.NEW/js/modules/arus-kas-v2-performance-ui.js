@@ -209,6 +209,15 @@ Tujuan:
     document.head.appendChild(style);
   }
 
+  function loadManualTools(){
+    if(document.querySelector('script[data-ak2-manual-tools-ui]')) return;
+    const s=document.createElement("script");
+    s.src="../js/modules/arus-kas-v2-manual-tools-ui.js";
+    s.async=false;
+    s.dataset.ak2ManualToolsUi="1";
+    document.body.appendChild(s);
+  }
+
   installStyle();
   if(!installRefreshButton()){
     let tries=0;
@@ -217,4 +226,5 @@ Tujuan:
       if(installRefreshButton() || tries>=80) clearInterval(timer);
     },50);
   }
+  loadManualTools();
 })();
