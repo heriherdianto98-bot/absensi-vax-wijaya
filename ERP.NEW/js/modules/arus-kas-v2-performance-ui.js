@@ -140,7 +140,71 @@ Tujuan:
         font-weight:800;
       }
       body.page-arus-kas #ak2RefreshAll:hover{filter:brightness(1.08)}
-      @media(max-width:900px){body.page-arus-kas #ak2RefreshAll{min-width:132px}}
+
+      /* UI ONLY — perjelas badge SUMBER dan STATUS pada Buku Arus Kas. */
+      body.page-arus-kas .ak2-ledger-card .ak2-source,
+      body.page-arus-kas .ak2-ledger-card .ak2-status{
+        display:inline-flex !important;
+        align-items:center;
+        justify-content:center;
+        min-height:34px;
+        padding:7px 13px !important;
+        border-radius:999px;
+        font-size:12px !important;
+        line-height:1;
+        font-weight:900 !important;
+        letter-spacing:.045em;
+        white-space:nowrap;
+        border:1px solid transparent;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 5px 14px rgba(0,0,0,.16);
+      }
+
+      body.page-arus-kas .ak2-ledger-card .ak2-source{
+        min-width:64px;
+        background:linear-gradient(180deg,#2b333d,#20262d) !important;
+        border-color:#44505d;
+        color:#e6edf4 !important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-source.is-auto{
+        background:linear-gradient(180deg,#214d35,#173524) !important;
+        border-color:#3f7d58;
+        color:#b8f1cb !important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-source.is-owner{
+        background:linear-gradient(180deg,#5a431a,#34260f) !important;
+        border-color:#9d7631;
+        color:#ffe39b !important;
+      }
+
+      body.page-arus-kas .ak2-ledger-card .ak2-status{
+        min-width:128px;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-status.is-pending{
+        background:linear-gradient(180deg,#5a4516,#34280f) !important;
+        border-color:#98752c;
+        color:#ffe08b !important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-status.is-verified{
+        background:linear-gradient(180deg,#24523a,#173525) !important;
+        border-color:#43805c;
+        color:#b9f2cd !important;
+      }
+      body.page-arus-kas .ak2-ledger-card .ak2-status.is-correction{
+        background:linear-gradient(180deg,#5a2828,#351919) !important;
+        border-color:#8a4444;
+        color:#ffc0c0 !important;
+      }
+
+      @media(max-width:900px){
+        body.page-arus-kas #ak2RefreshAll{min-width:132px}
+        body.page-arus-kas .ak2-ledger-card .ak2-source,
+        body.page-arus-kas .ak2-ledger-card .ak2-status{
+          min-height:31px;
+          padding:6px 10px !important;
+          font-size:11px !important;
+        }
+        body.page-arus-kas .ak2-ledger-card .ak2-status{min-width:116px}
+      }
     `;
     document.head.appendChild(style);
   }
