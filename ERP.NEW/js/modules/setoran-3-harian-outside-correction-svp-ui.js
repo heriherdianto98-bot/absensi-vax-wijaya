@@ -20,9 +20,20 @@
   ).toLowerCase();
   const isSvp=()=>["svp","spv"].includes(canonicalRole());
   const proofReadyCache=new Map();
+  let decorating=false;
+  let decorateQueued=false;
 
   function ts(v){const n=Date.parse(v||"");return Number.isFinite(n)?n:0;}
   function key(id){return flow.key(id);}
+  function setText(el,text){ if(el && el.textContent!==text) el.textContent=text; }
+  function scheduleDecorate(){
+    if(decorateQueued) return;
+    decorateQueued=true;
+    requestAnimationFrame(()=>{
+      decorateQueued=false;
+      decorateAttention();
+    });
+  }
 
   function ensureStyle(){
     if(document.getElementById("s3OutsideCorrectionSvpUiStyle")) return;
@@ -59,48 +70,54 @@
   }
 
   function decorateAttention(){
-    ensureStyle();
-    if(!isSvp()) return;
-    document.querySelectorAll('#s3sheetBody tr[data-cabang-id]').forEach(tr=>{
-      const id=Number(tr.dataset.cabangId||0);
-      const saved=flow.savedRows.get(key(id))||{};
-      const requested=statusOf(saved)==="REQUESTED";
-      const btn=tr.querySelector('[data-s3-outside-open]');
-      if(btn){
-        btn.classList.toggle('correction-requested',requested);
-        if(requested){
-          btn.title='KOREKSI OWNER: klik untuk perbaiki nominal, keterangan, dan upload foto terbaru.';
-          btn.setAttribute('aria-label','Koreksi Owner — buka Biaya di luar Cashout');
-        }
-      }
-
-      const resend=tr.querySelector('[data-corr-resubmit]');
-      if(resend && requested){
-        const ready=proofReadyCache.get(id)===true;
-        resend.disabled=!ready;
-        resend.title=ready
-          ? 'Perbaikan + foto terbaru sudah lengkap. Klik untuk kirim ulang ke Owner.'
-          : 'Klik ikon Biaya di luar Cashout yang berkedip merah. Edit data dan upload foto terbaru terlebih dahulu.';
-        let hint=resend.parentElement?.querySelector('[data-corr-ready-hint]');
-        if(!hint && resend.parentElement){
-          hint=document.createElement('span');
-          hint.className='s3-corr-ready-hint';
-          hint.dataset.corrReadyHint='1';
-          resend.parentElement.appendChild(hint);
-        }
-        if(hint) hint.textContent=ready?'Siap dikirim ulang':'Perbaiki via ikon merah dulu';
-
-        freshCorrectionReady(id,saved).then(v=>{
-          proofReadyCache.set(id,v);
-          if(resend.isConnected){
-            resend.disabled=!v;
-            resend.title=v?'Perbaikan + foto terbaru sudah lengkap. Klik untuk kirim ulang ke Owner.':'Klik ikon Biaya di luar Cashout yang berkedip merah. Edit data dan upload foto terbaru terlebih dahulu.';
-            const h=resend.parentElement?.querySelector('[data-corr-ready-hint]');
-            if(h) h.textContent=v?'Siap dikirim ulang':'Perbaiki via ikon merah dulu';
+    if(decorating) return;
+    decorating=true;
+    try{
+      ensureStyle();
+      if(!isSvp()) return;
+      document.querySelectorAll('#s3sheetBody tr[data-cabang-id]').forEach(tr=>{
+        const id=Number(tr.dataset.cabangId||0);
+        const saved=flow.savedRows.get(key(id))||{};
+        const requested=statusOf(saved)==="REQUESTED";
+        const btn=tr.querySelector('[data-s3-outside-open]');
+        if(btn){
+          btn.classList.toggle('correction-requested',requested);
+          if(requested){
+            btn.title='KOREKSI OWNER: klik untuk perbaiki nominal, keterangan, dan upload foto terbaru.';
+            btn.setAttribute('aria-label','Koreksi Owner — buka Biaya di luar Cashout');
           }
-        });
-      }
-    });
+        }
+
+        const resend=tr.querySelector('[data-corr-resubmit]');
+        if(resend && requested){
+          const ready=proofReadyCache.get(id)===true;
+          resend.disabled=!ready;
+          resend.title=ready
+            ? 'Perbaikan + foto terbaru sudah lengkap. Klik untuk kirim ulang ke Owner.'
+            : 'Klik ikon Biaya di luar Cashout yang berkedip merah. Edit data dan upload foto terbaru terlebih dahulu.';
+          let hint=resend.parentElement?.querySelector('[data-corr-ready-hint]');
+          if(!hint && resend.parentElement){
+            hint=document.createElement('span');
+            hint.className='s3-corr-ready-hint';
+            hint.dataset.corrReadyHint='1';
+            resend.parentElement.appendChild(hint);
+          }
+          setText(hint,ready?'Siap dikirim ulang':'Perbaiki via ikon merah dulu');
+
+          freshCorrectionReady(id,saved).then(v=>{
+            proofReadyCache.set(id,v);
+            if(resend.isConnected){
+              resend.disabled=!v;
+              resend.title=v?'Perbaikan + foto terbaru sudah lengkap. Klik untuk kirim ulang ke Owner.':'Klik ikon Biaya di luar Cashout yang berkedip merah. Edit data dan upload foto terbaru terlebih dahulu.';
+              const h=resend.parentElement?.querySelector('[data-corr-ready-hint]');
+              setText(h,v?'Siap dikirim ulang':'Perbaiki via ikon merah dulu');
+            }
+          });
+        }
+      });
+    }finally{
+      decorating=false;
+    }
   }
 
   function decoratePopup(id){
@@ -121,7 +138,7 @@
     box.innerHTML=`<strong>⚠ KOREKSI DARI OWNER</strong><span>${flow.esc?flow.esc(note):note}</span><small>Perbaiki nominal + keterangan, lalu wajib upload foto bukti TERBARU. Setelah SIMPAN, tombol KIRIM ULANG akan aktif.</small>`;
 
     const st=modal.querySelector('#s3OutsideProofStatus');
-    if(st) st.textContent='Koreksi Owner aktif — upload foto bukti terbaru wajib.';
+    setText(st,'Koreksi Owner aktif — upload foto bukti terbaru wajib.');
   }
 
   document.addEventListener('click',e=>{
@@ -149,16 +166,19 @@
   const baseRender=flow.renderTable.bind(flow);
   flow.renderTable=function(){
     const r=baseRender(...arguments);
-    setTimeout(decorateAttention,0);
+    scheduleDecorate();
     return r;
   };
 
-  const observer=new MutationObserver(()=>decorateAttention());
+  /* Hanya observe pergantian row langsung di tbody. Pada versi sebelumnya observer memakai subtree:true,
+     lalu decorateAttention menambah/mengubah hint di dalam cell. Perubahan hint itu memicu observer lagi
+     tanpa henti khusus pada periode yang punya status REQUESTED (contoh 04–06 Sep), sehingga UI SVP macet. */
+  const observer=new MutationObserver(()=>scheduleDecorate());
   function bind(){
     ensureStyle();
     const body=document.getElementById('s3sheetBody');
-    if(body) observer.observe(body,{childList:true,subtree:true});
-    decorateAttention();
+    if(body) observer.observe(body,{childList:true});
+    scheduleDecorate();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(bind,160),{once:true});
   else setTimeout(bind,160);
