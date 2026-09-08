@@ -65,9 +65,11 @@ data Cash Out, data Setoran, status, atau workflow.
       .s3-cashout-summary strong{display:block;margin-top:8px;font-size:31px;line-height:1.05;font-weight:900}
       .s3-cashout-summary .is-red strong{color:#ff6262}
 
-      .s3-cashout-backrow{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid rgba(216,165,59,.18);background:#0b141e}
-      .s3-cashout-backrow button{height:34px;padding:0 13px;border:1px solid rgba(216,165,59,.45);border-radius:8px;background:rgba(216,165,59,.08);color:#f2c451;font-size:11px;font-weight:900;cursor:pointer}
-      .s3-cashout-backrow strong{font-size:15px;font-weight:900}.s3-cashout-backrow span{color:#b7c3cf;font-size:14px;font-weight:700}
+      .s3-cashout-backrow{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:15px 20px;border-bottom:1px solid rgba(216,165,59,.24);background:linear-gradient(180deg,#101b27,#0a131d);box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+      .s3-cashout-backrow button{height:40px;padding:0 17px;border:1px solid rgba(216,165,59,.58);border-radius:9px;background:linear-gradient(180deg,rgba(216,165,59,.15),rgba(216,165,59,.08));color:#f6cc62;font-size:13px;font-weight:900;letter-spacing:.02em;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,.2)}
+      .s3-cashout-backrow button:hover{border-color:rgba(242,196,93,.88);background:rgba(216,165,59,.18)}
+      .s3-cashout-backrow strong{font-size:19px;line-height:1.1;font-weight:900;color:#fff}
+      .s3-cashout-backrow span{color:#f0c45d;font-size:16px;line-height:1.1;font-weight:900}
 
       .s3-cashout-body{flex:1 1 auto;min-height:0;overflow:auto;background:#071018;scrollbar-color:#b4882d #09131c;scrollbar-width:thin}
       .s3-cashout-table{width:100%;min-width:920px;border-collapse:separate;border-spacing:0;font-size:16px}
@@ -85,7 +87,7 @@ data Cash Out, data Setoran, status, atau workflow.
       .s3-cashout-note{flex:0 0 auto;padding:12px 18px;border-top:1px solid rgba(216,165,59,.14);background:#09131c;color:#aebbc8;font-size:13px;line-height:1.5}
       .s3-cashout-body::-webkit-scrollbar{width:11px;height:11px}.s3-cashout-body::-webkit-scrollbar-track{background:#09131c}.s3-cashout-body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#75591d,#c79a37);border:2px solid #09131c;border-radius:999px}
       @media(max-width:1250px){.s3sheet-totals.s3-has-cashout{grid-template-columns:repeat(4,minmax(0,1fr))}}
-      @media(max-width:850px){.s3sheet-totals.s3-has-cashout{grid-template-columns:repeat(2,minmax(0,1fr))}.s3-cashout-summary{grid-template-columns:1fr;gap:8px;padding:10px}.s3-cashout-summary>div{padding:11px 12px}.s3-cashout-summary strong{font-size:24px}.s3-cashout-head{padding:14px}.s3-cashout-head h3{font-size:22px}.s3-cashout-table{font-size:14px}.s3-cashout-table td{padding:14px 12px}.s3-cashout-table .amount{font-size:15px}}
+      @media(max-width:850px){.s3sheet-totals.s3-has-cashout{grid-template-columns:repeat(2,minmax(0,1fr))}.s3-cashout-summary{grid-template-columns:1fr;gap:8px;padding:10px}.s3-cashout-summary>div{padding:11px 12px}.s3-cashout-summary strong{font-size:24px}.s3-cashout-head{padding:14px}.s3-cashout-head h3{font-size:22px}.s3-cashout-table{font-size:14px}.s3-cashout-table td{padding:14px 12px}.s3-cashout-table .amount{font-size:15px}.s3-cashout-backrow{gap:10px;padding:12px}.s3-cashout-backrow button{font-size:11px;height:36px}.s3-cashout-backrow strong{font-size:16px}.s3-cashout-backrow span{font-size:13px}}
     `;
     document.head.appendChild(style);
   }
@@ -192,14 +194,18 @@ data Cash Out, data Setoran, status, atau workflow.
       <section class="s3-cashout-panel" role="dialog" aria-modal="true" aria-labelledby="s3CashOutTitle">
         <div class="s3-cashout-head"><div><span class="eyebrow">FINANCE • MINUTES</span><h3 id="s3CashOutTitle">Rincian Cash Out</h3><p id="s3CashOutPeriod">—</p></div><button type="button" class="s3-cashout-close" data-s3-cashout-close aria-label="Tutup">×</button></div>
         <div class="s3-cashout-summary"><div class="is-red"><span>Total Cash Out</span><strong id="s3CashOutSum">Rp0</strong></div><div><span>Cabang Ada Cash Out</span><strong id="s3CashOutBranchCount">0</strong></div><div><span>Jumlah Transaksi</span><strong id="s3CashOutTxnCount">0</strong></div></div>
-        <div id="s3CashOutBackRow" class="s3-cashout-backrow" hidden><button type="button" data-s3-cashout-back>← SEMUA CABANG</button><strong id="s3CashOutBranchTitle">—</strong><span id="s3CashOutBranchTotal">—</span></div>
+        <div id="s3CashOutBackRow" class="s3-cashout-backrow" hidden><button type="button" data-s3-cashout-back data-mode="list">← SEMUA CABANG</button><strong id="s3CashOutBranchTitle">—</strong><span id="s3CashOutBranchTotal">—</span></div>
         <div class="s3-cashout-body" id="s3CashOutBody"></div>
         <div class="s3-cashout-note">Read only · sumber data sama dengan modul Cash Out: <b>daily_recap_source.cash_out</b> + rincian <b>keterangan_cash_out</b>. Tidak ada data Setoran yang diubah.</div>
       </section>`;
     document.body.appendChild(modal);
     modal.addEventListener("click",e=>{
       if(e.target.closest("[data-s3-cashout-close]")) closeModal();
-      if(e.target.closest("[data-s3-cashout-back]")) renderBranchList();
+      const backBtn=e.target.closest("[data-s3-cashout-back]");
+      if(backBtn){
+        if(backBtn.dataset.mode==="return") closeModal();
+        else renderBranchList();
+      }
       const view=e.target.closest("[data-s3-cashout-branch]");
       if(view) renderBranchDetail(Number(view.dataset.s3CashoutBranch));
     });
@@ -210,7 +216,14 @@ data Cash Out, data Setoran, status, atau workflow.
   function renderBranchList(){
     const modal=ensureModal(),data=cacheData;
     if(!data) return;
-    document.getElementById("s3CashOutBackRow").hidden=true;
+    const back=document.getElementById("s3CashOutBackRow");
+    const backBtn=back?.querySelector("[data-s3-cashout-back]");
+    if(back){
+      back.hidden=false;
+      if(backBtn){backBtn.textContent="← KEMBALI KE SETORAN 3 HARIAN";backBtn.dataset.mode="return";}
+      document.getElementById("s3CashOutBranchTitle").textContent="SEMUA CABANG";
+      document.getElementById("s3CashOutBranchTotal").textContent=`${dateLabel(data.period.start)} — ${dateLabel(data.period.end)}`;
+    }
     const body=document.getElementById("s3CashOutBody");
     const rows=data.branches||[];
     body.innerHTML=`<table class="s3-cashout-table"><thead><tr><th>Cabang</th><th class="num">Total Cash Out</th><th class="num">Jumlah Transaksi</th><th class="num">Rincian</th></tr></thead><tbody>${rows.map(b=>{
@@ -226,7 +239,11 @@ data Cash Out, data Setoran, status, atau workflow.
     const branch=(data.branches||[]).find(b=>Number(b.id)===Number(id));
     if(!branch) return;
     const back=document.getElementById("s3CashOutBackRow");
-    back.hidden=false;
+    const backBtn=back?.querySelector("[data-s3-cashout-back]");
+    if(back){
+      back.hidden=false;
+      if(backBtn){backBtn.textContent="← SEMUA CABANG";backBtn.dataset.mode="list";}
+    }
     document.getElementById("s3CashOutBranchTitle").textContent=branch.name;
     document.getElementById("s3CashOutBranchTotal").textContent=`Total ${money(branch.total)}`;
     const body=document.getElementById("s3CashOutBody");
