@@ -1,6 +1,6 @@
 /* ARUS KAS V2 — MANUAL INPUT TYPE THEME UI ONLY
    Visual safety cue: Pemasukan = biru, Pengeluaran = merah.
-   Warning besar berkedip di sisi kanan header, text-only kontras tanpa background.
+   Warning safety dibuat ringkas, premium, dan kontras tanpa background.
    Tidak mengubah engine, save logic, validation, formula, query, wallet, atau data.
 */
 "use strict";
@@ -41,26 +41,27 @@
       body.page-arus-kas #ak2Modal.ak2-type-in .ak2-type-visual-badge{color:#ccecff;background:rgba(38,141,213,.18);border:1px solid rgba(76,174,239,.42)}
       body.page-arus-kas #ak2Modal.ak2-type-out .ak2-type-visual-badge{color:#ffd7d7;background:rgba(193,53,53,.18);border:1px solid rgba(227,86,86,.44)}
 
-      /* Warning text-only: besar, kontras, tanpa kotak/background. */
+      /* Safety warning: text-only, tidak berkompetisi dengan judul modal. */
       body.page-arus-kas #ak2Modal .ak2-input-safety-warning{
-        position:absolute;right:74px;top:50%;transform:translateY(-50%);
-        width:min(455px,50%);padding:0;margin:0;text-align:right;
-        font-family:Arial Black,Impact,system-ui,sans-serif;
-        font-size:20px;font-weight:1000;line-height:1.15;letter-spacing:.045em;text-transform:uppercase;
-        color:#ffe34f!important;
-        background:transparent!important;border:0!important;box-shadow:none!important;
-        -webkit-text-stroke:.35px rgba(35,24,0,.25);
-        text-shadow:0 0 8px rgba(255,220,55,.78),0 0 18px rgba(255,183,0,.42),0 2px 2px rgba(0,0,0,.82)!important;
-        animation:ak2SafetyBlink 1.15s ease-in-out infinite;
-        pointer-events:none
+        position:absolute;right:78px;top:50%;transform:translateY(-50%);
+        width:min(390px,44%);margin:0;padding:0;text-align:right;
+        font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+        color:#ffd35a!important;background:transparent!important;border:0!important;box-shadow:none!important;
+        pointer-events:none;animation:ak2SafetyPulse 1.8s ease-in-out infinite
       }
-      @keyframes ak2SafetyBlink{
-        0%,100%{opacity:1;filter:brightness(1.18)}
-        50%{opacity:.32;filter:brightness(.78)}
+      body.page-arus-kas #ak2Modal .ak2-input-safety-warning .ak2-warn-main{
+        display:block;font-size:16px;font-weight:950;line-height:1.1;letter-spacing:.055em;text-transform:uppercase;
+        text-shadow:0 0 10px rgba(255,190,45,.34),0 1px 2px rgba(0,0,0,.72)
       }
+      body.page-arus-kas #ak2Modal .ak2-input-safety-warning .ak2-warn-sub{
+        display:block;margin-top:4px;font-size:11px;font-weight:800;line-height:1.15;letter-spacing:.025em;
+        color:rgba(255,245,210,.84)!important;text-transform:none;text-shadow:0 1px 2px rgba(0,0,0,.72)
+      }
+      @keyframes ak2SafetyPulse{0%,100%{opacity:1}50%{opacity:.62}}
       @media(max-width:900px){
-        body.page-arus-kas #ak2Modal .ak2-modal-head{padding-bottom:78px!important}
-        body.page-arus-kas #ak2Modal .ak2-input-safety-warning{left:22px;right:22px;top:auto;bottom:14px;transform:none;width:auto;text-align:center;font-size:17px}
+        body.page-arus-kas #ak2Modal .ak2-modal-head{padding-bottom:68px!important}
+        body.page-arus-kas #ak2Modal .ak2-input-safety-warning{left:22px;right:22px;top:auto;bottom:12px;transform:none;width:auto;text-align:center}
+        body.page-arus-kas #ak2Modal .ak2-input-safety-warning .ak2-warn-main{font-size:15px}
       }
       @media (prefers-reduced-motion:reduce){body.page-arus-kas #ak2Modal .ak2-input-safety-warning{animation:none}}
     `;
@@ -82,7 +83,7 @@
     if(!warning){
       warning=document.createElement("div");
       warning.className="ak2-input-safety-warning";
-      warning.textContent="Pastikan input data dengan benar, mohon cek kembali !!!";
+      warning.innerHTML='<span class="ak2-warn-main">⚠ Periksa sebelum simpan</span><span class="ak2-warn-sub">Pastikan input data sudah benar · mohon cek kembali</span>';
       const close=head.querySelector(".ak2-close");
       if(close) head.insertBefore(warning,close); else head.appendChild(warning);
     }
