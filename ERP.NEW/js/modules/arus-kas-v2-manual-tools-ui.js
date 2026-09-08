@@ -9,6 +9,7 @@ Fungsi:
 - Edit tetap memakai flow existing ArusKasV2.openInput(row).
 - Saat edit MANUAL tampil Hapus + Simpan Perubahan.
 - Tabel boleh horizontal scroll bila kolom tidak cukup.
+- UI audit: saldo Kas Besar diperjelas, pembatas tanggal tegas, kolom tanggal freeze.
 =========================================================
 */
 "use strict";
@@ -151,10 +152,27 @@ Fungsi:
     });
   }
 
+  function decorateDateGroups(){
+    const body=document.getElementById("ak2LedgerBody");
+    if(!body) return;
+    let previousDate="";
+    body.querySelectorAll("tr[data-id]").forEach(tr=>{
+      const row=rowById(tr.dataset.id)||{};
+      const date=String(row.tanggal||"");
+      tr.classList.toggle("ak2-date-start",!!date && date!==previousDate);
+      if(date) previousDate=date;
+    });
+  }
+
   function scheduleDecorate(){
     if(decorateQueued) return;
     decorateQueued=true;
-    requestAnimationFrame(()=>{ decorateQueued=false; decorateManualRows(); applySearch(); });
+    requestAnimationFrame(()=>{
+      decorateQueued=false;
+      decorateManualRows();
+      decorateDateGroups();
+      applySearch();
+    });
   }
 
   document.addEventListener("click",e=>{
@@ -201,9 +219,20 @@ Fungsi:
       body.page-arus-kas .ak2-search-count{display:block;min-height:16px;color:#d7b86a;font-size:12px;font-weight:800;line-height:16px;text-align:center;white-space:nowrap}
 
       body.page-arus-kas .ak2-ledger-card .ak2-table-wrap{overflow-x:auto!important;overflow-y:auto;-webkit-overflow-scrolling:touch}
-      body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1420px;width:max-content}
+      body.page-arus-kas .ak2-ledger-card .ak2-table{min-width:1420px;width:max-content;border-collapse:separate;border-spacing:0}
       body.page-arus-kas .ak2-ledger-card .ak2-table th,body.page-arus-kas .ak2-ledger-card .ak2-table td{white-space:normal}
       body.page-arus-kas .ak2-ledger-card .ak2-table th:nth-last-child(-n+3),body.page-arus-kas .ak2-ledger-card .ak2-table td:nth-last-child(-n+3){white-space:nowrap}
+
+      /* UI audit: nominal SALDO KAS BESAR lebih besar dan tegas. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:nth-child(7){font-size:18px!important;font-weight:950!important;color:#ffd36b!important;letter-spacing:.01em;text-shadow:0 0 10px rgba(255,196,74,.08)}
+
+      /* UI audit: pembatas awal tanggal dibuat jelas. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr.ak2-date-start td{border-top:2px solid rgba(215,170,85,.62)!important;box-shadow:inset 0 1px 0 rgba(255,234,182,.06)}
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr.ak2-date-start td:first-child{color:#ffe39b!important;background:#17212b!important}
+
+      /* UI audit: kolom TANGGAL freeze saat tabel digeser horizontal. */
+      body.page-arus-kas .ak2-ledger-card .ak2-table thead th:first-child{position:sticky;left:0;z-index:12;min-width:112px;background:#203247!important;box-shadow:3px 0 0 rgba(215,170,85,.34),8px 0 18px rgba(0,0,0,.22)}
+      body.page-arus-kas .ak2-ledger-card .ak2-table tbody td:first-child{position:sticky;left:0;z-index:7;min-width:112px;background:#0f1922!important;color:#f5f7fa;font-size:15px;font-weight:900;box-shadow:3px 0 0 rgba(215,170,85,.20),8px 0 18px rgba(0,0,0,.16)}
 
       body.page-arus-kas .ak2-action-head,body.page-arus-kas .ak2-action-cell{width:66px;min-width:66px;max-width:66px;text-align:center!important;padding-left:8px!important;padding-right:8px!important;position:relative;z-index:3;pointer-events:auto!important}
       body.page-arus-kas .ak2-ledger-edit-icon{width:36px;height:36px;display:inline-grid!important;place-items:center;border-radius:10px;border:1px solid #9a752d;background:linear-gradient(180deg,#5b4318,#34260f);color:#ffe39b;font:inherit;font-size:18px;font-weight:900;line-height:1;cursor:pointer;position:relative;z-index:5;pointer-events:auto!important;touch-action:manipulation;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 5px 14px rgba(0,0,0,.16)}
@@ -239,7 +268,7 @@ Fungsi:
     flow.closeInput=function(){ const r=baseCloseInput(...arguments); setTimeout(syncManualActions,0); return r; };
   }
 
-  installStyle(); installSearch(); ensureDeleteButton(); syncManualActions(); decorateManualRows();
+  installStyle(); installSearch(); ensureDeleteButton(); syncManualActions(); decorateManualRows(); decorateDateGroups();
   const body=document.getElementById("ak2LedgerBody");
   if(body) new MutationObserver(()=>scheduleDecorate()).observe(body,{childList:true,subtree:false});
   if(!document.getElementById("ak2QuickSearch")){
