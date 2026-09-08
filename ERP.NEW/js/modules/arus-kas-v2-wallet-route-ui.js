@@ -5,13 +5,11 @@ UI / presentation only. Tidak mengubah engine, data, formula, query,
 wallet balance, source of truth, ataupun workflow transaksi.
 
 Tujuan:
-- Setiap nominal yang tampil di Buku Arus Kas mempunyai petunjuk jelas
-  sumber wallet -> tujuan wallet.
-- Berlaku untuk akun Owner dan SVP.
-- Tidak menambah kolom baru; rute wallet ditampilkan di kolom keterangan
-  pemasukan / pengeluaran yang sudah ada.
-- Label dibuat ringkas agar tabel tetap muat dalam 1 pandangan dan tidak
-  melebar hanya karena keterangan rute wallet.
+- Setiap nominal di Buku Arus Kas punya petunjuk sumber/tujuan yang jelas.
+- Tampilan dibuat sederhana 2 baris dalam kolom keterangan yang sama.
+- AUTO: baris 1 "Auto", baris 2 jenis/periode transaksi.
+- MANUAL: baris 1 wallet asal ke wallet tujuan, baris 2 keterangan kecil.
+- Berlaku untuk akun Owner dan SVP tanpa menambah kolom baru.
 =========================================================
 */
 "use strict";
@@ -24,12 +22,12 @@ Tujuan:
   let decorateQueued=false;
 
   const WALLET_LABELS={
-    EXTERNAL:"Ext",
-    KAS_BESAR:"Besar",
-    DANA_PRODUK:"Produk",
-    KAS_DENDA:"Denda",
-    PIUTANG_SETORAN:"P.Setoran",
-    PIUTANG_DENDA:"P.Denda"
+    EXTERNAL:"Luar",
+    KAS_BESAR:"Kas Besar",
+    DANA_PRODUK:"Dana Produk",
+    KAS_DENDA:"Kas Denda",
+    PIUTANG_SETORAN:"Piutang Setoran",
+    PIUTANG_DENDA:"Piutang Denda"
   };
 
   const rowById=id=>flow.ledger?.find(x=>String(x.id)===String(id))||null;
@@ -44,19 +42,6 @@ Tujuan:
       .filter(Boolean)
       .map(x=>x.charAt(0).toUpperCase()+x.slice(1))
       .join(" ");
-  }
-
-  function fullWalletLabel(value){
-    const key=String(value||"").trim().toUpperCase();
-    const full={
-      EXTERNAL:"Eksternal",
-      KAS_BESAR:"Kas Besar",
-      DANA_PRODUK:"Dana Produk",
-      KAS_DENDA:"Kas Denda",
-      PIUTANG_SETORAN:"Piutang Setoran",
-      PIUTANG_DENDA:"Piutang Denda"
-    };
-    return full[key]||walletLabel(value);
   }
 
   function findLedgerCells(tr){
@@ -84,57 +69,96 @@ Tujuan:
     return {y:Number(m[1]),m:Number(m[2]),d:Number(m[3])};
   }
 
-  function compactPeriod(row){
+  function periodFromMetadata(row){
     const md=row?.metadata||{};
     const a=parseDateOnly(row?.source_period_start||md.period_start||md.source_period_start);
     const b=parseDateOnly(row?.source_period_end||md.period_end||md.source_period_end);
     if(!a||!b) return "";
     if(a.y===b.y&&a.m===b.m){
-      if(a.d===b.d) return `${String(a.d).padStart(2,"0")} ${MONTHS[a.m-1]}`;
-      return `${String(a.d).padStart(2,"0")}–${String(b.d).padStart(2,"0")} ${MONTHS[b.m-1]}`;
+      if(a.d===b.d) return `tgl ${a.d} ${MONTHS[a.m-1]}`;
+      return `tgl ${a.d} sd ${b.d} ${MONTHS[b.m-1]}`;
     }
-    return `${String(a.d).padStart(2,"0")} ${MONTHS[a.m-1]}–${String(b.d).padStart(2,"0")} ${MONTHS[b.m-1]}`;
+    return `tgl ${a.d} ${MONTHS[a.m-1]} sd ${b.d} ${MONTHS[b.m-1]}`;
   }
 
-  function compactDescription(row){
-    const desc=String(row?.description||flow.categoryName?.(row?.category)||"Transaksi").trim();
-    const period=compactPeriod(row);
-    const category=String(row?.category||"").toUpperCase();
+  function periodFromDescription(row){
+    const desc=String(row?.description||"");
+    const m=desc.match(/(\d{1,2})\s+Sep(?:tember)?\s+2026\s*[—-]\s*(\d{1,2})\s+Sep(?:tember)?\s+2026/i)
+      || desc.match(/(\d{1,2})\s+Sep(?:tember)?\s+2026\s*(?:sd|s\/d|to)\s*(\d{1,2})\s+Sep(?:tember)?\s+2026/i);
+    if(m) return `tgl ${Number(m[1])} sd ${Number(m[2])} Sep`;
 
-    if(category==="SETORAN_3_HARIAN"){
-      if(/^koreksi\s+setoran/i.test(desc)) return period?`Koreksi Setoran ${period}`:"Koreksi Setoran";
-      return period?`Setoran ${period}`:"Setoran";
-    }
-    if(category==="TRANSFER_DANA_PRODUK") return period?`Nett Produk ${period}`:"Nett Produk";
+    const compact=desc.match(/(\d{1,2})\s*(?:sd|s\/d|[-–—])\s*(\d{1,2})\s*Sep/i);
+    if(compact) return `tgl ${Number(compact[1])} sd ${Number(compact[2])} Sep`;
+    return "";
+  }
 
+  function periodLabel(row){
+    return periodFromMetadata(row)||periodFromDescription(row);
+  }
+
+  function cleanManualDescription(row){
+    let desc=String(row?.description||flow.categoryName?.(row?.category)||"Transaksi").trim();
+    desc=desc.replace(/^setoran\s+/i,"Setoran ");
     return desc;
   }
 
-  function routeText(row){
+  function autoSecondLine(row){
+    const category=String(row?.category||"").toUpperCase();
+    const period=periodLabel(row);
+    if(category==="SETORAN_3_HARIAN"){
+      const correction=/^koreksi\s+setoran/i.test(String(row?.description||""));
+      return `${correction?"Koreksi setoran":"Setoran"}${period?` ${period}`:""}`;
+    }
+    if(category==="TRANSFER_DANA_PRODUK"){
+      return `Nett Produk${period?` ${period}`:""}`;
+    }
+    const desc=cleanManualDescription(row);
+    return period && !desc.toLowerCase().includes(period.toLowerCase()) ? `${desc} ${period}` : desc;
+  }
+
+  function labelParts(row){
+    const isAuto=String(row?.entry_type||"").toUpperCase()==="AUTO";
+    if(isAuto){
+      return {primary:"Auto",secondary:autoSecondLine(row)};
+    }
+
     const from=walletLabel(row?.from_wallet);
     const to=walletLabel(row?.to_wallet);
-    const desc=compactDescription(row);
-    return `${from}→${to} · ${desc}`;
+    return {
+      primary:`${from} ke ${to}`,
+      secondary:`(${cleanManualDescription(row)})`
+    };
   }
 
   function fullRouteText(row){
-    const from=fullWalletLabel(row?.from_wallet);
-    const to=fullWalletLabel(row?.to_wallet);
+    const from=walletLabel(row?.from_wallet);
+    const to=walletLabel(row?.to_wallet);
     const desc=String(row?.description||flow.categoryName?.(row?.category)||"Transaksi").trim();
-    return `${from} → ${to} · ${desc}`;
+    return `${from} ke ${to} · ${desc}`;
   }
 
-  function setDescription(cell,text,row){
+  function setDescription(cell,row){
     if(!cell) return;
     const deleted=typeof flow.isDeleteInactive==="function" && flow.isDeleteInactive(row);
+    const parts=labelParts(row);
     cell.textContent="";
-    const span=document.createElement("span");
-    span.className=deleted
+
+    const wrap=document.createElement("span");
+    wrap.className=deleted
       ? "ak2-wallet-route ak2-deleted-history-text ak2-deleted-desc"
       : "ak2-wallet-route";
-    span.textContent=text;
-    span.title=fullRouteText(row);
-    cell.appendChild(span);
+
+    const primary=document.createElement("span");
+    primary.className="ak2-wallet-route-main";
+    primary.textContent=parts.primary;
+
+    const secondary=document.createElement("span");
+    secondary.className="ak2-wallet-route-sub";
+    secondary.textContent=parts.secondary;
+
+    wrap.append(primary,secondary);
+    wrap.title=fullRouteText(row);
+    cell.appendChild(wrap);
     cell.title=fullRouteText(row);
   }
 
@@ -146,10 +170,8 @@ Tujuan:
       const row=rowById(tr.dataset.id);
       if(!row) return;
       const c=findLedgerCells(tr);
-      const text=routeText(row);
-
-      if(hasNominal(c.masuk)) setDescription(c.ketMasuk,text,row);
-      if(hasNominal(c.keluar)) setDescription(c.ketKeluar,text,row);
+      if(hasNominal(c.masuk)) setDescription(c.ketMasuk,row);
+      if(hasNominal(c.keluar)) setDescription(c.ketKeluar,row);
     });
   }
 
@@ -169,69 +191,71 @@ Tujuan:
     s.id="ak2WalletRouteUiStyle";
     s.textContent=`
       body.page-arus-kas .ak2-wallet-route{
-        display:block;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        gap:0;
         width:100%;
+        max-width:100%;
+        overflow:hidden;
+        line-height:1;
+      }
+      body.page-arus-kas .ak2-wallet-route-main,
+      body.page-arus-kas .ak2-wallet-route-sub{
+        display:block;
         max-width:100%;
         overflow:hidden;
         text-overflow:ellipsis;
         white-space:nowrap;
-        color:#e6edf4;
-        font-weight:700;
-        line-height:1.15;
+      }
+      body.page-arus-kas .ak2-wallet-route-main{
+        color:#eef3f8;
+        font-size:13px;
+        font-weight:850;
+        line-height:1.05;
+      }
+      body.page-arus-kas .ak2-wallet-route-sub{
+        margin-top:2px;
+        color:#8f9daa;
+        font-size:10px;
+        font-weight:650;
+        line-height:1;
       }
 
-      /* UI ONLY — ledger lebih rapat untuk audit satu layar. */
+      /* UI ONLY — tetap rapat meskipun keterangan 2 baris. */
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
-        padding-top:4px!important;
-        padding-bottom:4px!important;
-        padding-left:10px!important;
-        padding-right:10px!important;
-        line-height:1.12!important;
+        padding-top:3px!important;
+        padding-bottom:3px!important;
+        padding-left:9px!important;
+        padding-right:9px!important;
+        line-height:1.08!important;
       }
       body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
         height:40px!important;
       }
-      body.page-arus-kas .ak2-ledger-card .ak2-table thead th{
-        padding-top:10px!important;
-        padding-bottom:10px!important;
-      }
-      body.page-arus-kas .ak2-ledger-card .ak2-source,
-      body.page-arus-kas .ak2-ledger-card .ak2-status{
-        min-height:28px!important;
-        padding:4px 10px!important;
-      }
-      body.page-arus-kas .ak2-ledger-card .ak2-ledger-edit-icon{
-        width:30px!important;
-        height:30px!important;
-        font-size:15px!important;
-      }
-
       body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(4),
       body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(6){
-        width:215px!important;
-        min-width:215px!important;
-        max-width:215px!important;
+        width:185px!important;
+        min-width:185px!important;
+        max-width:185px!important;
         overflow:hidden!important;
       }
       body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc{
         color:#d9b7b7!important;
       }
+      body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc .ak2-wallet-route-main,
+      body.page-arus-kas .ak2-wallet-route.ak2-deleted-desc .ak2-wallet-route-sub{
+        color:#d9a1a1!important;
+      }
       @media(max-width:1200px){
         body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(4),
         body.page-arus-kas #ak2LedgerBody tr[data-id] td:nth-child(6){
-          width:190px!important;
-          min-width:190px!important;
-          max-width:190px!important;
+          width:170px!important;
+          min-width:170px!important;
+          max-width:170px!important;
         }
-        body.page-arus-kas .ak2-ledger-card .ak2-table tbody td{
-          padding-top:3px!important;
-          padding-bottom:3px!important;
-          padding-left:8px!important;
-          padding-right:8px!important;
-        }
-        body.page-arus-kas .ak2-ledger-card .ak2-table tbody tr{
-          height:38px!important;
-        }
+        body.page-arus-kas .ak2-wallet-route-main{font-size:12px}
+        body.page-arus-kas .ak2-wallet-route-sub{font-size:9.5px}
       }
     `;
     document.head.appendChild(s);
