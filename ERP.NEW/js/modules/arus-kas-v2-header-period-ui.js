@@ -31,6 +31,15 @@
     document.head.appendChild(s);
   }
 
+  /* UI only: urutkan ledger newest-first termasuk transaksi terakhir pada tanggal yang sama. */
+  if(!document.querySelector('script[data-ak2-ledger-latest-first-ui]')){
+    const l=document.createElement("script");
+    l.src="../js/modules/arus-kas-v2-ledger-latest-first-ui.js";
+    l.async=false;
+    l.dataset.ak2LedgerLatestFirstUi="1";
+    document.head.appendChild(l);
+  }
+
   /* Muat additive performance orchestration + tombol Refresh Semua. */
   if(!document.querySelector('script[data-ak2-performance-ui]')){
     const p=document.createElement("script");
