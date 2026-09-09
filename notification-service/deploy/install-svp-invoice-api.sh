@@ -32,34 +32,51 @@ else
   BACKUP="${SITE_FILE}.bak-$(date +%Y%m%d-%H%M%S)"
   cp -a "$SITE_FILE" "$BACKUP"
   python3 - "$SITE_FILE" "$NGINX_SNIPPET_SRC" <<'PY'
+import re
 import sys
 from pathlib import Path
-site=Path(sys.argv[1]); snippet=Path(sys.argv[2]).read_text().strip()+"\n"
-text=site.read_text()
-needle='erp-test.vaxwijaya.com'
-pos=text.find(needle)
-if pos < 0:
-    raise SystemExit('server_name erp-test.vaxwijaya.com tidak ditemukan')
-# Cari pembuka server block terdekat sebelum server_name.
-server_pos=text.rfind('server',0,pos)
-brace=text.find('{',server_pos,pos+1)
-if server_pos < 0 or brace < 0:
-    raise SystemExit('server block tidak dapat diparse')
-depth=0
-end=None
-for i in range(brace,len(text)):
-    ch=text[i]
-    if ch=='{': depth+=1
-    elif ch=='}':
-        depth-=1
-        if depth==0:
-            end=i
-            break
-if end is None:
-    raise SystemExit('penutup server block tidak ditemukan')
-indent='    '
-insert='\n' + '\n'.join(indent+line if line else '' for line in snippet.splitlines()) + '\n'
-site.write_text(text[:end]+insert+text[end:])
+
+site = Path(sys.argv[1])
+snippet = Path(sys.argv[2]).read_text().strip() + "\n"
+text = site.read_text()
+domain = 'erp-test.vaxwijaya.com'
+
+starts = [m.start() for m in re.finditer(r'(?m)^[ \t]*server[ \t]*\{', text)]
+if not starts:
+    raise SystemExit('server block Nginx tidak ditemukan')
+
+def block_end(start):
+    brace = text.find('{', start)
+    if brace < 0:
+        return None
+    depth = 0
+    for i in range(brace, len(text)):
+        ch = text[i]
+        if ch == '{':
+            depth += 1
+        elif ch == '}':
+            depth -= 1
+            if depth == 0:
+                return i
+    return None
+
+target = None
+for start in starts:
+    end = block_end(start)
+    if end is None:
+        continue
+    block = text[start:end+1]
+    if re.search(r'(?m)^\s*server_name\s+[^;]*\b' + re.escape(domain) + r'\b[^;]*;', block):
+        target = (start, end)
+        break
+
+if target is None:
+    raise SystemExit('server block erp-test.vaxwijaya.com tidak ditemukan')
+
+_, end = target
+indent = '    '
+insert = '\n' + '\n'.join(indent + line if line else '' for line in snippet.splitlines()) + '\n'
+site.write_text(text[:end] + insert + text[end:])
 PY
   nginx -t
   systemctl reload nginx
