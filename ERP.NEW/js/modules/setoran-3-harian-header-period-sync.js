@@ -6,6 +6,15 @@ Safety: UI/context sync only. No formula/query/engine change.
 =========================================================
 */
 (function(){
+  function ensureGlobalNotifications(){
+    if(window.ERPGlobalNotifications || document.querySelector('script[data-erp-setoran-notif]')) return;
+    const s=document.createElement('script');
+    s.src='../js/modules/erp-global-notifications.js?v=20260909-1';
+    s.async=false;
+    s.dataset.erpSetoranNotif='1';
+    document.head.appendChild(s);
+  }
+
   function installPeriodEmphasisStyle(){
     if(document.getElementById("s3PeriodEmphasisStrongUi")) return;
     const style = document.createElement("style");
@@ -88,6 +97,7 @@ Safety: UI/context sync only. No formula/query/engine change.
   }
 
   function bind(){
+    ensureGlobalNotifications();
     installPeriodEmphasisStyle();
     syncSetoranHeaderPeriod();
 
