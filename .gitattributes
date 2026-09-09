@@ -1,0 +1,4 @@
+# Keep Linux deployment scripts executable-compatible when checked out on Windows.
+notification-service/deploy/*.sh text eol=lf
+notification-service/deploy/*.service text eol=lf
+notification-service/deploy/*.conf text eol=lf
