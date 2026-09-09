@@ -37,6 +37,14 @@ function jakartaParts(date = new Date()) {
   return { y: Number(get('year')), m: Number(get('month')), d: Number(get('day')) };
 }
 
+function jakartaClock() {
+  const now = new Date();
+  return {
+    date: new Intl.DateTimeFormat('id-ID', { timeZone:'Asia/Jakarta', day:'2-digit', month:'long', year:'numeric' }).format(now),
+    time: new Intl.DateTimeFormat('id-ID', { timeZone:'Asia/Jakarta', hour:'2-digit', minute:'2-digit', hour12:false }).format(now) + ' WIB'
+  };
+}
+
 function daysUntilMonthly(day) {
   const { y, m, d } = jakartaParts();
   const now = new Date(Date.UTC(y, m - 1, d));
@@ -74,9 +82,44 @@ function urgencyLabel(d) {
 }
 
 function urgencyColor(d) {
-  if (d === 0) return '#ef4444';
-  if (d === 1) return '#f97316';
-  return '#d9b54e';
+  if (d === 0) return '#a52323';
+  if (d === 1) return '#b15d15';
+  return '#8a6818';
+}
+
+function cashOutShell(content, { title='MASTER TAGIHAN', subtitle='Reminder otomatis Owner + SVP' } = {}) {
+  const clock = jakartaClock();
+  return `<!doctype html><html><body style="margin:0;background:#eceff3;font-family:Arial,Helvetica,sans-serif;color:#172233">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#eceff3;padding:24px 10px">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:720px;background:#fff;border:1px solid #c9d0d8">
+        <tr><td style="padding:20px 24px;border-top:5px solid #b88a19;border-bottom:1px solid #cbd2da;background:#fff">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr>
+            <td style="vertical-align:top">
+              <div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:700;letter-spacing:1px;color:#163e86">ERP VAX WIJAYA</div>
+              <div style="margin-top:5px;font-size:13px;font-weight:900;letter-spacing:2.2px;color:#172233">${title}</div>
+              <div style="margin-top:4px;font-size:10px;font-weight:700;letter-spacing:1.2px;color:#6e7884;text-transform:uppercase">Enterprise Management System</div>
+            </td>
+            <td align="right" style="vertical-align:top;font-size:10px;line-height:1.55;color:#56616e">
+              <b style="display:block;color:#163e86;letter-spacing:1.1px">CONFIDENTIAL</b>
+              ${clock.date}<br>${clock.time}
+            </td>
+          </tr></table>
+        </td></tr>
+        <tr><td style="padding:22px 24px">
+          <div style="margin:0 0 16px;padding:11px 13px;border-left:4px solid #b88a19;background:#f5f7f9;color:#4d5966;font-size:12px;line-height:1.55">${subtitle}</div>
+          ${content}
+        </td></tr>
+        <tr><td style="padding:12px 24px;border-top:1px solid #cbd2da;background:#f6f7f9">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr>
+            <td style="font-size:10px;line-height:1.45;color:#43505d"><b style="display:block;color:#163e86">ERP VAX WIJAYA</b>MASTER TAGIHAN</td>
+            <td align="center" style="font-size:9px;line-height:1.45;color:#7a8490">INTERNAL / CONFIDENTIAL<br>Generated automatically</td>
+            <td align="right" style="font-size:9px;line-height:1.45;color:#7a8490">${clock.date}<br>${clock.time}</td>
+          </tr></table>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table></body></html>`;
 }
 
 function buildHtml(rows) {
@@ -84,48 +127,43 @@ function buildHtml(rows) {
   const grouped = new Map();
   for (const r of rows) {
     const d = daysUntilMonthly(r.jatuh_tempo_hari);
-    const key = d;
-    if (!grouped.has(key)) grouped.set(key, []);
-    grouped.get(key).push(r);
+    if (!grouped.has(d)) grouped.set(d, []);
+    grouped.get(d).push(r);
   }
 
   const sections = [...grouped.entries()].sort((a,b)=>a[0]-b[0]).map(([d, items]) => {
     const color = urgencyColor(d);
     const cards = items.map(r => `
-      <tr><td style="padding:0 0 10px 0">
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #303944;border-radius:12px;background:#151c23">
-          <tr><td style="padding:14px 16px">
-            <div style="font-size:12px;font-weight:800;color:${color};letter-spacing:.08em">${urgencyLabel(d)}</div>
-            <div style="margin-top:5px;font-size:18px;font-weight:800;color:#f5f7f9">${String(r.kategori || '').replaceAll('_',' ')} — ${r.cabang || '—'}</div>
-            <div style="margin-top:10px;font-size:13px;color:#aeb8c2">Jatuh tempo: <b style="color:#fff">${targetDateLabel(r.jatuh_tempo_hari)}</b></div>
-            <div style="margin-top:4px;font-size:13px;color:#aeb8c2">Nominal: <b style="color:#fff">${fmtMoney(r.nominal)}</b></div>
+      <tr><td style="padding:0 0 9px">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #d5dae0;background:#fff">
+          <tr><td style="padding:13px 15px">
+            <div style="font-size:10px;font-weight:900;color:${color};letter-spacing:1.2px">${urgencyLabel(d)}</div>
+            <div style="margin-top:5px;font-size:16px;font-weight:800;color:#172233">${String(r.kategori || '').replaceAll('_',' ')} — ${r.cabang || '—'}</div>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:10px"><tr>
+              <td style="font-size:12px;color:#697481">Jatuh tempo<br><b style="color:#172233">${targetDateLabel(r.jatuh_tempo_hari)}</b></td>
+              <td align="right" style="font-size:12px;color:#697481">Nominal<br><b style="font-size:16px;color:#163e86">${fmtMoney(r.nominal)}</b></td>
+            </tr></table>
           </td></tr>
         </table>
       </td></tr>`).join('');
-    return `<tr><td style="padding-top:8px"><table width="100%" role="presentation">${cards}</table></td></tr>`;
+    return `<table width="100%" role="presentation" cellspacing="0" cellpadding="0">${cards}</table>`;
   }).join('');
 
-  return `<!doctype html><html><body style="margin:0;background:#0b1016;font-family:Arial,sans-serif;color:#eef2f6">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#0b1016;padding:24px 12px">
-    <tr><td align="center">
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;border:1px solid #38434e;border-radius:16px;overflow:hidden;background:#10171d">
-        <tr><td style="padding:22px 24px;border-bottom:2px solid #b6922e;background:linear-gradient(180deg,#161e26,#11171d)">
-          <div style="font-size:12px;font-weight:900;color:#d9b54e;letter-spacing:.14em">ERP VAX WIJAYA</div>
-          <div style="margin-top:5px;font-size:26px;font-weight:900;color:#fff">Master Tagihan</div>
-          <div style="margin-top:5px;font-size:13px;color:#9aa6b1">Reminder otomatis Owner + SVP</div>
-        </td></tr>
-        <tr><td style="padding:20px 24px">${sections}
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:8px;border-top:1px solid #303944">
-            <tr><td style="padding-top:16px;font-size:13px;color:#aeb8c2">Total kewajiban pada reminder ini</td></tr>
-            <tr><td style="padding-top:4px;font-size:26px;font-weight:900;color:#f1c84d">${fmtMoney(total)}</td></tr>
-            <tr><td style="padding-top:14px;font-size:12px;line-height:1.6;color:#7f8b97">Pembayaran tetap dilakukan melalui Cash Out Minutes. Master Tagihan hanya berfungsi sebagai reminder dan tidak membuat transaksi Arus Kas.</td></tr>
-            <tr><td style="padding-top:18px"><a href="${process.env.ERP_BASE_URL}/ERP.NEW/pages/master-tagihan.html" style="display:inline-block;padding:11px 16px;border-radius:9px;background:#745815;color:#ffe59a;text-decoration:none;font-size:13px;font-weight:800">Buka Master Tagihan</a></td></tr>
-          </table>
-        </td></tr>
-        <tr><td style="padding:12px 24px;border-top:1px solid #2b343d;background:#0d1318;text-align:center;font-size:10px;color:#68737d">ERP VAX WIJAYA · Automated Notification</td></tr>
-      </table>
-    </td></tr>
-  </table></body></html>`;
+  const content = `${sections}
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:10px;border-top:2px solid #172233">
+      <tr><td style="padding-top:14px;font-size:12px;color:#697481">Total kewajiban pada reminder ini</td><td align="right" style="padding-top:12px;font-size:22px;font-weight:900;color:#163e86">${fmtMoney(total)}</td></tr>
+      <tr><td colspan="2" style="padding-top:14px;font-size:11px;line-height:1.6;color:#697481">Pembayaran tetap dilakukan melalui Cash Out Minutes. Master Tagihan hanya berfungsi sebagai reminder dan tidak membuat transaksi Arus Kas.</td></tr>
+      <tr><td colspan="2" style="padding-top:16px"><a href="${process.env.ERP_BASE_URL}/ERP.NEW/pages/master-tagihan.html" style="display:inline-block;padding:10px 15px;border:1px solid #b88a19;background:#fff8df;color:#6c5010;text-decoration:none;font-size:12px;font-weight:800">Buka Master Tagihan</a></td></tr>
+    </table>`;
+
+  return cashOutShell(content);
+}
+
+function buildTestHtml() {
+  return cashOutShell(
+    '<div style="padding:18px;border:1px solid #d5dae0;background:#fff"><div style="font-size:15px;font-weight:800;color:#172233">Test Email Notification</div><p style="margin:8px 0 0;font-size:12px;line-height:1.6;color:#697481">Test email notification berhasil dikirim dari VPS melalui Brevo SMTP.</p></div>',
+    { title:'NOTIFICATION TEST', subtitle:'Verifikasi jalur VPS → Brevo SMTP → Owner + SVP' }
+  );
 }
 
 async function loadRows() {
@@ -165,7 +203,7 @@ async function main() {
       from: `"${process.env.MAIL_FROM_NAME || 'ERP VAX WIJAYA'}" <${process.env.MAIL_FROM}>`,
       to: [process.env.MAIL_OWNER, process.env.MAIL_SVP].filter(Boolean).join(','),
       subject: '[ERP VAX] Test Email Notification',
-      html: '<div style="font-family:Arial;background:#10171d;color:#fff;padding:24px"><h2 style="color:#d9b54e">ERP VAX WIJAYA</h2><p>Test email notification berhasil dikirim dari VPS.</p></div>'
+      html: buildTestHtml()
     });
     console.log('Test email sent');
     return;
