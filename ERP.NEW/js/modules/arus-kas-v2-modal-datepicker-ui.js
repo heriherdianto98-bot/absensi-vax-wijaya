@@ -26,7 +26,7 @@ const ArusKasV2ModalDatepickerUI={
       .ak2-date-trigger .ak2-date-icon{color:#e0b254;font-size:18px;flex:0 0 auto}
       .ak2-date-trigger .ak2-date-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:21px!important;line-height:1.1;font-weight:900;letter-spacing:.01em;text-transform:none;color:#fff1c5}
       .ak2-date-trigger .ak2-date-caret{margin-left:auto;color:#d7aa55;font-size:14px;flex:0 0 auto}
-      .ak2-date-pop{position:absolute;left:0;top:calc(100% + 7px);z-index:2605;width:310px;padding:12px;border-radius:15px;border:1px solid #765a27;background:radial-gradient(circle at 15% 0%,rgba(211,165,78,.10),transparent 34%),linear-gradient(180deg,#151d26,#0d1319);box-shadow:0 22px 55px rgba(0,0,0,.60),0 0 24px rgba(205,159,70,.09),inset 0 1px 0 rgba(255,255,255,.035)}
+      .ak2-date-pop{position:absolute;left:0;top:calc(100% + 7px);z-index:3405;width:310px;padding:12px;border-radius:15px;border:1px solid #765a27;background:radial-gradient(circle at 15% 0%,rgba(211,165,78,.10),transparent 34%),linear-gradient(180deg,#151d26,#0d1319);box-shadow:0 22px 55px rgba(0,0,0,.60),0 0 24px rgba(205,159,70,.09),inset 0 1px 0 rgba(255,255,255,.035)}
       .ak2-date-pop[hidden]{display:none!important}
       .ak2-date-pop-head{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid rgba(213,170,84,.20)}
       .ak2-date-pop-head strong{text-align:center;color:#f6f3eb;font-size:14px;text-transform:capitalize}
