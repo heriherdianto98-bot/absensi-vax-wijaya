@@ -293,6 +293,34 @@ Security / deployment notes:
 - Do not commit `.env`, Supabase service-role key, SMTP credentials, WhatsApp session data, or browser access tokens.
 - VPS runtime files under `/opt/erp-vax-notification` are deployment targets; canonical source remains this repository.
 
+## HARD LOCK — SVP → OWNER INVOICE ACTIONS
+
+Status: OWNER PASS / HARD LOCK
+
+Verified on:
+- 2026-09-10 WIB
+
+Verified capabilities:
+- Akun SVP memakai modul invoice yang sama untuk membuat invoice kepada Owner.
+- Invoice SVP dapat disimpan dengan ownership SVP dan tidak boleh mengubah invoice milik Owner.
+- WhatsApp SVP → Owner sudah diuji Owner dan dinyatakan aman/PASS.
+- Target WhatsApp Owner mengikuti routing yang sudah ditetapkan untuk flow SVP → Owner.
+- Public PDF share untuk invoice buatan SVP tidak menampilkan tanda tangan/otorisasi Owner.
+- Tombol aksi invoice SVP yang sudah SENT mempertahankan aksi `Kirim Ulang Email`, `WhatsApp`, dan `Print`.
+- UI final tombol aksi menggunakan icon 3D kontras: Email biru/cyan, WhatsApp hijau, Print gold; icon WhatsApp versi final telah disetujui Owner.
+
+Locked behavior:
+- Jangan ubah routing WhatsApp SVP → Owner, ownership invoice, token/PDF share security, atau aturan tanpa tanda tangan Owner tanpa explicit Owner unlock.
+- Jangan mengubah flow Owner → SVP yang sudah HARD LOCK saat mengerjakan flow balik SVP → Owner.
+- Tampilan/icon tombol aksi final tidak boleh diubah lagi kecuali Owner secara eksplisit membuka LOCK UI ini.
+- Email SVP → Owner tetap merupakan service terpisah; perubahan tujuan email harus tetap terisolasi dan tidak boleh mengubah service Owner → SVP.
+
+Locked files for this flow:
+- `ERP.NEW/js/modules/master-tagihan-svp-invoice-role-bridge.js`
+- `ERP.NEW/js/modules/master-tagihan-svp-invoice-share.js`
+- `notification-service/svp-invoice-share-api.js`
+- `notification-service/svp-invoice-send-owner-api.js`
+
 ## CHANGE POLICY
 
 - Stable baseline is reference-only.
