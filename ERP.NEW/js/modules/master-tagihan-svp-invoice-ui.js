@@ -58,7 +58,7 @@
       }catch(e){alert(`Gagal kirim invoice: ${e?.message||e}`)}finally{btn.disabled=false;btn.textContent=old}
     };
 
-    inv.invoiceViewUrl=function(id){return new URL(`./svp-invoice-view.html?id=${encodeURIComponent(id)}`,window.location.href).href};
+    inv.invoiceViewUrl=function(id){return `https://vaxwijaya.com/ERP.NEW/pages/svp-invoice-view.html?id=${encodeURIComponent(id)}`};
     inv.openWhatsapp=function(row){
       if(!this.isOwner()||!row)return;
       const message=[
