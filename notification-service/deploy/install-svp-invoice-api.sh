@@ -19,19 +19,25 @@ install -m 0644 "$SERVICE_SRC" "$SERVICE_DST"
 systemctl daemon-reload
 systemctl enable --now erp-vax-svp-invoice.service
 
-SITE_FILE="$(grep -RIlE 'server_name[[:space:]]+[^;]*erp-test\.vaxwijaya\.com' /etc/nginx/sites-enabled /etc/nginx/sites-available 2>/dev/null | head -n1 || true)"
+# Prioritaskan site aktif canonical dan JANGAN pernah memilih file .bak.
+SITE_FILE=""
+if [[ -f /etc/nginx/sites-enabled/erp-vax-test ]] && grep -qE 'server_name[[:space:]]+[^;]*erp-test\.vaxwijaya\.com' /etc/nginx/sites-enabled/erp-vax-test; then
+  SITE_FILE="/etc/nginx/sites-enabled/erp-vax-test"
+else
+  SITE_FILE="$(find /etc/nginx/sites-enabled /etc/nginx/sites-available -maxdepth 1 -type f ! -name '*.bak*' -print0 2>/dev/null | xargs -0 -r grep -IlE 'server_name[[:space:]]+[^;]*erp-test\.vaxwijaya\.com' | head -n1 || true)"
+fi
+
 if [[ -z "$SITE_FILE" ]]; then
   echo "Service API aktif, tetapi site Nginx erp-test.vaxwijaya.com tidak ditemukan otomatis." >&2
   echo "Tambahkan isi $NGINX_SNIPPET_SRC ke server block ERP lalu nginx -t && systemctl reload nginx." >&2
   exit 2
 fi
 
-if grep -q 'location = /api/svp-invoice/send' "$SITE_FILE"; then
-  echo "Nginx route SVP invoice sudah ada: $SITE_FILE"
-else
-  BACKUP="${SITE_FILE}.bak-$(date +%Y%m%d-%H%M%S)"
-  cp -a "$SITE_FILE" "$BACKUP"
-  python3 - "$SITE_FILE" "$NGINX_SNIPPET_SRC" <<'PY'
+BACKUP="${SITE_FILE}.bak-$(date +%Y%m%d-%H%M%S)"
+cp -a "$SITE_FILE" "$BACKUP"
+
+# Idempotent: hapus route invoice lama dari server block target lalu pasang snippet terbaru.
+python3 - "$SITE_FILE" "$NGINX_SNIPPET_SRC" <<'PY'
 import re
 import sys
 from pathlib import Path
@@ -45,13 +51,13 @@ starts = [m.start() for m in re.finditer(r'(?m)^[ \t]*server[ \t]*\{', text)]
 if not starts:
     raise SystemExit('server block Nginx tidak ditemukan')
 
-def block_end(start):
-    brace = text.find('{', start)
+def block_end(src, start):
+    brace = src.find('{', start)
     if brace < 0:
         return None
     depth = 0
-    for i in range(brace, len(text)):
-        ch = text[i]
+    for i in range(brace, len(src)):
+        ch = src[i]
         if ch == '{':
             depth += 1
         elif ch == '}':
@@ -62,7 +68,7 @@ def block_end(start):
 
 target = None
 for start in starts:
-    end = block_end(start)
+    end = block_end(text, start)
     if end is None:
         continue
     block = text[start:end+1]
@@ -73,15 +79,51 @@ for start in starts:
 if target is None:
     raise SystemExit('server block erp-test.vaxwijaya.com tidak ditemukan')
 
-_, end = target
+start, end = target
+block = text[start:end+1]
+
+# Hapus location exact lama milik SVP invoice (send + health), termasuk isi nested brace.
+def remove_location(src, path):
+    pat = re.compile(r'(?m)^\s*location\s*=\s*' + re.escape(path) + r'\s*\{')
+    while True:
+        m = pat.search(src)
+        if not m:
+            return src
+        brace = src.find('{', m.start())
+        depth = 0
+        close = None
+        for i in range(brace, len(src)):
+            if src[i] == '{':
+                depth += 1
+            elif src[i] == '}':
+                depth -= 1
+                if depth == 0:
+                    close = i
+                    break
+        if close is None:
+            raise SystemExit(f'location {path} tidak tertutup')
+        # ikut buang newline setelah block agar rapi
+        j = close + 1
+        while j < len(src) and src[j] in ' \t':
+            j += 1
+        if j < len(src) and src[j] == '\n':
+            j += 1
+        src = src[:m.start()] + src[j:]
+
+block = remove_location(block, '/api/svp-invoice/send')
+block = remove_location(block, '/api/svp-invoice/health')
+
+# Sisipkan snippet terbaru tepat sebelum penutup server block.
+last = block.rfind('}')
 indent = '    '
 insert = '\n' + '\n'.join(indent + line if line else '' for line in snippet.splitlines()) + '\n'
-site.write_text(text[:end] + insert + text[end:])
+block = block[:last] + insert + block[last:]
+site.write_text(text[:start] + block + text[end+1:])
 PY
-  nginx -t
-  systemctl reload nginx
-  echo "Nginx route ditambahkan ke $SITE_FILE (backup: $BACKUP)"
-fi
+
+nginx -t
+systemctl reload nginx
+echo "Nginx route SVP invoice diperbarui di $SITE_FILE (backup: $BACKUP)"
 
 curl -fsS http://127.0.0.1:8791/health
 echo
