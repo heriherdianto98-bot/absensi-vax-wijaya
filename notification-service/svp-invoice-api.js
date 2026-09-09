@@ -16,7 +16,30 @@ function invoiceHtml(inv,items){const c=clock();const rows=items.map((x,i)=>`<tr
 function cors(req,res){const o=req.headers.origin||'';const allowed=[process.env.ERP_BASE_URL,'https://erp-test.vaxwijaya.com','http://127.0.0.1:5500','http://localhost:5500'].filter(Boolean);if(allowed.includes(o))res.setHeader('Access-Control-Allow-Origin',o);res.setHeader('Vary','Origin');res.setHeader('Access-Control-Allow-Headers','Authorization, Content-Type');res.setHeader('Access-Control-Allow-Methods','POST, OPTIONS');}
 const readBody=req=>new Promise((resolve,reject)=>{let b='';req.on('data',c=>{b+=c;if(b.length>1024*50){reject(new Error('Payload too large'));req.destroy()}});req.on('end',()=>{try{resolve(b?JSON.parse(b):{})}catch(e){reject(e)}});req.on('error',reject)});
 
-async function isOwner(req){const auth=String(req.headers.authorization||'');const token=auth.startsWith('Bearer ')?auth.slice(7):'';if(!token)return null;const {data,error}=await db.auth.getUser(token);if(error||!data?.user)return null;const {data:p}=await db.from('profiles').select('role,aktif').eq('id',data.user.id).maybeSingle();if(!p||p.aktif===false||String(p.role||'').toLowerCase()!=='owner')return null;return data.user}
+async function ownerAuth(req){
+  const auth=String(req.headers.authorization||'');
+  const bearer=auth.startsWith('Bearer ');
+  const token=bearer?auth.slice(7):'';
+  if(!token){
+    console.warn('[SVP Invoice Auth] bearer token missing',{hasAuthorization:Boolean(auth),origin:req.headers.origin||''});
+    return {ok:false,error:'Bearer token tidak diterima API'};
+  }
+  const {data,error}=await db.auth.getUser(token);
+  if(error||!data?.user){
+    console.warn('[SVP Invoice Auth] token rejected',{message:error?.message||'user not found',status:error?.status||null});
+    return {ok:false,error:`Token Owner tidak valid${error?.message?`: ${error.message}`:''}`};
+  }
+  const user=data.user;
+  const {data:p,error:pe}=await db.from('profiles').select('role,aktif').eq('id',user.id).maybeSingle();
+  if(pe){
+    console.warn('[SVP Invoice Auth] profile lookup failed',{userId:user.id,message:pe.message});
+    return {ok:false,error:'Profile Owner gagal dibaca'};
+  }
+  const role=String(p?.role||'').toLowerCase();
+  console.log('[SVP Invoice Auth]',{userId:user.id,role,aktif:p?.aktif!==false,origin:req.headers.origin||''});
+  if(!p||p.aktif===false||role!=='owner')return {ok:false,error:`Akses ditolak: role ${role||'kosong'}`};
+  return {ok:true,user};
+}
 
-const server=http.createServer(async(req,res)=>{cors(req,res);if(req.method==='OPTIONS'){res.writeHead(204);return res.end()}if(req.method==='GET'&&req.url==='/health'){res.writeHead(200,{'Content-Type':'application/json'});return res.end(JSON.stringify({ok:true,service:'svp-invoice-api'}))}if(req.method!=='POST'||req.url!=='/api/svp-invoice/send'){res.writeHead(404,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:'Not found'}))}try{const owner=await isOwner(req);if(!owner){res.writeHead(403,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:'Owner authorization required'}))}const body=await readBody(req);const id=body.invoice_id;if(!id)throw new Error('invoice_id required');const {data:inv,error:ie}=await db.from('svp_invoices').select('*').eq('id',id).single();if(ie)throw ie;const {data:items,error:xe}=await db.from('svp_invoice_items').select('*').eq('invoice_id',id).order('sort_order');if(xe)throw xe;if(!items?.length)throw new Error('Invoice tidak memiliki item');const to=process.env.MAIL_SVP;const info=await transport.sendMail({from:`"${process.env.MAIL_FROM_NAME||'ERP VAX WIJAYA'}" <${process.env.MAIL_FROM}>`,to,subject:`[ERP VAX] ${inv.title||'Invoice SVP'} — ${inv.invoice_no}`,html:invoiceHtml(inv,items)});await db.from('svp_invoices').update({status:'sent',sent_at:new Date().toISOString(),sent_to_email:to,updated_by:owner.id,updated_at:new Date().toISOString()}).eq('id',id);res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify({sent:true,to,messageId:info.messageId,invoice_no:inv.invoice_no}))}catch(e){console.error('[SVP Invoice API]',e);res.writeHead(500,{'Content-Type':'application/json'});res.end(JSON.stringify({error:e?.message||String(e)}))}});
+const server=http.createServer(async(req,res)=>{cors(req,res);if(req.method==='OPTIONS'){res.writeHead(204);return res.end()}if(req.method==='GET'&&req.url==='/health'){res.writeHead(200,{'Content-Type':'application/json'});return res.end(JSON.stringify({ok:true,service:'svp-invoice-api'}))}if(req.method!=='POST'||req.url!=='/api/svp-invoice/send'){res.writeHead(404,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:'Not found'}))}try{const auth=await ownerAuth(req);if(!auth.ok){res.writeHead(403,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:auth.error}))}const owner=auth.user;const body=await readBody(req);const id=body.invoice_id;if(!id)throw new Error('invoice_id required');const {data:inv,error:ie}=await db.from('svp_invoices').select('*').eq('id',id).single();if(ie)throw ie;const {data:items,error:xe}=await db.from('svp_invoice_items').select('*').eq('invoice_id',id).order('sort_order');if(xe)throw xe;if(!items?.length)throw new Error('Invoice tidak memiliki item');const to=process.env.MAIL_SVP;const info=await transport.sendMail({from:`"${process.env.MAIL_FROM_NAME||'ERP VAX WIJAYA'}" <${process.env.MAIL_FROM}>`,to,subject:`[ERP VAX] ${inv.title||'Invoice SVP'} — ${inv.invoice_no}`,html:invoiceHtml(inv,items)});await db.from('svp_invoices').update({status:'sent',sent_at:new Date().toISOString(),sent_to_email:to,updated_by:owner.id,updated_at:new Date().toISOString()}).eq('id',id);console.log('[SVP Invoice Send]',{invoiceNo:inv.invoice_no,to,userId:owner.id,messageId:info.messageId});res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify({sent:true,to,messageId:info.messageId,invoice_no:inv.invoice_no}))}catch(e){console.error('[SVP Invoice API]',e);res.writeHead(500,{'Content-Type':'application/json'});res.end(JSON.stringify({error:e?.message||String(e)}))}});
 const port=Number(process.env.SVP_INVOICE_API_PORT||8791);server.listen(port,'127.0.0.1',()=>console.log(`SVP invoice API listening on 127.0.0.1:${port}`));
