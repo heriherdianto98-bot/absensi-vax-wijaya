@@ -8,6 +8,14 @@
   const parse=v=>{if(!v)return null;const [y,m,d]=String(v).split('-').map(Number);return y&&m&&d?new Date(y,m-1,d):null};
   const label=v=>{const d=parse(v);return d?`${pad(d.getDate())} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`:''};
 
+  function relocateInvoiceCard(){
+    const card=document.getElementById('mtInvoiceCard');
+    const masterCard=document.querySelector('.mt-shell > .mt-card');
+    if(!card||!masterCard)return false;
+    if(card.nextElementSibling!==masterCard)masterCard.insertAdjacentElement('beforebegin',card);
+    return true;
+  }
+
   function enhanceDate(input){
     if(!input || input.dataset.premiumDate==='1')return;
     input.dataset.premiumDate='1';
@@ -51,8 +59,10 @@
   }
 
   function boot(){
+    relocateInvoiceCard();
     const modal=document.getElementById('mtInvoiceModal');if(!modal)return false;
     enhanceDate(document.getElementById('invDate'));enhanceDate(document.getElementById('invDue'));
+    relocateInvoiceCard();
     return true;
   }
   let tries=0;const t=setInterval(()=>{if(boot()||++tries>30)clearInterval(t)},150);
