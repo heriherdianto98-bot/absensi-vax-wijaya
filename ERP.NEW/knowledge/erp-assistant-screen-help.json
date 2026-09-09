@@ -1,18 +1,18 @@
 {
   "schema_version": "1.0",
-  "last_updated": "2026-09-07",
+  "last_updated": "2026-09-09",
   "screens": [
     {
       "id": "ARUS_KAS_MANUAL_INPUT",
       "module_id": "ARUS_KAS_V2",
       "title": "Input Arus Kas Manual",
       "aliases": ["input arus kas", "transaksi manual arus kas", "form arus kas", "input manual"],
-      "summary": "Form untuk mencatat transaksi Arus Kas yang dibuat manual oleh Owner atau SVP. Ini berbeda dari transaksi AUTO yang berasal dari Setoran 3 Harian.",
+      "summary": "Form untuk mencatat transaksi Arus Kas yang dibuat manual oleh Owner atau SVP. Ini berbeda dari transaksi AUTO yang berasal dari Setoran 3 Harian dan tersinkron otomatis ke Arus Kas.",
       "steps": [
         "Tanggal: pilih tanggal transaksi yang benar-benar terjadi.",
-        "Jenis: pilih Pemasukan jika uang masuk ke wallet, atau Pengeluaran jika uang keluar dari wallet.",
+        "Jenis: pilih Pemasukan jika uang masuk dari luar sistem ke wallet, atau Pengeluaran jika uang keluar dari wallet ke luar sistem.",
         "Kategori: pilih kategori yang paling sesuai dengan sumber atau tujuan transaksi.",
-        "Wallet: pilih wallet yang menjadi tujuan uang untuk Pemasukan, atau sumber uang untuk Pengeluaran.",
+        "Jika kategori Transfer Internal dipilih, pilih Wallet Sumber dan Wallet Tujuan. Uang hanya berpindah antar-wallet ERP dan tidak keluar dari sistem.",
         "Nominal: isi jumlah uang transaksi.",
         "Keterangan: tulis sumber atau tujuan transaksi dengan jelas agar mudah diaudit dan diverifikasi.",
         "Jika kategori QRIS / GoPay Transfer dipilih, isi Periode Sumber sesuai periode uang rekening yang sedang direkonsiliasi.",
@@ -29,19 +29,31 @@
           "key": "jenis",
           "label": "Jenis",
           "aliases": ["pemasukan", "pengeluaran", "in", "out"],
-          "help": "Pemasukan berarti uang masuk ke wallet yang dipilih. Pengeluaran berarti uang keluar dari wallet yang dipilih."
+          "help": "Pemasukan berarti uang berasal dari luar sistem (External) dan masuk ke wallet. Pengeluaran berarti uang keluar dari wallet menuju luar sistem (External). Untuk perpindahan antar-wallet gunakan kategori Transfer Internal."
         },
         {
           "key": "kategori",
           "label": "Kategori",
           "aliases": ["pemasukan lain", "qris transfer", "gopay transfer", "pengeluaran barber", "pribadi owner", "transfer internal", "kas denda", "dana produk"],
-          "help": "Kategori menjelaskan jenis transaksi. Pilih yang paling sesuai: Pemasukan Lain, QRIS / GoPay Transfer, Pengeluaran Barber, Pribadi Owner, Transfer Internal, Kas Denda, atau Dana Produk."
+          "help": "Kategori menjelaskan jenis transaksi. Pilih yang paling sesuai: Pemasukan Lain, QRIS / GoPay Transfer, Pengeluaran Barber, Pribadi Owner, Transfer Internal, Kas Denda, atau Dana Produk. Transfer Internal dipakai saat uang hanya berpindah dari satu wallet ERP ke wallet ERP lain."
         },
         {
           "key": "wallet",
           "label": "Wallet",
           "aliases": ["kas besar", "dana produk", "kas denda", "piutang setoran", "piutang denda"],
-          "help": "Wallet adalah kantong ledger yang terkena transaksi. Untuk Pemasukan, wallet yang dipilih menerima uang. Untuk Pengeluaran, wallet yang dipilih menjadi sumber uang."
+          "help": "Untuk transaksi biasa, Wallet adalah kantong ledger yang menerima uang pada Pemasukan atau menjadi sumber uang pada Pengeluaran. Untuk Transfer Internal, gunakan Wallet Sumber dan Wallet Tujuan."
+        },
+        {
+          "key": "wallet_sumber",
+          "label": "Wallet Sumber",
+          "aliases": ["dari wallet", "sumber wallet", "asal wallet"],
+          "help": "Dipakai pada Transfer Internal. Wallet Sumber adalah wallet yang saldonya berkurang. Contoh Kas Denda → Kas Besar: Wallet Sumber = Kas Denda."
+        },
+        {
+          "key": "wallet_tujuan",
+          "label": "Wallet Tujuan",
+          "aliases": ["ke wallet", "tujuan wallet"],
+          "help": "Dipakai pada Transfer Internal. Wallet Tujuan adalah wallet yang saldonya bertambah. Contoh Kas Denda → Kas Besar: Wallet Tujuan = Kas Besar."
         },
         {
           "key": "nominal",
@@ -53,7 +65,7 @@
           "key": "keterangan",
           "label": "Keterangan",
           "aliases": ["catatan", "deskripsi"],
-          "help": "Penjelasan singkat tetapi jelas tentang asal atau tujuan uang agar transaksi mudah dicek kembali."
+          "help": "Penjelasan singkat tetapi jelas tentang asal atau tujuan uang agar transaksi mudah dicek kembali. Untuk Transfer Internal, tulis alasan perpindahan uang, misalnya 'Tabel kas / pindah Kas Denda ke Kas Besar'."
         },
         {
           "key": "periode_sumber",
@@ -64,7 +76,13 @@
       ],
       "notes": [
         "Transaksi AUTO dari Setoran 3 Harian tidak perlu diinput ulang lewat form ini.",
+        "Setoran 3 Harian yang berubah pada data canonical akan tersinkron otomatis ke transaksi AUTO Arus Kas. Transaksi yang sudah benar-benar DONE/diterima Owner tetap final.",
         "Transaksi AUTO dari Setoran yang sudah Owner Verified tidak perlu diverifikasi ulang di Arus Kas.",
+        "Transfer Internal tidak mengubah total uang keseluruhan ERP. Saldo wallet sumber berkurang dan saldo wallet tujuan bertambah dengan nominal yang sama.",
+        "External → Wallet = Pemasukan. Wallet → External = Pengeluaran. Wallet A → Wallet B = Transfer Internal.",
+        "Contoh Transfer Internal yang benar: Kas Denda → Kas Besar. Kas Denda berkurang, Kas Besar bertambah, total uang ERP tetap.",
+        "Contoh Transfer Internal lain: Dana Produk → Kas Besar bila uang Dana Produk memang dipindahkan ke Kas Besar.",
+        "Lima ringkasan saldo Arus Kas adalah Kas Besar, Dana Produk, Kas Denda, Piutang Setoran, dan Piutang Denda. Masing-masing mewakili saldo wallet/pos yang berbeda.",
         "Transaksi MANUAL yang dibuat SVP wajib direview Owner sebelum dianggap final."
       ]
     }
