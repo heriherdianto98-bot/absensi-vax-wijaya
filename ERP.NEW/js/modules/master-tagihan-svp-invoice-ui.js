@@ -5,7 +5,7 @@
   const WEEK=['MIN','SEN','SEL','RAB','KAM','JUM','SAB'];
   const SVP_WHATSAPP_PHONE='6282120130092';
   const pad=n=>String(n).padStart(2,'0');
-  const iso=(y,m,d)=>`${y}-${pad(m+1)}-${pad(d)}`;
+  const iso=(y,m,d)=>`${y}-${pad(m+1,'0')}-${pad(d)}`;
   const parse=v=>{if(!v)return null;const [y,m,d]=String(v).split('-').map(Number);return y&&m&&d?new Date(y,m-1,d):null};
   const label=v=>{const d=parse(v);return d?`${pad(d.getDate())} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`:''};
 
@@ -78,7 +78,21 @@
 
     inv.markPaid=async function(id,btn){if(!this.isOwner())return;if(!confirm('Tandai invoice ini sebagai SUDAH DIBAYAR?'))return;const old=btn?.textContent||'';if(btn){btn.disabled=true;btn.textContent='Menyimpan...'}try{const payload={status:'paid',paid_at:new Date().toISOString(),paid_by:this.user.id,updated_by:this.user.id,updated_at:new Date().toISOString()};const {error}=await db.from('svp_invoices').update(payload).eq('id',id).eq('status','sent');if(error)throw error;await this.reload()}catch(e){alert(`Gagal tandai dibayar: ${e?.message||e}`)}finally{if(btn){btn.disabled=false;btn.textContent=old}}};
     inv.render=function(){const el=document.getElementById('mtInvoiceList');if(!el)return;const rows=this.rows||[],draft=rows.find(r=>String(r.status||'draft').toLowerCase()==='draft')||null,history=rows.filter(r=>String(r.status||'draft').toLowerCase()!=='draft');const activeHtml=draft?`<div class="mt-invoice-row mt-invoice-active-row"><div><div class="mt-invoice-no">${this.esc(draft.invoice_no)}</div><small>${this.esc(draft.title||'INVOICE SVP')}</small></div><div>${this.esc(draft.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(draft.total)}</div><div><span class="mt-invoice-status draft">DRAFT</span></div><div class="mt-invoice-buttons">${this.isOwner()?`<button class="mt-action" data-inv-action="edit" data-id="${draft.id}">Edit</button><button class="mt-action" data-inv-action="send" data-id="${draft.id}">Send Email</button><button class="mt-action mt-action-wa" data-wa-id="${draft.id}">WhatsApp</button>`:''}<button class="mt-action" data-inv-action="print" data-id="${draft.id}">Print</button></div></div>`:'<div class="mt-invoice-empty">Tidak ada draft aktif. Klik <b>Buat Invoice SVP</b> untuk membuat invoice baru.</div>';const historyRows=history.map(r=>{const st=String(r.status||'sent').toLowerCase();return `<div class="mt-invoice-row mt-invoice-history-row"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${this.esc(r.title||'INVOICE SVP')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div><span class="mt-invoice-status ${st==='paid'?'paid':'sent'}">${st==='paid'?'PAID':'SENT'}</span></div><div class="mt-invoice-buttons">${this.isOwner()?`<button class="mt-action mt-action-wa" data-wa-id="${r.id}">WhatsApp</button>`:''}${this.isOwner()&&st==='sent'?`<button class="mt-action mt-action-paid" data-paid-id="${r.id}">Tandai Dibayar</button>`:''}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`}).join('');el.innerHTML=`<div class="mt-invoice-active">${activeHtml}</div>${history.length?`<div class="mt-invoice-history"><button type="button" class="mt-invoice-history-toggle" data-history-toggle><span>Riwayat Invoice</span><b>${history.length}</b><i>${this.historyOpen?'▲':'▼'}</i></button><div class="mt-invoice-history-list" ${this.historyOpen?'':'hidden'}>${historyRows}</div></div>`:''}`};
-    document.getElementById('mtInvoiceList')?.addEventListener('click',e=>{const wa=e.target.closest('[data-wa-id]');if(wa){e.preventDefault();e.stopPropagation();const row=(inv.rows||[]).find(r=>String(r.id)===String(wa.dataset.waId));if(row)inv.openWhatsapp(row);return}const paid=e.target.closest('[data-paid-id]');if(paid){e.preventDefault();e.stopPropagation();inv.markPaid(paid.dataset.paidId,paid);return}const toggle=e.target.closest('[data-history-toggle]');if(toggle){e.preventDefault();inv.historyOpen=!inv.historyOpen;inv.render()}});inv.render();return true;
+
+    /* Delegated on document so actions survive any invoice-list re-render/replacement. */
+    if(!document.__svpInvoiceActionsBound){
+      document.__svpInvoiceActionsBound=true;
+      document.addEventListener('click',e=>{
+        const root=e.target.closest('#mtInvoiceCard');if(!root)return;
+        const wa=e.target.closest('[data-wa-id]');
+        if(wa){e.preventDefault();e.stopPropagation();const row=(inv.rows||[]).find(r=>String(r.id)===String(wa.dataset.waId));if(row)inv.openWhatsapp(row);return}
+        const paid=e.target.closest('[data-paid-id]');
+        if(paid){e.preventDefault();e.stopPropagation();inv.markPaid(paid.dataset.paidId,paid);return}
+        const toggle=e.target.closest('[data-history-toggle]');
+        if(toggle){e.preventDefault();e.stopPropagation();inv.historyOpen=!inv.historyOpen;inv.render();return}
+      },true);
+    }
+    inv.render();return true;
   }
 
   function boot(){relocateInvoiceCard();const modal=document.getElementById('mtInvoiceModal');if(modal){enhanceDate(document.getElementById('invDate'));enhanceDate(document.getElementById('invDue'))}installWorkflow();relocateInvoiceCard();return !!modal&&!!window.SvPInvoice}
