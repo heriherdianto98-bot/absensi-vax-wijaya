@@ -159,28 +159,38 @@
           min-height:42px;
           display:inline-flex;
           align-items:center;
-          gap:10px;
-          padding:0 13px 0 11px;
+          gap:8px;
+          padding:0 11px 0 13px;
           margin-left:auto;
           border:1px solid rgba(67,83,107,.88);
           border-radius:10px;
           background:linear-gradient(180deg,#172331 0%,#111a24 100%);
-          color:#c9d4df;
+          color:#cbd6e1;
           font-size:12px;
           font-weight:800;
           letter-spacing:.005em;
           white-space:nowrap;
           box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 7px 18px rgba(0,0,0,.16);
         }
-        body.page-arus-kas .ak2-refresh-reminder::before{
-          content:"";
-          width:3px;
-          height:22px;
-          flex:0 0 3px;
-          border-radius:999px;
-          background:#d4a743;
-          box-shadow:0 0 9px rgba(212,167,67,.34);
-          animation:ak2RefreshAccentPulse 1.25s ease-in-out infinite;
+        body.page-arus-kas .ak2-refresh-reminder-text{
+          color:#cbd6e1;
+          text-shadow:none;
+        }
+        body.page-arus-kas .ak2-refresh-reminder-refresh{
+          width:24px;
+          height:24px;
+          flex:0 0 24px;
+          display:grid;
+          place-items:center;
+          border-radius:50%;
+          border:1px solid rgba(77,145,190,.48);
+          background:rgba(53,125,174,.10);
+          color:#8ed2ff;
+          font-size:17px;
+          font-weight:900;
+          line-height:1;
+          box-shadow:0 0 10px rgba(67,157,218,.10);
+          animation:ak2RefreshIconSpin 2.2s linear infinite;
         }
         body.page-arus-kas .ak2-refresh-reminder-icon{
           width:22px;
@@ -195,28 +205,31 @@
           font-size:13px;
           font-weight:950;
           line-height:1;
-        }
-        body.page-arus-kas .ak2-refresh-reminder span:last-child{
-          color:#cbd6e1;
-          text-shadow:none;
+          animation:ak2RefreshAlertPulse 1.2s ease-in-out infinite;
         }
         body.page-arus-kas .ak2-refresh-reminder + .ak2-quick-search-wrap{
           margin-left:0!important;
         }
-        @keyframes ak2RefreshAccentPulse{
-          0%,100%{opacity:.38;transform:scaleY(.72);box-shadow:0 0 4px rgba(212,167,67,.10)}
-          50%{opacity:1;transform:scaleY(1);box-shadow:0 0 12px rgba(212,167,67,.42)}
+        @keyframes ak2RefreshIconSpin{
+          to{transform:rotate(360deg)}
+        }
+        @keyframes ak2RefreshAlertPulse{
+          0%,100%{opacity:.48;box-shadow:0 0 0 rgba(212,167,67,0)}
+          50%{opacity:1;box-shadow:0 0 10px rgba(212,167,67,.20)}
         }
         @media(max-width:1120px){
-          body.page-arus-kas .ak2-refresh-reminder{min-height:40px;padding:0 10px 0 9px;font-size:11px;gap:8px}
-          body.page-arus-kas .ak2-refresh-reminder::before{height:20px}
+          body.page-arus-kas .ak2-refresh-reminder{min-height:40px;padding:0 9px 0 10px;font-size:11px;gap:7px}
+          body.page-arus-kas .ak2-refresh-reminder-refresh{width:21px;height:21px;flex-basis:21px;font-size:15px}
           body.page-arus-kas .ak2-refresh-reminder-icon{width:20px;height:20px;flex-basis:20px;font-size:12px}
         }
         @media(max-width:820px){
           body.page-arus-kas .ak2-refresh-reminder{order:2;margin-left:0;width:auto;max-width:100%;justify-content:flex-start}
           body.page-arus-kas .ak2-quick-search-wrap{order:3;width:100%!important;grid-template-columns:minmax(0,1fr)!important}
         }
-        @media(prefers-reduced-motion:reduce){body.page-arus-kas .ak2-refresh-reminder::before{animation:none}}
+        @media(prefers-reduced-motion:reduce){
+          body.page-arus-kas .ak2-refresh-reminder-refresh,
+          body.page-arus-kas .ak2-refresh-reminder-icon{animation:none}
+        }
       `;
       document.head.appendChild(style);
     }
@@ -231,7 +244,7 @@
       reminder.id="ak2RefreshReminder";
       reminder.className="ak2-refresh-reminder";
       reminder.setAttribute("role","note");
-      reminder.innerHTML='<span class="ak2-refresh-reminder-icon" aria-hidden="true">!</span><span>Untuk update data mohon refresh</span>';
+      reminder.innerHTML='<span class="ak2-refresh-reminder-text">Untuk update data mohon refresh</span><span class="ak2-refresh-reminder-refresh" aria-hidden="true">↻</span><span class="ak2-refresh-reminder-icon" aria-hidden="true">!</span>';
     }
 
     if(reminder.nextElementSibling!==search) head.insertBefore(reminder,search);
