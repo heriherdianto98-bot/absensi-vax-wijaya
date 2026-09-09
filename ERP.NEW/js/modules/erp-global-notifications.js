@@ -23,7 +23,7 @@
     },
     ensureAssets(){
       if(!document.querySelector('link[data-erp-global-notif-css]')){
-        const l=document.createElement('link');l.rel='stylesheet';l.href='../styles/erp-global-notifications.css?v=20260909-1';l.dataset.erpGlobalNotifCss='1';document.head.appendChild(l);
+        const l=document.createElement('link');l.rel='stylesheet';l.href='../styles/erp-global-notifications.css?v=20260909-2';l.dataset.erpGlobalNotifCss='1';document.head.appendChild(l);
       }
     },
     findHelpDesk(){
@@ -42,7 +42,7 @@
       let panel=document.getElementById('erpGlobalNotifPanel');
       if(!panel){
         panel=document.createElement('section');panel.id='erpGlobalNotifPanel';panel.className='erp-global-notif-panel';panel.hidden=true;
-        panel.innerHTML='<div class="erp-global-notif-head"><div><strong>Notifikasi ERP</strong><span>Semua perhatian penting Owner / SVP</span></div><button type="button" id="erpGlobalNotifRefresh" class="erp-global-notif-refresh">↻ Refresh</button></div><div id="erpGlobalNotifList" class="erp-global-notif-list"></div><div class="erp-global-notif-foot">Read only • tidak mengubah data atau status modul</div>';
+        panel.innerHTML='<div class="erp-global-notif-head"><div><strong>Notifikasi ERP</strong><span>Semua perhatian penting Owner / SVP</span></div><button type="button" id="erpGlobalNotifRefresh" class="erp-global-notif-refresh"><span class="erp-global-notif-refresh-icon">↻</span><span>Refresh</span></button></div><div id="erpGlobalNotifList" class="erp-global-notif-list"></div><div class="erp-global-notif-foot">Read only • tidak mengubah data atau status modul</div>';
         document.body.appendChild(panel);
       }
       this.root=root;this.panel=panel;this.list=document.getElementById('erpGlobalNotifList');this.badge=document.getElementById('erpGlobalNotifBadge');this.button=document.getElementById('erpGlobalNotifBtn');
@@ -83,10 +83,10 @@
       }catch(e){console.warn('[Notif] pengumuman',e)}
     },
     sortItems(){const rank={urgent:0,warning:1,info:2};this.items.sort((a,b)=>(rank[a.tone]??9)-(rank[b.tone]??9)||String(a.module).localeCompare(String(b.module)))},
-    render(){if(!this.ensureUi())return;this.sortItems();const n=this.items.length;this.badge.textContent=n>99?'99+':String(n);this.badge.hidden=!n;this.button.classList.toggle('has-alert',n>0);if(!this.list)return;if(!n){this.list.innerHTML='<div class="erp-global-notif-empty">Tidak ada notifikasi penting saat ini.</div>';return}
+    render(){if(!this.ensureUi())return;this.sortItems();const n=this.items.length;this.badge.textContent=n>99?'99+':String(n);this.badge.hidden=!n;this.button.classList.toggle('has-alert',n>0);this.button.setAttribute('aria-label',n?`${n} notifikasi penting`:'Tidak ada notifikasi penting');if(!this.list)return;if(!n){this.list.innerHTML='<div class="erp-global-notif-empty">Tidak ada notifikasi penting saat ini.</div>';return}
       this.list.innerHTML=this.items.slice(0,60).map(x=>`<a class="erp-global-notif-item is-${this.esc(x.tone)}" href="${this.esc(x.href)}"><span class="erp-global-notif-item-icon">${this.esc(x.icon)}</span><span class="erp-global-notif-copy"><strong>${this.esc(x.title)}</strong><p>${this.esc(x.detail)}</p><small>${this.esc(x.module)}</small></span><span class="erp-global-notif-arrow">›</span></a>`).join('')
     },
-    async refresh(){if(this.loading)return;this.loading=true;this.ensureUi();if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Memuat notifikasi…</div>';try{const db=await this.waitDb();if(!db)throw new Error('Supabase belum siap');this.items=[];await Promise.all([this.loadTagihan(db),this.loadArusKas(db),this.loadSetoran(db),this.loadIzin(db),this.loadPengumuman(db)]);this.render()}catch(e){console.warn('[Notif] refresh',e);if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Notifikasi belum dapat dimuat.</div>'}finally{this.loading=false}},
+    async refresh(){if(this.loading)return;this.loading=true;this.ensureUi();const rf=document.getElementById('erpGlobalNotifRefresh');if(rf){rf.classList.add('is-loading');rf.disabled=true}if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Memuat notifikasi…</div>';try{const db=await this.waitDb();if(!db)throw new Error('Supabase belum siap');this.items=[];await Promise.all([this.loadTagihan(db),this.loadArusKas(db),this.loadSetoran(db),this.loadIzin(db),this.loadPengumuman(db)]);this.render()}catch(e){console.warn('[Notif] refresh',e);if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Notifikasi belum dapat dimuat.</div>'}finally{if(rf){rf.classList.remove('is-loading');rf.disabled=false}this.loading=false}},
     open(){this.ensureUi();this.panel.hidden=false;this.button.setAttribute('aria-expanded','true');this.refresh()},
     close(){if(this.panel)this.panel.hidden=true;if(this.button)this.button.setAttribute('aria-expanded','false')},
     toggle(){if(!this.panel||this.panel.hidden)this.open();else this.close()},
