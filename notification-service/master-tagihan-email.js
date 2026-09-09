@@ -149,7 +149,17 @@ function buildHtml(rows) {
     return `<table width="100%" role="presentation" cellspacing="0" cellpadding="0">${cards}</table>`;
   }).join('');
 
-  const content = `${sections}
+  const ownerWarning = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 16px;border:1px solid #d7a625;background:#fff8df">
+      <tr>
+        <td width="52" align="center" style="padding:13px 8px;font-size:24px;line-height:1;color:#a52323">⚠</td>
+        <td style="padding:13px 15px 13px 4px;border-left:3px solid #d7a625;font-size:14px;line-height:1.5;font-weight:900;color:#8f1f1f;letter-spacing:.2px">
+          INFORMASIKAN DULU KE OWNER UNTUK MELAKUKAN PEMBAYARAN
+        </td>
+      </tr>
+    </table>`;
+
+  const content = `${ownerWarning}${sections}
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:10px;border-top:2px solid #172233">
       <tr><td style="padding-top:14px;font-size:12px;color:#697481">Total kewajiban pada reminder ini</td><td align="right" style="padding-top:12px;font-size:22px;font-weight:900;color:#163e86">${fmtMoney(total)}</td></tr>
       <tr><td colspan="2" style="padding-top:14px;font-size:11px;line-height:1.6;color:#697481">Pembayaran tetap dilakukan melalui Cash Out Minutes. Master Tagihan hanya berfungsi sebagai reminder dan tidak membuat transaksi Arus Kas.</td></tr>
