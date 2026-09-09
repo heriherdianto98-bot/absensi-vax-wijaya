@@ -92,13 +92,16 @@ const MasterTagihan={
     return this.rows.filter(r=>(!q||[r.kategori,r.cabang,r.catatan].some(v=>String(v||"").toLowerCase().includes(q)))&&(cat==="ALL"||r.kategori===cat)&&(status==="ALL"||(status==="ACTIVE"?r.aktif:!r.aktif)));
   },
   render(){
-    const active=this.rows.filter(r=>r.aktif);
+    /* Summary cards follow the same visible filter as the table.
+       Category WIFI => every card summarizes WIFI only; ALL => all data. */
+    const rows=this.filtered();
+    const active=rows.filter(r=>r.aktif);
     document.getElementById("mtActiveCount").textContent=String(active.length);
     document.getElementById("mtMonthlyTotal").textContent=this.rupiah(active.reduce((t,r)=>t+this.money(r.nominal),0));
     document.getElementById("mtDueSoon").textContent=String(active.filter(r=>{const d=this.daysUntil(r.jatuh_tempo_hari);return d>=0&&d<=7}).length);
-    document.getElementById("mtCategoryCount").textContent=String(new Set(active.map(r=>r.kategori)).size);
+    document.getElementById("mtCategoryCount").textContent=String(new Set(rows.map(r=>r.kategori)).size);
 
-    const rows=this.filtered();document.getElementById("mtRowCount").textContent=`${rows.length} data`;
+    document.getElementById("mtRowCount").textContent=`${rows.length} data`;
     const body=document.getElementById("mtBody");
     if(!rows.length){body.innerHTML='<tr><td colspan="7" class="mt-empty">Tidak ada master tagihan sesuai filter.</td></tr>';return}
     body.innerHTML=rows.map(r=>{
