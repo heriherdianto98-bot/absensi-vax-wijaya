@@ -5,6 +5,25 @@
   const roleOf=inv=>String(inv?.role||'').toLowerCase();
   const isSvp=inv=>['svp','spv'].includes(roleOf(inv));
 
+  function ensureSvpActionStyles(){
+    if(document.getElementById('svpInvoiceActionPolish'))return;
+    const s=document.createElement('style');
+    s.id='svpInvoiceActionPolish';
+    s.textContent=`
+      .svp-return-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:nowrap}
+      .svp-return-actions .mt-action{min-height:38px;padding:8px 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:9px;line-height:1;white-space:nowrap;font-weight:800}
+      .svp-return-actions .svp-action-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 18px;font-size:16px;line-height:1}
+      .svp-return-actions .mt-action-email{border-color:#53667a;background:linear-gradient(180deg,#22303c,#18232d);color:#eaf2f8}
+      .svp-return-actions .mt-action-email:hover{border-color:#6f8ba3;background:linear-gradient(180deg,#2a3d4d,#1d2d39)}
+      .svp-return-actions .mt-action-print{border-color:#465360;background:linear-gradient(180deg,#202b35,#17212a);color:#e7edf2}
+      .svp-return-actions .mt-action-print:hover{border-color:#657686;background:linear-gradient(180deg,#293640,#1e2b35)}
+      .svp-return-actions .mt-action-wa{min-height:38px!important;padding:8px 12px!important;gap:7px!important}
+      .svp-return-actions .mt-action-wa::before{width:18px!important;height:18px!important;flex-basis:18px!important;background-size:16px 16px!important}
+      @media(max-width:900px){.svp-return-actions{flex-wrap:wrap}.svp-return-actions .mt-action{min-height:36px}}
+    `;
+    document.head.appendChild(s);
+  }
+
   function ensureSaveButton(inv){
     if(!isSvp(inv))return;
     const actions=document.querySelector('#mtInvoiceForm .mt-invoice-form-actions');
@@ -26,6 +45,13 @@
     const modalTitle=document.getElementById('mtInvoiceTitle');
     if(modalTitle && !document.getElementById('mtInvoiceModal')?.hidden)modalTitle.textContent='Buat Invoice Owner';
     ensureSaveButton(inv);
+  }
+
+  function emailButton(id,label='Send Email'){
+    return `<button class="mt-action mt-action-email" data-inv-action="send" data-id="${id}"><span class="svp-action-icon" aria-hidden="true">✉</span><span>${label}</span></button>`;
+  }
+  function printButton(id){
+    return `<button class="mt-action mt-action-print" data-inv-action="print" data-id="${id}"><span class="svp-action-icon" aria-hidden="true">▣</span><span>Print</span></button>`;
   }
 
   function install(){
@@ -50,7 +76,7 @@
 
     inv.__svpOwnerReturnInstalled=true;
     inv.canManage=function(){return this.isOwner()||['svp','spv'].includes(roleOf(this))};
-
+    ensureSvpActionStyles();
     applySvpLabels(inv);
 
     const originalOpen=inv.open.bind(inv);
@@ -97,13 +123,13 @@
 
     inv.send=async function(id,btn){
       if(!isSvp(this))return;
-      btn.disabled=true;const old=btn.textContent;btn.textContent='Sending...';
+      btn.disabled=true;const old=btn.innerHTML;btn.textContent='Sending...';
       try{
         const {data:s}=await db.auth.getSession();const token=s?.session?.access_token;if(!token)throw new Error('Sesi tidak ditemukan');
         const res=await fetch(SEND_OWNER_API,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({invoice_id:id})});
         const out=await res.json().catch(()=>({}));if(!res.ok)throw new Error(out.error||`HTTP ${res.status}`);
         alert(`Invoice terkirim ke email Owner: ${out.to||''}`);await this.reload();
-      }catch(e){alert(`Gagal kirim invoice: ${e?.message||e}`)}finally{btn.disabled=false;btn.textContent=old}
+      }catch(e){alert(`Gagal kirim invoice: ${e?.message||e}`)}finally{btn.disabled=false;btn.innerHTML=old}
     };
 
     const originalPreview=inv.preview.bind(inv);
@@ -131,8 +157,8 @@
       const mine=r=>['svp','spv'].includes(String(r.sender_role||'').toLowerCase())&&String(r.created_by||'')===String(this.user?.id||'');
       const draft=rows.find(r=>mine(r)&&String(r.status||'draft').toLowerCase()==='draft')||null;
       const history=rows.filter(r=>!draft||String(r.id)!==String(draft.id));
-      const activeHtml=draft?`<div class="mt-invoice-row mt-invoice-active-row"><div><div class="mt-invoice-no">${this.esc(draft.invoice_no)}</div><small>SVP → OWNER • ${this.esc(draft.title||'INVOICE SVP')}</small></div><div>${this.esc(draft.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(draft.total)}</div><div><span class="mt-invoice-status draft">DRAFT</span></div><div class="mt-invoice-buttons"><button class="mt-action" data-inv-action="edit" data-id="${draft.id}">Edit</button><button class="mt-action" data-inv-action="send" data-id="${draft.id}">Send Email</button><button class="mt-action mt-action-wa" data-wa-id="${draft.id}">WhatsApp</button><button class="mt-action" data-inv-action="print" data-id="${draft.id}">Print</button></div></div>`:'<div class="mt-invoice-empty">Tidak ada draft SVP aktif. Klik <b>Buat Invoice Owner</b> untuk membuat invoice baru.</div>';
-      const historyRows=history.map(r=>{const st=String(r.status||'draft').toLowerCase(),own=mine(r),direction=own?'SVP → OWNER':'OWNER → SVP';return `<div class="mt-invoice-row mt-invoice-history-row"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${direction} • ${this.esc(r.title||'INVOICE SVP')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div><span class="mt-invoice-status ${st==='paid'?'paid':st==='draft'?'draft':'sent'}">${st.toUpperCase()}</span></div><div class="mt-invoice-buttons">${own&&st==='draft'?`<button class="mt-action" data-inv-action="edit" data-id="${r.id}">Edit</button><button class="mt-action" data-inv-action="send" data-id="${r.id}">Send Email</button>`:own&&st==='sent'?`<button class="mt-action" data-inv-action="send" data-id="${r.id}">Kirim Ulang Email</button>`:''}${own?`<button class="mt-action mt-action-wa" data-wa-id="${r.id}">WhatsApp</button>`:''}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`}).join('');
+      const activeHtml=draft?`<div class="mt-invoice-row mt-invoice-active-row"><div><div class="mt-invoice-no">${this.esc(draft.invoice_no)}</div><small>SVP → OWNER • ${this.esc(draft.title||'INVOICE SVP')}</small></div><div>${this.esc(draft.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(draft.total)}</div><div><span class="mt-invoice-status draft">DRAFT</span></div><div class="mt-invoice-buttons svp-return-actions"><button class="mt-action" data-inv-action="edit" data-id="${draft.id}">Edit</button>${emailButton(draft.id)}<button class="mt-action mt-action-wa" data-wa-id="${draft.id}">WhatsApp</button>${printButton(draft.id)}</div></div>`:'<div class="mt-invoice-empty">Tidak ada draft SVP aktif. Klik <b>Buat Invoice Owner</b> untuk membuat invoice baru.</div>';
+      const historyRows=history.map(r=>{const st=String(r.status||'draft').toLowerCase(),own=mine(r),direction=own?'SVP → OWNER':'OWNER → SVP';return `<div class="mt-invoice-row mt-invoice-history-row"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${direction} • ${this.esc(r.title||'INVOICE SVP')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div><span class="mt-invoice-status ${st==='paid'?'paid':st==='draft'?'draft':'sent'}">${st.toUpperCase()}</span></div><div class="mt-invoice-buttons svp-return-actions">${own&&st==='draft'?`<button class="mt-action" data-inv-action="edit" data-id="${r.id}">Edit</button>${emailButton(r.id)}`:own&&st==='sent'?emailButton(r.id,'Kirim Ulang Email'):''}${own?`<button class="mt-action mt-action-wa" data-wa-id="${r.id}">WhatsApp</button>`:''}${printButton(r.id)}</div></div>`}).join('');
       el.innerHTML=`<div class="mt-invoice-active">${activeHtml}</div>${history.length?`<div class="mt-invoice-history"><button type="button" class="mt-invoice-history-toggle" data-history-toggle><span>Riwayat Invoice</span><b>${history.length}</b><i>${this.historyOpen?'▲':'▼'}</i></button><div class="mt-invoice-history-list" ${this.historyOpen?'':'hidden'}>${historyRows}</div></div>`:''}`;
     };
 
