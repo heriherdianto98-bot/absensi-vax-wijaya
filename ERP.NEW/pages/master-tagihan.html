@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="../styles/light-contrast.css">
 <link rel="stylesheet" href="../styles/master-tagihan.css?v=20260909-1">
 <link rel="stylesheet" href="../styles/master-tagihan-muted.css?v=20260909-1">
+<link rel="stylesheet" href="../styles/master-tagihan-calendar-ui.css?v=20260909-1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="page-master-tagihan">
@@ -76,7 +77,23 @@
       <input type="hidden" id="mtId">
       <label><span>Kategori</span><select id="mtFormCategory" required></select></label>
       <label><span>Cabang</span><input id="mtBranch" required placeholder="Contoh: PAMANUKAN"></label>
-      <label><span>Tanggal Jatuh Tempo</span><input id="mtDueDay" type="number" min="1" max="31" required></label>
+      <div class="mt-calendar-field">
+        <span>Tanggal Jatuh Tempo</span>
+        <input id="mtDueDay" type="hidden" required>
+        <button id="mtDueDayTrigger" class="mt-calendar-trigger" type="button" aria-haspopup="dialog" aria-expanded="false">
+          <span data-mt-calendar-value>Pilih tanggal jatuh tempo</span>
+          <span class="mt-calendar-trigger-icon" aria-hidden="true">▦</span>
+        </button>
+        <div class="mt-calendar-popup" id="mtCalendarPopup" role="dialog" aria-label="Pilih tanggal jatuh tempo" hidden>
+          <div class="mt-calendar-head">
+            <div class="mt-calendar-title"><strong>Pilih Jatuh Tempo</strong><span id="mtCalendarLabel">Tanggal setiap bulan</span></div>
+            <button type="button" class="mt-calendar-close" data-mt-calendar-close aria-label="Tutup kalender">×</button>
+          </div>
+          <div class="mt-calendar-week" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
+          <div class="mt-calendar-grid" id="mtCalendarGrid"></div>
+          <div class="mt-calendar-note"><b>Jadwal bulanan.</b> Pilih tanggal 1–31; nilai tetap disimpan sebagai tanggal jatuh tempo bulanan.</div>
+        </div>
+      </div>
       <label><span>Nominal</span><input id="mtAmount" inputmode="numeric" required placeholder="Rp0"></label>
       <label class="mt-span-2"><span>Catatan</span><input id="mtNote" placeholder="Opsional"></label>
       <div class="mt-reminder-box mt-span-2"><strong>Reminder</strong><span>Default H-7, H-3, H-1, dan hari H • target Owner + SVP (channel WA/email dikerjakan tahap berikutnya)</span></div>
@@ -94,6 +111,7 @@
 <script src="../js/modules/erp-header-sync.js"></script>
 <script src="../js/loader.js"></script>
 <script src="../js/modules/master-tagihan.js?v=20260909-1"></script>
+<script src="../js/modules/master-tagihan-calendar-ui.js?v=20260909-1"></script>
 <script>
 function ensureMasterTagihanSidebarEntry(){
   const sidebar=document.querySelector('.sidebar');
