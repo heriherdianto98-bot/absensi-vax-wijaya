@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Karyawan | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/toolbar.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/light-contrast.css">
+<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/master-karyawan.css?v=20260910-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="setoran-dark payroll-aruskas-theme">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <main class="erp-content">
+    <section class="master-karyawan-page">
+      <header class="mk-head">
+        <div>
+          <small>MASTER DATA</small>
+          <h2>Master Karyawan</h2>
+          <p>Satu identitas karyawan untuk ERP. Nama Capster mengikuti nama operasional Minutes tanpa membuat duplikat.</p>
+        </div>
+        <button id="mkRefresh" class="mk-refresh" type="button">↻ Refresh</button>
+      </header>
+
+      <section class="mk-summary" aria-label="Ringkasan karyawan">
+        <article class="mk-card"><span>Total Master</span><strong id="mkTotal">—</strong></article>
+        <article class="mk-card"><span>Karyawan Aktif</span><strong id="mkActive">—</strong></article>
+        <article class="mk-card"><span>Capster Aktif</span><strong id="mkCapster">—</strong></article>
+        <article class="mk-card"><span>Non-Capster Aktif</span><strong id="mkOther">—</strong></article>
+      </section>
+
+      <section class="mk-toolbar" aria-label="Filter Master Karyawan">
+        <input id="mkSearch" type="search" autocomplete="off" placeholder="Cari nama, cabang, jabatan…">
+        <select id="mkBranch"><option value="">Semua Cabang</option></select>
+        <select id="mkRole"><option value="">Semua Jabatan</option></select>
+        <select id="mkStatus">
+          <option value="ACTIVE">Aktif</option>
+          <option value="ALL">Semua Status</option>
+          <option value="INACTIVE">Nonaktif</option>
+        </select>
+      </section>
+
+      <div class="mk-meta">
+        <span id="mkLoadStatus">Memuat data karyawan…</span>
+        <strong id="mkCount">—</strong>
+      </div>
+
+      <section class="mk-table-wrap">
+        <table class="mk-table">
+          <thead>
+            <tr><th>No.</th><th>Nama</th><th>Cabang Asal</th><th>Jabatan</th><th>Status</th><th>Sumber Nama</th></tr>
+          </thead>
+          <tbody id="mkBody"><tr><td colspan="6" class="mk-empty">Memuat…</td></tr></tbody>
+        </table>
+      </section>
+    </section>
+  </main>
+</div>
+
+<nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./tabel-harian-cabang.html"><span class="bn-icon">▦</span>Tabel</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
+
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/master-karyawan.js?v=20260910-1"></script>
+<script>
+Promise.all([
+  loadComponent('sidebar','../components/sidebar.html'),
+  loadComponent('header','../components/header.html')
+]).then(()=>{
+  if(typeof OwnerAuth!=='undefined'){
+    OwnerAuth.bindUi?.();
+    OwnerAuth.syncHeader?.();
+    OwnerAuth.applyAccessControl?.();
+  }
+  initErpShellChrome?.();
+  document.querySelectorAll('.sidebar .menu-item').forEach(el=>el.classList.remove('active'));
+  document.querySelector('.sidebar [data-erp-nav="karyawan"]')?.classList.add('active');
+  const t=document.getElementById('erpHeaderCabang'); if(t) t.textContent='Master Karyawan';
+  const p=document.getElementById('erpHeaderPeriode'); if(p) p.textContent='Master Data';
+}).catch(()=>{});
+</script>
+</body>
+</html>
