@@ -1,0 +1,17 @@
+[Unit]
+Description=ERP VAX Owner to SVP Invoice Email API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/erp-vax-notification
+EnvironmentFile=/opt/erp-vax-notification/.env
+ExecStart=/usr/bin/node /opt/erp-vax-notification/svp-invoice-api.js
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
