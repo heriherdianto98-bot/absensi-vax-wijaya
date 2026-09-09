@@ -39,6 +39,7 @@
 
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
+<script src="../js/modules/erp-header-sync.js"></script>
 <script src="../js/modules/cash-out.js"></script>
 <script src="../js/modules/cash-out-focus-date.js"></script>
 <script src="../js/loader.js"></script>
@@ -65,6 +66,7 @@ document.addEventListener("erp:finance-ready", async () => {
         if(title) title.textContent = "Cash Out";
         if(sub) sub.textContent = "Rincian pengeluaran Minutes";
         if(typeof initErpShellChrome === "function") initErpShellChrome();
+        if(typeof ErpHeaderSync !== "undefined" && ErpHeaderSync.refresh) ErpHeaderSync.refresh();
     }
 
     document.body.classList.add("has-bottom-nav");
