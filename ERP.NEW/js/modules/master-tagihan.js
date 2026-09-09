@@ -26,6 +26,7 @@ const MasterTagihan={
     if(error)throw error;
     if(!data||data.aktif===false)throw new Error("Profil tidak aktif.");
     this.profile=data;this.role=String(data.role||"").toLowerCase();
+    if(this.role==="spv")this.role="svp";
     if(!["owner","svp"].includes(this.role))throw new Error("Master Tagihan hanya untuk Owner / SVP.");
   },
   applyAccess(){
@@ -36,7 +37,8 @@ const MasterTagihan={
   populateCategories(){
     const opts=this.categories.map(x=>`<option value="${x}">${this.labelCategory(x)}</option>`).join("");
     const filter=document.getElementById("mtCategory");
-    if(filter)filter.insertAdjacentHTML("beforeend",opts);
+    if(filter){filter.insertAdjacentHTML("beforeend",opts);filter.value="ALL";}
+    const status=document.getElementById("mtStatus");if(status)status.value="ALL";
     const form=document.getElementById("mtFormCategory"); if(form)form.innerHTML=opts;
   },
   bind(){
@@ -60,11 +62,19 @@ const MasterTagihan={
   async reload(){
     const btn=document.getElementById("mtRefresh"); if(btn){btn.disabled=true;btn.textContent="↻ Memuat..."}
     try{
-      const {data,error}=await db.from(this.TABLE).select("*").order("jatuh_tempo_hari",{ascending:true}).order("kategori",{ascending:true}).order("cabang",{ascending:true});
+      let {data,error}=await db.rpc("get_master_tagihan");
+      if(error){
+        const fallback=await db.from(this.TABLE).select("*").order("jatuh_tempo_hari",{ascending:true}).order("kategori",{ascending:true}).order("cabang",{ascending:true});
+        data=fallback.data;error=fallback.error;
+      }
       if(error)throw error;
-      this.rows=data||[];this.render();
+      this.rows=Array.isArray(data)?data:[];
+      this.render();
     }catch(e){
-      console.error(e);document.getElementById("mtBody").innerHTML=`<tr><td colspan="7" class="mt-empty">${this.esc(e?.message||String(e))}</td></tr>`;
+      console.error("Master Tagihan reload gagal",e);
+      this.rows=[];this.render();
+      const body=document.getElementById("mtBody");
+      if(body)body.innerHTML=`<tr><td colspan="7" class="mt-empty">Gagal memuat master tagihan: ${this.esc(e?.message||String(e))}</td></tr>`;
     }finally{if(btn){btn.disabled=false;btn.textContent="↻ Refresh"}}
   },
   daysUntil(day){
