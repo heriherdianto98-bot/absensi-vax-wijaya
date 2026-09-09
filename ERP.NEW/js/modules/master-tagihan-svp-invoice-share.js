@@ -19,37 +19,54 @@
     return out.url;
   }
 
-  function install(){
+  async function secureOpenWhatsapp(row){
+    if(!this.isOwner()||!row)return;
+    const popup=window.open('about:blank','_blank');
+    try{
+      const shareUrl=await makeShareUrl(this,row);
+      const message=[
+        'INVOICE VAX WIJAYA',
+        '',
+        `No. Invoice: ${row.invoice_no||'-'}`,
+        `Total: ${this.rp(row.total)}`,
+        '',
+        'Detail invoice:',
+        shareUrl,
+        '',
+        'Mohon ditinjau dan ditindaklanjuti.'
+      ].join('\n');
+      const wa=`https://api.whatsapp.com/send?phone=${SVP_WHATSAPP_PHONE}&text=${encodeURIComponent(message)}`;
+      if(popup)popup.location.replace(wa);else window.location.href=wa;
+    }catch(e){
+      if(popup)popup.close();
+      alert(`Gagal membuat link PDF invoice: ${e?.message||e}`);
+    }
+  }
+
+  secureOpenWhatsapp.__erpSecurePdfShare=true;
+
+  function installFinal(){
     const inv=window.SvPInvoice;
-    if(!inv||inv.__securePdfShareInstalled)return false;
+    if(!inv||!inv.__workflowV2)return false;
+    if(inv.openWhatsapp?.__erpSecurePdfShare===true)return true;
+    inv.openWhatsapp=secureOpenWhatsapp;
     inv.__securePdfShareInstalled=true;
-    inv.openWhatsapp=async function(row){
-      if(!this.isOwner()||!row)return;
-      const popup=window.open('about:blank','_blank');
-      try{
-        const shareUrl=await makeShareUrl(this,row);
-        const message=[
-          'INVOICE VAX WIJAYA',
-          '',
-          `No. Invoice: ${row.invoice_no||'-'}`,
-          `Total: ${this.rp(row.total)}`,
-          '',
-          'Detail invoice:',
-          shareUrl,
-          '',
-          'Mohon ditinjau dan ditindaklanjuti.'
-        ].join('\n');
-        const wa=`https://api.whatsapp.com/send?phone=${SVP_WHATSAPP_PHONE}&text=${encodeURIComponent(message)}`;
-        if(popup)popup.location.replace(wa);else window.location.href=wa;
-      }catch(e){
-        if(popup)popup.close();
-        alert(`Gagal membuat link PDF invoice: ${e?.message||e}`);
-      }
-    };
     return true;
   }
 
+  /*
+   * master-tagihan-svp-invoice-ui.js boots asynchronously and can assign
+   * openWhatsapp after this file has loaded. Wait until that workflow is
+   * actually ready, then make secure PDF share the final handler.
+   */
   let tries=0;
-  const t=setInterval(()=>{if(install()||++tries>60)clearInterval(t)},100);
-  window.addEventListener('load',()=>setTimeout(install,500));
+  const t=setInterval(()=>{
+    if(installFinal())clearInterval(t);
+    else if(++tries>100)clearInterval(t);
+  },100);
+
+  window.addEventListener('load',()=>{
+    setTimeout(installFinal,700);
+    setTimeout(installFinal,1500);
+  });
 })();
