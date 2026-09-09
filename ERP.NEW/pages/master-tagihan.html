@@ -94,11 +94,25 @@
 <script src="../js/loader.js"></script>
 <script src="../js/modules/master-tagihan.js?v=20260909-1"></script>
 <script>
+function ensureMasterTagihanSidebarEntry(){
+  const sidebar=document.querySelector('.sidebar');
+  if(!sidebar || sidebar.querySelector('[data-erp-nav="master-tagihan"]')) return;
+  const cabang=sidebar.querySelector('[data-erp-nav="cabang"]');
+  const karyawan=sidebar.querySelector('[data-erp-nav="karyawan"]');
+  const anchor=cabang||karyawan;
+  if(!anchor) return;
+  const link=document.createElement('a');
+  link.href='./master-tagihan.html';
+  link.className='menu-item active';
+  link.dataset.erpNav='master-tagihan';
+  link.innerHTML='<span class="icon" style="color:#f0b94b">▤</span><span class="text">Master Tagihan</span>';
+  anchor.insertAdjacentElement('afterend',link);
+}
 (async()=>{
   try{
     await Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]);
     OwnerAuth?.bindUi?.(); OwnerAuth?.syncHeader?.(); OwnerAuth?.applyAccessControl?.();
-    initErpShellChrome?.(); syncSidebarRoleMeta?.();
+    initErpShellChrome?.(); syncSidebarRoleMeta?.(); ensureMasterTagihanSidebarEntry();
     document.querySelectorAll('.sidebar .menu-item').forEach(a=>a.classList.toggle('active',a.dataset.erpNav==='master-tagihan'));
     const cabang=document.getElementById('erpHeaderCabang'); if(cabang)cabang.textContent='Semua Cabang';
     const periode=document.getElementById('erpHeaderPeriode'); if(periode)periode.textContent='Master Data';
