@@ -13,6 +13,15 @@ Tidak mengubah data, formula, sync, atau source.
     const TABLE_ID = "thcTable";
     const STYLE_ID = "thcRowFocusStyle";
 
+    function ensureGlobalNotifications(){
+        if(window.ERPGlobalNotifications || document.querySelector('script[data-erp-thc-notif]')) return;
+        const s=document.createElement('script');
+        s.src='../js/modules/erp-global-notifications.js?v=20260909-1';
+        s.async=false;
+        s.dataset.erpThcNotif='1';
+        document.head.appendChild(s);
+    }
+
     function ensureStyle(){
         if(document.getElementById(STYLE_ID)) return;
         const style = document.createElement("style");
@@ -75,6 +84,7 @@ Tidak mengubah data, formula, sync, atau source.
     }
 
     function bind(){
+        ensureGlobalNotifications();
         ensureStyle();
         document.addEventListener("click", (event) => {
             const branchCell = event.target.closest?.(`#${TABLE_ID} tbody td:nth-child(2)`);
