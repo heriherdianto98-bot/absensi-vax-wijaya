@@ -117,7 +117,6 @@ function shortDateLabel(iso) {
   }).format(new Date(Date.UTC(y,m-1,d,12)));
 }
 
-// Persis SetoranMoneyEngine.calculateBranchMoney() — JANGAN diubah mandiri.
 function calculateBranchMoney(row) {
   const nettMinutes = Number(row?.nett_revenue || 0);
   const productCost = Number(row?.product_cost || 0);
@@ -129,7 +128,6 @@ function nettProduct(row) {
   return Number(row?.produk || 0) - Number(row?.share_produk || 0);
 }
 
-// Parser identik dengan CashOutDetail (view only).
 function parseRupiahToken(raw) {
   const s = String(raw || '').replace(/[\s\u00a0\u202f\u2009]/g,'').trim();
   if (!s) return null;
@@ -369,7 +367,6 @@ function pdfBuffer(report,{title}) {
     drawTableHead();
     for(const r of report.rows){ensure(28); if(doc.y<95)drawTableHead();let x=30;const yy=doc.y;const vals=[r.name,rupiah(r.cashReference),rupiah(r.nonCash),rupiah(r.nettProduk),rupiah(r.bri),rupiah(r.diff),rupiah(r.actual),`${r.taken?'DIAMBIL':'BELUM'} / ${r.verified?'VERIFIED':'BELUM'}`]; vals.forEach((v,i)=>{doc.rect(x,yy,widths[i],24).strokeColor('#d4d0c7').stroke();doc.fillColor('#111').font(i===0?'Helvetica-Bold':'Helvetica').fontSize(6.4).text(String(v),x+3,yy+7,{width:widths[i]-6,align:i>0&&i<7?'right':'left'});x+=widths[i];}); doc.y=yy+24;}
 
-    // Cash Out full details
     doc.addPage(); header(); doc.y=92;
     doc.fillColor('#c2410c').font('Helvetica-Bold').fontSize(8).text('RINCIAN CASH OUT');
     doc.fillColor('#111').fontSize(15).text('Cash Out Per Cabang & Per Tanggal');
@@ -390,16 +387,6 @@ function pdfBuffer(report,{title}) {
       if(!details.length){doc.fillColor('#777').font('Helvetica').fontSize(7).text('Tidak ada rincian Cash Out.',35,doc.y+7);doc.y+=24;}
       for(const d of details){ensure(23); if(doc.y<95){x=30;hy=doc.y;dh.forEach((h,i)=>{doc.rect(x,hy,cw[i],20).fillAndStroke('#111','#333');doc.fillColor('#fff').font('Helvetica-Bold').fontSize(6).text(h,x+3,hy+6,{width:cw[i]-6,align:i===1?'right':'left'});x+=cw[i];});doc.y=hy+20;} x=30;const yy=doc.y;const vals=[shortDateLabel(d.tanggal),d.nominal==null?'—':rupiah(d.nominal),d.keterangan||'—',d.kasir||'—']; vals.forEach((v,i)=>{doc.rect(x,yy,cw[i],20).strokeColor('#d7d0bf').stroke();doc.fillColor(i===1?'#b42323':'#222').font(i===1?'Helvetica-Bold':'Helvetica').fontSize(6.5).text(String(v),x+3,yy+6,{width:cw[i]-6,align:i===1?'right':'left'});x+=cw[i];});doc.y=yy+20;}
       doc.y+=10;
-    }
-    const pages=doc.bufferedPageRange();
-    for(let i=0;i<pages.count;i++){
-      doc.switchToPage(i);
-      doc.fillColor('#777').font('Helvetica').fontSize(6.5).text(
-        `ERP VAX WIJAYA · READ ONLY · Halaman ${i+1}/${pages.count}`,
-        30,
-        doc.page.height-22,
-        {width:W,align:'right',lineBreak:false}
-      );
     }
     doc.end();
   });
