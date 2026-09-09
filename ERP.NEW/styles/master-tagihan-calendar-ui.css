@@ -1,0 +1,40 @@
+/* ERP VAX — Master Tagihan calendar popup, UI ONLY */
+.mt-calendar-field{position:relative;display:block}
+.mt-calendar-field>span{display:block;margin-bottom:7px;font-size:12px;color:#9aa6b1;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+#mtDueDay{display:none!important}
+.mt-calendar-trigger{
+  width:100%;height:49px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 13px;border:1px solid #364553;border-radius:11px;cursor:pointer;
+  background:linear-gradient(180deg,#1c2630,#17212a);color:#98a4af;font:inherit;font-size:15px;font-weight:800;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 6px 14px rgba(0,0,0,.10);
+  transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease
+}
+.mt-calendar-trigger:hover,.mt-calendar-trigger[aria-expanded="true"]{
+  border-color:#8e7224;box-shadow:0 0 0 2px rgba(142,114,36,.08),0 0 14px rgba(247,197,47,.05),inset 0 1px 0 rgba(255,255,255,.03)
+}
+.mt-calendar-trigger.has-value{color:#f2f5f7}
+.mt-calendar-trigger-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;border:1px solid rgba(77,112,136,.42);background:linear-gradient(180deg,#1d3747,#152b39);color:#72d5f2;font-size:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.mt-calendar-popup[hidden]{display:none!important}
+.mt-calendar-popup{
+  position:absolute;z-index:2900;left:0;top:calc(100% + 8px);width:min(360px,calc(100vw - 48px));padding:14px;
+  border:1px solid rgba(126,103,37,.48);border-radius:14px;
+  background:linear-gradient(180deg,#18232d 0%,#111920 100%);
+  box-shadow:0 24px 64px rgba(0,0,0,.58),0 0 22px rgba(247,197,47,.045),inset 0 1px 0 rgba(255,255,255,.04);
+  opacity:0;transform:translateY(-5px) scale(.985);transform-origin:top left;transition:opacity .14s ease,transform .14s ease
+}
+.mt-calendar-popup.is-open{opacity:1;transform:translateY(0) scale(1)}
+.mt-calendar-popup::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 85% 8%,rgba(57,158,202,.08),transparent 28%),radial-gradient(circle at 12% 88%,rgba(247,197,47,.05),transparent 26%)}
+.mt-calendar-head{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:1px 1px 11px;border-bottom:1px solid rgba(69,83,98,.46)}
+.mt-calendar-title{display:grid;gap:2px}.mt-calendar-title strong{font-size:15px;color:#f3f6f8}.mt-calendar-title span{font-size:11px;color:#7ecce6;font-weight:800;letter-spacing:.04em}
+.mt-calendar-close{width:32px;height:32px;border:1px solid #344553;border-radius:9px;background:linear-gradient(180deg,#202b35,#18212a);color:#cbd4dc;font-size:18px;font-weight:800;cursor:pointer}
+.mt-calendar-week{position:relative;z-index:1;display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:11px 0 6px;color:#768592;font-size:10px;font-weight:900;text-align:center;letter-spacing:.05em}
+.mt-calendar-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.mt-calendar-day{
+  aspect-ratio:1;border:1px solid rgba(57,72,87,.72);border-radius:9px;background:linear-gradient(180deg,#1b252e,#141c23);color:#dce3e9;
+  font:inherit;font-size:13px;font-weight:900;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);transition:transform .14s ease,border-color .14s ease,background .14s ease,box-shadow .14s ease,color .14s ease
+}
+.mt-calendar-day:hover{transform:translateY(-2px);border-color:rgba(73,170,207,.62);background:linear-gradient(180deg,#203847,#182a35);color:#9ee8ff;box-shadow:0 6px 14px rgba(0,0,0,.18),0 0 10px rgba(70,196,234,.05)}
+.mt-calendar-day.is-selected{border-color:#9b7b22;background:linear-gradient(180deg,#6f5615,#4b3a0e);color:#ffe38a;box-shadow:0 0 0 2px rgba(247,197,47,.07),0 7px 16px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.06)}
+.mt-calendar-note{position:relative;z-index:1;margin-top:10px;padding:9px 10px;border:1px solid rgba(48,91,113,.28);border-radius:9px;background:rgba(20,48,63,.16);color:#8fa6b5;font-size:11px;line-height:1.35}.mt-calendar-note b{color:#8ed8f2}
+@media(max-width:700px){.mt-calendar-popup{position:fixed;left:50%;top:50%;width:min(360px,calc(100vw - 28px));transform:translate(-50%,-52%) scale(.985);transform-origin:center}.mt-calendar-popup.is-open{transform:translate(-50%,-50%) scale(1)}}
+@media(prefers-reduced-motion:reduce){.mt-calendar-popup,.mt-calendar-day,.mt-calendar-trigger{transition:none!important}}
