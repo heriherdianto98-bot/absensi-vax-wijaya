@@ -1,13 +1,14 @@
 {
   "name": "erp-vax-notification-service",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Read-only ERP VAX email reminder service for Master Tagihan and future notification sources.",
+  "description": "ERP VAX email reminder and Owner-to-SVP invoice notification service.",
   "type": "module",
   "scripts": {
     "run": "node master-tagihan-email.js",
     "test-email": "node master-tagihan-email.js --test-email",
-    "dry-run": "node master-tagihan-email.js --dry-run"
+    "dry-run": "node master-tagihan-email.js --dry-run",
+    "invoice-api": "node svp-invoice-api.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
