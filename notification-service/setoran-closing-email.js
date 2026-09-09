@@ -392,7 +392,15 @@ function pdfBuffer(report,{title}) {
       doc.y+=10;
     }
     const pages=doc.bufferedPageRange();
-    for(let i=0;i<pages.count;i++){doc.switchToPage(i);doc.fillColor('#777').font('Helvetica').fontSize(6.5).text(`ERP VAX WIJAYA · READ ONLY · Halaman ${i+1}/${pages.count}`,30,doc.page.height-22,{width:W,align:'right'});}
+    for(let i=0;i<pages.count;i++){
+      doc.switchToPage(i);
+      doc.fillColor('#777').font('Helvetica').fontSize(6.5).text(
+        `ERP VAX WIJAYA · READ ONLY · Halaman ${i+1}/${pages.count}`,
+        30,
+        doc.page.height-22,
+        {width:W,align:'right',lineBreak:false}
+      );
+    }
     doc.end();
   });
 }
