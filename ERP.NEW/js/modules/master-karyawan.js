@@ -91,10 +91,12 @@ const MasterKaryawan = (() => {
     const q = norm($("mkSearch")?.value);
     const branch = Number($("mkBranch")?.value || 0);
     const role = String($("mkRole")?.value || "");
-    const status = String($("mkStatus")?.value || "ACTIVE");
+    const status = String($("mkStatus")?.value || "ACTIVE").toUpperCase();
+
     return state.rows.filter(r => {
-      if(q && !norm(`${r.nama} ${r.namaMaster} ${r.cabang} ${r.jabatan}`).includes(q)) return false;
-      if(branch && r.cabangId !== branch) return false;
+      const haystack = norm(`${r.nama} ${r.namaMaster} ${r.cabang} ${r.jabatan}`);
+      if(q && !haystack.includes(q)) return false;
+      if(branch && Number(r.cabangId) !== branch) return false;
       if(role && r.jabatan !== role) return false;
       if(status === "ACTIVE" && !r.aktif) return false;
       if(status === "INACTIVE" && r.aktif) return false;
@@ -109,6 +111,7 @@ const MasterKaryawan = (() => {
     const active = state.rows.filter(r=>r.aktif).length;
     const capster = state.rows.filter(r=>r.aktif && norm(r.jabatan)==="capster").length;
     const other = state.rows.filter(r=>r.aktif && norm(r.jabatan)!=="capster").length;
+
     if($("mkTotal")) $("mkTotal").textContent = String(state.rows.length);
     if($("mkActive")) $("mkActive").textContent = String(active);
     if($("mkCapster")) $("mkCapster").textContent = String(capster);
@@ -120,6 +123,7 @@ const MasterKaryawan = (() => {
       body.innerHTML = '<tr><td colspan="6" class="mk-empty">Tidak ada data sesuai filter.</td></tr>';
       return;
     }
+
     body.innerHTML = rows.map((r,i) => `
       <tr>
         <td class="mk-no">${i+1}</td>
@@ -131,17 +135,20 @@ const MasterKaryawan = (() => {
       </tr>`).join("");
   }
 
+  function handleFilterEvent(event){
+    const id = event?.target?.id;
+    if(!["mkSearch","mkBranch","mkRole","mkStatus"].includes(id)) return;
+    render();
+  }
+
   function bind(){
     if(state.uiBound) return;
-    const search = $("mkSearch");
-    const branch = $("mkBranch");
-    const role = $("mkRole");
-    const status = $("mkStatus");
-    search?.addEventListener("input", render);
-    search?.addEventListener("search", render);
-    branch?.addEventListener("change", render);
-    role?.addEventListener("change", render);
-    status?.addEventListener("change", render);
+
+    // Delegated binding: tetap aktif walau option/dropdown diisi ulang saat refresh.
+    document.addEventListener("input", handleFilterEvent);
+    document.addEventListener("change", handleFilterEvent);
+    document.addEventListener("search", handleFilterEvent);
+
     $("mkRefresh")?.addEventListener("click", init);
     state.uiBound = true;
   }
@@ -163,7 +170,7 @@ const MasterKaryawan = (() => {
     }
   }
 
-  return { init };
+  return { init, render };
 })();
 
 document.addEventListener("DOMContentLoaded", () => MasterKaryawan.init(), {once:true});
