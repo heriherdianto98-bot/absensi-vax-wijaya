@@ -1,4 +1,4 @@
-/* ERP VAX — Invoice SVP premium UI only. No data/engine mutation. */
+/* ERP VAX — Invoice SVP premium UI/workflow layer. Additive only. No locked engine mutation. */
 "use strict";
 (() => {
   const MONTHS=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -25,7 +25,6 @@
     trigger.innerHTML='<span class="value placeholder">Pilih tanggal</span><span class="icon">▦</span>';
     const cal=document.createElement('div');cal.className='mt-invoice-calendar';cal.hidden=true;
     wrap.append(trigger,cal);input.insertAdjacentElement('afterend',wrap);
-
     let cursor=parse(input.value)||new Date();
     const sync=()=>{const val=trigger.querySelector('.value');val.textContent=input.value?label(input.value):'Pilih tanggal';val.classList.toggle('placeholder',!input.value)};
     const render=()=>{
@@ -58,13 +57,64 @@
     input.addEventListener('change',sync);sync();
   }
 
-  function boot(){
-    relocateInvoiceCard();
-    const modal=document.getElementById('mtInvoiceModal');if(!modal)return false;
-    enhanceDate(document.getElementById('invDate'));enhanceDate(document.getElementById('invDue'));
-    relocateInvoiceCard();
+  function installWorkflow(){
+    const inv=window.SvPInvoice;
+    if(!inv || inv.__workflowV2)return false;
+    inv.__workflowV2=true;
+    inv.historyOpen=false;
+
+    const originalOpen=inv.open.bind(inv);
+    inv.open=async function(row=null){
+      if(!row){
+        const draft=(this.rows||[]).find(r=>String(r.status||'draft').toLowerCase()==='draft');
+        if(draft)row=draft;
+      }
+      return originalOpen(row);
+    };
+
+    inv.markPaid=async function(id,btn){
+      if(!this.isOwner())return;
+      if(!confirm('Tandai invoice ini sebagai SUDAH DIBAYAR?'))return;
+      const old=btn?.textContent||'';
+      if(btn){btn.disabled=true;btn.textContent='Menyimpan...'}
+      try{
+        const payload={status:'paid',paid_at:new Date().toISOString(),paid_by:this.user.id,updated_by:this.user.id,updated_at:new Date().toISOString()};
+        const {error}=await db.from('svp_invoices').update(payload).eq('id',id).eq('status','sent');
+        if(error)throw error;
+        await this.reload();
+      }catch(e){alert(`Gagal tandai dibayar: ${e?.message||e}`)}
+      finally{if(btn){btn.disabled=false;btn.textContent=old}}
+    };
+
+    inv.render=function(){
+      const el=document.getElementById('mtInvoiceList');if(!el)return;
+      const rows=this.rows||[];
+      const drafts=rows.filter(r=>String(r.status||'draft').toLowerCase()==='draft');
+      const draft=drafts[0]||null;
+      const history=rows.filter(r=>String(r.status||'draft').toLowerCase()!=='draft');
+      const activeHtml=draft?`<div class="mt-invoice-row mt-invoice-active-row"><div><div class="mt-invoice-no">${this.esc(draft.invoice_no)}</div><small>${this.esc(draft.title||'INVOICE SVP')}</small></div><div>${this.esc(draft.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(draft.total)}</div><div><span class="mt-invoice-status draft">DRAFT</span></div><div class="mt-invoice-buttons">${this.isOwner()?`<button class="mt-action" data-inv-action="edit" data-id="${draft.id}">Edit</button><button class="mt-action" data-inv-action="send" data-id="${draft.id}">Send Email</button>`:''}<button class="mt-action" data-inv-action="print" data-id="${draft.id}">Print</button></div></div>`:'<div class="mt-invoice-empty">Tidak ada draft aktif. Klik <b>Buat Invoice SVP</b> untuk membuat invoice baru.</div>';
+      const historyRows=history.map(r=>{const s=String(r.status||'sent').toLowerCase();return `<div class="mt-invoice-row mt-invoice-history-row"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${this.esc(r.title||'INVOICE SVP')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div><span class="mt-invoice-status ${s==='paid'?'paid':'sent'}">${s==='paid'?'PAID':'SENT'}</span></div><div class="mt-invoice-buttons">${this.isOwner()&&s==='sent'?`<button class="mt-action mt-action-paid" data-paid-id="${r.id}">Tandai Dibayar</button>`:''}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`}).join('');
+      el.innerHTML=`<div class="mt-invoice-active">${activeHtml}</div>${history.length?`<div class="mt-invoice-history"><button type="button" class="mt-invoice-history-toggle" data-history-toggle><span>Riwayat Invoice</span><b>${history.length}</b><i>${this.historyOpen?'▲':'▼'}</i></button><div class="mt-invoice-history-list" ${this.historyOpen?'':'hidden'}>${historyRows}</div></div>`:''}`;
+    };
+
+    document.getElementById('mtInvoiceList')?.addEventListener('click',e=>{
+      const paid=e.target.closest('[data-paid-id]');
+      if(paid){e.preventDefault();e.stopPropagation();inv.markPaid(paid.dataset.paidId,paid);return}
+      const toggle=e.target.closest('[data-history-toggle]');
+      if(toggle){e.preventDefault();inv.historyOpen=!inv.historyOpen;inv.render()}
+    });
+    inv.render();
     return true;
   }
-  let tries=0;const t=setInterval(()=>{if(boot()||++tries>30)clearInterval(t)},150);
+
+  function boot(){
+    relocateInvoiceCard();
+    const modal=document.getElementById('mtInvoiceModal');
+    if(modal){enhanceDate(document.getElementById('invDate'));enhanceDate(document.getElementById('invDue'))}
+    installWorkflow();
+    relocateInvoiceCard();
+    return !!modal && !!window.SvPInvoice;
+  }
+  let tries=0;const t=setInterval(()=>{if(boot()||++tries>40)clearInterval(t)},150);
   window.addEventListener('load',()=>setTimeout(boot,900));
 })();
