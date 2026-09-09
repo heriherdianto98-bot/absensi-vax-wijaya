@@ -103,6 +103,15 @@
     document.head.appendChild(c);
   }
 
+  /* UI only: toolbar utama tidak boleh menimpa popup Detail / Verifikasi / Input. */
+  if(!document.querySelector('script[data-ak2-modal-layer-ui]')){
+    const ml=document.createElement("script");
+    ml.src="../js/modules/arus-kas-v2-modal-layer-ui.js";
+    ml.async=false;
+    ml.dataset.ak2ModalLayerUi="1";
+    document.head.appendChild(ml);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
