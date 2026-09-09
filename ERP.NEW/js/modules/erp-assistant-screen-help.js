@@ -5,6 +5,7 @@
 
 const ErpAssistantScreenHelp={
   KEY:"erpAssistantScreenHelpContextV1",
+  GLOBAL_HELP_KEY:"erpAssistantGlobalHelpContextV1",
   defs:null,
   context:null,
 
@@ -53,8 +54,8 @@ const ErpAssistantScreenHelp={
         jenis:this.valueLabel("ak2Jenis"),
         kategori:this.valueLabel("ak2Kategori"),
         wallet:this.valueLabel("ak2Wallet"),
-        wallet_sumber:this.valueLabel("ak2WalletSource"),
-        wallet_tujuan:this.valueLabel("ak2WalletTarget"),
+        wallet_sumber:this.valueLabel("ak2SourceWallet"),
+        wallet_tujuan:this.valueLabel("ak2TargetWallet"),
         nominal:this.valueLabel("ak2Nominal"),
         keterangan:this.valueLabel("ak2Keterangan"),
         periode_sumber_awal:this.valueLabel("ak2SourceStart"),
@@ -86,31 +87,20 @@ const ErpAssistantScreenHelp={
     return d.innerHTML;
   },
 
-  normalizeQuery(query){
-    return (window.ErpAssistant?.expand?.(query)||String(query||"").toLowerCase())
-      .replace(/\s+/g," ")
-      .trim();
-  },
-
-  hasPhrase(q,phrase){
-    const p=String(phrase||"").toLowerCase().trim();
-    if(!p)return false;
-    if(p.length<=3){
-      const escaped=p.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
-      return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`,"i").test(q);
-    }
-    return q.includes(p);
-  },
-
   fieldMatch(screen,query){
-    const q=this.normalizeQuery(query);
+    const q=(window.ErpAssistant?.expand?.(query)||String(query||"").toLowerCase());
     let best=null,bestScore=0;
     for(const f of (screen?.fields||[])){
       const phrases=[f.label,...(f.aliases||[])];
       let score=0;
       for(const p of phrases){
-        if(!this.hasPhrase(q,p))continue;
-        const s=window.ErpAssistant?.phraseScore?.(q,p)||8;
+        const phrase=String(p||"").toLowerCase().trim();
+        if(!phrase)continue;
+        if(phrase.length<=3){
+          const re=new RegExp(`(^|\\s)${phrase.replace(/[.*+?^${}()|[\\]\\\\]/g,"\\$&")}(?=\\s|$)`);
+          if(!re.test(q))continue;
+        }
+        const s=window.ErpAssistant?.phraseScore?.(q,p)||0;
         score=Math.max(score,s);
       }
       if(score>bestScore){best=f;bestScore=score}
@@ -118,31 +108,11 @@ const ErpAssistantScreenHelp={
     return bestScore>=8?best:null;
   },
 
-  transferInternalHelp(screen){
-    const vals=this.context?.values||{};
-    const src=vals.wallet_sumber||"Wallet Sumber";
-    const dst=vals.wallet_tujuan||"Wallet Tujuan";
-    const selected=(vals.kategori||"").toLowerCase().includes("transfer internal");
-    return `<p><strong>Transfer Internal</strong> dipakai saat uang hanya berpindah antar-wallet ERP, bukan keluar dari sistem.</p>
-      <div class="ea-rule-box"><strong>Alurnya</strong>
-        <p>1. Pilih kategori <strong>Transfer Internal</strong>.</p>
-        <p>2. Pilih <strong>Wallet Sumber</strong> = wallet asal uang.</p>
-        <p>3. Pilih <strong>Wallet Tujuan</strong> = wallet penerima uang.</p>
-        <p>4. Isi nominal dan keterangan, lalu Simpan.</p>
-      </div>
-      <div class="ea-rule-box"><strong>Contoh</strong>
-        <p>Kas Denda → Kas Besar: Kas Denda berkurang, Kas Besar bertambah dengan nominal yang sama. Total uang ERP tetap sama.</p>
-        <p>Dana Produk → Kas Besar juga memakai Transfer Internal, bukan Pengeluaran ke External.</p>
-      </div>
-      ${selected?`<div class="ea-rule-box"><strong>Yang sedang terpilih</strong><p>${this.escape(src)} → ${this.escape(dst)}</p></div>`:""}
-      <div class="ea-source"><span>${this.escape(screen.title)}</span><b>SCREEN HELP</b></div>`;
-  },
-
   genericHelp(screen){
     const vals=this.context?.values||{};
     const current=[
-      ["Tanggal",vals.tanggal],["Jenis",vals.jenis],["Kategori",vals.kategori],
-      ["Wallet",vals.wallet],["Wallet Sumber",vals.wallet_sumber],["Wallet Tujuan",vals.wallet_tujuan],["Nominal",vals.nominal]
+      ["Tanggal",vals.tanggal],["Jenis",vals.jenis],["Kategori",vals.kategori],["Wallet",vals.wallet],
+      ["Wallet Sumber",vals.wallet_sumber],["Wallet Tujuan",vals.wallet_tujuan],["Nominal",vals.nominal]
     ].filter(x=>x[1]).map(x=>`<span><strong>${this.escape(x[0])}:</strong> ${this.escape(x[1])}</span>`).join(" • ");
     return `<p>Saya mengenali layar ini sebagai <strong>${this.escape(screen.title)}</strong>. Ini cara mengisinya:</p>
       <div class="ea-rule-box"><strong>Langkah pengisian</strong>${(screen.steps||[]).map((x,i)=>`<p><strong>${i+1}.</strong> ${this.escape(x)}</p>`).join("")}</div>
@@ -151,17 +121,35 @@ const ErpAssistantScreenHelp={
       <div class="ea-source"><span>Screen Help · ${this.escape(screen.title)}</span><b>READ ONLY</b></div>`;
   },
 
+  transferInternalHelp(){
+    return `<p><strong>Transfer Internal</strong> dipakai ketika uang hanya berpindah antar-wallet ERP dan tidak keluar dari sistem.</p>
+      <div class="ea-rule-box"><strong>Langkah transfer internal</strong>
+        <p><strong>1.</strong> Buka <strong>Arus Kas → + Input Manual</strong>.</p>
+        <p><strong>2.</strong> Pilih <strong>Kategori: Transfer Internal</strong>.</p>
+        <p><strong>3.</strong> Pada <strong>Wallet Sumber</strong>, pilih wallet tempat uang berasal.</p>
+        <p><strong>4.</strong> Pada <strong>Wallet Tujuan</strong>, pilih wallet penerima uang.</p>
+        <p><strong>5.</strong> Isi <strong>Nominal</strong> sesuai uang yang benar-benar dipindahkan.</p>
+        <p><strong>6.</strong> Isi <strong>Keterangan</strong> supaya perpindahan mudah diaudit.</p>
+        <p><strong>7.</strong> Periksa lagi sumber, tujuan, dan nominal lalu klik <strong>Simpan</strong>.</p>
+      </div>
+      <div class="ea-rule-box"><strong>Contoh: Kas Denda → Kas Besar</strong>
+        <p>Wallet Sumber: <strong>Kas Denda</strong></p>
+        <p>Wallet Tujuan: <strong>Kas Besar</strong></p>
+        <p>Dampak: Kas Denda berkurang dan Kas Besar bertambah dengan nominal yang sama. Total uang ERP tetap.</p>
+      </div>
+      <div class="ea-rule-box"><strong>Bedakan dengan transaksi biasa</strong>
+        <p>External → Wallet = <strong>Pemasukan</strong>.</p>
+        <p>Wallet → External = <strong>Pengeluaran</strong>.</p>
+        <p>Wallet A → Wallet B = <strong>Transfer Internal</strong>.</p>
+      </div>
+      <div class="ea-source"><span>Arus Kas V2</span><b>HELP DESK · TRANSFER INTERNAL</b></div>`;
+  },
+
   answer(query){
     const screen=this.getScreen();
     if(!screen)return null;
-    const q=this.normalizeQuery(query);
-
-    /* Intent spesifik harus menang sebelum field matcher generik.
-       Ini mencegah alias pendek seperti "in" terbaca dari kata "internal". */
-    if(/transfer\s+internal|pindah\s+(uang|saldo)|antar\s*wallet|wallet\s+sumber|wallet\s+tujuan/.test(q)){
-      return this.transferInternalHelp(screen);
-    }
-
+    const q=window.ErpAssistant?.expand?.(query)||String(query||"").toLowerCase();
+    if(/transfer\s+internal|internal\s+transfer/.test(q))return this.transferInternalHelp();
     const field=this.fieldMatch(screen,q);
     if(field){
       return `<p><strong>${this.escape(field.label)}</strong>: ${this.escape(field.help)}</p>
@@ -171,8 +159,34 @@ const ErpAssistantScreenHelp={
     return null;
   },
 
+  wireHelpDeskTransferInternal(){
+    let isHelpDesk=false;
+    try{isHelpDesk=new URLSearchParams(location.search).get("helpDesk")==="1"}catch(_e){}
+    if(!isHelpDesk||!window.ErpAssistant)return false;
+
+    let ctx=null;
+    try{ctx=JSON.parse(sessionStorage.getItem(this.GLOBAL_HELP_KEY)||"null")}catch(_e){}
+    if(ctx?.module_id!=="ARUS_KAS_V2")return false;
+
+    const baseCompose=window.ErpAssistant.compose.bind(window.ErpAssistant);
+    window.ErpAssistant.compose=(query)=>{
+      const q=window.ErpAssistant?.expand?.(query)||String(query||"").toLowerCase();
+      if(/transfer\s+internal|internal\s+transfer/.test(q)){
+        const module=window.ErpAssistant.getModule?.("ARUS_KAS_V2")||null;
+        window.ErpAssistant.state={lastModuleId:"ARUS_KAS_V2",lastFocus:"transfer_internal",lastIntent:"how"};
+        return {unknown:false,module,html:this.transferInternalHelp()};
+      }
+      return baseCompose(query);
+    };
+    return true;
+  },
+
   wireAssistant(){
     if(!window.ErpAssistant)return;
+
+    /* Help Desk Arus Kas punya prioritas khusus untuk intent Transfer Internal.
+       Ini dipasang setelah semantic/context resolver agar pertanyaan langkah tidak dialihkan ke QRIS. */
+    this.wireHelpDeskTransferInternal();
 
     /* Screen Help hanya boleh aktif bila halaman dibuka khusus lewat ?screenHelp=1.
        Context lama di sessionStorage tidak boleh bocor ke Global Help Desk atau chat biasa. */
@@ -208,7 +222,7 @@ const ErpAssistantScreenHelp={
       const badge=document.getElementById("eaContext");
       if(badge)badge.textContent=`Bantuan layar: ${screen.title}`;
       window.ErpAssistant.addBubble("assistant",this.genericHelp(screen));
-      if(window.ErpAssistant.refs?.input)window.ErpAssistant.refs.input.placeholder=`Tanya tentang ${screen.title}, misalnya: cara transfer internal gimana?`;
+      if(window.ErpAssistant.refs?.input)window.ErpAssistant.refs.input.placeholder=`Tanya tentang ${screen.title}, misalnya: kategori ini pilih apa?`;
     };
   },
 
