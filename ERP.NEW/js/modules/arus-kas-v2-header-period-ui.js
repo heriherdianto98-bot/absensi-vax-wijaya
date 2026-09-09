@@ -143,13 +143,76 @@
     });
   }
 
+  function installRefreshReminder(){
+    if(document.getElementById("ak2RefreshReminder")) return true;
+    const head=document.querySelector(".ak2-head");
+    const user=head?.querySelector(".ak2-user");
+    if(!head||!user) return false;
+
+    if(!document.getElementById("ak2RefreshReminderStyle")){
+      const style=document.createElement("style");
+      style.id="ak2RefreshReminderStyle";
+      style.textContent=`
+        body.page-arus-kas .ak2-refresh-reminder{
+          margin-left:auto;
+          margin-right:18px;
+          display:flex;
+          align-items:center;
+          gap:8px;
+          color:#e7c368;
+          font-size:12px;
+          font-weight:900;
+          letter-spacing:.02em;
+          white-space:nowrap;
+          text-transform:none;
+        }
+        body.page-arus-kas .ak2-refresh-reminder-icon{
+          width:24px;
+          height:24px;
+          display:grid;
+          place-items:center;
+          border-radius:50%;
+          border:1px solid rgba(224,178,84,.72);
+          background:rgba(224,178,84,.10);
+          color:#ffd36b;
+          font-size:15px;
+          font-weight:950;
+          line-height:1;
+          box-shadow:0 0 0 0 rgba(224,178,84,.28);
+          animation:ak2RefreshReminderBlink 1.15s ease-in-out infinite;
+        }
+        @keyframes ak2RefreshReminderBlink{
+          0%,100%{opacity:.42;transform:scale(.96);box-shadow:0 0 0 0 rgba(224,178,84,.12)}
+          50%{opacity:1;transform:scale(1.08);box-shadow:0 0 15px 4px rgba(224,178,84,.18)}
+        }
+        @media(max-width:1050px){
+          body.page-arus-kas .ak2-refresh-reminder{font-size:11px;margin-right:10px;gap:6px}
+          body.page-arus-kas .ak2-refresh-reminder-icon{width:22px;height:22px;font-size:14px}
+        }
+        @media(max-width:820px){body.page-arus-kas .ak2-refresh-reminder{display:none}}
+        @media(prefers-reduced-motion:reduce){body.page-arus-kas .ak2-refresh-reminder-icon{animation:none}}
+      `;
+      document.head.appendChild(style);
+    }
+
+    const reminder=document.createElement("div");
+    reminder.id="ak2RefreshReminder";
+    reminder.className="ak2-refresh-reminder";
+    reminder.setAttribute("role","note");
+    reminder.innerHTML='<span class="ak2-refresh-reminder-icon" aria-hidden="true">!</span><span>Untuk update data mohon refresh</span>';
+    head.insertBefore(reminder,user);
+    return true;
+  }
+
   function startSync(){
     bindInputs();
     sync();
+    installRefreshReminder();
     let tries=0;
     const timer=setInterval(()=>{
       tries+=1;
       bindInputs();
+      installRefreshReminder();
       if(sync() && document.getElementById("ak2Start")?.value && document.getElementById("ak2End")?.value){
         if(tries>=20) clearInterval(timer);
       }
