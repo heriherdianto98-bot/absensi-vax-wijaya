@@ -151,7 +151,7 @@ Owner-taken interpretation:
 
 ## LOCKED FILES FOR SETORAN 3 HARIAN
 
-Files below are the verified Setoran 3 Harian baseline reference and MUST NOT be modified in the stable baseline unless owner explicitly unlocks the task:
+Files below are the verified Setoran 3 Harian baseline reference and MUST NOT be modified unless Owner explicitly unlocks this task:
 - ERP.NEW/pages/setoran-3-harian.html
 - ERP.NEW/components/setoran-3-harian-table.html
 - ERP.NEW/js/modules/setoran-3-harian.js
@@ -248,6 +248,50 @@ Current implementation files (not file-level HARD LOCK until OWNER PASS):
 Unlock rule:
 - Formula atau source ownership di atas hanya boleh diubah setelah Owner secara eksplisit membuka LOCK.
 - UI/presentation boleh diperbaiki selama tidak mengubah rumus atau source ownership.
+
+## HARD LOCK — SVP INVOICE EMAIL + WHATSAPP PDF SHARE
+
+Status: OWNER PASS / HARD LOCK
+
+Verified on:
+- 2026-09-10 WIB
+
+Verified capabilities:
+- Owner dapat membuat dan mengelola Invoice SVP dari Master Tagihan.
+- Email invoice dapat dikirim dari ERP lokal melalui API online/VPS dengan autentikasi Owner.
+- Email delivery menggunakan service invoice terpisah dan SMTP/Brevo yang sudah teruji.
+- WhatsApp membuka nomor SVP yang sudah ditetapkan melalui `api.whatsapp.com` dengan pesan profesional.
+- WhatsApp share membuat token acak 10 karakter untuk setiap invoice dan menghasilkan direct PDF link publik read-only.
+- Format link PDF final: `https://erp.vaxwijaya.com/i/<token>.pdf`.
+- Link lama `https://erp.vaxwijaya.com/i/<token>` tetap kompatibel.
+- PDF share tidak memerlukan login SVP/Owner, hanya token share yang valid; token dapat direvoke melalui mekanisme share link.
+- PDF share menampilkan header invoice, tanggal, jatuh tempo, item, nominal, total, catatan Owner, otorisasi/tanda tangan Owner, dan footer.
+- Service share publik berjalan terpisah pada `erp-vax-svp-invoice-share.service` / port 8792 dan diproxy melalui Nginx `erp.vaxwijaya.com`.
+- Perubahan UI tombol WhatsApp tidak mengubah logic email/share/token.
+
+Locked behavior:
+- Jangan ubah autentikasi Owner untuk endpoint email/share tanpa explicit Owner unlock.
+- Jangan ubah nomor tujuan WhatsApp SVP tanpa explicit Owner instruction.
+- Jangan mengganti token share dengan invoice number yang mudah ditebak.
+- Jangan membuat PDF share membuka data invoice lain selain invoice yang terkait token.
+- Jangan menggabungkan service invoice dengan engine Minutes, Finance, Cash Out, Arus Kas, atau scheduler.
+- UI/presentation boleh diperbaiki selama tidak mengubah email delivery, auth, token, source invoice, atau share security behavior.
+
+## LOCKED FILES FOR SVP INVOICE EMAIL + WHATSAPP PDF SHARE
+
+Files below are the verified Invoice SVP baseline and MUST NOT be modified except for UI-only presentation changes explicitly requested by Owner:
+- `ERP.NEW/js/modules/master-tagihan-svp-invoice.js`
+- `ERP.NEW/js/modules/master-tagihan-svp-invoice-ui.js`
+- `ERP.NEW/js/modules/master-tagihan-svp-invoice-share.js`
+- `notification-service/svp-invoice-api.js`
+- `notification-service/svp-invoice-share-api.js`
+
+Presentation file allowed for UI-only adjustment without unlocking business logic:
+- `ERP.NEW/styles/master-tagihan-svp-invoice.css`
+
+Security / deployment notes:
+- Do not commit `.env`, Supabase service-role key, SMTP credentials, WhatsApp session data, or browser access tokens.
+- VPS runtime files under `/opt/erp-vax-notification` are deployment targets; canonical source remains this repository.
 
 ## CHANGE POLICY
 
