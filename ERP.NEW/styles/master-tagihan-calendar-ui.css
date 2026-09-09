@@ -36,5 +36,17 @@
 .mt-calendar-day:hover{transform:translateY(-2px);border-color:rgba(73,170,207,.62);background:linear-gradient(180deg,#203847,#182a35);color:#9ee8ff;box-shadow:0 6px 14px rgba(0,0,0,.18),0 0 10px rgba(70,196,234,.05)}
 .mt-calendar-day.is-selected{border-color:#9b7b22;background:linear-gradient(180deg,#6f5615,#4b3a0e);color:#ffe38a;box-shadow:0 0 0 2px rgba(247,197,47,.07),0 7px 16px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.06)}
 .mt-calendar-note{position:relative;z-index:1;margin-top:10px;padding:9px 10px;border:1px solid rgba(48,91,113,.28);border-radius:9px;background:rgba(20,48,63,.16);color:#8fa6b5;font-size:11px;line-height:1.35}.mt-calendar-note b{color:#8ed8f2}
-@media(max-width:700px){.mt-calendar-popup{position:fixed;left:50%;top:50%;width:min(360px,calc(100vw - 28px));transform:translate(-50%,-52%) scale(.985);transform-origin:center}.mt-calendar-popup.is-open{transform:translate(-50%,-50%) scale(1)}}
+
+/* UI ONLY — calendar must be allowed to float outside the form/dialog.
+   Base Master Tagihan dialog uses overflow:hidden, which clipped row 29–31. */
+.page-master-tagihan .mt-dialog{overflow:visible!important}
+.page-master-tagihan .mt-dialog-head{border-radius:16px 16px 0 0}
+.page-master-tagihan .mt-form{border-radius:0 0 16px 16px}
+.page-master-tagihan .mt-calendar-field{z-index:12}
+.page-master-tagihan .mt-calendar-popup{z-index:3200;max-height:min(470px,calc(100vh - 150px));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#6e581d #121a21}
+.page-master-tagihan .mt-calendar-popup::-webkit-scrollbar{width:7px}
+.page-master-tagihan .mt-calendar-popup::-webkit-scrollbar-track{background:#121a21;border-radius:999px}
+.page-master-tagihan .mt-calendar-popup::-webkit-scrollbar-thumb{background:#6e581d;border-radius:999px}
+
+@media(max-width:700px){.mt-calendar-popup{position:fixed;left:50%;top:50%;width:min(360px,calc(100vw - 28px));max-height:calc(100vh - 32px);overflow-y:auto;transform:translate(-50%,-52%) scale(.985);transform-origin:center}.mt-calendar-popup.is-open{transform:translate(-50%,-50%) scale(1)}}
 @media(prefers-reduced-motion:reduce){.mt-calendar-popup,.mt-calendar-day,.mt-calendar-trigger{transition:none!important}}
