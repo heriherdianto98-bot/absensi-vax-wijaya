@@ -1,0 +1,28 @@
+/* ERP VAX — Global Notification Center, UI/read-only only */
+@keyframes erpNotifBellPulse{0%,100%{box-shadow:0 0 0 rgba(239,68,68,0),inset 0 1px 0 rgba(255,255,255,.04)}50%{box-shadow:0 0 18px rgba(239,68,68,.20),0 0 28px rgba(242,194,48,.08),inset 0 1px 0 rgba(255,255,255,.06)}}
+@keyframes erpNotifDotPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.18);opacity:.82}}
+.erp-global-notif{position:relative;display:flex;align-items:center;margin-left:10px!important;z-index:3400}
+.erp-global-notif-btn{position:relative;width:42px;height:42px;border:1px solid rgba(212,168,38,.36);border-radius:12px;background:linear-gradient(180deg,#1a222b,#111820);color:#f2c230;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);transition:.18s ease}
+.erp-global-notif-btn:hover{transform:translateY(-1px);border-color:rgba(242,194,48,.62);box-shadow:0 10px 22px rgba(0,0,0,.26),0 0 14px rgba(242,194,48,.10)}
+.erp-global-notif-btn.has-alert{animation:erpNotifBellPulse 2.4s ease-in-out infinite}
+.erp-global-notif-icon{font-size:21px;line-height:1;filter:drop-shadow(0 0 5px rgba(242,194,48,.28))}
+.erp-global-notif-badge{position:absolute;right:-5px;top:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ef4444;border:2px solid #11161c;color:white;font-size:10px;font-weight:900;display:grid;place-items:center;box-shadow:0 0 12px rgba(239,68,68,.36);animation:erpNotifDotPulse 1.8s ease-in-out infinite}
+.erp-global-notif-badge[hidden]{display:none!important}
+.erp-global-notif-panel{position:fixed;top:78px;right:116px;width:min(430px,calc(100vw - 24px));max-height:min(620px,calc(100vh - 96px));display:flex;flex-direction:column;border:1px solid rgba(212,168,38,.30);border-radius:16px;background:linear-gradient(180deg,#171f27,#0f151b);box-shadow:0 30px 80px rgba(0,0,0,.62),0 0 28px rgba(242,194,48,.055),inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden;z-index:5000}
+.erp-global-notif-panel[hidden]{display:none!important}
+.erp-global-notif-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;border-bottom:1px solid rgba(71,84,97,.50);background:linear-gradient(180deg,#1d2731,#172029)}
+.erp-global-notif-head strong{display:block;color:#f5f7f9;font-size:17px}.erp-global-notif-head span{display:block;margin-top:2px;color:#8d99a5;font-size:11px}
+.erp-global-notif-refresh{height:34px;padding:0 11px;border-radius:9px;border:1px solid #35566c;background:linear-gradient(180deg,#18364a,#122a3a);color:#bfeaff;font-size:12px;font-weight:800;cursor:pointer}
+.erp-global-notif-list{overflow:auto;padding:8px;scrollbar-width:thin;scrollbar-color:#394652 transparent}
+.erp-global-notif-empty{padding:32px 18px;text-align:center;color:#85919d;font-size:13px}
+.erp-global-notif-item{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:start;padding:11px 10px;border:1px solid rgba(60,73,86,.42);border-radius:12px;background:linear-gradient(180deg,#151d24,#11181e);margin-bottom:7px;text-decoration:none;transition:.16s ease}
+.erp-global-notif-item:hover{transform:translateX(2px);border-color:rgba(212,168,38,.42);background:linear-gradient(180deg,#1a232b,#141b21)}
+.erp-global-notif-item.is-urgent{border-color:rgba(239,68,68,.30);box-shadow:inset 3px 0 0 rgba(239,68,68,.55)}
+.erp-global-notif-item.is-warning{border-color:rgba(242,194,48,.24);box-shadow:inset 3px 0 0 rgba(242,194,48,.42)}
+.erp-global-notif-item.is-info{box-shadow:inset 3px 0 0 rgba(56,189,248,.34)}
+.erp-global-notif-item-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:#202a34;border:1px solid rgba(255,255,255,.06);font-size:16px}
+.erp-global-notif-copy strong{display:block;color:#eef2f6;font-size:13px;line-height:1.25}.erp-global-notif-copy p{margin:4px 0 0;color:#98a5b1;font-size:11.5px;line-height:1.35}.erp-global-notif-copy small{display:block;margin-top:6px;color:#6f7b86;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.erp-global-notif-arrow{color:#7e8994;font-size:18px;line-height:1;margin-top:6px}
+.erp-global-notif-foot{padding:9px 14px;border-top:1px solid rgba(65,78,91,.44);color:#77838e;font-size:10px;text-align:center;background:#10161c}
+@media(max-width:900px){.erp-global-notif{margin-left:6px!important}.erp-global-notif-panel{top:70px;right:10px;width:calc(100vw - 20px);max-height:calc(100vh - 84px)}}
+@media(prefers-reduced-motion:reduce){.erp-global-notif-btn,.erp-global-notif-badge{animation:none!important}.erp-global-notif-item{transition:none!important}}
