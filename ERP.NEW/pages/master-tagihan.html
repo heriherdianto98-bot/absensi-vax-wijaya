@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Tagihan | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/toolbar.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/light-contrast.css">
+<link rel="stylesheet" href="../styles/master-tagihan.css?v=20260909-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="page-master-tagihan">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <div class="erp-content">
+    <main class="mt-shell">
+      <header class="mt-head">
+        <div>
+          <div class="mt-eyebrow">MASTER DATA • OPERASIONAL</div>
+          <h1>Master Tagihan</h1>
+          <p>Jadwal kewajiban rutin cabang untuk reminder Owner & SVP. Pembayaran tetap melalui Cash Out Minutes.</p>
+        </div>
+        <div class="mt-head-badge">REMINDER MASTER</div>
+      </header>
+
+      <section class="mt-toolbar">
+        <label class="mt-control mt-search"><span>CARI</span><input id="mtSearch" type="search" placeholder="Cari cabang / kategori..."></label>
+        <label class="mt-control"><span>KATEGORI</span><select id="mtCategory"><option value="ALL">Semua</option></select></label>
+        <label class="mt-control"><span>STATUS</span><select id="mtStatus"><option value="ALL">Semua</option><option value="ACTIVE">Aktif</option><option value="INACTIVE">Nonaktif</option></select></label>
+        <div class="mt-toolbar-actions">
+          <button id="mtRefresh" type="button" class="mt-btn mt-btn-secondary">↻ Refresh</button>
+          <button id="mtAdd" type="button" class="mt-btn mt-btn-primary">+ Tambah Tagihan</button>
+        </div>
+      </section>
+
+      <section class="mt-summary" aria-label="Ringkasan Master Tagihan">
+        <article><span>Total Master Aktif</span><strong id="mtActiveCount">0</strong><small>jadwal aktif</small></article>
+        <article><span>Total Nominal Bulanan</span><strong id="mtMonthlyTotal">Rp0</strong><small>estimasi kewajiban rutin</small></article>
+        <article><span>Jatuh Tempo ≤ 7 Hari</span><strong id="mtDueSoon">0</strong><small>calon reminder</small></article>
+        <article><span>Kategori</span><strong id="mtCategoryCount">0</strong><small>jenis tagihan</small></article>
+      </section>
+
+      <section class="mt-card">
+        <div class="mt-card-head">
+          <div><strong>DAFTAR MASTER TAGIHAN</strong><small>Reminder only • tidak membuat transaksi Arus Kas</small></div>
+          <span id="mtRowCount">0 data</span>
+        </div>
+        <div class="mt-table-wrap">
+          <table class="mt-table">
+            <thead><tr><th>Kategori</th><th>Cabang</th><th>Jatuh Tempo</th><th>Nominal</th><th>Reminder</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="mtBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="mt-modal" id="mtModal" hidden>
+  <div class="mt-backdrop" data-mt-close></div>
+  <section class="mt-dialog" role="dialog" aria-modal="true" aria-labelledby="mtModalTitle">
+    <div class="mt-dialog-head"><div><span>MASTER TAGIHAN</span><h2 id="mtModalTitle">Tambah Tagihan</h2></div><button type="button" data-mt-close>×</button></div>
+    <form id="mtForm" class="mt-form">
+      <input type="hidden" id="mtId">
+      <label><span>Kategori</span><select id="mtFormCategory" required></select></label>
+      <label><span>Cabang</span><input id="mtBranch" required placeholder="Contoh: PAMANUKAN"></label>
+      <label><span>Tanggal Jatuh Tempo</span><input id="mtDueDay" type="number" min="1" max="31" required></label>
+      <label><span>Nominal</span><input id="mtAmount" inputmode="numeric" required placeholder="Rp0"></label>
+      <label class="mt-span-2"><span>Catatan</span><input id="mtNote" placeholder="Opsional"></label>
+      <div class="mt-reminder-box mt-span-2"><strong>Reminder</strong><span>Default H-7, H-3, H-1, dan hari H • target Owner + SVP (channel WA/email dikerjakan tahap berikutnya)</span></div>
+      <label class="mt-switch mt-span-2"><input id="mtActive" type="checkbox" checked><span>Master aktif</span></label>
+      <div id="mtFormMsg" class="mt-form-msg mt-span-2"></div>
+      <div class="mt-form-actions mt-span-2"><button type="button" class="mt-btn mt-btn-secondary" data-mt-close>Batal</button><button type="submit" class="mt-btn mt-btn-primary">Simpan Master</button></div>
+    </form>
+  </section>
+</div>
+
+<nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./arus-kas.html"><span class="bn-icon">⇄</span>Arus Kas</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
+<script src="../config/minutes.js"></script>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/modules/erp-header-sync.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/master-tagihan.js?v=20260909-1"></script>
+<script>
+(async()=>{
+  try{
+    await Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]);
+    OwnerAuth?.bindUi?.(); OwnerAuth?.syncHeader?.(); OwnerAuth?.applyAccessControl?.();
+    initErpShellChrome?.(); syncSidebarRoleMeta?.();
+    document.querySelectorAll('.sidebar .menu-item').forEach(a=>a.classList.toggle('active',a.dataset.erpNav==='master-tagihan'));
+    const cabang=document.getElementById('erpHeaderCabang'); if(cabang)cabang.textContent='Semua Cabang';
+    const periode=document.getElementById('erpHeaderPeriode'); if(periode)periode.textContent='Master Data';
+    await MasterTagihan.init();
+  }catch(err){console.error('Master Tagihan boot error',err);}
+})();
+</script>
+</body>
+</html>
