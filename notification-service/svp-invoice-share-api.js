@@ -71,6 +71,7 @@ async function invoiceByToken(token){
   return {inv,items:items||[]};
 }
 
+/* UI-only PDF presentation. Data/auth/token logic intentionally unchanged. */
 function streamPdf(res,inv,items){
   const safeNo=String(inv.invoice_no||'invoice').replace(/[^A-Za-z0-9._-]+/g,'-');
   res.writeHead(200,{
@@ -83,76 +84,63 @@ function streamPdf(res,inv,items){
   const doc=new PDFDocument({size:'A4',margin:36,info:{Title:`Invoice ${inv.invoice_no||''}`,Author:'ERP VAX WIJAYA'}});
   doc.pipe(res);
 
-  const pageW=595.28;
-  const left=36;
-  const right=pageW-36;
-  const width=right-left;
-  const blue='#163e86';
-  const gold='#b88a19';
-  const ink='#172233';
-  const muted='#6e7884';
-  const line='#cbd2da';
-  const soft='#f3f5f7';
+  const pageW=595.28,left=36,right=pageW-36,width=right-left;
+  const blue='#163e86',gold='#b88a19',ink='#172233',muted='#6e7884',line='#cbd2da',soft='#f3f5f7';
 
-  // Outer document frame — follows approved browser Print template.
   doc.rect(left,36,width,770).lineWidth(0.8).strokeColor('#c9d0d8').stroke();
   doc.rect(left,36,width,5).fill(gold);
 
-  // Header.
   doc.font('Times-Bold').fontSize(25).fillColor(blue).text('ERP VAX WIJAYA',left+24,65,{width:width-48});
   doc.font('Helvetica-Bold').fontSize(12).fillColor(ink).text(String(inv.title||'INVOICE SVP').toUpperCase(),left+24,99,{characterSpacing:1.8});
   doc.font('Helvetica').fontSize(8.8).fillColor(muted).text('ENTERPRISE MANAGEMENT SYSTEM',left+24,120,{characterSpacing:0.8});
   doc.moveTo(left,144).lineTo(right,144).lineWidth(2.2).strokeColor('#c5cbd2').stroke();
 
-  // Meta card.
-  const metaX=left+24,metaY=162,metaW=width-48,metaH=92;
+  // Meta header: left and right columns are locked inside the approved card.
+  const metaX=left+24,metaY=162,metaW=width-48,metaH=98;
+  const metaRightW=170,metaRightX=metaX+metaW-metaRightW-18;
   doc.roundedRect(metaX,metaY,metaW,metaH,3).fillAndStroke(soft,'#dde2e7');
   doc.rect(metaX,metaY,4,metaH).fill(gold);
-  doc.font('Helvetica-Bold').fontSize(8.8).fillColor(ink).text('No. Invoice',metaX+18,178);
-  doc.font('Helvetica').fontSize(10.5).text(inv.invoice_no||'-',metaX+18,193,{width:250});
-  doc.font('Helvetica-Bold').fontSize(8.8).text('Kepada',metaX+18,220);
-  doc.font('Helvetica').fontSize(10.5).text('SVP VAX WIJAYA',metaX+18,235,{width:250});
-  doc.font('Helvetica-Bold').fontSize(8.8).text('Tanggal',metaX+330,178,{width:180,align:'right'});
-  doc.font('Helvetica').fontSize(10.5).text(dateLabel(inv.invoice_date),metaX+330,193,{width:180,align:'right'});
-  if(inv.due_date){
-    doc.font('Helvetica-Bold').fontSize(8.8).text('Jatuh Tempo',metaX+330,220,{width:180,align:'right'});
-    doc.font('Helvetica').fontSize(10.5).text(dateLabel(inv.due_date),metaX+330,235,{width:180,align:'right'});
-  }
 
-  // Items table.
-  const tableX=left+24;
-  const tableW=width-48;
-  const cols=[tableX,tableX+46,tableX+270,tableX+332,tableX+438,tableX+tableW];
-  let y=276;
+  doc.font('Helvetica-Bold').fontSize(8.8).fillColor(ink).text('No. Invoice',metaX+18,178,{width:245});
+  doc.font('Helvetica').fontSize(10.5).text(inv.invoice_no||'-',metaX+18,193,{width:245});
+  doc.font('Helvetica-Bold').fontSize(8.8).text('Kepada',metaX+18,222,{width:245});
+  doc.font('Helvetica').fontSize(10.5).text('SVP VAX WIJAYA',metaX+18,237,{width:245});
+
+  doc.font('Helvetica-Bold').fontSize(8.8).text('Tanggal',metaRightX,178,{width:metaRightW,align:'right'});
+  doc.font('Helvetica').fontSize(10.5).text(dateLabel(inv.invoice_date),metaRightX,193,{width:metaRightW,align:'right'});
+  doc.font('Helvetica-Bold').fontSize(8.8).text('Jatuh Tempo',metaRightX,222,{width:metaRightW,align:'right'});
+  doc.font('Helvetica').fontSize(10.5).text(dateLabel(inv.due_date),metaRightX,237,{width:metaRightW,align:'right'});
+
+  // Table widths tuned so currency never wraps in Nominal/Jumlah.
+  const tableX=left+24,tableW=width-48;
+  const cols=[tableX,tableX+38,tableX+244,tableX+292,tableX+382,tableX+tableW];
+  let y=282;
   const headerH=28;
   doc.rect(tableX,y,tableW,headerH).fill('#eef1f4');
   doc.strokeColor('#d5dae0').lineWidth(0.8).rect(tableX,y,tableW,headerH).stroke();
-  doc.font('Helvetica-Bold').fontSize(9).fillColor(ink);
-  doc.text('No',cols[0]+8,y+9,{width:cols[1]-cols[0]-16});
-  doc.text('Daftar Tagihan',cols[1]+8,y+9,{width:cols[2]-cols[1]-16});
-  doc.text('Qty',cols[2]+8,y+9,{width:cols[3]-cols[2]-16,align:'center'});
-  doc.text('Nominal',cols[3]+8,y+9,{width:cols[4]-cols[3]-16,align:'right'});
-  doc.text('Jumlah',cols[4]+8,y+9,{width:cols[5]-cols[4]-16,align:'right'});
+  doc.font('Helvetica-Bold').fontSize(8.7).fillColor(ink);
+  doc.text('No',cols[0]+7,y+9,{width:cols[1]-cols[0]-14});
+  doc.text('Daftar Tagihan',cols[1]+7,y+9,{width:cols[2]-cols[1]-14});
+  doc.text('Qty',cols[2]+6,y+9,{width:cols[3]-cols[2]-12,align:'center'});
+  doc.text('Nominal',cols[3]+6,y+9,{width:cols[4]-cols[3]-12,align:'right'});
+  doc.text('Jumlah',cols[4]+6,y+9,{width:cols[5]-cols[4]-12,align:'right'});
   y+=headerH;
 
-  doc.font('Helvetica').fontSize(9.2);
+  doc.font('Helvetica').fontSize(8.9);
   for(let i=0;i<items.length;i++){
-    const x=items[i];
-    const rowH=32;
+    const x=items[i],rowH=32;
     doc.strokeColor('#d5dae0').rect(tableX,y,tableW,rowH).stroke();
-    doc.fillColor(ink).text(String(i+1),cols[0]+8,y+10,{width:cols[1]-cols[0]-16});
-    doc.text(String(x.item_name||''),cols[1]+8,y+10,{width:cols[2]-cols[1]-16});
-    doc.text(String(Number(x.qty||0)),cols[2]+8,y+10,{width:cols[3]-cols[2]-16,align:'center'});
-    doc.text(rp(x.unit_price),cols[3]+8,y+10,{width:cols[4]-cols[3]-16,align:'right'});
-    doc.font('Helvetica-Bold').text(rp(x.amount),cols[4]+8,y+10,{width:cols[5]-cols[4]-16,align:'right'}).font('Helvetica');
+    doc.fillColor(ink).text(String(i+1),cols[0]+7,y+10,{width:cols[1]-cols[0]-14,lineBreak:false});
+    doc.text(String(x.item_name||''),cols[1]+7,y+10,{width:cols[2]-cols[1]-14,height:14,ellipsis:true});
+    doc.text(String(Number(x.qty||0)),cols[2]+6,y+10,{width:cols[3]-cols[2]-12,align:'center',lineBreak:false});
+    doc.text(rp(x.unit_price),cols[3]+6,y+10,{width:cols[4]-cols[3]-12,align:'right',lineBreak:false});
+    doc.font('Helvetica-Bold').text(rp(x.amount),cols[4]+6,y+10,{width:cols[5]-cols[4]-12,align:'right',lineBreak:false}).font('Helvetica');
     y+=rowH;
   }
 
-  // Total.
-  const totalY=Math.max(y+18,355);
-  doc.font('Helvetica-Bold').fontSize(21).fillColor(blue).text(`TOTAL  ${rp(inv.total)}`,right-260,totalY,{width:236,align:'right'});
+  const totalY=Math.max(y+18,360);
+  doc.font('Helvetica-Bold').fontSize(21).fillColor(blue).text(`TOTAL  ${rp(inv.total)}`,right-275,totalY,{width:251,align:'right',lineBreak:false});
 
-  // Optional note, kept on the left so signature stays clean on the right.
   if(inv.notes){
     const noteY=totalY+42;
     doc.rect(left+24,noteY,270,54).fill('#f7f8fa');
@@ -161,9 +149,7 @@ function streamPdf(res,inv,items){
     doc.font('Helvetica').fontSize(8.5).text(String(inv.notes),left+36,noteY+24,{width:246,height:24,ellipsis:true});
   }
 
-  // Owner authorization block — same structure as approved Print template.
-  const signX=right-245;
-  const signY=Math.max(totalY+46,475);
+  const signX=right-245,signY=Math.max(totalY+46,475);
   doc.font('Helvetica-Bold').fontSize(9.5).fillColor(ink).text('Disetujui / Mengetahui,',signX,signY,{width:210,align:'center'});
   doc.font('Helvetica-Bold').fontSize(8.2).fillColor(ink).text('OTORISASI OWNER',signX,signY+15,{width:210,align:'center',characterSpacing:1.2});
   if(existsSync(OWNER_SIGNATURE_PATH)){
@@ -172,7 +158,6 @@ function streamPdf(res,inv,items){
   doc.font('Helvetica-Bold').fontSize(10.5).fillColor(ink).text('Heri Herdianto',signX,signY+104,{width:210,align:'center'});
   doc.font('Helvetica-Bold').fontSize(8.2).fillColor(ink).text('OWNER',signX,signY+124,{width:210,align:'center',characterSpacing:1.5});
 
-  // Footer.
   const footerY=770;
   doc.moveTo(left,footerY).lineTo(right,footerY).lineWidth(0.8).strokeColor(line).stroke();
   doc.rect(left,footerY,width,36).fill('#f6f7f9');
@@ -181,7 +166,6 @@ function streamPdf(res,inv,items){
   doc.font('Helvetica').fontSize(7.2).fillColor(ink).text('INTERNAL / CONFIDENTIAL',left+210,footerY+11,{width:160,align:'center'});
   doc.font('Helvetica').fontSize(7.2).fillColor(muted).text('Generated automatically',left+210,footerY+21,{width:160,align:'center'});
   doc.font('Helvetica').fontSize(7.2).fillColor(ink).text(dateLabel(new Date().toISOString().slice(0,10)),right-120,footerY+16,{width:96,align:'right'});
-
   doc.end();
 }
 
@@ -197,10 +181,10 @@ const server=http.createServer(async(req,res)=>{
       const body=await readBody(req);const id=String(body.invoice_id||'');if(!id)throw new Error('invoice_id required');
       const {data:inv,error:ie}=await db.from('svp_invoices').select('id,invoice_no').eq('id',id).maybeSingle();if(ie)throw ie;if(!inv){res.writeHead(404,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:'Invoice tidak ditemukan'}));}
       const token=await tokenForInvoice(id,auth.user.id);
-      const shareUrl=`${PUBLIC_BASE}/i/${token}`;
+      const shareUrl=`${PUBLIC_BASE}/i/${token}.pdf`;
       res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify({ok:true,token,url:shareUrl,invoice_no:inv.invoice_no}));
     }
-    const m=url.pathname.match(/^\/i\/([23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{10})$/);
+    const m=url.pathname.match(/^\/i\/([23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{10})(?:\.pdf)?$/);
     if(req.method==='GET'&&m){
       const result=await invoiceByToken(m[1]);
       if(!result){res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store'});return res.end('Invoice tidak ditemukan atau link sudah tidak aktif.');}
