@@ -2,7 +2,8 @@
 "use strict";
 (() => {
   const SEND_OWNER_API='https://erp.vaxwijaya.com/api/svp-invoice/send-owner';
-  const isSvp=inv=>['svp','spv'].includes(String(inv?.role||'').toLowerCase());
+  const roleOf=inv=>String(inv?.role||'').toLowerCase();
+  const isSvp=inv=>['svp','spv'].includes(roleOf(inv));
 
   function ensureSaveButton(inv){
     if(!isSvp(inv))return;
@@ -16,20 +17,52 @@
     actions.appendChild(b);
   }
 
-  function install(){
-    const inv=window.SvPInvoice;
-    if(!inv||!inv.__workflowV2)return false;
-    if(inv.__svpOwnerReturnInstalled)return true;
-    inv.__svpOwnerReturnInstalled=true;
-    inv.canManage=function(){return this.isOwner()||['svp','spv'].includes(String(this.role||'').toLowerCase())};
-
-    if(!isSvp(inv))return true;
-
+  function applySvpLabels(inv){
+    if(!isSvp(inv))return;
     const head=document.querySelector('#mtInvoiceCard .mt-invoice-head strong');
     if(head)head.textContent='INVOICE OWNER ↔ SVP';
     const topBtn=document.querySelector('.mt-invoice-top-btn');
     if(topBtn)topBtn.innerHTML='<span aria-hidden="true">▤</span> Buat Invoice Owner';
+    const modalTitle=document.getElementById('mtInvoiceTitle');
+    if(modalTitle && !document.getElementById('mtInvoiceModal')?.hidden)modalTitle.textContent='Buat Invoice Owner';
     ensureSaveButton(inv);
+  }
+
+  function install(){
+    const inv=window.SvPInvoice;
+    if(!inv||!inv.__workflowV2)return false;
+
+    /* Wait until SvPInvoice.init() has actually resolved the authenticated role. */
+    const role=roleOf(inv);
+    if(!role)return false;
+
+    if(inv.__svpOwnerReturnInstalled)return true;
+
+    /* Owner flow is already HARD LOCKED. Do not override anything for Owner. */
+    if(role==='owner'){
+      inv.__svpOwnerReturnInstalled=true;
+      return true;
+    }
+    if(!isSvp(inv)){
+      inv.__svpOwnerReturnInstalled=true;
+      return true;
+    }
+
+    inv.__svpOwnerReturnInstalled=true;
+    inv.canManage=function(){return this.isOwner()||['svp','spv'].includes(roleOf(this))};
+
+    applySvpLabels(inv);
+
+    const originalOpen=inv.open.bind(inv);
+    inv.open=async function(row=null){
+      const out=await originalOpen(row);
+      if(isSvp(this)){
+        const title=document.getElementById('mtInvoiceTitle');
+        if(title)title.textContent=row?'Edit Invoice Owner':'Buat Invoice Owner';
+        ensureSaveButton(this);
+      }
+      return out;
+    };
 
     inv.save=async function(){
       if(!isSvp(this))return;
@@ -104,10 +137,11 @@
     };
 
     inv.render();
+    applySvpLabels(inv);
     return true;
   }
 
   let tries=0;
-  const t=setInterval(()=>{if(install()||++tries>120)clearInterval(t)},100);
-  window.addEventListener('load',()=>{setTimeout(install,900);setTimeout(install,1700)});
+  const t=setInterval(()=>{if(install()||++tries>180)clearInterval(t)},100);
+  window.addEventListener('load',()=>{setTimeout(install,900);setTimeout(install,1700);setTimeout(install,3000)});
 })();
