@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="../styles/master-tagihan.css?v=20260909-1">
 <link rel="stylesheet" href="../styles/master-tagihan-muted.css?v=20260909-1">
 <link rel="stylesheet" href="../styles/master-tagihan-calendar-ui.css?v=20260909-1">
-<link rel="stylesheet" href="../styles/master-tagihan-svp-invoice.css?v=20260909-1">
+<link rel="stylesheet" href="../styles/master-tagihan-svp-invoice.css?v=20260909-2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="page-master-tagihan">
@@ -34,7 +34,10 @@
           <h1>Master Tagihan</h1>
           <p>Jadwal kewajiban rutin cabang untuk reminder Owner & SVP. Pembayaran tetap melalui Cash Out Minutes.</p>
         </div>
-        <div class="mt-head-badge">REMINDER MASTER</div>
+        <div class="mt-head-right">
+          <div class="mt-head-badge">REMINDER MASTER</div>
+          <button type="button" class="mt-invoice-top-btn" onclick="window.SvPInvoice?.open?.()"><span aria-hidden="true">▤</span> Buat Invoice SVP</button>
+        </div>
       </header>
 
       <section class="mt-toolbar">
