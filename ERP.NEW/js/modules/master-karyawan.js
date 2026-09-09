@@ -10,7 +10,7 @@ This module is read-only toward Supabase.
 */
 
 const MasterKaryawan = (() => {
-  const state = { employees: [], branches: [], rows: [] };
+  const state = { employees: [], branches: [], rows: [], uiBound: false };
   const GENERIC_MINUTES = new Set(["backup", "capster"]);
 
   const $ = (id) => document.getElementById(id);
@@ -75,11 +75,15 @@ const MasterKaryawan = (() => {
     const branch = $("mkBranch");
     const role = $("mkRole");
     if(branch){
+      const selected = branch.value;
       branch.innerHTML = '<option value="">Semua Cabang</option>' + state.branches.map(b => `<option value="${Number(b.id)}">${esc(b.nama_cabang)}</option>`).join("");
+      if([...branch.options].some(o => o.value === selected)) branch.value = selected;
     }
     if(role){
+      const selected = role.value;
       const roles = [...new Set(state.rows.map(r => r.jabatan).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"id"));
       role.innerHTML = '<option value="">Semua Jabatan</option>' + roles.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
+      if([...role.options].some(o => o.value === selected)) role.value = selected;
     }
   }
 
@@ -89,7 +93,7 @@ const MasterKaryawan = (() => {
     const role = String($("mkRole")?.value || "");
     const status = String($("mkStatus")?.value || "ACTIVE");
     return state.rows.filter(r => {
-      if(q && !norm(`${r.nama} ${r.cabang} ${r.jabatan}`).includes(q)) return false;
+      if(q && !norm(`${r.nama} ${r.namaMaster} ${r.cabang} ${r.jabatan}`).includes(q)) return false;
       if(branch && r.cabangId !== branch) return false;
       if(role && r.jabatan !== role) return false;
       if(status === "ACTIVE" && !r.aktif) return false;
@@ -128,13 +132,24 @@ const MasterKaryawan = (() => {
   }
 
   function bind(){
-    ["mkSearch","mkBranch","mkRole","mkStatus"].forEach(id => $(id)?.addEventListener(id==="mkSearch"?"input":"change", render));
+    if(state.uiBound) return;
+    const search = $("mkSearch");
+    const branch = $("mkBranch");
+    const role = $("mkRole");
+    const status = $("mkStatus");
+    search?.addEventListener("input", render);
+    search?.addEventListener("search", render);
+    branch?.addEventListener("change", render);
+    role?.addEventListener("change", render);
+    status?.addEventListener("change", render);
     $("mkRefresh")?.addEventListener("click", init);
+    state.uiBound = true;
   }
 
   async function init(){
     const status = $("mkLoadStatus");
     try{
+      bind();
       if(status) status.textContent = "Memuat data karyawan…";
       await loadSources();
       populateFilters();
