@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_DIR="/opt/erp-vax-notification"
+SERVICE_SRC="$APP_DIR/deploy/erp-vax-svp-invoice.service"
+NGINX_SNIPPET_SRC="$APP_DIR/deploy/nginx-svp-invoice.conf"
+SERVICE_DST="/etc/systemd/system/erp-vax-svp-invoice.service"
+
+if [[ $EUID -ne 0 ]]; then
+  echo "Jalankan sebagai root." >&2
+  exit 1
+fi
+
+for f in "$APP_DIR/svp-invoice-api.js" "$APP_DIR/.env" "$SERVICE_SRC" "$NGINX_SNIPPET_SRC"; do
+  [[ -f "$f" ]] || { echo "File wajib belum ada: $f" >&2; exit 1; }
+done
+
+install -m 0644 "$SERVICE_SRC" "$SERVICE_DST"
+systemctl daemon-reload
+systemctl enable --now erp-vax-svp-invoice.service
+
+SITE_FILE="$(grep -RIlE 'server_name[[:space:]]+[^;]*erp-test\.vaxwijaya\.com' /etc/nginx/sites-enabled /etc/nginx/sites-available 2>/dev/null | head -n1 || true)"
+if [[ -z "$SITE_FILE" ]]; then
+  echo "Service API aktif, tetapi site Nginx erp-test.vaxwijaya.com tidak ditemukan otomatis." >&2
+  echo "Tambahkan isi $NGINX_SNIPPET_SRC ke server block ERP lalu nginx -t && systemctl reload nginx." >&2
+  exit 2
+fi
+
+if grep -q 'location = /api/svp-invoice/send' "$SITE_FILE"; then
+  echo "Nginx route SVP invoice sudah ada: $SITE_FILE"
+else
+  BACKUP="${SITE_FILE}.bak-$(date +%Y%m%d-%H%M%S)"
+  cp -a "$SITE_FILE" "$BACKUP"
+  python3 - "$SITE_FILE" "$NGINX_SNIPPET_SRC" <<'PY'
+import sys
+from pathlib import Path
+site=Path(sys.argv[1]); snippet=Path(sys.argv[2]).read_text().strip()+"\n"
+text=site.read_text()
+needle='erp-test.vaxwijaya.com'
+pos=text.find(needle)
+if pos < 0:
+    raise SystemExit('server_name erp-test.vaxwijaya.com tidak ditemukan')
+# Cari pembuka server block terdekat sebelum server_name.
+server_pos=text.rfind('server',0,pos)
+brace=text.find('{',server_pos,pos+1)
+if server_pos < 0 or brace < 0:
+    raise SystemExit('server block tidak dapat diparse')
+depth=0
+end=None
+for i in range(brace,len(text)):
+    ch=text[i]
+    if ch=='{': depth+=1
+    elif ch=='}':
+        depth-=1
+        if depth==0:
+            end=i
+            break
+if end is None:
+    raise SystemExit('penutup server block tidak ditemukan')
+indent='    '
+insert='\n' + '\n'.join(indent+line if line else '' for line in snippet.splitlines()) + '\n'
+site.write_text(text[:end]+insert+text[end:])
+PY
+  nginx -t
+  systemctl reload nginx
+  echo "Nginx route ditambahkan ke $SITE_FILE (backup: $BACKUP)"
+fi
+
+curl -fsS http://127.0.0.1:8791/health
+echo
+curl -fsS https://erp-test.vaxwijaya.com/api/svp-invoice/health
+echo
+systemctl --no-pager --full status erp-vax-svp-invoice.service | sed -n '1,12p'
+echo "SVP Invoice API deploy PASS"
