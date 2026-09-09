@@ -143,99 +143,13 @@
     });
   }
 
-  function installRefreshReminder(){
-    document.querySelectorAll("#ak2RefreshReminder").forEach((el,index)=>{if(index>0)el.remove();});
-    const legacy=document.querySelector(".ak2-head #ak2RefreshReminder");
-    if(legacy) legacy.remove();
-
-    if(!document.getElementById("ak2RefreshReminderStyle")){
-      const style=document.createElement("style");
-      style.id="ak2RefreshReminderStyle";
-      style.textContent=`
-        body.page-arus-kas .ak2-ledger-card .ak2-section-head{
-          gap:14px;
-          flex-wrap:wrap;
-        }
-        body.page-arus-kas .ak2-refresh-reminder{
-          display:inline-flex;
-          align-items:center;
-          gap:8px;
-          margin-left:auto;
-          padding:0;
-          border:0;
-          background:transparent;
-          box-shadow:none;
-          color:#c8d3df;
-          font-size:12px;
-          font-weight:800;
-          letter-spacing:.005em;
-          line-height:1;
-          white-space:nowrap;
-        }
-        body.page-arus-kas .ak2-refresh-reminder-text{
-          color:#c8d3df;
-          text-shadow:none;
-        }
-        body.page-arus-kas .ak2-refresh-reminder-refresh{
-          width:22px;
-          height:22px;
-          flex:0 0 22px;
-          display:grid;
-          place-items:center;
-          color:#73c7ff;
-          font-size:18px;
-          font-weight:900;
-          line-height:1;
-          filter:drop-shadow(0 0 5px rgba(76,169,231,.28));
-          animation:ak2RefreshIconSpin 2.2s linear infinite;
-        }
-        body.page-arus-kas .ak2-refresh-reminder + .ak2-quick-search-wrap{
-          margin-left:0!important;
-        }
-        @keyframes ak2RefreshIconSpin{
-          to{transform:rotate(360deg)}
-        }
-        @media(max-width:1120px){
-          body.page-arus-kas .ak2-refresh-reminder{font-size:11px;gap:6px}
-          body.page-arus-kas .ak2-refresh-reminder-refresh{width:20px;height:20px;flex-basis:20px;font-size:16px}
-        }
-        @media(max-width:820px){
-          body.page-arus-kas .ak2-refresh-reminder{order:2;margin-left:0;max-width:100%;justify-content:flex-start}
-          body.page-arus-kas .ak2-quick-search-wrap{order:3;width:100%!important;grid-template-columns:minmax(0,1fr)!important}
-        }
-        @media(prefers-reduced-motion:reduce){
-          body.page-arus-kas .ak2-refresh-reminder-refresh{animation:none}
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    const head=document.querySelector(".ak2-ledger-card .ak2-section-head");
-    const search=document.querySelector(".ak2-ledger-card .ak2-section-head .ak2-quick-search-wrap");
-    if(!head||!search) return false;
-
-    let reminder=document.getElementById("ak2RefreshReminder");
-    if(!reminder){
-      reminder=document.createElement("div");
-      reminder.id="ak2RefreshReminder";
-      reminder.className="ak2-refresh-reminder";
-      reminder.setAttribute("role","note");
-    }
-    reminder.innerHTML='<span class="ak2-refresh-reminder-text">Untuk update data mohon refresh</span><span class="ak2-refresh-reminder-refresh" aria-hidden="true">↻</span>';
-
-    if(reminder.nextElementSibling!==search) head.insertBefore(reminder,search);
-    return true;
-  }
-
   function startSync(){
     bindInputs();
     sync();
-    installRefreshReminder();
     let tries=0;
     const timer=setInterval(()=>{
       tries+=1;
       bindInputs();
-      installRefreshReminder();
       if(sync() && document.getElementById("ak2Start")?.value && document.getElementById("ak2End")?.value){
         if(tries>=20) clearInterval(timer);
       }
