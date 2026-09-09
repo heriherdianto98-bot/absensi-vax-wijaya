@@ -33,7 +33,10 @@ if [[ -z "$SITE_FILE" ]]; then
   exit 2
 fi
 
-BACKUP="${SITE_FILE}.bak-$(date +%Y%m%d-%H%M%S)"
+# Backup WAJIB di luar sites-enabled supaya tidak ikut di-include Nginx.
+BACKUP_DIR="/etc/nginx/erp-vax-backups"
+mkdir -p "$BACKUP_DIR"
+BACKUP="$BACKUP_DIR/$(basename "$SITE_FILE").bak-$(date +%Y%m%d-%H%M%S)"
 cp -a "$SITE_FILE" "$BACKUP"
 
 # Idempotent: hapus route invoice lama dari server block target lalu pasang snippet terbaru.
@@ -82,7 +85,6 @@ if target is None:
 start, end = target
 block = text[start:end+1]
 
-# Hapus location exact lama milik SVP invoice (send + health), termasuk isi nested brace.
 def remove_location(src, path):
     pat = re.compile(r'(?m)^\s*location\s*=\s*' + re.escape(path) + r'\s*\{')
     while True:
@@ -102,7 +104,6 @@ def remove_location(src, path):
                     break
         if close is None:
             raise SystemExit(f'location {path} tidak tertutup')
-        # ikut buang newline setelah block agar rapi
         j = close + 1
         while j < len(src) and src[j] in ' \t':
             j += 1
@@ -113,7 +114,6 @@ def remove_location(src, path):
 block = remove_location(block, '/api/svp-invoice/send')
 block = remove_location(block, '/api/svp-invoice/health')
 
-# Sisipkan snippet terbaru tepat sebelum penutup server block.
 last = block.rfind('}')
 indent = '    '
 insert = '\n' + '\n'.join(indent + line if line else '' for line in snippet.splitlines()) + '\n'
