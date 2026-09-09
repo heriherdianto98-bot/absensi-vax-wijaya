@@ -3,7 +3,7 @@ import http from 'node:http';
 import nodemailer from 'nodemailer';
 import { createClient } from '@supabase/supabase-js';
 
-const required=['SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY','SMTP_HOST','SMTP_PORT','SMTP_USER','SMTP_PASS','MAIL_FROM'];
+const required=['SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY','SMTP_HOST','SMTP_PORT','SMTP_USER','SMTP_PASS','MAIL_FROM','MAIL_OWNER'];
 for(const k of required) if(!process.env[k]) throw new Error(`Missing env: ${k}`);
 
 const db=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_SERVICE_ROLE_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
@@ -41,18 +41,6 @@ async function svpAuth(req){
   return {ok:true,user};
 }
 
-async function ownerEmail(){
-  const {data:profiles,error}=await db.from('profiles').select('id,role,aktif');
-  if(error)throw error;
-  const owner=(profiles||[]).find(p=>p.aktif!==false&&String(p.role||'').toLowerCase()==='owner');
-  if(!owner)throw new Error('Akun Owner aktif tidak ditemukan');
-  const {data,error:ue}=await db.auth.admin.getUserById(owner.id);
-  if(ue)throw ue;
-  const email=data?.user?.email;
-  if(!email)throw new Error('Email Owner tidak ditemukan');
-  return email;
-}
-
 const server=http.createServer(async(req,res)=>{
   cors(req,res);
   if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}
@@ -64,7 +52,7 @@ const server=http.createServer(async(req,res)=>{
     const {data:inv,error:ie}=await db.from('svp_invoices').select('*').eq('id',id).maybeSingle();if(ie)throw ie;if(!inv)throw new Error('Invoice tidak ditemukan');
     if(String(inv.created_by)!==String(auth.user.id)||!['svp','spv'].includes(String(inv.sender_role||'').toLowerCase())){res.writeHead(403,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:'SVP hanya dapat mengirim invoice miliknya sendiri'}));}
     const {data:items,error:xe}=await db.from('svp_invoice_items').select('*').eq('invoice_id',id).order('sort_order');if(xe)throw xe;if(!items?.length)throw new Error('Invoice tidak memiliki item');
-    const to=await ownerEmail();
+    const to=process.env.MAIL_OWNER;
     const info=await transport.sendMail({from:`"${process.env.MAIL_FROM_NAME||'ERP VAX WIJAYA'}" <${process.env.MAIL_FROM}>`,to,subject:`[ERP VAX] ${inv.title||'Invoice SVP'} — ${inv.invoice_no}`,html:invoiceHtml(inv,items)});
     await db.from('svp_invoices').update({status:'sent',sent_at:new Date().toISOString(),sent_to_email:to,updated_by:auth.user.id,updated_at:new Date().toISOString()}).eq('id',id);
     console.log('[SVP -> Owner Invoice Send]',{invoiceNo:inv.invoice_no,to,userId:auth.user.id,messageId:info.messageId});
