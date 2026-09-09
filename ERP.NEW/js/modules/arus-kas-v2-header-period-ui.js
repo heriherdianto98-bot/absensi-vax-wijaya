@@ -152,58 +152,71 @@
       style.id="ak2RefreshReminderStyle";
       style.textContent=`
         body.page-arus-kas .ak2-ledger-card .ak2-section-head{
-          gap:12px;
+          gap:14px;
           flex-wrap:wrap;
         }
         body.page-arus-kas .ak2-refresh-reminder{
-          min-height:44px;
+          min-height:42px;
           display:inline-flex;
           align-items:center;
-          gap:9px;
-          padding:0 14px;
+          gap:10px;
+          padding:0 13px 0 11px;
           margin-left:auto;
-          border:1px solid rgba(215,170,85,.56);
-          border-radius:11px;
-          background:linear-gradient(180deg,rgba(67,49,18,.78),rgba(30,23,11,.92));
-          color:#f1cf7b;
+          border:1px solid rgba(67,83,107,.88);
+          border-radius:10px;
+          background:linear-gradient(180deg,#172331 0%,#111a24 100%);
+          color:#c9d4df;
           font-size:12px;
-          font-weight:900;
-          letter-spacing:.01em;
+          font-weight:800;
+          letter-spacing:.005em;
           white-space:nowrap;
-          box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 0 1px rgba(215,170,85,.04),0 8px 20px rgba(0,0,0,.18);
-          animation:ak2RefreshBoxPulse 1.25s ease-in-out infinite;
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 7px 18px rgba(0,0,0,.16);
+        }
+        body.page-arus-kas .ak2-refresh-reminder::before{
+          content:"";
+          width:3px;
+          height:22px;
+          flex:0 0 3px;
+          border-radius:999px;
+          background:#d4a743;
+          box-shadow:0 0 9px rgba(212,167,67,.34);
+          animation:ak2RefreshAccentPulse 1.25s ease-in-out infinite;
         }
         body.page-arus-kas .ak2-refresh-reminder-icon{
-          width:23px;
-          height:23px;
-          flex:0 0 23px;
+          width:22px;
+          height:22px;
+          flex:0 0 22px;
           display:grid;
           place-items:center;
-          border-radius:50%;
-          border:1px solid rgba(255,208,105,.78);
-          background:rgba(230,177,72,.13);
-          color:#ffd66f;
-          font-size:14px;
+          border-radius:7px;
+          border:1px solid rgba(212,167,67,.42);
+          background:rgba(212,167,67,.08);
+          color:#e5bd63;
+          font-size:13px;
           font-weight:950;
           line-height:1;
-          box-shadow:0 0 11px rgba(225,175,73,.16);
+        }
+        body.page-arus-kas .ak2-refresh-reminder span:last-child{
+          color:#cbd6e1;
+          text-shadow:none;
         }
         body.page-arus-kas .ak2-refresh-reminder + .ak2-quick-search-wrap{
           margin-left:0!important;
         }
-        @keyframes ak2RefreshBoxPulse{
-          0%,100%{border-color:rgba(215,170,85,.36);box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 0 0 1px rgba(215,170,85,.03),0 7px 18px rgba(0,0,0,.16);opacity:.78}
-          50%{border-color:rgba(245,196,91,.92);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 16px rgba(223,174,72,.22),0 9px 22px rgba(0,0,0,.22);opacity:1}
+        @keyframes ak2RefreshAccentPulse{
+          0%,100%{opacity:.38;transform:scaleY(.72);box-shadow:0 0 4px rgba(212,167,67,.10)}
+          50%{opacity:1;transform:scaleY(1);box-shadow:0 0 12px rgba(212,167,67,.42)}
         }
-        @media(max-width:1050px){
-          body.page-arus-kas .ak2-refresh-reminder{min-height:40px;padding:0 11px;font-size:11px;gap:7px}
-          body.page-arus-kas .ak2-refresh-reminder-icon{width:21px;height:21px;flex-basis:21px;font-size:13px}
+        @media(max-width:1120px){
+          body.page-arus-kas .ak2-refresh-reminder{min-height:40px;padding:0 10px 0 9px;font-size:11px;gap:8px}
+          body.page-arus-kas .ak2-refresh-reminder::before{height:20px}
+          body.page-arus-kas .ak2-refresh-reminder-icon{width:20px;height:20px;flex-basis:20px;font-size:12px}
         }
         @media(max-width:820px){
-          body.page-arus-kas .ak2-refresh-reminder{order:2;margin-left:0;width:100%;justify-content:center}
+          body.page-arus-kas .ak2-refresh-reminder{order:2;margin-left:0;width:auto;max-width:100%;justify-content:flex-start}
           body.page-arus-kas .ak2-quick-search-wrap{order:3;width:100%!important;grid-template-columns:minmax(0,1fr)!important}
         }
-        @media(prefers-reduced-motion:reduce){body.page-arus-kas .ak2-refresh-reminder{animation:none}}
+        @media(prefers-reduced-motion:reduce){body.page-arus-kas .ak2-refresh-reminder::before{animation:none}}
       `;
       document.head.appendChild(style);
     }
