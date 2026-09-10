@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Master Sewa & Investor | VAX ERP</title>
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/master-sewa-investor.css?v=20260911-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="page-master-sewa-investor">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <div class="erp-content msi-shell">
+    <header class="msi-head">
+      <div><small>MASTER DATA • BULANAN</small><h1>Master Sewa & Investor</h1><p>Perubahan tarif/persentase memakai tanggal efektif. Histori lama tetap tersimpan.</p></div>
+      <a class="msi-back" href="./erp-dashboard.html">← Dashboard</a>
+    </header>
+
+    <div class="msi-tabs">
+      <button class="is-active" data-tab="sewa">Biaya Sewa Tempat</button>
+      <button data-tab="investor">Investor</button>
+    </div>
+
+    <section id="panelSewa" class="msi-panel is-active">
+      <div class="msi-panel-head"><div><small>MASTER AKTIF</small><h2>Biaya Sewa Tempat</h2></div><span id="sewaCount">0 cabang</span></div>
+      <div class="msi-table-wrap"><table><thead><tr><th>Cabang</th><th class="num">Sewa / Bulan</th><th>Periode</th><th>Jatuh Tempo</th><th>Aturan Rugi</th><th>Berlaku</th><th>Aksi</th></tr></thead><tbody id="sewaBody"></tbody></table></div>
+      <details class="msi-history"><summary>Riwayat Perubahan Sewa</summary><div class="msi-table-wrap"><table><thead><tr><th>Cabang</th><th class="num">Nominal</th><th>Dari</th><th>Sampai</th><th>Status</th><th>Catatan</th></tr></thead><tbody id="sewaHistory"></tbody></table></div></details>
+    </section>
+
+    <section id="panelInvestor" class="msi-panel">
+      <div class="msi-panel-head"><div><small>MASTER AKTIF</small><h2>Investor</h2></div><span id="investorCount">0 cabang</span></div>
+      <div class="msi-table-wrap"><table><thead><tr><th>Cabang</th><th>Investor</th><th class="num">Bagi Hasil</th><th>Hak Sewa</th><th>Dasar</th><th>Pembayaran</th><th>Berlaku</th><th>Aksi</th></tr></thead><tbody id="investorBody"></tbody></table></div>
+      <details class="msi-history"><summary>Riwayat Perubahan Investor</summary><div class="msi-table-wrap"><table><thead><tr><th>Cabang</th><th>Investor</th><th class="num">Persentase</th><th>Dari</th><th>Sampai</th><th>Status</th><th>Catatan</th></tr></thead><tbody id="investorHistory"></tbody></table></div></details>
+    </section>
+  </div>
+</div>
+
+<div id="msiModal" class="msi-modal" hidden>
+  <div class="msi-backdrop" data-close></div>
+  <form id="msiForm" class="msi-dialog">
+    <div class="msi-dialog-head"><div><small id="modalEyebrow">UBAH MASTER</small><h2 id="modalTitle">—</h2></div><button type="button" data-close>×</button></div>
+    <input type="hidden" id="modalType"><input type="hidden" id="modalBranchCode">
+    <label>Cabang<input id="modalBranch" disabled></label>
+    <label id="rentField">Nominal Sewa / Bulan<input id="modalRent" inputmode="numeric"></label>
+    <label id="shareField" hidden>Persentase Bagi Hasil<input id="modalShare" inputmode="decimal"></label>
+    <label>Berlaku Mulai<input id="modalEffective" type="date" required></label>
+    <label>Catatan<input id="modalNotes" placeholder="Opsional"></label>
+    <p class="msi-warning">Simpan perubahan akan menutup periode aktif lama sehari sebelum tanggal berlaku baru. Histori lama tidak dihapus.</p>
+    <p id="modalMsg" class="msi-msg"></p>
+    <div class="msi-actions"><button type="button" data-close>Batal</button><button id="modalSave" type="submit">Simpan Perubahan</button></div>
+  </form>
+</div>
+
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/master-sewa-investor.js?v=20260911-1"></script>
+<script>
+Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
+  OwnerAuth?.bindUi?.(); OwnerAuth?.syncHeader?.(); OwnerAuth?.applyAccessControl?.(); initErpShellChrome?.();
+  const c=document.getElementById('erpHeaderCabang'); if(c)c.textContent='Master Data';
+  const p=document.getElementById('erpHeaderPeriode'); if(p)p.textContent='Sewa & Investor';
+});
+</script>
+</body>
+</html>
