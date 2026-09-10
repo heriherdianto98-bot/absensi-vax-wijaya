@@ -26,6 +26,20 @@ Scope: Kasbon UI integration only.
     return (M.karyawanList || []).find(r => Number(r.id) === id) || null;
   }
 
+  function markExistingMonthlyKasbon(){
+    const summary = document.querySelector("#kasbonForm .kasbon-employee-summary") || document.querySelector(".kasbon-modal .kasbon-employee-summary");
+    if(!summary) return;
+    summary.querySelectorAll(".kasbon-existing-monthly-pulse").forEach(el => el.classList.remove("kasbon-existing-monthly-pulse"));
+    const nodes = [...summary.querySelectorAll("div,span,strong,p")];
+    const label = nodes.find(el => String(el.textContent || "").trim().toUpperCase() === "SUDAH KASBON BULAN INI");
+    if(!label) return;
+    const box = label.closest("div") || label.parentElement;
+    const value = box?.querySelector("strong") || label.nextElementSibling;
+    if(!value) return;
+    const amount = Number(String(value.textContent || "").replace(/[^\d]/g,"")) || 0;
+    if(amount > 0) value.classList.add("kasbon-existing-monthly-pulse");
+  }
+
   function ensureUi(){
     const formGrid = document.querySelector("#kasbonForm .kasbon-fieldset:nth-of-type(2) .kasbon-form-grid");
     if(formGrid && !document.getElementById("kasbonFormPaymentMethod")){
@@ -165,7 +179,6 @@ Scope: Kasbon UI integration only.
       <div class="kasbon-payment-history" id="kasbonPaymentHistory"><span>Riwayat Pembayaran</span><strong>Memuat…</strong></div>`;
     body.appendChild(panel);
 
-    // LUNAS harus berasal dari outstanding = 0, bukan shortcut manual UI.
     actions.querySelectorAll("[data-kasbon-lunas]").forEach(el => el.remove());
     actions.querySelectorAll("[data-kasbon-delete-test]").forEach(el => el.remove());
 
@@ -319,6 +332,7 @@ Scope: Kasbon UI integration only.
     M.onEmployeeSelected = async function(...args){
       const result = await originalEmployeeSelected(...args);
       syncFormMethod();
+      window.requestAnimationFrame(markExistingMonthlyKasbon);
       return result;
     };
   }
@@ -330,6 +344,7 @@ Scope: Kasbon UI integration only.
       ensureUi();
       const row = id ? (M.rows || []).find(r => String(r.id) === String(id)) : null;
       syncFormMethod(row);
+      window.requestAnimationFrame(markExistingMonthlyKasbon);
       return result;
     };
   }
