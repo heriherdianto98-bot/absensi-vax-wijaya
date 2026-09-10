@@ -102,4 +102,25 @@ Scope: Kasbon only.
       emp.cabang_id = originalBranchId;
     }
   };
+
+  // UI text only: keep the existing disbursement logic untouched, but replace the stale native-confirm copy.
+  if(typeof M.disburse === "function" && !M.__disburseConfirmCopyV1){
+    M.__disburseConfirmCopyV1 = true;
+    const originalDisburse = M.disburse.bind(M);
+    M.disburse = async function(...args){
+      const nativeConfirm = window.confirm;
+      window.confirm = (message) => {
+        const text = String(message || "");
+        if(text.includes("Cairkan kasbon ini dan set status AKTIF?")){
+          return nativeConfirm("Cairkan kasbon ini dan set status AKTIF?\nArus Kas akan mencatat pencairan Kasbon secara otomatis.");
+        }
+        return nativeConfirm(message);
+      };
+      try{
+        return await originalDisburse(...args);
+      } finally {
+        window.confirm = nativeConfirm;
+      }
+    };
+  }
 })();
