@@ -414,3 +414,160 @@ Scope: Kasbon UI integration only.
     return result;
   };
 })();
+
+/* =========================================================
+   FORM TANGGAL PENGAJUAN — CUSTOM CYAN CALENDAR / UI ONLY
+   Keeps #kasbonFormTanggal as the canonical value source.
+   ========================================================= */
+(() => {
+  if(typeof KasbonModule === "undefined") return;
+  const M = KasbonModule;
+  if(M.__formDateCyanUiV1) return;
+  M.__formDateCyanUiV1 = true;
+
+  const MONTHS = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  let viewYear = 0;
+  let viewMonth = 0;
+
+  const fmt = (iso) => {
+    const p = String(iso || "").split("-");
+    return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : "Pilih tanggal";
+  };
+
+  const today = () => M.todayWib ? M.todayWib() : new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jakarta",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+
+  function closePicker(){
+    const popup = document.getElementById("kasbonFormDatePopup");
+    const trigger = document.getElementById("kasbonFormDateTrigger");
+    if(popup) popup.hidden = true;
+    if(trigger) trigger.setAttribute("aria-expanded","false");
+  }
+
+  function syncTrigger(){
+    const input = document.getElementById("kasbonFormTanggal");
+    const label = document.getElementById("kasbonFormDateLabel");
+    if(input && label) label.textContent = fmt(input.value);
+  }
+
+  function render(){
+    const input = document.getElementById("kasbonFormTanggal");
+    const monthEl = document.getElementById("kasbonFormDateMonth");
+    const grid = document.getElementById("kasbonFormDateGrid");
+    if(!input || !monthEl || !grid) return;
+    monthEl.textContent = `${MONTHS[viewMonth]} ${viewYear}`;
+    const selected = input.value || "";
+    const now = today();
+    const first = new Date(Date.UTC(viewYear,viewMonth,1,12));
+    const offset = (first.getUTCDay()+6)%7;
+    const max = new Date(Date.UTC(viewYear,viewMonth+1,0,12)).getUTCDate();
+    let html = "";
+    for(let i=0;i<offset;i++) html += `<span class="kasbon-form-date-day is-empty"></span>`;
+    for(let d=1;d<=max;d++){
+      const iso = `${viewYear}-${String(viewMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      const cls = ["kasbon-form-date-day"];
+      if(iso===selected) cls.push("is-selected");
+      if(iso===now) cls.push("is-today");
+      html += `<button type="button" class="${cls.join(" ")}" data-kasbon-form-date="${iso}">${d}</button>`;
+    }
+    grid.innerHTML = html;
+  }
+
+  function openPicker(){
+    const input = document.getElementById("kasbonFormTanggal");
+    const popup = document.getElementById("kasbonFormDatePopup");
+    const trigger = document.getElementById("kasbonFormDateTrigger");
+    if(!input || !popup || !trigger) return;
+    const seed = input.value || today();
+    const p = seed.split("-").map(Number);
+    viewYear = p[0];
+    viewMonth = (p[1] || 1)-1;
+    popup.hidden = false;
+    trigger.setAttribute("aria-expanded","true");
+    render();
+  }
+
+  function ensurePicker(){
+    const input = document.getElementById("kasbonFormTanggal");
+    if(!input || document.getElementById("kasbonFormDateTrigger")){
+      syncTrigger();
+      return;
+    }
+    const label = input.closest("label");
+    if(!label) return;
+    input.classList.add("kasbon-form-date-native");
+    input.tabIndex = -1;
+    input.setAttribute("aria-hidden","true");
+
+    const wrap = document.createElement("div");
+    wrap.className = "kasbon-form-date-wrap";
+    wrap.innerHTML = `
+      <button type="button" class="kasbon-form-date-trigger" id="kasbonFormDateTrigger" aria-haspopup="dialog" aria-expanded="false">
+        <span id="kasbonFormDateLabel">${fmt(input.value)}</span><i aria-hidden="true">▣</i>
+      </button>
+      <div class="kasbon-form-date-popup" id="kasbonFormDatePopup" role="dialog" aria-label="Pilih tanggal pengajuan" hidden>
+        <div class="kasbon-form-date-head">
+          <button type="button" data-kasbon-form-date-nav="-1" aria-label="Bulan sebelumnya">‹</button>
+          <strong id="kasbonFormDateMonth">—</strong>
+          <button type="button" data-kasbon-form-date-nav="1" aria-label="Bulan berikutnya">›</button>
+        </div>
+        <div class="kasbon-form-date-week"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+        <div class="kasbon-form-date-grid" id="kasbonFormDateGrid"></div>
+        <div class="kasbon-form-date-foot"><button type="button" data-kasbon-form-date-today>Hari ini</button></div>
+      </div>`;
+    input.insertAdjacentElement("afterend",wrap);
+
+    const trigger = document.getElementById("kasbonFormDateTrigger");
+    trigger?.addEventListener("click",()=>{
+      const popup = document.getElementById("kasbonFormDatePopup");
+      if(popup?.hidden) openPicker(); else closePicker();
+    });
+    wrap.addEventListener("click",(e)=>{
+      const nav = e.target.closest("[data-kasbon-form-date-nav]");
+      if(nav){
+        const delta = Number(nav.getAttribute("data-kasbon-form-date-nav") || 0);
+        viewMonth += delta;
+        if(viewMonth<0){viewMonth=11;viewYear--;} else if(viewMonth>11){viewMonth=0;viewYear++;}
+        render();
+        return;
+      }
+      const day = e.target.closest("[data-kasbon-form-date]");
+      if(day){
+        input.value = day.getAttribute("data-kasbon-form-date") || input.value;
+        input.dispatchEvent(new Event("change",{bubbles:true}));
+        syncTrigger();
+        closePicker();
+        return;
+      }
+      if(e.target.closest("[data-kasbon-form-date-today]")){
+        input.value = today();
+        input.dispatchEvent(new Event("change",{bubbles:true}));
+        syncTrigger();
+        closePicker();
+      }
+    });
+    input.addEventListener("change",syncTrigger);
+  }
+
+  document.addEventListener("click",(e)=>{
+    const wrap = document.querySelector(".kasbon-form-date-wrap");
+    if(wrap && !wrap.contains(e.target)) closePicker();
+  });
+  document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closePicker(); });
+
+  const originalBoot = M.boot.bind(M);
+  M.boot = async function(...args){
+    const result = await originalBoot(...args);
+    ensurePicker();
+    return result;
+  };
+  if(typeof M.openForm === "function"){
+    const originalOpenForm = M.openForm.bind(M);
+    M.openForm = async function(...args){
+      const result = await originalOpenForm(...args);
+      ensurePicker();
+      syncTrigger();
+      closePicker();
+      return result;
+    };
+  }
+})();
