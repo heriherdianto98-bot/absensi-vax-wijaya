@@ -1,0 +1,173 @@
+/* ERP VAX — Master Karyawan standard ERP UI override
+   UI ONLY. Tidak mengubah data, mapping, sync, atau business logic. */
+
+.master-karyawan-page{
+  --mk-std-bg:#0B0E12;
+  --mk-std-surface:#11151B;
+  --mk-std-surface-2:#171C23;
+  --mk-std-border:#2A3340;
+  --mk-std-gold:#F2C230;
+  --mk-std-text:#F8FAFC;
+  --mk-std-muted:#94A3B8;
+}
+
+/* Hilangkan efek premium/purple berlebihan, kembali ke komponen standar ERP */
+.master-karyawan-page .mk-head{
+  padding:16px 18px;
+  border:1px solid var(--mk-std-border);
+  border-left:4px solid var(--mk-std-gold);
+  border-radius:12px;
+  background:var(--mk-std-surface);
+  box-shadow:0 8px 22px rgba(0,0,0,.24);
+  overflow:visible;
+  transform:none;
+}
+.master-karyawan-page .mk-head:hover{
+  transform:none;
+  border-color:var(--mk-std-border);
+  border-left-color:var(--mk-std-gold);
+  box-shadow:0 8px 22px rgba(0,0,0,.24);
+}
+.master-karyawan-page .mk-head::before,
+.master-karyawan-page .mk-head::after{display:none}
+.master-karyawan-page .mk-head small{color:var(--mk-std-gold);letter-spacing:1.5px}
+.master-karyawan-page .mk-head h2{color:var(--mk-std-text);font-size:34px}
+.master-karyawan-page .mk-head p{color:#CBD5E1}
+
+.master-karyawan-page .mk-refresh{
+  border:1px solid #3A4654;
+  background:#1A2029;
+  color:#E2E8F0;
+  border-radius:9px;
+  box-shadow:none;
+}
+.master-karyawan-page .mk-refresh:hover{
+  transform:none;
+  border-color:var(--mk-std-gold);
+  box-shadow:none;
+}
+
+/* Summary card standar ERP: satu visual language, gold sebagai accent */
+.master-karyawan-page .mk-card,
+.master-karyawan-page .mk-card:nth-child(1),
+.master-karyawan-page .mk-card:nth-child(2),
+.master-karyawan-page .mk-card:nth-child(3),
+.master-karyawan-page .mk-card:nth-child(4){
+  --card-accent:242,194,48;
+  min-height:96px;
+  border:1px solid var(--mk-std-border);
+  border-left:4px solid var(--mk-std-gold);
+  border-radius:12px;
+  background:linear-gradient(180deg,var(--mk-std-surface-2) 0%,var(--mk-std-surface) 100%);
+  box-shadow:0 7px 18px rgba(0,0,0,.22);
+  animation:none;
+}
+.master-karyawan-page .mk-card:hover{
+  transform:none;
+  border-color:#394452;
+  border-left-color:var(--mk-std-gold);
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+}
+.master-karyawan-page .mk-card::before{
+  border:1px solid rgba(242,194,48,.35);
+  background:#1A2029;
+  color:var(--mk-std-gold)!important;
+  box-shadow:none;
+}
+.master-karyawan-page .mk-card:hover::before{transform:translateY(-50%);box-shadow:none}
+.master-karyawan-page .mk-card::after{display:none}
+.master-karyawan-page .mk-card span{color:#CBD5E1}
+.master-karyawan-page .mk-card strong{color:var(--mk-std-text)}
+
+/* Filter standar ERP */
+.master-karyawan-page .mk-toolbar{
+  border:1px solid var(--mk-std-border);
+  border-radius:12px;
+  background:var(--mk-std-surface);
+  box-shadow:0 6px 16px rgba(0,0,0,.18);
+}
+.master-karyawan-page .mk-toolbar input,
+.master-karyawan-page .mk-toolbar select{
+  border:1px solid #34404D;
+  border-radius:9px;
+  background:#171C23;
+  color:var(--mk-std-text);
+  box-shadow:none;
+}
+.master-karyawan-page .mk-toolbar input:hover,
+.master-karyawan-page .mk-toolbar select:hover,
+.master-karyawan-page .mk-toolbar input:focus,
+.master-karyawan-page .mk-toolbar select:focus{
+  transform:none;
+  border-color:var(--mk-std-gold);
+  box-shadow:0 0 0 2px rgba(242,194,48,.10);
+}
+.master-karyawan-page .mk-meta{color:var(--mk-std-muted)}
+.master-karyawan-page .mk-meta strong{color:#E2E8F0}
+
+/* Tabel standar ERP */
+.master-karyawan-page .mk-table-wrap{
+  border:1px solid var(--mk-std-border);
+  border-radius:12px;
+  background:var(--mk-std-surface);
+  box-shadow:0 8px 22px rgba(0,0,0,.22);
+}
+.master-karyawan-page .mk-table thead th{
+  background:#171C23;
+  color:#E2E8F0;
+  border-bottom:2px solid var(--mk-std-gold);
+  padding:13px 14px;
+}
+
+/* OWNER REQUEST: setiap baris nama memiliki pembatas gold yang jelas */
+.master-karyawan-page .mk-table tbody td{
+  background:var(--mk-std-surface);
+  color:#E5E7EB;
+  border-bottom:1px solid rgba(242,194,48,.48);
+}
+.master-karyawan-page .mk-table tbody tr:nth-child(even) td{
+  background:#131820;
+}
+.master-karyawan-page .mk-table tbody tr:hover td{
+  background:#1A2028;
+  border-bottom-color:var(--mk-std-gold);
+}
+.master-karyawan-page .mk-table tbody tr:hover{
+  transform:none;
+  filter:none;
+}
+.master-karyawan-page .mk-table tbody tr:last-child td{
+  border-bottom:1px solid rgba(242,194,48,.48);
+}
+.master-karyawan-page .mk-no{
+  color:#AAB4C0!important;
+  border-right:1px solid rgba(242,194,48,.28);
+}
+.master-karyawan-page .mk-name{color:#FFFFFF}
+.master-karyawan-page .mk-table small{color:#8290A0}
+
+/* Badge dibuat lebih flat seperti modul ERP lain */
+.master-karyawan-page .mk-role,
+.master-karyawan-page .mk-status,
+.master-karyawan-page .mk-source{
+  box-shadow:none;
+}
+.master-karyawan-page .mk-role{
+  background:#242B35;
+  border-color:#3A4654;
+  color:#E5E7EB;
+}
+.master-karyawan-page .mk-source{
+  background:#242B35;
+  border-color:#3A4654;
+  color:#CBD5E1;
+}
+.master-karyawan-page .mk-source.is-minutes{
+  background:#18303A;
+  border-color:#29505E;
+  color:#8EDFF5;
+}
+
+@media(max-width:700px){
+  .master-karyawan-page .mk-head h2{font-size:30px}
+}
