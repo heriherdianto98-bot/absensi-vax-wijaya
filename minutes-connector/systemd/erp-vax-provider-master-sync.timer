@@ -1,0 +1,12 @@
+[Unit]
+Description=Run ERP VAX Provider Master Sync every 30 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=30min
+Persistent=true
+AccuracySec=1min
+Unit=erp-vax-provider-master-sync.service
+
+[Install]
+WantedBy=timers.target
