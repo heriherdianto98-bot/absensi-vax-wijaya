@@ -1,7 +1,7 @@
 /* VAX ERP — Unified Payroll Print Presenter
    Header/footer mengikuti pola MASTER PRINT Tabel Harian Semua Cabang.
    Output: A4 portrait untuk Print / Save as PDF.
-   UI only: Owner signature mirrors the approved Owner Invoice presentation.
+   UI only: Owner and Supervisor signatures are print presentation assets.
 */
 (() => {
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
@@ -60,7 +60,13 @@
     .sum:nth-child(6){border-top-color:#43c5cf;background:#eefbfd}.sum:nth-child(6) span{color:#187f87}
     .sum:nth-child(7){border-top-color:#d4af37;background:#fff9e6}.sum:nth-child(7) span,.sum:nth-child(7) strong{color:#8c6b00}
     .empty{text-align:center;padding:8mm;color:#777}
-    .sign{margin-top:2.5mm;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid}.sign .box{text-align:center;min-height:25mm}.sign .space{height:17mm}.sign .line{border-top:1px solid #333;padding-top:1.2mm;font-weight:700}.sign .role{font-size:7pt;color:#666;margin-top:.7mm}.owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}.owner-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center}.owner-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
+    .sign{margin-top:2.5mm;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid}
+    .sign .box{text-align:center;min-height:25mm}
+    .sign .line{border-top:1px solid #333;padding-top:1.2mm;font-weight:700}
+    .sign .role{font-size:7pt;color:#666;margin-top:.7mm}
+    .supervisor-sign .stage{height:17mm;width:100%;margin:0 auto .5mm;display:flex;align-items:flex-end;justify-content:center}
+    .supervisor-sign .ttd img{max-width:38mm;max-height:16mm;object-fit:contain}
+    .owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}.owner-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center}.owner-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
 
     @media print{
       .sign{position:fixed;left:0;right:0;bottom:11mm;z-index:4;margin-top:0}
@@ -84,6 +90,7 @@
     const w=window.open('','_blank');if(!w){alert('Popup print diblokir browser.');return;}
     const logo='../assets/logo-vax-wijaya.png';
     const signatureUrl=new URL('../assets/owner-signature.png',window.location.href).href;
+    const supervisorSignatureUrl=new URL('../assets/supervisor-signature-rangga.svg',window.location.href).href;
     const printedAt=nowWib();
     const header=`<header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">PAYROLL KARYAWAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN OPERASIONAL</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>`;
     const footer=`<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
@@ -92,7 +99,7 @@
         <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Gaji Pokok − Denda − Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk</p></section>
         <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
         ${snap.cards.map(cardHtml).join('')}
-        <section class="sign"><div class="box"><div class="space"></div><div class="line">Rangga Putra Pratama</div><div class="role">SUPERVISOR · VAX WIJAYA</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
+        <section class="sign"><div class="box supervisor-sign"><div class="stage"><div class="ttd"><img src="${supervisorSignatureUrl}" alt="Tanda tangan Supervisor" onerror="this.style.display='none'"></div></div><div class="line">Rangga Putra Pratama</div><div class="role">SUPERVISOR · VAX WIJAYA</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
       </main></td></tr></tbody></table>
       <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\/script></body></html>`;
     w.document.open();w.document.write(html);w.document.close();
