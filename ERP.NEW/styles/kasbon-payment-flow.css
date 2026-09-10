@@ -116,6 +116,67 @@
   50%{transform:translateY(-3px)}
 }
 
+/* FORM DROPDOWN VISIBILITY — UI ONLY */
+.kasbon-modal .kasbon-form,
+.kasbon-modal .kasbon-fieldset,
+.kasbon-modal .kasbon-form-grid,
+.kasbon-modal .kasbon-field{
+  overflow:visible!important;
+}
+.kasbon-modal .erp-cselect{
+  position:relative!important;
+}
+.kasbon-modal .erp-cselect.is-open{
+  z-index:22000!important;
+}
+.kasbon-modal .erp-cselect-menu{
+  z-index:23000!important;
+  max-height:220px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  border:1px solid rgba(34,211,238,.38)!important;
+  background:linear-gradient(180deg,#07171c 0%,#050d11 100%)!important;
+  box-shadow:0 18px 38px rgba(0,0,0,.72),0 0 18px rgba(34,211,238,.12)!important;
+}
+.kasbon-modal .erp-cselect-option{
+  color:#EAFBFF!important;
+  background:transparent!important;
+}
+.kasbon-modal .erp-cselect-option:hover,
+.kasbon-modal .erp-cselect-option.is-active{
+  color:#A5F3FC!important;
+  background:rgba(34,211,238,.12)!important;
+}
+.kasbon-modal .erp-cselect-option.is-selected{
+  color:#071014!important;
+  background:linear-gradient(180deg,#67E8F9,#22D3EE)!important;
+}
+.kasbon-modal .kasbon-field:has(#kasbonFormRekom){
+  position:relative!important;
+  z-index:21000!important;
+}
+
+/* NATIVE DATE PICKER — DARK CYAN THEME / UI ONLY */
+.kasbon-modal input[type="date"]{
+  color-scheme:dark!important;
+  accent-color:#22D3EE!important;
+  background:#071014!important;
+  color:#F4FDFF!important;
+}
+.kasbon-modal input[type="date"]::-webkit-calendar-picker-indicator{
+  opacity:.92!important;
+  cursor:pointer!important;
+  filter:invert(88%) sepia(34%) saturate(920%) hue-rotate(136deg) brightness(102%) contrast(95%)!important;
+}
+.kasbon-modal input[type="date"]::-webkit-datetime-edit,
+.kasbon-modal input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+.kasbon-modal input[type="date"]::-webkit-datetime-edit-text,
+.kasbon-modal input[type="date"]::-webkit-datetime-edit-month-field,
+.kasbon-modal input[type="date"]::-webkit-datetime-edit-day-field,
+.kasbon-modal input[type="date"]::-webkit-datetime-edit-year-field{
+  color:#F4FDFF!important;
+}
+
 @media(max-height:760px) and (min-width:700px){
   .kasbon-modal{padding-top:58px!important;padding-bottom:8px!important}
   .kasbon-modal .kasbon-modal-panel{max-height:calc(100vh - 70px)!important}
