@@ -68,8 +68,8 @@
 #financeHubCard[data-menu="cash-in"]{padding-top:10px!important}
 #financeHubCard[data-menu="cash-in"] > #financeTitle,#financeHubCard[data-menu="cash-in"] > #financeDesc,#financeHubCard[data-menu="cash-in"] > #financeFilterChips{margin-top:0!important;margin-bottom:0!important}
 #financeHubCard[data-menu="cash-in"] #financeKasbonRoot{margin-top:-6px!important}
-#financeHubCard[data-menu="cash-in"] .kasbon-page{gap:10px!important}
-#financeHubCard[data-menu="cash-in"] .kasbon-tabs{margin-bottom:2px!important}
+#financeHubCard[data-menu="cash-in"] .kasbon-page{gap:18px!important}
+#financeHubCard[data-menu="cash-in"] .kasbon-tabs{margin-bottom:6px!important}
 
 /* SUMMARY CARDS — BLACK BASE + STRONG FUNCTION COLORS (UI ONLY) */
 .kasbon-page .kasbon-sum-card{background:linear-gradient(180deg,#090909 0%,#020202 100%)!important;border-width:1px!important;border-style:solid!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 10px 24px rgba(0,0,0,.42)!important}
@@ -82,21 +82,19 @@
 .kasbon-page .kasbon-sum-card:nth-child(1):hover{border-color:#F59E0B!important;box-shadow:inset 4px 0 0 #F59E0B,0 14px 30px rgba(0,0,0,.5),0 0 24px rgba(245,158,11,.24)!important}.kasbon-page .kasbon-sum-card:nth-child(2):hover{border-color:#22D3EE!important;box-shadow:inset 4px 0 0 #22D3EE,0 14px 30px rgba(0,0,0,.5),0 0 24px rgba(34,211,238,.22)!important}.kasbon-page .kasbon-sum-card:nth-child(3):hover{border-color:#A855F7!important;box-shadow:inset 4px 0 0 #A855F7,0 14px 30px rgba(0,0,0,.5),0 0 24px rgba(168,85,247,.22)!important}.kasbon-page .kasbon-sum-card:nth-child(4):hover{border-color:#EF4444!important;box-shadow:inset 4px 0 0 #EF4444,0 14px 30px rgba(0,0,0,.5),0 0 26px rgba(239,68,68,.24)!important}.kasbon-page .kasbon-sum-card:nth-child(5):hover{border-color:#22C55E!important;box-shadow:inset 4px 0 0 #22C55E,0 14px 30px rgba(0,0,0,.5),0 0 24px rgba(34,197,94,.22)!important}
 
 /* SECTION BACKGROUND DIFFERENTIATION — UI ONLY */
-.kasbon-page .kasbon-owner-queue{
-  background:linear-gradient(180deg,#201314 0%,#140d0e 100%)!important;
-  border-color:rgba(239,68,68,.24)!important;
-  box-shadow:inset 3px 0 0 rgba(239,68,68,.58),0 8px 22px rgba(0,0,0,.24)!important;
-}
+.kasbon-page .kasbon-owner-queue{background:linear-gradient(180deg,#201314 0%,#140d0e 100%)!important;border-color:rgba(239,68,68,.24)!important;box-shadow:inset 3px 0 0 rgba(239,68,68,.58),0 8px 22px rgba(0,0,0,.24)!important}
 .kasbon-page .kasbon-owner-queue h3{color:#FCA5A5!important}
 .kasbon-page .kasbon-owner-queue .kasbon-queue-list{background:rgba(30,12,14,.34)!important}
-
-.kasbon-page .kasbon-list-wrap{
-  background:linear-gradient(180deg,#1d180e 0%,#121009 100%)!important;
-  border-color:rgba(201,162,39,.28)!important;
-  box-shadow:inset 3px 0 0 rgba(201,162,39,.62),0 8px 22px rgba(0,0,0,.24)!important;
-}
+.kasbon-page .kasbon-list-wrap{background:linear-gradient(180deg,#1d180e 0%,#121009 100%)!important;border-color:rgba(201,162,39,.28)!important;box-shadow:inset 3px 0 0 rgba(201,162,39,.62),0 8px 22px rgba(0,0,0,.24)!important}
 .kasbon-page .kasbon-list-wrap h3{color:#F5E6A8!important}
 .kasbon-page .kasbon-list-wrap .kasbon-table-scroll{background:#0f0d08!important}
+
+/* SECTION SPACING — UI ONLY */
+#financeHubCard[data-menu="cash-in"] .kasbon-head{margin-bottom:2px!important}
+#financeHubCard[data-menu="cash-in"] .kasbon-summary{margin-top:2px!important;margin-bottom:2px!important}
+#financeHubCard[data-menu="cash-in"] .kasbon-filters{margin-top:2px!important;margin-bottom:2px!important}
+#financeHubCard[data-menu="cash-in"] .kasbon-owner-queue{margin-top:4px!important}
+#financeHubCard[data-menu="cash-in"] .kasbon-list-wrap{margin-top:4px!important}
 
 @media(max-width:900px){.kasbon-payment-detail{grid-template-columns:repeat(2,minmax(0,1fr))}.kasbon-page .kasbon-head h2{font-size:24px}}
 @media(max-width:560px){.kasbon-payment-detail{grid-template-columns:1fr}.kasbon-payment-history{grid-column:1}.kasbon-page .kasbon-sum-card strong{font-size:19px!important}}
