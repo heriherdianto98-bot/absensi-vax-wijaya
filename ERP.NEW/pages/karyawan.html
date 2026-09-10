@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="../styles/setoran-dark-premium.css">
 <link rel="stylesheet" href="../styles/master-karyawan.css?v=20260910-ui5">
 <link rel="stylesheet" href="../styles/master-karyawan-scrollbar.css?v=20260910-scroll1">
+<link rel="stylesheet" href="../styles/master-karyawan-actions.css?v=20260910-actions1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="setoran-dark payroll-aruskas-theme">
@@ -33,7 +34,10 @@
           <h2>Master Karyawan</h2>
           <p>Satu identitas karyawan untuk ERP. Nama Capster mengikuti nama operasional Minutes tanpa membuat duplikat.</p>
         </div>
-        <button id="mkRefresh" class="mk-refresh" type="button">↻ Refresh</button>
+        <div class="mk-head-actions">
+          <button id="mkAdd" class="mk-add" type="button">＋ Tambah Karyawan</button>
+          <button id="mkRefresh" class="mk-refresh" type="button">↻ Refresh</button>
+        </div>
       </header>
 
       <section class="mk-summary" aria-label="Ringkasan karyawan">
@@ -62,13 +66,64 @@
       <section class="mk-table-wrap">
         <table class="mk-table">
           <thead>
-            <tr><th>No.</th><th>Nama</th><th>Cabang Asal</th><th>Jabatan</th><th>Status</th><th>Sumber Nama</th></tr>
+            <tr><th>No.</th><th>Nama</th><th>Cabang Asal</th><th>Jabatan</th><th>Status</th><th>Sumber Nama</th><th>Aksi</th></tr>
           </thead>
-          <tbody id="mkBody"><tr><td colspan="6" class="mk-empty">Memuat…</td></tr></tbody>
+          <tbody id="mkBody"><tr><td colspan="7" class="mk-empty">Memuat…</td></tr></tbody>
         </table>
       </section>
     </section>
   </main>
+</div>
+
+<div id="mkModal" class="mk-modal" aria-hidden="true">
+  <div class="mk-modal-backdrop" data-mk-close></div>
+  <section class="mk-modal-card" role="dialog" aria-modal="true" aria-labelledby="mkModalTitle">
+    <header class="mk-modal-head">
+      <div>
+        <small>MASTER KARYAWAN</small>
+        <h3 id="mkModalTitle">Tambah Karyawan</h3>
+        <p id="mkModalHint">Nomor HP/WhatsApp dan alamat sesuai KTP wajib untuk karyawan baru.</p>
+      </div>
+      <button class="mk-modal-x" type="button" data-mk-close aria-label="Tutup">×</button>
+    </header>
+
+    <form id="mkForm" class="mk-form" novalidate>
+      <input id="mkFormId" type="hidden">
+      <label class="mk-field mk-field-wide">
+        <span>Nama Karyawan</span>
+        <input id="mkFormName" type="text" autocomplete="off" placeholder="Nama lengkap" required>
+      </label>
+      <label class="mk-field">
+        <span>Cabang</span>
+        <select id="mkFormBranch" required></select>
+      </label>
+      <label class="mk-field">
+        <span>Jabatan</span>
+        <select id="mkFormRole" required></select>
+      </label>
+      <label class="mk-field">
+        <span>Status</span>
+        <select id="mkFormActive" required>
+          <option value="true">Aktif</option>
+          <option value="false">Nonaktif</option>
+        </select>
+      </label>
+      <label class="mk-field">
+        <span>No. HP / WhatsApp</span>
+        <input id="mkFormPhone" type="tel" autocomplete="tel" placeholder="08xxxxxxxxxx">
+      </label>
+      <label class="mk-field mk-field-wide">
+        <span>Alamat Sesuai KTP</span>
+        <textarea id="mkFormAddress" rows="4" placeholder="Alamat lengkap sesuai KTP"></textarea>
+      </label>
+
+      <div id="mkFormError" class="mk-form-error" hidden></div>
+      <footer class="mk-modal-actions">
+        <button type="button" class="mk-btn-secondary" data-mk-close>Batal</button>
+        <button id="mkSave" type="submit" class="mk-btn-primary">Simpan</button>
+      </footer>
+    </form>
+  </section>
 </div>
 
 <nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./tabel-harian-cabang.html"><span class="bn-icon">▦</span>Tabel</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
@@ -76,7 +131,7 @@
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/loader.js"></script>
-<script src="../js/modules/master-karyawan.js?v=20260910-filter2"></script>
+<script src="../js/modules/master-karyawan.js?v=20260910-actions1"></script>
 <script>
 Promise.all([
   loadComponent('sidebar','../components/sidebar.html'),
