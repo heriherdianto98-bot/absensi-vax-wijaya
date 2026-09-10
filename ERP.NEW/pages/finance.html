@@ -92,6 +92,42 @@
     border:1px solid #3a4a59;
     background:#1c2732;
 }
+
+/* KASBON REFRESH FEEDBACK — UI ONLY */
+#kasbonRefresh{
+    position:relative;
+    overflow:hidden;
+    transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,opacity .16s ease!important;
+}
+#kasbonRefresh::before{
+    content:"↻";
+    display:inline-block;
+    margin-right:7px;
+    font-size:16px;
+    font-weight:900;
+    line-height:1;
+    opacity:.82;
+    transform-origin:center;
+}
+#kasbonRefresh.is-kasbon-refreshing{
+    border-color:rgba(34,211,238,.72)!important;
+    box-shadow:0 0 0 2px rgba(34,211,238,.12),0 0 24px rgba(34,211,238,.18)!important;
+    animation:kasbonRefreshBlink .14s linear infinite alternate!important;
+}
+#kasbonRefresh.is-kasbon-refreshing::before{
+    animation:kasbonRefreshSpin .42s linear infinite!important;
+    color:#67E8F9;
+    opacity:1;
+}
+@keyframes kasbonRefreshBlink{
+    from{opacity:.48;transform:translateY(0) scale(.985)}
+    to{opacity:1;transform:translateY(-1px) scale(1.015)}
+}
+@keyframes kasbonRefreshSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){
+    #kasbonRefresh.is-kasbon-refreshing,
+    #kasbonRefresh.is-kasbon-refreshing::before{animation:none!important}
+}
 </style>
 </head>
 <body>
@@ -408,6 +444,16 @@
         }
     });
 })();
+
+// Kasbon Refresh: visual feedback only; data reload tetap ditangani KasbonModule.bindEvents().
+document.addEventListener("click", (e) => {
+    const btn = e.target.closest("#kasbonRefresh");
+    if(!btn) return;
+    btn.classList.remove("is-kasbon-refreshing");
+    void btn.offsetWidth;
+    btn.classList.add("is-kasbon-refreshing");
+    window.setTimeout(() => btn.classList.remove("is-kasbon-refreshing"), 900);
+}, true);
 </script>
 
 </body>
