@@ -102,6 +102,13 @@ Scope: Kasbon UI integration only.
     eventsBound = true;
     const root = document.getElementById("financeKasbonRoot") || document;
     root.addEventListener("click", (e) => {
+      const deleteBtn = e.target.closest("[data-kasbon-delete-test]");
+      if(deleteBtn){
+        e.preventDefault();
+        e.stopPropagation();
+        deleteTestKasbon(deleteBtn.getAttribute("data-kasbon-delete-test"));
+        return;
+      }
       const btn = e.target.closest("[data-kasbon-pay-daily]");
       if(!btn) return;
       e.preventDefault();
@@ -160,7 +167,21 @@ Scope: Kasbon UI integration only.
 
     // LUNAS harus berasal dari outstanding = 0, bukan shortcut manual UI.
     actions.querySelectorAll("[data-kasbon-lunas]").forEach(el => el.remove());
-    if(method === "HARIAN" && ["AKTIF","DICAIRKAN"].includes(String(row.status || "").toUpperCase()) && Number(row.current_outstanding || 0) > 0){
+    actions.querySelectorAll("[data-kasbon-delete-test]").forEach(el => el.remove());
+
+    const status = String(row.status || "").toUpperCase();
+    const deletableTestStatuses = ["DRAFT","MENUNGGU OWNER","DIKEMBALIKAN","DITOLAK","DISETUJUI"];
+    if(M.role === "owner" && deletableTestStatuses.includes(status)){
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "kasbon-btn-danger";
+      delBtn.setAttribute("data-kasbon-delete-test", row.id);
+      delBtn.textContent = "Hapus Data Tes";
+      delBtn.title = "Owner-only. Hanya sebelum kasbon masuk pencairan / pembayaran.";
+      actions.insertBefore(delBtn, actions.firstChild);
+    }
+
+    if(method === "HARIAN" && ["AKTIF","DICAIRKAN"].includes(status) && Number(row.current_outstanding || 0) > 0){
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "kasbon-btn-primary";
@@ -185,6 +206,33 @@ Scope: Kasbon UI integration only.
       const box = document.getElementById("kasbonPaymentHistory");
       if(box) box.innerHTML = `<span>Riwayat Pembayaran</span><strong>Gagal memuat</strong>`;
       console.error(err);
+    }
+  }
+
+  async function deleteTestKasbon(id){
+    if(M.busy || M.role !== "owner") return;
+    const row = (M.rows || []).find(r => String(r.id) === String(id));
+    if(!row){ M.toast?.("Data Kasbon tidak ditemukan.","error"); return; }
+    const status = String(row.status || "").toUpperCase();
+    if(["DICAIRKAN","AKTIF","LUNAS"].includes(status)){
+      M.toast?.("Kasbon sudah masuk alur keuangan dan tidak boleh hard delete.","error");
+      return;
+    }
+    const ok = confirm(`HAPUS DATA TES KASBON?\n\n${row.employee_name_snapshot || "—"}\n${money(row.approved_amount ?? row.requested_amount)}\nStatus: ${status}\n\nData ini akan dihapus permanen. Lanjutkan?`);
+    if(!ok) return;
+    M.busy = true;
+    try{
+      const {error} = await db.rpc("erp_kasbon_delete_test",{p_kasbon_id:id});
+      if(error) throw error;
+      M.toast?.("Data tes Kasbon dihapus.","success");
+      M.historyCache?.delete(id);
+      M.closeModal?.("detail");
+      await M.loadList();
+    }catch(err){
+      console.error(err);
+      M.toast?.(err?.message || String(err),"error");
+    }finally{
+      M.busy = false;
     }
   }
 
