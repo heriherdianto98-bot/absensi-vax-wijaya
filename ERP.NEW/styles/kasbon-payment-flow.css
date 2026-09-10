@@ -1,17 +1,90 @@
-/* VAX ERP — Kasbon Payment Flow UI V1 (Kasbon-only) */
-.kasbon-payment-hint{display:block;margin-top:6px;color:#8fa0b3;font-size:12px;font-weight:600;line-height:1.35}
-.kasbon-method-badge{display:inline-flex;align-items:center;justify-content:center;margin-top:5px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.06em;line-height:1.2;border:1px solid rgba(242,194,48,.32);background:rgba(242,194,48,.08);color:#f2c230}
-.kasbon-method-badge.is-harian{border-color:rgba(34,211,238,.34);background:rgba(34,211,238,.08);color:#67e8f9}
-.kasbon-payment-detail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px;padding:14px;border:1px solid rgba(242,194,48,.2);border-radius:14px;background:rgba(9,14,20,.58)}
-.kasbon-payment-detail>div{min-width:0;padding:10px 11px;border-radius:10px;background:rgba(255,255,255,.025)}
-.kasbon-payment-detail span{display:block;margin-bottom:5px;color:#8fa0b3;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.kasbon-payment-detail strong{color:#eef4fa;font-size:13px;font-weight:800}
+/* VAX ERP — Kasbon Premium UI V1
+   Scope: Kasbon presentation only. No business/data logic.
+*/
+
+/* ---------- TYPOGRAPHY / PAGE ---------- */
+.kasbon-page{--kb-gold:#f2c230;--kb-gold-soft:rgba(242,194,48,.16);--kb-cyan:#67e8f9;--kb-bg:#0a0f15;--kb-panel:#101821;--kb-line:rgba(255,255,255,.09);--kb-text:#f7fafc;--kb-muted:#91a2b5;color:var(--kb-text)}
+.kasbon-page .kasbon-eyebrow,.kasbon-page .kasbon-head h2,.kasbon-page .kasbon-owner-queue h3,.kasbon-page .kasbon-list-wrap h3,.kasbon-page .kasbon-field>span,.kasbon-page .kasbon-fieldset legend,.kasbon-page .kasbon-sum-card span,.kasbon-page .kasbon-table th,.kasbon-modal .kasbon-modal-head h3{text-transform:uppercase;letter-spacing:.055em}
+.kasbon-page .kasbon-head h2{font-size:clamp(24px,2vw,31px);font-weight:900;color:#fff;text-shadow:0 0 22px rgba(242,194,48,.1)}
+.kasbon-page .kasbon-eyebrow{font-size:11px;font-weight:900;color:var(--kb-gold)}
+.kasbon-page .kasbon-sub{font-size:13px;font-weight:650;color:var(--kb-muted)}
+
+/* ---------- CARDS / HOVER GLOW ---------- */
+.kasbon-page .kasbon-sum-card,.kasbon-page .kasbon-owner-queue,.kasbon-page .kasbon-list-wrap,.kasbon-page .kasbon-filters,.kasbon-page .kasbon-queue-list>*,.kasbon-page .kasbon-employee-summary,.kasbon-payment-detail>div,.kasbon-payment-history p{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
+.kasbon-page .kasbon-sum-card{position:relative;overflow:hidden;border:1px solid rgba(242,194,48,.16);background:linear-gradient(145deg,rgba(18,28,38,.96),rgba(9,14,20,.96));box-shadow:0 10px 28px rgba(0,0,0,.18)}
+.kasbon-page .kasbon-sum-card::after{content:"";position:absolute;inset:auto -25% -75% 20%;height:95px;background:radial-gradient(circle,rgba(242,194,48,.17),transparent 68%);opacity:0;transition:opacity .18s ease}
+.kasbon-page .kasbon-sum-card:hover,.kasbon-page .kasbon-queue-list>*:hover,.kasbon-payment-detail>div:hover,.kasbon-payment-history p:hover{transform:translateY(-2px);border-color:rgba(242,194,48,.42);box-shadow:0 0 0 1px rgba(242,194,48,.08),0 13px 34px rgba(0,0,0,.28),0 0 22px rgba(242,194,48,.10)}
+.kasbon-page .kasbon-sum-card:hover::after{opacity:1}
+.kasbon-page .kasbon-sum-card span{font-size:10px;font-weight:850;color:#91a2b5}
+.kasbon-page .kasbon-sum-card strong{font-size:22px;font-weight:900;color:#fff}
+
+/* ---------- FILTERS / INPUTS ---------- */
+.kasbon-page .kasbon-filters{border:1px solid rgba(255,255,255,.075);background:linear-gradient(145deg,rgba(15,23,32,.97),rgba(9,14,20,.94));box-shadow:0 12px 32px rgba(0,0,0,.18)}
+.kasbon-page .kasbon-field>span,.kasbon-modal .kasbon-field>span{font-size:10px;font-weight:900;color:#d9ac27}
+.kasbon-page input,.kasbon-page select,.kasbon-page textarea,.kasbon-modal input,.kasbon-modal select,.kasbon-modal textarea{border:1px solid rgba(255,255,255,.11)!important;background:#0c131b!important;color:#f8fafc!important;font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
+.kasbon-page input:focus,.kasbon-page select:focus,.kasbon-page textarea:focus,.kasbon-modal input:focus,.kasbon-modal select:focus,.kasbon-modal textarea:focus{outline:none!important;border-color:rgba(242,194,48,.62)!important;box-shadow:0 0 0 3px rgba(242,194,48,.09),0 0 20px rgba(242,194,48,.07)!important;background:#0e1720!important}
+.kasbon-page select option,.kasbon-modal select option{background:#0d151e;color:#f8fafc}
+
+/* ---------- BUTTONS ---------- */
+.kasbon-page .kasbon-btn-primary,.kasbon-modal .kasbon-btn-primary{font-weight:900;text-transform:uppercase;letter-spacing:.035em;box-shadow:0 7px 20px rgba(242,194,48,.12);transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}
+.kasbon-page .kasbon-btn-primary:hover,.kasbon-modal .kasbon-btn-primary:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 9px 25px rgba(242,194,48,.22),0 0 16px rgba(242,194,48,.12)}
+.kasbon-page .kasbon-btn-ghost,.kasbon-page .kasbon-btn-warn,.kasbon-page .kasbon-btn-danger,.kasbon-modal .kasbon-btn-ghost{font-weight:850;text-transform:uppercase;letter-spacing:.025em;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+.kasbon-page .kasbon-btn-ghost:hover,.kasbon-page .kasbon-btn-warn:hover,.kasbon-page .kasbon-btn-danger:hover,.kasbon-modal .kasbon-btn-ghost:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.22)}
+
+/* ---------- TABLE ---------- */
+.kasbon-page .kasbon-table-scroll{border:1px solid rgba(255,255,255,.075);border-radius:15px;overflow:auto;background:rgba(7,11,16,.65)}
+.kasbon-page .kasbon-table th{font-size:10px;font-weight:900;color:#c7a637;background:#0e161f}
+.kasbon-page .kasbon-table tbody tr{transition:background .16s ease,box-shadow .16s ease}
+.kasbon-page .kasbon-table tbody tr:hover{background:rgba(242,194,48,.045);box-shadow:inset 3px 0 0 rgba(242,194,48,.52)}
+.kasbon-page .kasbon-table td{font-weight:650;color:#dce5ee}
+
+/* ---------- RANGE CALENDAR POPUP ---------- */
+.kasbon-page .kasbon-range-trigger{font-weight:800;border-color:rgba(242,194,48,.18);background:#0c131b;color:#fff;transition:border-color .18s ease,box-shadow .18s ease}
+.kasbon-page .kasbon-range-trigger:hover,.kasbon-page .kasbon-range-trigger[aria-expanded="true"]{border-color:rgba(242,194,48,.55);box-shadow:0 0 0 3px rgba(242,194,48,.07),0 0 20px rgba(242,194,48,.07)}
+.kasbon-page .kasbon-range-popup{z-index:80}
+.kasbon-page .kasbon-range-popup-inner{border:1px solid rgba(242,194,48,.28);background:linear-gradient(160deg,#111b26 0%,#090f16 100%);box-shadow:0 24px 75px rgba(0,0,0,.62),0 0 30px rgba(242,194,48,.07);backdrop-filter:blur(16px)}
+.kasbon-page .kasbon-range-month{font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.055em;color:#fff}
+.kasbon-page .kasbon-range-nav{border:1px solid rgba(242,194,48,.24);background:rgba(242,194,48,.065);color:#f4c841;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+.kasbon-page .kasbon-range-nav:hover{transform:scale(1.04);border-color:rgba(242,194,48,.6);box-shadow:0 0 17px rgba(242,194,48,.13)}
+.kasbon-page .kasbon-range-weekdays span{font-size:9px;font-weight:900;text-transform:uppercase;color:#75879b}
+.kasbon-page .kasbon-range-grid button{border:1px solid transparent;color:#dce6ef;font-weight:800;transition:background .14s ease,color .14s ease,border-color .14s ease,transform .14s ease,box-shadow .14s ease}
+.kasbon-page .kasbon-range-grid button:hover{transform:translateY(-1px);border-color:rgba(242,194,48,.30);background:rgba(242,194,48,.08);color:#fff;box-shadow:0 0 13px rgba(242,194,48,.07)}
+.kasbon-page .kasbon-range-grid button.is-selected,.kasbon-page .kasbon-range-grid button.is-start,.kasbon-page .kasbon-range-grid button.is-end{background:linear-gradient(180deg,#f5cc43,#d6a91c)!important;color:#111!important;border-color:#f6d25d!important;box-shadow:0 0 18px rgba(242,194,48,.18)}
+.kasbon-page .kasbon-range-grid button.is-in-range{background:rgba(242,194,48,.10);color:#f6d778}
+.kasbon-page .kasbon-range-meta>div{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);border-radius:10px}
+.kasbon-page .kasbon-range-meta span,.kasbon-page .kasbon-range-hint{font-size:10px;font-weight:800;text-transform:uppercase;color:#8294a8}
+.kasbon-page .kasbon-range-meta strong{color:#fff;font-weight:900}
+
+/* ---------- MODALS ---------- */
+.kasbon-modal{z-index:120}
+.kasbon-modal .kasbon-modal-backdrop{background:rgba(1,5,9,.78);backdrop-filter:blur(8px)}
+.kasbon-modal .kasbon-modal-panel{border:1px solid rgba(242,194,48,.25);background:linear-gradient(155deg,#14202b 0%,#0a1017 72%);box-shadow:0 30px 90px rgba(0,0,0,.66),0 0 35px rgba(242,194,48,.07)}
+.kasbon-modal .kasbon-modal-head{border-bottom:1px solid rgba(242,194,48,.14)}
+.kasbon-modal .kasbon-modal-head h3{font-size:18px;font-weight:900;color:#fff}
+.kasbon-modal .kasbon-icon-btn{border:1px solid rgba(242,194,48,.18);background:rgba(242,194,48,.06);color:#f2c230;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+.kasbon-modal .kasbon-icon-btn:hover{transform:rotate(4deg) scale(1.04);border-color:rgba(242,194,48,.52);box-shadow:0 0 18px rgba(242,194,48,.12)}
+.kasbon-modal .kasbon-fieldset{border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.018)}
+.kasbon-modal .kasbon-fieldset legend{font-size:10px;font-weight:900;color:#e1b42e}
+.kasbon-modal .kasbon-owner-meta{border:1px solid rgba(242,194,48,.13);background:rgba(242,194,48,.045);font-weight:750;color:#dbe5ee}
+
+/* ---------- PAYMENT FLOW ---------- */
+.kasbon-payment-hint{display:block;margin-top:6px;color:#91a2b5;font-size:11px;font-weight:700;line-height:1.4}
+.kasbon-method-badge{display:inline-flex;align-items:center;justify-content:center;margin-top:5px;padding:4px 9px;border-radius:999px;font-size:9px;font-weight:950;letter-spacing:.085em;line-height:1.2;text-transform:uppercase;border:1px solid rgba(242,194,48,.35);background:rgba(242,194,48,.085);color:#f5ce52;box-shadow:0 0 14px rgba(242,194,48,.045)}
+.kasbon-method-badge.is-harian{border-color:rgba(34,211,238,.38);background:rgba(34,211,238,.085);color:#67e8f9;box-shadow:0 0 14px rgba(34,211,238,.05)}
+.kasbon-payment-detail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px;padding:14px;border:1px solid rgba(242,194,48,.18);border-radius:14px;background:rgba(7,12,18,.72)}
+.kasbon-payment-detail>div{min-width:0;padding:11px 12px;border:1px solid rgba(255,255,255,.055);border-radius:11px;background:rgba(255,255,255,.024)}
+.kasbon-payment-detail span{display:block;margin-bottom:5px;color:#91a2b5;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.055em}
+.kasbon-payment-detail strong{color:#f3f7fb;font-size:13px;font-weight:900}
 .kasbon-payment-history{grid-column:1/-1}
-.kasbon-payment-history>div{display:grid;gap:6px;margin-top:5px}
-.kasbon-payment-history p{margin:0;padding:7px 9px;border-radius:8px;background:rgba(255,255,255,.025);color:#d7e0e9;font-size:12px;line-height:1.4}
-.kasbon-payment-history p b{color:#fff}.kasbon-payment-history p small{color:#f2c230;font-weight:800}
-.kasbon-payment-summary{display:flex;flex-direction:column;gap:4px;margin-bottom:4px;padding:12px 14px;border-radius:12px;border:1px solid rgba(242,194,48,.2);background:rgba(242,194,48,.055)}
-.kasbon-payment-summary strong{color:#fff;font-size:15px}.kasbon-payment-summary span{color:#aab6c3;font-size:12px;font-weight:650}
-#kasbonOwnerPaymentMethod,#kasbonFormPaymentMethod{width:100%}
-@media(max-width:900px){.kasbon-payment-detail{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.kasbon-payment-detail{grid-template-columns:1fr}.kasbon-payment-history{grid-column:1}}
+.kasbon-payment-history>div{display:grid;gap:6px;margin-top:6px}
+.kasbon-payment-history p{margin:0;padding:8px 10px;border:1px solid rgba(255,255,255,.045);border-radius:9px;background:rgba(255,255,255,.025);color:#d7e0e9;font-size:12px;line-height:1.4}
+.kasbon-payment-history p b{color:#fff}.kasbon-payment-history p small{color:#f2c230;font-weight:900;text-transform:uppercase}
+.kasbon-payment-summary{display:flex;flex-direction:column;gap:5px;margin-bottom:5px;padding:13px 15px;border-radius:12px;border:1px solid rgba(242,194,48,.20);background:linear-gradient(145deg,rgba(242,194,48,.07),rgba(255,255,255,.018));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.kasbon-payment-summary strong{color:#fff;font-size:16px;font-weight:900;text-transform:uppercase}.kasbon-payment-summary span{color:#aab6c3;font-size:12px;font-weight:700}
+#kasbonOwnerPaymentMethod,#kasbonFormPaymentMethod{width:100%;min-height:42px}
+#kasbonPaymentModal .kasbon-modal-panel{max-width:560px}
+#kasbonPaymentModal .kasbon-modal-head h3{text-transform:uppercase}
+
+@media(max-width:900px){.kasbon-payment-detail{grid-template-columns:repeat(2,minmax(0,1fr))}.kasbon-page .kasbon-head h2{font-size:24px}}
+@media(max-width:560px){.kasbon-payment-detail{grid-template-columns:1fr}.kasbon-payment-history{grid-column:1}.kasbon-page .kasbon-sum-card strong{font-size:19px}.kasbon-modal .kasbon-modal-head h3{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.kasbon-page *,.kasbon-modal *{transition:none!important;animation:none!important}}
