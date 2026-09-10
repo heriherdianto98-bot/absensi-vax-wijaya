@@ -209,6 +209,9 @@
   border-left-color:#D3AA35;
   background:radial-gradient(48% 170% at 92% 50%,rgba(201,161,45,.075),transparent 62%),linear-gradient(180deg,#12171D 0%,#0D1217 100%);
   animation:mkHeadGlowPulse 3.8s ease-in-out infinite;
+  transform:translateY(0) scale(1);
+  transition:transform .20s ease,border-color .20s ease,box-shadow .20s ease,filter .20s ease;
+  transform-origin:center;
 }
 .master-karyawan-page .mk-head > *{
   position:relative;
@@ -250,9 +253,11 @@
   z-index:2;
 }
 .master-karyawan-page .mk-head:hover{
+  transform:translateY(-5px) scale(1.012);
+  filter:brightness(1.04);
   border-color:#6A5319;
   border-left-color:#E1B73C;
-  box-shadow:0 14px 34px rgba(0,0,0,.38),0 0 34px rgba(201,161,45,.21),inset 0 1px 0 rgba(255,255,255,.05);
+  box-shadow:0 15px 30px rgba(0,0,0,.34),0 0 28px rgba(201,161,45,.18),inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 @media(max-width:900px){
