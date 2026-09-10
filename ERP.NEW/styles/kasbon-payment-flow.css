@@ -1,0 +1,17 @@
+/* VAX ERP — Kasbon Payment Flow UI V1 (Kasbon-only) */
+.kasbon-payment-hint{display:block;margin-top:6px;color:#8fa0b3;font-size:12px;font-weight:600;line-height:1.35}
+.kasbon-method-badge{display:inline-flex;align-items:center;justify-content:center;margin-top:5px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.06em;line-height:1.2;border:1px solid rgba(242,194,48,.32);background:rgba(242,194,48,.08);color:#f2c230}
+.kasbon-method-badge.is-harian{border-color:rgba(34,211,238,.34);background:rgba(34,211,238,.08);color:#67e8f9}
+.kasbon-payment-detail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px;padding:14px;border:1px solid rgba(242,194,48,.2);border-radius:14px;background:rgba(9,14,20,.58)}
+.kasbon-payment-detail>div{min-width:0;padding:10px 11px;border-radius:10px;background:rgba(255,255,255,.025)}
+.kasbon-payment-detail span{display:block;margin-bottom:5px;color:#8fa0b3;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.kasbon-payment-detail strong{color:#eef4fa;font-size:13px;font-weight:800}
+.kasbon-payment-history{grid-column:1/-1}
+.kasbon-payment-history>div{display:grid;gap:6px;margin-top:5px}
+.kasbon-payment-history p{margin:0;padding:7px 9px;border-radius:8px;background:rgba(255,255,255,.025);color:#d7e0e9;font-size:12px;line-height:1.4}
+.kasbon-payment-history p b{color:#fff}.kasbon-payment-history p small{color:#f2c230;font-weight:800}
+.kasbon-payment-summary{display:flex;flex-direction:column;gap:4px;margin-bottom:4px;padding:12px 14px;border-radius:12px;border:1px solid rgba(242,194,48,.2);background:rgba(242,194,48,.055)}
+.kasbon-payment-summary strong{color:#fff;font-size:15px}.kasbon-payment-summary span{color:#aab6c3;font-size:12px;font-weight:650}
+#kasbonOwnerPaymentMethod,#kasbonFormPaymentMethod{width:100%}
+@media(max-width:900px){.kasbon-payment-detail{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.kasbon-payment-detail{grid-template-columns:1fr}.kasbon-payment-history{grid-column:1}}
