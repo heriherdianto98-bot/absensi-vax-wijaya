@@ -139,7 +139,136 @@
   box-shadow:inset 0 2px 4px rgba(0,0,0,.30),0 2px 4px rgba(0,0,0,.26);
 }
 
+/* =========================================================
+   OWNER REVIEW 10 SEP 2026 — UI ONLY
+   - 4 summary cards beda warna + hover motion
+   - Capster memakai icon gunting
+   - Status / Sumber Nama / Aksi diselaraskan ke tema ERP
+   - Tambah Karyawan memakai gold ERP
+   ========================================================= */
+
+/* Empat card tetap dark premium, tetapi masing-masing punya identitas warna */
+.master-karyawan-page .mk-card,
+.master-karyawan-page .mk-card:nth-child(1),
+.master-karyawan-page .mk-card:nth-child(2),
+.master-karyawan-page .mk-card:nth-child(3),
+.master-karyawan-page .mk-card:nth-child(4){
+  position:relative;
+  overflow:hidden;
+  transition:transform .20s ease,border-color .20s ease,box-shadow .20s ease,filter .20s ease;
+}
+.master-karyawan-page .mk-card:nth-child(1){
+  --card-accent:201,161,45;
+  border-left-color:#C9A12D;
+  background:radial-gradient(120% 130% at 0% 0%,rgba(201,161,45,.11),transparent 48%),linear-gradient(180deg,#171C23 0%,#11151B 100%);
+}
+.master-karyawan-page .mk-card:nth-child(2){
+  --card-accent:70,190,126;
+  border-left-color:#3FAE78;
+  background:radial-gradient(120% 130% at 0% 0%,rgba(70,190,126,.10),transparent 48%),linear-gradient(180deg,#171C23 0%,#11151B 100%);
+}
+.master-karyawan-page .mk-card:nth-child(3){
+  --card-accent:86,156,214;
+  border-left-color:#4B8FC6;
+  background:radial-gradient(120% 130% at 0% 0%,rgba(86,156,214,.10),transparent 48%),linear-gradient(180deg,#171C23 0%,#11151B 100%);
+}
+.master-karyawan-page .mk-card:nth-child(4){
+  --card-accent:164,112,207;
+  border-left-color:#8D66B5;
+  background:radial-gradient(120% 130% at 0% 0%,rgba(164,112,207,.10),transparent 48%),linear-gradient(180deg,#171C23 0%,#11151B 100%);
+}
+.master-karyawan-page .mk-card:hover{
+  transform:translateY(-5px) scale(1.012);
+  filter:brightness(1.04);
+  border-color:rgba(var(--card-accent),.58);
+  border-left-color:rgb(var(--card-accent));
+  box-shadow:0 15px 30px rgba(0,0,0,.34),0 0 22px rgba(var(--card-accent),.14),inset 0 1px 0 rgba(255,255,255,.05);
+}
+.master-karyawan-page .mk-card::after{
+  display:block;
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,rgba(var(--card-accent),.62),transparent);
+  opacity:.65;
+}
+.master-karyawan-page .mk-card::before{
+  color:rgb(var(--card-accent))!important;
+  border-color:rgba(var(--card-accent),.34);
+  background:radial-gradient(circle at 34% 24%,rgba(255,255,255,.14),transparent 28%),linear-gradient(145deg,rgba(var(--card-accent),.18),rgba(var(--card-accent),.055));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 5px 12px rgba(0,0,0,.26),0 0 13px rgba(var(--card-accent),.09);
+  transition:transform .20s ease,box-shadow .20s ease;
+}
+.master-karyawan-page .mk-card:nth-child(3)::before{
+  content:"✂";
+  font-size:22px;
+  font-weight:900;
+}
+.master-karyawan-page .mk-card:hover::before{
+  transform:translateY(-50%) scale(1.10) rotate(-2deg);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 7px 15px rgba(0,0,0,.30),0 0 18px rgba(var(--card-accent),.18);
+}
+
+/* Status tetap hijau semantik, tetapi lebih muted agar nyatu dengan black-gold ERP */
+.master-karyawan-page .mk-status.is-active{
+  color:#B7E8CA;
+  border-color:#315B43;
+  background:linear-gradient(180deg,#224D38 0%,#173526 55%,#10251B 100%);
+}
+.master-karyawan-page .mk-status.is-active::before{color:#75D59B}
+
+/* Minutes tidak lagi cyan terang: dibuat teal-gold muted */
+.master-karyawan-page .mk-source.is-minutes{
+  color:#E6D7A0;
+  border-color:#6B5B2A;
+  background:linear-gradient(180deg,#4D4323 0%,#302A18 55%,#211D12 100%);
+  box-shadow:inset 0 1px 0 rgba(255,239,184,.16),inset 0 -2px 0 rgba(0,0,0,.24),0 3px 7px rgba(0,0,0,.30);
+}
+.master-karyawan-page .mk-source.is-minutes::before{color:#D6B84C}
+
+/* Aksi Edit ikut keluarga gold ERP, bukan ungu */
+.master-karyawan-page .mk-edit{
+  border-color:#78611D;
+  background:linear-gradient(180deg,#6E571A 0%,#493A12 52%,#2E250D 100%);
+  color:#F5E6AB;
+  box-shadow:inset 0 1px 0 rgba(255,240,177,.18),inset 0 -2px 0 rgba(0,0,0,.26),0 4px 8px rgba(0,0,0,.34),0 0 10px rgba(201,161,45,.08);
+}
+.master-karyawan-page .mk-edit:hover{
+  border-color:#B18A23;
+  background:linear-gradient(180deg,#84681F 0%,#584614 52%,#382D0F 100%);
+  box-shadow:inset 0 1px 0 rgba(255,244,193,.22),inset 0 -2px 0 rgba(0,0,0,.24),0 6px 11px rgba(0,0,0,.38),0 0 12px rgba(201,161,45,.14);
+}
+
+/* Tombol utama mengikuti tema black-gold ERP */
+.master-karyawan-page .mk-add{
+  border:1px solid #806517;
+  background:linear-gradient(180deg,#D0A72F 0%,#AD841C 52%,#7C5E12 100%);
+  color:#111318;
+  text-shadow:0 1px 0 rgba(255,244,194,.24);
+  box-shadow:inset 0 1px 0 rgba(255,246,196,.34),inset 0 -2px 0 rgba(82,58,4,.32),0 5px 13px rgba(0,0,0,.30),0 0 12px rgba(201,161,45,.10);
+}
+.master-karyawan-page .mk-add:hover{
+  transform:translateY(-2px);
+  border-color:#D3AA35;
+  background:linear-gradient(180deg,#DDB83E 0%,#BD9222 52%,#8B6914 100%);
+  box-shadow:inset 0 1px 0 rgba(255,249,211,.42),inset 0 -2px 0 rgba(82,58,4,.30),0 9px 18px rgba(0,0,0,.34),0 0 18px rgba(201,161,45,.16);
+}
+.master-karyawan-page .mk-add:active{
+  transform:translateY(1px);
+  box-shadow:inset 0 2px 5px rgba(70,49,4,.30),0 2px 5px rgba(0,0,0,.28);
+}
+
 @media(max-width:700px){
   .master-karyawan-page .mk-table tbody td{padding:5px 9px;font-size:15px}
   .master-karyawan-page .mk-table thead th{padding:7px 9px;font-size:14px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .master-karyawan-page .mk-card,
+  .master-karyawan-page .mk-card::before,
+  .master-karyawan-page .mk-add,
+  .master-karyawan-page .mk-edit{transition:none!important}
 }
