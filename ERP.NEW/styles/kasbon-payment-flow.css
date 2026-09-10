@@ -262,6 +262,32 @@
 .kasbon-method-badge.is-harian{border-color:rgba(122,166,184,.34)!important;background:rgba(122,166,184,.08)!important;color:#9bb9c5!important}
 .kasbon-payment-detail>div,.kasbon-payment-history p{border:1px solid rgba(201,162,39,.14)!important;background:#11100d!important}
 
+/* ---------- CASH-IN HUB COMPACTING (UI ONLY) ---------- */
+/* The Cash In label above the tabs is redundant with the Cash In tab. */
+#financeHubCard[data-menu="cash-in"] > #financeBadge{
+  display:none!important;
+}
+
+/* Pull the Kasbon workspace upward without changing any mount or business logic. */
+#financeHubCard[data-menu="cash-in"]{
+  padding-top:10px!important;
+}
+#financeHubCard[data-menu="cash-in"] > #financeTitle,
+#financeHubCard[data-menu="cash-in"] > #financeDesc,
+#financeHubCard[data-menu="cash-in"] > #financeFilterChips{
+  margin-top:0!important;
+  margin-bottom:0!important;
+}
+#financeHubCard[data-menu="cash-in"] #financeKasbonRoot{
+  margin-top:-6px!important;
+}
+#financeHubCard[data-menu="cash-in"] .kasbon-page{
+  gap:10px!important;
+}
+#financeHubCard[data-menu="cash-in"] .kasbon-tabs{
+  margin-bottom:2px!important;
+}
+
 @media(max-width:900px){.kasbon-payment-detail{grid-template-columns:repeat(2,minmax(0,1fr))}.kasbon-page .kasbon-head h2{font-size:24px}}
 @media(max-width:560px){.kasbon-payment-detail{grid-template-columns:1fr}.kasbon-payment-history{grid-column:1}.kasbon-page .kasbon-sum-card strong{font-size:19px!important}}
 @media(prefers-reduced-motion:reduce){.kasbon-page *,.kasbon-modal *{animation:none!important;transition:none!important}}
