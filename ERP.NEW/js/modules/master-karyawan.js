@@ -5,12 +5,12 @@ ERP VAX — Master Karyawan
 Source of truth identity: public.karyawan (employee ID)
 Operational display name for Capster: latest MATCHED Minutes provider name.
 Generic Minutes labels `Backup` and `Capster` are NOT employees.
-This module is read-only toward Supabase.
+Owner UI can add/edit master employee data. Existing IDs are preserved.
 =========================================================
 */
 
 const MasterKaryawan = (() => {
-  const state = { employees: [], branches: [], rows: [], uiBound: false };
+  const state = { employees: [], branches: [], rows: [], uiBound: false, mode: "add" };
   const GENERIC_MINUTES = new Set(["backup", "capster"]);
 
   const $ = (id) => document.getElementById(id);
@@ -19,7 +19,7 @@ const MasterKaryawan = (() => {
 
   async function loadSources(){
     const [empRes, branchRes, providerRes] = await Promise.all([
-      db.from("karyawan").select("id,nama_karyawan,cabang_id,jabatan,aktif").order("nama_karyawan", {ascending:true}),
+      db.from("karyawan").select("id,nama_karyawan,cabang_id,jabatan,aktif,no_hp_wa,alamat_ktp").order("nama_karyawan", {ascending:true}),
       db.from("cabang").select("id,nama_cabang").order("id", {ascending:true}),
       db.from("provider_sales_daily_source")
         .select("activity_date,employee_id,provider_name_raw,provider_name_normalized,mapping_status")
@@ -65,10 +65,18 @@ const MasterKaryawan = (() => {
         cabang: branchMap.get(Number(e.cabang_id)) || "—",
         jabatan: String(e.jabatan || "—").trim(),
         aktif: e.aktif !== false,
+        noHpWa: String(e.no_hp_wa || "").trim(),
+        alamatKtp: String(e.alamat_ktp || "").trim(),
         source: isCapster && m?.name ? "Minutes" : "Master",
         minutesDate: m?.date || null
       };
     });
+  }
+
+  function roleOptions(){
+    const values = new Set(state.rows.map(r => r.jabatan).filter(v => v && v !== "—"));
+    ["Capster","Kasir","Kasir Backup / Floating","SPV"].forEach(v => values.add(v));
+    return [...values].sort((a,b)=>a.localeCompare(b,"id"));
   }
 
   function populateFilters(){
@@ -81,9 +89,19 @@ const MasterKaryawan = (() => {
     }
     if(role){
       const selected = role.value;
-      const roles = [...new Set(state.rows.map(r => r.jabatan).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"id"));
-      role.innerHTML = '<option value="">Semua Jabatan</option>' + roles.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
+      role.innerHTML = '<option value="">Semua Jabatan</option>' + roleOptions().map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
       if([...role.options].some(o => o.value === selected)) role.value = selected;
+    }
+  }
+
+  function populateFormOptions(){
+    const branch = $("mkFormBranch");
+    const role = $("mkFormRole");
+    if(branch){
+      branch.innerHTML = '<option value="">Pilih Cabang</option>' + state.branches.map(b => `<option value="${Number(b.id)}">${esc(b.nama_cabang)}</option>`).join("");
+    }
+    if(role){
+      role.innerHTML = '<option value="">Pilih Jabatan</option>' + roleOptions().map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
     }
   }
 
@@ -120,7 +138,7 @@ const MasterKaryawan = (() => {
 
     if(!body) return;
     if(!rows.length){
-      body.innerHTML = '<tr><td colspan="6" class="mk-empty">Tidak ada data sesuai filter.</td></tr>';
+      body.innerHTML = '<tr><td colspan="7" class="mk-empty">Tidak ada data sesuai filter.</td></tr>';
       return;
     }
 
@@ -132,7 +150,113 @@ const MasterKaryawan = (() => {
         <td><span class="mk-role">${esc(r.jabatan)}</span></td>
         <td><span class="mk-status ${r.aktif?'is-active':'is-inactive'}">${r.aktif?'Aktif':'Nonaktif'}</span></td>
         <td><span class="mk-source ${r.source==='Minutes'?'is-minutes':''}">${esc(r.source)}</span></td>
+        <td><button class="mk-edit" type="button" data-edit-id="${r.id}">✎ Edit</button></td>
       </tr>`).join("");
+  }
+
+  function showError(message){
+    const box = $("mkFormError");
+    if(!box) return;
+    box.hidden = !message;
+    box.textContent = message || "";
+  }
+
+  function openModal(id = null){
+    const row = id ? state.rows.find(r => r.id === Number(id)) : null;
+    state.mode = row ? "edit" : "add";
+    populateFormOptions();
+    showError("");
+
+    $("mkFormId").value = row?.id || "";
+    $("mkFormName").value = row?.namaMaster || "";
+    $("mkFormBranch").value = row?.cabangId ? String(row.cabangId) : "";
+    $("mkFormRole").value = row?.jabatan && row.jabatan !== "—" ? row.jabatan : "";
+    $("mkFormActive").value = row?.aktif === false ? "false" : "true";
+    $("mkFormPhone").value = row?.noHpWa || "";
+    $("mkFormAddress").value = row?.alamatKtp || "";
+
+    $("mkModalTitle").textContent = row ? `Edit ${row.nama}` : "Tambah Karyawan";
+    $("mkModalHint").textContent = row
+      ? "Ubah cabang, jabatan, status, nomor WhatsApp, atau alamat KTP. ID karyawan tidak berubah."
+      : "Nomor HP/WhatsApp dan alamat sesuai KTP wajib untuk karyawan baru.";
+
+    const modal = $("mkModal");
+    modal?.classList.add("is-open");
+    modal?.setAttribute("aria-hidden","false");
+    setTimeout(() => $("mkFormName")?.focus(), 30);
+  }
+
+  function closeModal(){
+    const modal = $("mkModal");
+    modal?.classList.remove("is-open");
+    modal?.setAttribute("aria-hidden","true");
+    showError("");
+  }
+
+  function normalizePhone(value){
+    return String(value || "").replace(/[^0-9+]/g, "").trim();
+  }
+
+  function validateForm(){
+    const name = String($("mkFormName")?.value || "").trim();
+    const branchId = Number($("mkFormBranch")?.value || 0);
+    const role = String($("mkFormRole")?.value || "").trim();
+    const phone = normalizePhone($("mkFormPhone")?.value);
+    const address = String($("mkFormAddress")?.value || "").trim();
+
+    if(!name) return "Nama karyawan wajib diisi.";
+    if(GENERIC_MINUTES.has(norm(name))) return "Nama Backup/Capster generik tidak boleh dibuat sebagai karyawan.";
+    if(!branchId) return "Cabang wajib dipilih.";
+    if(!role) return "Jabatan wajib dipilih.";
+    if(state.mode === "add" && !phone) return "No. HP / WhatsApp wajib diisi untuk karyawan baru.";
+    if(state.mode === "add" && !address) return "Alamat sesuai KTP wajib diisi untuk karyawan baru.";
+
+    const editingId = Number($("mkFormId")?.value || 0);
+    const duplicate = state.rows.find(r => r.id !== editingId && norm(r.namaMaster) === norm(name));
+    if(duplicate) return `Nama ${name} sudah ada di Master Karyawan (ID ${duplicate.id}).`;
+    return "";
+  }
+
+  async function saveForm(event){
+    event?.preventDefault();
+    const error = validateForm();
+    if(error){ showError(error); return; }
+
+    const btn = $("mkSave");
+    const oldText = btn?.textContent || "Simpan";
+    if(btn){ btn.disabled = true; btn.textContent = "Menyimpan…"; }
+    showError("");
+
+    try{
+      const payload = {
+        nama_karyawan: String($("mkFormName").value || "").trim(),
+        cabang_id: Number($("mkFormBranch").value),
+        jabatan: String($("mkFormRole").value || "").trim(),
+        aktif: $("mkFormActive").value === "true",
+        no_hp_wa: normalizePhone($("mkFormPhone").value) || null,
+        alamat_ktp: String($("mkFormAddress").value || "").trim() || null
+      };
+
+      if(state.mode === "edit"){
+        const id = Number($("mkFormId").value);
+        const { error: updateError } = await db.from("karyawan").update(payload).eq("id", id);
+        if(updateError) throw updateError;
+      }else{
+        const nextId = Math.max(0, ...state.employees.map(e => Number(e.id) || 0)) + 1;
+        const { error: insertError } = await db.from("karyawan").insert({ id: nextId, ...payload });
+        if(insertError) throw insertError;
+      }
+
+      closeModal();
+      await init();
+      const status = $("mkLoadStatus");
+      if(status) status.textContent = state.mode === "edit" ? "Data karyawan berhasil diperbarui." : "Karyawan baru berhasil ditambahkan.";
+    }catch(err){
+      console.error("Simpan Master Karyawan gagal", err);
+      showError(err?.message || String(err));
+    }finally{
+      if(btn){ btn.disabled = false; btn.textContent = oldText; }
+    }
   }
 
   function handleFilterEvent(event){
@@ -141,15 +265,23 @@ const MasterKaryawan = (() => {
     render();
   }
 
+  function handleClick(event){
+    const edit = event.target.closest?.("[data-edit-id]");
+    if(edit){ openModal(Number(edit.dataset.editId)); return; }
+    if(event.target.closest?.("[data-mk-close]")){ closeModal(); return; }
+  }
+
   function bind(){
     if(state.uiBound) return;
-
-    // Delegated binding: tetap aktif walau option/dropdown diisi ulang saat refresh.
     document.addEventListener("input", handleFilterEvent);
     document.addEventListener("change", handleFilterEvent);
     document.addEventListener("search", handleFilterEvent);
+    document.addEventListener("click", handleClick);
+    document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
 
     $("mkRefresh")?.addEventListener("click", init);
+    $("mkAdd")?.addEventListener("click", () => openModal());
+    $("mkForm")?.addEventListener("submit", saveForm);
     state.uiBound = true;
   }
 
@@ -160,17 +292,18 @@ const MasterKaryawan = (() => {
       if(status) status.textContent = "Memuat data karyawan…";
       await loadSources();
       populateFilters();
+      populateFormOptions();
       render();
       if(status) status.textContent = "Sinkron tampilan: nama Capster mengikuti Minutes; Backup/Capster generik dikecualikan.";
     }catch(err){
       console.error("Master Karyawan gagal dimuat", err);
       if(status) status.textContent = `Gagal memuat data: ${err?.message || err}`;
       const body = $("mkBody");
-      if(body) body.innerHTML = '<tr><td colspan="6" class="mk-empty">Data belum dapat dimuat.</td></tr>';
+      if(body) body.innerHTML = '<tr><td colspan="7" class="mk-empty">Data belum dapat dimuat.</td></tr>';
     }
   }
 
-  return { init, render };
+  return { init, render, openModal };
 })();
 
 document.addEventListener("DOMContentLoaded", () => MasterKaryawan.init(), {once:true});
