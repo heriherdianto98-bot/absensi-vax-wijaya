@@ -1,0 +1,177 @@
+/* ERP VAX — Master Karyawan modal theme
+   UI ONLY. Tidak mengubah data, mapping, sync, validasi, atau business logic. */
+
+.mk-modal-backdrop{
+  background:rgba(3,5,8,.82);
+  backdrop-filter:blur(8px);
+}
+
+.mk-modal-card{
+  width:min(820px,96vw);
+  border:1px solid #4B3C15;
+  border-radius:18px;
+  background:
+    radial-gradient(95% 80% at 0% 0%,rgba(201,161,45,.10),transparent 48%),
+    linear-gradient(180deg,#151A21 0%,#0D1117 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.045),
+    0 28px 72px rgba(0,0,0,.62),
+    0 0 26px rgba(201,161,45,.07);
+}
+
+.mk-modal-head{
+  padding:22px 24px 18px;
+  border-bottom:1px solid rgba(201,161,45,.30);
+  background:linear-gradient(180deg,rgba(201,161,45,.055),rgba(201,161,45,0));
+}
+.mk-modal-head small{
+  color:#D9B84A;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:1.8px;
+}
+.mk-modal-head h3{
+  color:#FFFFFF;
+  font-size:30px;
+  line-height:1.05;
+  font-weight:900;
+  letter-spacing:-.2px;
+}
+.mk-modal-head p{
+  margin-top:9px;
+  color:#B7C0CA;
+  font-size:15px;
+  line-height:1.45;
+  font-weight:600;
+}
+
+.mk-modal-x{
+  width:40px;
+  height:40px;
+  border:1px solid #4B3C15;
+  border-radius:10px;
+  background:linear-gradient(180deg,#242017 0%,#17140D 100%);
+  color:#E9D487;
+  font-size:25px;
+  font-weight:800;
+  box-shadow:inset 0 1px 0 rgba(255,243,188,.10),0 4px 10px rgba(0,0,0,.25);
+  transition:transform .16s ease,border-color .16s ease,background .16s ease;
+}
+.mk-modal-x:hover{
+  transform:translateY(-1px);
+  border-color:#A78120;
+  background:linear-gradient(180deg,#342B16 0%,#211B0E 100%);
+}
+
+.mk-form{
+  gap:16px;
+  padding:22px 24px 24px;
+}
+.mk-field{
+  gap:8px;
+}
+.mk-field span{
+  color:#D4DAE1;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.35px;
+}
+
+.mk-field input,
+.mk-field select,
+.mk-field textarea{
+  border:1px solid #343C47;
+  border-radius:10px;
+  background:linear-gradient(180deg,#141A21 0%,#0E141A 100%);
+  color:#F3F5F7;
+  font-size:16px;
+  font-weight:700;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),inset 0 2px 8px rgba(0,0,0,.18);
+}
+.mk-field input,
+.mk-field select{
+  height:48px;
+  padding:0 14px;
+}
+.mk-field textarea{
+  min-height:112px;
+  padding:13px 14px;
+  line-height:1.45;
+}
+.mk-field input::placeholder,
+.mk-field textarea::placeholder{
+  color:#6F7A86;
+  font-weight:600;
+}
+.mk-field input:hover,
+.mk-field select:hover,
+.mk-field textarea:hover{
+  border-color:#5B4A1D;
+}
+.mk-field input:focus,
+.mk-field select:focus,
+.mk-field textarea:focus{
+  border-color:#C59A27;
+  box-shadow:0 0 0 3px rgba(201,161,45,.10),0 0 14px rgba(201,161,45,.06),inset 0 2px 8px rgba(0,0,0,.18);
+}
+
+.mk-form-error{
+  border-color:#734047;
+  background:#2A1519;
+  color:#FFC0C6;
+  font-size:14px;
+}
+
+.mk-modal-actions{
+  gap:12px;
+  padding-top:4px;
+}
+.mk-btn-secondary,
+.mk-btn-primary{
+  min-width:118px;
+  height:46px;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:900;
+}
+.mk-btn-secondary{
+  border:1px solid #3B4652;
+  background:linear-gradient(180deg,#1D242D 0%,#141A21 100%);
+  color:#E3E8ED;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 9px rgba(0,0,0,.22);
+}
+.mk-btn-secondary:hover{
+  border-color:#66717D;
+  background:linear-gradient(180deg,#252D37 0%,#181F27 100%);
+}
+.mk-btn-primary{
+  border:1px solid #806517;
+  background:linear-gradient(180deg,#D0A72F 0%,#AD841C 52%,#7C5E12 100%);
+  color:#111318;
+  box-shadow:inset 0 1px 0 rgba(255,246,196,.34),inset 0 -2px 0 rgba(82,58,4,.32),0 5px 12px rgba(0,0,0,.30),0 0 12px rgba(201,161,45,.10);
+  text-shadow:0 1px 0 rgba(255,244,194,.24);
+}
+.mk-btn-primary:hover{
+  border-color:#D3AA35;
+  background:linear-gradient(180deg,#DDB83E 0%,#BD9222 52%,#8B6914 100%);
+  box-shadow:inset 0 1px 0 rgba(255,249,211,.42),inset 0 -2px 0 rgba(82,58,4,.30),0 7px 15px rgba(0,0,0,.34),0 0 16px rgba(201,161,45,.15);
+}
+.mk-btn-primary:disabled{
+  opacity:.55;
+}
+
+@media(max-width:700px){
+  .mk-modal{padding:10px}
+  .mk-modal-card{width:100%;max-height:92vh;border-radius:14px}
+  .mk-modal-head{padding:18px 18px 15px}
+  .mk-modal-head h3{font-size:27px}
+  .mk-modal-head p{font-size:14px}
+  .mk-form{padding:18px;gap:14px}
+  .mk-field span{font-size:13px}
+  .mk-field input,.mk-field select,.mk-field textarea{font-size:15px}
+  .mk-btn-secondary,.mk-btn-primary{font-size:15px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .mk-modal-x{transition:none!important}
+}
