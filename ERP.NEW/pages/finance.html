@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/qris-reconciliation.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/light-contrast.css">
+<link rel="stylesheet" href="../styles/kasbon.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+.finance-hub-card .finance-filter-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:14px 0 6px;
+}
+.finance-hub-card .finance-filter-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid rgba(212,175,55,.35);
+    background:rgba(212,175,55,.08);
+    color:#F2C230;
+    font-size:12px;
+    font-weight:700;
+}
+.finance-hub-card .finance-filter-chip span{
+    color:#9ca3af;
+    font-weight:600;
+}
+.finance-hub-card[data-menu="cash-out"] .erp-section-badge{ color:#EF4444; }
+.finance-hub-card[data-menu="qris"] .erp-section-badge{ color:#22D3EE; }
+.finance-denda-panel{
+    margin-top:18px;
+    padding:22px 20px 20px;
+    border-radius:18px;
+    border:1px solid rgba(34,211,238,.35);
+    background:
+        radial-gradient(ellipse 80% 90% at 100% 0%, rgba(34,211,238,.12), transparent 55%),
+        linear-gradient(165deg, #0e1618 0%, #0c1014 100%);
+}
+.finance-denda-panel h3{
+    margin:0 0 8px;
+    color:#fff;
+    font-size:22px;
+    font-weight:900;
+    letter-spacing:.02em;
+}
+.finance-denda-panel p{
+    margin:0 0 10px;
+    color:#9eb0c2;
+    font-size:14px;
+    font-weight:650;
+    line-height:1.5;
+}
+.finance-denda-panel strong{ color:#67f0ad; }
+.finance-denda-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:16px;
+}
+.finance-denda-actions a{
+    display:inline-flex;
+    align-items:center;
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:800;
+    text-decoration:none;
+}
+.finance-denda-actions a.is-gold{
+    color:#101820;
+    background:linear-gradient(180deg,#f2c230,#d4a017);
+}
+.finance-denda-actions a.is-ghost{
+    color:#e8f0f8;
+    border:1px solid #3a4a59;
+    background:#1c2732;
+}
+</style>
+</head>
+<body>
+
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+    <div id="header"></div>
+    <div class="erp-content">
+        <section class="finance-hub-card" id="financeHubCard">
+            <p class="erp-section-badge" id="financeBadge">FINANCE</p>
+            <h2 id="financeTitle">FINANCE</h2>
+            <p id="financeDesc">Modul keuangan Owner / SPV - pantau setoran, QRIS, dan approval.</p>
+            <div class="finance-filter-chips" id="financeFilterChips" hidden></div>
+
+            <div class="finance-hub-grid" id="financeHubGrid">
+                <a class="finance-hub-item" href="./setoran-3-harian.html">
+                    <strong>Setoran 3 Harian</strong>
+                    <span>Konfirmasi BRI Merchant oleh SPV + approval setoran Owner</span>
+                </a>
+            </div>
+            <!-- Kasbon Karyawan mount (hanya aktif untuk menu=cash-in) -->
+            <div id="financeKasbonRoot" hidden></div>
+            <!-- Denda Karyawan dapur (source pembayaran belum ada) -->
+            <div id="financeDendaRoot" hidden></div>
+        </section>
+    </div>
+</div>
+
+<script src="../config/minutes.js"></script>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/modules/erp-toast.js"></script>
+<script src="../js/modules/erp-header-sync.js"></script>
+<script src="../js/modules/erp-custom-select.js"></script>
+<script src="../js/modules/kasbon.js"></script>
+<script src="../js/loader.js"></script>
+<script>
+(function(){
+    const HANDOFF_KEY = "vax_kpi_drilldown";
+
+    // Cash Out / QRIS punya modul detail sendiri — jangan tampilkan placeholder di hub.
+    try{
+        const bootQ = new URLSearchParams(window.location.search || "");
+        const bootMenu = String(bootQ.get("menu") || "").toLowerCase();
+        let handoffMenu = "";
+        try{
+            handoffMenu = String(JSON.parse(localStorage.getItem(HANDOFF_KEY) || "null")?.menu || "").toLowerCase();
+        }catch(_e){ handoffMenu = ""; }
+        if(bootMenu === "cash-out" || (!bootMenu && handoffMenu === "cash-out")){
+            const next = new URL("./cash-out.html", window.location.href);
+            bootQ.forEach((v, k) => next.searchParams.set(k, v));
+            if(!next.searchParams.get("menu")) next.searchParams.set("menu", "cash-out");
+            window.location.replace(next.pathname.split("/").pop() + next.search);
+            return;
+        }
+        // QRIS live module = setoran-3-harian (bukan stub hub).
+        if(bootMenu === "qris" || (!bootMenu && handoffMenu === "qris")){
+            const next = new URL("./setoran-3-harian.html", window.location.href);
+            bootQ.forEach((v, k) => next.searchParams.set(k, v));
+            if(!next.searchParams.get("menu")) next.searchParams.set("menu", "qris");
+            window.location.replace(next.pathname.split("/").pop() + next.search);
+            return;
+        }
+    }catch(_e){ /* continue hub */ }
+
+    const MENU_META = {
+        "cash-out": {
+            nav: "cash-out",
+            badge: "CASH OUT",
+            title: "CASH OUT",
+            desc: "Menu Cash Out — filter dari dashboard KPI ikut terbawa.",
+            documentTitle: "Cash Out | VAX ERP"
+        },
+        qris: {
+            nav: "qris",
+            badge: "QRIS",
+            title: "QRIS MONITORING",
+            desc: "Menu QRIS Monitoring — filter dari dashboard KPI ikut terbawa.",
+            documentTitle: "QRIS Monitoring | VAX ERP"
+        },
+        "cash-in": {
+            nav: "cash-in",
+            badge: "CASH IN",
+            title: "CASH IN / KASBON",
+            desc: "Menu Cash In / Kasbon.",
+            documentTitle: "Cash In | VAX ERP"
+        },
+        laporan: {
+            nav: "laporan",
+            badge: "LAPORAN",
+            title: "LAPORAN",
+            desc: "Menu Laporan keuangan.",
+            documentTitle: "Laporan | VAX ERP"
+        },
+        "setoran-bulanan": {
+            nav: "setoran-bulanan",
+            badge: "SETORAN",
+            title: "SETORAN RUTIN BULANAN",
+            desc: "Menu Setoran Rutin Bulanan.",
+            documentTitle: "Setoran Bulanan | VAX ERP"
+        },
+        reimbursement: {
+            nav: "reimbursement",
+            badge: "REIMBURSEMENT",
+            title: "REIMBURSEMENT",
+            desc: "Menu Reimbursement.",
+            documentTitle: "Reimbursement | VAX ERP"
+        }
+    };
+
+    const PERIODE_LABEL = {
+        hariini: "Hari Ini",
+        kemarin: "Kemarin",
+        "7hari": "7 Hari",
+        "30hari": "30 Hari",
+        bulanini: "Bulan Ini",
+        tahunini: "Tahun Ini",
+        customtanggal: "Custom Tanggal"
+    };
+
+    function readQuery(){
+        try{ return new URLSearchParams(window.location.search || ""); }
+        catch(_e){ return new URLSearchParams(); }
+    }
+
+    function readHandoff(){
+        try{
+            return JSON.parse(localStorage.getItem(HANDOFF_KEY) || "null");
+        }catch(_e){
+            return null;
+        }
+    }
+
+    function resolveContext(){
+        const q = readQuery();
+        const handoff = readHandoff() || {};
+        const menu = String(q.get("menu") || handoff.menu || handoff.focus || "").toLowerCase() || "finance";
+        const cabangId = q.get("cabangId") ?? handoff.cabangId ?? null;
+        const cabangName = q.get("cabangName") || handoff.cabangName || "";
+        const start = q.get("start") || handoff.start || "";
+        const end = q.get("end") || handoff.end || "";
+        const periode = String(q.get("periode") || handoff.periode || "").toLowerCase();
+        const view = String(q.get("view") || handoff.view || "").toLowerCase();
+        const from = String(q.get("from") || handoff.from || "").toLowerCase();
+        return { menu, cabangId, cabangName, start, end, periode, view, from, handoff };
+    }
+
+    function formatRange(start, end, periode){
+        const label = PERIODE_LABEL[periode];
+        if(label && periode !== "customtanggal") return label;
+        if(start && end && start === end) return start;
+        if(start && end) return `${start} — ${end}`;
+        return label || "—";
+    }
+
+    function applyMenuUi(ctx){
+        const meta = MENU_META[ctx.menu] || null;
+        const card = document.getElementById("financeHubCard");
+        const badge = document.getElementById("financeBadge");
+        const title = document.getElementById("financeTitle");
+        const desc = document.getElementById("financeDesc");
+        const chips = document.getElementById("financeFilterChips");
+        const grid = document.getElementById("financeHubGrid");
+
+        if(card) card.dataset.menu = meta ? ctx.menu : "finance";
+        if(meta){
+            document.title = meta.documentTitle;
+            if(badge) badge.textContent = meta.badge;
+            if(title) title.textContent = meta.title;
+            if(desc) desc.textContent = meta.desc;
+            // Menu spesifik: jangan arahkan ulang ke Setoran sebagai isi utama
+            if(grid && (ctx.menu === "cash-out" || ctx.menu === "qris")){
+                grid.innerHTML = `
+                    <div class="finance-hub-item" style="cursor:default;pointer-events:none;">
+                        <strong>${meta.title}</strong>
+                        <span>Filter cabang &amp; periode dari dashboard sudah aktif di atas. Modul detail transaksi menyusul — bukan Setoran 3 Harian.</span>
+                    </div>
+                `;
+            }
+        }
+
+        if(chips){
+            const parts = [];
+            if(ctx.cabangName || ctx.cabangId){
+                parts.push(`<div class="finance-filter-chip"><span>Cabang</span>${escapeHtml(ctx.cabangName || ("#" + ctx.cabangId))}</div>`);
+            }
+            const periodeText = formatRange(ctx.start, ctx.end, ctx.periode);
+            if(periodeText && periodeText !== "—"){
+                parts.push(`<div class="finance-filter-chip"><span>Periode</span>${escapeHtml(periodeText)}</div>`);
+            }
+            if(parts.length){
+                chips.hidden = false;
+                chips.innerHTML = parts.join("");
+            }else{
+                chips.hidden = true;
+                chips.innerHTML = "";
+            }
+        }
+
+        return meta;
+    }
+
+    function escapeHtml(str){
+        return String(str ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function syncHeaderFilters(ctx, meta){
+        const title = document.getElementById("erpHeaderTitle");
+        const sub = document.getElementById("erpHeaderSub");
+        const cabangEl = document.getElementById("erpHeaderCabang");
+        const periodeEl = document.getElementById("erpHeaderPeriode");
+        const dendaView = ctx.view === "denda-karyawan";
+        if(title) title.textContent = dendaView ? "CASH IN / DENDA KARYAWAN" : (meta ? meta.title : "Finance");
+        if(sub) sub.textContent = dendaView
+            ? "Source pembayaran denda · menunggu dapur canonical"
+            : (meta ? meta.desc : "Modul keuangan Owner / SPV");
+        if(cabangEl && (ctx.cabangName || ctx.cabangId)){
+            cabangEl.textContent = ctx.cabangName || ("Cabang #" + ctx.cabangId);
+        }
+        if(periodeEl){
+            const periodeText = formatRange(ctx.start, ctx.end, ctx.periode);
+            if(periodeText && periodeText !== "—") periodeEl.textContent = periodeText;
+        }
+    }
+
+    document.addEventListener("erp:finance-ready", async () => {
+        const ctx = resolveContext();
+        const meta = applyMenuUi(ctx);
+        // Default hub tanpa ?menu = Laporan (bukan QRIS stub)
+        const activeNav = meta?.nav || "laporan";
+
+        const sidebar = document.getElementById("sidebar");
+        const header = document.getElementById("header");
+        if (sidebar) {
+            sidebar.innerHTML = await (await fetch("../components/sidebar.html")).text();
+            if (typeof initSidebar === "function") {
+                initSidebar();
+            }
+            document.querySelectorAll(".menu-item").forEach(a => {
+                a.classList.toggle("active", a.dataset.erpNav === activeNav);
+            });
+        }
+        if (header) {
+            // Header induk PERSIS Dashboard Eksekutif / Arus Kas (components/header.html)
+            header.innerHTML = await (await fetch("../components/header.html")).text();
+            OwnerAuth.bindUi();
+            OwnerAuth.syncHeader();
+            OwnerAuth.applyAccessControl();
+            syncHeaderFilters(ctx, meta);
+            if (typeof initErpShellChrome === "function") initErpShellChrome();
+            if (typeof syncSidebarRoleMeta === "function") syncSidebarRoleMeta();
+            // Sync Minutes badge — reusable existing (sama Arus Kas / mirror Dashboard)
+            if (typeof ErpHeaderSync !== "undefined" && ErpHeaderSync.refresh) {
+                await ErpHeaderSync.refresh();
+            }
+        }
+
+        if (typeof markActiveSidebarLink === "function") {
+            markActiveSidebarLink();
+        }
+
+        // Cash In → Denda Karyawan: dapur pembayaran belum ada (jangan dummy).
+        if(ctx.menu === "cash-in" && ctx.view === "denda-karyawan"){
+            const grid = document.getElementById("financeHubGrid");
+            const kasbon = document.getElementById("financeKasbonRoot");
+            const denda = document.getElementById("financeDendaRoot");
+            const badge = document.getElementById("financeBadge");
+            const titleEl = document.getElementById("financeTitle");
+            const desc = document.getElementById("financeDesc");
+            if(badge) badge.textContent = "CASH IN · DENDA";
+            if(titleEl) titleEl.textContent = "DENDA KARYAWAN";
+            if(desc) desc.textContent = "Cash In Denda hanya dihitung setelah benar-benar dibayar / lunas.";
+            document.title = "Denda Karyawan | VAX ERP";
+            if(grid) grid.hidden = true;
+            if(kasbon) kasbon.hidden = true;
+            if(denda){
+                denda.hidden = false;
+                const backKasbon = "./finance.html?menu=cash-in";
+                const backArus = ctx.from === "arus-kas" ? "./arus-kas.html" : "";
+                denda.innerHTML = `
+                    <div class="finance-denda-panel">
+                        <h3>Belum tersedia — menunggu source Denda</h3>
+                        <p>Canonical pembayaran / lunas Denda Karyawan belum dibuat. Tagihan denda Absensi yang belum dibayar <strong>bukan</strong> Cash In dan tidak menambah Arus Kas.</p>
+                        <p>Halaman ini adalah dapur tujuan drilldown. Tidak ada rumus palsu / data dummy.</p>
+                        <div class="finance-denda-actions">
+                            ${backArus ? `<a class="is-gold" href="${backArus}">← Kembali ke Arus Kas</a>` : ""}
+                            <a class="is-ghost" href="${backKasbon}">Cash In / Kasbon</a>
+                        </div>
+                    </div>`;
+            }
+        }else if(ctx.menu === "cash-in" && typeof KasbonModule !== "undefined"){
+            // Cash In / Kasbon: mount modul Kasbon tanpa menghapus fungsi Cash In existing
+            const root = document.getElementById("financeKasbonRoot");
+            if(root){
+                root.hidden = false;
+                try{
+                    await KasbonModule.boot({ hostId: "financeKasbonRoot" });
+                    if(typeof KasbonModule.syncGlobalHeaderContext === "function"){
+                        KasbonModule.syncGlobalHeaderContext();
+                    }
+                    if (typeof ErpHeaderSync !== "undefined" && ErpHeaderSync.refresh) {
+                        ErpHeaderSync.refresh();
+                    }
+                }catch(err){
+                    console.error(err);
+                    root.innerHTML = `<p style="color:#FCA5A5;padding:12px;">Gagal memuat modul Kasbon: ${escapeHtml(err?.message || err)}</p>`;
+                }
+            }
+        }
+    });
+})();
+</script>
+
+</body>
+</html>
