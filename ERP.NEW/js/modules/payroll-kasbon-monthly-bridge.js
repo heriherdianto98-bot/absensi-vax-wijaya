@@ -1,4 +1,4 @@
-/* VAX ERP — Payroll Kasbon Monthly Bridge V2
+/* VAX ERP — Payroll Kasbon Monthly Bridge V3
    UI/engine bridge only. Keeps locked payroll formula/source ownership intact.
    BULANAN kasbon is deducted by Payroll; HARIAN is paid via SVP daily flow and must not be deducted here.
 
@@ -6,6 +6,8 @@
    - Kasbon BULANAN tetap tercatat sebagai potongan payroll pada periode terkait walau status sudah LUNAS.
    - Jika belum diposting payroll, sumber potongan = current_outstanding.
    - Jika sudah diposting payroll dan outstanding menjadi 0/LUNAS, sumber historis potongan = employee_cash_advance_payments source PAYROLL.
+   - Fallback untuk data LUNAS langsung/manual tanpa history PAYROLL: gunakan approved_amount HANYA pada bulan pencairan,
+     agar potongan tidak hilang dari payroll bulan terkait dan tidak terbawa berulang ke bulan berikutnya.
    - Tidak mengubah formula PayrollUnifiedEngine dan tidak menulis Arus Kas.
 */
 (() => {
@@ -48,10 +50,31 @@
     return monthly.flatMap(r=>{
       const historical=paidByKasbon.get(String(r.id));
       const outstanding=Math.max(0,Number(r.current_outstanding||0));
-      const deduction=historical?.amount>0 ? historical.amount : outstanding;
+      const approved=Math.max(0,Number(r.approved_amount||0));
+      const status=String(r.status||'').toUpperCase();
+      const disbursementDate=String(r.disbursement_date||'');
+      const disbursedInPeriod=Boolean(disbursementDate && disbursementDate>=start && disbursementDate<=end);
+
+      let deduction=0;
+      let deductionSource=null;
+      let baseDate=r.disbursement_date || start;
+
+      if((historical?.amount||0)>0){
+        deduction=Number(historical.amount||0);
+        deductionSource='PAYROLL_PAYMENT_HISTORY';
+        baseDate=historical.paymentDate || r.disbursement_date || start;
+      }else if(outstanding>0){
+        deduction=outstanding;
+        deductionSource='CURRENT_OUTSTANDING';
+      }else if(status==='LUNAS' && disbursedInPeriod && approved>0){
+        // Legacy/direct LUNAS fallback: tombol LUNAS lama dapat menghilangkan outstanding tanpa membuat history PAYROLL.
+        // Simpan efek payroll hanya di bulan pencairannya; jangan carry ke periode berikutnya.
+        deduction=approved;
+        deductionSource='LUNAS_PERIOD_APPROVED_FALLBACK';
+      }
+
       if(deduction<=0) return [];
 
-      const baseDate=historical?.paymentDate || r.disbursement_date || start;
       const payrollDate=String(baseDate||'')<start ? start : (String(baseDate||'')>end ? end : baseDate);
 
       return [{
@@ -59,7 +82,7 @@
         original_status:r.status,
         original_current_outstanding:outstanding,
         original_disbursement_date:r.disbursement_date,
-        payroll_deduction_source:historical?.amount>0?'PAYROLL_PAYMENT_HISTORY':'CURRENT_OUTSTANDING',
+        payroll_deduction_source:deductionSource,
         payroll_payment_amount:historical?.amount||0,
         // Payroll core memang memproses hanya status AKTIF + current_outstanding > 0.
         // Normalisasi ini hanya view-model payroll; status database tetap tidak diubah.
