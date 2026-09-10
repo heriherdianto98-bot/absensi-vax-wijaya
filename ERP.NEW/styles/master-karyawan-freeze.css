@@ -1,0 +1,46 @@
+/* ERP VAX — Master Karyawan freeze layout
+   UI ONLY. Tidak mengubah data, mapping, sync, filter, atau business logic. */
+
+/* Desktop: area atas tetap diam, hanya isi tabel yang scroll. */
+@media (min-width: 901px){
+  .master-karyawan-page{
+    height:calc(100vh - 104px);
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    box-sizing:border-box;
+  }
+
+  .master-karyawan-page .mk-head,
+  .master-karyawan-page .mk-summary,
+  .master-karyawan-page .mk-toolbar,
+  .master-karyawan-page .mk-meta{
+    flex:0 0 auto;
+  }
+
+  .master-karyawan-page .mk-table-wrap{
+    flex:1 1 auto;
+    min-height:0;
+    overflow:auto;
+    overscroll-behavior:contain;
+  }
+
+  .master-karyawan-page .mk-table thead th{
+    position:sticky;
+    top:0;
+    z-index:8;
+  }
+}
+
+/* Mobile/tablet tetap pakai alur normal agar tidak memotong konten. */
+@media (max-width: 900px){
+  .master-karyawan-page{
+    height:auto;
+    min-height:0;
+    overflow:visible;
+  }
+  .master-karyawan-page .mk-table-wrap{
+    max-height:none;
+  }
+}
