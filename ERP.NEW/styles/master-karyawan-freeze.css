@@ -33,6 +33,37 @@
   }
 }
 
+/* Filter dropdown utama — dark black-gold theme ERP */
+.master-karyawan-page .mk-toolbar select{
+  color-scheme:dark;
+  background-color:#171C23;
+  color:#F4F6F8;
+  border-color:#38414C;
+}
+.master-karyawan-page .mk-toolbar select:hover,
+.master-karyawan-page .mk-toolbar select:focus{
+  border-color:#A98222;
+  box-shadow:0 0 0 2px rgba(201,161,45,.10);
+}
+.master-karyawan-page .mk-toolbar select option{
+  background:#12171D;
+  color:#EEF2F5;
+  font-size:16px;
+  font-weight:700;
+}
+.master-karyawan-page .mk-toolbar select option:checked{
+  background:#6E5518;
+  color:#FFF0B7;
+}
+.master-karyawan-page .mk-toolbar select option:hover{
+  background:#2B2516;
+  color:#F3D77B;
+}
+.master-karyawan-page .mk-toolbar select option:disabled{
+  background:#171C22;
+  color:#7E8892;
+}
+
 /* Mobile/tablet tetap pakai alur normal agar tidak memotong konten. */
 @media (max-width: 900px){
   .master-karyawan-page{
