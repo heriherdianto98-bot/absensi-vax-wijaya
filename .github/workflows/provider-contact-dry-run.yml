@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare SSH
+      - name: Prepare SSH with retry
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
@@ -27,7 +27,16 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_erp_vax_contact
           chmod 600 ~/.ssh/id_erp_vax_contact
-          ssh-keyscan -T 10 -H "$VPS_HOST" >> ~/.ssh/known_hosts
+          : > ~/.ssh/known_hosts
+          ok=0
+          for i in 1 2 3 4 5; do
+            if ssh-keyscan -T 10 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null; then
+              ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$ok" = "1"
 
       - name: Upload isolated contact script only
         env:
@@ -51,7 +60,6 @@ jobs:
           LIVE_JSON=/tmp/provider-contact-master-live.json
           RESULT_JSON=/tmp/provider-contact-sync-result.json
 
-          # Locked provider audit is reused READ ONLY; its source file is not modified.
           node provider-master-audit.js --out="$LIVE_JSON"
 
           node - <<'NODE'
@@ -63,7 +71,6 @@ jobs:
           console.log(`CONTACT_AUDIT_GATE_PASS branches=${j.summary.branches} providers=${j.summary.providers}`);
           NODE
 
-          # IMPORTANT: no --apply => guaranteed DRY RUN path.
           node provider-contact-sync.js --input="$LIVE_JSON" --out="$RESULT_JSON"
 
           node - <<'NODE'
