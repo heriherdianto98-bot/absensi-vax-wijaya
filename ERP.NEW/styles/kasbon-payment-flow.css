@@ -97,36 +97,47 @@
 #financeHubCard[data-menu="cash-in"] .kasbon-list-wrap{margin-top:12px!important;margin-bottom:18px!important}
 
 /* EDGE FIT — UI ONLY */
-/* Use the whole Finance workspace instead of leaving the Kasbon layers floating inward. */
-#financeHubCard[data-menu="cash-in"]{
-  padding-left:8px!important;
-  padding-right:8px!important;
-  padding-bottom:8px!important;
+#financeHubCard[data-menu="cash-in"]{padding-left:8px!important;padding-right:8px!important;padding-bottom:8px!important}
+#financeHubCard[data-menu="cash-in"] #financeKasbonRoot{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important}
+#financeHubCard[data-menu="cash-in"] .kasbon-page,#financeHubCard[data-menu="cash-in"] .kasbon-panel,#financeHubCard[data-menu="cash-in"] #kasbonPanelKasbon{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important}
+#financeHubCard[data-menu="cash-in"] .kasbon-head,#financeHubCard[data-menu="cash-in"] .kasbon-summary,#financeHubCard[data-menu="cash-in"] .kasbon-filters,#financeHubCard[data-menu="cash-in"] .kasbon-owner-queue,#financeHubCard[data-menu="cash-in"] .kasbon-list-wrap{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;box-sizing:border-box!important}
+
+/* HEADER LIFT + CONTINUOUS ORBIT — UI ONLY */
+#financeHubCard[data-menu="cash-in"] .kasbon-head{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  margin-top:-14px!important;
+  margin-bottom:28px!important;
 }
-#financeHubCard[data-menu="cash-in"] #financeKasbonRoot{
-  width:100%!important;
-  max-width:none!important;
-  margin-left:0!important;
-  margin-right:0!important;
+#financeHubCard[data-menu="cash-in"] .kasbon-head::before{
+  content:"";
+  position:absolute;
+  z-index:-2;
+  width:42%;
+  height:520%;
+  left:29%;
+  top:-210%;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 310deg,rgba(255,214,70,.18) 326deg,#f6c945 344deg,#fff1a8 353deg,transparent 360deg);
+  animation:kasbonHeadOrbitSpin 4.8s linear infinite;
+  transform-origin:center;
+  pointer-events:none;
 }
-#financeHubCard[data-menu="cash-in"] .kasbon-page,
-#financeHubCard[data-menu="cash-in"] .kasbon-panel,
-#financeHubCard[data-menu="cash-in"] #kasbonPanelKasbon{
-  width:100%!important;
-  max-width:none!important;
-  margin-left:0!important;
-  margin-right:0!important;
+#financeHubCard[data-menu="cash-in"] .kasbon-head::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:2px;
+  border-radius:inherit;
+  background:linear-gradient(180deg,#1c1414 0%,#141010 100%);
+  pointer-events:none;
 }
-#financeHubCard[data-menu="cash-in"] .kasbon-head,
-#financeHubCard[data-menu="cash-in"] .kasbon-summary,
-#financeHubCard[data-menu="cash-in"] .kasbon-filters,
-#financeHubCard[data-menu="cash-in"] .kasbon-owner-queue,
-#financeHubCard[data-menu="cash-in"] .kasbon-list-wrap{
-  width:100%!important;
-  max-width:none!important;
-  margin-left:0!important;
-  margin-right:0!important;
-  box-sizing:border-box!important;
+#financeHubCard[data-menu="cash-in"] .kasbon-head{
+  border-color:rgba(201,162,39,.34)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.32),0 0 18px rgba(201,162,39,.07)!important;
+}
+@keyframes kasbonHeadOrbitSpin{
+  to{transform:rotate(360deg)}
 }
 
 @media(max-width:900px){.kasbon-payment-detail{grid-template-columns:repeat(2,minmax(0,1fr))}.kasbon-page .kasbon-head h2{font-size:24px}}
