@@ -7,11 +7,12 @@
   --mk-std-surface-2:#171C23;
   --mk-std-border:#2A3340;
   --mk-std-gold:#F2C230;
+  --mk-std-gold-deep:#C9A227;
   --mk-std-text:#F8FAFC;
   --mk-std-muted:#94A3B8;
+  font-size:16px;
 }
 
-/* Hilangkan efek premium/purple berlebihan, kembali ke komponen standar ERP */
 .master-karyawan-page .mk-head{
   padding:16px 18px;
   border:1px solid var(--mk-std-border);
@@ -30,9 +31,9 @@
 }
 .master-karyawan-page .mk-head::before,
 .master-karyawan-page .mk-head::after{display:none}
-.master-karyawan-page .mk-head small{color:var(--mk-std-gold);letter-spacing:1.5px}
-.master-karyawan-page .mk-head h2{color:var(--mk-std-text);font-size:34px}
-.master-karyawan-page .mk-head p{color:#CBD5E1}
+.master-karyawan-page .mk-head small{color:var(--mk-std-gold);letter-spacing:1.5px;font-size:14px;font-weight:900}
+.master-karyawan-page .mk-head h2{color:var(--mk-std-text);font-size:36px}
+.master-karyawan-page .mk-head p{color:#CBD5E1;font-size:16px}
 
 .master-karyawan-page .mk-refresh{
   border:1px solid #3A4654;
@@ -40,6 +41,7 @@
   color:#E2E8F0;
   border-radius:9px;
   box-shadow:none;
+  font-size:15px;
 }
 .master-karyawan-page .mk-refresh:hover{
   transform:none;
@@ -47,7 +49,6 @@
   box-shadow:none;
 }
 
-/* Summary card standar ERP: satu visual language, gold sebagai accent */
 .master-karyawan-page .mk-card,
 .master-karyawan-page .mk-card:nth-child(1),
 .master-karyawan-page .mk-card:nth-child(2),
@@ -76,10 +77,9 @@
 }
 .master-karyawan-page .mk-card:hover::before{transform:translateY(-50%);box-shadow:none}
 .master-karyawan-page .mk-card::after{display:none}
-.master-karyawan-page .mk-card span{color:#CBD5E1}
-.master-karyawan-page .mk-card strong{color:var(--mk-std-text)}
+.master-karyawan-page .mk-card span{color:#CBD5E1;font-size:14px;font-weight:900}
+.master-karyawan-page .mk-card strong{color:var(--mk-std-text);font-size:36px}
 
-/* Filter standar ERP */
 .master-karyawan-page .mk-toolbar{
   border:1px solid var(--mk-std-border);
   border-radius:12px;
@@ -93,6 +93,8 @@
   background:#171C23;
   color:var(--mk-std-text);
   box-shadow:none;
+  font-size:16px;
+  font-weight:700;
 }
 .master-karyawan-page .mk-toolbar input:hover,
 .master-karyawan-page .mk-toolbar select:hover,
@@ -102,10 +104,9 @@
   border-color:var(--mk-std-gold);
   box-shadow:0 0 0 2px rgba(242,194,48,.10);
 }
-.master-karyawan-page .mk-meta{color:var(--mk-std-muted)}
-.master-karyawan-page .mk-meta strong{color:#E2E8F0}
+.master-karyawan-page .mk-meta{color:var(--mk-std-muted);font-size:14px}
+.master-karyawan-page .mk-meta strong{color:#E2E8F0;font-size:14px}
 
-/* Tabel standar ERP */
 .master-karyawan-page .mk-table-wrap{
   border:1px solid var(--mk-std-border);
   border-radius:12px;
@@ -113,44 +114,51 @@
   box-shadow:0 8px 22px rgba(0,0,0,.22);
 }
 .master-karyawan-page .mk-table thead th{
-  background:#171C23;
-  color:#E2E8F0;
-  border-bottom:2px solid var(--mk-std-gold);
-  padding:13px 14px;
+  background:linear-gradient(180deg,#F6CF45 0%,#E8B91E 100%);
+  color:#11151B;
+  border-bottom:2px solid #9E7C0A;
+  padding:11px 14px;
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.45px;
+  text-shadow:none;
 }
 
-/* OWNER REQUEST: setiap baris nama memiliki pembatas gold yang jelas */
+/* OWNER REQUEST: baris lebih rapat + pembatas gold */
 .master-karyawan-page .mk-table tbody td{
   background:var(--mk-std-surface);
   color:#E5E7EB;
-  border-bottom:1px solid rgba(242,194,48,.48);
+  border-bottom:1px solid rgba(242,194,48,.56);
+  padding:9px 14px;
+  font-size:16px;
+  line-height:1.15;
+  vertical-align:middle;
 }
-.master-karyawan-page .mk-table tbody tr:nth-child(even) td{
-  background:#131820;
-}
+.master-karyawan-page .mk-table tbody tr:nth-child(even) td{background:#131820}
 .master-karyawan-page .mk-table tbody tr:hover td{
   background:#1A2028;
   border-bottom-color:var(--mk-std-gold);
 }
-.master-karyawan-page .mk-table tbody tr:hover{
-  transform:none;
-  filter:none;
-}
-.master-karyawan-page .mk-table tbody tr:last-child td{
-  border-bottom:1px solid rgba(242,194,48,.48);
-}
+.master-karyawan-page .mk-table tbody tr:hover{transform:none;filter:none}
+.master-karyawan-page .mk-table tbody tr:last-child td{border-bottom:1px solid rgba(242,194,48,.56)}
 .master-karyawan-page .mk-no{
-  color:#AAB4C0!important;
-  border-right:1px solid rgba(242,194,48,.28);
+  width:54px;
+  color:#D9E1EA!important;
+  border-right:1px solid rgba(242,194,48,.34);
+  font-size:15px;
+  font-weight:900;
 }
-.master-karyawan-page .mk-name{color:#FFFFFF}
-.master-karyawan-page .mk-table small{color:#8290A0}
+.master-karyawan-page .mk-name{color:#FFFFFF;font-size:17px;font-weight:900}
+.master-karyawan-page .mk-table small{color:#9AA7B5;font-size:12px;margin-top:2px}
 
-/* Badge dibuat lebih flat seperti modul ERP lain */
 .master-karyawan-page .mk-role,
 .master-karyawan-page .mk-status,
 .master-karyawan-page .mk-source{
   box-shadow:none;
+  min-height:26px;
+  padding:3px 10px;
+  font-size:13px;
+  font-weight:900;
 }
 .master-karyawan-page .mk-role{
   background:#242B35;
@@ -167,7 +175,12 @@
   border-color:#29505E;
   color:#8EDFF5;
 }
+.master-karyawan-page .mk-edit,
+.master-karyawan-page .mk-add,
+.master-karyawan-page button{font-size:15px;font-weight:800}
 
 @media(max-width:700px){
-  .master-karyawan-page .mk-head h2{font-size:30px}
+  .master-karyawan-page .mk-head h2{font-size:31px}
+  .master-karyawan-page .mk-table tbody td{font-size:15px;padding:8px 10px}
+  .master-karyawan-page .mk-table thead th{font-size:14px;padding:10px}
 }
