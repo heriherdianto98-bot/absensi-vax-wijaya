@@ -7,7 +7,7 @@
   padding-bottom:14px!important;
 }
 .kasbon-modal .kasbon-modal-panel{
-  width:min(610px,calc(100vw - 28px))!important;
+  width:min(760px,calc(100vw - 32px))!important;
   max-height:calc(100vh - 94px)!important;
   overflow:hidden!important;
   border:1px solid rgba(34,211,238,.58)!important;
@@ -156,17 +156,25 @@
   z-index:21000!important;
 }
 
-/* NATIVE DATE PICKER — DARK CYAN THEME / UI ONLY */
+/* NATIVE DATE PICKER — CYAN BLUE EMPHASIS / UI ONLY */
 .kasbon-modal input[type="date"]{
   color-scheme:dark!important;
   accent-color:#22D3EE!important;
-  background:#071014!important;
+  background:linear-gradient(180deg,#0A3440 0%,#082630 100%)!important;
   color:#F4FDFF!important;
+  border-color:rgba(34,211,238,.72)!important;
+  box-shadow:inset 0 0 0 1px rgba(103,232,249,.08),0 0 18px rgba(34,211,238,.08)!important;
+}
+.kasbon-modal input[type="date"]:hover,
+.kasbon-modal input[type="date"]:focus{
+  background:linear-gradient(180deg,#0C4250 0%,#0A2D38 100%)!important;
+  border-color:#22D3EE!important;
+  box-shadow:0 0 0 3px rgba(34,211,238,.15),0 0 22px rgba(34,211,238,.14)!important;
 }
 .kasbon-modal input[type="date"]::-webkit-calendar-picker-indicator{
-  opacity:.92!important;
+  opacity:1!important;
   cursor:pointer!important;
-  filter:invert(88%) sepia(34%) saturate(920%) hue-rotate(136deg) brightness(102%) contrast(95%)!important;
+  filter:invert(88%) sepia(34%) saturate(920%) hue-rotate(136deg) brightness(108%) contrast(98%)!important;
 }
 .kasbon-modal input[type="date"]::-webkit-datetime-edit,
 .kasbon-modal input[type="date"]::-webkit-datetime-edit-fields-wrapper,
@@ -175,6 +183,10 @@
 .kasbon-modal input[type="date"]::-webkit-datetime-edit-day-field,
 .kasbon-modal input[type="date"]::-webkit-datetime-edit-year-field{
   color:#F4FDFF!important;
+}
+
+@media(max-width:820px){
+  .kasbon-modal .kasbon-modal-panel{width:min(94vw,760px)!important}
 }
 
 @media(max-height:760px) and (min-width:700px){
