@@ -1,0 +1,251 @@
+<section class="kasbon-page" id="kasbonPage" data-kasbon-root="1">
+  <div class="kasbon-tabs" role="tablist" aria-label="Cash In / Kasbon">
+    <button type="button" class="kasbon-tab" data-kasbon-main-tab="cash-in" id="kasbonTabCashIn">Cash In</button>
+    <button type="button" class="kasbon-tab is-active" data-kasbon-main-tab="kasbon" id="kasbonTabKasbon">Kasbon Karyawan</button>
+  </div>
+
+  <div class="kasbon-panel" id="kasbonPanelCashIn" hidden>
+    <div class="kasbon-cashin-keep" id="kasbonCashInHost"></div>
+  </div>
+
+  <div class="kasbon-panel" id="kasbonPanelKasbon">
+    <header class="kasbon-head">
+      <div>
+        <p class="kasbon-eyebrow">KASBON KARYAWAN</p>
+        <h2>Pengajuan &amp; Approval Kasbon</h2>
+        <p class="kasbon-sub">SPV input → Owner approve / kembalikan / tolak. Satu pengajuan = satu transaksi.</p>
+      </div>
+      <div class="kasbon-head-actions">
+        <button type="button" class="kasbon-btn-ghost" id="kasbonRefresh">Refresh</button>
+        <button type="button" class="kasbon-btn-primary" id="kasbonNewBtn">+ Pengajuan Baru</button>
+      </div>
+    </header>
+
+    <div class="kasbon-summary" id="kasbonSummary">
+      <div class="kasbon-sum-card"><span>Menunggu Owner</span><strong id="kasbonSumWaiting">0</strong></div>
+      <div class="kasbon-sum-card"><span>Kasbon Aktif</span><strong id="kasbonSumAktif">0</strong></div>
+      <div class="kasbon-sum-card"><span>Total Pengajuan Periode</span><strong id="kasbonSumTotalReq">Rp0</strong></div>
+      <div class="kasbon-sum-card"><span>Total Outstanding</span><strong id="kasbonSumOutstanding">Rp0</strong></div>
+      <div class="kasbon-sum-card"><span>Lunas</span><strong id="kasbonSumLunas">0</strong></div>
+    </div>
+
+    <div class="kasbon-filters">
+      <label class="kasbon-field">
+        <span>Cabang</span>
+        <select id="kasbonFilterCabang" data-erp-cselect data-erp-cselect-search="Cari cabang..."></select>
+      </label>
+      <label class="kasbon-field">
+        <span>Karyawan</span>
+        <select id="kasbonFilterKaryawan" data-erp-cselect data-erp-cselect-search="Cari karyawan...">
+          <option value="">Semua Karyawan</option>
+        </select>
+      </label>
+      <label class="kasbon-field">
+        <span>Status</span>
+        <select id="kasbonFilterStatus" data-erp-cselect>
+          <option value="">Semua Status</option>
+          <option value="DRAFT">DRAFT</option>
+          <option value="MENUNGGU OWNER">MENUNGGU OWNER</option>
+          <option value="DIKEMBALIKAN">DIKEMBALIKAN</option>
+          <option value="DITOLAK">DITOLAK</option>
+          <option value="DISETUJUI">DISETUJUI</option>
+          <option value="DICAIRKAN">DICAIRKAN</option>
+          <option value="AKTIF">AKTIF</option>
+          <option value="LUNAS">LUNAS</option>
+        </select>
+      </label>
+      <div class="kasbon-field kasbon-field-range" id="kasbonRangeWrap">
+        <span>Periode (Dari — Sampai)</span>
+        <button type="button" id="kasbonRangeTrigger" class="kasbon-range-trigger" aria-haspopup="dialog" aria-expanded="false">
+          <span id="kasbonRangeLabel">Pilih rentang tanggal</span>
+        </button>
+        <!-- Source of truth filter existing — diisi oleh custom range picker -->
+        <input type="date" id="kasbonFilterStart" class="kasbon-date-sr" tabindex="-1" aria-hidden="true">
+        <input type="date" id="kasbonFilterEnd" class="kasbon-date-sr" tabindex="-1" aria-hidden="true">
+        <div id="kasbonRangePopup" class="kasbon-range-popup" role="dialog" aria-label="Pilih rentang tanggal" hidden>
+          <div class="kasbon-range-popup-inner">
+            <div class="kasbon-range-head">
+              <button type="button" id="kasbonRangePrev" class="kasbon-range-nav" aria-label="Bulan sebelumnya">‹</button>
+              <p class="kasbon-range-month" id="kasbonRangeMonth">—</p>
+              <button type="button" id="kasbonRangeNext" class="kasbon-range-nav" aria-label="Bulan berikutnya">›</button>
+            </div>
+            <div class="kasbon-range-weekdays" aria-hidden="true">
+              <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span>
+            </div>
+            <div class="kasbon-range-grid" id="kasbonRangeGrid"></div>
+            <div class="kasbon-range-meta">
+              <div>
+                <span>Dari</span>
+                <strong id="kasbonRangeDraftStart">—</strong>
+              </div>
+              <div>
+                <span>Sampai</span>
+                <strong id="kasbonRangeDraftEnd">—</strong>
+              </div>
+            </div>
+            <p class="kasbon-range-hint" id="kasbonRangeHint">Pilih tanggal mulai, lalu tanggal akhir.</p>
+            <div class="kasbon-range-actions">
+              <button type="button" id="kasbonRangeClear" class="kasbon-btn-ghost kasbon-range-btn">Reset</button>
+              <button type="button" id="kasbonRangeCancel" class="kasbon-btn-ghost kasbon-range-btn">Batal</button>
+              <button type="button" id="kasbonRangeApply" class="kasbon-btn-primary kasbon-range-btn">Terapkan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="kasbon-btn-primary" id="kasbonFilterApply">Terapkan</button>
+    </div>
+
+    <section class="kasbon-owner-queue" id="kasbonOwnerQueue" hidden>
+      <h3>Pengajuan Kasbon Menunggu Approval</h3>
+      <div class="kasbon-queue-list" id="kasbonQueueList"></div>
+    </section>
+
+    <section class="kasbon-list-wrap">
+      <h3>Daftar Kasbon</h3>
+      <div class="kasbon-table-scroll">
+        <table class="kasbon-table">
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Karyawan</th>
+              <th>Cabang</th>
+              <th>Ke-</th>
+              <th>Diajukan</th>
+              <th>Disetujui</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="kasbonTableBody">
+            <tr><td colspan="8" class="kasbon-empty">Memuat…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</section>
+
+<!-- Form modal -->
+<div class="kasbon-modal" id="kasbonFormModal" hidden>
+  <div class="kasbon-modal-backdrop" data-kasbon-close="form"></div>
+  <div class="kasbon-modal-panel" role="dialog" aria-modal="true" aria-labelledby="kasbonFormTitle">
+    <header class="kasbon-modal-head">
+      <h3 id="kasbonFormTitle">Form Pengajuan Kasbon</h3>
+      <button type="button" class="kasbon-icon-btn" data-kasbon-close="form" aria-label="Tutup">×</button>
+    </header>
+    <form id="kasbonForm" class="kasbon-form" autocomplete="off">
+      <input type="hidden" id="kasbonEditId" value="">
+
+      <fieldset class="kasbon-fieldset">
+        <legend>A. Karyawan</legend>
+        <div class="kasbon-form-grid">
+          <label class="kasbon-field">
+            <span>Cabang</span>
+            <select id="kasbonFormCabang" data-erp-cselect data-erp-cselect-search="Cari cabang..." required></select>
+          </label>
+          <label class="kasbon-field">
+            <span>Nama Karyawan</span>
+            <select id="kasbonFormKaryawan" data-erp-cselect data-erp-cselect-search="Cari karyawan..." required>
+              <option value="">— Pilih karyawan —</option>
+            </select>
+          </label>
+          <label class="kasbon-field">
+            <span>Jabatan</span>
+            <input type="text" id="kasbonFormJabatan" readonly tabindex="-1">
+          </label>
+          <label class="kasbon-field">
+            <span>Tanggal Pengajuan</span>
+            <input type="date" id="kasbonFormTanggal" required>
+          </label>
+        </div>
+      </fieldset>
+
+      <aside class="kasbon-employee-summary" id="kasbonEmployeeSummary" hidden>
+        <h4 id="kasbonEmpSumTitle">—</h4>
+        <div class="kasbon-emp-grid">
+          <div><span>Kasbon bulan ini</span><strong id="kasbonEmpKe">—</strong></div>
+          <div><span>Sudah kasbon bulan ini</span><strong id="kasbonEmpSudah">—</strong></div>
+          <div><span>Jumlah pengajuan bulan ini</span><strong id="kasbonEmpCount">—</strong></div>
+          <div><span>Kasbon aktif sebelumnya</span><strong id="kasbonEmpAktif">—</strong></div>
+          <div><span>Sisa belum lunas</span><strong id="kasbonEmpSisa">—</strong></div>
+          <div><span>Pengajuan baru</span><strong id="kasbonEmpBaru">—</strong></div>
+          <div><span>Jika disetujui</span><strong id="kasbonEmpProyeksi">—</strong></div>
+          <div id="kasbonEmpGajiWrap" hidden><span>Gaji pokok (info)</span><strong id="kasbonEmpGaji">—</strong></div>
+        </div>
+      </aside>
+
+      <fieldset class="kasbon-fieldset">
+        <legend>B. Pengajuan</legend>
+        <div class="kasbon-form-grid">
+          <label class="kasbon-field kasbon-field-wide">
+            <span>Nominal Kasbon</span>
+            <input type="text" id="kasbonFormNominal" inputmode="numeric" placeholder="Rp0" required>
+          </label>
+          <label class="kasbon-field kasbon-field-wide">
+            <span>Alasan / Kebutuhan</span>
+            <textarea id="kasbonFormReason" rows="2" required></textarea>
+          </label>
+          <label class="kasbon-field kasbon-field-wide">
+            <span>Catatan SPV</span>
+            <textarea id="kasbonFormSpvNote" rows="2"></textarea>
+          </label>
+          <label class="kasbon-field kasbon-field-wide">
+            <span>Rekomendasi SPV</span>
+            <select id="kasbonFormRekom" data-erp-cselect required>
+              <option value="">— Pilih —</option>
+              <option value="SETUJUI">SETUJUI DIAJUKAN KE OWNER</option>
+              <option value="TOLAK">TOLAK</option>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="kasbon-form-actions">
+        <button type="button" class="kasbon-btn-ghost" data-kasbon-close="form">Batal</button>
+        <button type="button" class="kasbon-btn-ghost" id="kasbonSaveDraft">Simpan Draft</button>
+        <button type="button" class="kasbon-btn-primary" id="kasbonSubmitOwner">Ajukan ke Owner</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Detail modal -->
+<div class="kasbon-modal" id="kasbonDetailModal" hidden>
+  <div class="kasbon-modal-backdrop" data-kasbon-close="detail"></div>
+  <div class="kasbon-modal-panel kasbon-modal-wide" role="dialog" aria-modal="true" aria-labelledby="kasbonDetailTitle">
+    <header class="kasbon-modal-head">
+      <h3 id="kasbonDetailTitle">Detail Kasbon</h3>
+      <button type="button" class="kasbon-icon-btn" data-kasbon-close="detail" aria-label="Tutup">×</button>
+    </header>
+    <div id="kasbonDetailBody" class="kasbon-detail-body"></div>
+    <div class="kasbon-detail-actions" id="kasbonDetailActions"></div>
+  </div>
+</div>
+
+<!-- Owner action modal -->
+<div class="kasbon-modal" id="kasbonOwnerModal" hidden>
+  <div class="kasbon-modal-backdrop" data-kasbon-close="owner"></div>
+  <div class="kasbon-modal-panel" role="dialog" aria-modal="true" aria-labelledby="kasbonOwnerTitle">
+    <header class="kasbon-modal-head">
+      <h3 id="kasbonOwnerTitle">Aksi Owner</h3>
+      <button type="button" class="kasbon-icon-btn" data-kasbon-close="owner" aria-label="Tutup">×</button>
+    </header>
+    <form id="kasbonOwnerForm" class="kasbon-form" autocomplete="off">
+      <input type="hidden" id="kasbonOwnerId" value="">
+      <input type="hidden" id="kasbonOwnerAction" value="">
+      <p class="kasbon-owner-meta" id="kasbonOwnerMeta"></p>
+      <label class="kasbon-field kasbon-field-wide" id="kasbonOwnerAmountWrap">
+        <span>Nominal Final Disetujui</span>
+        <input type="text" id="kasbonOwnerAmount" inputmode="numeric" placeholder="Rp0">
+      </label>
+      <label class="kasbon-field kasbon-field-wide">
+        <span id="kasbonOwnerNoteLabel">Catatan Owner</span>
+        <textarea id="kasbonOwnerNote" rows="3"></textarea>
+      </label>
+      <div class="kasbon-form-actions">
+        <button type="button" class="kasbon-btn-ghost" data-kasbon-close="owner">Batal</button>
+        <button type="submit" class="kasbon-btn-primary" id="kasbonOwnerConfirm">Konfirmasi</button>
+      </div>
+    </form>
+  </div>
+</div>
