@@ -173,37 +173,176 @@
   50%{opacity:.28;transform:scale(1.08)}
 }
 
-/* NATIVE DATE PICKER — CYAN BLUE EMPHASIS / UI ONLY */
+/* NATIVE DATE INPUT FALLBACK — CYAN BLUE / UI ONLY */
 .kasbon-modal input[type="date"]{
   color-scheme:dark!important;
   accent-color:#22D3EE!important;
   background:linear-gradient(180deg,#0A3440 0%,#082630 100%)!important;
   color:#F4FDFF!important;
   border-color:rgba(34,211,238,.72)!important;
-  box-shadow:inset 0 0 0 1px rgba(103,232,249,.08),0 0 18px rgba(34,211,238,.08)!important;
 }
-.kasbon-modal input[type="date"]:hover,
-.kasbon-modal input[type="date"]:focus{
-  background:linear-gradient(180deg,#0C4250 0%,#0A2D38 100%)!important;
-  border-color:#22D3EE!important;
-  box-shadow:0 0 0 3px rgba(34,211,238,.15),0 0 22px rgba(34,211,238,.14)!important;
+
+/* CUSTOM FORM DATE PICKER — FULL CYAN BLUE / UI ONLY */
+.kasbon-form-date-native{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  margin:0!important;
+  padding:0!important;
 }
-.kasbon-modal input[type="date"]::-webkit-calendar-picker-indicator{
-  opacity:1!important;
+.kasbon-form-date-wrap{
+  position:relative!important;
+  width:100%!important;
+  z-index:24000!important;
+}
+.kasbon-form-date-trigger{
+  width:100%!important;
+  height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding:6px 11px!important;
+  border-radius:9px!important;
+  border:1px solid rgba(34,211,238,.64)!important;
+  background:linear-gradient(180deg,#0B3B49 0%,#082832 100%)!important;
+  color:#F3FDFF!important;
+  font-size:13.5px!important;
+  font-weight:800!important;
   cursor:pointer!important;
-  filter:invert(88%) sepia(34%) saturate(920%) hue-rotate(136deg) brightness(108%) contrast(98%)!important;
+  box-shadow:inset 0 1px 0 rgba(165,243,252,.08),0 0 16px rgba(34,211,238,.08)!important;
 }
-.kasbon-modal input[type="date"]::-webkit-datetime-edit,
-.kasbon-modal input[type="date"]::-webkit-datetime-edit-fields-wrapper,
-.kasbon-modal input[type="date"]::-webkit-datetime-edit-text,
-.kasbon-modal input[type="date"]::-webkit-datetime-edit-month-field,
-.kasbon-modal input[type="date"]::-webkit-datetime-edit-day-field,
-.kasbon-modal input[type="date"]::-webkit-datetime-edit-year-field{
-  color:#F4FDFF!important;
+.kasbon-form-date-trigger:hover,
+.kasbon-form-date-trigger[aria-expanded="true"]{
+  border-color:#67E8F9!important;
+  background:linear-gradient(180deg,#0E5060 0%,#0A3541 100%)!important;
+  box-shadow:0 0 0 3px rgba(34,211,238,.12),0 0 22px rgba(34,211,238,.18)!important;
+}
+.kasbon-form-date-trigger i{
+  color:#67E8F9!important;
+  font-style:normal!important;
+  font-size:14px!important;
+}
+.kasbon-form-date-popup{
+  position:absolute!important;
+  top:calc(100% + 8px)!important;
+  right:0!important;
+  width:326px!important;
+  padding:12px!important;
+  border-radius:14px!important;
+  border:1px solid rgba(103,232,249,.78)!important;
+  background:
+    radial-gradient(circle at 88% 8%,rgba(34,211,238,.24),transparent 34%),
+    linear-gradient(160deg,#0D4250 0%,#082A34 46%,#061A21 100%)!important;
+  box-shadow:0 22px 52px rgba(0,0,0,.70),0 0 30px rgba(34,211,238,.24),inset 0 1px 0 rgba(165,243,252,.10)!important;
+  z-index:26000!important;
+  animation:kasbonCyanCalendarIn .16s ease-out both!important;
+}
+@keyframes kasbonCyanCalendarIn{
+  from{opacity:0;transform:translateY(-5px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.kasbon-form-date-head{
+  display:grid!important;
+  grid-template-columns:34px 1fr 34px!important;
+  gap:8px!important;
+  align-items:center!important;
+  margin-bottom:9px!important;
+}
+.kasbon-form-date-head strong{
+  text-align:center!important;
+  color:#CFFAFE!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  letter-spacing:.02em!important;
+}
+.kasbon-form-date-head button,
+.kasbon-form-date-foot button{
+  border:1px solid rgba(103,232,249,.36)!important;
+  background:rgba(3,25,32,.72)!important;
+  color:#67E8F9!important;
+  border-radius:8px!important;
+  cursor:pointer!important;
+  font-weight:900!important;
+}
+.kasbon-form-date-head button{
+  width:34px!important;
+  height:30px!important;
+  font-size:20px!important;
+  line-height:1!important;
+}
+.kasbon-form-date-head button:hover,
+.kasbon-form-date-foot button:hover{
+  background:#22D3EE!important;
+  color:#031217!important;
+  border-color:#A5F3FC!important;
+  box-shadow:0 0 16px rgba(34,211,238,.28)!important;
+}
+.kasbon-form-date-week,
+.kasbon-form-date-grid{
+  display:grid!important;
+  grid-template-columns:repeat(7,1fr)!important;
+  gap:4px!important;
+}
+.kasbon-form-date-week{
+  margin-bottom:5px!important;
+}
+.kasbon-form-date-week span{
+  text-align:center!important;
+  color:#A5F3FC!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+}
+.kasbon-form-date-day{
+  height:33px!important;
+  border:1px solid transparent!important;
+  border-radius:8px!important;
+  background:rgba(2,17,22,.48)!important;
+  color:#E8FCFF!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+  transition:transform .14s ease,background .14s ease,border-color .14s ease,box-shadow .14s ease!important;
+}
+.kasbon-form-date-day:hover{
+  transform:translateY(-1px)!important;
+  background:rgba(34,211,238,.18)!important;
+  border-color:rgba(103,232,249,.62)!important;
+  box-shadow:0 0 12px rgba(34,211,238,.16)!important;
+}
+.kasbon-form-date-day.is-today{
+  border-color:#22D3EE!important;
+  color:#A5F3FC!important;
+}
+.kasbon-form-date-day.is-selected{
+  background:linear-gradient(180deg,#67E8F9 0%,#22D3EE 100%)!important;
+  color:#031217!important;
+  border-color:#CFFAFE!important;
+  box-shadow:0 0 18px rgba(34,211,238,.36)!important;
+}
+.kasbon-form-date-day.is-empty{
+  background:transparent!important;
+  pointer-events:none!important;
+}
+.kasbon-form-date-foot{
+  display:flex!important;
+  justify-content:flex-end!important;
+  margin-top:9px!important;
+  padding-top:9px!important;
+  border-top:1px solid rgba(103,232,249,.18)!important;
+}
+.kasbon-form-date-foot button{
+  min-height:30px!important;
+  padding:0 11px!important;
+  font-size:11px!important;
 }
 
 @media(max-width:820px){
   .kasbon-modal .kasbon-modal-panel{width:min(94vw,760px)!important}
+  .kasbon-form-date-popup{width:min(326px,84vw)!important;right:0!important}
 }
 
 @media(max-height:760px) and (min-width:700px){
@@ -213,4 +352,5 @@
   .kasbon-modal .kasbon-field>span{font-size:10px!important}
   .kasbon-modal input,.kasbon-modal select{height:31px!important;min-height:31px!important;font-size:12.5px!important}
   .kasbon-modal textarea{height:36px!important;min-height:36px!important;font-size:12.5px!important}
+  .kasbon-form-date-trigger{height:31px!important;font-size:12.5px!important}
 }
