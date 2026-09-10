@@ -1,0 +1,15 @@
+[Unit]
+Description=ERP VAX Provider Master Sync (Minutes -> ERP Karyawan)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/var/www/absensi-vax-wijaya/minutes-connector
+ExecStart=/usr/bin/bash /var/www/absensi-vax-wijaya/minutes-connector/provider-master-sync-run.sh
+User=root
+Group=root
+Nice=5
+
+[Install]
+WantedBy=multi-user.target
