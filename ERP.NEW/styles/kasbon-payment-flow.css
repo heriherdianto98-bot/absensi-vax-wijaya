@@ -85,6 +85,27 @@
 #kasbonPaymentModal .kasbon-modal-panel{max-width:560px}
 #kasbonPaymentModal .kasbon-modal-head h3{text-transform:uppercase}
 
+/* ---------- BLACK PREMIUM OVERRIDE (UI ONLY) ---------- */
+.kasbon-page{background:#050505!important}
+.kasbon-page .kasbon-head,
+.kasbon-page .kasbon-sum-card,
+.kasbon-page .kasbon-filters,
+.kasbon-page .kasbon-owner-queue,
+.kasbon-page .kasbon-list-wrap,
+.kasbon-page .kasbon-queue-list>*,
+.kasbon-page .kasbon-employee-summary,
+.kasbon-page .kasbon-table-scroll,
+.kasbon-page .kasbon-payment-detail,
+.kasbon-page .kasbon-payment-detail>div,
+.kasbon-page .kasbon-payment-history p{background:#080808!important}
+.kasbon-page .kasbon-table th{background:#0b0b0b!important}
+.kasbon-page .kasbon-table tbody tr{background:#060606}
+.kasbon-page .kasbon-table tbody tr:hover{background:#0c0c0c!important}
+.kasbon-page input,.kasbon-page select,.kasbon-page textarea,.kasbon-modal input,.kasbon-modal select,.kasbon-modal textarea,.kasbon-page .kasbon-range-trigger{background:#090909!important}
+.kasbon-page input:focus,.kasbon-page select:focus,.kasbon-page textarea:focus,.kasbon-modal input:focus,.kasbon-modal select:focus,.kasbon-modal textarea:focus{background:#0b0b0b!important}
+.kasbon-page .kasbon-range-popup-inner,.kasbon-modal .kasbon-modal-panel{background:#080808!important}
+.kasbon-modal .kasbon-fieldset,.kasbon-modal .kasbon-owner-meta,.kasbon-payment-summary{background:#0a0a0a!important}
+
 @media(max-width:900px){.kasbon-payment-detail{grid-template-columns:repeat(2,minmax(0,1fr))}.kasbon-page .kasbon-head h2{font-size:24px}}
 @media(max-width:560px){.kasbon-payment-detail{grid-template-columns:1fr}.kasbon-payment-history{grid-column:1}.kasbon-page .kasbon-sum-card strong{font-size:19px}.kasbon-modal .kasbon-modal-head h3{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.kasbon-page *,.kasbon-modal *{transition:none!important;animation:none!important}}
