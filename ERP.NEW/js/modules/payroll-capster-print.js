@@ -4,7 +4,7 @@
    UI only: Owner signature mirrors the approved Owner Invoice presentation.
 */
 (() => {
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   const text=node=>String(node?.textContent||'').replace(/\s+/g,' ').trim();
   const nowWib=()=>new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'long',timeStyle:'short'}).format(new Date());
 
@@ -51,6 +51,9 @@
     .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5mm;padding:2mm}.sum{border:1px solid #ccc;padding:1.55mm}.sum span{display:block;color:#666;font-size:6.2pt;text-transform:uppercase}.sum strong{display:block;margin-top:.7mm;font-size:8.6pt}.empty{text-align:center;padding:8mm;color:#777}
     .sign{margin-top:2.5mm;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid}.sign .box{text-align:center;min-height:25mm}.sign .space{height:17mm}.sign .line{border-top:1px solid #333;padding-top:1.2mm;font-weight:700}.sign .role{font-size:7pt;color:#666;margin-top:.7mm}.owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}.owner-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center}.owner-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
 
+    @media print{
+      .master-foot{position:fixed;left:0;right:0;bottom:0;z-index:5}
+    }
     @media screen{
       body{padding:16px;background:#f3f1ea}.page-frame{background:#fff;max-width:210mm;margin:auto;box-shadow:0 8px 28px rgba(0,0,0,.12)}
       .page-frame>thead,.page-frame>tfoot{display:table-row-group}.head-space,.foot-space{height:auto}.master-head{height:auto;padding:16px 20px 0}.master-foot{height:auto;margin:0 20px;padding:10px 0 16px}.content{padding:0 20px 20px}
