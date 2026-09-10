@@ -9,11 +9,18 @@
     const {data,error}=await db
       .from(this.TABLE_KASBON)
       .select("id,employee_id,branch_id,employee_name_snapshot,position_snapshot,request_date,approved_amount,disbursement_date,status,current_outstanding,total_paid,payment_method")
-      .gte("disbursement_date",start)
       .lte("disbursement_date",end)
+      .in("status",["DICAIRKAN","AKTIF"])
+      .gt("current_outstanding",0)
       .order("disbursement_date",{ascending:true});
     if(error) throw error;
-    return (Array.isArray(data)?data:[]).filter(r=>String(r.payment_method||'BULANAN').toUpperCase()==='BULANAN');
+    return (Array.isArray(data)?data:[])
+      .filter(r=>String(r.payment_method||'BULANAN').toUpperCase()==='BULANAN')
+      .map(r=>({
+        ...r,
+        original_disbursement_date:r.disbursement_date,
+        disbursement_date:String(r.disbursement_date||'')<start?start:r.disbursement_date
+      }));
   };
 
   window.PayrollKasbonMonthlyBridge = {
