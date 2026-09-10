@@ -115,6 +115,27 @@
   box-shadow:0 0 0 3px rgba(201,161,45,.10),0 0 14px rgba(201,161,45,.06),inset 0 2px 8px rgba(0,0,0,.18);
 }
 
+/* Native dropdown options — dark theme ERP */
+.mk-modal .mk-field select{
+  color-scheme:dark;
+  background-color:#111820;
+  color:#F3F5F7;
+}
+.mk-modal .mk-field select option{
+  background:#111820;
+  color:#E8EDF2;
+  font-size:16px;
+  font-weight:700;
+}
+.mk-modal .mk-field select option:checked{
+  background:#6F5518;
+  color:#FFF3C0;
+}
+.mk-modal .mk-field select option:disabled{
+  background:#171C22;
+  color:#8B949E;
+}
+
 .mk-form-error{
   border-color:#734047;
   background:#2A1519;
@@ -169,6 +190,7 @@
   .mk-form{padding:18px;gap:14px}
   .mk-field span{font-size:13px}
   .mk-field input,.mk-field select,.mk-field textarea{font-size:15px}
+  .mk-modal .mk-field select option{font-size:15px}
   .mk-btn-secondary,.mk-btn-primary{font-size:15px}
 }
 
