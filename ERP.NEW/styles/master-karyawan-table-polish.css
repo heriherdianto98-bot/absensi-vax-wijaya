@@ -1,0 +1,145 @@
+/* ERP VAX — Master Karyawan table polish
+   UI ONLY. No data, sync, mapping, or business-logic changes. */
+
+/* Tabel dibuat lebih gelap, mengikuti karakter tabel operasional ERP */
+.master-karyawan-page .mk-table-wrap{
+  background:#080B0F;
+  border-color:#242B34;
+  box-shadow:0 10px 26px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+/* Gold header diturunkan supaya tidak terlalu menyala */
+.master-karyawan-page .mk-table thead th{
+  background:linear-gradient(180deg,#C9A12D 0%,#A77E19 100%);
+  color:#101318;
+  border-bottom:2px solid #71540D;
+  padding:8px 12px;
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.42px;
+  box-shadow:inset 0 1px 0 rgba(255,240,175,.24),inset 0 -1px 0 rgba(69,48,0,.32);
+}
+
+/* Baris dibuat lebih pendek tetapi font tetap besar */
+.master-karyawan-page .mk-table tbody td{
+  background:#090D12;
+  color:#E7EBF0;
+  border-bottom:1px solid rgba(176,133,33,.48);
+  padding:5px 12px;
+  font-size:16px;
+  line-height:1.05;
+  vertical-align:middle;
+}
+.master-karyawan-page .mk-table tbody tr:nth-child(even) td{background:#0C1117}
+.master-karyawan-page .mk-table tbody tr:hover td{
+  background:#131A22;
+  border-bottom-color:#B68B24;
+}
+.master-karyawan-page .mk-table tbody tr:last-child td{border-bottom:1px solid rgba(176,133,33,.48)}
+.master-karyawan-page .mk-no{
+  width:50px;
+  color:#E0E5EB!important;
+  border-right:1px solid rgba(176,133,33,.28);
+  font-size:15px;
+  font-weight:900;
+}
+.master-karyawan-page .mk-name{
+  color:#FFFFFF;
+  font-size:17px;
+  line-height:1.02;
+  font-weight:900;
+}
+.master-karyawan-page .mk-table small{
+  color:#8B98A6;
+  font-size:11px;
+  line-height:1;
+  margin-top:1px;
+}
+
+/* Badge dibuat lebih compact dan 3D */
+.master-karyawan-page .mk-role,
+.master-karyawan-page .mk-status,
+.master-karyawan-page .mk-source{
+  min-height:23px;
+  padding:2px 9px;
+  font-size:13px;
+  line-height:1;
+  border-radius:999px;
+}
+
+.master-karyawan-page .mk-status.is-active{
+  color:#A8F4C9;
+  border:1px solid #265E44;
+  background:linear-gradient(180deg,#1F6245 0%,#103A29 52%,#0A281D 100%);
+  box-shadow:inset 0 1px 0 rgba(210,255,231,.20),inset 0 -2px 0 rgba(0,0,0,.24),0 3px 7px rgba(0,0,0,.30),0 0 9px rgba(56,190,120,.08);
+  text-shadow:0 1px 1px rgba(0,0,0,.45);
+}
+.master-karyawan-page .mk-status.is-active::before{
+  content:"✓";
+  display:inline-block;
+  margin-right:5px;
+  font-weight:900;
+  color:#7FF2B2;
+  text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+.master-karyawan-page .mk-status.is-inactive{
+  border:1px solid #70343A;
+  background:linear-gradient(180deg,#6B3037 0%,#421D22 55%,#2D1317 100%);
+  color:#FFC0C5;
+  box-shadow:inset 0 1px 0 rgba(255,225,228,.16),inset 0 -2px 0 rgba(0,0,0,.22),0 3px 7px rgba(0,0,0,.28);
+}
+
+.master-karyawan-page .mk-source.is-minutes{
+  color:#B5ECFF;
+  border:1px solid #28586A;
+  background:linear-gradient(180deg,#23647B 0%,#153E4D 52%,#0D2933 100%);
+  box-shadow:inset 0 1px 0 rgba(218,246,255,.20),inset 0 -2px 0 rgba(0,0,0,.24),0 3px 7px rgba(0,0,0,.30),0 0 9px rgba(60,183,226,.08);
+  text-shadow:0 1px 1px rgba(0,0,0,.45);
+}
+.master-karyawan-page .mk-source.is-minutes::before{
+  content:"◆";
+  display:inline-block;
+  margin-right:5px;
+  font-size:9px;
+  color:#79DFFF;
+  text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+.master-karyawan-page .mk-source:not(.is-minutes){
+  border:1px solid #46505D;
+  background:linear-gradient(180deg,#343D49 0%,#222A33 55%,#171D24 100%);
+  color:#D8DEE6;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),inset 0 -2px 0 rgba(0,0,0,.24),0 3px 7px rgba(0,0,0,.27);
+}
+
+/* Tombol Edit 3D, tetap memakai handler/data-edit-id yang sama */
+.master-karyawan-page .mk-edit{
+  min-width:68px;
+  min-height:27px;
+  padding:4px 10px;
+  border:1px solid #604E88;
+  border-radius:9px;
+  background:linear-gradient(180deg,#5A477E 0%,#392D55 50%,#241C39 100%);
+  color:#F1E9FF;
+  font-size:13px;
+  font-weight:900;
+  line-height:1;
+  letter-spacing:.1px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -2px 0 rgba(0,0,0,.28),0 4px 8px rgba(0,0,0,.34),0 0 10px rgba(150,110,225,.08);
+  text-shadow:0 1px 1px rgba(0,0,0,.55);
+  transform:translateY(0);
+}
+.master-karyawan-page .mk-edit:hover{
+  transform:translateY(-1px);
+  border-color:#8069AF;
+  background:linear-gradient(180deg,#695397 0%,#443465 50%,#2B2043 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -2px 0 rgba(0,0,0,.25),0 6px 11px rgba(0,0,0,.38),0 0 12px rgba(157,108,255,.13);
+}
+.master-karyawan-page .mk-edit:active{
+  transform:translateY(1px);
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.30),0 2px 4px rgba(0,0,0,.26);
+}
+
+@media(max-width:700px){
+  .master-karyawan-page .mk-table tbody td{padding:5px 9px;font-size:15px}
+  .master-karyawan-page .mk-table thead th{padding:7px 9px;font-size:14px}
+}
