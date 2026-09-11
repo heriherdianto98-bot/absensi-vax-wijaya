@@ -31,26 +31,24 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     animation:vax-revenue-lightning 4.6s linear infinite;
 }
 
-/* Light rain: sparse drops only, appearing briefly after lightning. */
+/* Natural rain: many short droplet marks, never long streaks. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
     top:var(--erp-top-header-h,42px);
     bottom:0;
     z-index:150;
     opacity:0;
-    background:
-        repeating-linear-gradient(102deg,
-            transparent 0 74px,
-            rgba(190,226,255,.20) 75px 76px,
-            transparent 77px 154px),
-        repeating-linear-gradient(100deg,
-            transparent 0 118px,
-            rgba(132,196,241,.14) 119px 120px,
-            transparent 121px 238px);
-    background-size:100% 86px,100% 122px;
-    filter:blur(.08px);
+    background-image:
+        radial-gradient(ellipse at center,rgba(190,226,255,.72) 0 34%,rgba(190,226,255,.26) 46%,transparent 68%),
+        radial-gradient(ellipse at center,rgba(150,205,244,.60) 0 34%,rgba(150,205,244,.20) 48%,transparent 70%),
+        radial-gradient(ellipse at center,rgba(210,238,255,.54) 0 32%,rgba(210,238,255,.18) 48%,transparent 70%),
+        radial-gradient(ellipse at center,rgba(125,188,232,.48) 0 34%,rgba(125,188,232,.16) 48%,transparent 70%);
+    background-size:3px 9px,2px 7px,3px 8px,2px 6px;
+    background-position:8px -30px,34px -10px,62px -46px,91px -22px;
+    background-repeat:repeat;
+    filter:blur(.05px) drop-shadow(0 0 2px rgba(140,205,250,.12));
     animation:
-        vax-revenue-rain-fall 1.15s linear 1.15s infinite,
-        vax-revenue-rain-pulse 6.2s ease-in-out 1.15s infinite;
+        vax-revenue-raindrops 1.15s linear 1s infinite,
+        vax-revenue-rain-bursts 6.2s ease-in-out 1s infinite;
 }
 
 body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
@@ -75,15 +73,22 @@ body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-bad
     64.8%{opacity:.18}
 }
 
-@keyframes vax-revenue-rain-fall{
-    from{background-position:0 -86px,24px -122px}
-    to{background-position:-10px 86px,8px 122px}
+@keyframes vax-revenue-raindrops{
+    from{background-position:8px -30px,34px -10px,62px -46px,91px -22px}
+    to{background-position:2px 74px,30px 88px,56px 66px,86px 82px}
 }
 
-@keyframes vax-revenue-rain-pulse{
-    0%,16%,42%,58%,84%,100%{opacity:0}
-    22%,30%{opacity:.20}
-    64%,72%{opacity:.14}
+@keyframes vax-revenue-rain-bursts{
+    0%,10%{opacity:0}
+    16%{opacity:.20}
+    26%{opacity:.34}
+    38%{opacity:.24}
+    50%{opacity:.08}
+    58%{opacity:0}
+    69%{opacity:.16}
+    78%{opacity:.30}
+    88%{opacity:.18}
+    96%,100%{opacity:0}
 }
 
 @media (max-width:900px){
