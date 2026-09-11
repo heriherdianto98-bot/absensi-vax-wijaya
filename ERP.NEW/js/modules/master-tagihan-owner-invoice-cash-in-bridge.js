@@ -99,6 +99,17 @@
     }
   }
 
+  function syncPaidUi(row){
+    row.status="paid";
+    const inv=window.SvPInvoice;
+    if(!inv) return;
+    if(Array.isArray(inv.rows)){
+      const local=inv.rows.find(x=>String(x.id)===String(row.id));
+      if(local) local.status="paid";
+    }
+    if(typeof inv.render==="function") inv.render();
+  }
+
   async function approve(row,btn){
     if(!row || !isOwnerInvoice(row) || isApproved(row)) return;
     const total=Math.round(Number(row.total||0));
@@ -154,6 +165,7 @@
       }
 
       await markInvoicePaid(row,user.id);
+      syncPaidUi(row);
       const inv=window.SvPInvoice;
       if(inv?.reload) await inv.reload();
       alert(`Invoice Owner berhasil di-ACC.\nKas Besar bertambah ${rupiah(total)}.`);
@@ -161,7 +173,10 @@
       console.error("Owner invoice cash-in bridge:",err);
       alert(`Gagal ACC invoice Owner: ${err?.message||err}`);
     }finally{
-      if(btn){btn.disabled=false;if(old!=null)btn.innerHTML=old;}
+      if(btn && btn.isConnected && !isApproved(row)){
+        btn.disabled=false;
+        if(old!=null)btn.innerHTML=old;
+      }
     }
   }
 
