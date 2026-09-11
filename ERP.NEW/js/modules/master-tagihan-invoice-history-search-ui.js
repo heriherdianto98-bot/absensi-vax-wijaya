@@ -17,10 +17,11 @@
     const s = document.createElement("style");
     s.id = STYLE_ID;
     s.textContent = `
-      #mtInvoiceCard .mt-invoice-history-toggle{position:relative;padding-right:112px}
+      #mtInvoiceCard .mt-invoice-history{position:relative}
+      #mtInvoiceCard .mt-invoice-history-toggle{position:relative;padding-right:52px}
       #mtInvoiceCard .mt-invoice-history-search-ui{
-        position:absolute;right:46px;top:50%;transform:translateY(-50%);
-        display:flex;align-items:center;justify-content:flex-end;gap:6px;z-index:4;
+        position:absolute;right:46px;top:6px;
+        display:flex;align-items:center;justify-content:flex-end;gap:6px;z-index:6;
       }
       #mtInvoiceCard .mt-invoice-history-search-btn{
         width:34px;height:34px;border-radius:10px;border:1px solid #2f6178;
@@ -50,10 +51,10 @@
         font-size:11px;cursor:pointer
       }
       @media(max-width:900px){
-        #mtInvoiceCard .mt-invoice-history-toggle{padding-right:92px}
+        #mtInvoiceCard .mt-invoice-history-toggle{padding-right:52px}
         #mtInvoiceCard .mt-invoice-history-search-ui.is-open{
-          position:absolute;left:12px;right:42px;top:100%;transform:none;padding:7px 0;
-          background:#0d1821;border-bottom:1px solid #243945
+          left:12px;right:42px;top:48px;padding:7px 0;background:#0d1821;
+          border-bottom:1px solid #243945
         }
         #mtInvoiceCard .mt-invoice-history-search-ui.is-open .mt-invoice-history-search-input{width:100%}
       }
@@ -91,33 +92,38 @@
     if(!history) return null;
     const toggle = history.querySelector("[data-history-toggle],.mt-invoice-history-toggle");
     if(!toggle) return null;
-    let shell = toggle.querySelector(".mt-invoice-history-search-ui");
+
+    let shell = history.querySelector(":scope > .mt-invoice-history-search-ui");
     if(shell) return shell;
 
-    shell = document.createElement("span");
+    shell = document.createElement("div");
     shell.className = "mt-invoice-history-search-ui";
     shell.innerHTML = `
       <button type="button" class="mt-invoice-history-search-btn" data-invoice-search-toggle title="Cari riwayat invoice" aria-label="Cari riwayat invoice">⌕</button>
       <input type="search" class="mt-invoice-history-search-input" data-invoice-search-input placeholder="Cari invoice / kata kunci..." autocomplete="off">
       <button type="button" class="mt-invoice-history-search-clear" data-invoice-search-clear title="Hapus pencarian" aria-label="Hapus pencarian">×</button>
     `;
-    toggle.appendChild(shell);
+    toggle.insertAdjacentElement("afterend", shell);
 
     const btn = shell.querySelector("[data-invoice-search-toggle]");
     const input = shell.querySelector("[data-invoice-search-input]");
     const clear = shell.querySelector("[data-invoice-search-clear]");
 
-    [btn,input,clear].forEach(el => el?.addEventListener("click", e => e.stopPropagation()));
-    btn?.addEventListener("click", () => {
+    btn?.addEventListener("click", e => {
+      e.preventDefault();
+      e.stopPropagation();
       shell.classList.toggle("is-open");
       if(shell.classList.contains("is-open")) setTimeout(() => input?.focus(), 0);
     });
+    input?.addEventListener("click", e => e.stopPropagation());
     input?.addEventListener("input", () => {
       query = norm(input.value);
       shell.classList.toggle("has-query", !!query);
       apply();
     });
-    clear?.addEventListener("click", () => {
+    clear?.addEventListener("click", e => {
+      e.preventDefault();
+      e.stopPropagation();
       if(input) input.value = "";
       query = "";
       shell.classList.remove("has-query");
