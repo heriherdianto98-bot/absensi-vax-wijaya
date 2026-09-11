@@ -111,6 +111,68 @@ html body.page-erp-dashboard .erp-wrapper.erp-wrapper .od-filterbar.od-filterbar
     isolation:isolate !important;
 }
 
+/* Center the whole Dashboard toolbar vertically between Header Bar and Rp54jt card. */
+html body.page-erp-dashboard .erp-wrapper.erp-wrapper .toolbar-wrapper.toolbar-wrapper,
+html body.page-erp-dashboard .erp-wrapper.erp-wrapper .od-filterbar.od-filterbar{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+}
+html body.page-erp-dashboard .toolbar-wrapper .toolbar-left,
+html body.page-erp-dashboard .toolbar-wrapper .toolbar-right,
+html body.page-erp-dashboard .od-filterbar .toolbar-left,
+html body.page-erp-dashboard .od-filterbar .toolbar-right{
+    display:flex !important;
+    align-items:center !important;
+    min-height:100% !important;
+}
+
+/* Colored filter identities: Cabang = cyan, Periode = violet. Visual only. */
+html body.page-erp-dashboard .toolbar-left > *:has(#branchFilter),
+html body.page-erp-dashboard .od-filterbar > *:has(#branchFilter),
+html body.page-erp-dashboard .toolbar-left > *:has(#periodFilter),
+html body.page-erp-dashboard .od-filterbar > *:has(#periodFilter){
+    position:relative !important;
+}
+html body.page-erp-dashboard #branchFilter,
+html body.page-erp-dashboard #periodFilter{
+    padding-left:36px !important;
+}
+html body.page-erp-dashboard .toolbar-left > *:has(#branchFilter)::before,
+html body.page-erp-dashboard .od-filterbar > *:has(#branchFilter)::before{
+    content:"◆";
+    position:absolute;
+    left:11px;
+    bottom:12px;
+    z-index:3;
+    color:#35D5FF;
+    font-size:13px;
+    line-height:1;
+    text-shadow:0 0 8px rgba(53,213,255,.75);
+    pointer-events:none;
+}
+html body.page-erp-dashboard .toolbar-left > *:has(#periodFilter)::before,
+html body.page-erp-dashboard .od-filterbar > *:has(#periodFilter)::before{
+    content:"●";
+    position:absolute;
+    left:11px;
+    bottom:12px;
+    z-index:3;
+    color:#A78BFA;
+    font-size:12px;
+    line-height:1;
+    text-shadow:0 0 8px rgba(167,139,250,.72);
+    pointer-events:none;
+}
+html body.page-erp-dashboard #branchFilter{
+    border-color:rgba(53,213,255,.34) !important;
+    box-shadow:inset 3px 0 0 rgba(53,213,255,.72) !important;
+}
+html body.page-erp-dashboard #periodFilter{
+    border-color:rgba(167,139,250,.34) !important;
+    box-shadow:inset 3px 0 0 rgba(167,139,250,.72) !important;
+}
+
 @media (max-width:900px){
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
         left:0;
