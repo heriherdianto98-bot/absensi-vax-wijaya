@@ -7,13 +7,13 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
     content:"";
     position:fixed;
-    left:var(--sidebar-width,220px);
-    right:0;
     pointer-events:none;
 }
 
 /* Lightning strip: flashes repeatedly just below the fixed header bar. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
+    left:var(--sidebar-width,220px);
+    right:0;
     top:var(--erp-top-header-h,42px);
     height:70px;
     z-index:164;
@@ -31,31 +31,66 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     animation:vax-revenue-lightning 4.6s linear infinite;
 }
 
-/* Natural rain: many short droplet marks, never long streaks. */
+/* Real raindrop particles: short individual drops, not stripes/patterns. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
-    top:var(--erp-top-header-h,42px);
-    bottom:0;
+    left:calc(var(--sidebar-width,220px) + 1vw);
+    top:calc(var(--erp-top-header-h,42px) - 100vh);
+    width:2px;
+    height:7px;
     z-index:150;
+    border-radius:50% 50% 55% 55%;
+    background:rgba(205,235,255,.72);
+    box-shadow:
+        4vw 4vh 0 0 rgba(205,235,255,.64),
+        9vw 16vh 0 0 rgba(165,213,246,.58),
+        14vw 30vh 0 0 rgba(210,239,255,.70),
+        18vw 51vh 0 0 rgba(158,205,239,.54),
+        23vw 71vh 0 0 rgba(205,235,255,.64),
+        28vw 10vh 0 0 rgba(178,220,248,.58),
+        32vw 39vh 0 0 rgba(214,241,255,.72),
+        36vw 62vh 0 0 rgba(154,203,238,.52),
+        41vw 83vh 0 0 rgba(203,233,253,.63),
+        46vw 19vh 0 0 rgba(180,222,249,.60),
+        50vw 45vh 0 0 rgba(212,240,255,.70),
+        55vw 68vh 0 0 rgba(160,208,241,.55),
+        60vw 7vh 0 0 rgba(201,232,252,.62),
+        64vw 26vh 0 0 rgba(173,217,246,.58),
+        69vw 54vh 0 0 rgba(213,241,255,.70),
+        74vw 77vh 0 0 rgba(157,206,240,.54),
+        79vw 13vh 0 0 rgba(203,234,254,.65),
+        84vw 35vh 0 0 rgba(176,220,248,.58),
+        89vw 59vh 0 0 rgba(214,241,255,.70),
+        94vw 86vh 0 0 rgba(160,208,241,.54),
+        6vw 90vh 0 0 rgba(198,230,251,.60),
+        12vw 64vh 0 0 rgba(173,218,247,.56),
+        20vw 22vh 0 0 rgba(211,239,255,.68),
+        26vw 88vh 0 0 rgba(157,205,239,.52),
+        34vw 14vh 0 0 rgba(203,234,254,.64),
+        43vw 58vh 0 0 rgba(178,221,248,.58),
+        52vw 92vh 0 0 rgba(214,241,255,.70),
+        58vw 33vh 0 0 rgba(160,208,241,.54),
+        67vw 72vh 0 0 rgba(204,234,254,.64),
+        76vw 47vh 0 0 rgba(175,219,247,.58),
+        86vw 24vh 0 0 rgba(211,239,255,.68),
+        92vw 69vh 0 0 rgba(157,205,239,.52);
+    filter:drop-shadow(0 0 1px rgba(145,210,250,.35));
     opacity:0;
-    background-image:
-        radial-gradient(ellipse at center,rgba(190,226,255,.72) 0 34%,rgba(190,226,255,.26) 46%,transparent 68%),
-        radial-gradient(ellipse at center,rgba(150,205,244,.60) 0 34%,rgba(150,205,244,.20) 48%,transparent 70%),
-        radial-gradient(ellipse at center,rgba(210,238,255,.54) 0 32%,rgba(210,238,255,.18) 48%,transparent 70%),
-        radial-gradient(ellipse at center,rgba(125,188,232,.48) 0 34%,rgba(125,188,232,.16) 48%,transparent 70%);
-    background-size:3px 9px,2px 7px,3px 8px,2px 6px;
-    background-position:8px -30px,34px -10px,62px -46px,91px -22px;
-    background-repeat:repeat;
-    filter:blur(.05px) drop-shadow(0 0 2px rgba(140,205,250,.12));
     animation:
-        vax-revenue-raindrops 1.15s linear 1s infinite,
-        vax-revenue-rain-bursts 6.2s ease-in-out 1s infinite;
+        vax-revenue-raindrop-fall 1.45s linear 1s infinite,
+        vax-revenue-raindrop-burst 6.4s ease-in-out 1s infinite;
 }
 
-body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
-body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after,
-.sidebar.collapsed ~ .erp-wrapper::before,
-.sidebar.collapsed ~ .erp-wrapper::after{
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
     left:var(--sidebar-collapse,72px);
+}
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+    left:calc(var(--sidebar-collapse,72px) + 1vw);
+}
+.sidebar.collapsed ~ .erp-wrapper::before{
+    left:var(--sidebar-collapse,72px);
+}
+.sidebar.collapsed ~ .erp-wrapper::after{
+    left:calc(var(--sidebar-collapse,72px) + 1vw);
 }
 
 @keyframes vax-revenue-lightning{
@@ -73,28 +108,30 @@ body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-bad
     64.8%{opacity:.18}
 }
 
-@keyframes vax-revenue-raindrops{
-    from{background-position:8px -30px,34px -10px,62px -46px,91px -22px}
-    to{background-position:2px 74px,30px 88px,56px 66px,86px 82px}
+@keyframes vax-revenue-raindrop-fall{
+    from{transform:translate3d(0,0,0)}
+    to{transform:translate3d(-12px,200vh,0)}
 }
 
-@keyframes vax-revenue-rain-bursts{
-    0%,10%{opacity:0}
-    16%{opacity:.20}
-    26%{opacity:.34}
-    38%{opacity:.24}
-    50%{opacity:.08}
-    58%{opacity:0}
-    69%{opacity:.16}
-    78%{opacity:.30}
-    88%{opacity:.18}
+@keyframes vax-revenue-raindrop-burst{
+    0%,9%{opacity:0}
+    15%{opacity:.42}
+    27%{opacity:.72}
+    39%{opacity:.48}
+    50%{opacity:.12}
+    57%{opacity:0}
+    68%{opacity:.36}
+    79%{opacity:.68}
+    89%{opacity:.42}
     96%,100%{opacity:0}
 }
 
 @media (max-width:900px){
-    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
-    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
         left:0;
+    }
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+        left:1vw;
     }
 }
 
