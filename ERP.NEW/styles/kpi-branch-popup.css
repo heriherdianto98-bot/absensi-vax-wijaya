@@ -419,6 +419,25 @@
     color: #FB923C;
 }
 
+/* NETT popup cards — UI ONLY: match the popup panel theme instead of bright grey blocks. */
+.kpi-branch-modal[data-kpi-tone="gold"] .kpi-branch-modal-total,
+.kpi-branch-modal[data-kpi-tone="gold"] .kpi-branch-row{
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.035) 0%, rgba(255,255,255,.01) 100%),
+        #151A21;
+    border-color:rgba(212,175,55,.10);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+.kpi-branch-modal[data-kpi-tone="gold"] .kpi-branch-row:hover,
+.kpi-branch-modal[data-kpi-tone="gold"] .kpi-branch-row:focus-visible{
+    background:
+        linear-gradient(180deg, rgba(212,175,55,.055) 0%, rgba(255,255,255,.012) 100%),
+        #171C23;
+    border-color:rgba(212,175,55,.20);
+    box-shadow:0 0 0 1px rgba(212,175,55,.06), 0 0 16px rgba(212,175,55,.08);
+}
+
 /* Clickable affordance on dashboard targets */
 #todayRevenue,
 .executive-item[data-kpi-metric],
