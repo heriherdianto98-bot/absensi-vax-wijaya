@@ -3,36 +3,40 @@
    Active automatically only when Executive Summary exposes .exec-trend-badge.negative.
 */
 
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper{
+    position:relative !important;
+}
+
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
     content:"";
-    position:fixed;
     pointer-events:none;
 }
 
-/* Lightning strip: stays visible BELOW the raised dashboard toolbar, never hidden behind it. */
+/* Realistic branching lightning. It belongs to page content (absolute), so it scrolls away. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
-    left:var(--sidebar-width,220px);
+    position:absolute;
+    left:0;
     right:0;
-    top:calc(var(--erp-top-header-h,42px) + 14px + 68px);
-    height:70px;
+    top:124px;
+    height:170px;
     z-index:164;
     opacity:0;
-    background:
-        linear-gradient(114deg,transparent 0 17%,rgba(255,255,255,.98) 17.35% 17.75%,rgba(155,219,255,.95) 18.05% 18.45%,transparent 18.8% 100%),
-        linear-gradient(72deg,transparent 0 42%,rgba(255,255,255,.96) 42.3% 42.65%,rgba(120,207,255,.92) 43.05% 43.45%,transparent 43.8% 100%),
-        linear-gradient(118deg,transparent 0 69%,rgba(255,255,255,.98) 69.25% 69.7%,rgba(158,220,255,.9) 70.05% 70.5%,transparent 70.85% 100%),
-        radial-gradient(ellipse at 22% 0%,rgba(196,230,255,.48),transparent 34%),
-        radial-gradient(ellipse at 51% 0%,rgba(214,239,255,.42),transparent 31%),
-        radial-gradient(ellipse at 78% 0%,rgba(177,222,255,.40),transparent 32%),
-        linear-gradient(180deg,rgba(164,211,255,.16),transparent 88%);
-    filter:drop-shadow(0 0 5px rgba(182,226,255,.95)) drop-shadow(0 0 18px rgba(90,180,255,.58));
+    overflow:hidden;
+    background-image:
+        radial-gradient(ellipse at 52% 4%,rgba(228,243,255,.35) 0%,rgba(138,196,255,.16) 22%,transparent 52%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 260'%3E%3Cdefs%3E%3Cfilter id='g'%3E%3CfeGaussianBlur stdDeviation='5'/%3E%3C/filter%3E%3Cfilter id='g2'%3E%3CfeGaussianBlur stdDeviation='2'/%3E%3C/filter%3E%3C/defs%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M620 0 L598 38 L612 58 L573 91 L585 111 L538 151 L551 168 L500 221 L488 260' stroke='%239bd7ff' stroke-width='16' opacity='.35' filter='url(%23g)'/%3E%3Cpath d='M620 0 L598 38 L612 58 L573 91 L585 111 L538 151 L551 168 L500 221 L488 260' stroke='white' stroke-width='4.5'/%3E%3Cpath d='M585 110 L525 124 L487 153 L442 162 L409 197' stroke='%23e8f7ff' stroke-width='2.2'/%3E%3Cpath d='M551 168 L609 181 L646 206 L690 215 L728 246' stroke='%23dff4ff' stroke-width='2.1'/%3E%3Cpath d='M612 58 L672 72 L710 96 L763 104 L806 132' stroke='%23dff4ff' stroke-width='1.8'/%3E%3Cpath d='M598 38 L545 51 L507 75 L460 85 L423 112' stroke='%23dff4ff' stroke-width='1.7'/%3E%3Cpath d='M672 72 L650 105 L664 124 L639 154' stroke='%23dff4ff' stroke-width='1.3'/%3E%3Cpath d='M525 124 L499 102 L468 95 L446 75' stroke='%23dff4ff' stroke-width='1.2'/%3E%3Cpath d='M487 153 L469 178 L438 188 L422 211' stroke='%23dff4ff' stroke-width='1.2'/%3E%3Cpath d='M646 206 L623 232 L618 258' stroke='%23dff4ff' stroke-width='1.2'/%3E%3Cpath d='M900 58 L884 82 L891 99 L865 126 L873 142 L846 172 L850 205' stroke='%23a9dcff' stroke-width='9' opacity='.23' filter='url(%23g2)'/%3E%3Cpath d='M900 58 L884 82 L891 99 L865 126 L873 142 L846 172 L850 205' stroke='white' stroke-width='2.5'/%3E%3Cpath d='M873 142 L914 151 L941 173 L973 182' stroke='%23dff4ff' stroke-width='1.2'/%3E%3Cpath d='M285 72 L268 98 L275 116 L247 148 L253 166 L224 201 L218 235' stroke='%23a9dcff' stroke-width='9' opacity='.23' filter='url(%23g2)'/%3E%3Cpath d='M285 72 L268 98 L275 116 L247 148 L253 166 L224 201 L218 235' stroke='white' stroke-width='2.5'/%3E%3Cpath d='M247 148 L206 159 L176 183 L146 190' stroke='%23dff4ff' stroke-width='1.2'/%3E%3C/g%3E%3C/svg%3E");
+    background-size:100% 100%,100% 100%;
+    background-position:center top,center top;
+    background-repeat:no-repeat;
+    filter:drop-shadow(0 0 5px rgba(203,233,255,.96)) drop-shadow(0 0 18px rgba(81,171,255,.62));
     mix-blend-mode:screen;
-    animation:vax-revenue-lightning 4.6s linear infinite;
+    animation:vax-revenue-lightning-real 5.2s linear infinite;
 }
 
-/* Dense REAL raindrop particles: short individual drops, no tiled screen pattern. */
+/* Dense short raindrop particles. Rain remains a viewport effect. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+    position:fixed;
     left:calc(var(--sidebar-width,220px) + 1vw);
     top:calc(var(--erp-top-header-h,42px) - 100vh);
     width:2.2px;
@@ -41,105 +45,30 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     border-radius:50% 50% 58% 58%;
     background:rgba(220,242,255,.86);
     box-shadow:
-        2vw 3vh 0 0 rgba(220,242,255,.74),
-        5vw 12vh 0 0 rgba(178,221,249,.68),
-        8vw 25vh 0 0 rgba(214,240,255,.80),
-        11vw 44vh 0 0 rgba(164,211,244,.66),
-        14vw 68vh 0 0 rgba(220,242,255,.74),
-        17vw 84vh 0 0 rgba(183,224,250,.70),
-        20vw 9vh 0 0 rgba(214,240,255,.80),
-        23vw 31vh 0 0 rgba(162,210,243,.66),
-        26vw 55vh 0 0 rgba(217,241,255,.76),
-        29vw 76vh 0 0 rgba(179,222,249,.68),
-        32vw 18vh 0 0 rgba(221,243,255,.82),
-        35vw 39vh 0 0 rgba(162,210,243,.66),
-        38vw 63vh 0 0 rgba(218,241,255,.78),
-        41vw 89vh 0 0 rgba(177,221,248,.68),
-        44vw 6vh 0 0 rgba(220,242,255,.78),
-        47vw 28vh 0 0 rgba(166,213,246,.66),
-        50vw 49vh 0 0 rgba(215,240,255,.80),
-        53vw 71vh 0 0 rgba(181,223,249,.68),
-        56vw 92vh 0 0 rgba(220,242,255,.78),
-        59vw 14vh 0 0 rgba(164,211,244,.66),
-        62vw 36vh 0 0 rgba(216,240,255,.78),
-        65vw 58vh 0 0 rgba(180,222,249,.68),
-        68vw 81vh 0 0 rgba(221,243,255,.82),
-        71vw 21vh 0 0 rgba(164,211,244,.66),
-        74vw 43vh 0 0 rgba(216,240,255,.78),
-        77vw 66vh 0 0 rgba(180,222,249,.68),
-        80vw 88vh 0 0 rgba(220,242,255,.78),
-        83vw 11vh 0 0 rgba(165,212,245,.66),
-        86vw 34vh 0 0 rgba(217,241,255,.80),
-        89vw 57vh 0 0 rgba(181,223,249,.68),
-        92vw 79vh 0 0 rgba(220,242,255,.78),
-        95vw 96vh 0 0 rgba(165,212,245,.66),
-        3vw 52vh 0 0 rgba(214,240,255,.78),
-        7vw 74vh 0 0 rgba(180,222,249,.68),
-        12vw 16vh 0 0 rgba(220,242,255,.80),
-        16vw 37vh 0 0 rgba(164,211,244,.66),
-        21vw 60vh 0 0 rgba(215,240,255,.78),
-        25vw 82vh 0 0 rgba(180,222,249,.68),
-        30vw 4vh 0 0 rgba(221,243,255,.82),
-        34vw 24vh 0 0 rgba(166,213,246,.66),
-        39vw 47vh 0 0 rgba(216,240,255,.78),
-        43vw 69vh 0 0 rgba(181,223,249,.68),
-        48vw 86vh 0 0 rgba(220,242,255,.78),
-        52vw 10vh 0 0 rgba(164,211,244,.66),
-        57vw 32vh 0 0 rgba(216,240,255,.80),
-        61vw 53vh 0 0 rgba(180,222,249,.68),
-        66vw 75vh 0 0 rgba(220,242,255,.78),
-        70vw 94vh 0 0 rgba(165,212,245,.66),
-        75vw 17vh 0 0 rgba(217,241,255,.80),
-        79vw 40vh 0 0 rgba(181,223,249,.68),
-        84vw 62vh 0 0 rgba(220,242,255,.78),
-        88vw 84vh 0 0 rgba(164,211,244,.66),
-        93vw 27vh 0 0 rgba(216,240,255,.80),
-        97vw 50vh 0 0 rgba(180,222,249,.68),
-        1vw 89vh 0 0 rgba(220,242,255,.78),
-        9vw 93vh 0 0 rgba(167,214,246,.66),
-        18vw 48vh 0 0 rgba(216,240,255,.78),
-        27vw 13vh 0 0 rgba(181,223,249,.68),
-        36vw 78vh 0 0 rgba(220,242,255,.78),
-        45vw 35vh 0 0 rgba(164,211,244,.66),
-        54vw 64vh 0 0 rgba(217,241,255,.80),
-        63vw 87vh 0 0 rgba(180,222,249,.68),
-        72vw 5vh 0 0 rgba(220,242,255,.78),
-        81vw 30vh 0 0 rgba(164,211,244,.66),
-        90vw 72vh 0 0 rgba(217,241,255,.80),
-        98vw 90vh 0 0 rgba(181,223,249,.68);
+        2vw 3vh 0 rgba(220,242,255,.74),5vw 12vh 0 rgba(178,221,249,.68),8vw 25vh 0 rgba(214,240,255,.80),11vw 44vh 0 rgba(164,211,244,.66),14vw 68vh 0 rgba(220,242,255,.74),17vw 84vh 0 rgba(183,224,250,.70),20vw 9vh 0 rgba(214,240,255,.80),23vw 31vh 0 rgba(162,210,243,.66),26vw 55vh 0 rgba(217,241,255,.76),29vw 76vh 0 rgba(179,222,249,.68),32vw 18vh 0 rgba(221,243,255,.82),35vw 39vh 0 rgba(162,210,243,.66),38vw 63vh 0 rgba(218,241,255,.78),41vw 89vh 0 rgba(177,221,248,.68),44vw 6vh 0 rgba(220,242,255,.78),47vw 28vh 0 rgba(166,213,246,.66),50vw 49vh 0 rgba(215,240,255,.80),53vw 71vh 0 rgba(181,223,249,.68),56vw 92vh 0 rgba(220,242,255,.78),59vw 14vh 0 rgba(164,211,244,.66),62vw 36vh 0 rgba(216,240,255,.78),65vw 58vh 0 rgba(180,222,249,.68),68vw 81vh 0 rgba(221,243,255,.82),71vw 21vh 0 rgba(164,211,244,.66),74vw 43vh 0 rgba(216,240,255,.78),77vw 66vh 0 rgba(180,222,249,.68),80vw 88vh 0 rgba(220,242,255,.78),83vw 11vh 0 rgba(165,212,245,.66),86vw 34vh 0 rgba(217,241,255,.80),89vw 57vh 0 rgba(181,223,249,.68),92vw 79vh 0 rgba(220,242,255,.78),95vw 96vh 0 rgba(165,212,245,.66),3vw 52vh 0 rgba(214,240,255,.78),7vw 74vh 0 rgba(180,222,249,.68),12vw 16vh 0 rgba(220,242,255,.80),16vw 37vh 0 rgba(164,211,244,.66),21vw 60vh 0 rgba(215,240,255,.78),25vw 82vh 0 rgba(180,222,249,.68),30vw 4vh 0 rgba(221,243,255,.82),34vw 24vh 0 rgba(166,213,246,.66),39vw 47vh 0 rgba(216,240,255,.78),43vw 69vh 0 rgba(181,223,249,.68),48vw 86vh 0 rgba(220,242,255,.78),52vw 10vh 0 rgba(164,211,244,.66),57vw 32vh 0 rgba(216,240,255,.80),61vw 53vh 0 rgba(180,222,249,.68),66vw 75vh 0 rgba(220,242,255,.78),70vw 94vh 0 rgba(165,212,245,.66),75vw 17vh 0 rgba(217,241,255,.80),79vw 40vh 0 rgba(181,223,249,.68),84vw 62vh 0 rgba(220,242,255,.78),88vw 84vh 0 rgba(164,211,244,.66),93vw 27vh 0 rgba(216,240,255,.80),97vw 50vh 0 rgba(180,222,249,.68),1vw 89vh 0 rgba(220,242,255,.78),9vw 93vh 0 rgba(167,214,246,.66),18vw 48vh 0 rgba(216,240,255,.78),27vw 13vh 0 rgba(181,223,249,.68),36vw 78vh 0 rgba(220,242,255,.78),45vw 35vh 0 rgba(164,211,244,.66),54vw 64vh 0 rgba(217,241,255,.80),63vw 87vh 0 rgba(180,222,249,.68),72vw 5vh 0 rgba(220,242,255,.78),81vw 30vh 0 rgba(164,211,244,.66),90vw 72vh 0 rgba(217,241,255,.80),98vw 90vh 0 rgba(181,223,249,.68);
     filter:drop-shadow(0 0 1.5px rgba(150,215,255,.46));
     opacity:0;
-    animation:
-        vax-revenue-raindrop-fall 1.15s linear .9s infinite,
-        vax-revenue-raindrop-burst 5.8s ease-in-out .9s infinite;
+    animation:vax-revenue-raindrop-fall 1.15s linear .9s infinite,vax-revenue-raindrop-burst 5.8s ease-in-out .9s infinite;
 }
 
-body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
-    left:var(--sidebar-collapse,72px);
-}
-body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
-    left:calc(var(--sidebar-collapse,72px) + 1vw);
-}
-.sidebar.collapsed ~ .erp-wrapper::before{
-    left:var(--sidebar-collapse,72px);
-}
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after,
 .sidebar.collapsed ~ .erp-wrapper::after{
     left:calc(var(--sidebar-collapse,72px) + 1vw);
 }
 
-@keyframes vax-revenue-lightning{
-    0%,5%,8%,12%,31%,34%,38%,62%,66%,69%,100%{opacity:0}
-    5.7%{opacity:.92}
-    6.2%{opacity:.16}
-    6.8%{opacity:1}
-    7.35%{opacity:.22}
-    32%{opacity:.82}
-    32.45%{opacity:.14}
-    33.05%{opacity:.95}
-    63.1%{opacity:.72}
-    63.55%{opacity:.08}
-    64.15%{opacity:1}
-    64.8%{opacity:.18}
+@keyframes vax-revenue-lightning-real{
+    0%,5%,8%,11%,29%,32%,35%,61%,64%,67%,100%{opacity:0}
+    5.4%{opacity:.96}
+    5.9%{opacity:.18}
+    6.5%{opacity:1}
+    7.1%{opacity:.28}
+    30%{opacity:.82}
+    30.45%{opacity:.16}
+    31.05%{opacity:.94}
+    62%{opacity:.74}
+    62.45%{opacity:.10}
+    63.05%{opacity:1}
+    63.7%{opacity:.20}
 }
 
 @keyframes vax-revenue-raindrop-fall{
@@ -161,14 +90,13 @@ body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-bad
     100%{opacity:0}
 }
 
-/* Keep Dashboard toolbar/filter/status row fully readable above storm layers. */
+/* Dashboard toolbar stays readable above storm layers. */
 html body.page-erp-dashboard .dash-toolbar-host.dash-toolbar-host{
     position:relative !important;
     z-index:180 !important;
     margin:14px 0 2px !important;
 }
 
-/* Higher specificity than owner-layout-inline-lock, without editing that lock. */
 html body.page-erp-dashboard .erp-wrapper.erp-wrapper .dash-toolbar-host.dash-toolbar-host .toolbar-wrapper.toolbar-wrapper,
 html body.page-erp-dashboard .erp-wrapper.erp-wrapper .toolbar-wrapper.toolbar-wrapper,
 html body.page-erp-dashboard .erp-wrapper.erp-wrapper .od-filterbar.od-filterbar{
@@ -186,6 +114,7 @@ html body.page-erp-dashboard .erp-wrapper.erp-wrapper .od-filterbar.od-filterbar
 @media (max-width:900px){
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
         left:0;
+        right:0;
     }
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
         left:1vw;
