@@ -94,6 +94,7 @@
 <script src="../js/modules/tabel-harian-cabang.js"></script>
 <script src="../js/modules/tabel-harian-cashout-row-link.js?v=20260907-rowcash1"></script>
 <script src="../js/modules/tabel-harian-share-cards.js?v=20260902-sharecards1"></script>
+<script src="../js/modules/tabel-harian-total-card-ui.js?v=20260911-cardrestore1"></script>
 <script src="../js/modules/tabel-harian-bri-merchant-card.js?v=20260905-bricard1"></script>
 <script src="../js/modules/tabel-harian-print-full.js?v=20260903-printfull2"></script>
 <script src="../js/modules/kpi-ultimate.js"></script>
@@ -112,6 +113,7 @@ document.addEventListener("erp:finance-ready", async () => {
     if(typeof TabelHarianBriMerchantCard !== "undefined") TabelHarianBriMerchantCard.boot();
     TabelHarianCabang.boot();
     if(typeof KpiUltimate !== "undefined") KpiUltimate.boot();
+    if(typeof TabelHarianTotalCardUI !== "undefined") TabelHarianTotalCardUI.refresh();
     document.dispatchEvent(new CustomEvent("erp:components-ready"));
     if(typeof syncHeaderContextFromPage === "function"){ syncHeaderContextFromPage(); setTimeout(syncHeaderContextFromPage, 400); }
 });
