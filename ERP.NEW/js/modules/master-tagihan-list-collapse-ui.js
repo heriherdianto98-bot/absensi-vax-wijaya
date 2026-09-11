@@ -96,10 +96,20 @@
     }
   }
 
+  function ensureInvoiceHistoryUi(){
+    if(document.querySelector('script[data-invoice-history-search-ui]')) return;
+    const s=document.createElement('script');
+    s.src='../js/modules/master-tagihan-invoice-history-search-ui.js?v=20260911-1';
+    s.async=false;
+    s.dataset.invoiceHistorySearchUi='1';
+    document.head.appendChild(s);
+  }
+
   let tries=0;
   const timer=setInterval(()=>{
     const collapseReady=install();
     syncGlobalHeaderRole();
+    ensureInvoiceHistoryUi();
     if((collapseReady && headerSyncDone)||++tries>180) clearInterval(timer);
   },100);
 
@@ -107,5 +117,6 @@
     setTimeout(install,500);
     setTimeout(syncGlobalHeaderRole,550);
     setTimeout(syncGlobalHeaderRole,1400);
+    setTimeout(ensureInvoiceHistoryUi,650);
   });
 })();
