@@ -1,0 +1,78 @@
+/* ERP VAX — UI ONLY: invoice history alignment + visual separation.
+   Presentation only. No invoice / approval / finance logic changes.
+*/
+
+/* Make the history area visually distinct from the rest of Master Tagihan. */
+#mtInvoiceCard .mt-invoice-list{
+  padding:12px 12px 14px!important;
+  background:
+    linear-gradient(180deg,rgba(19,43,56,.76),rgba(10,24,33,.92)),
+    #0b1720!important;
+  border-top:1px solid rgba(83,154,188,.18);
+}
+
+/* Each invoice history row gets a different blue-slate tone. */
+#mtInvoiceCard .mt-invoice-row{
+  background:linear-gradient(180deg,#14232e 0%,#0f1c25 100%)!important;
+  border:1px solid #2b4657!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 8px 18px rgba(0,0,0,.10)!important;
+}
+#mtInvoiceCard .mt-invoice-row:hover{
+  background:linear-gradient(180deg,#173040 0%,#11232e 100%)!important;
+  border-color:#3e6e85!important;
+}
+
+/* Keep all action controls on the same visual baseline. */
+#mtInvoiceCard .mt-invoice-buttons,
+#mtInvoiceCard .svp-return-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:12px!important;
+  flex-wrap:nowrap!important;
+}
+
+#mtInvoiceCard .mt-invoice-buttons .mt-action,
+#mtInvoiceCard .svp-return-actions .mt-action{
+  box-sizing:border-box!important;
+  height:38px!important;
+  min-height:38px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  vertical-align:middle!important;
+  line-height:1!important;
+  margin:0!important;
+}
+
+/* Icon-only WA / Email keep identical footprint and spacing. */
+#mtInvoiceCard .mt-action-icon-only{
+  width:40px!important;
+  min-width:40px!important;
+  max-width:40px!important;
+  height:38px!important;
+  min-height:38px!important;
+  flex:0 0 40px!important;
+}
+#mtInvoiceCard .mt-action-icon-only svg{
+  width:20px!important;
+  height:20px!important;
+  display:block!important;
+}
+
+/* Keep icons inside text actions centered consistently too. */
+#mtInvoiceCard .mt-action-svp-view,
+#mtInvoiceCard [data-owner-invoice-acc],
+#mtInvoiceCard [data-svp-invoice-acc]{
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+@media(max-width:1080px){
+  #mtInvoiceCard .mt-invoice-buttons,
+  #mtInvoiceCard .svp-return-actions{
+    gap:9px!important;
+    flex-wrap:wrap!important;
+    justify-content:flex-start!important;
+  }
+}
