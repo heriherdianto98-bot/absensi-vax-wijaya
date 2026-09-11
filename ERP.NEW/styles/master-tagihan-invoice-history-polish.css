@@ -139,6 +139,18 @@
   display:block!important;
 }
 
+/* Account-role neutral override: keep the same direction palette on both Owner and SVP screens. */
+html body #mtInvoiceCard .mt-invoice-row.mt-invoice-owner-to-svp{
+  background:linear-gradient(90deg,rgba(17,70,91,.42) 0%,rgba(16,35,46,.97) 24%,rgba(12,27,36,.99) 100%)!important;
+  border-color:rgba(55,174,218,.46)!important;
+  box-shadow:inset 3px 0 0 #35b9e8,inset 0 1px 0 rgba(255,255,255,.025),0 8px 18px rgba(0,0,0,.10)!important;
+}
+html body #mtInvoiceCard .mt-invoice-row.mt-invoice-svp-to-owner{
+  background:linear-gradient(90deg,rgba(77,48,111,.44) 0%,rgba(35,28,49,.98) 24%,rgba(19,25,35,.99) 100%)!important;
+  border-color:rgba(167,112,226,.48)!important;
+  box-shadow:inset 3px 0 0 #a56be0,inset 0 1px 0 rgba(255,255,255,.025),0 8px 18px rgba(0,0,0,.10)!important;
+}
+
 @media(max-width:1180px){
   #mtInvoiceCard .mt-invoice-row{
     grid-template-columns:minmax(230px,1fr) 112px 122px 82px 262px!important;
