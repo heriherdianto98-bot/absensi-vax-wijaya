@@ -1,0 +1,96 @@
+/* ERP VAX — Revenue Down Storm UI
+   VISUAL ONLY. No engine, formula, data, Supabase, Minutes, KPI logic, or locked module behavior changes.
+   Active automatically only when Executive Summary exposes .exec-trend-badge.negative.
+*/
+
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+    content:"";
+    position:fixed;
+    left:var(--sidebar-width,220px);
+    right:0;
+    pointer-events:none;
+}
+
+/* Lightning strip: flashes repeatedly just below the fixed header bar. */
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
+    top:var(--erp-top-header-h,42px);
+    height:70px;
+    z-index:164;
+    opacity:0;
+    background:
+        linear-gradient(114deg,transparent 0 17%,rgba(255,255,255,.98) 17.35% 17.75%,rgba(155,219,255,.95) 18.05% 18.45%,transparent 18.8% 100%),
+        linear-gradient(72deg,transparent 0 42%,rgba(255,255,255,.96) 42.3% 42.65%,rgba(120,207,255,.92) 43.05% 43.45%,transparent 43.8% 100%),
+        linear-gradient(118deg,transparent 0 69%,rgba(255,255,255,.98) 69.25% 69.7%,rgba(158,220,255,.9) 70.05% 70.5%,transparent 70.85% 100%),
+        radial-gradient(ellipse at 22% 0%,rgba(196,230,255,.48),transparent 34%),
+        radial-gradient(ellipse at 51% 0%,rgba(214,239,255,.42),transparent 31%),
+        radial-gradient(ellipse at 78% 0%,rgba(177,222,255,.40),transparent 32%),
+        linear-gradient(180deg,rgba(164,211,255,.16),transparent 88%);
+    filter:drop-shadow(0 0 5px rgba(182,226,255,.95)) drop-shadow(0 0 18px rgba(90,180,255,.58));
+    mix-blend-mode:screen;
+    animation:vax-revenue-lightning 4.6s linear infinite;
+}
+
+/* Heavy rain sheet appears shortly after lightning begins. */
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+    top:var(--erp-top-header-h,42px);
+    bottom:0;
+    z-index:150;
+    opacity:0;
+    background:
+        repeating-linear-gradient(102deg,transparent 0 13px,rgba(190,226,255,.40) 14px 15px,transparent 16px 28px),
+        repeating-linear-gradient(100deg,transparent 0 22px,rgba(132,196,241,.28) 23px 24px,transparent 25px 41px),
+        linear-gradient(180deg,rgba(8,18,28,.12),rgba(4,10,16,.18));
+    background-size:100% 42px,100% 58px,100% 100%;
+    filter:blur(.15px);
+    animation:
+        vax-revenue-rain-fall .32s linear 1.05s infinite,
+        vax-revenue-rain-in .85s ease 1.05s both;
+}
+
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after,
+.sidebar.collapsed ~ .erp-wrapper::before,
+.sidebar.collapsed ~ .erp-wrapper::after{
+    left:var(--sidebar-collapse,72px);
+}
+
+@keyframes vax-revenue-lightning{
+    0%,5%,8%,12%,31%,34%,38%,62%,66%,69%,100%{opacity:0}
+    5.7%{opacity:.92}
+    6.2%{opacity:.16}
+    6.8%{opacity:1}
+    7.35%{opacity:.22}
+    32%{opacity:.82}
+    32.45%{opacity:.14}
+    33.05%{opacity:.95}
+    63.1%{opacity:.72}
+    63.55%{opacity:.08}
+    64.15%{opacity:1}
+    64.8%{opacity:.18}
+}
+
+@keyframes vax-revenue-rain-fall{
+    from{background-position:0 -42px,12px -58px,0 0}
+    to{background-position:-12px 42px,0 58px,0 0}
+}
+
+@keyframes vax-revenue-rain-in{
+    from{opacity:0}
+    to{opacity:.52}
+}
+
+@media (max-width:900px){
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+        left:0;
+    }
+}
+
+@media (prefers-reduced-motion:reduce){
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+        animation:none!important;
+        opacity:0!important;
+    }
+}
