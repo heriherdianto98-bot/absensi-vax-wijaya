@@ -1,8 +1,10 @@
-/* ERP VAX — UI ONLY: collapsible Daftar Master Tagihan card. */
+/* ERP VAX — UI ONLY: collapsible Daftar Master Tagihan card + global header role sync. */
 "use strict";
 (() => {
   const STYLE_ID = "masterTagihanListCollapseUiStyle";
   const STORAGE_KEY = "erp-vax-master-tagihan-list-collapsed";
+  let headerSyncRunning = false;
+  let headerSyncDone = false;
 
   function ensureStyle(){
     if(document.getElementById(STYLE_ID)) return;
@@ -64,7 +66,46 @@
     return true;
   }
 
+  async function syncGlobalHeaderRole(){
+    if(headerSyncDone || headerSyncRunning) return headerSyncDone;
+    if(!window.OwnerAuth || typeof window.OwnerAuth.requireFinance!=="function") return false;
+    const header=document.getElementById("header");
+    if(!header || !document.getElementById("ownerAuthName") || !document.getElementById("ownerAuthRole")) return false;
+
+    headerSyncRunning=true;
+    try{
+      const ok=await window.OwnerAuth.requireFinance();
+      if(!ok) return false;
+
+      window.OwnerAuth.syncHeader?.();
+      window.OwnerAuth.applyAccessControl?.();
+      window.syncSidebarRoleMeta?.();
+
+      const cabang=document.getElementById("erpHeaderCabang");
+      const periode=document.getElementById("erpHeaderPeriode");
+      if(cabang) cabang.textContent="Semua Cabang";
+      if(periode) periode.textContent="Master Data";
+
+      headerSyncDone=true;
+      return true;
+    }catch(err){
+      console.warn("[Master Tagihan Header UI]",err?.message||err);
+      return false;
+    }finally{
+      headerSyncRunning=false;
+    }
+  }
+
   let tries=0;
-  const timer=setInterval(()=>{if(install()||++tries>180)clearInterval(timer)},100);
-  window.addEventListener("load",()=>setTimeout(install,500));
+  const timer=setInterval(()=>{
+    const collapseReady=install();
+    syncGlobalHeaderRole();
+    if((collapseReady && headerSyncDone)||++tries>180) clearInterval(timer);
+  },100);
+
+  window.addEventListener("load",()=>{
+    setTimeout(install,500);
+    setTimeout(syncGlobalHeaderRole,550);
+    setTimeout(syncGlobalHeaderRole,1400);
+  });
 })();
