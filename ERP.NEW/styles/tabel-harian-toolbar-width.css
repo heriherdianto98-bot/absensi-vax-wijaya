@@ -113,19 +113,44 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         letter-spacing:.04em!important;
     }
 
-    /* Share Cukur adalah card ke-16 pada susunan canonical totals. Pindahkan ikon aksi ke pojok kanan atas. */
+    /* Share Cukur adalah card ke-16 pada susunan canonical totals. */
     body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:nth-child(16){
         position:relative!important;
-        padding-right:34px!important;
+        padding-right:88px!important;
     }
-    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:nth-child(16) .thc-tot-go,
-    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:nth-child(16) > em[aria-hidden="true"]{
+
+    /* Pindahkan ikon + label DETAIL Share Cukur ke pojok kanan atas. */
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:nth-child(16) > :nth-last-child(2):not(span):not(strong):not(.thc-tot-desc){
         position:absolute!important;
         top:7px!important;
-        right:8px!important;
+        right:56px!important;
         bottom:auto!important;
         left:auto!important;
         margin:0!important;
         line-height:1!important;
+        z-index:3!important;
+    }
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:nth-child(16) > :last-child:not(span):not(strong):not(.thc-tot-desc){
+        position:absolute!important;
+        top:7px!important;
+        right:9px!important;
+        bottom:auto!important;
+        left:auto!important;
+        margin:0!important;
+        line-height:1!important;
+        z-index:3!important;
+    }
+
+    /* Fallback jika action Share Cukur dibungkus satu elemen. */
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:nth-child(16) .thc-tot-go,
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:nth-child(16) > em[aria-hidden="true"]{
+        position:absolute!important;
+        top:7px!important;
+        right:9px!important;
+        bottom:auto!important;
+        left:auto!important;
+        margin:0!important;
+        line-height:1!important;
+        z-index:3!important;
     }
 }
