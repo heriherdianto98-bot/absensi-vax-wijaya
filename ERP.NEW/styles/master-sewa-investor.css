@@ -1,1 +1,326 @@
-body.page-master-sewa-investor{background:#080c11;color:#eef3f8}.msi-shell{padding:28px}.msi-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:22px}.msi-head small,.msi-panel-head small{color:#d8ad44;font-weight:900;letter-spacing:1.3px}.msi-head h1{margin:4px 0 5px;font-size:30px}.msi-head p{margin:0;color:#94a0ad}.msi-back{padding:10px 14px;border:1px solid #33404d;border-radius:10px;color:#d9e1e8;text-decoration:none}.msi-tabs{display:flex;gap:8px;margin-bottom:14px}.msi-tabs button{border:1px solid #2d3a47;background:#101720;color:#aeb9c5;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}.msi-tabs button.is-active{color:#f5c84c;border-color:#b88d25;background:rgba(184,141,37,.12)}.msi-panel{display:none;background:#0f151d;border:1px solid #25323f;border-radius:16px;overflow:hidden}.msi-panel.is-active{display:block}.msi-panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid #25323f}.msi-panel-head h2{margin:4px 0 0}.msi-panel-head>span{color:#9aa7b4}.msi-table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:920px}th,td{padding:13px 14px;border-bottom:1px solid #202b36;text-align:left;vertical-align:top}th{font-size:12px;color:#98a5b2;text-transform:uppercase;letter-spacing:.4px;background:#0b1118;position:sticky;top:0}td{font-size:14px}.num{text-align:right}.msi-edit{border:1px solid #b88d25;background:rgba(184,141,37,.12);color:#f5c84c;border-radius:8px;padding:7px 11px;font-weight:800;cursor:pointer}.msi-pill{display:inline-flex;padding:4px 8px;border-radius:999px;border:1px solid #315341;color:#75d69c;background:rgba(49,83,65,.18);font-size:11px;font-weight:900}.msi-history{margin:16px;border:1px solid #25323f;border-radius:12px;overflow:hidden}.msi-history summary{padding:13px 15px;cursor:pointer;color:#d9e1e8;font-weight:800;background:#0b1118}.msi-modal{position:fixed;inset:0;z-index:3000;display:grid;place-items:center}.msi-modal[hidden]{display:none}.msi-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(3px)}.msi-dialog{position:relative;width:min(520px,calc(100vw - 28px));background:#111820;border:1px solid #3a4653;border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.48)}.msi-dialog-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}.msi-dialog-head h2{margin:3px 0 0}.msi-dialog-head button{border:0;background:none;color:#b8c2cc;font-size:28px;cursor:pointer}.msi-dialog label{display:block;margin:12px 0;color:#aeb9c5;font-size:12px;font-weight:800}.msi-dialog input{width:100%;box-sizing:border-box;margin-top:6px;padding:11px 12px;border-radius:9px;border:1px solid #33404d;background:#0a1016;color:#fff;font-size:15px}.msi-dialog input:disabled{color:#c6d0da;background:#151c24}.msi-warning{font-size:12px;line-height:1.45;color:#d4b86e;background:rgba(212,184,110,.08);border:1px solid rgba(212,184,110,.25);padding:10px;border-radius:9px}.msi-msg{min-height:18px;font-size:12px}.msi-msg.ok{color:#75d69c}.msi-msg.err{color:#ff7777}.msi-actions{display:flex;justify-content:flex-end;gap:9px}.msi-actions button{padding:10px 14px;border-radius:9px;border:1px solid #34414e;background:#141c25;color:#dbe3ea;font-weight:800;cursor:pointer}.msi-actions #modalSave{border-color:#b88d25;background:#b88d25;color:#0b0e11}.msi-empty{padding:22px;text-align:center;color:#83909d}@media(max-width:900px){.msi-shell{padding:16px}.msi-head{display:block}.msi-back{display:inline-block;margin-top:14px}.msi-tabs{overflow:auto}.msi-panel-head{align-items:flex-start}.msi-panel-head h2{font-size:20px}}
+/* ERP VAX — Master Sewa & Investor UI only */
+body.page-master-sewa-investor{
+  --msi-bg:#0a0d11;
+  --msi-card:#11161d;
+  --msi-card-2:#0d1218;
+  --msi-line:rgba(255,255,255,.08);
+  --msi-line-gold:rgba(201,168,76,.34);
+  --msi-gold:#d6af47;
+  --msi-gold-2:#f0c75a;
+  --msi-text:#f2f5f8;
+  --msi-muted:#8f99a5;
+  --msi-green:#55d98b;
+  background:var(--msi-bg)!important;
+  color:var(--msi-text)!important;
+  font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif!important;
+}
+
+html body.page-master-sewa-investor .erp-wrapper,
+html body.page-master-sewa-investor .erp-content{
+  background:var(--msi-bg)!important;
+}
+
+html body.page-master-sewa-investor .msi-shell{
+  padding:18px 22px 34px!important;
+  max-width:1500px!important;
+  margin:0 auto!important;
+}
+
+html body.page-master-sewa-investor .msi-head{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  margin:0 0 16px!important;
+  padding:0 2px 14px!important;
+  border-bottom:1px solid var(--msi-line)!important;
+}
+
+html body.page-master-sewa-investor .msi-head small,
+html body.page-master-sewa-investor .msi-panel-head small{
+  display:block!important;
+  margin:0 0 4px!important;
+  color:var(--msi-gold)!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:1.25px!important;
+}
+
+html body.page-master-sewa-investor .msi-head h1{
+  margin:0!important;
+  font-size:28px!important;
+  line-height:1.05!important;
+  font-weight:800!important;
+  color:#fff!important;
+  letter-spacing:-.35px!important;
+}
+
+html body.page-master-sewa-investor .msi-head p{
+  margin:6px 0 0!important;
+  color:var(--msi-muted)!important;
+  font-size:13px!important;
+  line-height:1.4!important;
+}
+
+html body.page-master-sewa-investor .msi-back{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:34px!important;
+  padding:0 12px!important;
+  border:1px solid var(--msi-line-gold)!important;
+  border-radius:9px!important;
+  background:rgba(201,168,76,.07)!important;
+  color:#d8dde3!important;
+  text-decoration:none!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+
+html body.page-master-sewa-investor .msi-tabs{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin:0 0 12px!important;
+  padding:4px!important;
+  border:1px solid var(--msi-line)!important;
+  border-radius:11px!important;
+  background:#0d1218!important;
+}
+
+html body.page-master-sewa-investor .msi-tabs button{
+  min-height:34px!important;
+  padding:0 14px!important;
+  border:1px solid transparent!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#8f99a5!important;
+  font-family:inherit!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+
+html body.page-master-sewa-investor .msi-tabs button.is-active{
+  border-color:rgba(214,175,71,.38)!important;
+  background:linear-gradient(180deg,rgba(214,175,71,.18),rgba(214,175,71,.08))!important;
+  color:var(--msi-gold-2)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+
+html body.page-master-sewa-investor .msi-panel{
+  display:none!important;
+  overflow:hidden!important;
+  border:1px solid var(--msi-line)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#121820 0%,#0f141a 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 26px rgba(0,0,0,.18)!important;
+}
+
+html body.page-master-sewa-investor .msi-panel.is-active{display:block!important;}
+
+html body.page-master-sewa-investor .msi-panel-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  min-height:64px!important;
+  padding:12px 16px!important;
+  border-bottom:1px solid var(--msi-line)!important;
+  background:rgba(255,255,255,.012)!important;
+}
+
+html body.page-master-sewa-investor .msi-panel-head h2{
+  margin:0!important;
+  color:#f8fafc!important;
+  font-size:19px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+}
+
+html body.page-master-sewa-investor .msi-panel-head>span{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:28px!important;
+  padding:0 10px!important;
+  border:1px solid rgba(85,217,139,.22)!important;
+  border-radius:999px!important;
+  background:rgba(85,217,139,.07)!important;
+  color:#71dda0!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+
+html body.page-master-sewa-investor .msi-table-wrap{
+  width:100%!important;
+  overflow:auto!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#745f26 #0d1218!important;
+}
+
+html body.page-master-sewa-investor .msi-table-wrap table{
+  width:100%!important;
+  min-width:980px!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  background:transparent!important;
+}
+
+html body.page-master-sewa-investor .msi-table-wrap th,
+html body.page-master-sewa-investor .msi-table-wrap td{
+  padding:11px 13px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.055)!important;
+  text-align:left!important;
+  vertical-align:middle!important;
+  white-space:nowrap!important;
+}
+
+html body.page-master-sewa-investor .msi-table-wrap th{
+  position:sticky!important;
+  top:0!important;
+  z-index:2!important;
+  background:#0c1117!important;
+  color:#8d97a3!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.65px!important;
+  text-transform:uppercase!important;
+}
+
+html body.page-master-sewa-investor .msi-table-wrap td{
+  color:#dce2e8!important;
+  font-size:12.5px!important;
+  font-weight:600!important;
+}
+
+html body.page-master-sewa-investor .msi-table-wrap tbody tr{
+  transition:background .15s ease!important;
+}
+html body.page-master-sewa-investor .msi-table-wrap tbody tr:hover{
+  background:rgba(255,255,255,.025)!important;
+}
+
+html body.page-master-sewa-investor .msi-table-wrap th.num,
+html body.page-master-sewa-investor .msi-table-wrap td.num{text-align:right!important;}
+
+html body.page-master-sewa-investor .msi-edit{
+  min-height:30px!important;
+  padding:0 11px!important;
+  border:1px solid rgba(214,175,71,.42)!important;
+  border-radius:8px!important;
+  background:rgba(214,175,71,.10)!important;
+  color:var(--msi-gold-2)!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+html body.page-master-sewa-investor .msi-edit:hover{
+  background:rgba(214,175,71,.18)!important;
+  border-color:rgba(214,175,71,.70)!important;
+}
+
+html body.page-master-sewa-investor .msi-pill{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:24px!important;
+  padding:0 8px!important;
+  border:1px solid rgba(85,217,139,.22)!important;
+  border-radius:999px!important;
+  background:rgba(85,217,139,.07)!important;
+  color:#72dda0!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+
+html body.page-master-sewa-investor .msi-history{
+  margin:12px!important;
+  overflow:hidden!important;
+  border:1px solid var(--msi-line)!important;
+  border-radius:10px!important;
+  background:#0d1218!important;
+}
+
+html body.page-master-sewa-investor .msi-history summary{
+  padding:10px 12px!important;
+  background:#0d1218!important;
+  color:#cfd6dd!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+
+html body.page-master-sewa-investor .msi-empty{
+  padding:24px!important;
+  color:#7f8a96!important;
+  text-align:center!important;
+  font-size:12px!important;
+}
+
+/* Modal */
+html body.page-master-sewa-investor .msi-modal{
+  position:fixed!important;
+  inset:0!important;
+  z-index:5000!important;
+  display:grid!important;
+  place-items:center!important;
+}
+html body.page-master-sewa-investor .msi-modal[hidden]{display:none!important;}
+html body.page-master-sewa-investor .msi-backdrop{
+  position:absolute!important;
+  inset:0!important;
+  background:rgba(0,0,0,.74)!important;
+  backdrop-filter:blur(4px)!important;
+}
+html body.page-master-sewa-investor .msi-dialog{
+  position:relative!important;
+  width:min(520px,calc(100vw - 28px))!important;
+  padding:18px!important;
+  border:1px solid rgba(214,175,71,.28)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#141b23,#10161d)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.55)!important;
+}
+html body.page-master-sewa-investor .msi-dialog-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  margin-bottom:12px!important;
+}
+html body.page-master-sewa-investor .msi-dialog-head small{color:var(--msi-gold)!important;font-size:10px!important;font-weight:800!important;letter-spacing:1.1px!important;}
+html body.page-master-sewa-investor .msi-dialog-head h2{margin:3px 0 0!important;color:#fff!important;font-size:20px!important;}
+html body.page-master-sewa-investor .msi-dialog-head button{border:0!important;background:transparent!important;color:#9ca6b1!important;font-size:24px!important;cursor:pointer!important;}
+html body.page-master-sewa-investor .msi-dialog label{display:block!important;margin:10px 0!important;color:#aeb8c3!important;font-size:11px!important;font-weight:800!important;}
+html body.page-master-sewa-investor .msi-dialog input{
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin-top:5px!important;
+  padding:10px 11px!important;
+  border:1px solid #303b47!important;
+  border-radius:8px!important;
+  outline:none!important;
+  background:#0a1016!important;
+  color:#f4f7fa!important;
+  font-family:inherit!important;
+  font-size:14px!important;
+}
+html body.page-master-sewa-investor .msi-dialog input:focus{border-color:rgba(214,175,71,.65)!important;box-shadow:0 0 0 3px rgba(214,175,71,.08)!important;}
+html body.page-master-sewa-investor .msi-dialog input:disabled{background:#151b22!important;color:#c2cad2!important;}
+html body.page-master-sewa-investor .msi-warning{margin:12px 0!important;padding:9px 10px!important;border:1px solid rgba(214,175,71,.22)!important;border-radius:8px!important;background:rgba(214,175,71,.06)!important;color:#cdb675!important;font-size:11px!important;line-height:1.45!important;}
+html body.page-master-sewa-investor .msi-msg{min-height:18px!important;margin:8px 0!important;font-size:11px!important;}
+html body.page-master-sewa-investor .msi-msg.ok{color:#65d995!important;}
+html body.page-master-sewa-investor .msi-msg.err{color:#ff7b7b!important;}
+html body.page-master-sewa-investor .msi-actions{display:flex!important;justify-content:flex-end!important;gap:8px!important;}
+html body.page-master-sewa-investor .msi-actions button{min-height:34px!important;padding:0 13px!important;border:1px solid #34404c!important;border-radius:8px!important;background:#151c24!important;color:#dce3e9!important;font-family:inherit!important;font-size:11px!important;font-weight:800!important;cursor:pointer!important;}
+html body.page-master-sewa-investor .msi-actions #modalSave{border-color:#c69f38!important;background:linear-gradient(180deg,#ddb94f,#bd922c)!important;color:#101215!important;}
+
+@media(max-width:900px){
+  html body.page-master-sewa-investor .msi-shell{padding:12px!important;}
+  html body.page-master-sewa-investor .msi-head{display:block!important;}
+  html body.page-master-sewa-investor .msi-back{margin-top:10px!important;}
+  html body.page-master-sewa-investor .msi-tabs{display:flex!important;width:100%!important;box-sizing:border-box!important;overflow:auto!important;}
+  html body.page-master-sewa-investor .msi-tabs button{flex:1 0 auto!important;}
+  html body.page-master-sewa-investor .msi-head h1{font-size:23px!important;}
+}
