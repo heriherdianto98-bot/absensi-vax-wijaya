@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="../styles/master-sewa-investor.css?v=20260912-ui2">
 <link rel="stylesheet" href="../styles/master-sewa-investor-kasbon-ui.css?v=20260912-ui4">
 <link rel="stylesheet" href="../styles/master-sewa-investor-table-header-ui.css?v=20260912-ui1">
+<link rel="stylesheet" href="../styles/master-sewa-investor-editor-ui.css?v=20260912-ui1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="page-master-sewa-investor">
@@ -25,9 +26,11 @@
   <div id="header"></div>
   <div class="erp-content msi-shell">
     <header class="msi-head">
-      <div><small>MASTER DATA • BULANAN</small><h1>Master Sewa & Investor</h1><p>Perubahan tarif/persentase memakai tanggal efektif. Histori lama tetap tersimpan.</p></div>
-      <a class="msi-back" href="./erp-dashboard.html">← Dashboard</a>
+      <div><small>MASTER DATA • BULANAN</small><h1>Master Sewa & Investor</h1><p>Data aktif bisa direvisi dari tombol Edit. Setiap perubahan baru disimpan dengan tanggal efektif dan histori lama tetap aman.</p></div>
+      <div class="msi-head-actions"><button type="button" id="btnMasterReload" class="msi-reload">↻ Muat Ulang</button><a class="msi-back" href="./erp-dashboard.html">← Dashboard</a></div>
     </header>
+
+    <div id="masterLoadState" class="msi-load-state" hidden></div>
 
     <div class="msi-tabs">
       <button class="is-active" data-tab="sewa">Biaya Sewa Tempat</button>
@@ -51,14 +54,47 @@
 <div id="msiModal" class="msi-modal" hidden>
   <div class="msi-backdrop" data-close></div>
   <form id="msiForm" class="msi-dialog">
-    <div class="msi-dialog-head"><div><small id="modalEyebrow">UBAH MASTER</small><h2 id="modalTitle">—</h2></div><button type="button" data-close>×</button></div>
+    <div class="msi-dialog-head"><div><small id="modalEyebrow">UBAH MASTER</small><h2 id="modalTitle">—</h2></div><button type="button" data-close aria-label="Tutup">×</button></div>
     <input type="hidden" id="modalType"><input type="hidden" id="modalBranchCode">
-    <label>Cabang<input id="modalBranch" disabled></label>
-    <label id="rentField">Nominal Sewa / Bulan<input id="modalRent" inputmode="numeric"></label>
-    <label id="shareField" hidden>Persentase Bagi Hasil<input id="modalShare" inputmode="decimal"></label>
-    <label>Berlaku Mulai<input id="modalEffective" type="date" required></label>
-    <label>Catatan<input id="modalNotes" placeholder="Opsional"></label>
-    <p class="msi-warning">Simpan perubahan akan menutup periode aktif lama sehari sebelum tanggal berlaku baru. Histori lama tidak dihapus.</p>
+
+    <div class="msi-form-grid">
+      <label class="msi-span-2">Cabang<input id="modalBranch" disabled></label>
+
+      <div id="sewaEditor" class="msi-editor-section msi-span-2">
+        <label>Nominal Sewa / Bulan<input id="modalRent" inputmode="numeric"></label>
+        <label>Periode
+          <select id="modalPeriodType"><option value="BULANAN">Bulanan</option></select>
+        </label>
+        <label>Jatuh Tempo
+          <select id="modalDueRule"><option value="AKHIR_BULAN">Akhir Bulan</option></select>
+        </label>
+        <label>Aturan Jika Laba 0 / Rugi
+          <select id="modalLossRule"><option value="JADI_HUTANG_BULAN_BERIKUTNYA">Jadi Hutang Bulan Berikutnya</option></select>
+        </label>
+      </div>
+
+      <div id="investorEditor" class="msi-editor-section msi-span-2" hidden>
+        <label class="msi-span-2">Nama Investor<input id="modalInvestorName" autocomplete="off"></label>
+        <label>Persentase Bagi Hasil (%)<input id="modalShare" inputmode="decimal"></label>
+        <label>Hak Uang Sewa
+          <select id="modalRentEntitlement"><option value="true">Ya</option><option value="false">Tidak</option></select>
+        </label>
+        <label>Dasar Bagi Hasil
+          <select id="modalProfitBasis"><option value="LABA_BERSIH">Laba Bersih</option></select>
+        </label>
+        <label>Waktu Pembayaran
+          <select id="modalPaymentTiming"><option value="AWAL_BULAN">Awal Bulan</option></select>
+        </label>
+        <label>Tanggal Pembayaran Mulai<input id="modalPayStart" type="number" min="1" max="31"></label>
+        <label>Tanggal Pembayaran Sampai<input id="modalPayEnd" type="number" min="1" max="31"></label>
+        <label class="msi-span-2">Biaya Dipotong Sebelum Bagi Hasil<textarea id="modalDeductions" rows="3"></textarea></label>
+      </div>
+
+      <label>Berlaku Mulai<input id="modalEffective" type="date" required></label>
+      <label>Catatan<input id="modalNotes" placeholder="Opsional"></label>
+    </div>
+
+    <p class="msi-warning">Jika tanggal efektif berbeda dari periode aktif saat ini, ERP menutup periode lama sehari sebelumnya lalu membuat periode baru. Data lama tidak dihapus.</p>
     <p id="modalMsg" class="msi-msg"></p>
     <div class="msi-actions"><button type="button" data-close>Batal</button><button id="modalSave" type="submit">Simpan Perubahan</button></div>
   </form>
@@ -67,7 +103,7 @@
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/loader.js"></script>
-<script src="../js/modules/master-sewa-investor.js?v=20260911-1"></script>
+<script src="../js/modules/master-sewa-investor.js?v=20260912-full1"></script>
 <script>
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   OwnerAuth?.bindUi?.(); OwnerAuth?.syncHeader?.(); OwnerAuth?.applyAccessControl?.(); initErpShellChrome?.();
