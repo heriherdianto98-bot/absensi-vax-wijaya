@@ -90,7 +90,7 @@
     const w=window.open('','_blank');if(!w){alert('Popup print diblokir browser.');return;}
     const logo='../assets/logo-vax-wijaya.png';
     const signatureUrl=new URL('../assets/owner-signature.png',window.location.href).href;
-    const supervisorSignatureUrl=new URL('../assets/supervisor-signature-rangga.svg',window.location.href).href;
+    const supervisorSignatureAssetUrl=new URL('../assets/supervisor-signature-rangga.svg',window.location.href).href;
     const printedAt=nowWib();
     const header=`<header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">PAYROLL KARYAWAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN OPERASIONAL</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>`;
     const footer=`<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
@@ -99,9 +99,21 @@
         <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Gaji Pokok − Denda − Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk</p></section>
         <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
         ${snap.cards.map(cardHtml).join('')}
-        <section class="sign"><div class="box supervisor-sign"><div class="stage"><div class="ttd"><img src="${supervisorSignatureUrl}" alt="Tanda tangan Supervisor" onerror="this.style.display='none'"></div></div><div class="line">Rangga Putra Pratama</div><div class="role">SUPERVISOR · VAX WIJAYA</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
+        <section class="sign"><div class="box supervisor-sign"><div class="stage"><div class="ttd"><img id="supervisorSignature" alt="Tanda tangan Supervisor"></div></div><div class="line">Rangga Putra Pratama</div><div class="role">SUPERVISOR · VAX WIJAYA</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
       </main></td></tr></tbody></table>
-      <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\/script></body></html>`;
+      <script>
+      window.addEventListener('load',async()=>{
+        const img=document.getElementById('supervisorSignature');
+        try{
+          const res=await fetch(${JSON.stringify(supervisorSignatureAssetUrl)});
+          const svg=await res.text();
+          const match=svg.match(/href=["'](data:image\\/png;base64,[^"']+)["']/i);
+          if(match&&img){img.src=match[1];await img.decode?.().catch(()=>{});}
+        }catch(e){if(img)img.style.display='none';}
+        await Promise.all([...document.images].map(i=>i.complete?Promise.resolve():new Promise(resolve=>{i.addEventListener('load',resolve,{once:true});i.addEventListener('error',resolve,{once:true});})));
+        setTimeout(()=>window.print(),120);
+      });
+      <\/script></body></html>`;
     w.document.open();w.document.write(html);w.document.close();
   }
   window.PayrollCapsterPrint={open};
