@@ -16,7 +16,6 @@ UI / PRESENTATION ONLY.
 (function(){
     const STYLE_ID = "thcTotalCardRestoreStyle";
     const MODAL_ID = "thcTotalCardDetailModal";
-    const LOADER_ID = "thcTotalCardRestoreLoader";
     let bound = false;
     let observer = null;
 
@@ -32,8 +31,8 @@ UI / PRESENTATION ONLY.
         thcTotTransaksi:    { label:"Transaksi", key:"transaction", format:"int" },
         thcTotServices:     { label:"Services", key:"services", format:"int" },
         thcTotAvgTicket:    { label:"Avg Ticket", key:"avg_ticket", format:"money" },
-        thcTotShareProduk:  { label:"Share Produk", rawKey:"share_produk", format:"money" },
-        thcTotNettProduk:   { label:"Nett Produk", rawFormula:"nettProduk", format:"money" }
+        thcTotShareProduk:  { label:"Share Produk", source:"dailyProduct", sourceMode:"share", format:"money" },
+        thcTotNettProduk:   { label:"Nett Produk", source:"dailyProduct", sourceMode:"nett", format:"money" }
     };
 
     function ensureStyles(){
@@ -41,39 +40,18 @@ UI / PRESENTATION ONLY.
         const style=document.createElement("style");
         style.id=STYLE_ID;
         style.textContent=`
-            /* Nominal jangan pernah dipotong dengan ellipsis. */
             body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > strong,
             body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained > strong,
             body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained.is-actual > strong{
-                width:100%!important;
-                max-width:100%!important;
-                min-width:0!important;
-                white-space:nowrap!important;
-                overflow:visible!important;
-                text-overflow:clip!important;
-                font-size:clamp(12.5px,1vw,15px)!important;
-                letter-spacing:-.01em!important;
+                width:100%!important;max-width:100%!important;min-width:0!important;
+                white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+                font-size:clamp(12.5px,1vw,15px)!important;letter-spacing:-.01em!important;
                 font-variant-numeric:tabular-nums!important;
             }
-            body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item{
-                min-width:0!important;
-                overflow:visible!important;
-            }
-            body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.thc-detail-card{
-                position:relative!important;
-                cursor:pointer!important;
-                padding-right:34px!important;
-            }
-            body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.thc-detail-card .thc-detail-hint{
-                position:absolute;right:8px;bottom:7px;width:20px;height:20px;
-                display:grid;place-items:center;border:1px solid rgba(255,255,255,.22);
-                border-radius:7px;background:rgba(255,255,255,.055);color:currentColor;
-                font-size:11px;font-weight:900;line-height:1;pointer-events:none;opacity:.9;
-            }
-            body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.thc-detail-card:focus-visible{
-                outline:2px solid rgba(242,194,48,.78)!important;outline-offset:2px!important;
-            }
-
+            body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item{min-width:0!important;overflow:visible!important}
+            body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.thc-detail-card{position:relative!important;cursor:pointer!important;padding-right:34px!important}
+            body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.thc-detail-card .thc-detail-hint{position:absolute;right:8px;bottom:7px;width:20px;height:20px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.22);border-radius:7px;background:rgba(255,255,255,.055);color:currentColor;font-size:11px;font-weight:900;line-height:1;pointer-events:none;opacity:.9}
+            body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.thc-detail-card:focus-visible{outline:2px solid rgba(242,194,48,.78)!important;outline-offset:2px!important}
             #${MODAL_ID}[hidden]{display:none!important}
             #${MODAL_ID}{position:fixed;inset:0;z-index:100050;display:grid;place-items:center;padding:18px;box-sizing:border-box}
             #${MODAL_ID} .thcd-backdrop{position:absolute;inset:0;background:rgba(2,6,12,.84);backdrop-filter:blur(5px)}
@@ -117,6 +95,12 @@ UI / PRESENTATION ONLY.
         const end=DashboardEngine?.lastRange?.end||start;
         return start&&end ? (start===end?start:`${start} — ${end}`) : "Periode aktif";
     }
+    function branchNameMap(){
+        const map=new Map();
+        const list=typeof DashboardEngine?.getOperationalCabangList==="function"?DashboardEngine.getOperationalCabangList():(DashboardEngine?.cabangList||[]);
+        (list||[]).forEach(c=>map.set(Number(c.id),shortName(c.nama_cabang||`Cabang #${c.id}`)));
+        return map;
+    }
 
     function branchGroups(){
         const map=new Map();
@@ -130,157 +114,106 @@ UI / PRESENTATION ONLY.
         return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name));
     }
 
-    function rawValueForBranch(group, meta){
-        if(meta.rawKey){
-            return group.rows.reduce((sum,r)=>sum+Number(r?.raw?.[meta.rawKey] ?? r?.[meta.rawKey] ?? 0),0);
-        }
-        if(meta.rawFormula==="nettProduk"){
-            return group.rows.reduce((sum,r)=>{
-                const raw=r?.raw||r||{};
-                const produk=Number(raw.produk ?? r.produk ?? 0);
-                const share=Number(raw.share_produk ?? r.share_produk ?? 0);
-                return sum+(produk-share);
-            },0);
-        }
-        return 0;
+    function rowsForCoreMetric(meta){
+        return branchGroups().map(group=>{
+            const t=typeof TabelHarianCabang?.computeTotals==="function"?TabelHarianCabang.computeTotals(group.rows):{};
+            return {...group,value:Number(t?.[meta.key]||0)};
+        }).sort((a,b)=>Math.abs(b.value)-Math.abs(a.value)||a.name.localeCompare(b.name));
     }
 
-    function rowsForMetric(meta){
-        return branchGroups().map(group=>{
-            let value=0;
-            if(meta.key && typeof TabelHarianCabang?.computeTotals === "function"){
-                const t=TabelHarianCabang.computeTotals(group.rows);
-                value=Number(t?.[meta.key]||0);
-            }else{
-                value=rawValueForBranch(group,meta);
-            }
-            return {...group,value};
-        }).sort((a,b)=>Math.abs(b.value)-Math.abs(a.value)||a.name.localeCompare(b.name));
+    async function rowsForDailyProduct(meta){
+        if(typeof db==="undefined") return [];
+        const start=DashboardEngine?.lastRange?.start||null;
+        const end=DashboardEngine?.lastRange?.end||start;
+        if(!start||!end) return [];
+        const activeId=typeof DashboardEngine?.resolveCabangId==="function"?DashboardEngine.resolveCabangId(DashboardEngine.lastCabangId):null;
+        const opIds=activeId==null&&typeof DashboardEngine?.getOperationalCabangIds==="function"?DashboardEngine.getOperationalCabangIds().map(Number).filter(Number.isFinite):null;
+        const out=[];let from=0;const pageSize=1000;
+        while(true){
+            let q=db.from("daily_recap_source").select("cabang_id,produk,share_produk").gte("tanggal",start).lte("tanggal",end).range(from,from+pageSize-1);
+            if(activeId!=null) q=q.eq("cabang_id",Number(activeId));
+            else if(Array.isArray(opIds)&&opIds.length) q=q.in("cabang_id",opIds);
+            else return [];
+            const {data,error}=await q;if(error) throw error;
+            const batch=data||[];out.push(...batch);if(batch.length<pageSize) break;from+=pageSize;
+        }
+        const names=branchNameMap(),map=new Map();
+        out.forEach(r=>{
+            const id=Number(r.cabang_id);if(!map.has(id)) map.set(id,{id,key:String(id),name:names.get(id)||`Cabang #${id}`,value:0});
+            const g=map.get(id),produk=Number(r.produk||0),share=Number(r.share_produk||0);
+            g.value+=meta.sourceMode==="share"?share:(produk-share);
+        });
+        return [...map.values()].sort((a,b)=>Math.abs(b.value)-Math.abs(a.value)||a.name.localeCompare(b.name));
+    }
+
+    async function rowsForMetric(meta){
+        if(meta.source==="dailyProduct") return rowsForDailyProduct(meta);
+        return rowsForCoreMetric(meta);
     }
 
     function ensureModal(){
         let modal=document.getElementById(MODAL_ID);
         if(modal) return modal;
         modal=document.createElement("div");
-        modal.id=MODAL_ID;
-        modal.hidden=true;
+        modal.id=MODAL_ID;modal.hidden=true;
         modal.innerHTML=`<div class="thcd-backdrop" data-thcd-close></div><section class="thcd-panel" role="dialog" aria-modal="true" aria-labelledby="thcdTitle"><div class="thcd-head"><div><span class="thcd-kicker">RINCIAN TOTAL PERIODE</span><h3 id="thcdTitle">—</h3><p class="thcd-period" id="thcdPeriod">—</p></div><button type="button" class="thcd-close" data-thcd-close aria-label="Tutup">×</button></div><div class="thcd-total"><span>Total periode</span><strong id="thcdGrand">—</strong></div><div class="thcd-body" id="thcdBody"></div></section>`;
         document.body.appendChild(modal);
-        modal.addEventListener("click",e=>{ if(e.target.closest("[data-thcd-close]")) closeModal(); });
+        modal.addEventListener("click",e=>{if(e.target.closest("[data-thcd-close]"))closeModal();});
         return modal;
     }
 
-    function openMetric(meta,valueEl){
-        const modal=ensureModal();
-        const rows=rowsForMetric(meta);
-        const formatter=meta.format==="int"?formatInt:formatMoney;
+    async function openMetric(meta,valueEl){
+        const modal=ensureModal(),formatter=meta.format==="int"?formatInt:formatMoney;
         document.getElementById("thcdTitle").textContent=`${meta.label} · Per Cabang`;
         document.getElementById("thcdPeriod").textContent=currentPeriod();
         document.getElementById("thcdGrand").textContent=String(valueEl?.textContent||"—").trim()||"—";
         const body=document.getElementById("thcdBody");
-        body.innerHTML=rows.length
-            ? `<table><thead><tr><th>Cabang</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${formatter(r.value)}</td></tr>`).join("")}</tbody></table>`
-            : `<div class="thcd-empty">Belum ada data pada periode aktif.</div>`;
-        modal.hidden=false;
-        document.body.style.overflow="hidden";
+        body.innerHTML=`<div class="thcd-empty">Memuat rincian…</div>`;
+        modal.hidden=false;document.body.style.overflow="hidden";
+        try{
+            const rows=await rowsForMetric(meta);
+            body.innerHTML=rows.length?`<table><thead><tr><th>Cabang</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${formatter(r.value)}</td></tr>`).join("")}</tbody></table>`:`<div class="thcd-empty">Belum ada data pada periode aktif.</div>`;
+        }catch(err){
+            console.error("[TabelHarianTotalCardUI] drilldown gagal:",err);
+            body.innerHTML=`<div class="thcd-empty">Rincian gagal dimuat. Nilai card tidak diubah.</div>`;
+        }
     }
-
-    function closeModal(){
-        const modal=document.getElementById(MODAL_ID);
-        if(modal) modal.hidden=true;
-        document.body.style.overflow="";
-    }
-    function escapeHtml(v){
-        return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-    }
+    function closeModal(){const modal=document.getElementById(MODAL_ID);if(modal)modal.hidden=true;document.body.style.overflow="";}
+    function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
     function decorateCoreCards(){
         Object.entries(CORE).forEach(([id,meta])=>{
-            const value=document.getElementById(id);
-            const card=value?.closest(".thc-tot-item");
-            if(!card || card.id==="thcCardCashOut") return;
-            card.classList.add("thc-detail-card");
-            card.dataset.thcDetail=id;
-            card.setAttribute("role","button");
-            card.setAttribute("tabindex","0");
-            card.setAttribute("aria-label",`Buka rincian ${meta.label} per cabang`);
-            card.title=`Klik untuk melihat rincian ${meta.label} per cabang`;
-            if(!card.querySelector(".thc-detail-hint")){
-                const hint=document.createElement("span");
-                hint.className="thc-detail-hint";
-                hint.setAttribute("aria-hidden","true");
-                hint.textContent="↗";
-                card.appendChild(hint);
-            }
+            const value=document.getElementById(id),card=value?.closest(".thc-tot-item");
+            if(!card||card.id==="thcCardCashOut")return;
+            card.classList.add("thc-detail-card");card.dataset.thcDetail=id;card.setAttribute("role","button");card.setAttribute("tabindex","0");card.setAttribute("aria-label",`Buka rincian ${meta.label} per cabang`);card.title=`Klik untuk melihat rincian ${meta.label} per cabang`;
+            if(!card.querySelector(".thc-detail-hint")){const hint=document.createElement("span");hint.className="thc-detail-hint";hint.setAttribute("aria-hidden","true");hint.textContent="↗";card.appendChild(hint);}
         });
     }
 
     function loadScript(id,src,test){
-        if(test?.()) return Promise.resolve();
-        const existing=document.getElementById(id);
-        if(existing) return Promise.resolve();
-        return new Promise(resolve=>{
-            const s=document.createElement("script");
-            s.id=id;s.src=src;s.async=false;
-            s.onload=()=>resolve();
-            s.onerror=()=>{console.error("[TabelHarianTotalCardUI] gagal memuat",src);resolve();};
-            document.head.appendChild(s);
-        });
+        if(test?.())return Promise.resolve();const existing=document.getElementById(id);if(existing)return Promise.resolve();
+        return new Promise(resolve=>{const s=document.createElement("script");s.id=id;s.src=src;s.async=false;s.onload=()=>resolve();s.onerror=()=>{console.error("[TabelHarianTotalCardUI] gagal memuat",src);resolve();};document.head.appendChild(s);});
     }
 
     async function restoreSpecializedDrilldowns(){
-        await loadScript("thcNettProductRestoreScript","../js/modules/tabel-harian-nett-product-card.js?v=20260911-cardrestore1",()=>typeof TabelHarianNettProductCard!=="undefined");
-        if(typeof TabelHarianNettProductCard?.boot==="function") TabelHarianNettProductCard.boot();
-
-        await loadScript("thcShareCukurRestoreScript","../js/modules/share-cukur-card.js?v=20260911-cardrestore1",()=>document.getElementById("thcShareCukurDrilldownModal"));
-        await loadScript("thcShareCukurPopupUiRestoreScript","../js/modules/share-cukur-popup-ui.js?v=20260911-cardrestore1",()=>document.getElementById("thcShareCukurPopupUiStyles"));
-
-        await loadScript("thcProteksiEngineRestoreScript","../js/modules/proteksi-engine.js?v=20260911-cardrestore1",()=>typeof ProteksiEngine!=="undefined");
-        await loadScript("thcProteksiRestoreScript","../js/modules/proteksi-card.js?v=20260911-cardrestore1",()=>document.getElementById("thcProteksiDrilldownModal"));
-        await loadScript("thcProteksiHintRestoreScript","../js/modules/proteksi-card-click-hint.js?v=20260911-cardrestore1",()=>document.getElementById("thcProteksiCardHintStyle"));
-
+        await loadScript("thcNettProductRestoreScript","../js/modules/tabel-harian-nett-product-card.js?v=20260911-cardrestore2",()=>typeof TabelHarianNettProductCard!=="undefined");
+        if(typeof TabelHarianNettProductCard?.boot==="function")TabelHarianNettProductCard.boot();
+        await loadScript("thcShareCukurRestoreScript","../js/modules/share-cukur-card.js?v=20260911-cardrestore2",()=>document.getElementById("thcShareCukurDrilldownModal"));
+        await loadScript("thcShareCukurPopupUiRestoreScript","../js/modules/share-cukur-popup-ui.js?v=20260911-cardrestore2",()=>document.getElementById("thcShareCukurPopupUiStyles"));
+        await loadScript("thcProteksiEngineRestoreScript","../js/modules/proteksi-engine.js?v=20260911-cardrestore2",()=>typeof ProteksiEngine!=="undefined");
+        await loadScript("thcProteksiRestoreScript","../js/modules/proteksi-card.js?v=20260911-cardrestore2",()=>document.getElementById("thcProteksiDrilldownModal"));
+        await loadScript("thcProteksiHintRestoreScript","../js/modules/proteksi-card-click-hint.js?v=20260911-cardrestore2",()=>document.getElementById("thcProteksiCardHintStyle"));
         setTimeout(decorateCoreCards,100);
     }
 
     function bind(){
-        if(bound) return;
-        bound=true;
-        document.addEventListener("click",e=>{
-            const card=e.target.closest?.("#thcTotals .thc-detail-card[data-thc-detail]");
-            if(!card) return;
-            if(e.target.closest("button,a,input,select,textarea")) return;
-            const id=card.dataset.thcDetail;
-            const meta=CORE[id];
-            const value=document.getElementById(id);
-            if(meta){e.preventDefault();openMetric(meta,value);}
-        });
-        document.addEventListener("keydown",e=>{
-            if(e.key==="Escape" && !document.getElementById(MODAL_ID)?.hidden) closeModal();
-            if(e.key!=="Enter" && e.key!==" ") return;
-            const card=e.target.closest?.("#thcTotals .thc-detail-card[data-thc-detail]");
-            if(!card) return;
-            const id=card.dataset.thcDetail,meta=CORE[id];
-            if(meta){e.preventDefault();openMetric(meta,document.getElementById(id));}
-        });
+        if(bound)return;bound=true;
+        document.addEventListener("click",e=>{const card=e.target.closest?.("#thcTotals .thc-detail-card[data-thc-detail]");if(!card||e.target.closest("button,a,input,select,textarea"))return;const id=card.dataset.thcDetail,meta=CORE[id];if(meta){e.preventDefault();openMetric(meta,document.getElementById(id));}});
+        document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById(MODAL_ID)?.hidden)closeModal();if(e.key!=="Enter"&&e.key!==" ")return;const card=e.target.closest?.("#thcTotals .thc-detail-card[data-thc-detail]");if(!card)return;const id=card.dataset.thcDetail,meta=CORE[id];if(meta){e.preventDefault();openMetric(meta,document.getElementById(id));}});
     }
-
-    function observeCards(){
-        const totals=document.getElementById("thcTotals");
-        if(!totals || observer) return;
-        observer=new MutationObserver(()=>decorateCoreCards());
-        observer.observe(totals,{childList:true,subtree:true});
-    }
-
-    async function boot(){
-        ensureStyles();
-        bind();
-        decorateCoreCards();
-        observeCards();
-        await restoreSpecializedDrilldowns();
-        decorateCoreCards();
-    }
+    function observeCards(){const totals=document.getElementById("thcTotals");if(!totals||observer)return;observer=new MutationObserver(()=>decorateCoreCards());observer.observe(totals,{childList:true,subtree:true});}
+    async function boot(){ensureStyles();bind();decorateCoreCards();observeCards();await restoreSpecializedDrilldowns();decorateCoreCards();}
 
     window.TabelHarianTotalCardUI={boot,refresh:decorateCoreCards};
-    if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot,{once:true});
-    else boot();
+    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
