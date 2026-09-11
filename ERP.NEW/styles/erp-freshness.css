@@ -304,3 +304,17 @@ html body.page-erp-dashboard .erp-wrapper #header .od-command-bar::before{
     filter:drop-shadow(0 0 3px rgba(242,194,48,.28)) !important;
     animation:none !important;
 }
+
+/* Dashboard toolbar label fit — UI only. Keep the full “Semua Cabang” text visible beside the cyan icon. */
+html body.page-erp-dashboard .toolbar-left > *:has(#branchFilter),
+html body.page-erp-dashboard .od-filterbar > *:has(#branchFilter){
+    width:220px !important;
+    min-width:220px !important;
+    flex:0 0 220px !important;
+}
+html body.page-erp-dashboard #branchFilter{
+    width:100% !important;
+    min-width:0 !important;
+    padding-right:34px !important;
+    box-sizing:border-box !important;
+}
