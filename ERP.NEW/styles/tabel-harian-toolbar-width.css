@@ -129,23 +129,23 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     .thc-page #thcTable tbody td:nth-child(1),
     .thc-page #thcTable tbody td:nth-child(2){
         z-index: 52 !important;
-        background: #1B222C !important;
-        background-clip: padding-box !important;
+        background:#1B222C !important;
+        background-clip:padding-box !important;
     }
 
     .thc-page #thcTable thead th:nth-child(2),
     .thc-page #thcTable tbody td:nth-child(2){
-        box-shadow: 8px 0 12px -8px rgba(0,0,0,.98), 1px 0 0 rgba(212,175,55,.20) !important;
+        box-shadow:8px 0 12px -8px rgba(0,0,0,.98), 1px 0 0 rgba(212,175,55,.20) !important;
     }
 
     .thc-page #thcTable thead th.thc-bri-daily-head + th,
     .thc-page #thcTable tbody td.thc-bri-daily-cell + td{
-        width: 112px !important;
-        min-width: 112px !important;
-        max-width: 112px !important;
-        box-sizing: border-box !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
+        width:112px !important;
+        min-width:112px !important;
+        max-width:112px !important;
+        box-sizing:border-box !important;
+        padding-left:10px !important;
+        padding-right:10px !important;
     }
 }
 
@@ -189,36 +189,22 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     color:inherit;
 }
 
-@media (max-width: 900px){
-    .thc-page{
-        --thc-freeze-sidebar-w: 0px;
-    }
+@media (max-width:900px){
+    .thc-page{--thc-freeze-sidebar-w:0px;}
 }
 
-@media (min-width: 1100px){
-    .thc-page .thc-unified-toolbar{
-        flex-wrap: nowrap !important;
-        justify-content: flex-start !important;
-    }
+@media (min-width:1100px){
+    .thc-page .thc-unified-toolbar{flex-wrap:nowrap !important;justify-content:flex-start !important;}
 }
 
-@media (min-width: 1100px) and (max-width: 1450px){
-    .thc-page .thc-page-head .thc-tb-actions{
-        gap: 6px !important;
-    }
+@media (min-width:1100px) and (max-width:1450px){
+    .thc-page .thc-page-head .thc-tb-actions{gap:6px !important;}
 }
 
-@media (max-width: 1099px){
-    .thc-page .thc-page-head{
-        flex-wrap: wrap !important;
-        min-width: 100% !important;
-        padding: 12px 14px !important;
-    }
+@media (max-width:1099px){
+    .thc-page .thc-page-head{flex-wrap:wrap !important;min-width:100% !important;padding:12px 14px !important;}
     .thc-page .thc-page-head .thc-tb-actions,
-    .thc-page .thc-tb-actions{
-        flex-wrap: wrap !important;
-        margin-left: auto !important;
-    }
+    .thc-page .thc-tb-actions{flex-wrap:wrap !important;margin-left:auto !important;}
 }
 
 /* Compact card visual — hanya presentasi. Interaksi/popup tetap milik modul native. */
@@ -359,14 +345,13 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         white-space:nowrap!important;
     }
 
-    /* Tiga card ringkas: sembunyikan semua child runtime selain judul + nilai. */
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-customer > :not(span):not(strong),
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-transaksi > :not(span):not(strong),
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-services > :not(span):not(strong){
         display:none!important;
     }
 
-    /* Nett Revenue — kompres vertikal khusus agar 2 baris deskripsi terbaca penuh. */
+    /* Nett Revenue — deskripsi dipendekkan secara visual, tanpa mengubah engine/data. */
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett{
         display:flex!important;
         flex-direction:column!important;
@@ -404,17 +389,23 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
 
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > .thc-tot-desc{
-        display:-webkit-box!important;
-        -webkit-box-orient:vertical!important;
-        -webkit-line-clamp:2!important;
-        line-clamp:2!important;
+        display:block!important;
         position:static!important;
         margin:0!important;
         padding:0!important;
-        font-size:8.6px!important;
+        font-size:0!important;
         line-height:1!important;
-        font-weight:600!important;
-        white-space:normal!important;
-        overflow:hidden!important;
+        white-space:nowrap!important;
+        overflow:visible!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > .thc-tot-desc::after{
+        content:"Laba bersih operasional";
+        display:block;
+        font-size:9px;
+        line-height:1.1;
+        font-weight:600;
+        color:#AEB9C7;
+        white-space:nowrap;
     }
 }
