@@ -1,12 +1,13 @@
 /* ERP VAX — notification stability patch. UI/read-only only.
-   Purpose: keep one click handler, harden role/invoice reads, never touch approval/finance engines.
+   Purpose: only surface notifications that still represent a real active action.
+   IMPORTANT: notification layer only; no approval, finance, setoran, invoice, or data engine changes.
 */
 "use strict";
 (function(){
   const install=()=>{
     const N=window.ERPGlobalNotifications;
-    if(!N||N.__stabilityPatchInstalledV3)return false;
-    N.__stabilityPatchInstalledV3=true;
+    if(!N||N.__stabilityPatchInstalledV4)return false;
+    N.__stabilityPatchInstalledV4=true;
 
     N.resolveRoleFromHeader=function(){
       const probes=[
@@ -23,26 +24,23 @@
       return '';
     };
 
-    /* ERP connector.js exposes Supabase as top-level lexical `db`, not window.db.
-       Notification layer resolves the existing client without touching connector/auth engines. */
     N.waitDb=async function(){
       const started=Date.now();
       while(Date.now()-started<6000){
-        try{
-          if(typeof db!=='undefined'&&db&&typeof db.from==='function')return db;
-        }catch(_e){}
+        try{if(typeof db!=='undefined'&&db&&typeof db.from==='function')return db}catch(_e){}
         if(window.db&&typeof window.db.from==='function')return window.db;
         await new Promise(r=>setTimeout(r,80));
       }
       return null;
     };
 
-    /* Legacy notification paths disabled by Owner decision 2026-09-11.
-       Important: this only stops obsolete notifications. No Setoran / Arus Kas engine,
-       transaction, status, formula, approval, or database record is changed. */
-    N.loadArusKas=async function(){
-      return;
-    };
+    /* Obsolete legacy Arus Kas notification is intentionally disabled. */
+    N.loadArusKas=async function(){ return; };
+
+    /* Master Tagihan reminder is disabled from the global bell until a payment-aware
+       source of truth can prove the current month's obligation is still unpaid.
+       This prevents date-only false positives. The Master Tagihan module itself is untouched. */
+    N.loadTagihan=async function(){ return; };
 
     N.loadSetoran=async function(db){
       try{
@@ -55,17 +53,21 @@
         if(error)throw error;
 
         (data||[]).forEach(r=>{
-          if(r.request_proof&&!r.proof_path){
+          const status=String(r.status||'').toUpperCase();
+          /* A CLEAR setoran is complete, so old request_proof flags must not alert. */
+          if(status!=='CLEAR'&&r.request_proof&&!r.proof_path){
             N.add({
+              key:`setoran-proof:${r.id}`,
               tone:'urgent',icon:'📷',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',
-              title:'Bukti setoran diminta',
+              title:'Bukti setoran masih diperlukan',
               detail:`Periode ${r.period_start} — ${r.period_end} • cabang ID ${r.cabang_id}`
             });
           }
-          if(N.role==='owner'&&r.owner_verified===false&&String(r.status||'').toUpperCase()!=='CLEAR'){
+          if(N.role==='owner'&&r.owner_verified===false&&status!=='CLEAR'){
             N.add({
+              key:`setoran-owner-verify:${r.id}`,
               tone:'warning',icon:'✓',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',
-              title:'Setoran belum Owner Verified',
+              title:'Setoran menunggu verifikasi Owner',
               detail:`Periode ${r.period_start} — ${r.period_end} • ${r.status||'menunggu review'}`
             });
           }
@@ -75,9 +77,8 @@
       }
     };
 
-    /* Important: do NOT attach another bell click handler here.
-       The base notification module already owns toggle/open/close. */
-
+    /* Invoice notification now means an incoming invoice exists, not an ACC/payment request.
+       ACC-to-Kas workflow has been retired by Owner decision. */
     N.loadInvoices=async function(db){
       if(!['owner','svp'].includes(N.role))return;
       let data=null,error=null;
@@ -110,25 +111,16 @@
 
           N.add({
             key:`invoice:${r.id}:${N.role}`,
-            tone:'urgent',
+            tone:'info',
             icon:'▤',
             module:'INVOICE',
             href:`./master-tagihan.html?focus=invoice&invoice=${encodeURIComponent(r.id)}`,
-            title:N.role==='owner'?'Invoice SVP menunggu ACC Owner':'Invoice Owner menunggu ACC SVP',
+            title:N.role==='owner'?'Invoice baru dari SVP':'Invoice baru dari Owner',
             detail:`${r.invoice_no||'Invoice'} • ${N.money(r.total)}${r.title?` • ${r.title}`:''}`
           });
         });
       }catch(e){
         console.warn('[Notif stability] invoice read',e);
-        N.add({
-          key:`invoice-read-error:${N.role}`,
-          tone:'warning',
-          icon:'!',
-          module:'INVOICE',
-          href:'./master-tagihan.html?focus=invoice',
-          title:'Invoice perlu dicek',
-          detail:'Data invoice belum dapat dibaca dari akun ini. Buka Master Tagihan untuk pengecekan.'
-        });
       }
     };
 
@@ -162,7 +154,6 @@
       }catch(e){
         console.warn('[Notif stability] refresh',e);
         N.items=[];
-        N.add?.({tone:'warning',icon:'!',module:'NOTIFIKASI',href:'#',title:'Notifikasi belum dapat dimuat',detail:e?.message||String(e)});
         N.render();
       }finally{
         if(rf){rf.disabled=false;rf.classList.remove('is-loading')}
