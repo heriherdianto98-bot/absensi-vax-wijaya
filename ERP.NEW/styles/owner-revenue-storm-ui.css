@@ -31,21 +31,26 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     animation:vax-revenue-lightning 4.6s linear infinite;
 }
 
-/* Heavy rain sheet appears shortly after lightning begins. */
+/* Light rain: sparse drops only, appearing briefly after lightning. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
     top:var(--erp-top-header-h,42px);
     bottom:0;
     z-index:150;
     opacity:0;
     background:
-        repeating-linear-gradient(102deg,transparent 0 13px,rgba(190,226,255,.40) 14px 15px,transparent 16px 28px),
-        repeating-linear-gradient(100deg,transparent 0 22px,rgba(132,196,241,.28) 23px 24px,transparent 25px 41px),
-        linear-gradient(180deg,rgba(8,18,28,.12),rgba(4,10,16,.18));
-    background-size:100% 42px,100% 58px,100% 100%;
-    filter:blur(.15px);
+        repeating-linear-gradient(102deg,
+            transparent 0 74px,
+            rgba(190,226,255,.20) 75px 76px,
+            transparent 77px 154px),
+        repeating-linear-gradient(100deg,
+            transparent 0 118px,
+            rgba(132,196,241,.14) 119px 120px,
+            transparent 121px 238px);
+    background-size:100% 86px,100% 122px;
+    filter:blur(.08px);
     animation:
-        vax-revenue-rain-fall .32s linear 1.05s infinite,
-        vax-revenue-rain-in .85s ease 1.05s both;
+        vax-revenue-rain-fall 1.15s linear 1.15s infinite,
+        vax-revenue-rain-pulse 6.2s ease-in-out 1.15s infinite;
 }
 
 body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
@@ -71,13 +76,14 @@ body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-bad
 }
 
 @keyframes vax-revenue-rain-fall{
-    from{background-position:0 -42px,12px -58px,0 0}
-    to{background-position:-12px 42px,0 58px,0 0}
+    from{background-position:0 -86px,24px -122px}
+    to{background-position:-10px 86px,8px 122px}
 }
 
-@keyframes vax-revenue-rain-in{
-    from{opacity:0}
-    to{opacity:.52}
+@keyframes vax-revenue-rain-pulse{
+    0%,16%,42%,58%,84%,100%{opacity:0}
+    22%,30%{opacity:.20}
+    64%,72%{opacity:.14}
 }
 
 @media (max-width:900px){
