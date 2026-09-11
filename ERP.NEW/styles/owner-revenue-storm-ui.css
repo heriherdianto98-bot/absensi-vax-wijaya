@@ -165,7 +165,7 @@ body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-bad
 html body.page-erp-dashboard .dash-toolbar-host{
     position:relative !important;
     z-index:180 !important;
-    margin-top:6px !important;
+    margin-top:14px !important;
 }
 html body.page-erp-dashboard .dash-toolbar-host .toolbar-wrapper,
 html body.page-erp-dashboard .erp-wrapper .toolbar-wrapper,
