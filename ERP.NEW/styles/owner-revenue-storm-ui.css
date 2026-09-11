@@ -161,6 +161,22 @@ body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-bad
     100%{opacity:0}
 }
 
+/* Keep Dashboard toolbar/filter/status row fully readable above storm layers. */
+html body.page-erp-dashboard .dash-toolbar-host,
+html body.page-erp-dashboard .dash-toolbar-host .toolbar-wrapper,
+html body.page-erp-dashboard .erp-wrapper .toolbar-wrapper,
+html body.page-erp-dashboard .od-filterbar{
+    position:relative !important;
+    z-index:180 !important;
+}
+
+html body.page-erp-dashboard .dash-toolbar-host .toolbar-wrapper,
+html body.page-erp-dashboard .erp-wrapper .toolbar-wrapper,
+html body.page-erp-dashboard .od-filterbar{
+    background:#0A0E13 !important;
+    isolation:isolate !important;
+}
+
 @media (max-width:900px){
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
         left:0;
