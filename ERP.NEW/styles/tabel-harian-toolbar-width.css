@@ -31,7 +31,6 @@
     --thc-thead-top: calc(var(--erp-top-header-h, 58px) + var(--thc-pin-stack-h, 104px) - 1px);
 }
 
-/* Title + actions ikut scroll vertikal agar area tabel lebih lega. */
 body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
 .erp-wrapper .thc-page .thc-page-head,
 .thc-page .thc-page-head{
@@ -95,11 +94,6 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     overflow: visible !important;
 }
 
-/*
-   Freeze horizontal Tabel Harian — Tanggal + Cabang.
-   Karena horizontal scroll ada di level halaman, sticky left harus berhenti
-   di sisi kanan sidebar (bukan left:0 yang tertutup sidebar fixed).
-*/
 @media screen{
     .thc-page{
         --thc-freeze-sidebar-w: 212px;
@@ -144,8 +138,6 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         box-shadow: 8px 0 12px -8px rgba(0,0,0,.98), 1px 0 0 rgba(212,175,55,.20) !important;
     }
 
-    /* UI only: Cash Out dibuat lebih compact. Selector mengikuti posisi
-       Cash Out yang selalu tepat setelah kolom BRI Merchant canonical. */
     .thc-page #thcTable thead th.thc-bri-daily-head + th,
     .thc-page #thcTable tbody td.thc-bri-daily-cell + td{
         width: 112px !important;
@@ -157,7 +149,6 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
 }
 
-/* Nama cabang dibuat lebih menonjol dan tidak putih. */
 .thc-page #thcTable tbody td:nth-child(2){
     font-size:15px !important;
     font-weight:800 !important;
@@ -170,8 +161,6 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     text-shadow:0 0 10px rgba(244,196,61,.20);
 }
 
-/* UI ONLY — pertegas sumber angka non-cash agar tidak ambigu.
-   Header tepat sebelum BRI Merchant adalah kolom Non Tunai Minutes. */
 .thc-page #thcTable thead th:has(+ th.thc-bri-daily-head){
     font-size:0 !important;
     text-align:center !important;
@@ -188,7 +177,6 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     text-align:center;
 }
 
-/* Samakan label card total agar istilah tetap konsisten di halaman yang sama. */
 .thc-page .thc-tot-item.is-nontunai > span{
     font-size:0 !important;
 }
@@ -230,5 +218,115 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     .thc-page .thc-tb-actions{
         flex-wrap: wrap !important;
         margin-left: auto !important;
+    }
+}
+
+/* Compact card visual — hanya presentasi. Interaksi/popup tetap milik modul native. */
+@media screen and (pointer:fine){
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals{
+        width:calc(100vw - 250px)!important;
+        max-width:calc(100vw - 250px)!important;
+        padding:8px 10px 10px!important;
+        overflow:visible!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-label{
+        margin:0 0 6px!important;
+        font-size:11px!important;
+        line-height:1.1!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid{
+        display:grid!important;
+        grid-template-columns:repeat(5,minmax(0,1fr))!important;
+        grid-auto-flow:row!important;
+        gap:6px!important;
+        width:100%!important;
+        max-width:100%!important;
+        overflow:visible!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item{
+        grid-column:auto!important;
+        grid-row:auto!important;
+        width:auto!important;
+        min-width:0!important;
+        max-width:none!important;
+        height:70px!important;
+        min-height:70px!important;
+        max-height:70px!important;
+        padding:6px 9px 7px 11px!important;
+        border-radius:12px!important;
+        border:1px solid rgba(255,255,255,.08)!important;
+        background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.014) 26%,transparent 52%),radial-gradient(130% 90% at 100% 0%,rgba(255,255,255,.04) 0%,transparent 52%),linear-gradient(180deg,#181E28 0%,#11161D 100%)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 1px 0 0 rgba(255,255,255,.025),0 3px 10px rgba(0,0,0,.20)!important;
+        overflow:visible!important;
+        box-sizing:border-box!important;
+        transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease!important;
+        transform:translateY(0) scale(1)!important;
+        will-change:transform;
+        pointer-events:auto!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nontunai > span::after{
+        margin:0 0 2px!important;
+        font-size:10.5px!important;
+        line-height:1.08!important;
+        letter-spacing:.045em!important;
+        font-weight:900!important;
+        text-transform:uppercase!important;
+        text-shadow:0 1px 0 rgba(0,0,0,.32)!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > strong,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained > strong,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained.is-actual > strong{
+        margin:0 0 3px!important;
+        font-size:15px!important;
+        line-height:1.05!important;
+        font-weight:800!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item .thc-tot-desc{
+        display:-webkit-box!important;
+        -webkit-box-orient:vertical!important;
+        -webkit-line-clamp:2!important;
+        line-clamp:2!important;
+        white-space:normal!important;
+        overflow:hidden!important;
+        margin:0!important;
+        padding:0!important;
+        font-size:9.2px!important;
+        line-height:1.15!important;
+        font-weight:600!important;
+        color:#AEB9C7!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained{
+        height:70px!important;
+        min-height:70px!important;
+        max-height:70px!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:hover{
+        transform:translateY(-2px) scale(1.012)!important;
+        border-color:rgba(255,255,255,.16)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 18px rgba(0,0,0,.32),0 0 14px rgba(255,255,255,.035)!important;
+        filter:brightness(1.06)!important;
+        z-index:2;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-customer > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-transaksi > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-services > span{
+        font-size:11.5px!important;
+        line-height:1.05!important;
+        font-weight:900!important;
+        letter-spacing:.04em!important;
     }
 }
