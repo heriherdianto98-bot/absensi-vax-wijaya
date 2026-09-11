@@ -2,6 +2,32 @@
    Presentation only. No invoice / approval / finance logic changes.
 */
 
+/* Main invoice card: cleaner owner/SVP visual hierarchy. */
+#mtInvoiceCard{
+  overflow:hidden!important;
+  border-radius:16px!important;
+}
+#mtInvoiceCard .mt-invoice-head{
+  padding:18px 20px!important;
+  min-height:74px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+}
+#mtInvoiceCard .mt-invoice-head strong{display:block!important;line-height:1.15!important}
+#mtInvoiceCard .mt-invoice-head small{display:block!important;margin-top:7px!important;line-height:1.35!important}
+
+/* Empty/draft area should not create a large dead space on Owner. */
+#mtInvoiceCard .mt-invoice-empty{
+  min-height:66px!important;
+  padding:20px 24px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+
 /* Make the history area visually distinct from the rest of Master Tagihan. */
 #mtInvoiceCard .mt-invoice-list{
   padding:12px 12px 14px!important;
@@ -10,17 +36,30 @@
     #0b1720!important;
   border-top:1px solid rgba(83,154,188,.18);
 }
+#mtInvoiceCard .mt-invoice-history-head,
+#mtInvoiceCard .mt-invoice-history-toggle{
+  min-height:44px!important;
+  padding:0 14px!important;
+  display:flex!important;
+  align-items:center!important;
+}
 
 /* Each invoice history row gets a different blue-slate tone. */
 #mtInvoiceCard .mt-invoice-row{
   background:linear-gradient(180deg,#14232e 0%,#0f1c25 100%)!important;
   border:1px solid #2b4657!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 8px 18px rgba(0,0,0,.10)!important;
+  min-height:74px!important;
+  padding-top:12px!important;
+  padding-bottom:12px!important;
+  align-items:center!important;
 }
 #mtInvoiceCard .mt-invoice-row:hover{
   background:linear-gradient(180deg,#173040 0%,#11232e 100%)!important;
   border-color:#3e6e85!important;
 }
+#mtInvoiceCard .mt-invoice-no{line-height:1.2!important}
+#mtInvoiceCard .mt-invoice-row small{display:block!important;margin-top:5px!important;line-height:1.25!important}
 
 /* Keep all action controls on the same visual baseline. */
 #mtInvoiceCard .mt-invoice-buttons,
@@ -30,6 +69,7 @@
   justify-content:flex-end!important;
   gap:12px!important;
   flex-wrap:nowrap!important;
+  min-height:40px!important;
 }
 
 #mtInvoiceCard .mt-invoice-buttons .mt-action,
