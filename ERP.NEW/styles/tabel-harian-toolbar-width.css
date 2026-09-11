@@ -329,4 +329,10 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         font-weight:900!important;
         letter-spacing:.04em!important;
     }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-customer .thc-tot-desc,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-transaksi .thc-tot-desc,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-services .thc-tot-desc{
+        display:none!important;
+    }
 }
