@@ -23,6 +23,20 @@
       return '';
     };
 
+    /* ERP connector.js exposes Supabase as top-level lexical `db`, not window.db.
+       Notification layer resolves the existing client without touching connector/auth engines. */
+    N.waitDb=async function(){
+      const started=Date.now();
+      while(Date.now()-started<6000){
+        try{
+          if(typeof db!=='undefined'&&db&&typeof db.from==='function')return db;
+        }catch(_e){}
+        if(window.db&&typeof window.db.from==='function')return window.db;
+        await new Promise(r=>setTimeout(r,80));
+      }
+      return null;
+    };
+
     /* Important: do NOT attach another bell click handler here.
        The base notification module already owns toggle/open/close. */
 
