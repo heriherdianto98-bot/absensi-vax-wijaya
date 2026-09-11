@@ -290,4 +290,42 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         -webkit-line-clamp: 1 !important;
         line-clamp: 1 !important;
     }
+
+    /* Fit viewport: blok TOTAL PERIODE jangan ikut lebar tabel horizontal.
+       Parent tabel tetap boleh max-content; hanya totals yang dikunci ke area layar. */
+    .thc-page .thc-totals{
+        width: calc(100vw - 250px) !important;
+        max-width: calc(100vw - 250px) !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    .thc-page .thc-totals-grid{
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    .thc-page .thc-tot-item{
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .thc-page .thc-tot-item > span,
+    .thc-page .thc-tot-item > strong,
+    .thc-page .thc-tot-item .thc-tot-desc{
+        max-width: 100% !important;
+    }
+
+    .thc-page .thc-tot-item > strong{
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
 }
