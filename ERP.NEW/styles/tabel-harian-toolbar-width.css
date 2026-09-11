@@ -319,3 +319,25 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         line-clamp: 1 !important;
     }
 }
+
+/* Final desktop/laptop guard: some responsive rules can make each card span the full row.
+   Force grid participation only; UI layer only. */
+@media screen and (pointer: fine){
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid{
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        grid-auto-flow: row !important;
+        grid-auto-columns: auto !important;
+        gap: 7px !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item{
+        grid-column: auto !important;
+        grid-row: auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        justify-self: stretch !important;
+        align-self: stretch !important;
+    }
+}
