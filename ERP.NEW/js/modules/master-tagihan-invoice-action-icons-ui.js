@@ -95,8 +95,8 @@
   function markDirection(row){
     const text=String(row.textContent||"").toUpperCase().replace(/\s+/g," ");
     row.classList.remove("mt-invoice-owner-to-svp","mt-invoice-svp-to-owner");
-    if(text.includes("OWNER → SVP")||text.includes("OWNER -> SVP"))row.classList.add("mt-invoice-owner-to-svp");
-    else if(text.includes("SVP → OWNER")||text.includes("SVP -> OWNER"))row.classList.add("mt-invoice-svp-to-owner");
+    if(text.includes("SVP → OWNER")||text.includes("SVP -> OWNER"))row.classList.add("mt-invoice-svp-to-owner");
+    else if(text.includes("OWNER → SVP")||text.includes("OWNER -> SVP")||row.querySelector('[data-inv-action="edit"]'))row.classList.add("mt-invoice-owner-to-svp");
   }
 
   function decorateAcc(row,actions,id){
