@@ -366,7 +366,7 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         display:none!important;
     }
 
-    /* Nett Revenue — rapikan agar title, nominal, dan deskripsi tidak terpotong. */
+    /* Nett Revenue — kompres vertikal khusus agar 2 baris deskripsi terbaca penuh. */
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett{
         display:flex!important;
         flex-direction:column!important;
@@ -374,17 +374,17 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         height:70px!important;
         min-height:70px!important;
         max-height:70px!important;
-        padding:6px 10px 7px 11px!important;
+        padding:4px 10px 4px 11px!important;
         overflow:hidden!important;
     }
 
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > span{
         display:block!important;
         position:static!important;
-        margin:0 0 2px!important;
+        margin:0 0 1px!important;
         padding:0!important;
         font-size:10.5px!important;
-        line-height:1.08!important;
+        line-height:1!important;
         font-weight:900!important;
         white-space:nowrap!important;
         overflow:visible!important;
@@ -393,10 +393,10 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > strong{
         display:block!important;
         position:static!important;
-        margin:0 0 3px!important;
+        margin:0 0 1px!important;
         padding:0!important;
         font-size:15px!important;
-        line-height:1.05!important;
+        line-height:1!important;
         font-weight:900!important;
         white-space:nowrap!important;
         overflow:visible!important;
@@ -411,8 +411,8 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         position:static!important;
         margin:0!important;
         padding:0!important;
-        font-size:9px!important;
-        line-height:1.08!important;
+        font-size:8.6px!important;
+        line-height:1!important;
         font-weight:600!important;
         white-space:normal!important;
         overflow:hidden!important;
