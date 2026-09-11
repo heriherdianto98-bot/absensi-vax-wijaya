@@ -1,0 +1,75 @@
+/* ERP VAX — KPI popup card-tone alignment
+   UI ONLY. Uses existing data-kpi-tone set by kpi-branch-popup.js.
+   No data, formula, engine, routing, Supabase, Minutes, or KPI logic changes. */
+
+.kpi-branch-modal{
+    --popup-accent:#D4AF37;
+    --popup-accent-rgb:212,175,55;
+}
+.kpi-branch-modal[data-kpi-tone="blue"]{--popup-accent:#38BDF8;--popup-accent-rgb:56,189,248;}
+.kpi-branch-modal[data-kpi-tone="amber"]{--popup-accent:#F59E0B;--popup-accent-rgb:245,158,11;}
+.kpi-branch-modal[data-kpi-tone="gold"]{--popup-accent:#D4AF37;--popup-accent-rgb:212,175,55;}
+.kpi-branch-modal[data-kpi-tone="cyan"]{--popup-accent:#22D3EE;--popup-accent-rgb:34,211,238;}
+.kpi-branch-modal[data-kpi-tone="red"]{--popup-accent:#EF4444;--popup-accent-rgb:239,68,68;}
+.kpi-branch-modal[data-kpi-tone="green"]{--popup-accent:#22C55E;--popup-accent-rgb:34,197,94;}
+.kpi-branch-modal[data-kpi-tone="purple"]{--popup-accent:#A78BFA;--popup-accent-rgb:167,139,250;}
+.kpi-branch-modal[data-kpi-tone="orange"]{--popup-accent:#FB923C;--popup-accent-rgb:251,146,60;}
+
+/* Match popup shell to active card tone while preserving dark VAX base. */
+.kpi-branch-modal .kpi-branch-modal-panel{
+    border-color:rgba(var(--popup-accent-rgb),.34) !important;
+    background:
+        radial-gradient(90% 46% at 50% 0%,rgba(var(--popup-accent-rgb),.09),transparent 68%),
+        linear-gradient(180deg,#171D25 0%,#11161D 58%,#0D1218 100%) !important;
+    box-shadow:
+        0 24px 48px rgba(0,0,0,.48),
+        0 0 0 1px rgba(var(--popup-accent-rgb),.05),
+        0 0 28px rgba(var(--popup-accent-rgb),.08) !important;
+}
+
+.kpi-branch-modal .kpi-branch-modal-total{
+    background:
+        linear-gradient(90deg,rgba(var(--popup-accent-rgb),.10),rgba(255,255,255,.025)) !important;
+    border-color:rgba(var(--popup-accent-rgb),.22) !important;
+}
+.kpi-branch-modal .kpi-branch-modal-total strong,
+.kpi-branch-modal .kpi-branch-modal-heading small,
+.kpi-branch-modal .kpi-branch-row-bar > i{
+    color:var(--popup-accent) !important;
+}
+
+/* Branch cards inherit popup/card accent instead of generic grey. */
+.kpi-branch-modal .kpi-branch-row{
+    background:
+        linear-gradient(90deg,rgba(var(--popup-accent-rgb),.075),rgba(255,255,255,.022) 48%,rgba(255,255,255,.012)) !important;
+    border:1px solid rgba(var(--popup-accent-rgb),.12) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+.kpi-branch-modal .kpi-branch-row:hover,
+.kpi-branch-modal .kpi-branch-row:focus-visible{
+    background:
+        linear-gradient(90deg,rgba(var(--popup-accent-rgb),.14),rgba(var(--popup-accent-rgb),.055) 52%,rgba(255,255,255,.02)) !important;
+    border-color:rgba(var(--popup-accent-rgb),.30) !important;
+    box-shadow:
+        0 0 0 1px rgba(var(--popup-accent-rgb),.08),
+        0 0 18px rgba(var(--popup-accent-rgb),.12) !important;
+}
+.kpi-branch-modal .kpi-branch-row-chevron{
+    color:rgba(var(--popup-accent-rgb),.70) !important;
+}
+.kpi-branch-modal .kpi-branch-row:hover .kpi-branch-row-chevron{
+    color:var(--popup-accent) !important;
+}
+
+/* Scrollbar follows the active KPI card tone too. */
+.kpi-branch-modal .kpi-branch-list{
+    scrollbar-color:rgba(var(--popup-accent-rgb),.58) rgba(255,255,255,.06) !important;
+}
+.kpi-branch-modal .kpi-branch-list::-webkit-scrollbar-thumb{
+    background:rgba(var(--popup-accent-rgb),.48) !important;
+    background-clip:padding-box !important;
+}
+.kpi-branch-modal .kpi-branch-list::-webkit-scrollbar-thumb:hover{
+    background:rgba(var(--popup-accent-rgb),.72) !important;
+    background-clip:padding-box !important;
+}
