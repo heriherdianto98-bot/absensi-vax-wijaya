@@ -1,0 +1,89 @@
+/* ERP VAX — Master Sewa & Investor full editor UI only */
+html body.page-master-sewa-investor .msi-head-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+html body.page-master-sewa-investor .msi-reload{
+  min-height:40px!important;
+  padding:0 14px!important;
+  border:1px solid rgba(201,162,39,.26)!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(28,34,43,.78),rgba(20,24,31,.94))!important;
+  color:#f0d77e!important;
+  font-family:inherit!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease!important;
+}
+html body.page-master-sewa-investor .msi-reload:hover{
+  transform:translateY(-1px)!important;
+  border-color:rgba(201,162,39,.52)!important;
+  background:rgba(201,162,39,.12)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.2)!important;
+}
+html body.page-master-sewa-investor .msi-load-state{
+  margin:0 0 10px!important;
+  padding:9px 12px!important;
+  border:1px solid rgba(201,162,39,.22)!important;
+  border-radius:9px!important;
+  background:rgba(201,162,39,.06)!important;
+  color:#e7d38d!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+html body.page-master-sewa-investor .msi-load-state.error{
+  border-color:rgba(239,68,68,.32)!important;
+  background:rgba(239,68,68,.08)!important;
+  color:#fca5a5!important;
+}
+html body.page-master-sewa-investor .msi-dialog{
+  width:min(760px,calc(100vw - 28px))!important;
+  max-height:90vh!important;
+  overflow:auto!important;
+}
+html body.page-master-sewa-investor .msi-form-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px 12px!important;
+}
+html body.page-master-sewa-investor .msi-span-2{grid-column:1 / -1!important;}
+html body.page-master-sewa-investor .msi-editor-section{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px 12px!important;
+  padding:12px!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:11px!important;
+  background:#0d131a!important;
+}
+html body.page-master-sewa-investor .msi-editor-section[hidden]{display:none!important;}
+html body.page-master-sewa-investor .msi-dialog select,
+html body.page-master-sewa-investor .msi-dialog textarea{
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin-top:5px!important;
+  padding:10px 11px!important;
+  border:1px solid #303b47!important;
+  border-radius:8px!important;
+  outline:none!important;
+  background:#0a1016!important;
+  color:#f4f7fa!important;
+  font-family:inherit!important;
+  font-size:14px!important;
+  font-weight:700!important;
+}
+html body.page-master-sewa-investor .msi-dialog select{min-height:42px!important;}
+html body.page-master-sewa-investor .msi-dialog textarea{resize:vertical!important;min-height:76px!important;line-height:1.4!important;}
+html body.page-master-sewa-investor .msi-dialog select:focus,
+html body.page-master-sewa-investor .msi-dialog textarea:focus{
+  border-color:rgba(214,175,71,.65)!important;
+  box-shadow:0 0 0 3px rgba(214,175,71,.08)!important;
+}
+@media(max-width:760px){
+  html body.page-master-sewa-investor .msi-form-grid,
+  html body.page-master-sewa-investor .msi-editor-section{grid-template-columns:1fr!important;}
+  html body.page-master-sewa-investor .msi-span-2{grid-column:auto!important;}
+  html body.page-master-sewa-investor .msi-head-actions{margin-top:10px!important;flex-wrap:wrap!important;}
+}
