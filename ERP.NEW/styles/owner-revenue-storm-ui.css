@@ -184,6 +184,14 @@ html body.page-erp-dashboard #periodFilter option{
     background:#151022 !important;
     color:#A78BFA !important;
 }
+html body.page-erp-dashboard #branchFilter option:checked{
+    background:#10323A linear-gradient(#10323A,#10323A) !important;
+    color:#7DEBFF !important;
+}
+html body.page-erp-dashboard #periodFilter option:checked{
+    background:#2A1D46 linear-gradient(#2A1D46,#2A1D46) !important;
+    color:#C9B8FF !important;
+}
 
 @media (max-width:900px){
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
