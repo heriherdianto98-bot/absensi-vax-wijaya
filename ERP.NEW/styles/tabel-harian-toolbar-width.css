@@ -398,14 +398,4 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         white-space:nowrap!important;
         overflow:visible!important;
     }
-
-    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > .thc-tot-desc::after{
-        content:"Laba bersih operasional";
-        display:block;
-        font-size:9px;
-        line-height:1.1;
-        font-weight:600;
-        color:#AEB9C7;
-        white-space:nowrap;
-    }
 }
