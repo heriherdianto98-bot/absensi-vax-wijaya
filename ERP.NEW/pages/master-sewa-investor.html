@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="../styles/master-sewa-investor-kasbon-ui.css?v=20260912-ui4">
 <link rel="stylesheet" href="../styles/master-sewa-investor-table-header-ui.css?v=20260912-ui1">
 <link rel="stylesheet" href="../styles/master-sewa-investor-editor-ui.css?v=20260912-ui1">
+<link rel="stylesheet" href="../styles/master-sewa-investor-calendar-ui.css?v=20260912-ui1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="page-master-sewa-investor">
@@ -90,7 +91,17 @@
         <label class="msi-span-2">Biaya Dipotong Sebelum Bagi Hasil<textarea id="modalDeductions" rows="3"></textarea></label>
       </div>
 
-      <label>Berlaku Mulai<input id="modalEffective" type="date" required></label>
+      <div class="msi-date-field">
+        <span>Berlaku Mulai</span>
+        <input id="modalEffective" type="hidden" required>
+        <button type="button" id="msiDateTrigger" class="msi-date-trigger" aria-haspopup="dialog" aria-expanded="false"><span id="msiDateLabel">Pilih tanggal</span><span class="msi-date-icon">▣</span></button>
+        <div id="msiCalendar" class="msi-calendar" hidden>
+          <div class="msi-cal-head"><button type="button" id="msiCalPrev" aria-label="Bulan sebelumnya">‹</button><div id="msiCalTitle" class="msi-cal-title">—</div><button type="button" id="msiCalNext" aria-label="Bulan berikutnya">›</button></div>
+          <div class="msi-cal-week"><span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span></div>
+          <div id="msiCalGrid" class="msi-cal-grid"></div>
+          <div class="msi-cal-foot"><button type="button" id="msiCalClose">Tutup</button><button type="button" id="msiCalToday" class="msi-cal-today">Hari Ini</button></div>
+        </div>
+      </div>
       <label>Catatan<input id="modalNotes" placeholder="Opsional"></label>
     </div>
 
@@ -104,6 +115,7 @@
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/loader.js"></script>
 <script src="../js/modules/master-sewa-investor.js?v=20260912-full1"></script>
+<script src="../js/modules/master-sewa-investor-calendar-ui.js?v=20260912-ui1"></script>
 <script>
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   OwnerAuth?.bindUi?.(); OwnerAuth?.syncHeader?.(); OwnerAuth?.applyAccessControl?.(); initErpShellChrome?.();
