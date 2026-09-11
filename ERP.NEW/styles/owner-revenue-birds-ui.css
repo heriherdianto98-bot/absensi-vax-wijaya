@@ -11,7 +11,6 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) 
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::after{
     content:"";
     position:fixed;
-    left:-34vw;
     width:30vw;
     height:220px;
     pointer-events:none;
@@ -22,47 +21,50 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) 
     filter:drop-shadow(0 0 2px rgba(255,255,255,.38));
 }
 
-/* Front flock — wing-up frame. */
+/* Front flock — animated wing frames + varied curved flight path. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::before{
+    left:-34vw;
     top:150px;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 220'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' opacity='.94'%3E%3Cpath d='M22 74 Q34 58 47 74 Q59 58 72 74'/%3E%3Cpath d='M112 42 Q122 27 134 42 Q145 26 156 42'/%3E%3Cpath d='M191 101 Q202 86 213 101 Q224 85 236 101'/%3E%3Cpath d='M275 58 Q286 42 298 58 Q309 42 321 58'/%3E%3Cpath d='M356 122 Q367 107 379 122 Q390 106 402 122'/%3E%3Cpath d='M437 77 Q448 62 459 77 Q470 61 482 77'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' opacity='.72'%3E%3Cpath d='M72 155 Q81 143 90 155 Q99 142 108 155'/%3E%3Cpath d='M164 177 Q173 165 182 177 Q191 164 200 177'/%3E%3Cpath d='M306 171 Q315 159 324 171 Q333 158 342 171'/%3E%3Cpath d='M419 164 Q428 152 437 164 Q446 151 455 164'/%3E%3C/g%3E%3C/svg%3E");
     animation:
-        vax-revenue-birds-fly-a 17s linear infinite,
-        vax-revenue-birds-bob-a 3.8s ease-in-out infinite,
+        vax-revenue-birds-path-a 22s ease-in-out infinite,
         vax-revenue-birds-flap-a .54s steps(1,end) infinite;
 }
 
-/* Rear flock — slightly softer / slower and flaps out of phase. */
+/* Rear flock — opposite direction and different altitude curve. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::after{
+    left:106vw;
     top:310px;
     width:24vw;
     height:170px;
     opacity:.64;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 170'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 62 Q30 48 41 62 Q51 47 62 62'/%3E%3Cpath d='M104 34 Q114 21 124 34 Q134 20 145 34'/%3E%3Cpath d='M196 92 Q206 79 216 92 Q226 78 237 92'/%3E%3Cpath d='M286 48 Q296 35 306 48 Q316 34 327 48'/%3E%3Cpath d='M350 116 Q360 103 370 116 Q380 102 391 116'/%3E%3C/g%3E%3C/svg%3E");
     animation:
-        vax-revenue-birds-fly-b 23s linear 2.4s infinite,
-        vax-revenue-birds-bob-b 4.6s ease-in-out infinite,
+        vax-revenue-birds-path-b 28s ease-in-out 2s infinite,
         vax-revenue-birds-flap-b .68s steps(1,end) .18s infinite;
 }
 
-@keyframes vax-revenue-birds-fly-a{
-    from{left:-34vw}
-    to{left:104vw}
+/* Movement changes naturally: climb, dive, glide, reverse direction, then repeat. */
+@keyframes vax-revenue-birds-path-a{
+    0%{left:-34vw;top:182px;transform:rotate(-3deg) scale(.92)}
+    16%{left:2vw;top:126px;transform:rotate(-7deg) scale(1)}
+    34%{left:34vw;top:168px;transform:rotate(3deg) scale(1.03)}
+    52%{left:66vw;top:112px;transform:rotate(-5deg) scale(.98)}
+    68%{left:104vw;top:148px;transform:rotate(2deg) scale(.94)}
+    69%{left:104vw;top:148px;transform:rotate(2deg) scale(.94)}
+    82%{left:62vw;top:206px;transform:rotate(5deg) scale(.98)}
+    100%{left:-34vw;top:154px;transform:rotate(-2deg) scale(.92)}
 }
 
-@keyframes vax-revenue-birds-fly-b{
-    from{left:-28vw}
-    to{left:106vw}
-}
-
-@keyframes vax-revenue-birds-bob-a{
-    0%,100%{margin-top:0}
-    50%{margin-top:-18px}
-}
-
-@keyframes vax-revenue-birds-bob-b{
-    0%,100%{margin-top:0}
-    50%{margin-top:14px}
+@keyframes vax-revenue-birds-path-b{
+    0%{left:106vw;top:326px;transform:rotate(4deg) scale(.9)}
+    18%{left:78vw;top:274px;transform:rotate(-4deg) scale(.96)}
+    36%{left:48vw;top:344px;transform:rotate(5deg) scale(1)}
+    55%{left:18vw;top:292px;transform:rotate(-3deg) scale(.94)}
+    70%{left:-28vw;top:318px;transform:rotate(2deg) scale(.9)}
+    71%{left:-28vw;top:318px;transform:rotate(2deg) scale(.9)}
+    84%{left:26vw;top:246px;transform:rotate(-6deg) scale(.97)}
+    100%{left:106vw;top:304px;transform:rotate(3deg) scale(.9)}
 }
 
 /* Wing flap: alternate between wing-up and wing-down silhouettes. */
@@ -88,12 +90,10 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) 
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::before{
         width:48vw;
         height:180px;
-        top:138px;
     }
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::after{
         width:38vw;
         height:140px;
-        top:270px;
     }
 }
 
