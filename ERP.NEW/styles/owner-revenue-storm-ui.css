@@ -18,7 +18,7 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     position:absolute;
     left:0;
     right:0;
-    top:112px;
+    top:104px;
     height:170px;
     z-index:164;
     opacity:0;
@@ -102,10 +102,10 @@ html body.page-erp-dashboard .erp-wrapper.erp-wrapper .toolbar-wrapper.toolbar-w
 html body.page-erp-dashboard .erp-wrapper.erp-wrapper .od-filterbar.od-filterbar{
     position:relative !important;
     z-index:180 !important;
-    height:56px !important;
-    min-height:56px !important;
-    max-height:56px !important;
-    padding:4px 2px !important;
+    height:48px !important;
+    min-height:48px !important;
+    max-height:48px !important;
+    padding:2px 2px !important;
     box-sizing:border-box !important;
     background:#0A0E13 !important;
     isolation:isolate !important;
@@ -143,7 +143,7 @@ html body.page-erp-dashboard .od-filterbar > *:has(#branchFilter)::before{
     content:"◆";
     position:absolute;
     left:11px;
-    bottom:12px;
+    bottom:10px;
     z-index:3;
     color:#35D5FF;
     font-size:13px;
@@ -156,7 +156,7 @@ html body.page-erp-dashboard .od-filterbar > *:has(#periodFilter)::before{
     content:"●";
     position:absolute;
     left:11px;
-    bottom:12px;
+    bottom:10px;
     z-index:3;
     color:#A78BFA;
     font-size:12px;
@@ -165,12 +165,24 @@ html body.page-erp-dashboard .od-filterbar > *:has(#periodFilter)::before{
     pointer-events:none;
 }
 html body.page-erp-dashboard #branchFilter{
-    border-color:rgba(53,213,255,.34) !important;
-    box-shadow:inset 3px 0 0 rgba(53,213,255,.72) !important;
+    border-color:rgba(53,213,255,.56) !important;
+    box-shadow:inset 3px 0 0 rgba(53,213,255,.85) !important;
+    background:rgba(53,213,255,.07) !important;
+    color:#DDF8FF !important;
 }
 html body.page-erp-dashboard #periodFilter{
-    border-color:rgba(167,139,250,.34) !important;
-    box-shadow:inset 3px 0 0 rgba(167,139,250,.72) !important;
+    border-color:rgba(167,139,250,.56) !important;
+    box-shadow:inset 3px 0 0 rgba(167,139,250,.85) !important;
+    background:rgba(167,139,250,.08) !important;
+    color:#F0EAFF !important;
+}
+html body.page-erp-dashboard #branchFilter option{
+    background:#07171C !important;
+    color:#35D5FF !important;
+}
+html body.page-erp-dashboard #periodFilter option{
+    background:#151022 !important;
+    color:#A78BFA !important;
 }
 
 @media (max-width:900px){
