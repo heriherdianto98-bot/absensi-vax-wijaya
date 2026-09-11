@@ -5,8 +5,8 @@
 (function(){
   const install=()=>{
     const N=window.ERPGlobalNotifications;
-    if(!N||N.__stabilityPatchInstalledV2)return false;
-    N.__stabilityPatchInstalledV2=true;
+    if(!N||N.__stabilityPatchInstalledV3)return false;
+    N.__stabilityPatchInstalledV3=true;
 
     N.resolveRoleFromHeader=function(){
       const probes=[
@@ -35,6 +35,44 @@
         await new Promise(r=>setTimeout(r,80));
       }
       return null;
+    };
+
+    /* Legacy notification paths disabled by Owner decision 2026-09-11.
+       Important: this only stops obsolete notifications. No Setoran / Arus Kas engine,
+       transaction, status, formula, approval, or database record is changed. */
+    N.loadArusKas=async function(){
+      return;
+    };
+
+    N.loadSetoran=async function(db){
+      try{
+        const since=N.isoAddDays(N.jakartaToday(),-14);
+        const {data,error}=await db.from('setoran_3_harian')
+          .select('id,period_start,period_end,cabang_id,status,owner_verified,request_proof,proof_path')
+          .gte('period_end',since)
+          .order('period_end',{ascending:false})
+          .limit(40);
+        if(error)throw error;
+
+        (data||[]).forEach(r=>{
+          if(r.request_proof&&!r.proof_path){
+            N.add({
+              tone:'urgent',icon:'📷',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',
+              title:'Bukti setoran diminta',
+              detail:`Periode ${r.period_start} — ${r.period_end} • cabang ID ${r.cabang_id}`
+            });
+          }
+          if(N.role==='owner'&&r.owner_verified===false&&String(r.status||'').toUpperCase()!=='CLEAR'){
+            N.add({
+              tone:'warning',icon:'✓',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',
+              title:'Setoran belum Owner Verified',
+              detail:`Periode ${r.period_start} — ${r.period_end} • ${r.status||'menunggu review'}`
+            });
+          }
+        });
+      }catch(e){
+        console.warn('[Notif stability] setoran read',e);
+      }
     };
 
     /* Important: do NOT attach another bell click handler here.
