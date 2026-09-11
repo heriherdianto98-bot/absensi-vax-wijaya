@@ -62,11 +62,14 @@
     .empty{text-align:center;padding:8mm;color:#777}
     .sign{margin-top:2.5mm;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid}
     .sign .box{text-align:center;min-height:25mm}
-    .sign .line{border-top:1px solid #333;padding-top:1.2mm;font-weight:700}
-    .sign .role{font-size:7pt;color:#666;margin-top:.7mm}
-    .supervisor-sign .stage{height:17mm;width:100%;margin:0 auto .5mm;display:flex;align-items:flex-end;justify-content:center}
-    .supervisor-sign .ttd img{max-width:38mm;max-height:16mm;object-fit:contain}
-    .owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}.owner-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center}.owner-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
+    .supervisor-sign .who,.owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}
+    .supervisor-sign .auth-role,.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
+    .supervisor-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center}
+    .supervisor-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}
+    .supervisor-sign .name,.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}
+    .supervisor-sign .supervisor-line,.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}
+    .supervisor-sign .job,.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
+    .owner-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center}.owner-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}
 
     @media print{
       .sign{position:fixed;left:0;right:0;bottom:11mm;z-index:4;margin-top:0}
@@ -99,7 +102,7 @@
         <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Gaji Pokok − Denda − Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk</p></section>
         <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
         ${snap.cards.map(cardHtml).join('')}
-        <section class="sign"><div class="box supervisor-sign"><div class="stage"><div class="ttd"><img id="supervisorSignature" alt="Tanda tangan Supervisor"></div></div><div class="line">Rangga Putra Pratama</div><div class="role">SUPERVISOR · VAX WIJAYA</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
+        <section class="sign"><div class="box supervisor-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Supervisor</div><div class="stage"><div class="ttd"><img id="supervisorSignature" alt="Tanda tangan Supervisor"></div></div><div class="name">Rangga Putra Pratama</div><div class="supervisor-line"></div><div class="job">SUPERVISOR</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
       </main></td></tr></tbody></table>
       <script>
       window.addEventListener('load',async()=>{
