@@ -7,13 +7,13 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
     content:"";
     position:fixed;
+    left:var(--sidebar-width,220px);
+    right:0;
     pointer-events:none;
 }
 
 /* Lightning strip: flashes repeatedly just below the fixed header bar. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
-    left:var(--sidebar-width,220px);
-    right:0;
     top:var(--erp-top-header-h,42px);
     height:70px;
     z-index:164;
@@ -31,66 +31,33 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     animation:vax-revenue-lightning 4.6s linear infinite;
 }
 
-/* Real raindrop particles: short individual drops, not stripes/patterns. */
+/* Rain: denser and thicker short droplets, still real-drop style and not long streaks. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
-    left:calc(var(--sidebar-width,220px) + 1vw);
-    top:calc(var(--erp-top-header-h,42px) - 100vh);
-    width:2px;
-    height:7px;
+    top:var(--erp-top-header-h,42px);
+    bottom:0;
     z-index:150;
-    border-radius:50% 50% 55% 55%;
-    background:rgba(205,235,255,.72);
-    box-shadow:
-        4vw 4vh 0 0 rgba(205,235,255,.64),
-        9vw 16vh 0 0 rgba(165,213,246,.58),
-        14vw 30vh 0 0 rgba(210,239,255,.70),
-        18vw 51vh 0 0 rgba(158,205,239,.54),
-        23vw 71vh 0 0 rgba(205,235,255,.64),
-        28vw 10vh 0 0 rgba(178,220,248,.58),
-        32vw 39vh 0 0 rgba(214,241,255,.72),
-        36vw 62vh 0 0 rgba(154,203,238,.52),
-        41vw 83vh 0 0 rgba(203,233,253,.63),
-        46vw 19vh 0 0 rgba(180,222,249,.60),
-        50vw 45vh 0 0 rgba(212,240,255,.70),
-        55vw 68vh 0 0 rgba(160,208,241,.55),
-        60vw 7vh 0 0 rgba(201,232,252,.62),
-        64vw 26vh 0 0 rgba(173,217,246,.58),
-        69vw 54vh 0 0 rgba(213,241,255,.70),
-        74vw 77vh 0 0 rgba(157,206,240,.54),
-        79vw 13vh 0 0 rgba(203,234,254,.65),
-        84vw 35vh 0 0 rgba(176,220,248,.58),
-        89vw 59vh 0 0 rgba(214,241,255,.70),
-        94vw 86vh 0 0 rgba(160,208,241,.54),
-        6vw 90vh 0 0 rgba(198,230,251,.60),
-        12vw 64vh 0 0 rgba(173,218,247,.56),
-        20vw 22vh 0 0 rgba(211,239,255,.68),
-        26vw 88vh 0 0 rgba(157,205,239,.52),
-        34vw 14vh 0 0 rgba(203,234,254,.64),
-        43vw 58vh 0 0 rgba(178,221,248,.58),
-        52vw 92vh 0 0 rgba(214,241,255,.70),
-        58vw 33vh 0 0 rgba(160,208,241,.54),
-        67vw 72vh 0 0 rgba(204,234,254,.64),
-        76vw 47vh 0 0 rgba(175,219,247,.58),
-        86vw 24vh 0 0 rgba(211,239,255,.68),
-        92vw 69vh 0 0 rgba(157,205,239,.52);
-    filter:drop-shadow(0 0 1px rgba(145,210,250,.35));
     opacity:0;
+    background-image:
+        radial-gradient(ellipse at center,rgba(214,239,255,.92) 0 40%,rgba(176,220,251,.52) 54%,transparent 74%),
+        radial-gradient(ellipse at center,rgba(176,220,251,.84) 0 40%,rgba(136,199,243,.42) 56%,transparent 74%),
+        radial-gradient(ellipse at center,rgba(230,246,255,.82) 0 38%,rgba(178,219,248,.40) 54%,transparent 72%),
+        radial-gradient(ellipse at center,rgba(158,207,242,.72) 0 40%,rgba(121,184,229,.34) 56%,transparent 74%),
+        radial-gradient(ellipse at center,rgba(205,235,255,.76) 0 38%,rgba(159,211,247,.36) 54%,transparent 72%),
+        radial-gradient(ellipse at center,rgba(186,224,250,.70) 0 38%,rgba(141,197,236,.32) 54%,transparent 72%);
+    background-size:4px 10px,3px 8px,4px 9px,3px 7px,4px 8px,3px 9px;
+    background-position:6px -36px,24px -14px,45px -52px,67px -26px,86px -42px,104px -18px;
+    background-repeat:repeat;
+    filter:drop-shadow(0 0 2.5px rgba(156,214,255,.20));
     animation:
-        vax-revenue-raindrop-fall 1.45s linear 1s infinite,
-        vax-revenue-raindrop-burst 6.4s ease-in-out 1s infinite;
+        vax-revenue-raindrops .88s linear .85s infinite,
+        vax-revenue-rain-bursts 5.4s ease-in-out .85s infinite;
 }
 
-body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
-    left:var(--sidebar-collapse,72px);
-}
-body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
-    left:calc(var(--sidebar-collapse,72px) + 1vw);
-}
-.sidebar.collapsed ~ .erp-wrapper::before{
-    left:var(--sidebar-collapse,72px);
-}
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after,
+.sidebar.collapsed ~ .erp-wrapper::before,
 .sidebar.collapsed ~ .erp-wrapper::after{
-    left:calc(var(--sidebar-collapse,72px) + 1vw);
+    left:var(--sidebar-collapse,72px);
 }
 
 @keyframes vax-revenue-lightning{
@@ -108,30 +75,29 @@ body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-bad
     64.8%{opacity:.18}
 }
 
-@keyframes vax-revenue-raindrop-fall{
-    from{transform:translate3d(0,0,0)}
-    to{transform:translate3d(-12px,200vh,0)}
+@keyframes vax-revenue-raindrops{
+    from{background-position:6px -36px,24px -14px,45px -52px,67px -26px,86px -42px,104px -18px}
+    to{background-position:1px 86px,19px 98px,40px 78px,62px 92px,81px 82px,99px 96px}
 }
 
-@keyframes vax-revenue-raindrop-burst{
-    0%,9%{opacity:0}
-    15%{opacity:.42}
-    27%{opacity:.72}
-    39%{opacity:.48}
-    50%{opacity:.12}
-    57%{opacity:0}
-    68%{opacity:.36}
-    79%{opacity:.68}
-    89%{opacity:.42}
+@keyframes vax-revenue-rain-bursts{
+    0%,7%{opacity:0}
+    13%{opacity:.30}
+    22%{opacity:.50}
+    34%{opacity:.44}
+    47%{opacity:.24}
+    56%{opacity:.08}
+    63%{opacity:0}
+    71%{opacity:.24}
+    80%{opacity:.46}
+    89%{opacity:.34}
     96%,100%{opacity:0}
 }
 
 @media (max-width:900px){
-    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
-        left:0;
-    }
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
-        left:1vw;
+        left:0;
     }
 }
 
