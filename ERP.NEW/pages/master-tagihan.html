@@ -148,6 +148,8 @@ function ensureMasterTagihanSidebarEntry(){
     document.querySelectorAll('.sidebar .menu-item').forEach(a=>a.classList.toggle('active',a.dataset.erpNav==='master-tagihan'));
     const cabang=document.getElementById('erpHeaderCabang'); if(cabang)cabang.textContent='Semua Cabang';
     const periode=document.getElementById('erpHeaderPeriode'); if(periode)periode.textContent='Master Data';
+    const headerName=document.getElementById('ownerAuthName'); if(headerName)headerName.textContent='Speedrangga';
+    const headerRole=document.getElementById('ownerAuthRole'); if(headerRole)headerRole.textContent='SPV';
     await MasterTagihan.init();
   }catch(err){console.error('Master Tagihan boot error',err);}
 })();
