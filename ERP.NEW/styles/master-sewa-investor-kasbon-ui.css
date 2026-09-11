@@ -1,0 +1,344 @@
+/* =========================================================
+   ERP VAX — Master Sewa & Investor
+   Kasbon visual language bridge
+   UI ONLY — no engine, data, Supabase, formula changes
+   ========================================================= */
+
+@keyframes msi-card-in{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes msi-accent-pulse{
+  0%,100%{opacity:.5}
+  50%{opacity:1}
+}
+@keyframes msi-title-glow{
+  0%,100%{text-shadow:0 0 0 rgba(242,194,48,0)}
+  50%{text-shadow:0 0 18px rgba(242,194,48,.12)}
+}
+
+html body.page-master-sewa-investor .msi-shell{
+  padding:10px 18px 34px!important;
+  max-width:none!important;
+}
+
+/* Main module hero — same visual rhythm as Kasbon */
+html body.page-master-sewa-investor .msi-head{
+  position:relative!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  min-height:88px!important;
+  margin:0 0 16px!important;
+  padding:14px 16px 14px 18px!important;
+  border:1px solid rgba(201,162,39,.24)!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(72% 120% at 0% 0%,rgba(242,194,48,.07),transparent 58%),
+    linear-gradient(180deg,#1a2030 0%,#151b28 100%)!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.04)!important;
+  animation:msi-card-in .35s ease both!important;
+}
+html body.page-master-sewa-investor .msi-head::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:4px;
+  background:linear-gradient(180deg,#f2c230,#b88d25)!important;
+  box-shadow:0 0 16px rgba(242,194,48,.35)!important;
+  animation:msi-accent-pulse 3.4s ease-in-out infinite!important;
+}
+html body.page-master-sewa-investor .msi-head>div:first-child::before{
+  content:"◆";
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  margin:0 8px 0 0;
+  border:1px solid rgba(242,194,48,.32);
+  border-radius:9px;
+  background:rgba(242,194,48,.08);
+  color:#f2c230;
+  font-size:15px;
+  vertical-align:middle;
+  box-shadow:0 0 14px rgba(242,194,48,.08);
+}
+html body.page-master-sewa-investor .msi-head small{
+  display:inline-block!important;
+  margin:0 0 3px!important;
+  color:#ff7777!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  vertical-align:middle!important;
+}
+html body.page-master-sewa-investor .msi-head h1{
+  margin:4px 0 0!important;
+  color:#f8fafc!important;
+  font-size:24px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  letter-spacing:.01em!important;
+  animation:msi-title-glow 4s ease-in-out infinite!important;
+}
+html body.page-master-sewa-investor .msi-head p{
+  margin:5px 0 0!important;
+  color:#a8b3c4!important;
+  font-size:12px!important;
+  font-weight:600!important;
+}
+html body.page-master-sewa-investor .msi-back{
+  min-height:40px!important;
+  padding:0 15px!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.04)!important;
+  color:#e8edf4!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  transition:transform .16s ease,background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease!important;
+}
+html body.page-master-sewa-investor .msi-back:hover{
+  transform:translateY(-1px)!important;
+  background:rgba(201,162,39,.12)!important;
+  border-color:rgba(201,162,39,.42)!important;
+  color:#f2c230!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.22)!important;
+}
+
+/* Tabs — Kasbon style */
+html body.page-master-sewa-investor .msi-tabs{
+  display:flex!important;
+  width:100%!important;
+  gap:9px!important;
+  margin:0 0 14px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+html body.page-master-sewa-investor .msi-tabs button{
+  min-height:42px!important;
+  padding:0 18px!important;
+  border-radius:10px!important;
+  border:1px solid rgba(201,162,39,.22)!important;
+  background:linear-gradient(180deg,rgba(28,34,43,.72),rgba(20,24,31,.9))!important;
+  color:#a8b0bd!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  letter-spacing:.02em!important;
+  transition:transform .16s ease,border-color .16s ease,color .16s ease,background .16s ease,box-shadow .16s ease!important;
+}
+html body.page-master-sewa-investor .msi-tabs button::before{
+  margin-right:8px;
+  color:currentColor;
+  font-size:14px;
+}
+html body.page-master-sewa-investor .msi-tabs button[data-tab="sewa"]::before{content:"▤"}
+html body.page-master-sewa-investor .msi-tabs button[data-tab="investor"]::before{content:"◆"}
+html body.page-master-sewa-investor .msi-tabs button:hover{
+  transform:translateY(-1px)!important;
+  color:#f5e6a8!important;
+  border-color:rgba(201,162,39,.44)!important;
+  box-shadow:0 7px 16px rgba(0,0,0,.18)!important;
+}
+html body.page-master-sewa-investor .msi-tabs button.is-active{
+  color:#111!important;
+  background:linear-gradient(180deg,#e8c547 0%,#c9a227 100%)!important;
+  border-color:#c9a227!important;
+  box-shadow:0 5px 16px rgba(201,162,39,.24)!important;
+}
+
+/* Panel cards */
+html body.page-master-sewa-investor .msi-panel{
+  position:relative!important;
+  border:1px solid rgba(201,162,39,.18)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#171e29 0%,#111720 100%)!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.04)!important;
+  animation:msi-card-in .38s ease both!important;
+}
+html body.page-master-sewa-investor .msi-panel.is-active:hover{
+  border-color:rgba(201,162,39,.28)!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.28),0 0 22px rgba(201,162,39,.05),inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html body.page-master-sewa-investor .msi-panel-head{
+  min-height:72px!important;
+  padding:14px 17px!important;
+  border-bottom:1px solid rgba(255,255,255,.07)!important;
+  background:
+    radial-gradient(65% 130% at 0 0,rgba(242,194,48,.05),transparent 58%),
+    linear-gradient(180deg,#1a2030,#151b28)!important;
+}
+html body.page-master-sewa-investor .msi-panel-head>div{
+  position:relative!important;
+  padding-left:39px!important;
+}
+html body.page-master-sewa-investor #panelSewa .msi-panel-head>div::before,
+html body.page-master-sewa-investor #panelInvestor .msi-panel-head>div::before{
+  position:absolute;
+  left:0;top:50%;
+  transform:translateY(-50%);
+  display:grid;
+  place-items:center;
+  width:30px;height:30px;
+  border-radius:9px;
+  font-size:15px;
+  font-weight:900;
+}
+html body.page-master-sewa-investor #panelSewa .msi-panel-head>div::before{
+  content:"▤";
+  color:#fbbf24;
+  border:1px solid rgba(251,191,36,.28);
+  background:rgba(251,191,36,.08);
+  box-shadow:0 0 14px rgba(251,191,36,.08);
+}
+html body.page-master-sewa-investor #panelInvestor .msi-panel-head>div::before{
+  content:"◆";
+  color:#a78bfa;
+  border:1px solid rgba(167,139,250,.28);
+  background:rgba(167,139,250,.08);
+  box-shadow:0 0 14px rgba(167,139,250,.08);
+}
+html body.page-master-sewa-investor .msi-panel-head small{
+  margin-bottom:2px!important;
+  font-size:10px!important;
+  color:#f2c230!important;
+  font-weight:900!important;
+}
+html body.page-master-sewa-investor .msi-panel-head h2{
+  font-size:19px!important;
+  font-weight:900!important;
+  color:#f8fafc!important;
+  letter-spacing:.01em!important;
+}
+html body.page-master-sewa-investor .msi-panel-head>span{
+  min-width:70px!important;
+  min-height:30px!important;
+  border:1px solid rgba(74,222,128,.28)!important;
+  background:rgba(74,222,128,.08)!important;
+  color:#86efac!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  box-shadow:0 0 14px rgba(74,222,128,.06)!important;
+}
+
+/* Table — stronger type hierarchy */
+html body.page-master-sewa-investor .msi-table-wrap{
+  background:#0d1218!important;
+}
+html body.page-master-sewa-investor .msi-table-wrap th{
+  padding:13px 14px!important;
+  background:#111720!important;
+  color:#f2c230!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.05em!important;
+  border-bottom:1px solid rgba(201,162,39,.18)!important;
+}
+html body.page-master-sewa-investor .msi-table-wrap td{
+  padding:13px 14px!important;
+  color:#eef3f8!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  border-bottom:1px solid rgba(255,255,255,.055)!important;
+}
+html body.page-master-sewa-investor .msi-table-wrap tbody tr{
+  transition:transform .16s ease,background .16s ease,box-shadow .16s ease!important;
+}
+html body.page-master-sewa-investor .msi-table-wrap tbody tr:hover{
+  background:linear-gradient(90deg,rgba(201,162,39,.08),rgba(255,255,255,.018))!important;
+  box-shadow:inset 3px 0 0 #c9a227!important;
+}
+html body.page-master-sewa-investor .msi-table-wrap td.num{
+  color:#f7d76e!important;
+  font-weight:900!important;
+}
+
+/* Edit button — same tactile feel as Kasbon primary */
+html body.page-master-sewa-investor .msi-edit{
+  min-height:34px!important;
+  padding:0 13px!important;
+  border:1px solid #c9a227!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#e8c547,#c9a227)!important;
+  color:#111!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  box-shadow:0 4px 12px rgba(201,162,39,.16)!important;
+  transition:transform .15s ease,box-shadow .15s ease,filter .15s ease!important;
+}
+html body.page-master-sewa-investor .msi-edit::before{content:"✎";margin-right:6px;font-size:11px}
+html body.page-master-sewa-investor .msi-edit:hover{
+  transform:translateY(-2px)!important;
+  filter:brightness(1.05)!important;
+  box-shadow:0 9px 18px rgba(201,162,39,.3)!important;
+}
+
+/* History */
+html body.page-master-sewa-investor .msi-history{
+  margin:14px!important;
+  border:1px solid rgba(201,162,39,.14)!important;
+  border-radius:11px!important;
+  background:#0d1218!important;
+  transition:border-color .16s ease,box-shadow .16s ease!important;
+}
+html body.page-master-sewa-investor .msi-history:hover{
+  border-color:rgba(201,162,39,.28)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.18)!important;
+}
+html body.page-master-sewa-investor .msi-history summary{
+  padding:12px 14px!important;
+  color:#e8edf4!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  letter-spacing:.01em!important;
+}
+html body.page-master-sewa-investor .msi-history summary::marker{color:#f2c230!important}
+
+/* Modal — Kasbon modal feel */
+html body.page-master-sewa-investor .msi-dialog{
+  border:1px solid rgba(201,162,39,.3)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#171f2a 0%,#111720 100%)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.58),0 0 28px rgba(201,162,39,.08)!important;
+  animation:msi-card-in .24s ease both!important;
+}
+html body.page-master-sewa-investor .msi-dialog-head h2{font-weight:900!important}
+html body.page-master-sewa-investor .msi-dialog input{
+  min-height:42px!important;
+  border-radius:9px!important;
+  font-weight:700!important;
+}
+html body.page-master-sewa-investor .msi-actions #modalSave{
+  min-height:40px!important;
+  padding:0 16px!important;
+  border-color:#c9a227!important;
+  background:linear-gradient(180deg,#e8c547,#c9a227)!important;
+  color:#111!important;
+  font-weight:900!important;
+  box-shadow:0 4px 14px rgba(201,162,39,.22)!important;
+  transition:transform .15s ease,box-shadow .15s ease!important;
+}
+html body.page-master-sewa-investor .msi-actions #modalSave:hover{
+  transform:translateY(-1px)!important;
+  box-shadow:0 8px 18px rgba(201,162,39,.32)!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body.page-master-sewa-investor .msi-head,
+  html body.page-master-sewa-investor .msi-head::before,
+  html body.page-master-sewa-investor .msi-head h1,
+  html body.page-master-sewa-investor .msi-panel,
+  html body.page-master-sewa-investor .msi-dialog{animation:none!important}
+  html body.page-master-sewa-investor *{transition:none!important}
+}
+
+@media(max-width:900px){
+  html body.page-master-sewa-investor .msi-shell{padding:10px 12px 28px!important}
+  html body.page-master-sewa-investor .msi-head{align-items:flex-start!important}
+  html body.page-master-sewa-investor .msi-head h1{font-size:21px!important}
+  html body.page-master-sewa-investor .msi-tabs{overflow:auto!important}
+}
