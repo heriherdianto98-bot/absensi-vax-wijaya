@@ -18,7 +18,8 @@
     s.textContent=`
       body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-list{padding:0 12px 12px}
       body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-row{
-        grid-template-columns:minmax(260px,1.55fr) 132px 138px 92px minmax(300px,auto)!important;
+        box-sizing:border-box;width:100%;
+        grid-template-columns:minmax(0,1fr) 128px 132px 88px 430px!important;
         gap:14px!important;align-items:center!important;
         min-height:70px;padding:12px 14px!important;margin-top:8px;
         border:1px solid #273642!important;border-radius:12px;
@@ -37,16 +38,24 @@
         display:block;margin-top:5px;color:#9aacb9;font-size:10.5px;line-height:1.25;
         white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
       }
-      body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-total{font-size:13px;text-align:right;white-space:nowrap}
-      body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-status{justify-self:center;white-space:nowrap}
+      body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-row>div:nth-child(2){
+        width:128px;text-align:center;justify-self:center;white-space:nowrap;
+      }
+      body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-total{
+        width:132px;font-size:13px;text-align:right;justify-self:end;white-space:nowrap
+      }
+      body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-status{
+        width:max-content;max-width:88px;justify-self:center;white-space:nowrap
+      }
       body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-buttons,
       body.${ROLE_CLASS} #mtInvoiceCard .svp-return-actions{
-        display:flex!important;align-items:center;justify-content:flex-end!important;gap:6px!important;
-        flex-wrap:nowrap!important;min-width:0;
+        width:430px!important;min-width:430px!important;max-width:430px!important;
+        display:flex!important;align-items:center;justify-content:flex-end!important;gap:7px!important;
+        flex-wrap:nowrap!important;justify-self:end;overflow:visible;
       }
       body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-buttons .mt-action,
       body.${ROLE_CLASS} #mtInvoiceCard .svp-return-actions .mt-action{
-        min-height:36px!important;padding:7px 10px!important;border-radius:9px!important;font-size:11px!important;
+        flex:0 0 auto;min-height:36px!important;padding:7px 10px!important;border-radius:9px!important;font-size:11px!important;
       }
       body.${ROLE_CLASS} #mtInvoiceCard .mt-action-svp-view{
         border:1px solid #3988aa;background:linear-gradient(180deg,#17445a,#103447 58%,#0b2736);
@@ -74,14 +83,28 @@
       #mtInvoiceModal[data-svp-view-only="1"] #invAddItem,
       #mtInvoiceModal[data-svp-view-only="1"] [data-remove],
       #mtInvoiceModal[data-svp-view-only="1"] .mt-invoice-form-actions button[type="submit"]{display:none!important}
-      @media(max-width:1180px){
-        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-row{grid-template-columns:minmax(220px,1.35fr) 110px 120px 86px minmax(250px,auto)!important}
+      @media(max-width:1450px){
+        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-row{
+          grid-template-columns:minmax(0,1fr) 112px 118px 82px 360px!important;
+          gap:10px!important;
+        }
+        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-row>div:nth-child(2){width:112px}
+        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-total{width:118px}
+        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-buttons,
+        body.${ROLE_CLASS} #mtInvoiceCard .svp-return-actions{width:360px!important;min-width:360px!important;max-width:360px!important;gap:5px!important}
+        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-buttons .mt-action,
+        body.${ROLE_CLASS} #mtInvoiceCard .svp-return-actions .mt-action{padding:7px 8px!important}
       }
-      @media(max-width:900px){
+      @media(max-width:1080px){
         body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-row{grid-template-columns:1fr 1fr!important;gap:9px!important}
-        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-buttons,body.${ROLE_CLASS} #mtInvoiceCard .svp-return-actions{grid-column:1/-1;justify-content:flex-start!important;flex-wrap:wrap!important}
+        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-row>div:nth-child(2),
+        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-total{width:auto;text-align:left;justify-self:start}
+        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-buttons,
+        body.${ROLE_CLASS} #mtInvoiceCard .svp-return-actions{
+          grid-column:1/-1;width:100%!important;min-width:0!important;max-width:none!important;
+          justify-content:flex-start!important;flex-wrap:wrap!important
+        }
         body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-status{justify-self:start}
-        body.${ROLE_CLASS} #mtInvoiceCard .mt-invoice-total{text-align:left}
       }
     `;
     document.head.appendChild(s);
