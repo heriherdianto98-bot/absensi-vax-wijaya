@@ -11,7 +11,7 @@
     }
     if(!document.querySelector('script[data-erp-global-notif-stability-js]')){
       const p=document.createElement('script');
-      p.src='../js/modules/erp-global-notifications-stability-ui.js?v=20260911-1';
+      p.src='../js/modules/erp-global-notifications-stability-ui.js?v=20260911-2';
       p.async=false;
       p.dataset.erpGlobalNotifStabilityJs='1';
       document.head.appendChild(p);
