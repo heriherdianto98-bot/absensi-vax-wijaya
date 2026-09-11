@@ -172,6 +172,10 @@ html body.page-erp-dashboard .erp-wrapper .toolbar-wrapper,
 html body.page-erp-dashboard .od-filterbar{
     position:relative !important;
     z-index:180 !important;
+    min-height:68px !important;
+    padding-top:8px !important;
+    padding-bottom:8px !important;
+    box-sizing:border-box !important;
 }
 
 html body.page-erp-dashboard .dash-toolbar-host .toolbar-wrapper,
