@@ -1,0 +1,51 @@
+/* ERP VAX — Master Gaji Pokok dropdown theme
+   UI ONLY: visual treatment for Cabang + Karyawan Fixed Salary dropdowns.
+   No payroll engine, salary formula, data, or persistence logic is changed.
+*/
+
+.salary-master-page #salaryBranch,
+.salary-master-page #salaryEmployee{
+  color-scheme:dark;
+  background:#111820!important;
+  color:#f5f7f9!important;
+  border-color:#3a4c59!important;
+}
+
+.salary-master-page #salaryBranch:hover,
+.salary-master-page #salaryEmployee:hover{
+  border-color:#5da7c6!important;
+  background:#15212a!important;
+}
+
+.salary-master-page #salaryBranch:focus,
+.salary-master-page #salaryEmployee:focus{
+  border-color:#69a9c2!important;
+  background:#15212a!important;
+  box-shadow:0 0 0 2px rgba(93,167,198,.15),0 8px 20px rgba(0,0,0,.22)!important;
+}
+
+.salary-master-page #salaryBranch option,
+.salary-master-page #salaryEmployee option{
+  background:#111820!important;
+  color:#eef3f6!important;
+  font-weight:700;
+}
+
+.salary-master-page #salaryBranch option:checked,
+.salary-master-page #salaryEmployee option:checked{
+  background:#1b3440!important;
+  color:#d8f3ff!important;
+  font-weight:800;
+}
+
+.salary-master-page #salaryBranch option:hover,
+.salary-master-page #salaryEmployee option:hover{
+  background:#18303a!important;
+  color:#ffffff!important;
+}
+
+.salary-master-page #salaryBranch option:disabled,
+.salary-master-page #salaryEmployee option:disabled{
+  color:#6f7c86!important;
+  background:#0e1419!important;
+}
