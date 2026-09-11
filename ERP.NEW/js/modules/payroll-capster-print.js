@@ -62,7 +62,7 @@
     .supervisor-sign .who,.owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}
     .supervisor-sign .auth-role,.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
     .supervisor-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center;overflow:visible}
-    .supervisor-sign .ttd img{display:block;width:42mm;height:16mm;object-fit:contain;object-position:center}
+    .supervisor-sign .ttd svg{display:block;width:42mm;height:16mm;overflow:visible}
     .supervisor-sign .name,.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}
     .supervisor-sign .supervisor-line,.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}
     .supervisor-sign .job,.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
@@ -84,12 +84,13 @@
     return `<section class="employee"><div class="emp-head"><div><h3>${esc(c.name)}</h3><p>${esc(c.info)}</p></div><div class="net"><span>Gaji Bersih</span><strong>${esc(net)}</strong></div></div><table class="tbl"><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th class="num">Service</th><th class="num">Gaji Pokok</th><th class="num">Denda</th><th class="num">Kasbon</th><th class="num">Bonus Produk</th></tr></thead><tbody>${rows}</tbody></table><div class="summary">${sums}</div></section>`;
   }
 
+  const supervisorSignatureSvg=`<svg viewBox="0 0 460 170" xmlns="http://www.w3.org/2000/svg" aria-label="Tanda tangan Supervisor"><g fill="none" stroke="#0d0d0d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M52 146 C67 105 82 60 93 27 C99 10 105 15 102 38 L91 123 C88 143 86 156 88 159 C94 166 104 147 113 126"/><path d="M94 57 C126 20 171 3 219 9 C242 12 254 24 251 39 C246 58 219 73 188 86 C159 98 128 108 109 120 C91 131 77 145 69 153"/><path d="M105 124 C126 113 147 102 165 98 C177 95 184 99 179 106 C171 117 156 122 145 124 C132 127 123 130 124 134 C125 139 136 140 149 138 C168 135 188 125 206 116 C226 106 240 102 246 107 C251 111 247 119 239 127 C231 135 225 140 228 144 C233 150 249 146 264 138 C292 124 318 111 347 100 C373 90 398 83 423 79"/></g></svg>`;
+
   function open(mode='print'){
     const snap=snapshot();if(!snap.cards.length){alert('Tidak ada data payroll untuk dicetak.');return;}
     const w=window.open('','_blank');if(!w){alert('Popup print diblokir browser.');return;}
     const logo='../assets/logo-vax-wijaya.png';
     const signatureUrl=new URL('../assets/owner-signature.png',window.location.href).href;
-    const supervisorSignatureUrl=new URL('../assets/supervisor-signature-rangga.png',window.location.href).href;
     const printedAt=nowWib();
     const header=`<header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">PAYROLL KARYAWAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN OPERASIONAL</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>`;
     const footer=`<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
@@ -98,7 +99,7 @@
         <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Gaji Pokok − Denda − Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk</p></section>
         <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
         ${snap.cards.map(cardHtml).join('')}
-        <section class="sign"><div class="box supervisor-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Supervisor</div><div class="stage"><div class="ttd"><img src="${supervisorSignatureUrl}" alt="Tanda tangan Supervisor"></div></div><div class="name">Rangga Putra Pratama</div><div class="supervisor-line"></div><div class="job">SUPERVISOR</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
+        <section class="sign"><div class="box supervisor-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Supervisor</div><div class="stage"><div class="ttd">${supervisorSignatureSvg}</div></div><div class="name">Rangga Putra Pratama</div><div class="supervisor-line"></div><div class="job">SUPERVISOR</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
       </main></td></tr></tbody></table>
       <script>
       window.addEventListener('load',async()=>{
