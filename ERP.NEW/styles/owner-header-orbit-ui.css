@@ -1,104 +1,102 @@
 /* ERP VAX — Owner Header Orbit UI
    VISUAL ONLY. Decorative orbit inside the global header bar.
    No engine, formula, data, Supabase, Minutes, KPI, or locked behavior changes.
+   SAFE TARGET: orbit is attached only to .vax-sync so #header layout is never changed.
 */
 
-html body.page-erp-dashboard .erp-wrapper #header{
+/* Anchor only the sync cluster. This does NOT change global header positioning/layout. */
+html body.page-erp-dashboard .erp-header-vax .vax-sync{
     position:relative !important;
-    isolation:isolate !important;
+    overflow:visible !important;
 }
 
-/* Keep real header controls above the decorative orbit. */
-html body.page-erp-dashboard .erp-wrapper #header .top-header > *,
-html body.page-erp-dashboard .erp-wrapper #header .erp-header > *,
-html body.page-erp-dashboard .erp-wrapper #header .od-command-bar > *{
+/* Keep real sync content above the decorative orbit. */
+html body.page-erp-dashboard .erp-header-vax .vax-sync > *{
     position:relative !important;
-    z-index:5 !important;
+    z-index:3 !important;
 }
 
-/* Soft elliptical orbit ring inside the global header bar. */
-html body.page-erp-dashboard .erp-wrapper #header::before{
+/* Soft elliptical orbit ring, visually extending inside the header bar. */
+html body.page-erp-dashboard .erp-header-vax .vax-sync::before{
     content:"";
     position:absolute;
     left:50%;
     top:50%;
-    width:46%;
-    height:26px;
-    transform:translate(-50%,-50%) rotate(-3deg);
+    width:360px;
+    height:28px;
+    transform:translate(-50%,-50%) rotate(-4deg);
     border-radius:50%;
-    border:1px solid rgba(148,163,184,.10);
-    border-top-color:rgba(53,213,255,.30);
-    border-right-color:rgba(167,139,250,.24);
-    border-bottom-color:rgba(242,194,48,.26);
+    border:1px solid rgba(148,163,184,.09);
+    border-top-color:rgba(53,213,255,.26);
+    border-right-color:rgba(167,139,250,.20);
+    border-bottom-color:rgba(242,194,48,.24);
     box-shadow:
-        0 0 8px rgba(53,213,255,.06),
-        inset 0 0 9px rgba(242,194,48,.04);
-    opacity:.66;
+        0 0 8px rgba(53,213,255,.05),
+        inset 0 0 8px rgba(242,194,48,.035);
+    opacity:.62;
     pointer-events:none;
-    z-index:3;
-    animation:vax-header-orbit-ring 10s linear infinite;
+    z-index:1;
+    animation:vax-header-orbit-ring 10s ease-in-out infinite;
 }
 
-/* Glowing satellite that travels around the orbit. */
-html body.page-erp-dashboard .erp-wrapper #header::after{
+/* Glowing satellite that travels around the same ellipse. */
+html body.page-erp-dashboard .erp-header-vax .vax-sync::after{
     content:"";
     position:absolute;
     width:5px;
     height:5px;
-    left:27%;
+    left:calc(50% - 180px);
     top:50%;
     margin:-2.5px 0 0 -2.5px;
     border-radius:50%;
     background:#F2C230;
     box-shadow:
         0 0 4px rgba(242,194,48,.95),
-        0 0 10px rgba(242,194,48,.60),
-        0 0 18px rgba(53,213,255,.18);
+        0 0 10px rgba(242,194,48,.56),
+        0 0 16px rgba(53,213,255,.16);
     pointer-events:none;
-    z-index:4;
+    z-index:2;
     animation:vax-header-orbit-dot 10s linear infinite;
 }
 
 @keyframes vax-header-orbit-ring{
-    0%{transform:translate(-50%,-50%) rotate(-3deg);opacity:.52}
-    50%{transform:translate(-50%,-50%) rotate(3deg);opacity:.76}
-    100%{transform:translate(-50%,-50%) rotate(-3deg);opacity:.52}
+    0%,100%{transform:translate(-50%,-50%) rotate(-4deg);opacity:.50}
+    50%{transform:translate(-50%,-50%) rotate(4deg);opacity:.72}
 }
 
-/* Elliptical path, intentionally subtle so the header stays professional. */
 @keyframes vax-header-orbit-dot{
-    0%{left:27%;top:50%;background:#F2C230}
-    6.25%{left:28.8%;top:39%;}
-    12.5%{left:33.7%;top:30%;background:#67E8F9}
-    18.75%{left:41%;top:24%;}
+    0%{left:calc(50% - 180px);top:50%;background:#F2C230}
+    6.25%{left:calc(50% - 166px);top:39%}
+    12.5%{left:calc(50% - 127px);top:30%;background:#67E8F9}
+    18.75%{left:calc(50% - 69px);top:24%}
     25%{left:50%;top:22%;background:#A78BFA}
-    31.25%{left:59%;top:24%;}
-    37.5%{left:66.3%;top:30%;background:#67E8F9}
-    43.75%{left:71.2%;top:39%;}
-    50%{left:73%;top:50%;background:#F2C230}
-    56.25%{left:71.2%;top:61%;}
-    62.5%{left:66.3%;top:70%;background:#67E8F9}
-    68.75%{left:59%;top:76%;}
+    31.25%{left:calc(50% + 69px);top:24%}
+    37.5%{left:calc(50% + 127px);top:30%;background:#67E8F9}
+    43.75%{left:calc(50% + 166px);top:39%}
+    50%{left:calc(50% + 180px);top:50%;background:#F2C230}
+    56.25%{left:calc(50% + 166px);top:61%}
+    62.5%{left:calc(50% + 127px);top:70%;background:#67E8F9}
+    68.75%{left:calc(50% + 69px);top:76%}
     75%{left:50%;top:78%;background:#A78BFA}
-    81.25%{left:41%;top:76%;}
-    87.5%{left:33.7%;top:70%;background:#67E8F9}
-    93.75%{left:28.8%;top:61%;}
-    100%{left:27%;top:50%;background:#F2C230}
+    81.25%{left:calc(50% - 69px);top:76%}
+    87.5%{left:calc(50% - 127px);top:70%;background:#67E8F9}
+    93.75%{left:calc(50% - 166px);top:61%}
+    100%{left:calc(50% - 180px);top:50%;background:#F2C230}
 }
 
-@media (max-width:900px){
-    html body.page-erp-dashboard .erp-wrapper #header::before{
-        width:58%;
+@media (max-width:1100px){
+    html body.page-erp-dashboard .erp-header-vax .vax-sync::before{
+        width:260px;
         opacity:.46;
     }
-    html body.page-erp-dashboard .erp-wrapper #header::after{
-        animation-duration:12s;
+    html body.page-erp-dashboard .erp-header-vax .vax-sync::after{
+        display:none;
     }
 }
 
 @media (prefers-reduced-motion:reduce){
-    html body.page-erp-dashboard .erp-wrapper #header::before,
-    html body.page-erp-dashboard .erp-wrapper #header::after{
+    html body.page-erp-dashboard .erp-header-vax .vax-sync::before,
+    html body.page-erp-dashboard .erp-header-vax .vax-sync::after{
         animation:none !important;
     }
 }
