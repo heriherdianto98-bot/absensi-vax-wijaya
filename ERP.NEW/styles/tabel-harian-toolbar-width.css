@@ -343,9 +343,8 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
 }
 
 /* =========================================================
-   UI ONLY — dashboard-style compact totals, 17 cards / 4 rows
-   5 columns => 17 cards selesai dalam 4 baris. Deskripsi max 2 baris.
-   Hanya tampilan; engine/data/formula tetap LOCK dan tidak disentuh.
+   UI ONLY — dashboard surface for TOTAL PERIODE, 17 cards / 4 rows
+   Mengikuti karakter card dashboard utama: compact, premium, teks tetap terbaca.
    ========================================================= */
 @media screen and (pointer: fine){
     body.setoran-dark .erp-wrapper .thc-page .thc-totals{
@@ -356,8 +355,9 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
 
     body.setoran-dark .erp-wrapper .thc-page .thc-totals-label{
-        margin-bottom: 6px !important;
+        margin: 0 0 6px !important;
         font-size: 11px !important;
+        line-height: 1.1 !important;
     }
 
     body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid{
@@ -376,22 +376,39 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         width: auto !important;
         min-width: 0 !important;
         max-width: none !important;
-        min-height: 62px !important;
-        height: 62px !important;
-        max-height: 62px !important;
-        padding: 6px 9px 6px 11px !important;
-        border-radius: 9px !important;
-        box-sizing: border-box !important;
+        height: 70px !important;
+        min-height: 70px !important;
+        max-height: 70px !important;
+        padding: 6px 9px 7px 11px !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255,255,255,.08) !important;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.014) 26%, transparent 52%),
+            radial-gradient(130% 90% at 100% 0%, rgba(255,255,255,.04) 0%, transparent 52%),
+            linear-gradient(180deg, #181E28 0%, #11161D 100%) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.12),
+            inset 1px 0 0 rgba(255,255,255,.025),
+            0 3px 10px rgba(0,0,0,.20) !important;
         overflow: hidden !important;
+        box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: flex-start !important;
+        animation: none !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:hover{
+        transform: none !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.14),
+            0 4px 12px rgba(0,0,0,.24) !important;
     }
 
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > span,
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nontunai > span::after{
         flex: 0 0 auto !important;
-        margin: 0 0 1px !important;
+        margin: 0 0 2px !important;
         font-size: 9.5px !important;
         line-height: 1.05 !important;
         letter-spacing: .035em !important;
@@ -402,7 +419,7 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained > strong,
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained.is-actual > strong{
         flex: 0 0 auto !important;
-        margin: 0 0 2px !important;
+        margin: 0 0 3px !important;
         font-size: 15px !important;
         line-height: 1.05 !important;
         font-weight: 800 !important;
@@ -418,16 +435,24 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         line-clamp: 2 !important;
         white-space: normal !important;
         overflow: hidden !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
         margin: 0 !important;
-        font-size: 8.7px !important;
-        line-height: 1.08 !important;
+        padding: 0 !important;
+        font-size: 9.2px !important;
+        line-height: 1.15 !important;
         font-weight: 600 !important;
+        color: #AEB9C7 !important;
     }
 
-    /* Card tanpa .thc-tot-desc memakai teks/deskripsi bawaan di elemen lain;
-       jaga agar tidak mendorong tinggi card. */
-    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > :last-child:not(strong):not(span):not(.thc-tot-go){
-        max-height: 19px !important;
-        overflow: hidden !important;
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained{
+        height: 70px !important;
+        min-height: 70px !important;
+        max-height: 70px !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained .thc-tot-desc{
+        -webkit-line-clamp: 2 !important;
+        line-clamp: 2 !important;
     }
 }
