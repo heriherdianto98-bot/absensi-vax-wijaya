@@ -38,15 +38,14 @@
 
   function compactButton(btn, kind){
     if(!btn) return;
-    const readyKind = btn.dataset.iconOnlyReady;
-    if(readyKind === kind) return;
+    const expected=kind==="wa"?"wa":"mail";
+    if(btn.dataset.iconOnlyReady===expected) return;
     const label=(btn.getAttribute("aria-label")||btn.title||btn.textContent||"").trim();
+    btn.dataset.iconOnlyReady=expected;
     btn.classList.add(ICON_CLASS,kind==="wa"?"mt-icon-wa":"mt-icon-mail");
     const title=kind==="wa"?"Kirim via WhatsApp":(label||"Kirim via Email");
-    btn.title=title;
-    btn.setAttribute("aria-label",title);
+    btn.title=title;btn.setAttribute("aria-label",title);
     btn.innerHTML=kind==="wa"?WA_SVG:MAIL_SVG;
-    btn.dataset.iconOnlyReady=kind;
   }
 
   function rowId(row){
@@ -57,19 +56,30 @@
     return (window.SvPInvoice?.rows||[]).find(x=>String(x.id)===String(id))||null;
   }
 
+  function isEmailButton(btn){
+    const text=String(btn.textContent||"").toLowerCase();
+    const cls=String(btn.className||"").toLowerCase();
+    const aria=String(btn.getAttribute("aria-label")||btn.title||"").toLowerCase();
+    return text.includes("email")||cls.includes("email")||aria.includes("email")||btn.dataset.invoiceEmail||btn.dataset.email||btn.dataset.iconOnlyReady==="mail";
+  }
+
+  function dedupeEmails(actions){
+    const mails=[...actions.querySelectorAll("button")].filter(isEmailButton);
+    if(mails.length<=1)return mails[0]||null;
+    const preferred=mails.find(b=>!b.classList.contains("mt-ui-mail-added"))||mails[0];
+    mails.forEach(b=>{if(b!==preferred)b.remove()});
+    return preferred;
+  }
+
   function ensureEmail(row,actions,id){
-    const existing=[...actions.querySelectorAll("button")].find(btn=>{
-      const t=String(btn.textContent||"").toLowerCase(),c=String(btn.className||"").toLowerCase();
-      return t.includes("email")||c.includes("email")||btn.dataset.invoiceEmail||btn.dataset.email;
-    });
+    const existing=dedupeEmails(actions);
     if(existing){compactButton(existing,"mail");return}
     if(!id)return;
     const b=document.createElement("button");
     b.type="button";b.className="mt-action mt-action-email mt-ui-mail-added";
     b.dataset.invAction="send";b.dataset.id=id;b.dataset.email="1";
-    b.title="Kirim via Email";b.setAttribute("aria-label","Kirim via Email");
-    actions.appendChild(b);
-    compactButton(b,"mail");
+    b.title="Kirim via Email";b.setAttribute("aria-label","Kirim via Email");b.innerHTML=MAIL_SVG;
+    actions.appendChild(b);compactButton(b,"mail");
   }
 
   function decorateAcc(row,actions,id){
@@ -81,10 +91,7 @@
       if(!actions.querySelector(".mt-acc-done")){
         const ok=document.createElement("span");ok.className="mt-acc-done";ok.title="Sudah ACC";ok.setAttribute("aria-label","Sudah ACC");ok.innerHTML=CHECK_SVG;actions.appendChild(ok);
       }
-    }else if(acc){
-      acc.classList.add("mt-acc-pending");
-      acc.title="Menunggu ACC";
-    }
+    }else if(acc){acc.classList.add("mt-acc-pending");acc.title="Menunggu ACC"}
   }
 
   function decorate(root=document){
@@ -92,10 +99,11 @@
     root.querySelectorAll?.("#mtInvoiceCard .mt-invoice-row").forEach(row=>{
       const actions=row.querySelector(".mt-invoice-buttons,.svp-return-actions");if(!actions)return;
       const id=rowId(row);
+      dedupeEmails(actions);
       actions.querySelectorAll("button").forEach(btn=>{
         const text=String(btn.textContent||"").toLowerCase(),cls=String(btn.className||"").toLowerCase();
         if(cls.includes("mt-action-wa")||text.includes("whatsapp"))compactButton(btn,"wa");
-        else if(text.includes("email")||cls.includes("email")||btn.dataset.invoiceEmail||btn.dataset.email)compactButton(btn,"mail");
+        else if(isEmailButton(btn))compactButton(btn,"mail");
       });
       ensureEmail(row,actions,id);
       decorateAcc(row,actions,id);
@@ -108,12 +116,8 @@
     if(!window.__invoiceActionIconsUiObserver){
       let queued=false;
       window.__invoiceActionIconsUiObserver=new MutationObserver(()=>{
-        if(queued)return;
-        queued=true;
-        requestAnimationFrame(()=>{
-          queued=false;
-          decorate(card);
-        });
+        if(queued)return;queued=true;
+        requestAnimationFrame(()=>{queued=false;decorate(card)});
       });
       window.__invoiceActionIconsUiObserver.observe(card,{childList:true,subtree:true});
     }
