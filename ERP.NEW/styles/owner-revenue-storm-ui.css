@@ -7,13 +7,13 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
     content:"";
     position:fixed;
-    left:var(--sidebar-width,220px);
-    right:0;
     pointer-events:none;
 }
 
 /* Lightning strip: flashes repeatedly just below the fixed header bar. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
+    left:var(--sidebar-width,220px);
+    right:0;
     top:var(--erp-top-header-h,42px);
     height:70px;
     z-index:164;
@@ -31,33 +31,100 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     animation:vax-revenue-lightning 4.6s linear infinite;
 }
 
-/* Rain: denser and thicker short droplets, still real-drop style and not long streaks. */
+/* Dense REAL raindrop particles: short individual drops, no tiled screen pattern. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
-    top:var(--erp-top-header-h,42px);
-    bottom:0;
+    left:calc(var(--sidebar-width,220px) + 1vw);
+    top:calc(var(--erp-top-header-h,42px) - 100vh);
+    width:2.2px;
+    height:7px;
     z-index:150;
+    border-radius:50% 50% 58% 58%;
+    background:rgba(220,242,255,.86);
+    box-shadow:
+        2vw 3vh 0 0 rgba(220,242,255,.74),
+        5vw 12vh 0 0 rgba(178,221,249,.68),
+        8vw 25vh 0 0 rgba(214,240,255,.80),
+        11vw 44vh 0 0 rgba(164,211,244,.66),
+        14vw 68vh 0 0 rgba(220,242,255,.74),
+        17vw 84vh 0 0 rgba(183,224,250,.70),
+        20vw 9vh 0 0 rgba(214,240,255,.80),
+        23vw 31vh 0 0 rgba(162,210,243,.66),
+        26vw 55vh 0 0 rgba(217,241,255,.76),
+        29vw 76vh 0 0 rgba(179,222,249,.68),
+        32vw 18vh 0 0 rgba(221,243,255,.82),
+        35vw 39vh 0 0 rgba(162,210,243,.66),
+        38vw 63vh 0 0 rgba(218,241,255,.78),
+        41vw 89vh 0 0 rgba(177,221,248,.68),
+        44vw 6vh 0 0 rgba(220,242,255,.78),
+        47vw 28vh 0 0 rgba(166,213,246,.66),
+        50vw 49vh 0 0 rgba(215,240,255,.80),
+        53vw 71vh 0 0 rgba(181,223,249,.68),
+        56vw 92vh 0 0 rgba(220,242,255,.78),
+        59vw 14vh 0 0 rgba(164,211,244,.66),
+        62vw 36vh 0 0 rgba(216,240,255,.78),
+        65vw 58vh 0 0 rgba(180,222,249,.68),
+        68vw 81vh 0 0 rgba(221,243,255,.82),
+        71vw 21vh 0 0 rgba(164,211,244,.66),
+        74vw 43vh 0 0 rgba(216,240,255,.78),
+        77vw 66vh 0 0 rgba(180,222,249,.68),
+        80vw 88vh 0 0 rgba(220,242,255,.78),
+        83vw 11vh 0 0 rgba(165,212,245,.66),
+        86vw 34vh 0 0 rgba(217,241,255,.80),
+        89vw 57vh 0 0 rgba(181,223,249,.68),
+        92vw 79vh 0 0 rgba(220,242,255,.78),
+        95vw 96vh 0 0 rgba(165,212,245,.66),
+        3vw 52vh 0 0 rgba(214,240,255,.78),
+        7vw 74vh 0 0 rgba(180,222,249,.68),
+        12vw 16vh 0 0 rgba(220,242,255,.80),
+        16vw 37vh 0 0 rgba(164,211,244,.66),
+        21vw 60vh 0 0 rgba(215,240,255,.78),
+        25vw 82vh 0 0 rgba(180,222,249,.68),
+        30vw 4vh 0 0 rgba(221,243,255,.82),
+        34vw 24vh 0 0 rgba(166,213,246,.66),
+        39vw 47vh 0 0 rgba(216,240,255,.78),
+        43vw 69vh 0 0 rgba(181,223,249,.68),
+        48vw 86vh 0 0 rgba(220,242,255,.78),
+        52vw 10vh 0 0 rgba(164,211,244,.66),
+        57vw 32vh 0 0 rgba(216,240,255,.80),
+        61vw 53vh 0 0 rgba(180,222,249,.68),
+        66vw 75vh 0 0 rgba(220,242,255,.78),
+        70vw 94vh 0 0 rgba(165,212,245,.66),
+        75vw 17vh 0 0 rgba(217,241,255,.80),
+        79vw 40vh 0 0 rgba(181,223,249,.68),
+        84vw 62vh 0 0 rgba(220,242,255,.78),
+        88vw 84vh 0 0 rgba(164,211,244,.66),
+        93vw 27vh 0 0 rgba(216,240,255,.80),
+        97vw 50vh 0 0 rgba(180,222,249,.68),
+        1vw 89vh 0 0 rgba(220,242,255,.78),
+        9vw 93vh 0 0 rgba(167,214,246,.66),
+        18vw 48vh 0 0 rgba(216,240,255,.78),
+        27vw 13vh 0 0 rgba(181,223,249,.68),
+        36vw 78vh 0 0 rgba(220,242,255,.78),
+        45vw 35vh 0 0 rgba(164,211,244,.66),
+        54vw 64vh 0 0 rgba(217,241,255,.80),
+        63vw 87vh 0 0 rgba(180,222,249,.68),
+        72vw 5vh 0 0 rgba(220,242,255,.78),
+        81vw 30vh 0 0 rgba(164,211,244,.66),
+        90vw 72vh 0 0 rgba(217,241,255,.80),
+        98vw 90vh 0 0 rgba(181,223,249,.68);
+    filter:drop-shadow(0 0 1.5px rgba(150,215,255,.46));
     opacity:0;
-    background-image:
-        radial-gradient(ellipse at center,rgba(214,239,255,.92) 0 40%,rgba(176,220,251,.52) 54%,transparent 74%),
-        radial-gradient(ellipse at center,rgba(176,220,251,.84) 0 40%,rgba(136,199,243,.42) 56%,transparent 74%),
-        radial-gradient(ellipse at center,rgba(230,246,255,.82) 0 38%,rgba(178,219,248,.40) 54%,transparent 72%),
-        radial-gradient(ellipse at center,rgba(158,207,242,.72) 0 40%,rgba(121,184,229,.34) 56%,transparent 74%),
-        radial-gradient(ellipse at center,rgba(205,235,255,.76) 0 38%,rgba(159,211,247,.36) 54%,transparent 72%),
-        radial-gradient(ellipse at center,rgba(186,224,250,.70) 0 38%,rgba(141,197,236,.32) 54%,transparent 72%);
-    background-size:4px 10px,3px 8px,4px 9px,3px 7px,4px 8px,3px 9px;
-    background-position:6px -36px,24px -14px,45px -52px,67px -26px,86px -42px,104px -18px;
-    background-repeat:repeat;
-    filter:drop-shadow(0 0 2.5px rgba(156,214,255,.20));
     animation:
-        vax-revenue-raindrops .88s linear .85s infinite,
-        vax-revenue-rain-bursts 5.4s ease-in-out .85s infinite;
+        vax-revenue-raindrop-fall 1.15s linear .9s infinite,
+        vax-revenue-raindrop-burst 5.8s ease-in-out .9s infinite;
 }
 
-body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
-body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after,
-.sidebar.collapsed ~ .erp-wrapper::before,
-.sidebar.collapsed ~ .erp-wrapper::after{
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
     left:var(--sidebar-collapse,72px);
+}
+body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+    left:calc(var(--sidebar-collapse,72px) + 1vw);
+}
+.sidebar.collapsed ~ .erp-wrapper::before{
+    left:var(--sidebar-collapse,72px);
+}
+.sidebar.collapsed ~ .erp-wrapper::after{
+    left:calc(var(--sidebar-collapse,72px) + 1vw);
 }
 
 @keyframes vax-revenue-lightning{
@@ -75,29 +142,31 @@ body.sidebar-collapsed.page-erp-dashboard:has(#executive-summary .exec-trend-bad
     64.8%{opacity:.18}
 }
 
-@keyframes vax-revenue-raindrops{
-    from{background-position:6px -36px,24px -14px,45px -52px,67px -26px,86px -42px,104px -18px}
-    to{background-position:1px 86px,19px 98px,40px 78px,62px 92px,81px 82px,99px 96px}
+@keyframes vax-revenue-raindrop-fall{
+    from{transform:translate3d(0,0,0)}
+    to{transform:translate3d(-10px,200vh,0)}
 }
 
-@keyframes vax-revenue-rain-bursts{
-    0%,7%{opacity:0}
-    13%{opacity:.30}
-    22%{opacity:.50}
-    34%{opacity:.44}
-    47%{opacity:.24}
-    56%{opacity:.08}
-    63%{opacity:0}
-    71%{opacity:.24}
-    80%{opacity:.46}
-    89%{opacity:.34}
-    96%,100%{opacity:0}
+@keyframes vax-revenue-raindrop-burst{
+    0%,6%{opacity:0}
+    12%{opacity:.48}
+    24%{opacity:.86}
+    40%{opacity:.72}
+    55%{opacity:.40}
+    64%{opacity:.10}
+    70%{opacity:0}
+    77%{opacity:.46}
+    88%{opacity:.80}
+    96%{opacity:.46}
+    100%{opacity:0}
 }
 
 @media (max-width:900px){
-    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before,
-    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
         left:0;
+    }
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::after{
+        left:1vw;
     }
 }
 
