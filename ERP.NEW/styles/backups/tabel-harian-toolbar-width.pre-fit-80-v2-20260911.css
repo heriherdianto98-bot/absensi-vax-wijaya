@@ -1,0 +1,281 @@
+/* BACKUP — ERP VAX Tabel Harian Semua Cabang
+   Snapshot sebelum revisi fit-width laptop 80% v2 — 11 Sep 2026.
+   Restore source: ERP.NEW/styles/tabel-harian-toolbar-width.css
+*/
+
+/* ERP VAX — Tabel Harian toolbar/table width alignment
+   UI ONLY. Tidak menyentuh engine, data, formula, render row, atau source Supabase. */
+
+.thc-page .thc-table-section{
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    align-self: flex-start;
+}
+
+.thc-page .thc-pin-stack,
+.thc-page .thc-table-toolbar,
+.thc-page .thc-unified-toolbar,
+.thc-page .thc-totals{
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+}
+
+.thc-page .thc-table-scroll,
+.thc-page .thc-table.setoran3-table{
+    max-width: none !important;
+}
+
+.thc-page{
+    position: relative;
+    --thc-page-head-h: 92px;
+    --thc-pin-stack-h: 104px;
+    --thc-page-head-top: var(--erp-top-header-h, 58px);
+    --thc-pin-stack-top: var(--erp-top-header-h, 58px);
+    --thc-thead-top: calc(var(--erp-top-header-h, 58px) + var(--thc-pin-stack-h, 104px) - 1px);
+}
+
+body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
+.erp-wrapper .thc-page .thc-page-head,
+.thc-page .thc-page-head{
+    position: relative !important;
+    top: auto !important;
+    z-index: 1 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: 14px 18px !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+}
+
+.thc-page .thc-page-head-copy{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.thc-page .thc-page-head .thc-tb-actions,
+.thc-page .thc-tb-actions{
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    inset: auto !important;
+    transform: none !important;
+    z-index: auto !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.thc-page .thc-pin-stack{
+    top: var(--thc-pin-stack-top) !important;
+    overflow: visible !important;
+}
+
+.thc-page .thc-table-toolbar,
+.thc-page .thc-unified-toolbar{
+    overflow: visible !important;
+}
+
+@media screen{
+    .thc-page{
+        --thc-freeze-sidebar-w: 212px;
+        --thc-freeze-tanggal-w: 118px;
+        --thc-freeze-cabang-w: 148px;
+    }
+
+    .thc-page #thcTable thead th:nth-child(1),
+    .thc-page #thcTable tbody td:nth-child(1){
+        position: sticky !important;
+        left: var(--thc-freeze-sidebar-w) !important;
+        width: var(--thc-freeze-tanggal-w) !important;
+        min-width: var(--thc-freeze-tanggal-w) !important;
+        max-width: var(--thc-freeze-tanggal-w) !important;
+    }
+
+    .thc-page #thcTable thead th:nth-child(2),
+    .thc-page #thcTable tbody td:nth-child(2){
+        position: sticky !important;
+        left: calc(var(--thc-freeze-sidebar-w) + var(--thc-freeze-tanggal-w)) !important;
+        width: var(--thc-freeze-cabang-w) !important;
+        min-width: var(--thc-freeze-cabang-w) !important;
+        max-width: var(--thc-freeze-cabang-w) !important;
+    }
+
+    .thc-page #thcTable thead th:nth-child(1),
+    .thc-page #thcTable thead th:nth-child(2){
+        z-index: 72 !important;
+        background: #11151B !important;
+        background-clip: padding-box !important;
+    }
+
+    .thc-page #thcTable tbody td:nth-child(1),
+    .thc-page #thcTable tbody td:nth-child(2){
+        z-index: 52 !important;
+        background: #1B222C !important;
+        background-clip: padding-box !important;
+    }
+
+    .thc-page #thcTable thead th:nth-child(2),
+    .thc-page #thcTable tbody td:nth-child(2){
+        box-shadow: 8px 0 12px -8px rgba(0,0,0,.98), 1px 0 0 rgba(212,175,55,.20) !important;
+    }
+
+    .thc-page #thcTable thead th.thc-bri-daily-head + th,
+    .thc-page #thcTable tbody td.thc-bri-daily-cell + td{
+        width: 112px !important;
+        min-width: 112px !important;
+        max-width: 112px !important;
+        box-sizing: border-box !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+}
+
+.thc-page #thcTable tbody td:nth-child(2){
+    font-size:15px !important;
+    font-weight:800 !important;
+    color:#f4c43d !important;
+    letter-spacing:.01em;
+}
+
+.thc-page #thcTable tbody tr.thc-row-focus td:nth-child(2){
+    color:#ffe082 !important;
+    text-shadow:0 0 10px rgba(244,196,61,.20);
+}
+
+.thc-page #thcTable thead th:has(+ th.thc-bri-daily-head){
+    font-size:0 !important;
+    text-align:center !important;
+}
+.thc-page #thcTable thead th:has(+ th.thc-bri-daily-head)::after{
+    content:"NON TUNAI\A MINUTES";
+    display:inline-block;
+    font-size:12px;
+    font-weight:800;
+    line-height:1.15;
+    letter-spacing:.02em;
+    color:inherit;
+    white-space:pre-line;
+    text-align:center;
+}
+
+.thc-page .thc-tot-item.is-nontunai > span{
+    font-size:0 !important;
+}
+.thc-page .thc-tot-item.is-nontunai > span::after{
+    content:"NON TUNAI MINUTES";
+    font-size:12px;
+    font-weight:800;
+    line-height:1.15;
+    letter-spacing:.02em;
+    color:inherit;
+}
+
+@media (max-width: 900px){
+    .thc-page{
+        --thc-freeze-sidebar-w: 0px;
+    }
+}
+
+@media (min-width: 1100px){
+    .thc-page .thc-unified-toolbar{
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+    }
+}
+
+@media (min-width: 1100px) and (max-width: 1450px){
+    .thc-page .thc-page-head .thc-tb-actions{
+        gap: 6px !important;
+    }
+}
+
+@media (max-width: 1099px){
+    .thc-page .thc-page-head{
+        flex-wrap: wrap !important;
+        min-width: 100% !important;
+        padding: 12px 14px !important;
+    }
+    .thc-page .thc-page-head .thc-tb-actions,
+    .thc-page .thc-tb-actions{
+        flex-wrap: wrap !important;
+        margin-left: auto !important;
+    }
+}
+
+@media screen and (min-width: 1100px){
+    .thc-page .thc-totals-grid{
+        gap: 8px !important;
+    }
+
+    .thc-page .thc-tot-item{
+        min-height: 58px !important;
+        padding: 6px 10px 6px 12px !important;
+        box-sizing: border-box !important;
+    }
+
+    .thc-page .thc-tot-item > span,
+    .thc-page .thc-tot-item.is-nontunai > span::after{
+        margin-bottom: 2px !important;
+        font-size: 10.5px !important;
+        line-height: 1.08 !important;
+        font-weight: 800 !important;
+        letter-spacing: .035em !important;
+    }
+
+    .thc-page .thc-tot-item > strong{
+        font-size: 16.5px !important;
+        line-height: 1.06 !important;
+        font-weight: 800 !important;
+    }
+
+    .thc-page .thc-tot-item.is-explained{
+        height: 58px !important;
+        min-height: 58px !important;
+        max-height: 58px !important;
+        padding: 4px 9px 4px 12px !important;
+    }
+
+    .thc-page .thc-tot-item.is-explained > span{
+        margin-bottom: 1px !important;
+        font-size: 10.5px !important;
+        line-height: 1.05 !important;
+    }
+
+    .thc-page .thc-tot-item.is-explained > strong,
+    .thc-page .thc-tot-item.is-explained.is-actual > strong{
+        margin-bottom: 1px !important;
+        font-size: 17px !important;
+        line-height: 1.04 !important;
+    }
+
+    .thc-page .thc-tot-item.is-explained .thc-tot-desc{
+        font-size: 9.5px !important;
+        line-height: 1.08 !important;
+        -webkit-line-clamp: 1 !important;
+        line-clamp: 1 !important;
+    }
+}
