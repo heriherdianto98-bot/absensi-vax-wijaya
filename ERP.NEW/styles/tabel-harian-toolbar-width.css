@@ -456,3 +456,41 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         line-clamp: 2 !important;
     }
 }
+
+/* =========================================================
+   UI ONLY — title consistency + hover feedback
+   Menyamakan label card dan memberi interaksi hover seperti dashboard.
+   ========================================================= */
+@media screen and (pointer: fine){
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item{
+        transition:
+            transform .18s ease,
+            box-shadow .18s ease,
+            border-color .18s ease,
+            filter .18s ease !important;
+        transform: translateY(0) scale(1) !important;
+        will-change: transform;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nontunai > span::after{
+        font-size: 10.5px !important;
+        line-height: 1.08 !important;
+        font-weight: 900 !important;
+        letter-spacing: .045em !important;
+        text-transform: uppercase !important;
+        text-shadow: 0 1px 0 rgba(0,0,0,.32) !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item:hover{
+        transform: translateY(-2px) scale(1.012) !important;
+        border-color: rgba(255,255,255,.16) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.18),
+            0 8px 18px rgba(0,0,0,.32),
+            0 0 14px rgba(255,255,255,.035) !important;
+        filter: brightness(1.06) !important;
+        z-index: 2;
+    }
+}
