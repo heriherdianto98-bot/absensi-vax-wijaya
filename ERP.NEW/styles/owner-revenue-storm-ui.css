@@ -18,7 +18,7 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     position:absolute;
     left:0;
     right:0;
-    top:124px;
+    top:112px;
     height:170px;
     z-index:164;
     opacity:0;
@@ -102,10 +102,10 @@ html body.page-erp-dashboard .erp-wrapper.erp-wrapper .toolbar-wrapper.toolbar-w
 html body.page-erp-dashboard .erp-wrapper.erp-wrapper .od-filterbar.od-filterbar{
     position:relative !important;
     z-index:180 !important;
-    height:68px !important;
-    min-height:68px !important;
-    max-height:68px !important;
-    padding:8px 2px !important;
+    height:56px !important;
+    min-height:56px !important;
+    max-height:56px !important;
+    padding:4px 2px !important;
     box-sizing:border-box !important;
     background:#0A0E13 !important;
     isolation:isolate !important;
