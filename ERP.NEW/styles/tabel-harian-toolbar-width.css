@@ -330,9 +330,11 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         letter-spacing:.04em!important;
     }
 
-    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-customer .thc-tot-desc,
-    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-transaksi .thc-tot-desc,
-    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-services .thc-tot-desc{
+    /* UI ONLY: tiga card counter hanya tampil judul + angka. Runtime boleh menambah helper,
+       tetapi elemen presentasi tambahan disembunyikan tanpa menyentuh render/engine. */
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-customer > :not(span):not(strong),
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-transaksi > :not(span):not(strong),
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-services > :not(span):not(strong){
         display:none!important;
     }
 }
