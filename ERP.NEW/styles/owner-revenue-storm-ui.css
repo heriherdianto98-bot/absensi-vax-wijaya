@@ -193,6 +193,17 @@ html body.page-erp-dashboard #periodFilter option:checked{
     color:#C9B8FF !important;
 }
 
+/* Executive revenue hero spacing/height — UI only. */
+html body.page-erp-dashboard .erp-wrapper.erp-wrapper #executive-summary{
+    margin-top:8px !important;
+}
+html body.page-erp-dashboard .erp-wrapper.erp-wrapper #executive-summary .executive-left,
+html body.page-erp-dashboard .erp-wrapper.erp-wrapper #executive-summary .exec-hero{
+    min-height:94px !important;
+    padding-top:10px !important;
+    padding-bottom:10px !important;
+}
+
 @media (max-width:900px){
     html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
         left:0;
