@@ -341,3 +341,93 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         align-self: stretch !important;
     }
 }
+
+/* =========================================================
+   UI ONLY — dashboard-style compact totals, 17 cards / 4 rows
+   5 columns => 17 cards selesai dalam 4 baris. Deskripsi max 2 baris.
+   Hanya tampilan; engine/data/formula tetap LOCK dan tidak disentuh.
+   ========================================================= */
+@media screen and (pointer: fine){
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals{
+        width: calc(100vw - 250px) !important;
+        max-width: calc(100vw - 250px) !important;
+        padding: 8px 10px 10px !important;
+        overflow: hidden !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-label{
+        margin-bottom: 6px !important;
+        font-size: 11px !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid{
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        grid-auto-flow: row !important;
+        gap: 6px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item{
+        grid-column: auto !important;
+        grid-row: auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        min-height: 62px !important;
+        height: 62px !important;
+        max-height: 62px !important;
+        padding: 6px 9px 6px 11px !important;
+        border-radius: 9px !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nontunai > span::after{
+        flex: 0 0 auto !important;
+        margin: 0 0 1px !important;
+        font-size: 9.5px !important;
+        line-height: 1.05 !important;
+        letter-spacing: .035em !important;
+        font-weight: 800 !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > strong,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained > strong,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained.is-actual > strong{
+        flex: 0 0 auto !important;
+        margin: 0 0 2px !important;
+        font-size: 15px !important;
+        line-height: 1.05 !important;
+        font-weight: 800 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item .thc-tot-desc{
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 2 !important;
+        line-clamp: 2 !important;
+        white-space: normal !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        font-size: 8.7px !important;
+        line-height: 1.08 !important;
+        font-weight: 600 !important;
+    }
+
+    /* Card tanpa .thc-tot-desc memakai teks/deskripsi bawaan di elemen lain;
+       jaga agar tidak mendorong tinggi card. */
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > :last-child:not(strong):not(span):not(.thc-tot-go){
+        max-height: 19px !important;
+        overflow: hidden !important;
+    }
+}
