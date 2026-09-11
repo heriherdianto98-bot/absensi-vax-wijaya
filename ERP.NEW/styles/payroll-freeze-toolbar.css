@@ -1,0 +1,36 @@
+/* VAX ERP — Payroll filter/status freeze
+   UI ONLY: keeps Cabang/Karyawan/Periode/actions + payroll status visible while scrolling.
+   No payroll engine, formula, data, or Supabase logic is changed.
+*/
+
+.payroll-page .payroll-panel{
+  position:sticky;
+  top:88px;
+  z-index:40;
+  isolation:isolate;
+  box-shadow:0 14px 30px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+
+.payroll-page .payroll-panel::after{
+  content:"";
+  position:absolute;
+  left:-1px;
+  right:-1px;
+  bottom:-10px;
+  height:10px;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(11,12,14,.72),rgba(11,12,14,0));
+}
+
+@media (max-width:1100px){
+  .payroll-page .payroll-panel{top:76px}
+}
+
+@media (max-width:760px){
+  .payroll-page .payroll-panel{
+    position:relative;
+    top:auto;
+    z-index:auto;
+  }
+  .payroll-page .payroll-panel::after{display:none}
+}
