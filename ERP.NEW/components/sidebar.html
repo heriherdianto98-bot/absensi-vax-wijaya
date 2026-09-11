@@ -111,7 +111,7 @@ Version   : UI-01
 
         <a href="../pages/master-sewa-investor.html" class="menu-item" data-erp-nav="master-sewa-investor">
             <span class="icon">◇</span>
-            <span class="text">Master Sewa & Investor</span>
+            <span class="text master-sewa-investor-label">Master Sewa &amp;<br>Investor</span>
         </a>
 
         <a href="../pages/master-tagihan.html" class="menu-item" data-erp-nav="master-tagihan">
@@ -211,6 +211,16 @@ Version   : UI-01
     letter-spacing:.05px!important;
 }
 .sidebar .menu-item:not(.menu-item-sub) .text{white-space:nowrap!important;}
+.sidebar [data-erp-nav="master-sewa-investor"]{
+    min-height:58px!important;
+    align-items:center!important;
+}
+.sidebar [data-erp-nav="master-sewa-investor"] .master-sewa-investor-label{
+    white-space:normal!important;
+    line-height:1.15!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+}
 
 .sidebar .menu-item .icon,
 .sidebar .menu-item .menu-icon{
