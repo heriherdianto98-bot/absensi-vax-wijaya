@@ -38,12 +38,15 @@
 
   function compactButton(btn, kind){
     if(!btn) return;
+    const readyKind = btn.dataset.iconOnlyReady;
+    if(readyKind === kind) return;
     const label=(btn.getAttribute("aria-label")||btn.title||btn.textContent||"").trim();
-    btn.dataset.iconOnlyReady="1";
     btn.classList.add(ICON_CLASS,kind==="wa"?"mt-icon-wa":"mt-icon-mail");
     const title=kind==="wa"?"Kirim via WhatsApp":(label||"Kirim via Email");
-    btn.title=title;btn.setAttribute("aria-label",title);
+    btn.title=title;
+    btn.setAttribute("aria-label",title);
     btn.innerHTML=kind==="wa"?WA_SVG:MAIL_SVG;
+    btn.dataset.iconOnlyReady=kind;
   }
 
   function rowId(row){
@@ -64,8 +67,9 @@
     const b=document.createElement("button");
     b.type="button";b.className="mt-action mt-action-email mt-ui-mail-added";
     b.dataset.invAction="send";b.dataset.id=id;b.dataset.email="1";
-    b.title="Kirim via Email";b.setAttribute("aria-label","Kirim via Email");b.innerHTML=MAIL_SVG;
-    actions.appendChild(b);compactButton(b,"mail");
+    b.title="Kirim via Email";b.setAttribute("aria-label","Kirim via Email");
+    actions.appendChild(b);
+    compactButton(b,"mail");
   }
 
   function decorateAcc(row,actions,id){
@@ -77,7 +81,10 @@
       if(!actions.querySelector(".mt-acc-done")){
         const ok=document.createElement("span");ok.className="mt-acc-done";ok.title="Sudah ACC";ok.setAttribute("aria-label","Sudah ACC");ok.innerHTML=CHECK_SVG;actions.appendChild(ok);
       }
-    }else if(acc){acc.classList.add("mt-acc-pending");acc.title="Menunggu ACC"}
+    }else if(acc){
+      acc.classList.add("mt-acc-pending");
+      acc.title="Menunggu ACC";
+    }
   }
 
   function decorate(root=document){
@@ -99,7 +106,15 @@
     const card=document.getElementById("mtInvoiceCard");if(!card)return false;
     ensureStyle();decorate(card);
     if(!window.__invoiceActionIconsUiObserver){
-      window.__invoiceActionIconsUiObserver=new MutationObserver(()=>decorate(card));
+      let queued=false;
+      window.__invoiceActionIconsUiObserver=new MutationObserver(()=>{
+        if(queued)return;
+        queued=true;
+        requestAnimationFrame(()=>{
+          queued=false;
+          decorate(card);
+        });
+      });
       window.__invoiceActionIconsUiObserver.observe(card,{childList:true,subtree:true});
     }
     return true;
