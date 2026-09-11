@@ -6,8 +6,8 @@
 (function(){
   const install=()=>{
     const N=window.ERPGlobalNotifications;
-    if(!N||N.__stabilityPatchInstalledV4)return false;
-    N.__stabilityPatchInstalledV4=true;
+    if(!N||N.__stabilityPatchInstalledV5)return false;
+    N.__stabilityPatchInstalledV5=true;
 
     N.resolveRoleFromHeader=function(){
       const probes=[
@@ -37,10 +37,37 @@
     /* Obsolete legacy Arus Kas notification is intentionally disabled. */
     N.loadArusKas=async function(){ return; };
 
-    /* Master Tagihan reminder is disabled from the global bell until a payment-aware
-       source of truth can prove the current month's obligation is still unpaid.
-       This prevents date-only false positives. The Master Tagihan module itself is untouched. */
-    N.loadTagihan=async function(){ return; };
+    /* Master Tagihan reminder: date-only reminder by Owner decision.
+       Show ONLY H-1, for the intended role, then disappear on/after due date.
+       No payment/paid status is required or inferred. */
+    N.loadTagihan=async function(db){
+      if(!['owner','svp'].includes(N.role))return;
+      try{
+        const {data,error}=await db.from('master_tagihan')
+          .select('id,kategori,cabang,jatuh_tempo_hari,nominal,aktif,notify_owner,notify_svp')
+          .eq('aktif',true);
+        if(error)throw error;
+
+        (data||[]).forEach(r=>{
+          if(N.role==='owner'&&!r.notify_owner)return;
+          if(N.role==='svp'&&!r.notify_svp)return;
+          const d=N.daysUntilMonthly(r.jatuh_tempo_hari);
+          if(d!==1)return;
+
+          N.add({
+            key:`tagihan-h1:${r.id}:${N.role}`,
+            tone:'warning',
+            icon:'⏰',
+            module:'MASTER TAGIHAN',
+            href:`./master-tagihan.html?focus=tagihan&id=${encodeURIComponent(r.id)}`,
+            title:`Tagihan jatuh tempo besok • ${String(r.kategori||'').replaceAll('_',' ')}`,
+            detail:`${r.cabang||'—'} • ${N.money(r.nominal)} • tanggal ${r.jatuh_tempo_hari}`
+          });
+        });
+      }catch(e){
+        console.warn('[Notif stability] tagihan read',e);
+      }
+    };
 
     N.loadSetoran=async function(db){
       try{
