@@ -365,4 +365,56 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-services > :not(span):not(strong){
         display:none!important;
     }
+
+    /* Nett Revenue — rapikan agar title, nominal, dan deskripsi tidak terpotong. */
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett{
+        display:flex!important;
+        flex-direction:column!important;
+        justify-content:flex-start!important;
+        height:70px!important;
+        min-height:70px!important;
+        max-height:70px!important;
+        padding:6px 10px 7px 11px!important;
+        overflow:hidden!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > span{
+        display:block!important;
+        position:static!important;
+        margin:0 0 2px!important;
+        padding:0!important;
+        font-size:10.5px!important;
+        line-height:1.08!important;
+        font-weight:900!important;
+        white-space:nowrap!important;
+        overflow:visible!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > strong{
+        display:block!important;
+        position:static!important;
+        margin:0 0 3px!important;
+        padding:0!important;
+        font-size:15px!important;
+        line-height:1.05!important;
+        font-weight:900!important;
+        white-space:nowrap!important;
+        overflow:visible!important;
+        text-overflow:clip!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > .thc-tot-desc{
+        display:-webkit-box!important;
+        -webkit-box-orient:vertical!important;
+        -webkit-line-clamp:2!important;
+        line-clamp:2!important;
+        position:static!important;
+        margin:0!important;
+        padding:0!important;
+        font-size:9px!important;
+        line-height:1.08!important;
+        font-weight:600!important;
+        white-space:normal!important;
+        overflow:hidden!important;
+    }
 }
