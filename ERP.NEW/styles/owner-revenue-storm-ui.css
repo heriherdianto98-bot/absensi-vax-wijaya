@@ -10,11 +10,11 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) 
     pointer-events:none;
 }
 
-/* Lightning strip: flashes repeatedly just below the fixed header bar. */
+/* Lightning strip: stays visible BELOW the raised dashboard toolbar, never hidden behind it. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.negative) .erp-wrapper::before{
     left:var(--sidebar-width,220px);
     right:0;
-    top:var(--erp-top-header-h,42px);
+    top:calc(var(--erp-top-header-h,42px) + 14px + 68px);
     height:70px;
     z-index:164;
     opacity:0;
