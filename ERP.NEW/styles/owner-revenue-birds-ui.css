@@ -1,0 +1,81 @@
+/* ERP VAX — Revenue Up Birds UI
+   VISUAL ONLY. No engine, formula, data, Supabase, Minutes, KPI logic, or locked module behavior changes.
+   Active automatically only when Executive Summary exposes .exec-trend-badge.positive.
+*/
+
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper{
+    position:relative !important;
+}
+
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::before,
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::after{
+    content:"";
+    position:fixed;
+    left:-34vw;
+    width:30vw;
+    height:220px;
+    pointer-events:none;
+    z-index:154;
+    opacity:.92;
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    filter:drop-shadow(0 0 2px rgba(255,255,255,.38));
+}
+
+/* Front flock: small clean white birds, spread naturally. */
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::before{
+    top:150px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 220'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' opacity='.94'%3E%3Cpath d='M22 74 Q34 62 47 74 Q59 62 72 74'/%3E%3Cpath d='M112 42 Q122 32 134 42 Q145 31 156 42'/%3E%3Cpath d='M191 101 Q202 91 213 101 Q224 90 236 101'/%3E%3Cpath d='M275 58 Q286 47 298 58 Q309 47 321 58'/%3E%3Cpath d='M356 122 Q367 112 379 122 Q390 111 402 122'/%3E%3Cpath d='M437 77 Q448 67 459 77 Q470 66 482 77'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' opacity='.72'%3E%3Cpath d='M72 155 Q81 147 90 155 Q99 146 108 155'/%3E%3Cpath d='M164 177 Q173 169 182 177 Q191 168 200 177'/%3E%3Cpath d='M306 171 Q315 163 324 171 Q333 162 342 171'/%3E%3Cpath d='M419 164 Q428 156 437 164 Q446 155 455 164'/%3E%3C/g%3E%3C/svg%3E");
+    animation:vax-revenue-birds-fly-a 17s linear infinite, vax-revenue-birds-bob-a 3.8s ease-in-out infinite;
+}
+
+/* Rear flock: fewer, softer birds at a different height/speed for depth. */
+html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::after{
+    top:310px;
+    width:24vw;
+    height:170px;
+    opacity:.64;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 170'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 62 Q30 52 41 62 Q51 51 62 62'/%3E%3Cpath d='M104 34 Q114 25 124 34 Q134 24 145 34'/%3E%3Cpath d='M196 92 Q206 83 216 92 Q226 82 237 92'/%3E%3Cpath d='M286 48 Q296 39 306 48 Q316 38 327 48'/%3E%3Cpath d='M350 116 Q360 107 370 116 Q380 106 391 116'/%3E%3C/g%3E%3C/svg%3E");
+    animation:vax-revenue-birds-fly-b 23s linear 2.4s infinite, vax-revenue-birds-bob-b 4.6s ease-in-out infinite;
+}
+
+@keyframes vax-revenue-birds-fly-a{
+    from{left:-34vw}
+    to{left:104vw}
+}
+
+@keyframes vax-revenue-birds-fly-b{
+    from{left:-28vw}
+    to{left:106vw}
+}
+
+@keyframes vax-revenue-birds-bob-a{
+    0%,100%{margin-top:0}
+    50%{margin-top:-18px}
+}
+
+@keyframes vax-revenue-birds-bob-b{
+    0%,100%{margin-top:0}
+    50%{margin-top:14px}
+}
+
+@media (max-width:900px){
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::before{
+        width:48vw;
+        height:180px;
+        top:138px;
+    }
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::after{
+        width:38vw;
+        height:140px;
+        top:270px;
+    }
+}
+
+@media (prefers-reduced-motion:reduce){
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::before,
+    html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::after{
+        animation:none !important;
+        opacity:0 !important;
+    }
+}
