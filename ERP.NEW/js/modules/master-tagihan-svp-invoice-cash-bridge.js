@@ -52,9 +52,51 @@
         background:linear-gradient(145deg,#d9ffe8,#6df4a5 55%,#20bd68);color:#064c28;font-size:15px;font-weight:1000;
         border:1px solid #adffcc;box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 2px 7px rgba(42,226,116,.35)
       }
+      .mt-invoice-buttons .mt-action-view{
+        min-height:40px;padding:8px 13px;border:1px solid #4da9d6;border-radius:10px;
+        background:linear-gradient(180deg,#174a65 0%,#10384f 55%,#0b293b 100%);
+        color:#eefaff;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 5px 13px rgba(20,118,166,.22);
+        cursor:pointer;white-space:nowrap;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;
+      }
+      .mt-invoice-buttons .mt-action-view:hover{transform:translateY(-1px);border-color:#7dd6ff;box-shadow:0 8px 18px rgba(42,157,211,.28)}
+      .mt-invoice-buttons .mt-action-view .view-icon{
+        width:23px;height:23px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;
+        background:linear-gradient(145deg,#dff7ff,#76d9ff 55%,#2ca9df);color:#073a52;font-size:14px;font-weight:1000;
+        border:1px solid #a9e9ff;box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 2px 7px rgba(72,193,239,.34)
+      }
+      #mtInvoiceModal[data-owner-view-only="1"] .mt-invoice-dialog{border-color:#2b789d;box-shadow:0 24px 80px rgba(0,0,0,.62),0 0 0 1px rgba(68,179,224,.12)}
+      #mtInvoiceModal[data-owner-view-only="1"] .mt-invoice-dialog-head h2{color:#bfeeff}
+      #mtInvoiceModal[data-owner-view-only="1"] #invAddItem,
+      #mtInvoiceModal[data-owner-view-only="1"] [data-remove],
+      #mtInvoiceModal[data-owner-view-only="1"] .mt-invoice-form-actions button[type="submit"]{display:none!important}
+      #mtInvoiceModal[data-owner-view-only="1"] input:disabled,
+      #mtInvoiceModal[data-owner-view-only="1"] textarea:disabled{
+        opacity:1!important;color:#e7f7ff!important;-webkit-text-fill-color:#e7f7ff!important;
+        background:#0d151d!important;border-color:#263b49!important;cursor:default!important
+      }
       .mt-invoice-status.paid,.mt-invoice-status.approved{background:#103b27!important;color:#7df0ad!important;border-color:#2aaf67!important}
     `;
     document.head.appendChild(style);
+  }
+
+  function restoreViewMode(){
+    const modal = document.getElementById("mtInvoiceModal");
+    if(!modal || modal.dataset.ownerViewOnly !== "1") return;
+    delete modal.dataset.ownerViewOnly;
+    modal.querySelectorAll("#invNo,#invDate,#invDue,#invTitle,#invNotes,#invItems input").forEach(el => { el.disabled = false; });
+  }
+
+  async function viewInvoice(row){
+    const inv = window.SvPInvoice;
+    if(!inv || !row) return;
+    await inv.open(row);
+    const modal = document.getElementById("mtInvoiceModal");
+    if(!modal) return;
+    modal.dataset.ownerViewOnly = "1";
+    const title = document.getElementById("mtInvoiceTitle");
+    if(title) title.textContent = "Lihat Invoice SVP";
+    modal.querySelectorAll("#invNo,#invDate,#invDue,#invTitle,#invNotes,#invItems input").forEach(el => { el.disabled = true; });
   }
 
   async function currentOwner(){
@@ -201,6 +243,16 @@
         if(!small.textContent.includes("SVP → OWNER")) small.textContent = `SVP → OWNER • ${small.textContent}`;
       }
 
+      if(!actions.querySelector(`[data-invoice-view="${id}"]`)){
+        const view = document.createElement("button");
+        view.type = "button";
+        view.className = "mt-action mt-action-view";
+        view.dataset.invoiceView = id;
+        view.title = "Lihat invoice yang diajukan SVP";
+        view.innerHTML = '<span class="view-icon" aria-hidden="true">◉</span><span>Lihat Invoice</span>';
+        actions.prepend(view);
+      }
+
       if(isApproved(row)){
         rowEl.dataset.invoiceCashApproved = "1";
         return;
@@ -213,7 +265,8 @@
       b.dataset.invoiceAcc = id;
       b.title = "ACC dan catat sebagai pengeluaran Kas Besar";
       b.innerHTML = '<span class="acc-icon" aria-hidden="true">✓</span><span>ACC</span>';
-      actions.prepend(b);
+      const viewBtn = actions.querySelector(`[data-invoice-view="${id}"]`);
+      if(viewBtn) viewBtn.insertAdjacentElement("afterend", b); else actions.prepend(b);
     });
   }
 
@@ -226,6 +279,18 @@
 
     ensureStyle();
     document.addEventListener("click", (e) => {
+      const viewBtn = e.target.closest?.("[data-invoice-view]");
+      if(viewBtn){
+        e.preventDefault();
+        e.stopPropagation();
+        const row = (window.SvPInvoice?.rows || []).find(x => String(x.id) === String(viewBtn.dataset.invoiceView));
+        if(row) viewInvoice(row);
+        return;
+      }
+
+      const closeBtn = e.target.closest?.("[data-inv-close]");
+      if(closeBtn) restoreViewMode();
+
       const btn = e.target.closest?.("[data-invoice-acc]");
       if(!btn) return;
       e.preventDefault();
