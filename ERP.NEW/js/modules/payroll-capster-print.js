@@ -30,7 +30,6 @@
     .page-frame>thead{display:table-header-group}.page-frame>tfoot{display:table-footer-group}
     .page-frame>thead>tr>td,.page-frame>tfoot>tr>td,.page-frame>tbody>tr>td{padding:0;border:0;vertical-align:top}
     .head-space{height:24mm}.foot-space{height:40mm}
-
     .master-head{height:20mm;background:#fff}
     .master-head-inner{display:flex;justify-content:space-between;align-items:flex-start;gap:8mm;height:15mm}
     .brand{display:flex;align-items:center;gap:4mm}.logo{width:14mm;height:14mm;object-fit:contain}
@@ -39,10 +38,8 @@
     .brand-copy .system{margin-top:.8mm;font-size:6.6pt;color:#666}
     .head-right{text-align:right;padding-top:.6mm}.head-right .doc{font-size:6.6pt;color:#666;letter-spacing:.08em;text-transform:uppercase}.head-right strong{display:block;margin-top:1mm;font-size:7.3pt;letter-spacing:.08em}
     .gold-rule{height:1mm;background:#d4af37;margin-top:2.5mm}
-
     .master-foot{height:10mm;border-top:1px solid #b8b8b8;background:#fff;padding-top:2mm;display:flex;justify-content:space-between;align-items:flex-start;color:#666;font-size:6.2pt}
     .master-foot strong{color:#111}.foot-center{text-align:center;flex:1}.foot-right{text-align:right}
-
     .content{padding:0}
     .report-title{margin:0 0 2.5mm}.report-title h2{font-size:14pt;margin:0}.report-title p{margin:.7mm 0 0;color:#666;font-size:7.4pt}
     .meta{display:grid;grid-template-columns:1fr 1fr;gap:1.5mm 10mm;border:1px solid #d5d5d5;padding:2.2mm 4mm;margin-bottom:3mm}.meta .item{display:flex;justify-content:space-between;gap:5mm}.meta .lbl{color:#666}.meta .val{font-weight:700;text-align:right}
@@ -64,13 +61,12 @@
     .sign .box{text-align:center;min-height:25mm}
     .supervisor-sign .who,.owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}
     .supervisor-sign .auth-role,.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
-    .supervisor-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center}
-    .supervisor-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}
+    .supervisor-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center;overflow:visible}
+    .supervisor-sign .ttd img{display:block;width:42mm;height:16mm;object-fit:contain;object-position:center}
     .supervisor-sign .name,.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}
     .supervisor-sign .supervisor-line,.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}
     .supervisor-sign .job,.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
     .owner-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center}.owner-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}
-
     @media print{
       .sign{position:fixed;left:0;right:0;bottom:11mm;z-index:4;margin-top:0}
       .master-foot{position:fixed;left:0;right:0;bottom:0;z-index:5}
@@ -93,7 +89,7 @@
     const w=window.open('','_blank');if(!w){alert('Popup print diblokir browser.');return;}
     const logo='../assets/logo-vax-wijaya.png';
     const signatureUrl=new URL('../assets/owner-signature.png',window.location.href).href;
-    const supervisorSignatureAssetUrl=new URL('../assets/supervisor-signature-rangga.svg',window.location.href).href;
+    const supervisorSignatureUrl=new URL('../assets/supervisor-signature-rangga.png',window.location.href).href;
     const printedAt=nowWib();
     const header=`<header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">PAYROLL KARYAWAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN OPERASIONAL</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>`;
     const footer=`<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
@@ -102,17 +98,10 @@
         <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Gaji Pokok − Denda − Kasbon + Bonus Insentif + Bonus KPI + Bonus Produk</p></section>
         <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
         ${snap.cards.map(cardHtml).join('')}
-        <section class="sign"><div class="box supervisor-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Supervisor</div><div class="stage"><div class="ttd"><img id="supervisorSignature" alt="Tanda tangan Supervisor"></div></div><div class="name">Rangga Putra Pratama</div><div class="supervisor-line"></div><div class="job">SUPERVISOR</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
+        <section class="sign"><div class="box supervisor-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Supervisor</div><div class="stage"><div class="ttd"><img src="${supervisorSignatureUrl}" alt="Tanda tangan Supervisor"></div></div><div class="name">Rangga Putra Pratama</div><div class="supervisor-line"></div><div class="job">SUPERVISOR</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${signatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
       </main></td></tr></tbody></table>
       <script>
       window.addEventListener('load',async()=>{
-        const img=document.getElementById('supervisorSignature');
-        try{
-          const res=await fetch(${JSON.stringify(supervisorSignatureAssetUrl)});
-          const svg=await res.text();
-          const match=svg.match(/href=["'](data:image\\/png;base64,[^"']+)["']/i);
-          if(match&&img){img.src=match[1];await img.decode?.().catch(()=>{});}
-        }catch(e){if(img)img.style.display='none';}
         await Promise.all([...document.images].map(i=>i.complete?Promise.resolve():new Promise(resolve=>{i.addEventListener('load',resolve,{once:true});i.addEventListener('error',resolve,{once:true});})));
         setTimeout(()=>window.print(),120);
       });
