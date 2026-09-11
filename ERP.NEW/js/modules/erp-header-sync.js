@@ -2,17 +2,24 @@
 "use strict";
 (function(){
   const ensureNotificationModule=()=>{
-    if(window.ERPGlobalNotifications) return;
-    if(document.querySelector('script[data-erp-global-notif-js]')) return;
-    const s=document.createElement('script');
-    s.src='../js/modules/erp-global-notifications.js?v=20260911-2';
-    s.async=false;
-    s.dataset.erpGlobalNotifJs='1';
-    document.head.appendChild(s);
+    if(!window.ERPGlobalNotifications&&!document.querySelector('script[data-erp-global-notif-js]')){
+      const s=document.createElement('script');
+      s.src='../js/modules/erp-global-notifications.js?v=20260911-2';
+      s.async=false;
+      s.dataset.erpGlobalNotifJs='1';
+      document.head.appendChild(s);
+    }
+    if(!document.querySelector('script[data-erp-global-notif-stability-js]')){
+      const p=document.createElement('script');
+      p.src='../js/modules/erp-global-notifications-stability-ui.js?v=20260911-1';
+      p.async=false;
+      p.dataset.erpGlobalNotifStabilityJs='1';
+      document.head.appendChild(p);
+    }
   };
   const refresh=()=>{
     ensureNotificationModule();
-    setTimeout(()=>window.ERPGlobalNotifications?.refresh?.(),120);
+    setTimeout(()=>window.ERPGlobalNotifications?.refresh?.(),180);
   };
   window.ErpHeaderSync=window.ErpHeaderSync||{};
   window.ErpHeaderSync.refresh=refresh;
