@@ -66,6 +66,7 @@
 <script>
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   OwnerAuth?.bindUi?.(); OwnerAuth?.syncHeader?.(); OwnerAuth?.applyAccessControl?.(); initErpShellChrome?.();
+  document.querySelectorAll('.sidebar .menu-item').forEach(a=>a.classList.toggle('active',a.dataset.erpNav==='master-sewa-investor'));
   const c=document.getElementById('erpHeaderCabang'); if(c)c.textContent='Master Data';
   const p=document.getElementById('erpHeaderPeriode'); if(p)p.textContent='Sewa & Investor';
 });
