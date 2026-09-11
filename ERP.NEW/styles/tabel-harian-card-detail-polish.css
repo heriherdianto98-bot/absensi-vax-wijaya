@@ -1,0 +1,82 @@
+/*
+=========================================================
+VAX ERP — TABEL HARIAN CARD DETAIL POPUP POLISH
+=========================================================
+UI ONLY.
+- Memperbesar judul + angka popup.
+- Scrollbar mengikuti warna accent card aktif.
+- Tidak menyentuh engine, formula, source, atau data.
+=========================================================
+*/
+
+#thcCardDetailModal .td-title{
+    font-size:24px !important;
+    font-weight:800 !important;
+    line-height:1.18 !important;
+    letter-spacing:-.01em !important;
+}
+
+#thcCardDetailModal .td-total span{
+    font-size:13px !important;
+    font-weight:700 !important;
+}
+
+#thcCardDetailModal .td-total strong{
+    font-size:31px !important;
+    font-weight:800 !important;
+    line-height:1 !important;
+    letter-spacing:-.02em !important;
+}
+
+#thcCardDetailModal table{
+    font-size:14px !important;
+}
+
+#thcCardDetailModal td:last-child{
+    font-size:15px !important;
+    font-weight:700 !important;
+}
+
+/* Firefox */
+#thcCardDetailModal .td-wrap{
+    scrollbar-width:thin !important;
+    scrollbar-color:var(--td-accent) color-mix(in srgb,var(--td-accent) 12%,#0c131d) !important;
+}
+
+/* Chromium / Edge / Chrome */
+#thcCardDetailModal .td-wrap::-webkit-scrollbar{
+    width:10px !important;
+    height:10px !important;
+}
+
+#thcCardDetailModal .td-wrap::-webkit-scrollbar-track{
+    background:color-mix(in srgb,var(--td-accent) 10%,#0c131d) !important;
+    border-radius:999px !important;
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--td-accent) 18%,transparent) !important;
+}
+
+#thcCardDetailModal .td-wrap::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg,
+        color-mix(in srgb,var(--td-accent) 92%,white 8%),
+        color-mix(in srgb,var(--td-accent) 72%,black 28%)) !important;
+    border:2px solid color-mix(in srgb,var(--td-accent) 10%,#0c131d) !important;
+    border-radius:999px !important;
+    min-height:44px !important;
+}
+
+#thcCardDetailModal .td-wrap::-webkit-scrollbar-thumb:hover{
+    background:var(--td-accent) !important;
+}
+
+#thcCardDetailModal .td-wrap::-webkit-scrollbar-corner{
+    background:#0c131d !important;
+}
+
+@media(max-width:640px){
+    #thcCardDetailModal .td-title{
+        font-size:21px !important;
+    }
+    #thcCardDetailModal .td-total strong{
+        font-size:25px !important;
+    }
+}
