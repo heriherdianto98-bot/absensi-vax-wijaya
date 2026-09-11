@@ -1,0 +1,11 @@
+/* ERP VAX — Master Sewa & Investor table header readability
+   UI ONLY — no data / engine / formula changes */
+html body.page-master-sewa-investor .msi-table-wrap th{
+  padding:15px 14px!important;
+  font-size:13px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+  color:#f2c230!important;
+  text-shadow:0 0 10px rgba(242,194,48,.08)!important;
+}
