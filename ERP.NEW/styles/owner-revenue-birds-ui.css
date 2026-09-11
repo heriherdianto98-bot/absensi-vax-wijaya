@@ -22,21 +22,27 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) 
     filter:drop-shadow(0 0 2px rgba(255,255,255,.38));
 }
 
-/* Front flock: small clean white birds, spread naturally. */
+/* Front flock — wing-up frame. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::before{
     top:150px;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 220'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' opacity='.94'%3E%3Cpath d='M22 74 Q34 62 47 74 Q59 62 72 74'/%3E%3Cpath d='M112 42 Q122 32 134 42 Q145 31 156 42'/%3E%3Cpath d='M191 101 Q202 91 213 101 Q224 90 236 101'/%3E%3Cpath d='M275 58 Q286 47 298 58 Q309 47 321 58'/%3E%3Cpath d='M356 122 Q367 112 379 122 Q390 111 402 122'/%3E%3Cpath d='M437 77 Q448 67 459 77 Q470 66 482 77'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' opacity='.72'%3E%3Cpath d='M72 155 Q81 147 90 155 Q99 146 108 155'/%3E%3Cpath d='M164 177 Q173 169 182 177 Q191 168 200 177'/%3E%3Cpath d='M306 171 Q315 163 324 171 Q333 162 342 171'/%3E%3Cpath d='M419 164 Q428 156 437 164 Q446 155 455 164'/%3E%3C/g%3E%3C/svg%3E");
-    animation:vax-revenue-birds-fly-a 17s linear infinite, vax-revenue-birds-bob-a 3.8s ease-in-out infinite;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 220'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' opacity='.94'%3E%3Cpath d='M22 74 Q34 58 47 74 Q59 58 72 74'/%3E%3Cpath d='M112 42 Q122 27 134 42 Q145 26 156 42'/%3E%3Cpath d='M191 101 Q202 86 213 101 Q224 85 236 101'/%3E%3Cpath d='M275 58 Q286 42 298 58 Q309 42 321 58'/%3E%3Cpath d='M356 122 Q367 107 379 122 Q390 106 402 122'/%3E%3Cpath d='M437 77 Q448 62 459 77 Q470 61 482 77'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' opacity='.72'%3E%3Cpath d='M72 155 Q81 143 90 155 Q99 142 108 155'/%3E%3Cpath d='M164 177 Q173 165 182 177 Q191 164 200 177'/%3E%3Cpath d='M306 171 Q315 159 324 171 Q333 158 342 171'/%3E%3Cpath d='M419 164 Q428 152 437 164 Q446 151 455 164'/%3E%3C/g%3E%3C/svg%3E");
+    animation:
+        vax-revenue-birds-fly-a 17s linear infinite,
+        vax-revenue-birds-bob-a 3.8s ease-in-out infinite,
+        vax-revenue-birds-flap-a .54s steps(1,end) infinite;
 }
 
-/* Rear flock: fewer, softer birds at a different height/speed for depth. */
+/* Rear flock — slightly softer / slower and flaps out of phase. */
 html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) .erp-wrapper::after{
     top:310px;
     width:24vw;
     height:170px;
     opacity:.64;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 170'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 62 Q30 52 41 62 Q51 51 62 62'/%3E%3Cpath d='M104 34 Q114 25 124 34 Q134 24 145 34'/%3E%3Cpath d='M196 92 Q206 83 216 92 Q226 82 237 92'/%3E%3Cpath d='M286 48 Q296 39 306 48 Q316 38 327 48'/%3E%3Cpath d='M350 116 Q360 107 370 116 Q380 106 391 116'/%3E%3C/g%3E%3C/svg%3E");
-    animation:vax-revenue-birds-fly-b 23s linear 2.4s infinite, vax-revenue-birds-bob-b 4.6s ease-in-out infinite;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 170'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 62 Q30 48 41 62 Q51 47 62 62'/%3E%3Cpath d='M104 34 Q114 21 124 34 Q134 20 145 34'/%3E%3Cpath d='M196 92 Q206 79 216 92 Q226 78 237 92'/%3E%3Cpath d='M286 48 Q296 35 306 48 Q316 34 327 48'/%3E%3Cpath d='M350 116 Q360 103 370 116 Q380 102 391 116'/%3E%3C/g%3E%3C/svg%3E");
+    animation:
+        vax-revenue-birds-fly-b 23s linear 2.4s infinite,
+        vax-revenue-birds-bob-b 4.6s ease-in-out infinite,
+        vax-revenue-birds-flap-b .68s steps(1,end) .18s infinite;
 }
 
 @keyframes vax-revenue-birds-fly-a{
@@ -57,6 +63,25 @@ html body.page-erp-dashboard:has(#executive-summary .exec-trend-badge.positive) 
 @keyframes vax-revenue-birds-bob-b{
     0%,100%{margin-top:0}
     50%{margin-top:14px}
+}
+
+/* Wing flap: alternate between wing-up and wing-down silhouettes. */
+@keyframes vax-revenue-birds-flap-a{
+    0%,49%{
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 220'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' opacity='.94'%3E%3Cpath d='M22 74 Q34 58 47 74 Q59 58 72 74'/%3E%3Cpath d='M112 42 Q122 27 134 42 Q145 26 156 42'/%3E%3Cpath d='M191 101 Q202 86 213 101 Q224 85 236 101'/%3E%3Cpath d='M275 58 Q286 42 298 58 Q309 42 321 58'/%3E%3Cpath d='M356 122 Q367 107 379 122 Q390 106 402 122'/%3E%3Cpath d='M437 77 Q448 62 459 77 Q470 61 482 77'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' opacity='.72'%3E%3Cpath d='M72 155 Q81 143 90 155 Q99 142 108 155'/%3E%3Cpath d='M164 177 Q173 165 182 177 Q191 164 200 177'/%3E%3Cpath d='M306 171 Q315 159 324 171 Q333 158 342 171'/%3E%3Cpath d='M419 164 Q428 152 437 164 Q446 151 455 164'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    50%,100%{
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 220'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' opacity='.94'%3E%3Cpath d='M22 68 Q34 82 47 70 Q59 82 72 68'/%3E%3Cpath d='M112 36 Q122 50 134 38 Q145 50 156 36'/%3E%3Cpath d='M191 95 Q202 109 213 97 Q224 109 236 95'/%3E%3Cpath d='M275 52 Q286 66 298 54 Q309 66 321 52'/%3E%3Cpath d='M356 116 Q367 130 379 118 Q390 130 402 116'/%3E%3Cpath d='M437 71 Q448 85 459 73 Q470 85 482 71'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' opacity='.72'%3E%3Cpath d='M72 149 Q81 160 90 151 Q99 160 108 149'/%3E%3Cpath d='M164 171 Q173 182 182 173 Q191 182 200 171'/%3E%3Cpath d='M306 165 Q315 176 324 167 Q333 176 342 165'/%3E%3Cpath d='M419 158 Q428 169 437 160 Q446 169 455 158'/%3E%3C/g%3E%3C/svg%3E");
+    }
+}
+
+@keyframes vax-revenue-birds-flap-b{
+    0%,49%{
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 170'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 62 Q30 48 41 62 Q51 47 62 62'/%3E%3Cpath d='M104 34 Q114 21 124 34 Q134 20 145 34'/%3E%3Cpath d='M196 92 Q206 79 216 92 Q226 78 237 92'/%3E%3Cpath d='M286 48 Q296 35 306 48 Q316 34 327 48'/%3E%3Cpath d='M350 116 Q360 103 370 116 Q380 102 391 116'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    50%,100%{
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 170'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 56 Q30 69 41 58 Q51 69 62 56'/%3E%3Cpath d='M104 28 Q114 41 124 30 Q134 41 145 28'/%3E%3Cpath d='M196 86 Q206 99 216 88 Q226 99 237 86'/%3E%3Cpath d='M286 42 Q296 55 306 44 Q316 55 327 42'/%3E%3Cpath d='M350 110 Q360 123 370 112 Q380 123 391 110'/%3E%3C/g%3E%3C/svg%3E");
+    }
 }
 
 @media (max-width:900px){
