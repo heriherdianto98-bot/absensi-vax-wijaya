@@ -74,6 +74,8 @@ Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent
   document.querySelectorAll('.sidebar .menu-item').forEach(a=>a.classList.toggle('active',a.dataset.erpNav==='master-sewa-investor'));
   const c=document.getElementById('erpHeaderCabang'); if(c)c.textContent='Master Data';
   const p=document.getElementById('erpHeaderPeriode'); if(p)p.textContent='Sewa & Investor';
+  const n=document.getElementById('ownerAuthName'); if(n)n.textContent='Heri Herdianto';
+  const r=document.getElementById('ownerAuthRole'); if(r)r.textContent='OWNER';
 });
 </script>
 </body>
