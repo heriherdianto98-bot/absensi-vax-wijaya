@@ -22,3 +22,28 @@ body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{
   background:#000!important;
   background-image:none!important;
 }
+
+/* Mapping Capster Backup — field pilihan cabang/karyawan hitam solid. */
+body.laporan-bulanan-page .lb-mapping select,
+body.laporan-bulanan-page .lb-mapping input,
+body.laporan-bulanan-page .monthly-provider-map-row select,
+body.laporan-bulanan-page .monthly-provider-map-row input{
+  background:#000!important;
+  background-image:none!important;
+  color:#f8fafc!important;
+}
+
+body.laporan-bulanan-page .lb-mapping select:focus,
+body.laporan-bulanan-page .lb-mapping input:focus,
+body.laporan-bulanan-page .monthly-provider-map-row select:focus,
+body.laporan-bulanan-page .monthly-provider-map-row input:focus{
+  background:#000!important;
+  box-shadow:0 0 0 1px rgba(56,189,248,.24),0 0 14px rgba(56,189,248,.10)!important;
+}
+
+/* Native option list ikut gelap sejauh didukung browser. */
+body.laporan-bulanan-page .lb-mapping select option,
+body.laporan-bulanan-page .monthly-provider-map-row select option{
+  background:#050607!important;
+  color:#f8fafc!important;
+}
