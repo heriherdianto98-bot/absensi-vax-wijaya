@@ -73,7 +73,7 @@ const LaporanBulananReadiness = {
         code:"PENDING_PROVIDER_MAPPING",
         level:"BLOCKER",
         rows:pendingProvider,
-        amount:this.number(report?.providerMapping?.pendingShare||report?.diagnostics?.payrollPendingMapping?.providerShare),
+        amount:this.number(report?.providerMapping?.pendingShare ?? report?.diagnostics?.payrollPendingMapping?.providerShare),
         message:"Masih ada provider/capster backup yang belum dimapping."
       });
     }
