@@ -3,6 +3,7 @@
 const LaporanBulananBackupCashoutBridge = {
   normalize(v){ return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim(); },
   parseMoney(v){ const m=String(v||"").match(/Rp\s*([\d.,]+)/i); return m?Number(String(m[1]).replace(/\D/g,"")):0; },
+  stripCashierSuffix(v){ return String(v||"").replace(/\s*[-–]\s*Kasir:\s*.+$/i,"").trim(); },
   isBackupFloating(row){
     if(row?.isBackupCashoutFloating) return true;
     const r=this.normalize(row?.jabatan||"");
@@ -16,13 +17,14 @@ const LaporanBulananBackupCashoutBridge = {
     return [...new Set(out)];
   },
   match(chunk,payrollRows){
-    const n=this.normalize(chunk);
+    const label=this.stripCashierSuffix(chunk);
+    const n=this.normalize(label);
     if(!n.includes("gaji")||!n.includes("backup")||n.includes("kasir")) return null;
-    const amount=this.parseMoney(chunk); if(amount<=0) return null;
+    const amount=this.parseMoney(label); if(amount<=0) return null;
     const matches=(payrollRows||[]).filter(emp=>this.isBackupFloating(emp)&&this.aliases(emp).some(a=>n.split(" ").includes(a)||n.includes(" "+a+" ")||n.endsWith(" "+a)));
     if(matches.length!==1) return null;
     const e=matches[0];
-    return {employeeId:Number(e.employeeId||e.id),nama:e.namaKaryawan||e.nama_karyawan||"—",jabatan:e.jabatan||"Kasir Backup / Floating",amount,raw:chunk};
+    return {employeeId:Number(e.employeeId||e.id),nama:e.namaKaryawan||e.nama_karyawan||"—",jabatan:e.jabatan||"Kasir Backup / Floating",amount,raw:chunk,label};
   },
   extract({cashOutRows=[],payrollRows=[],cabangId=null}={}){
     const detail=[]; let total=0;
