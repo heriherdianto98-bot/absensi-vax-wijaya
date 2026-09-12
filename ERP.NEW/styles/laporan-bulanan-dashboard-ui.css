@@ -75,8 +75,8 @@ body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(1){--lb-card-accent:#f2c230
 body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(1) strong{color:#f7cf36}
 body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(2){--lb-card-accent:#38bdf8;--lb-card-glow:rgba(56,189,248,.34)}
 body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(2) strong{color:#7dd3fc}
-body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3){--lb-card-accent:#f59e0b;--lb-card-glow:rgba(245,158,11,.30)}
-body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3) strong{color:#fbbf24}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3){--lb-card-accent:#ef4444;--lb-card-glow:rgba(239,68,68,.38)}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3) strong{color:#f87171}
 body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(4){--lb-card-accent:#a78bfa;--lb-card-glow:rgba(167,139,250,.30)}
 body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(4) strong{color:#c4b5fd}
 body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(5){--lb-card-accent:#34d399;--lb-card-glow:rgba(52,211,153,.34)}
@@ -87,7 +87,7 @@ body.laporan-bulanan-page #lbProfitCard.is-loss strong{color:#f87171}
 /* lower cards retain dashboard material with restrained category glows */
 body.laporan-bulanan-page .lb-grid .lb-card:nth-child(1){--lb-card-accent:#f2c230;--lb-card-glow:rgba(242,194,48,.26)}
 body.laporan-bulanan-page .lb-grid .lb-card:nth-child(2){--lb-card-accent:#38bdf8;--lb-card-glow:rgba(56,189,248,.22)}
-body.laporan-bulanan-page .lb-grid .lb-card:nth-child(3){--lb-card-accent:#f59e0b;--lb-card-glow:rgba(245,158,11,.20)}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(3){--lb-card-accent:#ef4444;--lb-card-glow:rgba(239,68,68,.24)}
 body.laporan-bulanan-page .lb-grid .lb-card:nth-child(4){--lb-card-accent:#34d399;--lb-card-glow:rgba(52,211,153,.20)}
 body.laporan-bulanan-page .lb-grid .lb-card:nth-child(5){--lb-card-accent:#a78bfa;--lb-card-glow:rgba(167,139,250,.20)}
 body.laporan-bulanan-page .lb-grid .lb-card:nth-child(6){--lb-card-accent:#22d3ee;--lb-card-glow:rgba(34,211,238,.20)}
@@ -171,6 +171,71 @@ body.laporan-bulanan-page .lb-month-trigger-ico{
 .lb-month-cell.is-current:not(.is-selected)::after{content:"";display:block;width:4px;height:4px;border-radius:50%;background:#38bdf8;margin:3px auto 0;box-shadow:0 0 6px rgba(56,189,248,.65)}
 .lb-month-popover-foot{display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:10px;border-top:1px solid rgba(148,163,184,.12);font-size:10px;color:#7f8b99}
 .lb-month-today{border:0;background:transparent;color:#f2c230;font-size:11px;font-weight:900;cursor:pointer;padding:4px 0}
+
+/* =========================================================
+   CATEGORY-TINTED CARD BACKGROUNDS — UI ONLY
+   Keep the dashboard material, but let each card read by name.
+   ========================================================= */
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(1){
+  background:linear-gradient(165deg,rgba(242,194,48,.16) 0%,rgba(33,31,18,.72) 34%,#10151b 100%) !important;
+  border-color:rgba(242,194,48,.30) !important;
+}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(2){
+  background:linear-gradient(165deg,rgba(56,189,248,.16) 0%,rgba(17,31,41,.72) 34%,#10151b 100%) !important;
+  border-color:rgba(56,189,248,.28) !important;
+}
+/* Operasional = Cash Out red */
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3){
+  background:linear-gradient(165deg,rgba(220,38,38,.22) 0%,rgba(42,18,18,.86) 34%,#11151b 100%) !important;
+  border-color:rgba(220,38,38,.42) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 8px 20px rgba(0,0,0,.28),0 0 18px rgba(220,38,38,.10) !important;
+}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(4){
+  background:linear-gradient(165deg,rgba(167,139,250,.17) 0%,rgba(28,24,44,.75) 34%,#10151b 100%) !important;
+  border-color:rgba(167,139,250,.30) !important;
+}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(5){
+  background:linear-gradient(165deg,rgba(52,211,153,.16) 0%,rgba(16,36,29,.74) 34%,#10151b 100%) !important;
+  border-color:rgba(52,211,153,.30) !important;
+}
+body.laporan-bulanan-page #lbProfitCard.is-loss{
+  background:linear-gradient(165deg,rgba(239,68,68,.20) 0%,rgba(43,19,21,.82) 34%,#10151b 100%) !important;
+  border-color:rgba(239,68,68,.38) !important;
+}
+
+/* Detail cards follow their semantic category instead of one dark surface */
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(1){
+  background:linear-gradient(165deg,rgba(242,194,48,.12) 0%,rgba(31,29,18,.66) 28%,#10151b 100%) !important;
+  border-color:rgba(242,194,48,.24) !important;
+}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(2){
+  background:linear-gradient(165deg,rgba(56,189,248,.12) 0%,rgba(17,29,39,.66) 28%,#10151b 100%) !important;
+  border-color:rgba(56,189,248,.23) !important;
+}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(3){
+  background:linear-gradient(165deg,rgba(220,38,38,.17) 0%,rgba(38,18,18,.76) 28%,#11151b 100%) !important;
+  border-color:rgba(220,38,38,.34) !important;
+}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(4){
+  background:linear-gradient(165deg,rgba(52,211,153,.12) 0%,rgba(16,32,27,.68) 28%,#10151b 100%) !important;
+  border-color:rgba(52,211,153,.23) !important;
+}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(5){
+  background:linear-gradient(165deg,rgba(167,139,250,.13) 0%,rgba(28,24,41,.70) 28%,#10151b 100%) !important;
+  border-color:rgba(167,139,250,.24) !important;
+}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(6){
+  background:linear-gradient(165deg,rgba(34,211,238,.12) 0%,rgba(14,31,35,.68) 28%,#10151b 100%) !important;
+  border-color:rgba(34,211,238,.23) !important;
+}
+body.laporan-bulanan-page .lb-review{
+  background:linear-gradient(165deg,rgba(251,191,36,.11) 0%,rgba(35,29,17,.68) 28%,#10151b 100%) !important;
+  border-color:rgba(251,191,36,.23) !important;
+}
+body.laporan-bulanan-page .lb-mapping{
+  background:linear-gradient(165deg,rgba(129,140,248,.12) 0%,rgba(23,25,42,.68) 28%,#10151b 100%) !important;
+  border-color:rgba(129,140,248,.23) !important;
+}
 
 @media(prefers-reduced-motion:reduce){
   body.laporan-bulanan-page .lb-kpi{transition:none}
