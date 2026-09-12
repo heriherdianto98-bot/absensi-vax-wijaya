@@ -52,7 +52,7 @@ const LaporanBulananProviderMapping = {
     async save({ client, month, providerRow, employee, branch } = {}){
         const supabase = this.resolveClient(client);
         const periodMonth = this.normalizeMonth(month || providerRow?.tanggal || providerRow?.activity_date);
-        const sourceId = Number(providerRow?.sourceId || providerRow?.id || providerRow?.source_provider_row_id || 0);
+        const sourceId = String(providerRow?.sourceId || providerRow?.id || providerRow?.source_provider_row_id || "").trim();
         const employeeId = Number(employee?.id || employee?.employeeId || 0);
         const employeeBranchId = Number(branch?.id || employee?.cabang_id || employee?.homeCabangId || 0);
         if(!periodMonth) throw new Error("Mapping Bulanan: periode tidak valid.");
@@ -107,7 +107,7 @@ const LaporanBulananProviderMapping = {
 
     async remove({ client, sourceProviderRowId } = {}){
         const supabase = this.resolveClient(client);
-        const sourceId = Number(sourceProviderRowId || 0);
+        const sourceId = String(sourceProviderRowId || "").trim();
         if(!sourceId) throw new Error("Mapping Bulanan: provider row tidak valid.");
         const { error } = await supabase.from(this.TABLE).delete().eq("source_provider_row_id", sourceId);
         if(error) throw error;
@@ -115,7 +115,7 @@ const LaporanBulananProviderMapping = {
     },
 
     buildReview({ pendingRows = [], mappings = [], branches = [], employees = [] } = {}){
-        const mapBySource = new Map((mappings || []).map((row) => [Number(row.source_provider_row_id), row]));
+        const mapBySource = new Map((mappings || []).map((row) => [String(row.source_provider_row_id || ""), row]));
         const branchRows = (branches || []).filter((row) => !String(row?.nama_cabang || "").toLowerCase().includes("floating"));
         const employeesByBranch = new Map();
         for(const employee of (employees || [])){
@@ -130,7 +130,7 @@ const LaporanBulananProviderMapping = {
         }
 
         const rows = (pendingRows || []).map((row) => {
-            const sourceId = Number(row?.sourceId || row?.id || 0);
+            const sourceId = String(row?.sourceId || row?.id || "").trim();
             const saved = mapBySource.get(sourceId) || null;
             return {
                 sourceId,
