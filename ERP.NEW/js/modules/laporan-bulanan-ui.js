@@ -4,7 +4,7 @@
 (() => {
   const el=id=>document.getElementById(id);
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
-  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;","</":"&lt;/","<":"&lt;","&":"&amp;",'"':"&quot;","'":"&#39;"}[c]||c));
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]||c));
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
   let branches=[],employees=[],currentReport=null,booted=false,headerSyncTimer=null;
 
@@ -77,12 +77,34 @@
     if(!rows.length) return '<div class="lb-line"><span>Gaji Tukang Cukur</span><strong>—</strong></div>';
     return rows.map(row=>{
       const parts=[];
-      if(Number(row?.payroll||0)) parts.push(`Payroll ${money(row.payroll)}`);
-      if(Number(row?.mapped||0)) parts.push(`Backup Mapped ${money(row.mapped)}`);
+      if(Number(row?.payroll||0)) parts.push(`Share Cukur ${money(row.payroll)}`);
+      if(Number(row?.mapped||0)) parts.push(`Backup Capster ${money(row.mapped)}`);
       if(Number(row?.protek||0)) parts.push(`Protek ${money(row.protek)}`);
       const name=`${row?.nama||"Capster"}${row?.isBackup?" (Backup Capster)":""}`;
       const formula=parts.length?` · ${parts.join(" + ")}`:"";
       return `<div class="lb-line"><span>${esc(name)}${esc(formula)}</span><strong>${money(row?.total)}</strong></div>`;
+    }).join("");
+  }
+
+  function payrollEmployeeFormula(row){
+    const plus=[];
+    const minus=[];
+    plus.push(`Gaji Pokok ${money(row?.gajiPokok)}`);
+    if(Number(row?.bonusInsentif||0)) plus.push(`Bonus Insentif ${money(row.bonusInsentif)}`);
+    if(Number(row?.bonusKpi||0)) plus.push(`Bonus KPI ${money(row.bonusKpi)}`);
+    if(Number(row?.bonusProduk||0)) plus.push(`Bonus Produk ${money(row.bonusProduk)}`);
+    if(Number(row?.denda||0)) minus.push(`Denda ${money(row.denda)}`);
+    if(Number(row?.kasbon||0)) minus.push(`Kasbon ${money(row.kasbon)}`);
+    return `${plus.join(" + ")}${minus.length?` - ${minus.join(" - ")}`:""}`;
+  }
+
+  function nonCapsterSalaryHtml(g){
+    const rows=Array.isArray(g?.nonCapsterDetail)?g.nonCapsterDetail:[];
+    if(!rows.length) return '';
+    return rows.map(row=>{
+      const jabatan=String(row?.jabatan||"").toLowerCase();
+      const label=jabatan.includes("kasir")?`Gaji Kasir — ${row?.nama||"Kasir"}`:`Gaji ${row?.jabatan||"Karyawan"} — ${row?.nama||"Karyawan"}`;
+      return `<div class="lb-line"><span>${esc(label)} · ${esc(payrollEmployeeFormula(row))}</span><strong>${money(row?.amount)}</strong></div>`;
     }).join("");
   }
 
@@ -91,7 +113,8 @@
     setHtml("lbIncomeLines",`<div class="lb-line"><span>Pendapatan Cukur</span><strong>${money(p.cukur)}</strong></div><div class="lb-line"><span>Pendapatan Produk (Gross)</span><strong>${money(p.produkGross)}</strong></div><div class="lb-line total"><span>Total Pendapatan</span><strong>${money(p.total)}</strong></div>`);
 
     const capsterRows=capsterSalaryHtml(g);
-    setHtml("lbSalaryLines",`${capsterRows}<div class="lb-line"><span>Payroll Non-Capster</span><strong>${money(g.nonCapsterPayroll)}</strong></div><div class="lb-line"><span>Gaji SVP</span><strong>${money(g.svp)}</strong></div><div class="lb-line"><span>Gaji Backup Kasir</span><strong>${money(g.backupNamedSupplement)}</strong></div><div class="lb-line total"><span>Total Biaya Gaji</span><strong>${money(g.total)}</strong></div>`);
+    const nonCapsterRows=nonCapsterSalaryHtml(g);
+    setHtml("lbSalaryLines",`${capsterRows}${nonCapsterRows}<div class="lb-line"><span>Gaji SVP</span><strong>${money(g.svp)}</strong></div><div class="lb-line"><span>Gaji Backup Kasir</span><strong>${money(g.backupNamedSupplement)}</strong></div><div class="lb-line total"><span>Total Biaya Gaji</span><strong>${money(g.total)}</strong></div>`);
 
     setHtml("lbExpenseLines",`<div class="lb-line"><span>Biaya Operasional</span><strong>${money(x.operasional)}</strong></div><div class="lb-line"><span>Sewa Tempat</span><strong>${money(x.sewa)}</strong></div><div class="lb-line total"><span>Total Pengeluaran Non-Gaji</span><strong>${money(x.total)}</strong></div>`);
     setHtml("lbInvestorLines",inv?.nama?`<div class="lb-line"><span>Investor</span><strong>${esc(inv.nama)}</strong></div><div class="lb-line"><span>Persentase</span><strong>${Number(inv.persentase||0)}%</strong></div><div class="lb-line"><span>Bagi Hasil</span><strong>${money(inv.bagiHasil)}</strong></div><div class="lb-line"><span>Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div><div class="lb-line total"><span>Total Hak Bulan Ini</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`:'<div class="lb-ok">Cabang ini tidak memiliki investor aktif.</div>');
@@ -108,7 +131,6 @@
   function renderPerformance(report){
     const perf=report?.performance||{};
     const status=perf.status||"—";
-    const title=perf.title||"Belum ada ringkasan AI untuk periode ini";
     const finding=perf.finding||"AI Insight akan ditampilkan sebagai ringkasan sederhana untuk investor setelah object insight periode aktif tersedia.";
     const growth=Number(perf.growthPct);
     const hasGrowth=perf.growthPct!==null&&perf.growthPct!==undefined&&Number.isFinite(growth);
