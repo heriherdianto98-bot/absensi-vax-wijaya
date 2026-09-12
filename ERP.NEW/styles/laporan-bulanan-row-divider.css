@@ -1,19 +1,71 @@
 /* =========================================================
-   LAPORAN BULANAN — DATA ROW DIVIDER
+   LAPORAN BULANAN — DATA ROW DIVIDER + READABILITY
    UI ONLY. No engine/source/formula changes.
    ========================================================= */
 
 /* Semua baris data di dalam card dibuat tegas dan mudah dipisahkan. */
 body.laporan-bulanan-page .lb-lines .lb-line{
   position:relative;
-  min-height:46px;
-  padding:12px 4px!important;
+  min-height:50px;
+  padding:13px 4px!important;
   border-bottom:2px solid rgba(255,255,255,.16)!important;
   box-shadow:inset 0 -1px 0 rgba(255,255,255,.035)!important;
 }
 
 body.laporan-bulanan-page .lb-lines .lb-line:first-child{
   border-top:2px solid rgba(255,255,255,.16)!important;
+}
+
+/* Font isi card diperbesar + ditebalkan supaya lebih jelas. */
+body.laporan-bulanan-page .lb-lines .lb-line > span{
+  font-size:15px!important;
+  line-height:1.35!important;
+  font-weight:700!important;
+  color:#c6cfdb!important;
+  letter-spacing:.01em;
+}
+
+body.laporan-bulanan-page .lb-lines .lb-line > strong{
+  font-size:15px!important;
+  line-height:1.35!important;
+  font-weight:900!important;
+  color:#f5f7fb!important;
+  letter-spacing:.01em;
+}
+
+/* Judul card juga dibesarkan sedikit. */
+body.laporan-bulanan-page .lb-card-head h3{
+  font-size:17px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+  letter-spacing:.01em;
+}
+
+body.laporan-bulanan-page .lb-card-head small{
+  font-size:12px!important;
+  line-height:1.25!important;
+  font-weight:700!important;
+}
+
+/* KPI atas dibuat lebih mudah dibaca. */
+body.laporan-bulanan-page .lb-kpi > span{
+  font-size:13px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+
+body.laporan-bulanan-page .lb-kpi > strong{
+  font-size:26px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  letter-spacing:.01em!important;
+}
+
+body.laporan-bulanan-page .lb-kpi > small{
+  font-size:12px!important;
+  line-height:1.25!important;
+  font-weight:700!important;
 }
 
 /* Pembatas mengikuti accent card supaya tetap satu tema. */
@@ -60,8 +112,8 @@ body.laporan-bulanan-page .lb-card .lb-lines .lb-line:first-child::before{
 /* Total dibuat paling jelas. */
 body.laporan-bulanan-page .lb-lines .lb-line.total{
   margin-top:8px;
-  padding-top:14px!important;
-  padding-bottom:14px!important;
+  padding-top:15px!important;
+  padding-bottom:15px!important;
   border-top:3px solid color-mix(in srgb,var(--lb-accent) 72%,rgba(255,255,255,.18))!important;
   border-bottom:3px solid color-mix(in srgb,var(--lb-accent) 72%,rgba(255,255,255,.18))!important;
   background:linear-gradient(90deg,color-mix(in srgb,var(--lb-accent) 5%,transparent),transparent 56%);
@@ -74,5 +126,6 @@ body.laporan-bulanan-page .lb-lines .lb-line.total::after{
 
 body.laporan-bulanan-page .lb-lines .lb-line.total span,
 body.laporan-bulanan-page .lb-lines .lb-line.total strong{
+  font-size:16px!important;
   font-weight:900!important;
 }
