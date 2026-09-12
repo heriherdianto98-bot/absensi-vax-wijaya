@@ -91,7 +91,7 @@
 <script src="../js/modules/laporan-bulanan-payroll-adjustment-bridge.js"></script>
 <script src="../js/modules/laporan-bulanan-readiness.js"></script>
 <script src="../js/modules/laporan-bulanan-consumer.js"></script>
-<script src="../js/modules/laporan-bulanan-ui.js?v=20260912-v2"></script>
+<script src="../js/modules/laporan-bulanan-ui.js?v=20260912-v3"></script>
 <script src="../js/modules/laporan-bulanan-calendar-ui.js?v=20260912-v2"></script>
 <script src="../js/modules/laporan-bulanan-branch-ui.js?v=20260912-v1"></script>
 <script>
@@ -104,8 +104,9 @@ function activateLaporanBulananSidebar(){
 }
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
-  initErpShellChrome?.();
+  if(typeof initErpShellChrome==='function') initErpShellChrome();
   activateLaporanBulananSidebar();
+  window.LaporanBulananUI?.syncHeaderContext?.();
 }).catch(()=>{});
 </script>
 </body>
