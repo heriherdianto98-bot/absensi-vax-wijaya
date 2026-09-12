@@ -1,70 +1,57 @@
 /* =========================================================
-   LAPORAN BULANAN — DATA ROW DIVIDER + READABILITY
+   LAPORAN BULANAN — DATA ROW DIVIDER
    UI ONLY. No engine/source/formula changes.
    ========================================================= */
 
 /* Semua baris data di dalam card dibuat tegas dan mudah dipisahkan. */
 body.laporan-bulanan-page .lb-lines .lb-line{
   position:relative;
-  min-height:50px;
-  padding:13px 4px!important;
+  min-height:46px;
+  padding:12px 4px!important;
   border-bottom:2px solid rgba(255,255,255,.16)!important;
   box-shadow:inset 0 -1px 0 rgba(255,255,255,.035)!important;
+  font-size:15px!important;
+  font-weight:700!important;
 }
 
 body.laporan-bulanan-page .lb-lines .lb-line:first-child{
   border-top:2px solid rgba(255,255,255,.16)!important;
 }
 
-/* Font isi card diperbesar + ditebalkan supaya lebih jelas. */
-body.laporan-bulanan-page .lb-lines .lb-line > span{
+body.laporan-bulanan-page .lb-lines .lb-line span{
   font-size:15px!important;
-  line-height:1.35!important;
   font-weight:700!important;
-  color:#c6cfdb!important;
-  letter-spacing:.01em;
+  color:#c8d0db!important;
 }
 
-body.laporan-bulanan-page .lb-lines .lb-line > strong{
-  font-size:15px!important;
-  line-height:1.35!important;
+body.laporan-bulanan-page .lb-lines .lb-line strong{
+  font-size:16px!important;
   font-weight:900!important;
-  color:#f5f7fb!important;
   letter-spacing:.01em;
 }
 
-/* Judul card juga dibesarkan sedikit. */
 body.laporan-bulanan-page .lb-card-head h3{
-  font-size:17px!important;
-  line-height:1.2!important;
+  font-size:18px!important;
   font-weight:900!important;
-  letter-spacing:.01em;
+  letter-spacing:.005em;
 }
 
 body.laporan-bulanan-page .lb-card-head small{
   font-size:12px!important;
-  line-height:1.25!important;
   font-weight:700!important;
 }
 
-/* KPI atas dibuat lebih mudah dibaca. */
-body.laporan-bulanan-page .lb-kpi > span{
+body.laporan-bulanan-page .lb-kpi span{
   font-size:13px!important;
-  line-height:1.2!important;
   font-weight:900!important;
-  letter-spacing:.08em!important;
 }
-
-body.laporan-bulanan-page .lb-kpi > strong{
-  font-size:26px!important;
+body.laporan-bulanan-page .lb-kpi strong{
+  font-size:25px!important;
   line-height:1.15!important;
   font-weight:900!important;
-  letter-spacing:.01em!important;
 }
-
-body.laporan-bulanan-page .lb-kpi > small{
+body.laporan-bulanan-page .lb-kpi small{
   font-size:12px!important;
-  line-height:1.25!important;
   font-weight:700!important;
 }
 
@@ -112,8 +99,8 @@ body.laporan-bulanan-page .lb-card .lb-lines .lb-line:first-child::before{
 /* Total dibuat paling jelas. */
 body.laporan-bulanan-page .lb-lines .lb-line.total{
   margin-top:8px;
-  padding-top:15px!important;
-  padding-bottom:15px!important;
+  padding-top:14px!important;
+  padding-bottom:14px!important;
   border-top:3px solid color-mix(in srgb,var(--lb-accent) 72%,rgba(255,255,255,.18))!important;
   border-bottom:3px solid color-mix(in srgb,var(--lb-accent) 72%,rgba(255,255,255,.18))!important;
   background:linear-gradient(90deg,color-mix(in srgb,var(--lb-accent) 5%,transparent),transparent 56%);
@@ -124,8 +111,55 @@ body.laporan-bulanan-page .lb-lines .lb-line.total::after{
   display:none!important;
 }
 
-body.laporan-bulanan-page .lb-lines .lb-line.total span,
-body.laporan-bulanan-page .lb-lines .lb-line.total strong{
+body.laporan-bulanan-page .lb-lines .lb-line.total span{
   font-size:16px!important;
   font-weight:900!important;
+}
+body.laporan-bulanan-page .lb-lines .lb-line.total strong{
+  font-size:17px!important;
+  font-weight:900!important;
+}
+
+/* =========================================================
+   MAPPING CAPSTER BACKUP — setiap tanggal jadi kotak terpisah
+   UI ONLY. Mapping logic tetap sama.
+   ========================================================= */
+body.laporan-bulanan-page .monthly-provider-map-row{
+  position:relative;
+  margin:12px 0!important;
+  padding:16px 14px!important;
+  border:2px solid rgba(96,165,250,.34)!important;
+  border-left:4px solid #60A5FA!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#07090c 0%,#030405 100%)!important;
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.26),
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 0 16px rgba(96,165,250,.07)!important;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+body.laporan-bulanan-page .monthly-provider-map-row:hover{
+  transform:translateY(-3px);
+  border-color:rgba(96,165,250,.62)!important;
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.38),
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 0 22px rgba(96,165,250,.14)!important;
+}
+body.laporan-bulanan-page .monthly-provider-map-row + .monthly-provider-map-row{
+  margin-top:14px!important;
+}
+body.laporan-bulanan-page .monthly-provider-source strong{
+  font-size:16px!important;
+  font-weight:900!important;
+  color:#f8fafc!important;
+}
+body.laporan-bulanan-page .monthly-provider-source span{
+  font-size:14px!important;
+  font-weight:700!important;
+}
+body.laporan-bulanan-page .monthly-provider-source small,
+body.laporan-bulanan-page .monthly-provider-choice label > span,
+body.laporan-bulanan-page .monthly-provider-choice .js-map-msg{
+  font-weight:700!important;
 }
