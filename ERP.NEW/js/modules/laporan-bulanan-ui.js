@@ -12,6 +12,7 @@
   function setText(id,value){ const node=el(id); if(node && node.textContent!==String(value)) node.textContent=value; }
   function setHtml(id,value){ const node=el(id); if(node) node.innerHTML=value; }
   function statusReady(report){ return report?.readiness?.finalReady===true; }
+  function signedPct(value){ const n=Number(value); if(value==null||Number.isNaN(n)) return "—"; return n>0?`▲ +${n}%`:n<0?`▼ ${n}%`:`● 0%`; }
 
   function selectedBranchLabel(){
     const select=el("lbBranch");
@@ -102,8 +103,25 @@
   }
 
   function renderPerformance(report){
-    const perf=report?.performance||{}; const status=perf.status||"—",title=perf.title||"Belum ada ringkasan AI untuk periode ini",finding=perf.finding||"AI Insight akan ditampilkan sebagai ringkasan sederhana untuk investor setelah object insight periode aktif tersedia.";
-    setHtml("lbPerformance",`<div><span>Status</span><strong>${esc(status)}</strong></div><div><span>Ringkasan</span><strong>${esc(title)}</strong></div><div><span>Periode</span><strong>${esc(monthLabel(el("lbMonth")?.value))}</strong></div>`); setText("lbPerformanceNote",finding);
+    const perf=report?.performance||{};
+    if(!perf || (!perf.status && !perf.summary && !perf.title && perf.omzet==null)){
+      setHtml("lbPerformance",`<div><span>Status</span><strong>—</strong></div><div><span>Ringkasan</span><strong>AI Insight belum tersedia</strong></div><div><span>Periode</span><strong>${esc(monthLabel(el("lbMonth")?.value))}</strong></div>`);
+      setText("lbPerformanceNote","Ringkasan investor akan tampil setelah AI Insight Dashboard berhasil dibaca.");
+      return;
+    }
+
+    const status=perf.status||"—";
+    const summary=perf.summary||perf.title||"Ringkasan performa tersedia";
+    const priority=perf.priority||perf.finding||"";
+    setHtml("lbPerformance",[
+      `<div><span>Status</span><strong>${esc(status)}</strong></div>`,
+      `<div><span>Omzet</span><strong>${money(perf.omzet)}</strong></div>`,
+      `<div><span>Growth</span><strong>${esc(signedPct(perf.growthPct))}</strong></div>`,
+      `<div><span>Customer</span><strong>${Number(perf.customer||0).toLocaleString("id-ID")}</strong></div>`,
+      `<div><span>Avg Ticket</span><strong>${money(perf.avgTicket)}</strong></div>`,
+      `<div><span>Periode</span><strong>${esc(monthLabel(el("lbMonth")?.value))}</strong></div>`
+    ].join(""));
+    setText("lbPerformanceNote",priority ? `${summary} · Prioritas: ${priority}` : summary);
   }
 
   async function renderMapping(report){
@@ -124,7 +142,7 @@
     try{
       if(typeof LaporanBulananConsumer==="undefined") throw new Error("Consumer Bulanan belum termuat.");
       const [year,mon]=month.split("-").map(Number);
-      const report=await withTimeout(LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId}),30000,"Engine Laporan Bulanan");
+      const report=await withTimeout(LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId}),45000,"Engine Laporan Bulanan");
       currentReport=report; renderStatus(report); renderKpis(report); renderFinance(report); renderReadiness(report); renderPerformance(report); syncHeaderContext(report);
       setText("lbLoadState",`${report.branch.name} · ${monthLabel(month)} · consumer read only`);
       await renderMapping(report);
