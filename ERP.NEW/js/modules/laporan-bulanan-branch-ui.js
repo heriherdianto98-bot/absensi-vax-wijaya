@@ -1,0 +1,127 @@
+/* VAX ERP — Laporan Bulanan themed branch picker / UI only */
+"use strict";
+
+(() => {
+  const $=id=>document.getElementById(id);
+
+  function injectStyle(){
+    if(document.getElementById("lbBranchPickerStyle")) return;
+    const style=document.createElement("style");
+    style.id="lbBranchPickerStyle";
+    style.textContent=`
+      body.laporan-bulanan-page #lbBranch{
+        position:absolute!important;
+        width:1px!important;
+        height:1px!important;
+        opacity:0!important;
+        pointer-events:none!important;
+        overflow:hidden!important;
+      }
+      body.laporan-bulanan-page .lb-branch-trigger{
+        width:100%;height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+        padding:0 12px 0 14px;border:1px solid rgba(45,212,191,.35);border-radius:11px;
+        background:linear-gradient(180deg,rgba(45,212,191,.12),rgba(18,25,32,.96));
+        color:#f8fafc;font:inherit;font-size:14px;font-weight:800;cursor:pointer;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 12px rgba(45,212,191,.05);
+      }
+      body.laporan-bulanan-page .lb-branch-trigger:hover,
+      body.laporan-bulanan-page .lb-branch-trigger[aria-expanded="true"]{
+        border-color:rgba(45,212,191,.62);box-shadow:0 0 0 2px rgba(45,212,191,.08),0 0 16px rgba(45,212,191,.12);
+      }
+      .lb-branch-trigger-ico{color:#5eead4;font-size:14px;filter:drop-shadow(0 0 5px rgba(45,212,191,.35));transition:transform .15s ease}
+      .lb-branch-trigger[aria-expanded="true"] .lb-branch-trigger-ico{transform:rotate(180deg)}
+      .lb-branch-popover{
+        position:fixed;z-index:1810;width:min(520px,calc(100vw - 28px));max-height:min(430px,70vh);overflow:auto;
+        padding:8px;border:1px solid rgba(45,212,191,.42);border-radius:14px;
+        background:radial-gradient(ellipse at 50% -15%,rgba(45,212,191,.12),transparent 46%),linear-gradient(165deg,#182128 0%,#10171d 68%,#0b1016 100%);
+        box-shadow:0 22px 54px rgba(0,0,0,.62),0 0 26px rgba(45,212,191,.10),inset 0 1px 0 rgba(255,255,255,.05);
+        color:#f8fafc;animation:lbBranchIn .14s ease-out;scrollbar-width:thin;scrollbar-color:#2dd4bf #0f151b;
+      }
+      .lb-branch-popover[hidden]{display:none!important}
+      @keyframes lbBranchIn{from{opacity:0;transform:translateY(-5px) scale(.988)}to{opacity:1;transform:none}}
+      .lb-branch-option{
+        width:100%;min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+        padding:0 12px;margin:2px 0;border:1px solid transparent;border-radius:10px;background:transparent;
+        color:#d8e1e9;font:inherit;font-size:13.5px;font-weight:750;text-align:left;cursor:pointer;
+      }
+      .lb-branch-option:hover{background:rgba(45,212,191,.08);border-color:rgba(45,212,191,.20);color:#fff}
+      .lb-branch-option.is-selected{
+        color:#ffffff;border-color:rgba(45,212,191,.52);
+        background:linear-gradient(90deg,rgba(45,212,191,.20),rgba(45,212,191,.07));
+        box-shadow:inset 3px 0 0 #2dd4bf,0 0 14px rgba(45,212,191,.08);
+      }
+      .lb-branch-option.is-selected::after{content:"✓";color:#5eead4;font-size:13px;font-weight:900}
+      @media(prefers-reduced-motion:reduce){.lb-branch-popover{animation:none}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+  function syncTrigger(){
+    const select=$("lbBranch"),text=$("lbBranchTriggerText");
+    if(!select||!text) return;
+    text.textContent=select.selectedOptions?.[0]?.textContent?.trim()||"Pilih Cabang";
+  }
+
+  function renderOptions(){
+    const select=$("lbBranch"),box=$("lbBranchOptions");
+    if(!select||!box) return;
+    const current=String(select.value||"");
+    box.innerHTML=Array.from(select.options).map(o=>`<button type="button" class="lb-branch-option${String(o.value)===current?" is-selected":""}" data-value="${esc(o.value)}">${esc(o.textContent.trim())}</button>`).join("");
+    box.querySelectorAll(".lb-branch-option").forEach(btn=>btn.addEventListener("click",()=>choose(btn.dataset.value)));
+  }
+
+  function position(){
+    const trigger=$("lbBranchTrigger"),pop=$("lbBranchPopover");
+    if(!trigger||!pop) return;
+    const r=trigger.getBoundingClientRect(),gap=8,width=Math.min(Math.max(r.width,360),520,window.innerWidth-28);
+    let left=Math.min(r.left,window.innerWidth-width-14);left=Math.max(14,left);
+    let top=r.bottom+gap;
+    pop.style.width=`${width}px`;
+    pop.style.left=`${left}px`;
+    pop.style.top=`${top}px`;
+    requestAnimationFrame(()=>{
+      const h=pop.getBoundingClientRect().height;
+      if(top+h>window.innerHeight-12) pop.style.top=`${Math.max(12,r.top-h-gap)}px`;
+    });
+  }
+
+  function open(){
+    const pop=$("lbBranchPopover"),trigger=$("lbBranchTrigger");
+    if(!pop||!trigger) return;
+    renderOptions();
+    pop.hidden=false;trigger.setAttribute("aria-expanded","true");position();
+  }
+  function close(){const pop=$("lbBranchPopover"),trigger=$("lbBranchTrigger");if(pop) pop.hidden=true;trigger?.setAttribute("aria-expanded","false");}
+  function choose(value){
+    const select=$("lbBranch");if(!select) return;
+    if(String(select.value)!==String(value)){
+      select.value=value;
+      select.dispatchEvent(new Event("change",{bubbles:true}));
+    }
+    syncTrigger();close();
+  }
+
+  function build(){
+    injectStyle();
+    const select=$("lbBranch");
+    if(!select||$("lbBranchTrigger")) return;
+    const field=select.closest(".lb-field");if(!field) return;
+    const trigger=document.createElement("button");
+    trigger.type="button";trigger.id="lbBranchTrigger";trigger.className="lb-branch-trigger";trigger.setAttribute("aria-haspopup","listbox");trigger.setAttribute("aria-expanded","false");
+    trigger.innerHTML='<span id="lbBranchTriggerText">Pilih Cabang</span><span class="lb-branch-trigger-ico" aria-hidden="true">▾</span>';
+    select.insertAdjacentElement("afterend",trigger);
+    const pop=document.createElement("div");pop.id="lbBranchPopover";pop.className="lb-branch-popover";pop.hidden=true;pop.setAttribute("role","listbox");pop.innerHTML='<div id="lbBranchOptions"></div>';document.body.appendChild(pop);
+    trigger.addEventListener("click",()=>pop.hidden?open():close());
+    select.addEventListener("change",()=>{syncTrigger();renderOptions();});
+    const mo=new MutationObserver(()=>{syncTrigger();if(!pop.hidden) renderOptions();});mo.observe(select,{childList:true,subtree:true});
+    document.addEventListener("pointerdown",e=>{if(pop.hidden) return;if(pop.contains(e.target)||trigger.contains(e.target)) return;close();});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape") close();});
+    window.addEventListener("resize",()=>{if(!pop.hidden) position();});
+    window.addEventListener("scroll",()=>{if(!pop.hidden) position();},true);
+    syncTrigger();
+  }
+
+  document.readyState==="loading"?document.addEventListener("DOMContentLoaded",build):build();
+})();
