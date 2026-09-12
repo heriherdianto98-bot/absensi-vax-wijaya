@@ -3,13 +3,26 @@
 /*
 VAX ERP — Laporan Bulanan Section Switcher
 UI ONLY.
-Hanya mengatur card mana yang terlihat dan custom themed picker.
+Hanya mengatur card/section mana yang terlihat dan custom themed picker.
 Tidak menyentuh engine, source, query, formula, atau data.
 */
 (() => {
   const select=()=>document.getElementById("lbSectionView");
   const grid=()=>document.querySelector(".lb-grid");
+  const mapping=()=>document.querySelector(".lb-mapping");
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  let focusIndex=-1;
+
+  function ensureMappingOption(){
+    const picker=select();
+    if(!picker) return;
+    if(!Array.from(picker.options).some(o=>o.value==="mapping")){
+      const option=document.createElement("option");
+      option.value="mapping";
+      option.textContent="Mapping Capster Backup";
+      picker.appendChild(option);
+    }
+  }
 
   function apply(value){
     const host=grid();
@@ -17,6 +30,12 @@ Tidak menyentuh engine, source, query, formula, atau data.
     host.classList.add("lb-single-view");
     const cards=[...host.querySelectorAll(":scope > .lb-card")];
     cards.forEach(card=>card.classList.toggle("is-view-active",card.dataset.lbView===value));
+
+    const map=mapping();
+    if(map){
+      map.classList.toggle("is-view-active",value==="mapping");
+      map.setAttribute("aria-hidden",value==="mapping"?"false":"true");
+    }
   }
 
   function syncTrigger(){
@@ -26,13 +45,35 @@ Tidak menyentuh engine, source, query, formula, atau data.
     text.textContent=picker.selectedOptions?.[0]?.textContent?.trim()||"Pilih Tampilan";
   }
 
+  function optionButtons(){
+    return [...document.querySelectorAll("#lbSectionOptions .lb-section-option")];
+  }
+
+  function setFocusIndex(index,{focus=true}={}){
+    const buttons=optionButtons();
+    if(!buttons.length) return;
+    focusIndex=Math.max(0,Math.min(index,buttons.length-1));
+    buttons.forEach((btn,i)=>{
+      btn.tabIndex=i===focusIndex?0:-1;
+      btn.classList.toggle("is-key-focus",i===focusIndex);
+    });
+    if(focus) buttons[focusIndex]?.focus({preventScroll:true});
+  }
+
   function renderOptions(){
     const picker=select();
     const box=document.getElementById("lbSectionOptions");
     if(!picker||!box) return;
     const current=String(picker.value||"");
-    box.innerHTML=Array.from(picker.options).map(o=>`<button type="button" class="lb-section-option${String(o.value)===current?" is-selected":""}" data-value="${esc(o.value)}">${esc(o.textContent.trim())}</button>`).join("");
-    box.querySelectorAll(".lb-section-option").forEach(btn=>btn.addEventListener("click",()=>choose(btn.dataset.value)));
+    const opts=Array.from(picker.options);
+    const currentIndex=Math.max(0,opts.findIndex(o=>String(o.value)===current));
+    box.innerHTML=opts.map((o,i)=>`<button type="button" role="option" aria-selected="${String(o.value)===current?"true":"false"}" tabindex="${i===currentIndex?"0":"-1"}" class="lb-section-option${String(o.value)===current?" is-selected":""}" data-value="${esc(o.value)}">${esc(o.textContent.trim())}</button>`).join("");
+    focusIndex=currentIndex;
+    box.querySelectorAll(".lb-section-option").forEach((btn,i)=>{
+      btn.addEventListener("click",()=>choose(btn.dataset.value));
+      btn.addEventListener("focus",()=>{focusIndex=i;btn.classList.add("is-key-focus");});
+      btn.addEventListener("blur",()=>btn.classList.remove("is-key-focus"));
+    });
   }
 
   function position(){
@@ -51,23 +92,67 @@ Tidak menyentuh engine, source, query, formula, atau data.
     });
   }
 
-  function open(){
+  function open({focusOptions=false,direction=1}={}){
     const pop=document.getElementById("lbSectionPopover");
     const trigger=document.getElementById("lbSectionTrigger");
     if(!pop||!trigger) return;
-    renderOptions(); pop.hidden=false; trigger.setAttribute("aria-expanded","true"); position();
+    renderOptions();
+    pop.hidden=false;
+    trigger.setAttribute("aria-expanded","true");
+    position();
+    if(focusOptions){
+      const buttons=optionButtons();
+      if(direction<0 && focusIndex<0) focusIndex=buttons.length-1;
+      requestAnimationFrame(()=>setFocusIndex(focusIndex>=0?focusIndex:(direction<0?buttons.length-1:0)));
+    }
   }
-  function close(){
+
+  function close({returnFocus=false}={}){
     const pop=document.getElementById("lbSectionPopover");
     const trigger=document.getElementById("lbSectionTrigger");
     if(pop) pop.hidden=true;
     trigger?.setAttribute("aria-expanded","false");
+    optionButtons().forEach(btn=>btn.classList.remove("is-key-focus"));
+    if(returnFocus) trigger?.focus({preventScroll:true});
   }
+
   function choose(value){
     const picker=select(); if(!picker) return;
     picker.value=value;
     picker.dispatchEvent(new Event("change",{bubbles:true}));
-    syncTrigger(); close();
+    syncTrigger(); close({returnFocus:true});
+  }
+
+  function handleTriggerKey(e){
+    const pop=document.getElementById("lbSectionPopover");
+    if(["ArrowDown","ArrowUp"].includes(e.key)){
+      e.preventDefault();
+      if(pop?.hidden) open({focusOptions:true,direction:e.key==="ArrowUp"?-1:1});
+      else setFocusIndex(focusIndex+(e.key==="ArrowUp"?-1:1));
+      return;
+    }
+    if(["Enter"," "].includes(e.key)){
+      e.preventDefault();
+      pop?.hidden?open({focusOptions:true}):close({returnFocus:true});
+      return;
+    }
+    if(e.key==="Escape"&&!pop?.hidden){e.preventDefault();close({returnFocus:true});}
+  }
+
+  function handlePopoverKey(e){
+    const buttons=optionButtons();
+    if(!buttons.length) return;
+    if(e.key==="ArrowDown"){e.preventDefault();setFocusIndex((focusIndex+1)%buttons.length);return;}
+    if(e.key==="ArrowUp"){e.preventDefault();setFocusIndex((focusIndex-1+buttons.length)%buttons.length);return;}
+    if(e.key==="Home"){e.preventDefault();setFocusIndex(0);return;}
+    if(e.key==="End"){e.preventDefault();setFocusIndex(buttons.length-1);return;}
+    if(e.key==="Enter"||e.key===" "){
+      e.preventDefault();
+      const btn=buttons[focusIndex]||document.activeElement?.closest?.(".lb-section-option");
+      if(btn?.dataset?.value) choose(btn.dataset.value);
+      return;
+    }
+    if(e.key==="Escape"){e.preventDefault();close({returnFocus:true});}
   }
 
   function buildThemedPicker(){
@@ -88,12 +173,15 @@ Tidak menyentuh engine, source, query, formula, atau data.
     pop.className="lb-section-popover";
     pop.hidden=true;
     pop.setAttribute("role","listbox");
+    pop.setAttribute("aria-label","Tampilan laporan bulanan");
     pop.innerHTML='<div id="lbSectionOptions"></div>';
     document.body.appendChild(pop);
 
     trigger.addEventListener("click",()=>pop.hidden?open():close());
+    trigger.addEventListener("keydown",handleTriggerKey);
+    pop.addEventListener("keydown",handlePopoverKey);
     document.addEventListener("pointerdown",e=>{if(pop.hidden) return;if(pop.contains(e.target)||trigger.contains(e.target)) return;close();});
-    document.addEventListener("keydown",e=>{if(e.key==="Escape") close();});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!pop.hidden) close({returnFocus:true});});
     window.addEventListener("resize",()=>{if(!pop.hidden) position();});
     window.addEventListener("scroll",()=>{if(!pop.hidden) position();},true);
     syncTrigger();
@@ -104,7 +192,9 @@ Tidak menyentuh engine, source, query, formula, atau data.
     const host=grid();
     if(!picker||!host) return;
 
+    ensureMappingOption();
     const valid=[...host.querySelectorAll(":scope > .lb-card")].map(card=>card.dataset.lbView).filter(Boolean);
+    if(mapping()) valid.push("mapping");
     const initial=valid.includes(picker.value)?picker.value:(valid[0]||"");
     if(initial) picker.value=initial;
     apply(initial);
