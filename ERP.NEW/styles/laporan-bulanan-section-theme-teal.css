@@ -57,15 +57,29 @@ body.laporan-bulanan-page .lb-section-trigger-ico{
 }
 
 /* =========================================================
-   FREEZE TAMPILAN LAPORAN — FIXED + OPAQUE SHIELD
-   UI ONLY. Diposisikan pasti di bawah toolbar Cabang/Periode.
+   FREEZE STACK — KPI + TAMPILAN LAPORAN
+   UI ONLY. 5 KPI tetap terlihat dan switcher tidak menutupi KPI.
    ========================================================= */
-body.laporan-bulanan-page .lb-view-switcher{
+body.laporan-bulanan-page .lb-kpis{
   position:fixed!important;
   top:calc(var(--erp-top-header-h,72px) + 226px)!important;
   left:calc(var(--sidebar-width,220px) + 12px)!important;
   right:12px!important;
-  z-index:930!important;
+  z-index:936!important;
+  margin:0!important;
+  padding:8px 0 10px!important;
+  box-sizing:border-box!important;
+  background:#06080b!important;
+  isolation:isolate!important;
+  box-shadow:0 12px 0 #06080b,0 18px 28px rgba(0,0,0,.42)!important;
+}
+
+body.laporan-bulanan-page .lb-view-switcher{
+  position:fixed!important;
+  top:calc(var(--erp-top-header-h,72px) + 336px)!important;
+  left:calc(var(--sidebar-width,220px) + 12px)!important;
+  right:12px!important;
+  z-index:934!important;
   isolation:isolate!important;
   overflow:visible!important;
   margin:0!important;
@@ -74,7 +88,7 @@ body.laporan-bulanan-page .lb-view-switcher{
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
   box-shadow:
-    0 -14px 0 #06080b,
+    0 -10px 0 #06080b,
     0 14px 0 #06080b,
     0 20px 34px rgba(0,0,0,.58),
     inset 0 1px 0 rgba(255,255,255,.035),
@@ -86,7 +100,7 @@ body.laporan-bulanan-page .lb-view-switcher::before{
   z-index:-1;
   left:-4px;
   right:-4px;
-  top:-14px;
+  top:-10px;
   bottom:-14px;
   border-radius:16px;
   background:#06080b;
@@ -103,28 +117,36 @@ body.laporan-bulanan-page .lb-view-switcher::after{
   pointer-events:none;
 }
 
-/* Karena switcher fixed keluar dari flow, sisakan ruang agar card aktif tidak ketiban. */
+/* KPI + switcher fixed keluar dari flow; sisakan ruang sebelum card aktif. */
 body.laporan-bulanan-page .lb-grid{
-  margin-top:92px!important;
+  margin-top:205px!important;
 }
 
+body.sidebar-collapsed.laporan-bulanan-page .lb-kpis,
 body.sidebar-collapsed.laporan-bulanan-page .lb-view-switcher,
+body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-kpis,
 body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-view-switcher{
   left:calc(var(--sidebar-collapse,72px) + 12px)!important;
 }
 
 @media(max-width:900px){
-  body.laporan-bulanan-page .lb-view-switcher{
+  body.laporan-bulanan-page .lb-kpis{
     top:calc(var(--erp-top-header-h,72px) + 226px)!important;
     left:8px!important;
     right:8px!important;
   }
+  body.laporan-bulanan-page .lb-view-switcher{
+    top:calc(var(--erp-top-header-h,72px) + 336px)!important;
+    left:8px!important;
+    right:8px!important;
+  }
   body.laporan-bulanan-page .lb-grid{
-    margin-top:92px!important;
+    margin-top:205px!important;
   }
 }
 
 @media print{
+  body.laporan-bulanan-page .lb-kpis,
   body.laporan-bulanan-page .lb-view-switcher{
     position:static!important;
     top:auto!important;
