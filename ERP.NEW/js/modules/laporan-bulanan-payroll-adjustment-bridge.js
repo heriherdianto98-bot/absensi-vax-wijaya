@@ -5,10 +5,7 @@ VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V1
 Consumer-only bridge.
 - Reads Payroll with manual adjustments already applied.
 - Reconciles report payroll amount to adjusted Payroll result.
-- Exposes Payroll bonus breakdown for Monthly display:
-  Bonus Insentif, Bonus KPI, Bonus Produk.
-- Bonus breakdown is READ ONLY and is NOT added again to total,
-  because it is already included in Payroll Gaji Bersih.
+- Exposes per-employee payroll components for Monthly display.
 - Does NOT modify Payroll engine or payroll tables.
 =========================================================
 */
@@ -29,10 +26,13 @@ const LaporanBulananPayrollAdjustmentBridge = {
     for(const employee of rows){
       if(employee?.isBackupCashoutFloating){
         const daily=(employee.daily||[]).filter(d=>Number(d?.cabangId)===id);
-        const amount=daily.reduce((sum,d)=>sum+this.number(d?.gajiPokok)-this.number(d?.denda)-this.number(d?.kasbon)+this.number(d?.bonusProduk),0);
+        const gajiPokok=daily.reduce((sum,d)=>sum+this.number(d?.gajiPokok),0);
+        const denda=daily.reduce((sum,d)=>sum+this.number(d?.denda),0);
+        const kasbon=daily.reduce((sum,d)=>sum+this.number(d?.kasbon),0);
         const employeeBonusInsentif=daily.reduce((sum,d)=>sum+this.number(d?.bonusInsentif),0);
         const employeeBonusKpi=daily.reduce((sum,d)=>sum+this.number(d?.bonusKpi),0);
         const employeeBonusProduk=daily.reduce((sum,d)=>sum+this.number(d?.bonusProduk),0);
+        const amount=gajiPokok-denda-kasbon+employeeBonusInsentif+employeeBonusKpi+employeeBonusProduk;
         bonusInsentif+=employeeBonusInsentif;
         bonusKpi+=employeeBonusKpi;
         bonusProduk+=employeeBonusProduk;
@@ -43,10 +43,12 @@ const LaporanBulananPayrollAdjustmentBridge = {
             nama:employee.namaKaryawan,
             jabatan:employee.jabatan,
             amount,
+            gajiPokok,denda,kasbon,
             bonusInsentif:employeeBonusInsentif,
             bonusKpi:employeeBonusKpi,
             bonusProduk:employeeBonusProduk,
-            source:"PAYROLL_FLOATING_BRANCH_DAILY"
+            source:"PAYROLL_FLOATING_BRANCH_DAILY",
+            isCapster:Boolean(employee?.isCapster)
           });
         }
         continue;
@@ -68,6 +70,9 @@ const LaporanBulananPayrollAdjustmentBridge = {
         nama:employee.namaKaryawan,
         jabatan:employee.jabatan,
         amount,
+        gajiPokok:this.number(summary.gajiPokok),
+        denda:this.number(summary.denda),
+        kasbon:this.number(summary.kasbon),
         bonusInsentif:employeeBonusInsentif,
         bonusKpi:employeeBonusKpi,
         bonusProduk:employeeBonusProduk,
@@ -76,13 +81,7 @@ const LaporanBulananPayrollAdjustmentBridge = {
       });
     }
 
-    return {
-      total,
-      detail,
-      bonusInsentif,
-      bonusKpi,
-      bonusProduk
-    };
+    return {total,detail,bonusInsentif,bonusKpi,bonusProduk};
   },
 
   apply(report,payrollDataset){
@@ -93,13 +92,9 @@ const LaporanBulananPayrollAdjustmentBridge = {
     report.gaji=report.gaji||{};
     report.gaji.payroll=branch.total;
     report.gaji.payrollDetail=branch.detail;
-
-    // Breakdown only. These three values are already part of Payroll gajiBersih.
-    // Do not add them again to report.gaji.total.
     report.gaji.bonusInsentif=this.number(branch.bonusInsentif);
     report.gaji.bonusKpi=this.number(branch.bonusKpi);
     report.gaji.bonusProduk=this.number(branch.bonusProduk);
-
     report.gaji.total=this.number(report.gaji.total)+delta;
 
     report.laba=report.laba||{};
