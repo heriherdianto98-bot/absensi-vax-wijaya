@@ -6,13 +6,14 @@ UI / READ ONLY consumer only.
 - Tidak mengubah DashboardEngine, AI Insight, DailyDataEngine, source data, atau formula.
 - Memperjelas angka customer periode aktif memakai summary + previousSummary Dashboard existing.
 - Membuat kesimpulan tahunan dari seri omzet Jan–Des yang sama dengan grafik Dashboard.
+- Render ke host khusus agar tidak ditimpa renderPerformance() UI utama.
 */
 (() => {
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
   const el=id=>document.getElementById(id);
   const idn=n=>Number(n||0).toLocaleString("id-ID");
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
-  let seq=0;
+  let seq=0,refreshTimer=null,noteObserver=null;
 
   function context(){
     const branchId=Number(el("lbBranch")?.value||0);
@@ -29,8 +30,8 @@ UI / READ ONLY consumer only.
   }
 
   function renderCustomerDetail(){
-    const host=el("lbPerformanceNote");
-    if(!host || typeof DashboardEngine==="undefined") return;
+    const host=el("lbPerformanceExplain");
+    if(!host || typeof DashboardEngine==="undefined") return false;
     const cur=Number(DashboardEngine.summary?.customer||0);
     const prev=Number(DashboardEngine.previousSummary?.customer||0);
     const tr=DashboardEngine.trends?.customer||{};
@@ -38,7 +39,7 @@ UI / READ ONLY consumer only.
     const pct=tr?.pct==null?null:Number(tr.pct);
     const t=tone(delta);
 
-    host.classList.add("lb-performance-explain");
+    host.className="lb-performance-explain-host lb-performance-explain";
     host.innerHTML=`
       <div class="lb-perf-explain-row ${t}">
         <span class="lb-perf-explain-icon">${arrow(delta)}</span>
@@ -50,6 +51,7 @@ UI / READ ONLY consumer only.
       </div>
       <div id="lbAnnualPerformanceConclusion" class="lb-perf-annual-conclusion is-loading">Menganalisis tren omzet Jan–Des…</div>
     `;
+    return true;
   }
 
   async function renderAnnualConclusion(){
@@ -112,21 +114,33 @@ UI / READ ONLY consumer only.
   }
 
   async function refresh(){
-    // Beri waktu UI utama selesai merender performance dan AI bridge selesai memuat DashboardEngine.
-    for(let i=0;i<20;i++){
-      if(typeof DashboardEngine!=="undefined" && el("lbPerformanceNote")) break;
+    for(let i=0;i<30;i++){
+      if(typeof DashboardEngine!=="undefined" && el("lbPerformanceExplain")) break;
       await new Promise(r=>setTimeout(r,100));
     }
-    renderCustomerDetail();
+    if(!renderCustomerDetail()) return;
     await renderAnnualConclusion();
   }
 
+  function scheduleRefresh(delay=180){
+    if(refreshTimer) clearTimeout(refreshTimer);
+    refreshTimer=setTimeout(()=>{ refreshTimer=null; refresh(); },delay);
+  }
+
   function bind(){
-    const later=()=>setTimeout(refresh,250);
-    el("lbBranch")?.addEventListener("change",later);
-    el("lbMonth")?.addEventListener("change",later);
-    el("lbRefresh")?.addEventListener("click",later);
-    setTimeout(refresh,1200);
+    el("lbBranch")?.addEventListener("change",()=>scheduleRefresh(350));
+    el("lbMonth")?.addEventListener("change",()=>scheduleRefresh(350));
+    el("lbRefresh")?.addEventListener("click",()=>scheduleRefresh(350));
+
+    // UI utama menulis finding ke lbPerformanceNote saat report selesai.
+    // Observe node itu hanya sebagai sinyal render selesai; hasil kita ditulis ke host lain.
+    const note=el("lbPerformanceNote");
+    if(note && typeof MutationObserver!=="undefined"){
+      noteObserver=new MutationObserver(()=>scheduleRefresh(120));
+      noteObserver.observe(note,{childList:true,characterData:true,subtree:true});
+    }
+
+    scheduleRefresh(1200);
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind,{once:true});
