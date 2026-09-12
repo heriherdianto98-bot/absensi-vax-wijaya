@@ -255,9 +255,31 @@ body.laporan-bulanan-page .lb-view-switcher{
   margin:0 0 14px!important;
 }
 
+/* =========================================================
+   ALIGN JUDUL + TOOLBAR KE KIRI — UI ONLY
+   Layout sebelumnya masih ter-offset satu lebar sidebar ke kanan.
+   Geser dua blok visual ini saja agar sejajar dengan KPI/card laporan.
+   ========================================================= */
+body.laporan-bulanan-page .lb-head,
+body.laporan-bulanan-page .lb-toolbar{
+  margin-left:calc(-1 * var(--sidebar-width,220px))!important;
+  margin-right:0!important;
+}
+
+body.sidebar-collapsed.laporan-bulanan-page .lb-head,
+body.sidebar-collapsed.laporan-bulanan-page .lb-toolbar,
+body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-head,
+body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-toolbar{
+  margin-left:calc(-1 * var(--sidebar-collapse,72px))!important;
+}
+
 @media(max-width:900px){
   body.laporan-bulanan-page .lb-wrap{padding:8px 0 40px!important}
   body.laporan-bulanan-page .lb-view-switcher{top:calc(var(--erp-top-header-h,72px) + 4px)!important}
+  body.laporan-bulanan-page .lb-head,
+  body.laporan-bulanan-page .lb-toolbar{
+    margin-left:0!important;
+  }
 }
 
 @media print{
@@ -277,5 +299,9 @@ body.laporan-bulanan-page .lb-view-switcher{
   body.laporan-bulanan-page .lb-view-switcher{
     position:static!important;
     top:auto!important;
+  }
+  body.laporan-bulanan-page .lb-head,
+  body.laporan-bulanan-page .lb-toolbar{
+    margin-left:0!important;
   }
 }
