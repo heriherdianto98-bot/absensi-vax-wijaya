@@ -18,15 +18,15 @@
     const style=document.createElement("style");
     style.id="lbUniqueCardColorOverrides";
     style.textContent=`
-      /* UI ONLY — unique semantic colors for every Laporan Bulanan card */
+      /* UI ONLY — premium investor palette: graphite base + semantic accents */
       body.laporan-bulanan-page .lb-toolbar{
         position:relative;
         overflow:hidden;
-        border-color:rgba(45,212,191,.32) !important;
+        border-color:rgba(242,194,48,.24) !important;
         background:
-          linear-gradient(180deg,rgba(45,212,191,.10),rgba(45,212,191,.025) 42%,rgba(242,194,48,.035)),
-          linear-gradient(165deg,#172128 0%,#121920 58%,#0f141a 100%) !important;
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 18px rgba(0,0,0,.22),0 0 18px rgba(45,212,191,.06) !important;
+          linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.008)),
+          linear-gradient(165deg,#171c23 0%,#12171e 58%,#0f141a 100%) !important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 18px rgba(0,0,0,.22),0 0 14px rgba(242,194,48,.035) !important;
       }
       body.laporan-bulanan-page .lb-toolbar::before{
         content:"";
@@ -36,101 +36,73 @@
         top:0;
         height:1px;
         background:linear-gradient(90deg,transparent,#2dd4bf 30%,#f2c230 70%,transparent);
-        box-shadow:0 0 12px rgba(45,212,191,.28);
+        opacity:.7;
+        box-shadow:0 0 10px rgba(45,212,191,.16);
         pointer-events:none;
       }
+      body.laporan-bulanan-page .lb-toolbar .lb-field:first-child .lb-branch-trigger,
       body.laporan-bulanan-page .lb-toolbar .lb-field:first-child select{
-        border-color:rgba(45,212,191,.26) !important;
-        background:linear-gradient(180deg,rgba(45,212,191,.09),rgba(17,24,31,.95)) !important;
+        border-color:rgba(45,212,191,.24) !important;
+        background:linear-gradient(180deg,#1a2229 0%,#141a21 100%) !important;
       }
       body.laporan-bulanan-page .lb-month-trigger{
-        border-color:rgba(168,85,247,.30) !important;
-        background:linear-gradient(180deg,rgba(168,85,247,.10),rgba(18,24,32,.96)) !important;
+        border-color:rgba(167,139,250,.24) !important;
+        background:linear-gradient(180deg,#1b2029 0%,#151a22 100%) !important;
       }
       body.laporan-bulanan-page .lb-btn{
-        border-color:rgba(242,194,48,.48) !important;
-        background:linear-gradient(180deg,rgba(242,194,48,.19),rgba(242,194,48,.08)) !important;
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 14px rgba(242,194,48,.06);
+        border-color:rgba(242,194,48,.42) !important;
+        background:linear-gradient(180deg,rgba(242,194,48,.14),rgba(242,194,48,.055)) !important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 12px rgba(242,194,48,.04);
       }
 
-      /* KPI cards — all five intentionally different */
-      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(1){
-        --lb-card-accent:#f2c230;--lb-card-glow:rgba(242,194,48,.42);
-        background:linear-gradient(165deg,rgba(242,194,48,.22) 0%,rgba(46,38,14,.80) 32%,#10151b 100%) !important;
-        border-color:rgba(242,194,48,.38) !important;
-      }
-      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(2){
-        --lb-card-accent:#38bdf8;--lb-card-glow:rgba(56,189,248,.35);
-        background:linear-gradient(165deg,rgba(56,189,248,.20) 0%,rgba(12,36,49,.80) 32%,#10151b 100%) !important;
-        border-color:rgba(56,189,248,.36) !important;
-      }
-      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3){
-        --lb-card-accent:#ef4444;--lb-card-glow:rgba(239,68,68,.40);
-        background:linear-gradient(165deg,rgba(239,68,68,.24) 0%,rgba(52,18,22,.88) 32%,#11151b 100%) !important;
-        border-color:rgba(239,68,68,.46) !important;
-      }
-      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(4){
-        --lb-card-accent:#a78bfa;--lb-card-glow:rgba(167,139,250,.36);
-        background:linear-gradient(165deg,rgba(167,139,250,.22) 0%,rgba(37,28,61,.82) 32%,#10151b 100%) !important;
-        border-color:rgba(167,139,250,.38) !important;
-      }
-      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(5){
-        --lb-card-accent:#34d399;--lb-card-glow:rgba(52,211,153,.38);
-        background:linear-gradient(165deg,rgba(52,211,153,.22) 0%,rgba(13,47,37,.82) 32%,#10151b 100%) !important;
-        border-color:rgba(52,211,153,.38) !important;
+      /* Common premium graphite body. Differentiation comes from accent, top glow and typography. */
+      body.laporan-bulanan-page .lb-kpi,
+      body.laporan-bulanan-page .lb-card{
+        background:
+          linear-gradient(180deg,rgba(255,255,255,.034) 0%,rgba(255,255,255,.01) 20%,rgba(255,255,255,0) 46%),
+          linear-gradient(165deg,#171c23 0%,#12171e 55%,#0f141a 100%) !important;
+        border-color:color-mix(in srgb,var(--lb-card-accent,#d4af37) 20%,rgba(148,163,184,.22)) !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,.05),
+          inset 0 -1px 0 rgba(0,0,0,.28),
+          0 8px 18px rgba(0,0,0,.23),
+          0 0 12px color-mix(in srgb,var(--lb-card-accent,#d4af37) 5%,transparent) !important;
       }
 
-      /* Detail cards — every card uses a separate hue family */
-      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(1){
-        --lb-card-accent:#f59e0b;--lb-card-glow:rgba(245,158,11,.30);
-        background:linear-gradient(165deg,rgba(245,158,11,.18),rgba(47,31,11,.72) 30%,#10151b 100%) !important;
-        border-color:rgba(245,158,11,.34) !important;
-      }
-      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(2){
-        --lb-card-accent:#06b6d4;--lb-card-glow:rgba(6,182,212,.28);
-        background:linear-gradient(165deg,rgba(6,182,212,.18),rgba(8,38,47,.74) 30%,#10151b 100%) !important;
-        border-color:rgba(6,182,212,.34) !important;
-      }
-      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(3){
-        --lb-card-accent:#dc2626;--lb-card-glow:rgba(220,38,38,.32);
-        background:linear-gradient(165deg,rgba(220,38,38,.22),rgba(51,17,20,.82) 30%,#11151b 100%) !important;
-        border-color:rgba(220,38,38,.44) !important;
-      }
-      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(4){
-        --lb-card-accent:#22c55e;--lb-card-glow:rgba(34,197,94,.28);
-        background:linear-gradient(165deg,rgba(34,197,94,.18),rgba(13,43,25,.76) 30%,#10151b 100%) !important;
-        border-color:rgba(34,197,94,.34) !important;
-      }
-      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(5){
-        --lb-card-accent:#d946ef;--lb-card-glow:rgba(217,70,239,.28);
-        background:linear-gradient(165deg,rgba(217,70,239,.18),rgba(48,20,53,.75) 30%,#10151b 100%) !important;
-        border-color:rgba(217,70,239,.34) !important;
-      }
-      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(6){
-        --lb-card-accent:#14b8a6;--lb-card-glow:rgba(20,184,166,.28);
-        background:linear-gradient(165deg,rgba(20,184,166,.18),rgba(10,42,39,.76) 30%,#10151b 100%) !important;
-        border-color:rgba(20,184,166,.34) !important;
-      }
-      body.laporan-bulanan-page .lb-review{
-        --lb-card-accent:#fb923c;--lb-card-glow:rgba(251,146,60,.27);
-        background:linear-gradient(165deg,rgba(251,146,60,.17),rgba(50,29,12,.76) 30%,#10151b 100%) !important;
-        border-color:rgba(251,146,60,.34) !important;
-      }
-      body.laporan-bulanan-page .lb-mapping{
-        --lb-card-accent:#6366f1;--lb-card-glow:rgba(99,102,241,.28);
-        background:linear-gradient(165deg,rgba(99,102,241,.18),rgba(29,29,60,.78) 30%,#10151b 100%) !important;
-        border-color:rgba(99,102,241,.35) !important;
-      }
+      /* KPI accents */
+      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(1){--lb-card-accent:#f2c230;--lb-card-glow:rgba(242,194,48,.26)}
+      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(2){--lb-card-accent:#38bdf8;--lb-card-glow:rgba(56,189,248,.22)}
+      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3){--lb-card-accent:#ef4444;--lb-card-glow:rgba(239,68,68,.28);border-color:rgba(239,68,68,.36) !important}
+      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(4){--lb-card-accent:#a78bfa;--lb-card-glow:rgba(167,139,250,.22)}
+      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(5){--lb-card-accent:#34d399;--lb-card-glow:rgba(52,211,153,.23)}
 
-      /* category title tint so scanning is faster */
+      /* Detail card accents — restrained but clearly distinct */
+      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(1){--lb-card-accent:#f59e0b;--lb-card-glow:rgba(245,158,11,.17)}
+      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(2){--lb-card-accent:#06b6d4;--lb-card-glow:rgba(6,182,212,.16)}
+      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(3){--lb-card-accent:#dc2626;--lb-card-glow:rgba(220,38,38,.20);border-color:rgba(220,38,38,.30) !important}
+      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(4){--lb-card-accent:#22c55e;--lb-card-glow:rgba(34,197,94,.16)}
+      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(5){--lb-card-accent:#c084fc;--lb-card-glow:rgba(192,132,252,.16)}
+      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(6){--lb-card-accent:#14b8a6;--lb-card-glow:rgba(20,184,166,.16)}
+      body.laporan-bulanan-page .lb-review{--lb-card-accent:#fb923c;--lb-card-glow:rgba(251,146,60,.15)}
+      body.laporan-bulanan-page .lb-mapping{--lb-card-accent:#818cf8;--lb-card-glow:rgba(129,140,248,.15)}
+
+      /* Header stays mostly neutral, only title carries the category accent */
+      body.laporan-bulanan-page .lb-card-head{
+        background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.006)) !important;
+        border-bottom-color:rgba(148,163,184,.12) !important;
+      }
       body.laporan-bulanan-page .lb-grid .lb-card:nth-child(1) .lb-card-head h3{color:#fbbf24}
       body.laporan-bulanan-page .lb-grid .lb-card:nth-child(2) .lb-card-head h3{color:#67e8f9}
       body.laporan-bulanan-page .lb-grid .lb-card:nth-child(3) .lb-card-head h3{color:#f87171}
       body.laporan-bulanan-page .lb-grid .lb-card:nth-child(4) .lb-card-head h3{color:#4ade80}
-      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(5) .lb-card-head h3{color:#e879f9}
+      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(5) .lb-card-head h3{color:#d8b4fe}
       body.laporan-bulanan-page .lb-grid .lb-card:nth-child(6) .lb-card-head h3{color:#5eead4}
       body.laporan-bulanan-page .lb-review .lb-card-head h3{color:#fdba74}
       body.laporan-bulanan-page .lb-mapping .lb-card-head h3{color:#a5b4fc}
+
+      /* Keep Operasional intentionally strongest like Cash Out */
+      body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3)::before,
+      body.laporan-bulanan-page .lb-grid .lb-card:nth-child(3)::before{opacity:.78}
     `;
     document.head.appendChild(style);
   }
