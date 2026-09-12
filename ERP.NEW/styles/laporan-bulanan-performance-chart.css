@@ -1,0 +1,65 @@
+/* =========================================================
+   LAPORAN BULANAN — PERFORMANCE CHART JAN–DES
+   UI ONLY · READ ONLY CONSUMER
+   ========================================================= */
+body.laporan-bulanan-page #lbPerformanceChart{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid rgba(45,212,191,.18);
+}
+body.laporan-bulanan-page .lb-perf-chart-meta{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:10px;
+}
+body.laporan-bulanan-page .lb-perf-chart-meta>div:first-child{display:flex;flex-direction:column;gap:3px}
+body.laporan-bulanan-page .lb-perf-chart-meta strong{font-size:15px;font-weight:900;color:#f8fafc}
+body.laporan-bulanan-page .lb-perf-chart-meta span{font-size:11px;font-weight:700;color:#7f8b99}
+body.laporan-bulanan-page .lb-perf-chart-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+body.laporan-bulanan-page .lb-perf-chart-chips span{
+  display:inline-flex;align-items:center;gap:7px;padding:7px 9px;border-radius:9px;
+  border:1px solid rgba(45,212,191,.16);background:#070a0d;color:#8794a2!important
+}
+body.laporan-bulanan-page .lb-perf-chart-chips b{font-size:11px;font-weight:900;color:#d8f9f4}
+body.laporan-bulanan-page .lb-perf-chart-svg-wrap{
+  position:relative;border:1px solid rgba(34,211,238,.14);border-radius:12px;
+  background:linear-gradient(180deg,#07090c 0%,#020405 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 8px 18px rgba(0,0,0,.22);
+  overflow:hidden;
+}
+body.laporan-bulanan-page .lb-perf-chart-svg{display:block;width:100%;height:auto;min-height:260px}
+body.laporan-bulanan-page .lb-perf-grid{stroke:rgba(148,163,184,.12);stroke-width:1}
+body.laporan-bulanan-page .lb-perf-axis-y{fill:#708090;font-size:12px;font-weight:700}
+body.laporan-bulanan-page .lb-perf-axis-x{fill:#a5b4c3;font-size:12px;font-weight:900}
+body.laporan-bulanan-page .lb-perf-line{
+  fill:none;stroke:#22d3ee;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1600;stroke-dashoffset:1600;animation:lbPerfDraw .85s ease forwards;
+}
+body.laporan-bulanan-page .lb-perf-point circle:first-child{
+  fill:#071014;stroke:#67e8f9;stroke-width:3;transition:transform .18s ease,fill .18s ease,stroke-width .18s ease;
+  transform-box:fill-box;transform-origin:center;
+}
+body.laporan-bulanan-page .lb-perf-point:hover circle:first-child{
+  transform:scale(1.45);fill:#22d3ee;stroke-width:2;filter:drop-shadow(0 0 8px rgba(34,211,238,.75));
+}
+body.laporan-bulanan-page .lb-perf-hit{fill:transparent;stroke:none;cursor:pointer}
+body.laporan-bulanan-page .lb-perf-chart-state{
+  display:flex;align-items:center;justify-content:center;gap:8px;min-height:180px;
+  border:1px dashed rgba(34,211,238,.20);border-radius:12px;background:#050709;color:#8ea0af;font-weight:800;
+}
+body.laporan-bulanan-page .lb-perf-chart-state.is-loading i{
+  width:8px;height:8px;border-radius:50%;background:#22d3ee;box-shadow:0 0 12px rgba(34,211,238,.75);
+  animation:lbPerfPulse 1s ease-in-out infinite;
+}
+body.laporan-bulanan-page .lb-perf-chart-state.is-error{color:#fca5a5;border-color:rgba(248,113,113,.24)}
+@keyframes lbPerfDraw{to{stroke-dashoffset:0}}
+@keyframes lbPerfPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.45)}}
+@media(max-width:900px){
+  body.laporan-bulanan-page .lb-perf-chart-meta{flex-direction:column}
+  body.laporan-bulanan-page .lb-perf-chart-chips{justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+  body.laporan-bulanan-page .lb-perf-line,
+  body.laporan-bulanan-page .lb-perf-chart-state.is-loading i{animation:none!important;stroke-dashoffset:0!important}
+}
+@media print{
+  body.laporan-bulanan-page .lb-perf-line{animation:none!important;stroke-dashoffset:0!important}
+}
