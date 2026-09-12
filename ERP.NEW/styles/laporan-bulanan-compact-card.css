@@ -29,11 +29,11 @@ body.laporan-bulanan-page .lb-lines .lb-line{
   min-height:30px!important;
   padding:5px 4px!important;
   border-top:0!important;
-  border-bottom:1px solid rgba(148,163,184,.14)!important;
+  border-bottom:1px dotted rgba(148,163,184,.34)!important;
   box-shadow:none!important;
 }
 body.laporan-bulanan-page .lb-lines .lb-line:first-child{
-  border-top:1px solid rgba(148,163,184,.10)!important;
+  border-top:1px dotted rgba(148,163,184,.24)!important;
 }
 
 /* Hilangkan divider glow warna-warni; pakai garis tipis netral. */
@@ -46,8 +46,8 @@ body.laporan-bulanan-page .lb-lines .lb-line.total{
   margin-top:3px!important;
   min-height:34px!important;
   padding:6px 4px!important;
-  border-top:1px solid rgba(242,194,48,.34)!important;
-  border-bottom:1px solid rgba(242,194,48,.34)!important;
+  border-top:1px dotted rgba(148,163,184,.42)!important;
+  border-bottom:1px dotted rgba(148,163,184,.42)!important;
   background:linear-gradient(90deg,rgba(242,194,48,.02),transparent 58%)!important;
 }
 
@@ -300,6 +300,35 @@ body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-perf-explain-row
 body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-perf-annual-conclusion{
   background-color:#000!important;
   background-image:none!important;
+}
+
+/* =========================================================
+   TAMPILAN LAPORAN — STATIC CARD + DOTTED ROW DIVIDERS
+   UI ONLY. Card laporan tidak melayang/bergerak saat hover agar
+   pemeriksaan angka stabil, dan tiap baris diberi pembatas titik-titik.
+   ========================================================= */
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view],
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view]:hover,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view]:focus-within,
+body.laporan-bulanan-page .lb-mapping,
+body.laporan-bulanan-page .lb-mapping:hover,
+body.laporan-bulanan-page .lb-mapping:focus-within{
+  transform:none!important;
+  translate:none!important;
+  animation:none!important;
+  transition:none!important;
+  box-shadow:none!important;
+}
+
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-line{
+  border-bottom:1px dotted rgba(148,163,184,.34)!important;
+}
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-line:first-child{
+  border-top:1px dotted rgba(148,163,184,.22)!important;
+}
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-line.total{
+  border-top:1px dotted rgba(148,163,184,.44)!important;
+  border-bottom:1px dotted rgba(148,163,184,.44)!important;
 }
 
 @media print{
