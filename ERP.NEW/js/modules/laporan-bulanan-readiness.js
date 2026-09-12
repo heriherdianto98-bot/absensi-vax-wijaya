@@ -60,20 +60,33 @@ const LaporanBulananReadiness = {
       });
     }
 
-    // IMPORTANT: when provider mapping has already been evaluated for this report,
-    // pendingRows=0 is a valid resolved state and must NOT fall back to stale diagnostics.
-    const mappedPending=report?.providerMapping?.pendingRows;
+    /*
+      Provider mapping truth for Monthly lives in diagnostics.providerMapping,
+      produced AFTER consumer mappings are applied.
+      payrollPendingMapping is raw Payroll diagnostics BEFORE Monthly mapping and
+      must only be used as a compatibility fallback when Monthly diagnostics do
+      not exist at all.
+    */
+    const monthlyProvider=report?.diagnostics?.providerMapping;
+    const monthlyPendingRows=monthlyProvider?.pendingRows;
+    const rawPayrollPending=report?.diagnostics?.payrollPendingMapping;
     const pendingProvider=Number(
-      mappedPending !== undefined && mappedPending !== null
-        ? mappedPending
-        : (report?.diagnostics?.payrollPendingMapping?.rows||0)
+      monthlyPendingRows !== undefined && monthlyPendingRows !== null
+        ? monthlyPendingRows
+        : (rawPayrollPending?.rows||0)
     );
+    const pendingProviderAmount=this.number(
+      monthlyProvider?.pendingAmount !== undefined && monthlyProvider?.pendingAmount !== null
+        ? monthlyProvider.pendingAmount
+        : rawPayrollPending?.providerShare
+    );
+
     if(pendingProvider>0){
       issues.push({
         code:"PENDING_PROVIDER_MAPPING",
         level:"BLOCKER",
         rows:pendingProvider,
-        amount:this.number(report?.providerMapping?.pendingShare ?? report?.diagnostics?.payrollPendingMapping?.providerShare),
+        amount:pendingProviderAmount,
         message:"Masih ada provider/capster backup yang belum dimapping."
       });
     }
@@ -86,7 +99,9 @@ const LaporanBulananReadiness = {
         fixedSalaryMissingCount:missingFixedSalary.length,
         cashoutCashierSalary:signals.cashierSalary.reduce((s,r)=>s+this.number(r.nominal),0),
         cashoutCashierBonus:cashoutBonusTotal,
-        payrollBonus:payrollBonusTotal
+        payrollBonus:payrollBonusTotal,
+        providerPendingRows:pendingProvider,
+        providerPendingAmount:pendingProviderAmount
       }
     };
   }
