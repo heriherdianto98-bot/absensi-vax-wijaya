@@ -1,0 +1,23 @@
+/* =========================================================
+   LAPORAN BULANAN — FREEZE TITLE OFFSET FIX
+   UI ONLY. Keeps title below the global fixed ERP header.
+   ========================================================= */
+body.laporan-bulanan-page .lb-head{
+  position:sticky!important;
+  top:var(--erp-top-header-h,72px)!important;
+  z-index:900!important;
+}
+
+@media(max-width:900px){
+  body.laporan-bulanan-page .lb-head{
+    top:var(--erp-top-header-h,72px)!important;
+  }
+}
+
+@media print{
+  body.laporan-bulanan-page .lb-head{
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+  }
+}
