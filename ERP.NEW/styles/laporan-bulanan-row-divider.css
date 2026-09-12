@@ -13,153 +13,62 @@ body.laporan-bulanan-page .lb-lines .lb-line{
   font-size:15px!important;
   font-weight:700!important;
 }
+body.laporan-bulanan-page .lb-lines .lb-line:first-child{border-top:2px solid rgba(255,255,255,.16)!important}
+body.laporan-bulanan-page .lb-lines .lb-line span{font-size:15px!important;font-weight:700!important;color:#c8d0db!important}
+body.laporan-bulanan-page .lb-lines .lb-line strong{font-size:16px!important;font-weight:900!important;letter-spacing:.01em}
+body.laporan-bulanan-page .lb-card-head h3{font-size:18px!important;font-weight:900!important;letter-spacing:.005em}
+body.laporan-bulanan-page .lb-card-head small{font-size:12px!important;font-weight:700!important}
+body.laporan-bulanan-page .lb-kpi span{font-size:13px!important;font-weight:900!important}
+body.laporan-bulanan-page .lb-kpi strong{font-size:25px!important;line-height:1.15!important;font-weight:900!important}
+body.laporan-bulanan-page .lb-kpi small{font-size:12px!important;font-weight:700!important}
 
-body.laporan-bulanan-page .lb-lines .lb-line:first-child{
-  border-top:2px solid rgba(255,255,255,.16)!important;
-}
-
-body.laporan-bulanan-page .lb-lines .lb-line span{
-  font-size:15px!important;
-  font-weight:700!important;
-  color:#c8d0db!important;
-}
-
-body.laporan-bulanan-page .lb-lines .lb-line strong{
-  font-size:16px!important;
-  font-weight:900!important;
-  letter-spacing:.01em;
-}
-
-body.laporan-bulanan-page .lb-card-head h3{
-  font-size:18px!important;
-  font-weight:900!important;
-  letter-spacing:.005em;
-}
-
-body.laporan-bulanan-page .lb-card-head small{
-  font-size:12px!important;
-  font-weight:700!important;
-}
-
-body.laporan-bulanan-page .lb-kpi span{
-  font-size:13px!important;
-  font-weight:900!important;
-}
-body.laporan-bulanan-page .lb-kpi strong{
-  font-size:25px!important;
-  line-height:1.15!important;
-  font-weight:900!important;
-}
-body.laporan-bulanan-page .lb-kpi small{
-  font-size:12px!important;
-  font-weight:700!important;
-}
-
-/* Pembatas mengikuti accent card supaya tetap satu tema. */
 body.laporan-bulanan-page .lb-card .lb-lines .lb-line::after{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:-2px;
-  height:2px;
-  pointer-events:none;
-  background:linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in srgb,var(--lb-accent) 42%,transparent) 12%,
-    color-mix(in srgb,var(--lb-accent) 72%,transparent) 50%,
-    color-mix(in srgb,var(--lb-accent) 42%,transparent) 88%,
-    transparent 100%
-  );
-  box-shadow:0 0 8px color-mix(in srgb,var(--lb-accent) 16%,transparent);
-  opacity:.78;
+  content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,color-mix(in srgb,var(--lb-accent) 42%,transparent) 12%,color-mix(in srgb,var(--lb-accent) 72%,transparent) 50%,color-mix(in srgb,var(--lb-accent) 42%,transparent) 88%,transparent 100%);
+  box-shadow:0 0 8px color-mix(in srgb,var(--lb-accent) 16%,transparent);opacity:.78
 }
-
 body.laporan-bulanan-page .lb-card .lb-lines .lb-line:first-child::before{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  top:-2px;
-  height:2px;
-  pointer-events:none;
-  background:linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in srgb,var(--lb-accent) 42%,transparent) 12%,
-    color-mix(in srgb,var(--lb-accent) 72%,transparent) 50%,
-    color-mix(in srgb,var(--lb-accent) 42%,transparent) 88%,
-    transparent 100%
-  );
-  box-shadow:0 0 8px color-mix(in srgb,var(--lb-accent) 16%,transparent);
-  opacity:.78;
+  content:"";position:absolute;left:0;right:0;top:-2px;height:2px;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,color-mix(in srgb,var(--lb-accent) 42%,transparent) 12%,color-mix(in srgb,var(--lb-accent) 72%,transparent) 50%,color-mix(in srgb,var(--lb-accent) 42%,transparent) 88%,transparent 100%);
+  box-shadow:0 0 8px color-mix(in srgb,var(--lb-accent) 16%,transparent);opacity:.78
 }
-
-/* Total dibuat paling jelas. */
 body.laporan-bulanan-page .lb-lines .lb-line.total{
-  margin-top:8px;
-  padding-top:14px!important;
-  padding-bottom:14px!important;
+  margin-top:8px;padding-top:14px!important;padding-bottom:14px!important;
   border-top:3px solid color-mix(in srgb,var(--lb-accent) 72%,rgba(255,255,255,.18))!important;
   border-bottom:3px solid color-mix(in srgb,var(--lb-accent) 72%,rgba(255,255,255,.18))!important;
-  background:linear-gradient(90deg,color-mix(in srgb,var(--lb-accent) 5%,transparent),transparent 56%);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--lb-accent) 5%,transparent),transparent 56%)
 }
-
 body.laporan-bulanan-page .lb-lines .lb-line.total::before,
-body.laporan-bulanan-page .lb-lines .lb-line.total::after{
-  display:none!important;
-}
+body.laporan-bulanan-page .lb-lines .lb-line.total::after{display:none!important}
+body.laporan-bulanan-page .lb-lines .lb-line.total span{font-size:16px!important;font-weight:900!important}
+body.laporan-bulanan-page .lb-lines .lb-line.total strong{font-size:17px!important;font-weight:900!important}
 
-body.laporan-bulanan-page .lb-lines .lb-line.total span{
-  font-size:16px!important;
-  font-weight:900!important;
-}
-body.laporan-bulanan-page .lb-lines .lb-line.total strong{
-  font-size:17px!important;
-  font-weight:900!important;
-}
-
-/* =========================================================
-   MAPPING CAPSTER BACKUP — setiap tanggal jadi kotak terpisah
-   UI ONLY. Mapping logic tetap sama.
-   ========================================================= */
+/* Mapping Capster Backup — setiap tanggal kotak terpisah */
 body.laporan-bulanan-page .monthly-provider-map-row{
-  position:relative;
-  margin:12px 0!important;
-  padding:16px 14px!important;
-  border:2px solid rgba(96,165,250,.34)!important;
-  border-left:4px solid #60A5FA!important;
-  border-radius:12px!important;
+  position:relative;margin:12px 0!important;padding:16px 14px!important;
+  border:2px solid rgba(96,165,250,.34)!important;border-left:4px solid #60A5FA!important;border-radius:12px!important;
   background:linear-gradient(180deg,#07090c 0%,#030405 100%)!important;
-  box-shadow:
-    0 8px 20px rgba(0,0,0,.26),
-    inset 0 1px 0 rgba(255,255,255,.035),
-    0 0 16px rgba(96,165,250,.07)!important;
-  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+  box-shadow:0 8px 20px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.035),0 0 16px rgba(96,165,250,.07)!important;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease
 }
 body.laporan-bulanan-page .monthly-provider-map-row:hover{
-  transform:translateY(-3px);
-  border-color:rgba(96,165,250,.62)!important;
-  box-shadow:
-    0 14px 28px rgba(0,0,0,.38),
-    inset 0 1px 0 rgba(255,255,255,.05),
-    0 0 22px rgba(96,165,250,.14)!important;
+  transform:translateY(-3px);border-color:rgba(96,165,250,.62)!important;
+  box-shadow:0 14px 28px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05),0 0 22px rgba(96,165,250,.14)!important
 }
-body.laporan-bulanan-page .monthly-provider-map-row + .monthly-provider-map-row{
-  margin-top:14px!important;
-}
-body.laporan-bulanan-page .monthly-provider-source strong{
-  font-size:16px!important;
-  font-weight:900!important;
-  color:#f8fafc!important;
-}
-body.laporan-bulanan-page .monthly-provider-source span{
-  font-size:14px!important;
-  font-weight:700!important;
-}
+body.laporan-bulanan-page .monthly-provider-map-row + .monthly-provider-map-row{margin-top:14px!important}
+body.laporan-bulanan-page .monthly-provider-source strong{font-size:16px!important;font-weight:900!important;color:#f8fafc!important}
+body.laporan-bulanan-page .monthly-provider-source span{font-size:14px!important;font-weight:700!important}
 body.laporan-bulanan-page .monthly-provider-source small,
 body.laporan-bulanan-page .monthly-provider-choice label > span,
-body.laporan-bulanan-page .monthly-provider-choice .js-map-msg{
-  font-weight:700!important;
+body.laporan-bulanan-page .monthly-provider-choice .js-map-msg{font-weight:700!important}
+
+/* Manual historical employee name — muncul bila pilih LAINNYA */
+body.laporan-bulanan-page .monthly-provider-manual{display:none!important;grid-column:1 / span 2}
+body.laporan-bulanan-page .monthly-provider-manual.is-open{display:flex!important;flex-direction:column;gap:6px}
+body.laporan-bulanan-page .monthly-provider-manual input{
+  width:100%;height:42px;padding:0 12px;border-radius:10px;
+  border:1px solid rgba(96,165,250,.42);background:#121722;color:#F8FAFC;
+  font:inherit;font-size:14px;font-weight:800;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)
 }
+body.laporan-bulanan-page .monthly-provider-manual input:focus{border-color:#60A5FA;box-shadow:0 0 0 3px rgba(96,165,250,.10),0 0 16px rgba(96,165,250,.10)}
+body.laporan-bulanan-page .monthly-provider-manual input::placeholder{color:#718096;font-weight:650}
