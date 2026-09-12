@@ -1,9 +1,9 @@
 /* =========================================================
-   LAPORAN BULANAN — FIXED TITLE CARD
-   UI ONLY. Keeps title permanently frozen below global header.
+   LAPORAN BULANAN — FIXED TITLE + FILTER TOOLBAR
+   UI ONLY. Keeps title and Cabang/Periode toolbar frozen below global header.
    ========================================================= */
 
-/* Judul laporan dibuat fixed seperti global headbar, bukan sticky. */
+/* Judul laporan dibuat fixed seperti global headbar. */
 body.laporan-bulanan-page .lb-head{
   position:fixed!important;
   top:var(--erp-top-header-h,72px)!important;
@@ -66,26 +66,49 @@ body.laporan-bulanan-page .lb-head::after{
   100%{transform:rotate(360deg) scale(1)}
 }
 
-/* Sisakan ruang agar toolbar/content tidak tertutup card judul fixed. */
+/* Toolbar Cabang + Periode ikut freeze tepat di bawah judul, tanpa jarak kosong besar. */
 body.laporan-bulanan-page .lb-head + .lb-toolbar{
-  margin-top:132px!important;
+  position:fixed!important;
+  top:calc(var(--erp-top-header-h,72px) + 118px)!important;
+  left:calc(var(--sidebar-width,220px) + var(--content-pad-x,14px) + 26px)!important;
+  right:calc(var(--content-pad-x,14px) + 26px)!important;
+  z-index:940!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  background:linear-gradient(180deg,rgba(13,18,24,.995) 0%,rgba(7,10,14,.995) 100%)!important;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 12px 24px rgba(0,0,0,.34),0 1px 0 rgba(242,194,48,.08)!important;
+}
+
+/* Karena head + toolbar fixed keluar dari flow, isi dimulai setelah keduanya. */
+body.laporan-bulanan-page #lbLoadState{
+  margin-top:214px!important;
 }
 
 /* Saat sidebar collapse, posisi fixed ikut bergeser mengikuti shell ERP. */
 body.sidebar-collapsed.laporan-bulanan-page .lb-head,
-body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-head{
+body.sidebar-collapsed.laporan-bulanan-page .lb-head + .lb-toolbar,
+body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-head,
+body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-head + .lb-toolbar{
   left:calc(var(--sidebar-collapse,72px) + var(--content-pad-x,14px) + 26px)!important;
 }
 
 /* Mobile: sidebar tidak mengambil ruang kiri. */
 @media(max-width:900px){
-  body.laporan-bulanan-page .lb-head{
+  body.laporan-bulanan-page .lb-head,
+  body.laporan-bulanan-page .lb-head + .lb-toolbar{
     left:12px!important;
     right:12px!important;
+  }
+  body.laporan-bulanan-page .lb-head{
     top:var(--erp-top-header-h,72px)!important;
   }
   body.laporan-bulanan-page .lb-head + .lb-toolbar{
-    margin-top:132px!important;
+    top:calc(var(--erp-top-header-h,72px) + 118px)!important;
+  }
+  body.laporan-bulanan-page #lbLoadState{
+    margin-top:214px!important;
   }
 }
 
@@ -95,20 +118,26 @@ body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-head{
 
 /* Print/PDF tidak memakai freeze / animasi. */
 @media print{
-  body.laporan-bulanan-page .lb-head{
+  body.laporan-bulanan-page .lb-head,
+  body.laporan-bulanan-page .lb-head + .lb-toolbar{
     position:static!important;
     top:auto!important;
     left:auto!important;
     right:auto!important;
     z-index:auto!important;
+  }
+  body.laporan-bulanan-page .lb-head{
     margin:-2px -4px 18px!important;
     overflow:visible!important;
+  }
+  body.laporan-bulanan-page .lb-head + .lb-toolbar{
+    margin-bottom:16px!important;
   }
   body.laporan-bulanan-page .lb-head::before,
   body.laporan-bulanan-page .lb-head::after{
     display:none!important;
   }
-  body.laporan-bulanan-page .lb-head + .lb-toolbar{
+  body.laporan-bulanan-page #lbLoadState{
     margin-top:0!important;
   }
 }
