@@ -1,0 +1,61 @@
+/* =========================================================
+   LAPORAN BULANAN — HOVER LIFT / UI ONLY
+   Adds a stronger floating effect without touching engine/data.
+   ========================================================= */
+
+body.laporan-bulanan-page .lb-kpi,
+body.laporan-bulanan-page .lb-card{
+  transform:translateY(0) scale(1);
+  transform-origin:center;
+  will-change:transform,box-shadow,filter;
+  transition:
+    transform .22s cubic-bezier(.2,.75,.25,1),
+    box-shadow .22s ease,
+    filter .22s ease,
+    border-color .22s ease !important;
+}
+
+body.laporan-bulanan-page .lb-kpi:hover,
+body.laporan-bulanan-page .lb-card:hover{
+  transform:translateY(-7px) scale(1.012) !important;
+  filter:brightness(1.06) !important;
+  z-index:8;
+}
+
+body.laporan-bulanan-page .lb-kpi:hover{
+  box-shadow:
+    0 18px 34px rgba(0,0,0,.52),
+    0 8px 18px rgba(0,0,0,.32),
+    0 0 30px color-mix(in srgb,var(--lb-accent,#F2C230) 22%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+
+body.laporan-bulanan-page .lb-card:hover{
+  box-shadow:
+    0 20px 38px rgba(0,0,0,.50),
+    0 8px 20px rgba(0,0,0,.30),
+    0 0 26px color-mix(in srgb,var(--lb-accent,#F2C230) 18%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+body.laporan-bulanan-page .lb-kpi:hover::before,
+body.laporan-bulanan-page .lb-card:hover::before{
+  opacity:1 !important;
+  filter:drop-shadow(0 0 8px var(--lb-accent,#F2C230));
+}
+
+body.laporan-bulanan-page .lb-kpi:hover strong,
+body.laporan-bulanan-page .lb-card:hover .lb-card-head h3{
+  text-shadow:0 0 16px color-mix(in srgb,var(--lb-accent,#F2C230) 34%,transparent);
+}
+
+@media (prefers-reduced-motion: reduce){
+  body.laporan-bulanan-page .lb-kpi,
+  body.laporan-bulanan-page .lb-card{
+    transition:none !important;
+  }
+  body.laporan-bulanan-page .lb-kpi:hover,
+  body.laporan-bulanan-page .lb-card:hover{
+    transform:none !important;
+  }
+}
