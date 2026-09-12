@@ -57,25 +57,26 @@ body.laporan-bulanan-page .lb-section-trigger-ico{
 }
 
 /* =========================================================
-   FREEZE TAMPILAN LAPORAN — OPAQUE SHIELD
-   UI ONLY. Menahan section picker di bawah toolbar Cabang/Periode
-   dan menutup penuh konten yang bergerak di belakangnya.
+   FREEZE TAMPILAN LAPORAN — FIXED + OPAQUE SHIELD
+   UI ONLY. Diposisikan pasti di bawah toolbar Cabang/Periode.
    ========================================================= */
 body.laporan-bulanan-page .lb-view-switcher{
-  position:sticky!important;
-  top:calc(var(--erp-top-header-h,72px) + 224px)!important;
+  position:fixed!important;
+  top:calc(var(--erp-top-header-h,72px) + 226px)!important;
+  left:calc(var(--sidebar-width,220px) + 12px)!important;
+  right:12px!important;
   z-index:930!important;
   isolation:isolate!important;
   overflow:visible!important;
-  margin-top:0!important;
-  margin-bottom:14px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
   background:#061014!important;
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
   box-shadow:
-    0 -12px 0 #06080b,
-    0 12px 0 #06080b,
-    0 18px 30px rgba(0,0,0,.52),
+    0 -14px 0 #06080b,
+    0 14px 0 #06080b,
+    0 20px 34px rgba(0,0,0,.58),
     inset 0 1px 0 rgba(255,255,255,.035),
     0 0 0 1px rgba(34,211,238,.18)!important;
 }
@@ -83,10 +84,10 @@ body.laporan-bulanan-page .lb-view-switcher::before{
   content:"";
   position:absolute;
   z-index:-1;
-  left:-2px;
-  right:-2px;
-  top:-12px;
-  bottom:-12px;
+  left:-4px;
+  right:-4px;
+  top:-14px;
+  bottom:-14px;
   border-radius:16px;
   background:#06080b;
   pointer-events:none;
@@ -102,9 +103,24 @@ body.laporan-bulanan-page .lb-view-switcher::after{
   pointer-events:none;
 }
 
+/* Karena switcher fixed keluar dari flow, sisakan ruang agar card aktif tidak ketiban. */
+body.laporan-bulanan-page .lb-grid{
+  margin-top:92px!important;
+}
+
+body.sidebar-collapsed.laporan-bulanan-page .lb-view-switcher,
+body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-view-switcher{
+  left:calc(var(--sidebar-collapse,72px) + 12px)!important;
+}
+
 @media(max-width:900px){
   body.laporan-bulanan-page .lb-view-switcher{
-    top:calc(var(--erp-top-header-h,72px) + 224px)!important;
+    top:calc(var(--erp-top-header-h,72px) + 226px)!important;
+    left:8px!important;
+    right:8px!important;
+  }
+  body.laporan-bulanan-page .lb-grid{
+    margin-top:92px!important;
   }
 }
 
@@ -112,11 +128,16 @@ body.laporan-bulanan-page .lb-view-switcher::after{
   body.laporan-bulanan-page .lb-view-switcher{
     position:static!important;
     top:auto!important;
+    left:auto!important;
+    right:auto!important;
     z-index:auto!important;
     box-shadow:none!important;
   }
   body.laporan-bulanan-page .lb-view-switcher::before,
   body.laporan-bulanan-page .lb-view-switcher::after{
     display:none!important;
+  }
+  body.laporan-bulanan-page .lb-grid{
+    margin-top:0!important;
   }
 }
