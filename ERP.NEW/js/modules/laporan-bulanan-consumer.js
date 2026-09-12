@@ -64,7 +64,28 @@ const LaporanBulananConsumer = {
     const client=args.client||(typeof db!=="undefined"?db:window.db);
     this.installMasterReadBridge(client);
 
-    const report=await LaporanBulananEngine.loadMonth(args);
+    let insight=args.insight||null;
+    if(!insight && typeof LaporanBulananAiInsightBridge!=="undefined"){
+      try{
+        insight=await LaporanBulananAiInsightBridge.load({
+          year:args.year,
+          month:args.month,
+          cabangId:args.cabangId
+        });
+      }catch(err){
+        // AI summary is presentation-only. Failure must never block finance report.
+        console.warn("[Laporan Bulanan AI Insight]",err);
+      }
+    }
+
+    const report=await LaporanBulananEngine.loadMonth({...args,insight});
+    if(insight?.__monthlyInvestor){
+      report.performance={
+        ...(report.performance||{}),
+        ...insight.__monthlyInvestor
+      };
+    }
+
     let payrollDataset=null;
 
     if(typeof PayrollUnifiedEngine!=="undefined"){
