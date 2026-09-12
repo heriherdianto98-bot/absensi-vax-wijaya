@@ -91,6 +91,11 @@ body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body::-webkit-scro
   display:none!important;
 }
 
+/* Jarak visual antara Kelengkapan Data dan Mapping Capster Backup. */
+body.laporan-bulanan-page .lb-review + .lb-mapping{
+  margin-top:32px!important;
+}
+
 /* Baris mapping juga dirapatkan sedikit tanpa mengubah field/action. */
 body.laporan-bulanan-page .monthly-provider-map-row{
   margin:7px 0!important;
