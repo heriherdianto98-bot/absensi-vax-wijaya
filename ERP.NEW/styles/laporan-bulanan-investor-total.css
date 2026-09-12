@@ -1,0 +1,80 @@
+/* =========================================================
+   LAPORAN BULANAN — TOTAL HAK INVESTOR SPLIT UI
+   UI ONLY. No engine/source/formula changes.
+   ========================================================= */
+
+@keyframes lbInvestorTotalBoxPulse{
+  0%,100%{
+    transform:translateY(0) scale(1);
+    box-shadow:0 12px 28px rgba(0,0,0,.42),0 0 12px rgba(242,194,48,.08),inset 0 1px 0 rgba(255,255,255,.03)
+  }
+  50%{
+    transform:translateY(-2px) scale(1.012);
+    box-shadow:0 18px 36px rgba(0,0,0,.50),0 0 28px rgba(242,194,48,.22),inset 0 1px 0 rgba(255,255,255,.05)
+  }
+}
+
+/* Total Hak Bulan Ini = label 1 baris besar + nominal di kotak hitam terpisah */
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total{
+  display:block!important;
+  min-height:0!important;
+  margin-top:10px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total::before,
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total::after{
+  display:none!important;
+}
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total span{
+  display:block!important;
+  width:100%!important;
+  padding:15px 4px 12px!important;
+  margin:0 0 10px!important;
+  border-top:3px solid rgba(167,139,250,.72)!important;
+  border-bottom:2px solid rgba(167,139,250,.36)!important;
+  background:linear-gradient(90deg,rgba(167,139,250,.07),transparent 58%)!important;
+  color:#f4f0ff!important;
+  font-size:21px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  letter-spacing:.01em!important;
+  text-transform:uppercase!important;
+}
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-height:112px!important;
+  margin:0!important;
+  padding:18px 20px!important;
+  border:1px solid rgba(242,194,48,.42)!important;
+  border-left:5px solid #F2C230!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#060708 0%,#010203 100%)!important;
+  color:#FFD45A!important;
+  font-size:40px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.015em!important;
+  text-align:center!important;
+  text-shadow:0 0 12px rgba(242,194,48,.20)!important;
+  animation:lbInvestorTotalBoxPulse 2.2s ease-in-out infinite!important;
+  transform-origin:center center!important;
+}
+
+@media(max-width:900px){
+  body.laporan-bulanan-page #lbInvestorLines .lb-line.total span{font-size:18px!important}
+  body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{font-size:32px!important;min-height:96px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{animation:none!important}
+}
+
+@media print{
+  body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{animation:none!important}
+}
