@@ -55,3 +55,68 @@ body.laporan-bulanan-page .lb-section-trigger-ico{
 .lb-section-option.is-selected::after{
   color:#f2c230!important;
 }
+
+/* =========================================================
+   FREEZE TAMPILAN LAPORAN — OPAQUE SHIELD
+   UI ONLY. Menahan section picker di bawah toolbar Cabang/Periode
+   dan menutup penuh konten yang bergerak di belakangnya.
+   ========================================================= */
+body.laporan-bulanan-page .lb-view-switcher{
+  position:sticky!important;
+  top:calc(var(--erp-top-header-h,72px) + 224px)!important;
+  z-index:930!important;
+  isolation:isolate!important;
+  overflow:visible!important;
+  margin-top:0!important;
+  margin-bottom:14px!important;
+  background:#061014!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:
+    0 -12px 0 #06080b,
+    0 12px 0 #06080b,
+    0 18px 30px rgba(0,0,0,.52),
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 0 0 1px rgba(34,211,238,.18)!important;
+}
+body.laporan-bulanan-page .lb-view-switcher::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:-2px;
+  right:-2px;
+  top:-12px;
+  bottom:-12px;
+  border-radius:16px;
+  background:#06080b;
+  pointer-events:none;
+}
+body.laporan-bulanan-page .lb-view-switcher::after{
+  content:"";
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:-1px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(34,211,238,.42),transparent);
+  pointer-events:none;
+}
+
+@media(max-width:900px){
+  body.laporan-bulanan-page .lb-view-switcher{
+    top:calc(var(--erp-top-header-h,72px) + 224px)!important;
+  }
+}
+
+@media print{
+  body.laporan-bulanan-page .lb-view-switcher{
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+    box-shadow:none!important;
+  }
+  body.laporan-bulanan-page .lb-view-switcher::before,
+  body.laporan-bulanan-page .lb-view-switcher::after{
+    display:none!important;
+  }
+}
