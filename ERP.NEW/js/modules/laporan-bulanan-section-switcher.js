@@ -13,6 +13,146 @@ Tidak menyentuh engine, source, query, formula, atau data.
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   let focusIndex=-1;
 
+  function injectCompactViewportStyle(){
+    if(document.getElementById("lbCompactViewportStyle")) return;
+    const style=document.createElement("style");
+    style.id="lbCompactViewportStyle";
+    style.textContent=`
+      /* Full-width monthly viewport — page UI only */
+      body.laporan-bulanan-page .erp-content{
+        padding-left:0!important;
+        padding-right:0!important;
+      }
+      body.laporan-bulanan-page .lb-wrap{
+        width:100%!important;
+        max-width:none!important;
+        padding-left:12px!important;
+        padding-right:12px!important;
+        box-sizing:border-box!important;
+      }
+
+      /* Frozen title + toolbar align to the viewport edges. */
+      body.laporan-bulanan-page .lb-head,
+      body.laporan-bulanan-page .lb-head + .lb-toolbar{
+        left:calc(var(--sidebar-width,220px) + 12px)!important;
+        right:12px!important;
+      }
+      body.sidebar-collapsed.laporan-bulanan-page .lb-head,
+      body.sidebar-collapsed.laporan-bulanan-page .lb-head + .lb-toolbar,
+      body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-head,
+      body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-head + .lb-toolbar{
+        left:calc(var(--sidebar-collapse,72px) + 12px)!important;
+      }
+
+      /* Opaque frozen toolbar: no card/text may bleed through while scrolling. */
+      body.laporan-bulanan-page .lb-head + .lb-toolbar{
+        isolation:isolate!important;
+        overflow:visible!important;
+        background:#06080b!important;
+        backdrop-filter:none!important;
+        -webkit-backdrop-filter:none!important;
+        box-shadow:
+          0 -14px 0 #06080b,
+          0 12px 0 #06080b,
+          0 18px 30px rgba(0,0,0,.48),
+          inset 0 1px 0 rgba(255,255,255,.035)!important;
+      }
+      body.laporan-bulanan-page .lb-head + .lb-toolbar::before{
+        content:"";
+        position:absolute;
+        z-index:-1;
+        left:-2px;right:-2px;top:-12px;bottom:-10px;
+        border-radius:16px;
+        background:#06080b;
+        pointer-events:none;
+      }
+
+      /* Compact single-section review: one block in view; long content scrolls inside the card. */
+      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{
+        width:100%!important;
+        max-height:310px!important;
+        min-height:0!important;
+        overflow:hidden!important;
+      }
+      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-head{
+        padding:10px 14px!important;
+        min-height:46px!important;
+      }
+      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body{
+        padding:10px 14px!important;
+        max-height:252px!important;
+        overflow-y:auto!important;
+        overscroll-behavior:contain;
+        scrollbar-width:thin;
+        scrollbar-color:rgba(167,139,250,.72) #080a0d;
+      }
+      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body::-webkit-scrollbar,
+      body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body::-webkit-scrollbar{
+        width:8px;
+      }
+      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body::-webkit-scrollbar-track,
+      body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body::-webkit-scrollbar-track{
+        background:#080a0d;
+      }
+      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body::-webkit-scrollbar-thumb,
+      body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body::-webkit-scrollbar-thumb{
+        background:linear-gradient(180deg,#a78bfa,#f2c230);
+        border-radius:999px;
+      }
+
+      /* Mapping follows the same compact viewport rule when selected. */
+      body.laporan-bulanan-page .lb-mapping.is-view-active{
+        width:100%!important;
+        max-height:340px!important;
+        min-height:0!important;
+        overflow:hidden!important;
+      }
+      body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-head{
+        padding:10px 14px!important;
+        min-height:46px!important;
+      }
+      body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
+        padding:10px 14px!important;
+        max-height:282px!important;
+        overflow-y:auto!important;
+        overscroll-behavior:contain;
+        scrollbar-width:thin;
+        scrollbar-color:rgba(96,165,250,.72) #080a0d;
+      }
+
+      @media(max-width:900px){
+        body.laporan-bulanan-page .lb-head,
+        body.laporan-bulanan-page .lb-head + .lb-toolbar{
+          left:8px!important;
+          right:8px!important;
+        }
+        body.laporan-bulanan-page .lb-wrap{
+          padding-left:8px!important;
+          padding-right:8px!important;
+        }
+        body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{
+          max-height:360px!important;
+        }
+        body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body{
+          max-height:302px!important;
+        }
+      }
+
+      @media print{
+        body.laporan-bulanan-page .erp-content{padding-left:inherit!important;padding-right:inherit!important}
+        body.laporan-bulanan-page .lb-wrap{max-width:1500px!important;padding-left:26px!important;padding-right:26px!important}
+        body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active,
+        body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body,
+        body.laporan-bulanan-page .lb-mapping.is-view-active,
+        body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
+          max-height:none!important;
+          overflow:visible!important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function ensureMappingOption(){
     const picker=select();
     if(!picker) return;
@@ -192,6 +332,7 @@ Tidak menyentuh engine, source, query, formula, atau data.
     const host=grid();
     if(!picker||!host) return;
 
+    injectCompactViewportStyle();
     ensureMappingOption();
     const valid=[...host.querySelectorAll(":scope > .lb-card")].map(card=>card.dataset.lbView).filter(Boolean);
     if(mapping()) valid.push("mapping");
