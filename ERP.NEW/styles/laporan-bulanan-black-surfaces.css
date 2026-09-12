@@ -1,0 +1,24 @@
+/* =========================================================
+   LAPORAN BULANAN — BLACK SURFACE OVERRIDES
+   UI ONLY. Tidak mengubah engine/source/formula/data.
+   ========================================================= */
+
+/* Kelengkapan Data: panel utama hitam solid, aksen/peringatan merah tetap. */
+body.laporan-bulanan-page .lb-review,
+body.laporan-bulanan-page .lb-review .lb-card-head,
+body.laporan-bulanan-page .lb-review .lb-card-body{
+  background:#000!important;
+  background-image:none!important;
+}
+
+/* Baris warning tetap terbaca sebagai warning, tapi permukaannya hitam. */
+body.laporan-bulanan-page .lb-review .lb-issue{
+  background:#000!important;
+  background-image:none!important;
+}
+
+/* Kotak nominal Total Hak Bulan Ini hitam solid. */
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{
+  background:#000!important;
+  background-image:none!important;
+}
