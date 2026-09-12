@@ -4,7 +4,7 @@
 (() => {
   const el=id=>document.getElementById(id);
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
-  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;","&gt;":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
   let branches=[],employees=[],currentReport=null,booted=false,headerSyncTimer=null;
 
@@ -12,7 +12,6 @@
   function setText(id,value){ const node=el(id); if(node && node.textContent!==String(value)) node.textContent=value; }
   function setHtml(id,value){ const node=el(id); if(node) node.innerHTML=value; }
   function statusReady(report){ return report?.readiness?.finalReady===true; }
-  function signedPct(value){ const n=Number(value); if(value==null||Number.isNaN(n)) return "—"; return n>0?`▲ +${n}%`:n<0?`▼ ${n}%`:`● 0%`; }
 
   function selectedBranchLabel(){
     const select=el("lbBranch");
@@ -104,24 +103,17 @@
 
   function renderPerformance(report){
     const perf=report?.performance||{};
-    if(!perf || (!perf.status && !perf.summary && !perf.title && perf.omzet==null)){
-      setHtml("lbPerformance",`<div><span>Status</span><strong>—</strong></div><div><span>Ringkasan</span><strong>AI Insight belum tersedia</strong></div><div><span>Periode</span><strong>${esc(monthLabel(el("lbMonth")?.value))}</strong></div>`);
-      setText("lbPerformanceNote","Ringkasan investor akan tampil setelah AI Insight Dashboard berhasil dibaca.");
-      return;
-    }
-
     const status=perf.status||"—";
-    const summary=perf.summary||perf.title||"Ringkasan performa tersedia";
-    const priority=perf.priority||perf.finding||"";
-    setHtml("lbPerformance",[
-      `<div><span>Status</span><strong>${esc(status)}</strong></div>`,
-      `<div><span>Omzet</span><strong>${money(perf.omzet)}</strong></div>`,
-      `<div><span>Growth</span><strong>${esc(signedPct(perf.growthPct))}</strong></div>`,
-      `<div><span>Customer</span><strong>${Number(perf.customer||0).toLocaleString("id-ID")}</strong></div>`,
-      `<div><span>Avg Ticket</span><strong>${money(perf.avgTicket)}</strong></div>`,
-      `<div><span>Periode</span><strong>${esc(monthLabel(el("lbMonth")?.value))}</strong></div>`
-    ].join(""));
-    setText("lbPerformanceNote",priority ? `${summary} · Prioritas: ${priority}` : summary);
+    const title=perf.title||"Belum ada ringkasan AI untuk periode ini";
+    const finding=perf.finding||"AI Insight akan ditampilkan sebagai ringkasan sederhana untuk investor setelah object insight periode aktif tersedia.";
+    const growth=Number(perf.growthPct);
+    const hasGrowth=perf.growthPct!==null&&perf.growthPct!==undefined&&Number.isFinite(growth);
+    const toneClass=!hasGrowth?"perf-flat":growth>0?"perf-up":growth<0?"perf-down":"perf-flat";
+    const arrow=!hasGrowth?"—":growth>0?"▲":growth<0?"▼":"●";
+    const growthText=!hasGrowth?"—":`${arrow} ${growth>0?"+":""}${growth}%`;
+    const statusTone=/turun|menurun|lemah|perlu perhatian|underperform/i.test(String(status))?"perf-down":/naik|meningkat|baik|stabil/i.test(String(status))?"perf-up":"perf-flat";
+    setHtml("lbPerformance",`<div class="${statusTone}"><span>Status</span><strong>${esc(status)}</strong></div><div><span>Omzet</span><strong>${money(perf.omzet)}</strong></div><div class="${toneClass}"><span>Growth</span><strong>${esc(growthText)}</strong></div><div><span>Customer</span><strong>${Number(perf.customer||0).toLocaleString("id-ID")}</strong></div><div><span>Avg Ticket</span><strong>${money(perf.avgTicket)}</strong></div><div><span>Periode</span><strong>${esc(monthLabel(el("lbMonth")?.value))}</strong></div>`);
+    setText("lbPerformanceNote",finding);
   }
 
   async function renderMapping(report){
@@ -142,7 +134,7 @@
     try{
       if(typeof LaporanBulananConsumer==="undefined") throw new Error("Consumer Bulanan belum termuat.");
       const [year,mon]=month.split("-").map(Number);
-      const report=await withTimeout(LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId}),45000,"Engine Laporan Bulanan");
+      const report=await withTimeout(LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId}),30000,"Engine Laporan Bulanan");
       currentReport=report; renderStatus(report); renderKpis(report); renderFinance(report); renderReadiness(report); renderPerformance(report); syncHeaderContext(report);
       setText("lbLoadState",`${report.branch.name} · ${monthLabel(month)} · consumer read only`);
       await renderMapping(report);
