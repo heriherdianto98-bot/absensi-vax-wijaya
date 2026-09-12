@@ -7,13 +7,14 @@ OWNER RULE:
 - Tidak menulis / mengubah Tabel Harian, Payroll, Cash Out,
   Master Sewa, Master Investor, DailyDataEngine, ProteksiEngine,
   VAX AI Insight, atau engine LOCK lain.
-- Semua angka sumber dibaca dari engine / tabel canonical existing.
+- Mapping provider AMBIGUOUS disimpan khusus consumer Bulanan;
+  source provider_sales_daily_source / Payroll tetap READ ONLY.
 
-Mapping awal OWNER 12 Sep 2026:
+Mapping OWNER 12 Sep 2026:
 1) Pendapatan Cukur  = Gross Service (DailyDataEngine)
 2) Pendapatan Produk = Nett Product = Product - Share Product (canonical)
 3) Gaji Kasir        = Payroll sesuai HOME BRANCH karyawan
-4) Gaji Capster      = Payroll + Protek Cash Out cabang
+4) Gaji Capster      = Payroll + provider AMBIGUOUS yang sudah dimapping + Protek Cash Out cabang
 5) Gaji SVP          = item Gaji SPV aktual di Cash Out cabang
 6) Backup/Floating   = Payroll; cash-out gaji backup + bensin bernama
    tidak dihitung lagi sebagai operasional
@@ -34,6 +35,7 @@ const LaporanBulananEngine = {
     TABLE_DAILY: "daily_recap_source",
     TABLE_SEWA: "master_biaya_sewa_tempat",
     TABLE_INVESTOR: "master_investor",
+    TABLE_PROVIDER_MAPPING: "laporan_bulanan_provider_mapping",
 
     number(value){
         const n = Number(value || 0);
@@ -245,6 +247,64 @@ const LaporanBulananEngine = {
         return Array.isArray(data) ? data : [];
     },
 
+    async fetchProviderMappings({ client, month }){
+        const supabase = this.resolveClient(client);
+        const periodMonth = String(month || "").slice(0, 7) + "-01";
+        const { data, error } = await supabase
+            .from(this.TABLE_PROVIDER_MAPPING)
+            .select("source_provider_row_id,period_month,source_cabang_id,source_provider_name,source_provider_share,employee_id,employee_cabang_id,employee_name_snapshot,branch_name_snapshot")
+            .eq("period_month", periodMonth);
+        if(error) throw error;
+        return Array.isArray(data) ? data : [];
+    },
+
+    applyProviderMappings({ pendingRows, mappings, reportCabangId }){
+        const reportId = Number(reportCabangId);
+        const mapBySource = new Map((mappings || []).map((m) => [String(m?.source_provider_row_id || ""), m]));
+        const relevant = (pendingRows || []).filter((row) => Number(row?.cabangId) === reportId);
+        const resolved = [];
+        const pending = [];
+
+        for(const row of relevant){
+            const sourceId = String(row?.sourceId || "").trim();
+            const mapping = mapBySource.get(sourceId) || null;
+            const amount = this.number(row?.providerShare);
+            if(mapping?.employee_id){
+                resolved.push({
+                    sourceId,
+                    tanggal: row?.tanggal || "",
+                    sourceCabangId: Number(row?.cabangId || 0) || null,
+                    sourceCabang: row?.cabang || "—",
+                    provider: row?.providerMinutes || "Backup",
+                    service: this.number(row?.service),
+                    amount,
+                    employeeId: Number(mapping.employee_id),
+                    employeeCabangId: Number(mapping.employee_cabang_id || 0) || null,
+                    employeeName: mapping.employee_name_snapshot || "—",
+                    employeeBranch: mapping.branch_name_snapshot || "—",
+                    source: "MONTHLY_PROVIDER_MAPPING"
+                });
+            }else{
+                pending.push({
+                    sourceId,
+                    tanggal: row?.tanggal || "",
+                    sourceCabangId: Number(row?.cabangId || 0) || null,
+                    sourceCabang: row?.cabang || "—",
+                    provider: row?.providerMinutes || "Backup",
+                    service: this.number(row?.service),
+                    amount
+                });
+            }
+        }
+
+        return {
+            resolved,
+            pending,
+            resolvedAmount: resolved.reduce((sum, row) => sum + this.number(row.amount), 0),
+            pendingAmount: pending.reduce((sum, row) => sum + this.number(row.amount), 0)
+        };
+    },
+
     pickBranchMaster(rows, branchName){
         const want = this.normalizeBranchName(branchName);
         const candidates = (rows || []).filter((row) => this.normalizeBranchName(row?.branch_name) === want);
@@ -348,10 +408,12 @@ const LaporanBulananEngine = {
             throw new Error("Laporan Bulanan: PayrollUnifiedEngine tidak tersedia.");
         }
 
-        const [daily, payrollAll, cashOutRows] = await Promise.all([
+        const periodMonth = `${range.start.slice(0, 7)}-01`;
+        const [daily, payrollAll, cashOutRows, providerMappings] = await Promise.all([
             DailyDataEngine.load({ client: supabase, start: range.start, end: range.end, cabangId: Number(cabangId) }),
             PayrollUnifiedEngine.loadPeriod({ start: range.start, end: range.end }),
-            this.fetchDailyCashOut({ client: supabase, start: range.start, end: range.end, cabangId: Number(cabangId) })
+            this.fetchDailyCashOut({ client: supabase, start: range.start, end: range.end, cabangId: Number(cabangId) }),
+            this.fetchProviderMappings({ client: supabase, month: periodMonth })
         ]);
 
         const branch = daily.branches?.[0] || null;
@@ -359,6 +421,11 @@ const LaporanBulananEngine = {
 
         const masters = await this.loadMasters({ client: supabase, date: range.end, branchName: branch.nama_cabang });
         const payroll = this.payrollForBranch(payrollAll, Number(cabangId));
+        const mappedProvider = this.applyProviderMappings({
+            pendingRows: payrollAll.pendingMapping || [],
+            mappings: providerMappings,
+            reportCabangId: Number(cabangId)
+        });
         const cashOut = this.classifyCashOutItems(cashOutRows, payrollAll.payroll || []);
 
         const grossService = this.number(daily.summary?.grossService);
@@ -366,9 +433,10 @@ const LaporanBulananEngine = {
         const pendapatan = grossService + nettProduct;
 
         const gajiPayroll = payroll.total;
+        const gajiProviderMapped = mappedProvider.resolvedAmount;
         const gajiProtek = cashOut.totals.protectionSalary;
         const gajiSvp = cashOut.totals.svpSalary;
-        const totalGaji = gajiPayroll + gajiProtek + gajiSvp;
+        const totalGaji = gajiPayroll + gajiProviderMapped + gajiProtek + gajiSvp;
         const operasional = cashOut.totals.operational;
         const sewa = this.number(masters.sewa?.monthly_rent);
         const totalBiaya = totalGaji + operasional + sewa;
@@ -391,6 +459,7 @@ const LaporanBulananEngine = {
             source: {
                 pendapatan: "DailyDataEngine",
                 payroll: "PayrollUnifiedEngine",
+                providerMapping: "laporan_bulanan_provider_mapping (consumer metadata)",
                 protek: "Proteksi/Cash Out canonical",
                 cashOut: "daily_recap_source.cash_out + keterangan_cash_out",
                 sewa: "master_biaya_sewa_tempat",
@@ -408,10 +477,13 @@ const LaporanBulananEngine = {
             },
             gaji: {
                 payroll: gajiPayroll,
+                providerMapped: gajiProviderMapped,
                 protek: gajiProtek,
                 svp: gajiSvp,
                 total: totalGaji,
                 payrollDetail: payroll.detail,
+                providerMappedDetail: mappedProvider.resolved,
+                providerPendingDetail: mappedProvider.pending,
                 floatingUnallocatedAdjustments: payroll.floatingUnallocatedAdjustments
             },
             pengeluaran: {
@@ -440,8 +512,21 @@ const LaporanBulananEngine = {
             } : null,
             master: masters,
             performance: this.summarizeInsight(insight),
+            review: {
+                status: mappedProvider.pending.length ? "BELUM_FINAL" : "MAPPING_PROVIDER_SELESAI",
+                providerResolvedRows: mappedProvider.resolved.length,
+                providerResolvedAmount: mappedProvider.resolvedAmount,
+                providerPendingRows: mappedProvider.pending.length,
+                providerPendingAmount: mappedProvider.pendingAmount
+            },
             diagnostics: {
                 payrollPendingMapping: payrollAll.pendingSummary || null,
+                providerMapping: {
+                    resolvedRows: mappedProvider.resolved.length,
+                    resolvedAmount: mappedProvider.resolvedAmount,
+                    pendingRows: mappedProvider.pending.length,
+                    pendingAmount: mappedProvider.pendingAmount
+                },
                 floatingUnallocatedAdjustments: payroll.floatingUnallocatedAdjustments,
                 cashOutParsedVsOfficialDifference: cashOut.totals.officialCashOut - cashOut.totals.parsedNominal
             }
