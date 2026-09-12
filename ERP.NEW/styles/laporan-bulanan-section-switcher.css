@@ -11,15 +11,15 @@ body.laporan-bulanan-page .lb-view-switcher{
   align-items:start;
   margin:0 0 14px;
   padding:14px 16px;
-  border:1px solid rgba(45,212,191,.24);
+  border:1px solid rgba(167,139,250,.30);
   border-radius:15px;
-  background:linear-gradient(180deg,#0a0d11 0%,#050709 100%);
-  box-shadow:0 10px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035),0 0 18px rgba(45,212,191,.05);
+  background:linear-gradient(180deg,#0d0b14 0%,#07060b 100%);
+  box-shadow:0 10px 24px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.035),0 0 20px rgba(167,139,250,.07);
 }
 body.laporan-bulanan-page .lb-view-field{display:contents}
 body.laporan-bulanan-page .lb-view-field > span{
   grid-column:1;grid-row:1;
-  color:#67e8f9;
+  color:#c4b5fd;
   font-size:11px;
   font-weight:900;
   letter-spacing:.9px;
@@ -28,7 +28,7 @@ body.laporan-bulanan-page .lb-view-field > span{
 body.laporan-bulanan-page .lb-view-hint{
   grid-column:2;grid-row:1;
   align-self:start;
-  color:#94a3b8;
+  color:#d6c7ff;
   font-size:12px;
   line-height:1.1;
   font-weight:800;
@@ -36,7 +36,7 @@ body.laporan-bulanan-page .lb-view-hint{
   padding-top:1px;
 }
 
-/* Native select tetap jadi source state, tapi visual diganti custom picker bertema seperti pilih cabang. */
+/* Native select tetap menjadi source state; visual custom dibuat berbeda dari picker cabang. */
 body.laporan-bulanan-page #lbSectionView.lb-section-native-hidden{
   position:absolute!important;
   width:1px!important;
@@ -50,36 +50,38 @@ body.laporan-bulanan-page .lb-section-trigger{
   width:100%;height:46px;
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:0 13px 0 15px;
-  border:1px solid rgba(45,212,191,.36);
+  border:1px solid rgba(167,139,250,.46);
   border-radius:11px;
-  background:linear-gradient(180deg,rgba(45,212,191,.12),rgba(18,25,32,.96));
+  background:linear-gradient(180deg,rgba(139,92,246,.18),rgba(20,16,30,.98));
   color:#f8fafc;font:inherit;font-size:14px;font-weight:900;cursor:pointer;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 12px rgba(45,212,191,.05);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 14px rgba(139,92,246,.08);
   transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
 }
 body.laporan-bulanan-page .lb-section-trigger:hover,
-body.laporan-bulanan-page .lb-section-trigger[aria-expanded="true"]{
-  border-color:rgba(45,212,191,.68);
-  box-shadow:0 0 0 2px rgba(45,212,191,.08),0 0 18px rgba(45,212,191,.14);
+body.laporan-bulanan-page .lb-section-trigger[aria-expanded="true"],
+body.laporan-bulanan-page .lb-section-trigger:focus-visible{
+  outline:none;
+  border-color:rgba(242,194,48,.78);
+  box-shadow:0 0 0 2px rgba(242,194,48,.10),0 0 20px rgba(139,92,246,.18);
 }
 body.laporan-bulanan-page .lb-section-trigger-ico{
-  color:#5eead4;font-size:14px;font-weight:900;
-  filter:drop-shadow(0 0 5px rgba(45,212,191,.35));
+  color:#f2c230;font-size:14px;font-weight:900;
+  filter:drop-shadow(0 0 6px rgba(242,194,48,.42));
   transition:transform .16s ease;
 }
 body.laporan-bulanan-page .lb-section-trigger[aria-expanded="true"] .lb-section-trigger-ico{transform:rotate(180deg)}
 
 .lb-section-popover{
   position:fixed;z-index:1820;
-  max-height:min(430px,70vh);overflow:auto;
+  max-height:min(470px,72vh);overflow:auto;
   padding:8px;
-  border:1px solid rgba(45,212,191,.44);
+  border:1px solid rgba(167,139,250,.54);
   border-radius:14px;
-  background:radial-gradient(ellipse at 50% -15%,rgba(45,212,191,.13),transparent 46%),linear-gradient(165deg,#182128 0%,#10171d 68%,#0b1016 100%);
-  box-shadow:0 22px 54px rgba(0,0,0,.64),0 0 28px rgba(45,212,191,.12),inset 0 1px 0 rgba(255,255,255,.05);
+  background:radial-gradient(ellipse at 50% -15%,rgba(139,92,246,.19),transparent 46%),linear-gradient(165deg,#191322 0%,#100d18 68%,#09070d 100%);
+  box-shadow:0 22px 54px rgba(0,0,0,.66),0 0 30px rgba(139,92,246,.16),inset 0 1px 0 rgba(255,255,255,.05);
   color:#f8fafc;
   animation:lbSectionPopoverIn .16s ease-out;
-  scrollbar-width:thin;scrollbar-color:#2dd4bf #0f151b;
+  scrollbar-width:thin;scrollbar-color:#8b5cf6 #0d0a12;
 }
 .lb-section-popover[hidden]{display:none!important}
 @keyframes lbSectionPopoverIn{from{opacity:0;transform:translateY(-6px) scale(.988)}to{opacity:1;transform:none}}
@@ -88,25 +90,29 @@ body.laporan-bulanan-page .lb-section-trigger[aria-expanded="true"] .lb-section-
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:0 13px;margin:2px 0;
   border:1px solid transparent;border-radius:10px;
-  background:transparent;color:#d8e1e9;
+  background:transparent;color:#ddd6fe;
   font:inherit;font-size:14px;font-weight:800;text-align:left;cursor:pointer;
-  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease,box-shadow .15s ease;
 }
-.lb-section-option:hover{
-  background:rgba(45,212,191,.09);
-  border-color:rgba(45,212,191,.22);
+.lb-section-option:hover,
+.lb-section-option.is-key-focus,
+.lb-section-option:focus-visible{
+  outline:none;
+  background:linear-gradient(90deg,rgba(139,92,246,.20),rgba(242,194,48,.055));
+  border-color:rgba(196,181,253,.38);
   color:#fff;
   transform:translateX(2px);
+  box-shadow:inset 3px 0 0 #a78bfa;
 }
 .lb-section-option.is-selected{
-  color:#fff;
-  border-color:rgba(45,212,191,.54);
-  background:linear-gradient(90deg,rgba(45,212,191,.22),rgba(45,212,191,.07));
-  box-shadow:inset 3px 0 0 #2dd4bf,0 0 14px rgba(45,212,191,.09);
+  color:#fff7cf;
+  border-color:rgba(242,194,48,.62);
+  background:linear-gradient(90deg,rgba(139,92,246,.30),rgba(242,194,48,.10));
+  box-shadow:inset 3px 0 0 #f2c230,0 0 16px rgba(139,92,246,.14);
 }
-.lb-section-option.is-selected::after{content:"✓";color:#5eead4;font-size:13px;font-weight:900}
+.lb-section-option.is-selected::after{content:"✓";color:#f2c230;font-size:13px;font-weight:900}
 
-/* Hanya satu card review utama yang tampil. Kelengkapan Data + Mapping tetap di luar grid. */
+/* Hanya satu card review utama yang tampil. Kelengkapan Data tetap di luar picker. */
 body.laporan-bulanan-page .lb-grid.lb-single-view{display:block!important}
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card{
   display:none!important;width:100%!important;min-width:0!important;margin:0!important;
@@ -115,6 +121,15 @@ body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{
   display:block!important;
   animation:lbSectionReveal .28s cubic-bezier(.2,.8,.2,1) both,lbCardBreath 4.2s ease-in-out .28s infinite;
 }
+
+/* Mapping Capster Backup sekarang ikut pilihan Tampilan Laporan. */
+body.laporan-bulanan-page .lb-mapping{display:none!important}
+body.laporan-bulanan-page .lb-mapping.is-view-active{
+  display:block!important;
+  margin-top:0!important;
+  animation:lbSectionReveal .28s cubic-bezier(.2,.8,.2,1) both,lbCardBreath 4.2s ease-in-out .28s infinite;
+}
+
 @keyframes lbSectionReveal{
   from{opacity:0;transform:translateY(8px) scale(.995)}
   to{opacity:1;transform:translateY(0) scale(1)}
@@ -184,7 +199,8 @@ body.laporan-bulanan-page .lb-review .lb-issue:nth-child(4)::before{animation-de
 }
 
 @media(prefers-reduced-motion:reduce){
-  body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{animation:none!important}
+  body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active,
+  body.laporan-bulanan-page .lb-mapping.is-view-active{animation:none!important}
   .lb-section-popover,
   body.laporan-bulanan-page .lb-review .lb-issue,
   body.laporan-bulanan-page .lb-review .lb-issue::before{animation:none!important}
@@ -194,6 +210,7 @@ body.laporan-bulanan-page .lb-review .lb-issue:nth-child(4)::before{animation-de
   body.laporan-bulanan-page .lb-view-switcher{display:none!important}
   body.laporan-bulanan-page .lb-grid.lb-single-view{display:grid!important}
   body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card{display:block!important}
+  body.laporan-bulanan-page .lb-mapping{display:block!important;margin-top:14px!important}
   body.laporan-bulanan-page .lb-review:has(#lbIssues > .lb-ok){display:none!important}
   body.laporan-bulanan-page .lb-review .lb-issue,
   body.laporan-bulanan-page .lb-review .lb-issue::before{animation:none!important}
