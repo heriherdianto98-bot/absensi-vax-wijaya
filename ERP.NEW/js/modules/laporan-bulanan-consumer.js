@@ -8,13 +8,22 @@ Does not modify locked source engines.
 OWNER correction 13 Sep 2026:
 - Pendapatan Produk Bulanan = GROSS PRODUCT dari Tabel Harian Semua Cabang.
 - Protek / Proteksi / Protect yang menyebut nama capster = tambahan gaji capster tersebut.
-- Gaji capster ditampilkan per nama: Payroll/share + mapped backup + protek = total.
+- Gaji capster Bulanan mengikuti aktivitas provider di cabang/periode, bukan hanya home branch.
+- Mapping manual dipakai untuk provider Backup; provider generic "Capster" tidak ditambahkan lagi
+  ke backup mapped agar tidak double count terhadap aktivitas capster cabang.
+- Gaji capster ditampilkan per nama: share aktivitas + mapped backup + protek = total.
 */
 const LaporanBulananConsumer = {
   _masterBridgeInstalled:false,
 
   number(v){ const n=Number(v||0); return Number.isFinite(n)?n:0; },
   normalize(v){ return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim(); },
+  canonicalPersonName(v){
+    return this.normalize(v)
+      .replace(/\bsaeful\b/g,"saepul")
+      .replace(/\bsaepull\b/g,"saepul")
+      .trim();
+  },
 
   installMasterReadBridge(client){
     if(this._masterBridgeInstalled) return;
@@ -23,12 +32,6 @@ const LaporanBulananConsumer = {
     const supabase=client||(typeof db!=="undefined"?db:window.db);
     if(!supabase?.rpc) throw new Error("Supabase RPC untuk Master Finance tidak tersedia.");
 
-    /*
-      IMPORTANT:
-      Master Sewa & Investor are LOCKED. Monthly consumer must not bypass or alter them.
-      Read through the existing SECURITY DEFINER RPC erp_master_finance_get(),
-      then resolve the row that was effective at the requested report date.
-    */
     LaporanBulananEngine.loadMasters=async ({date,branchName}={})=>{
       const {data,error}=await supabase.rpc("erp_master_finance_get");
       if(error) throw error;
@@ -127,6 +130,7 @@ const LaporanBulananConsumer = {
           tanggal:String(row?.tanggal||"").slice(0,10),
           cabangId:Number(row?.cabang_id||0)||null,
           nama:this.protectionName(label)||"Capster",
+          canonicalName:this.canonicalPersonName(this.protectionName(label)||"Capster"),
           amount,
           label,
           raw:item?.raw||label
@@ -146,10 +150,6 @@ const LaporanBulananConsumer = {
     report.gaji.protekDetail=protectionDetail;
 
     if(delta!==0){
-      /*
-        Protek yang sebelumnya gagal dikenali berada di Operasional.
-        Pindahkan hanya klasifikasinya: total biaya/laba tidak berubah.
-      */
       report.gaji.total=this.number(report.gaji.total)+delta;
       report.pengeluaran=report.pengeluaran||{};
       report.pengeluaran.operasional=Math.max(0,this.number(report.pengeluaran.operasional)-delta);
@@ -161,27 +161,88 @@ const LaporanBulananConsumer = {
     return report;
   },
 
+  async loadMatchedProviderActivity(client,report,payrollDataset){
+    const {data,error}=await client
+      .from("provider_sales_daily_source")
+      .select("activity_date,cabang_id,provider_name_raw,employee_id,mapping_status,provider_share")
+      .eq("cabang_id",Number(report.branch.id))
+      .gte("activity_date",report.range.start)
+      .lte("activity_date",report.range.end)
+      .eq("mapping_status","MATCHED")
+      .not("employee_id","is",null);
+    if(error) throw error;
+
+    const payrollById=new Map((payrollDataset?.payroll||[]).map(row=>[Number(row?.employeeId),row]));
+    const grouped=new Map();
+    for(const row of (data||[])){
+      const employeeId=Number(row?.employee_id||0);
+      const amount=this.number(row?.provider_share);
+      if(!employeeId||amount===0) continue;
+      const payroll=payrollById.get(employeeId)||{};
+      const nama=String(payroll?.namaKaryawan||row?.provider_name_raw||`Employee ${employeeId}`);
+      if(!grouped.has(employeeId)) grouped.set(employeeId,{employeeId,nama,amount:0,source:"PROVIDER_ACTIVITY_MATCHED"});
+      grouped.get(employeeId).amount+=amount;
+    }
+    return [...grouped.values()];
+  },
+
+  applyCapsterActivityReconciliation(report,activityDetail=[]){
+    report.gaji=report.gaji||{};
+    const oldCapsterPayroll=(report.gaji.payrollDetail||[])
+      .filter(row=>row?.isCapster)
+      .reduce((sum,row)=>sum+this.number(row?.amount),0);
+    const activityTotal=activityDetail.reduce((sum,row)=>sum+this.number(row?.amount),0);
+
+    const oldMapped=this.number(report.gaji.providerMapped);
+    const backupMappedDetail=(report.gaji.providerMappedDetail||[]).filter(row=>{
+      const provider=this.normalize(row?.provider||row?.sourceProviderName||"");
+      return /\bbackup\b/.test(provider);
+    });
+    const backupMappedTotal=backupMappedDetail.reduce((sum,row)=>sum+this.number(row?.amount),0);
+
+    const payrollDelta=activityTotal-oldCapsterPayroll;
+    const mappedDelta=backupMappedTotal-oldMapped;
+    const delta=payrollDelta+mappedDelta;
+
+    report.gaji.payroll=this.number(report.gaji.payroll)+payrollDelta;
+    report.gaji.providerMapped=backupMappedTotal;
+    report.gaji.providerMappedDetail=backupMappedDetail;
+    report.gaji.capsterActivityDetail=activityDetail;
+    report.gaji.total=this.number(report.gaji.total)+delta;
+
+    report.laba=report.laba||{};
+    report.laba.totalBiaya=this.number(report.laba.totalBiaya)+delta;
+    report.laba.labaBersih=this.number(report.laba.totalPendapatan)-this.number(report.laba.totalBiaya);
+    this.recalcInvestor(report);
+
+    report.diagnostics=report.diagnostics||{};
+    report.diagnostics.capsterActivityReconciliation={
+      previousHomeBranchCapsterPayroll:oldCapsterPayroll,
+      matchedBranchActivity:activityTotal,
+      previousMapped:oldMapped,
+      backupMapped:backupMappedTotal,
+      delta
+    };
+    return report;
+  },
+
   buildCapsterBreakdown(report){
     const map=new Map();
     const ensure=(key,name)=>{
-      const k=String(key||this.normalize(name)||name||"capster");
+      const k=String(key||this.canonicalPersonName(name)||name||"capster");
       if(!map.has(k)) map.set(k,{employeeId:null,nama:String(name||"Capster"),payroll:0,mapped:0,protek:0,total:0,isBackup:false});
       return map.get(k);
     };
 
-    let capsterPayrollBaseTotal=0;
-    for(const row of (report?.gaji?.payrollDetail||[])){
-      if(!row?.isCapster) continue;
-      const amount=this.number(row?.amount);
-      capsterPayrollBaseTotal+=amount;
-      const key=row?.employeeId?`id:${row.employeeId}`:`name:${this.normalize(row?.nama)}`;
+    for(const row of (report?.gaji?.capsterActivityDetail||[])){
+      const key=row?.employeeId?`id:${row.employeeId}`:`name:${this.canonicalPersonName(row?.nama)}`;
       const target=ensure(key,row?.nama);
       target.employeeId=row?.employeeId||target.employeeId;
-      target.payroll+=amount;
+      target.payroll+=this.number(row?.amount);
     }
 
     for(const row of (report?.gaji?.providerMappedDetail||[])){
-      const key=row?.employeeId?`id:${row.employeeId}`:`name:${this.normalize(row?.employeeName)}`;
+      const key=row?.employeeId?`id:${row.employeeId}`:`name:${this.canonicalPersonName(row?.employeeName)}`;
       const target=ensure(key,row?.employeeName||row?.provider||"Backup Capster");
       target.employeeId=row?.employeeId||target.employeeId;
       target.mapped+=this.number(row?.amount);
@@ -189,11 +250,11 @@ const LaporanBulananConsumer = {
     }
 
     for(const row of (report?.gaji?.protekDetail||[])){
-      const wanted=this.normalize(row?.nama);
-      let target=[...map.values()].find(x=>this.normalize(x.nama)===wanted);
+      const wanted=this.canonicalPersonName(row?.nama);
+      let target=[...map.values()].find(x=>this.canonicalPersonName(x.nama)===wanted);
       if(!target){
         const partial=[...map.values()].filter(x=>{
-          const a=this.normalize(x.nama),b=wanted;
+          const a=this.canonicalPersonName(x.nama),b=wanted;
           return a&&b&&(a===b||a.startsWith(b+" ")||b.startsWith(a+" "));
         });
         if(partial.length===1) target=partial[0];
@@ -207,11 +268,28 @@ const LaporanBulananConsumer = {
       total:this.number(row.payroll)+this.number(row.mapped)+this.number(row.protek)
     })).filter(row=>row.total!==0).sort((a,b)=>String(a.nama).localeCompare(String(b.nama),"id"));
 
-    report.gaji=report.gaji||{};
     report.gaji.capsterDetail=detail;
     report.gaji.capsterDetailTotal=detail.reduce((sum,row)=>sum+this.number(row.total),0);
-    report.gaji.capsterPayrollBaseTotal=capsterPayrollBaseTotal;
-    report.gaji.nonCapsterPayroll=Math.max(0,this.number(report.gaji.payroll)-capsterPayrollBaseTotal);
+    report.gaji.nonCapsterPayroll=Math.max(0,this.number(report.gaji.payroll)-activityDetailTotal(report.gaji.capsterActivityDetail,this.number.bind(this)));
+    return report;
+
+    function activityDetailTotal(rows,number){ return (rows||[]).reduce((sum,row)=>sum+number(row?.amount),0); }
+  },
+
+  buildNonCapsterBreakdown(report){
+    const rows=(report?.gaji?.payrollDetail||[]).filter(row=>!row?.isCapster&&!/backup.*kasir|kasir.*backup|floating/i.test(String(row?.jabatan||"")));
+    report.gaji.nonCapsterDetail=rows.map(row=>({
+      employeeId:row?.employeeId||null,
+      nama:row?.nama||"Karyawan",
+      jabatan:row?.jabatan||"Karyawan",
+      amount:this.number(row?.amount),
+      gajiPokok:this.number(row?.gajiPokok),
+      denda:this.number(row?.denda),
+      kasbon:this.number(row?.kasbon),
+      bonusInsentif:this.number(row?.bonusInsentif),
+      bonusKpi:this.number(row?.bonusKpi),
+      bonusProduk:this.number(row?.bonusProduk)
+    }));
     return report;
   },
 
@@ -225,30 +303,18 @@ const LaporanBulananConsumer = {
     let insight=args.insight||null;
     if(!insight && typeof LaporanBulananAiInsightBridge!=="undefined"){
       try{
-        insight=await LaporanBulananAiInsightBridge.load({
-          year:args.year,
-          month:args.month,
-          cabangId:args.cabangId
-        });
-      }catch(err){
-        // AI summary is presentation-only. Failure must never block finance report.
-        console.warn("[Laporan Bulanan AI Insight]",err);
-      }
+        insight=await LaporanBulananAiInsightBridge.load({year:args.year,month:args.month,cabangId:args.cabangId});
+      }catch(err){ console.warn("[Laporan Bulanan AI Insight]",err); }
     }
 
     const report=await LaporanBulananEngine.loadMonth({...args,insight});
     await this.applyGrossProduct(report,client);
 
     if(insight?.__monthlyInvestor){
-      report.performance={
-        ...(report.performance||{}),
-        ...insight.__monthlyInvestor
-      };
+      report.performance={...(report.performance||{}),...insight.__monthlyInvestor};
     }
 
     let payrollDataset=null;
-    let cashOutRows=null;
-
     if(typeof PayrollUnifiedEngine!=="undefined"){
       payrollDataset=await this.loadAdjustedPayroll(report);
       if(typeof LaporanBulananPayrollAdjustmentBridge!=="undefined"){
@@ -256,34 +322,35 @@ const LaporanBulananConsumer = {
       }
     }
 
-    cashOutRows=await LaporanBulananEngine.fetchDailyCashOut({
-      client,
-      start:report.range.start,
-      end:report.range.end,
-      cabangId:report.branch.id
+    const cashOutRows=await LaporanBulananEngine.fetchDailyCashOut({
+      client,start:report.range.start,end:report.range.end,cabangId:report.branch.id
     });
 
     if(typeof LaporanBulananBackupCashoutBridge!=="undefined"){
       if(!payrollDataset) payrollDataset=await this.loadAdjustedPayroll(report);
       const supplement=LaporanBulananBackupCashoutBridge.extract({
-        cashOutRows,
-        payrollRows:payrollDataset.payroll||[],
-        cabangId:report.branch.id
+        cashOutRows,payrollRows:payrollDataset.payroll||[],cabangId:report.branch.id
       });
       LaporanBulananBackupCashoutBridge.apply(report,supplement);
     }
 
     const protectionDetail=this.extractProtectionDetail(cashOutRows);
     this.applyProtectionReclassification(report,protectionDetail);
+
+    if(!payrollDataset) payrollDataset=await this.loadAdjustedPayroll(report);
+    try{
+      const activityDetail=await this.loadMatchedProviderActivity(client,report,payrollDataset);
+      this.applyCapsterActivityReconciliation(report,activityDetail);
+    }catch(err){
+      console.warn("[Laporan Bulanan Capster Activity]",err);
+      report.gaji.capsterActivityDetail=[];
+    }
+
     this.buildCapsterBreakdown(report);
+    this.buildNonCapsterBreakdown(report);
 
     if(typeof LaporanBulananReadiness!=="undefined"){
-      if(!payrollDataset) payrollDataset=await this.loadAdjustedPayroll(report);
-      report.readiness=LaporanBulananReadiness.validate({
-        report,
-        payrollDataset,
-        cabangId:report.branch.id
-      });
+      report.readiness=LaporanBulananReadiness.validate({report,payrollDataset,cabangId:report.branch.id});
     }
 
     return report;
