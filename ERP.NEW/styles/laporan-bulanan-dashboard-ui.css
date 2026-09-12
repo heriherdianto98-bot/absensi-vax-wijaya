@@ -70,26 +70,48 @@ body.laporan-bulanan-page .lb-kpi{
 }
 body.laporan-bulanan-page .lb-card{border-radius:14px!important}
 
+/* top + bottom divider for clearer card separation */
 body.laporan-bulanan-page .lb-kpi::before,
 body.laporan-bulanan-page .lb-card::before{
   content:"";
   position:absolute;
-  inset:0 auto 0 0;
-  width:3px;
-  background:linear-gradient(180deg,var(--lb-accent),color-mix(in srgb,var(--lb-accent) 16%,transparent));
+  left:12px;
+  right:12px;
+  top:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--lb-accent) 46%,transparent),transparent);
+  box-shadow:0 0 10px color-mix(in srgb,var(--lb-accent) 14%,transparent);
   pointer-events:none;
-  opacity:.78;
-  animation:lbAccentPulse 3.8s ease-in-out infinite;
+  opacity:.9;
 }
 body.laporan-bulanan-page .lb-kpi::after,
 body.laporan-bulanan-page .lb-card::after{
   content:"";
   position:absolute;
-  inset:0;
-  border-radius:inherit;
-  background:radial-gradient(ellipse 90% 48% at 50% -10%,rgba(255,255,255,.045) 0%,transparent 60%);
+  left:12px;
+  right:12px;
+  bottom:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--lb-accent) 28%,transparent),transparent);
+  box-shadow:0 0 8px color-mix(in srgb,var(--lb-accent) 10%,transparent);
   pointer-events:none;
-  opacity:.7;
+  opacity:.78;
+}
+
+/* left accent remains distinct */
+body.laporan-bulanan-page .lb-kpi{
+  box-shadow:
+    inset 3px 0 0 var(--lb-accent),
+    0 8px 22px rgba(0,0,0,.34),
+    0 0 14px color-mix(in srgb,var(--lb-accent) 6%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+body.laporan-bulanan-page .lb-card{
+  box-shadow:
+    inset 3px 0 0 var(--lb-accent),
+    0 8px 22px rgba(0,0,0,.34),
+    0 0 14px color-mix(in srgb,var(--lb-accent) 6%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.035)!important;
 }
 
 /* floating / melayang effect */
@@ -99,6 +121,7 @@ body.laporan-bulanan-page .lb-card:hover{
   filter:brightness(1.06);
   border-color:color-mix(in srgb,var(--lb-accent) 52%,rgba(255,255,255,.16))!important;
   box-shadow:
+    inset 3px 0 0 var(--lb-accent),
     0 18px 36px rgba(0,0,0,.52),
     0 10px 18px rgba(0,0,0,.34),
     0 0 30px color-mix(in srgb,var(--lb-accent) 18%,transparent),
@@ -106,9 +129,10 @@ body.laporan-bulanan-page .lb-card:hover{
   z-index:8;
 }
 body.laporan-bulanan-page .lb-kpi:hover::before,
-body.laporan-bulanan-page .lb-card:hover::before{
+body.laporan-bulanan-page .lb-card:hover::before,
+body.laporan-bulanan-page .lb-kpi:hover::after,
+body.laporan-bulanan-page .lb-card:hover::after{
   opacity:1;
-  box-shadow:0 0 16px color-mix(in srgb,var(--lb-accent) 42%,transparent);
 }
 
 body.laporan-bulanan-page .lb-kpi span,
@@ -174,9 +198,10 @@ body.laporan-bulanan-page .lb-month-trigger-ico{color:#C4B5FD;font-size:16px}
 
 @media(prefers-reduced-motion:reduce){
   body.laporan-bulanan-page .lb-kpi,
-  body.laporan-bulanan-page .lb-card,
-  body.laporan-bulanan-page .lb-kpi::before,
-  body.laporan-bulanan-page .lb-card::before{animation:none!important;transition:none!important}
+  body.laporan-bulanan-page .lb-card{
+    animation:none!important;
+    transition:none!important
+  }
   body.laporan-bulanan-page .lb-kpi:hover,
   body.laporan-bulanan-page .lb-card:hover{transform:none}
   .lb-month-popover{animation:none}
