@@ -88,6 +88,41 @@ body.laporan-bulanan-page .monthly-provider-map-row + .monthly-provider-map-row{
   margin-top:9px!important;
 }
 
+/* Kelengkapan Data dibuat sepadan dengan card review lain, tidak terlalu tinggi. */
+body.laporan-bulanan-page .lb-review{
+  min-height:0!important;
+  height:auto!important;
+}
+body.laporan-bulanan-page .lb-review .lb-card-head{
+  min-height:42px!important;
+  padding:8px 14px!important;
+}
+body.laporan-bulanan-page .lb-review .lb-card-body{
+  padding:8px 12px 10px!important;
+}
+body.laporan-bulanan-page .lb-review .lb-issues{
+  gap:7px!important;
+}
+body.laporan-bulanan-page .lb-review .lb-issue{
+  min-height:44px!important;
+  padding:8px 12px 8px 44px!important;
+  border-radius:10px!important;
+}
+body.laporan-bulanan-page .lb-review .lb-issue::before{
+  left:12px!important;
+  width:22px!important;
+  height:22px!important;
+  font-size:14px!important;
+}
+body.laporan-bulanan-page .lb-review .lb-issue strong{
+  font-size:12.5px!important;
+  line-height:1.12!important;
+}
+body.laporan-bulanan-page .lb-review .lb-issue span{
+  font-size:12.5px!important;
+  line-height:1.18!important;
+}
+
 @media print{
   body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body,
   body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
