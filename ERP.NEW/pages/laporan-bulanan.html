@@ -91,9 +91,17 @@
 <script src="../js/modules/laporan-bulanan-consumer.js"></script>
 <script src="../js/modules/laporan-bulanan-ui.js?v=20260912-v1"></script>
 <script>
+function activateLaporanBulananSidebar(){
+  const link=document.querySelector('.sidebar [data-erp-nav="laporan-bulanan"]');
+  const parent=document.querySelector('.sidebar [data-erp-nav="laporan"]');
+  link?.classList.add('active');
+  parent?.classList.add('is-active-parent');
+  if(typeof setLaporanMenuOpen==='function') setLaporanMenuOpen(true);
+}
 Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
   if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
-  initErpShellChrome?.(); markActiveSidebarLink?.();
+  initErpShellChrome?.();
+  activateLaporanBulananSidebar();
 }).catch(()=>{});
 </script>
 </body>
