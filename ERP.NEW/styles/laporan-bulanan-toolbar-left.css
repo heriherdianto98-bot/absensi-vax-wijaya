@@ -1,0 +1,26 @@
+/* =========================================================
+   LAPORAN BULANAN — TOOLBAR ALIGN LEFT
+   UI ONLY. Tidak menyentuh engine/data/formula.
+   Memindahkan toolbar Cabang/Periode ke kiri agar sejajar dengan
+   judul, KPI, dan card laporan.
+   ========================================================= */
+
+body.laporan-bulanan-page .lb-toolbar{
+  transform:translateX(calc(-1 * var(--sidebar-width,220px)))!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  width:100%!important;
+  max-width:none!important;
+}
+
+@media(max-width:900px){
+  body.laporan-bulanan-page .lb-toolbar{
+    transform:none!important;
+  }
+}
+
+@media print{
+  body.laporan-bulanan-page .lb-toolbar{
+    transform:none!important;
+  }
+}
