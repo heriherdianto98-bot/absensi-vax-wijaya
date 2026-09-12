@@ -4,7 +4,7 @@
 (() => {
   const el=id=>document.getElementById(id);
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
-  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;","</":"&lt;/","<":"&lt;","&":"&amp;",'"':"&quot;","'":"&#39;"}[c]||c));
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
   let branches=[],employees=[],currentReport=null,booted=false,headerSyncTimer=null;
 
@@ -72,10 +72,27 @@
     setText("lbCustomer",`${Number(p.customer||0).toLocaleString("id-ID")} customer`); setText("lbTransactions",`${Number(p.transaction||0).toLocaleString("id-ID")} transaksi`);
   }
 
+  function capsterSalaryHtml(g){
+    const rows=Array.isArray(g?.capsterDetail)?g.capsterDetail:[];
+    if(!rows.length) return '<div class="lb-line"><span>Gaji Tukang Cukur</span><strong>—</strong></div>';
+    return rows.map(row=>{
+      const parts=[];
+      if(Number(row?.payroll||0)) parts.push(`Payroll ${money(row.payroll)}`);
+      if(Number(row?.mapped||0)) parts.push(`Backup Mapped ${money(row.mapped)}`);
+      if(Number(row?.protek||0)) parts.push(`Protek ${money(row.protek)}`);
+      const name=`${row?.nama||"Capster"}${row?.isBackup?" (Backup Capster)":""}`;
+      const formula=parts.length?` · ${parts.join(" + ")}`:"";
+      return `<div class="lb-line"><span>${esc(name)}${esc(formula)}</span><strong>${money(row?.total)}</strong></div>`;
+    }).join("");
+  }
+
   function renderFinance(report){
     const p=report?.pendapatan||{},g=report?.gaji||{},x=report?.pengeluaran||{},l=report?.laba||{},inv=report?.investor||{};
-    setHtml("lbIncomeLines",`<div class="lb-line"><span>Pendapatan Cukur</span><strong>${money(p.cukur)}</strong></div><div class="lb-line"><span>Pendapatan Produk (Nett)</span><strong>${money(p.produkNett)}</strong></div><div class="lb-line total"><span>Total Pendapatan</span><strong>${money(p.total)}</strong></div>`);
-    setHtml("lbSalaryLines",`<div class="lb-line"><span>Payroll Karyawan</span><strong>${money(g.payroll)}</strong></div><div class="lb-line"><span>Bonus Insentif (Payroll)</span><strong>${money(g.bonusInsentif)}</strong></div><div class="lb-line"><span>Bonus KPI (Payroll)</span><strong>${money(g.bonusKpi)}</strong></div><div class="lb-line"><span>Bonus Produk (Payroll)</span><strong>${money(g.bonusProduk)}</strong></div><div class="lb-line"><span>Capster Backup Mapped</span><strong>${money(g.providerMapped)}</strong></div><div class="lb-line"><span>Protek Capster</span><strong>${money(g.protek)}</strong></div><div class="lb-line"><span>Gaji SVP</span><strong>${money(g.svp)}</strong></div><div class="lb-line"><span>Gaji Backup Kasir</span><strong>${money(g.backupNamedSupplement)}</strong></div><div class="lb-line total"><span>Total Biaya Gaji</span><strong>${money(g.total)}</strong></div>`);
+    setHtml("lbIncomeLines",`<div class="lb-line"><span>Pendapatan Cukur</span><strong>${money(p.cukur)}</strong></div><div class="lb-line"><span>Pendapatan Produk (Gross)</span><strong>${money(p.produkGross)}</strong></div><div class="lb-line total"><span>Total Pendapatan</span><strong>${money(p.total)}</strong></div>`);
+
+    const capsterRows=capsterSalaryHtml(g);
+    setHtml("lbSalaryLines",`${capsterRows}<div class="lb-line"><span>Payroll Non-Capster</span><strong>${money(g.nonCapsterPayroll)}</strong></div><div class="lb-line"><span>Gaji SVP</span><strong>${money(g.svp)}</strong></div><div class="lb-line"><span>Gaji Backup Kasir</span><strong>${money(g.backupNamedSupplement)}</strong></div><div class="lb-line total"><span>Total Biaya Gaji</span><strong>${money(g.total)}</strong></div>`);
+
     setHtml("lbExpenseLines",`<div class="lb-line"><span>Biaya Operasional</span><strong>${money(x.operasional)}</strong></div><div class="lb-line"><span>Sewa Tempat</span><strong>${money(x.sewa)}</strong></div><div class="lb-line total"><span>Total Pengeluaran Non-Gaji</span><strong>${money(x.total)}</strong></div>`);
     setHtml("lbInvestorLines",inv?.nama?`<div class="lb-line"><span>Investor</span><strong>${esc(inv.nama)}</strong></div><div class="lb-line"><span>Persentase</span><strong>${Number(inv.persentase||0)}%</strong></div><div class="lb-line"><span>Bagi Hasil</span><strong>${money(inv.bagiHasil)}</strong></div><div class="lb-line"><span>Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div><div class="lb-line total"><span>Total Hak Bulan Ini</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`:'<div class="lb-ok">Cabang ini tidak memiliki investor aktif.</div>');
     setHtml("lbResultLines",`<div class="lb-line"><span>Total Pendapatan</span><strong>${money(l.totalPendapatan)}</strong></div><div class="lb-line"><span>Total Biaya</span><strong>${money(l.totalBiaya)}</strong></div><div class="lb-line total"><span>Laba Bersih</span><strong>${money(l.labaBersih)}</strong></div>`);
