@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="../styles/laporan-bulanan-hover.css?v=20260912-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-row-divider.css?v=20260912-v3">
 <link rel="stylesheet" href="../styles/laporan-bulanan-freeze-fix.css?v=20260912-v1">
+<link rel="stylesheet" href="../styles/laporan-bulanan-performance-chart.css?v=20260912-v1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="laporan-bulanan-page">
@@ -59,7 +60,7 @@
         <div class="lb-card"><div class="lb-card-head"><h3>Biaya Pengeluaran</h3><small>Cash Out yang sudah anti double-count</small></div><div class="lb-card-body lb-lines" id="lbExpenseLines"></div></div>
         <div class="lb-card"><div class="lb-card-head"><h3>Hasil Bulan Berjalan</h3><small>Ringkasan laba rugi</small></div><div class="lb-card-body lb-lines" id="lbResultLines"></div></div>
         <div class="lb-card"><div class="lb-card-head"><h3>Pembagian Investor</h3><small>Master Investor</small></div><div class="lb-card-body lb-lines" id="lbInvestorLines"></div></div>
-        <div class="lb-card"><div class="lb-card-head"><h3>Ringkasan Performance Cabang</h3><small>AI Insight · simple investor view</small></div><div class="lb-card-body"><div class="lb-performance" id="lbPerformance"></div><p class="lb-performance-note" id="lbPerformanceNote"></p></div></div>
+        <div class="lb-card"><div class="lb-card-head"><h3>Ringkasan Performance Cabang</h3><small>AI Insight · simple investor view</small></div><div class="lb-card-body"><div class="lb-performance" id="lbPerformance"></div><p class="lb-performance-note" id="lbPerformanceNote"></p><div id="lbPerformanceChart"></div></div></div>
       </section>
 
       <section class="lb-card lb-review">
@@ -96,6 +97,7 @@
 <script src="../js/modules/laporan-bulanan-ai-insight-bridge.js?v=20260912-v1"></script>
 <script src="../js/modules/laporan-bulanan-consumer.js?v=20260912-v4"></script>
 <script src="../js/modules/laporan-bulanan-ui.js?v=20260912-v4"></script>
+<script src="../js/modules/laporan-bulanan-performance-chart.js?v=20260912-v1"></script>
 <script src="../js/modules/laporan-bulanan-calendar-ui.js?v=20260912-v2"></script>
 <script src="../js/modules/laporan-bulanan-branch-ui.js?v=20260912-v1"></script>
 <script>
