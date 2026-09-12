@@ -4,7 +4,7 @@
 (() => {
   const el=id=>document.getElementById(id);
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
-  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;","&gt;":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
   let branches=[],employees=[],currentReport=null,booted=false,headerSyncTimer=null;
 
@@ -25,20 +25,12 @@
     setText("erpHeaderPeriode",period || "—");
   }
 
-  /*
-    IMPORTANT: jangan pakai MutationObserver pada subtree header lalu menulis kembali
-    ke header dari callback yang sama. Itu bisa membentuk mutation loop dan membuat
-    tab browser hang. Header global dimuat async, jadi cukup retry terbatas.
-  */
   function bindHeaderSync(){
     let tries=0;
     const tick=()=>{
       syncHeaderContext();
       tries+=1;
-      if(tries>=12 && headerSyncTimer){
-        clearInterval(headerSyncTimer);
-        headerSyncTimer=null;
-      }
+      if(tries>=12 && headerSyncTimer){ clearInterval(headerSyncTimer); headerSyncTimer=null; }
     };
     tick();
     if(headerSyncTimer) clearInterval(headerSyncTimer);
@@ -47,10 +39,7 @@
   }
 
   function withTimeout(promise,ms,label){
-    return Promise.race([
-      promise,
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label} timeout`)),ms))
-    ]);
+    return Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label} timeout`)),ms))]);
   }
 
   async function loadBase(){
@@ -65,8 +54,7 @@
     const select=el("lbBranch");
     if(!select) throw new Error("Filter cabang tidak ditemukan.");
     select.innerHTML=branches.map(c=>`<option value="${Number(c.id)}">${esc(c.nama_cabang)}</option>`).join("");
-    if(branches.some(c=>Number(c.id)===5)) select.value="5";
-    else if(branches[0]) select.value=String(branches[0].id);
+    if(branches.some(c=>Number(c.id)===5)) select.value="5"; else if(branches[0]) select.value=String(branches[0].id);
     syncHeaderContext();
   }
 
@@ -80,8 +68,7 @@
   function renderKpis(report){
     const p=report?.pendapatan||{},g=report?.gaji||{},x=report?.pengeluaran||{},l=report?.laba||{};
     setText("lbRevenue",money(p.total)); setText("lbPayroll",money(g.total)); setText("lbOpex",money(x.operasional)); setText("lbRent",money(x.sewa)); setText("lbProfit",money(l.labaBersih));
-    const card=el("lbProfitCard");
-    card?.classList.toggle("is-profit",Number(l.labaBersih||0)>=0); card?.classList.toggle("is-loss",Number(l.labaBersih||0)<0);
+    const card=el("lbProfitCard"); card?.classList.toggle("is-profit",Number(l.labaBersih||0)>=0); card?.classList.toggle("is-loss",Number(l.labaBersih||0)<0);
     setText("lbCustomer",`${Number(p.customer||0).toLocaleString("id-ID")} customer`); setText("lbTransactions",`${Number(p.transaction||0).toLocaleString("id-ID")} transaksi`);
   }
 
