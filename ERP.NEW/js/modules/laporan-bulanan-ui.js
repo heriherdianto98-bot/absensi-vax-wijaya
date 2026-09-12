@@ -6,7 +6,7 @@
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
-  let branches=[],employees=[],currentReport=null;
+  let branches=[],employees=[],currentReport=null,booted=false;
 
   function monthLabel(value){ const [y,m]=String(value||"").split("-").map(Number); return y&&m?`${MONTHS[m-1]} ${y}`:"—"; }
   function setText(id,value){ const node=el(id); if(node) node.textContent=value; }
@@ -34,64 +34,56 @@
     window.addEventListener("load",()=>syncHeaderContext());
     setTimeout(()=>syncHeaderContext(),150);
     setTimeout(()=>syncHeaderContext(),700);
+    setTimeout(()=>syncHeaderContext(),1500);
+  }
+
+  function withTimeout(promise,ms,label){
+    return Promise.race([
+      promise,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label} timeout`)),ms))
+    ]);
   }
 
   async function loadBase(){
-    const [cabs,emps]=await Promise.all([PayrollUnifiedEngine.fetchCabang(),PayrollUnifiedEngine.fetchKaryawan()]);
-    branches=(cabs||[]).filter(c=>!String(c.nama_cabang||"").toLowerCase().includes("floating"));
-    employees=emps||[];
+    if(typeof db==="undefined" || !db?.from) throw new Error("Supabase client belum siap.");
+    const cabsReq=db.from("cabang").select("id,nama_cabang").order("id",{ascending:true});
+    const empsReq=db.from("karyawan").select("id,nama_karyawan,cabang_id,jabatan,aktif").order("nama_karyawan",{ascending:true});
+    const [cabsRes,empsRes]=await withTimeout(Promise.all([cabsReq,empsReq]),10000,"Master cabang/karyawan");
+    if(cabsRes?.error) throw cabsRes.error;
+    if(empsRes?.error) throw empsRes.error;
+    branches=(cabsRes?.data||[]).filter(c=>!String(c.nama_cabang||"").toLowerCase().includes("floating"));
+    employees=empsRes?.data||[];
     const select=el("lbBranch");
+    if(!select) throw new Error("Filter cabang tidak ditemukan.");
     select.innerHTML=branches.map(c=>`<option value="${Number(c.id)}">${esc(c.nama_cabang)}</option>`).join("");
     if(branches.some(c=>Number(c.id)===5)) select.value="5";
+    else if(branches[0]) select.value=String(branches[0].id);
+    select.dispatchEvent(new Event("change",{bubbles:true}));
     syncHeaderContext();
   }
 
   function renderStatus(report){
     const ready=statusReady(report), box=el("lbReportStatus");
+    if(!box) return;
     box.classList.toggle("is-ready",ready); box.classList.toggle("is-review",!ready);
     setText("lbReportStatusText",ready?"FINAL READY":"BELUM FINAL / PERLU REVIEW");
   }
 
   function renderKpis(report){
     const p=report?.pendapatan||{},g=report?.gaji||{},x=report?.pengeluaran||{},l=report?.laba||{};
-    setText("lbRevenue",money(p.total));
-    setText("lbPayroll",money(g.total));
-    setText("lbOpex",money(x.operasional));
-    setText("lbRent",money(x.sewa));
-    setText("lbProfit",money(l.labaBersih));
+    setText("lbRevenue",money(p.total)); setText("lbPayroll",money(g.total)); setText("lbOpex",money(x.operasional)); setText("lbRent",money(x.sewa)); setText("lbProfit",money(l.labaBersih));
     const card=el("lbProfitCard");
-    card.classList.toggle("is-profit",Number(l.labaBersih||0)>=0); card.classList.toggle("is-loss",Number(l.labaBersih||0)<0);
-    setText("lbCustomer",`${Number(p.customer||0).toLocaleString("id-ID")} customer`);
-    setText("lbTransactions",`${Number(p.transaction||0).toLocaleString("id-ID")} transaksi`);
+    card?.classList.toggle("is-profit",Number(l.labaBersih||0)>=0); card?.classList.toggle("is-loss",Number(l.labaBersih||0)<0);
+    setText("lbCustomer",`${Number(p.customer||0).toLocaleString("id-ID")} customer`); setText("lbTransactions",`${Number(p.transaction||0).toLocaleString("id-ID")} transaksi`);
   }
 
   function renderFinance(report){
     const p=report?.pendapatan||{},g=report?.gaji||{},x=report?.pengeluaran||{},l=report?.laba||{},inv=report?.investor||{};
-    setHtml("lbIncomeLines",`
-      <div class="lb-line"><span>Pendapatan Cukur</span><strong>${money(p.cukur)}</strong></div>
-      <div class="lb-line"><span>Pendapatan Produk (Nett)</span><strong>${money(p.produkNett)}</strong></div>
-      <div class="lb-line total"><span>Total Pendapatan</span><strong>${money(p.total)}</strong></div>`);
-    setHtml("lbSalaryLines",`
-      <div class="lb-line"><span>Payroll Karyawan</span><strong>${money(g.payroll)}</strong></div>
-      <div class="lb-line"><span>Capster Backup Mapped</span><strong>${money(g.providerMapped)}</strong></div>
-      <div class="lb-line"><span>Protek Capster</span><strong>${money(g.protek)}</strong></div>
-      <div class="lb-line"><span>Gaji SVP</span><strong>${money(g.svp)}</strong></div>
-      <div class="lb-line"><span>Backup Kasir Bernama</span><strong>${money(g.backupNamedSupplement)}</strong></div>
-      <div class="lb-line total"><span>Total Biaya Gaji</span><strong>${money(g.total)}</strong></div>`);
-    setHtml("lbExpenseLines",`
-      <div class="lb-line"><span>Biaya Operasional</span><strong>${money(x.operasional)}</strong></div>
-      <div class="lb-line"><span>Sewa Tempat</span><strong>${money(x.sewa)}</strong></div>
-      <div class="lb-line total"><span>Total Pengeluaran Non-Gaji</span><strong>${money(x.total)}</strong></div>`);
-    setHtml("lbInvestorLines",inv?.nama?`
-      <div class="lb-line"><span>Investor</span><strong>${esc(inv.nama)}</strong></div>
-      <div class="lb-line"><span>Persentase</span><strong>${Number(inv.persentase||0)}%</strong></div>
-      <div class="lb-line"><span>Bagi Hasil</span><strong>${money(inv.bagiHasil)}</strong></div>
-      <div class="lb-line"><span>Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div>
-      <div class="lb-line total"><span>Total Hak Bulan Ini</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`:'<div class="lb-ok">Cabang ini tidak memiliki investor aktif.</div>');
-    setHtml("lbResultLines",`
-      <div class="lb-line"><span>Total Pendapatan</span><strong>${money(l.totalPendapatan)}</strong></div>
-      <div class="lb-line"><span>Total Biaya</span><strong>${money(l.totalBiaya)}</strong></div>
-      <div class="lb-line total"><span>Laba Bersih</span><strong>${money(l.labaBersih)}</strong></div>`);
+    setHtml("lbIncomeLines",`<div class="lb-line"><span>Pendapatan Cukur</span><strong>${money(p.cukur)}</strong></div><div class="lb-line"><span>Pendapatan Produk (Nett)</span><strong>${money(p.produkNett)}</strong></div><div class="lb-line total"><span>Total Pendapatan</span><strong>${money(p.total)}</strong></div>`);
+    setHtml("lbSalaryLines",`<div class="lb-line"><span>Payroll Karyawan</span><strong>${money(g.payroll)}</strong></div><div class="lb-line"><span>Capster Backup Mapped</span><strong>${money(g.providerMapped)}</strong></div><div class="lb-line"><span>Protek Capster</span><strong>${money(g.protek)}</strong></div><div class="lb-line"><span>Gaji SVP</span><strong>${money(g.svp)}</strong></div><div class="lb-line"><span>Backup Kasir Bernama</span><strong>${money(g.backupNamedSupplement)}</strong></div><div class="lb-line total"><span>Total Biaya Gaji</span><strong>${money(g.total)}</strong></div>`);
+    setHtml("lbExpenseLines",`<div class="lb-line"><span>Biaya Operasional</span><strong>${money(x.operasional)}</strong></div><div class="lb-line"><span>Sewa Tempat</span><strong>${money(x.sewa)}</strong></div><div class="lb-line total"><span>Total Pengeluaran Non-Gaji</span><strong>${money(x.total)}</strong></div>`);
+    setHtml("lbInvestorLines",inv?.nama?`<div class="lb-line"><span>Investor</span><strong>${esc(inv.nama)}</strong></div><div class="lb-line"><span>Persentase</span><strong>${Number(inv.persentase||0)}%</strong></div><div class="lb-line"><span>Bagi Hasil</span><strong>${money(inv.bagiHasil)}</strong></div><div class="lb-line"><span>Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div><div class="lb-line total"><span>Total Hak Bulan Ini</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`:'<div class="lb-ok">Cabang ini tidak memiliki investor aktif.</div>');
+    setHtml("lbResultLines",`<div class="lb-line"><span>Total Pendapatan</span><strong>${money(l.totalPendapatan)}</strong></div><div class="lb-line"><span>Total Biaya</span><strong>${money(l.totalBiaya)}</strong></div><div class="lb-line total"><span>Laba Bersih</span><strong>${money(l.labaBersih)}</strong></div>`);
   }
 
   function renderReadiness(report){
@@ -102,70 +94,49 @@
   }
 
   function renderPerformance(report){
-    const perf=report?.performance||{};
-    const status=perf.status||"—",title=perf.title||"Belum ada ringkasan AI untuk periode ini",finding=perf.finding||"AI Insight akan ditampilkan sebagai ringkasan sederhana untuk investor setelah object insight periode aktif tersedia.";
-    setHtml("lbPerformance",`
-      <div><span>Status</span><strong>${esc(status)}</strong></div>
-      <div><span>Ringkasan</span><strong>${esc(title)}</strong></div>
-      <div><span>Periode</span><strong>${esc(monthLabel(el("lbMonth").value))}</strong></div>`);
-    setText("lbPerformanceNote",finding);
+    const perf=report?.performance||{}; const status=perf.status||"—",title=perf.title||"Belum ada ringkasan AI untuk periode ini",finding=perf.finding||"AI Insight akan ditampilkan sebagai ringkasan sederhana untuk investor setelah object insight periode aktif tersedia.";
+    setHtml("lbPerformance",`<div><span>Status</span><strong>${esc(status)}</strong></div><div><span>Ringkasan</span><strong>${esc(title)}</strong></div><div><span>Periode</span><strong>${esc(monthLabel(el("lbMonth")?.value))}</strong></div>`); setText("lbPerformanceNote",finding);
   }
 
   async function renderMapping(report){
-    const box=el("lbProviderMapping");
+    const box=el("lbProviderMapping"); if(!box) return;
     const pending=report?.gaji?.providerPendingDetail||[];
     if(!pending.length){ box.innerHTML='<div class="lb-ok">Tidak ada provider/capster backup yang perlu dimapping untuk cabang ini.</div>'; return; }
     try{
       const mappings=await LaporanBulananProviderMapping.loadMonth({client:db,month:report.range.start});
       const review=LaporanBulananProviderMapping.buildReview({pendingRows:pending,mappings,branches,employees});
       LaporanBulananProviderMappingUI.render(box,{review,month:report.range.start,client:db,onSaved:async()=>{await loadReport(false);}});
-    }catch(err){
-      console.warn("[Laporan Bulanan Mapping]",err);
-      box.innerHTML=`<div class="lb-issue"><strong>MAPPING BELUM TERSEDIA</strong><span>${esc(err?.message||"Gagal membaca mapping provider.")}</span></div>`;
-    }
+    }catch(err){ console.warn("[Laporan Bulanan Mapping]",err); box.innerHTML=`<div class="lb-issue"><strong>MAPPING BELUM TERSEDIA</strong><span>${esc(err?.message||"Gagal membaca mapping provider.")}</span></div>`; }
   }
 
   async function loadReport(showLoading=true){
-    const branchId=Number(el("lbBranch").value||0),month=el("lbMonth").value;
-    if(!branchId||!month) return;
-    syncHeaderContext();
-    if(showLoading) setText("lbLoadState","Memuat laporan...");
+    const branchId=Number(el("lbBranch")?.value||0),month=el("lbMonth")?.value;
+    if(!branchId||!month){ setText("lbLoadState","Pilih cabang dan periode."); return; }
+    syncHeaderContext(); if(showLoading) setText("lbLoadState","Memuat laporan...");
     try{
+      if(typeof LaporanBulananConsumer==="undefined") throw new Error("Consumer Bulanan belum termuat.");
       const [year,mon]=month.split("-").map(Number);
-      const report=await LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId});
-      currentReport=report;
-      renderStatus(report);
-      renderKpis(report);
-      renderFinance(report);
-      renderReadiness(report);
-      renderPerformance(report);
-      syncHeaderContext(report);
+      const report=await withTimeout(LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId}),30000,"Engine Laporan Bulanan");
+      currentReport=report; renderStatus(report); renderKpis(report); renderFinance(report); renderReadiness(report); renderPerformance(report); syncHeaderContext(report);
       setText("lbLoadState",`${report.branch.name} · ${monthLabel(month)} · consumer read only`);
       await renderMapping(report);
-    }catch(err){
-      console.error(err);
-      syncHeaderContext();
-      setText("lbLoadState",err?.message||"Gagal memuat laporan.");
-    }
+    }catch(err){ console.error(err); syncHeaderContext(); setText("lbLoadState",`Gagal memuat: ${err?.message||"unknown error"}`); setText("lbReportStatusText","GAGAL MEMUAT"); }
   }
 
   async function init(){
-    if(!el("lbBranch")) return;
+    if(booted||!el("lbBranch")) return; booted=true;
     bindHeaderSync();
     try{
+      setText("lbLoadState","Memuat master cabang...");
       await loadBase();
-      el("lbMonth").value="2026-08";
-      syncHeaderContext();
+      el("lbMonth").value="2026-08"; syncHeaderContext();
       await loadReport();
-    }catch(err){
-      console.error(err);
-      syncHeaderContext();
-      setText("lbLoadState",err?.message||"Gagal memuat modul.");
-    }
+    }catch(err){ console.error(err); syncHeaderContext(); setText("lbLoadState",`Gagal memuat modul: ${err?.message||"unknown error"}`); setText("lbReportStatusText","GAGAL MEMUAT"); }
     el("lbRefresh")?.addEventListener("click",()=>loadReport());
-    el("lbBranch")?.addEventListener("change",()=>{syncHeaderContext();loadReport();});
-    el("lbMonth")?.addEventListener("change",()=>{syncHeaderContext();loadReport();});
+    el("lbBranch")?.addEventListener("change",()=>{syncHeaderContext(); if(booted) loadReport();});
+    el("lbMonth")?.addEventListener("change",()=>{syncHeaderContext(); if(booted) loadReport();});
   }
 
-  document.readyState==="loading"?document.addEventListener("DOMContentLoaded",init):init();
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true}); else init();
+  window.LaporanBulananUI={init,loadReport,syncHeaderContext};
 })();
