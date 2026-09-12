@@ -17,7 +17,7 @@ body.laporan-bulanan-page .lb-review .lb-issue{
   background-image:none!important;
 }
 
-/* Tanda seru Kelengkapan Data dipusatkan vertikal pada tiap baris. */
+/* Ikon tanda seru dibuat benar-benar center di tengah baris warning. */
 body.laporan-bulanan-page .lb-review .lb-issue::before{
   top:50%!important;
   transform:translateY(-50%)!important;
@@ -56,4 +56,44 @@ body.laporan-bulanan-page .lb-mapping select option,
 body.laporan-bulanan-page .monthly-provider-map-row select option{
   background:#050607!important;
   color:#f8fafc!important;
+}
+
+/* =========================================================
+   DROPDOWN CABANG — BLACK + NAMA CABANG LEBIH BESAR
+   UI ONLY. Menimpa style popover custom tanpa mengubah logic picker.
+   ========================================================= */
+body.laporan-bulanan-page .lb-branch-popover{
+  background:#000!important;
+  background-image:none!important;
+  border-color:rgba(45,212,191,.34)!important;
+  box-shadow:0 22px 54px rgba(0,0,0,.78),0 0 22px rgba(45,212,191,.08)!important;
+}
+
+body.laporan-bulanan-page .lb-branch-option{
+  background:#000!important;
+  color:#eef6f7!important;
+  font-size:15.5px!important;
+  font-weight:800!important;
+  min-height:46px!important;
+}
+
+body.laporan-bulanan-page .lb-branch-option:hover,
+body.laporan-bulanan-page .lb-branch-option.is-keyboard-active{
+  background:#071211!important;
+  color:#fff!important;
+}
+
+body.laporan-bulanan-page .lb-branch-option.is-selected{
+  background:#071a18!important;
+  color:#fff!important;
+}
+
+body.laporan-bulanan-page .lb-branch-trigger{
+  background:#000!important;
+  background-image:none!important;
+}
+
+body.laporan-bulanan-page #lbBranchTriggerText{
+  font-size:15px!important;
+  font-weight:850!important;
 }
