@@ -1,0 +1,178 @@
+/* =========================================================
+   LAPORAN BULANAN — DASHBOARD CARD + MONTH PICKER UI ONLY
+   Scoped only to body.laporan-bulanan-page.
+   No engine, source, formula, or locked module changes.
+   ========================================================= */
+
+body.laporan-bulanan-page{
+  --lb-dash-surface:#11161d;
+  --lb-dash-surface-2:#0d1218;
+  --lb-dash-line:rgba(148,163,184,.18);
+  --lb-dash-gold:#f2c230;
+}
+
+/* dashboard-like metallic cards: dark body + luminous top wash */
+body.laporan-bulanan-page .lb-kpi,
+body.laporan-bulanan-page .lb-card{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.035) 0%,rgba(255,255,255,.012) 18%,rgba(255,255,255,0) 45%),
+    linear-gradient(165deg,#161c24 0%,#11171e 54%,#0d1218 100%) !important;
+  border:1px solid rgba(148,163,184,.19) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.055),
+    inset 0 -1px 0 rgba(0,0,0,.35),
+    0 8px 18px rgba(0,0,0,.23) !important;
+}
+
+body.laporan-bulanan-page .lb-kpi::before,
+body.laporan-bulanan-page .lb-card::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:-7%;
+  right:-7%;
+  top:-24px;
+  height:55px;
+  pointer-events:none;
+  opacity:.62;
+  filter:blur(10px);
+  background:radial-gradient(ellipse at 50% 0%,var(--lb-card-glow,rgba(242,194,48,.34)) 0%,transparent 68%);
+}
+
+body.laporan-bulanan-page .lb-kpi::after,
+body.laporan-bulanan-page .lb-card::after{
+  content:"";
+  position:absolute;
+  left:10px;
+  right:10px;
+  top:0;
+  height:1px;
+  pointer-events:none;
+  opacity:.72;
+  background:linear-gradient(90deg,transparent,var(--lb-card-accent,#d4af37),transparent);
+  box-shadow:0 0 12px color-mix(in srgb,var(--lb-card-accent,#d4af37) 48%,transparent);
+}
+
+body.laporan-bulanan-page .lb-kpi{
+  min-height:98px;
+  border-radius:15px !important;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+body.laporan-bulanan-page .lb-kpi:hover{
+  transform:translateY(-2px);
+  border-color:color-mix(in srgb,var(--lb-card-accent,#d4af37) 34%,rgba(148,163,184,.20)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.065),
+    0 10px 24px rgba(0,0,0,.30),
+    0 0 18px color-mix(in srgb,var(--lb-card-accent,#d4af37) 12%,transparent) !important;
+}
+
+/* five KPI accents, dashboard-like */
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(1){--lb-card-accent:#f2c230;--lb-card-glow:rgba(242,194,48,.42)}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(1) strong{color:#f7cf36}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(2){--lb-card-accent:#38bdf8;--lb-card-glow:rgba(56,189,248,.34)}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(2) strong{color:#7dd3fc}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3){--lb-card-accent:#f59e0b;--lb-card-glow:rgba(245,158,11,.30)}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(3) strong{color:#fbbf24}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(4){--lb-card-accent:#a78bfa;--lb-card-glow:rgba(167,139,250,.30)}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(4) strong{color:#c4b5fd}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(5){--lb-card-accent:#34d399;--lb-card-glow:rgba(52,211,153,.34)}
+body.laporan-bulanan-page .lb-kpis .lb-kpi:nth-child(5) strong{color:#6ee7b7}
+body.laporan-bulanan-page #lbProfitCard.is-loss{--lb-card-accent:#ef4444;--lb-card-glow:rgba(239,68,68,.34)}
+body.laporan-bulanan-page #lbProfitCard.is-loss strong{color:#f87171}
+
+/* lower cards retain dashboard material with restrained category glows */
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(1){--lb-card-accent:#f2c230;--lb-card-glow:rgba(242,194,48,.26)}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(2){--lb-card-accent:#38bdf8;--lb-card-glow:rgba(56,189,248,.22)}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(3){--lb-card-accent:#f59e0b;--lb-card-glow:rgba(245,158,11,.20)}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(4){--lb-card-accent:#34d399;--lb-card-glow:rgba(52,211,153,.20)}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(5){--lb-card-accent:#a78bfa;--lb-card-glow:rgba(167,139,250,.20)}
+body.laporan-bulanan-page .lb-grid .lb-card:nth-child(6){--lb-card-accent:#22d3ee;--lb-card-glow:rgba(34,211,238,.20)}
+body.laporan-bulanan-page .lb-review{--lb-card-accent:#fbbf24;--lb-card-glow:rgba(251,191,36,.18)}
+body.laporan-bulanan-page .lb-mapping{--lb-card-accent:#818cf8;--lb-card-glow:rgba(129,140,248,.18)}
+
+body.laporan-bulanan-page .lb-card-head{
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.008)) !important;
+  border-bottom-color:rgba(148,163,184,.13) !important;
+}
+body.laporan-bulanan-page .lb-card-head h3{color:#f8fafc}
+body.laporan-bulanan-page .lb-card-head small{color:#94a3b8}
+
+/* Period input becomes a themed trigger; original month input remains canonical for existing UI logic */
+body.laporan-bulanan-page #lbMonth{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  overflow:hidden !important;
+}
+body.laporan-bulanan-page .lb-month-trigger{
+  width:100%;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 12px 0 14px;
+  border:1px solid rgba(148,163,184,.25);
+  border-radius:11px;
+  background:linear-gradient(180deg,#1b222c 0%,#141a22 100%);
+  color:#f8fafc;
+  font:inherit;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045);
+}
+body.laporan-bulanan-page .lb-month-trigger:hover,
+body.laporan-bulanan-page .lb-month-trigger[aria-expanded="true"]{
+  border-color:rgba(242,194,48,.55);
+  box-shadow:0 0 0 2px rgba(242,194,48,.08),0 0 16px rgba(242,194,48,.10);
+}
+body.laporan-bulanan-page .lb-month-trigger-ico{
+  color:#f2c230;
+  font-size:16px;
+  filter:drop-shadow(0 0 5px rgba(242,194,48,.35));
+}
+
+/* popup */
+.lb-month-popover{
+  position:fixed;
+  z-index:1800;
+  width:min(360px,calc(100vw - 28px));
+  padding:13px;
+  border:1px solid rgba(242,194,48,.42);
+  border-radius:15px;
+  background:
+    radial-gradient(ellipse at 50% -15%,rgba(242,194,48,.15),transparent 48%),
+    linear-gradient(165deg,#1a2029 0%,#10151c 66%,#0b1016 100%);
+  box-shadow:0 22px 54px rgba(0,0,0,.62),0 0 26px rgba(242,194,48,.10),inset 0 1px 0 rgba(255,255,255,.05);
+  color:#f8fafc;
+  transform-origin:top center;
+  animation:lbMonthIn .16s ease-out;
+}
+.lb-month-popover[hidden]{display:none !important}
+@keyframes lbMonthIn{from{opacity:0;transform:translateY(-5px) scale(.985)}to{opacity:1;transform:none}}
+.lb-month-popover-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.lb-month-popover-title{display:flex;flex-direction:column;gap:1px}
+.lb-month-popover-title small{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;font-weight:800}
+.lb-month-popover-title strong{font-size:16px;color:#f8fafc}
+.lb-month-year-nav{display:flex;align-items:center;gap:6px}
+.lb-month-year-nav button{width:34px;height:34px;border-radius:9px;border:1px solid rgba(148,163,184,.20);background:#151b23;color:#cbd5e1;font-size:20px;font-weight:900;cursor:pointer}
+.lb-month-year-nav button:hover{border-color:rgba(242,194,48,.48);color:#f2c230;background:rgba(242,194,48,.08)}
+.lb-month-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.lb-month-cell{height:42px;border:1px solid rgba(148,163,184,.16);border-radius:10px;background:linear-gradient(180deg,#151c24,#10151c);color:#cbd5e1;font-size:12px;font-weight:800;cursor:pointer;transition:.15s ease}
+.lb-month-cell:hover{transform:translateY(-1px);border-color:rgba(242,194,48,.45);color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.20)}
+.lb-month-cell.is-selected{border-color:rgba(242,194,48,.82);background:linear-gradient(180deg,rgba(242,194,48,.24),rgba(212,175,55,.10));color:#f8d758;box-shadow:0 0 16px rgba(242,194,48,.15),inset 0 1px 0 rgba(255,255,255,.05)}
+.lb-month-cell.is-current:not(.is-selected)::after{content:"";display:block;width:4px;height:4px;border-radius:50%;background:#38bdf8;margin:3px auto 0;box-shadow:0 0 6px rgba(56,189,248,.65)}
+.lb-month-popover-foot{display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:10px;border-top:1px solid rgba(148,163,184,.12);font-size:10px;color:#7f8b99}
+.lb-month-today{border:0;background:transparent;color:#f2c230;font-size:11px;font-weight:900;cursor:pointer;padding:4px 0}
+
+@media(prefers-reduced-motion:reduce){
+  body.laporan-bulanan-page .lb-kpi{transition:none}
+  .lb-month-popover{animation:none}
+}
