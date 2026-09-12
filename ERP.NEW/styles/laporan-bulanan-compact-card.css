@@ -3,7 +3,7 @@
    UI ONLY. Tidak mengubah engine/source/formula/data.
    ========================================================= */
 
-/* Card aktif dibuat lebih pendek agar satu blok langsung terbaca. */
+/* Card aktif dibuat pendek dan mengikuti tinggi isi. */
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{
   min-height:0!important;
   height:auto!important;
@@ -11,25 +11,29 @@ body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{
 
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-head,
 body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-head{
-  min-height:44px!important;
-  padding:9px 14px!important;
+  min-height:38px!important;
+  padding:7px 12px!important;
+}
+body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-head h3,
+body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-head h3{
+  line-height:1.08!important;
 }
 
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body,
 body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
-  padding:8px 14px 10px!important;
+  padding:6px 12px 8px!important;
 }
 
-/* Tinggi antar baris dipadatkan. */
+/* Semua baris laporan dibuat setinggi pola Pendapatan. */
 body.laporan-bulanan-page .lb-lines .lb-line{
-  min-height:34px!important;
-  padding:7px 4px!important;
+  min-height:30px!important;
+  padding:5px 4px!important;
   border-top:0!important;
-  border-bottom:1px solid rgba(148,163,184,.16)!important;
+  border-bottom:1px solid rgba(148,163,184,.14)!important;
   box-shadow:none!important;
 }
 body.laporan-bulanan-page .lb-lines .lb-line:first-child{
-  border-top:1px solid rgba(148,163,184,.12)!important;
+  border-top:1px solid rgba(148,163,184,.10)!important;
 }
 
 /* Hilangkan divider glow warna-warni; pakai garis tipis netral. */
@@ -39,36 +43,33 @@ body.laporan-bulanan-page .lb-card .lb-lines .lb-line::after{
 }
 
 body.laporan-bulanan-page .lb-lines .lb-line.total{
-  margin-top:4px!important;
-  min-height:38px!important;
-  padding:8px 4px!important;
-  border-top:1px solid rgba(242,194,48,.38)!important;
-  border-bottom:1px solid rgba(242,194,48,.38)!important;
-  background:linear-gradient(90deg,rgba(242,194,48,.025),transparent 58%)!important;
+  margin-top:3px!important;
+  min-height:34px!important;
+  padding:6px 4px!important;
+  border-top:1px solid rgba(242,194,48,.34)!important;
+  border-bottom:1px solid rgba(242,194,48,.34)!important;
+  background:linear-gradient(90deg,rgba(242,194,48,.02),transparent 58%)!important;
 }
 
-/* Tetap terbaca, tapi tidak membuat baris membengkak. */
-body.laporan-bulanan-page .lb-lines .lb-line span{
-  line-height:1.15!important;
-}
+body.laporan-bulanan-page .lb-lines .lb-line span,
 body.laporan-bulanan-page .lb-lines .lb-line strong{
-  line-height:1.15!important;
+  line-height:1.1!important;
 }
 
-/* Kalau konten memang panjang, scroll di dalam card saja. */
+/* Tidak ada scrollbar internal pada card laporan utama.
+   Semua data ditampilkan penuh; scroll cukup pada halaman. */
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body{
-  max-height:430px!important;
-  overflow:auto!important;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(148,163,184,.38) transparent;
+  max-height:none!important;
+  overflow:visible!important;
 }
 
-/* Performance chart membutuhkan ruang sedikit lebih tinggi. */
+/* Performance tetap auto-height agar grafik + insight tampil utuh. */
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card[data-lb-view="performance"].is-view-active .lb-card-body{
-  max-height:560px!important;
+  max-height:none!important;
+  overflow:visible!important;
 }
 
-/* Mapping tetap compact, tapi list panjang bisa scroll sendiri. */
+/* Mapping tetap compact; list panjang boleh scroll sendiri. */
 body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
   max-height:470px!important;
   overflow:auto!important;
@@ -78,14 +79,14 @@ body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
 
 /* Baris mapping juga dirapatkan sedikit tanpa mengubah field/action. */
 body.laporan-bulanan-page .monthly-provider-map-row{
-  margin:8px 0!important;
-  padding:11px 12px!important;
+  margin:7px 0!important;
+  padding:10px 11px!important;
   border-width:1px!important;
   border-left-width:3px!important;
   box-shadow:0 5px 14px rgba(0,0,0,.22)!important;
 }
 body.laporan-bulanan-page .monthly-provider-map-row + .monthly-provider-map-row{
-  margin-top:9px!important;
+  margin-top:8px!important;
 }
 
 /* Kelengkapan Data dibuat sepadan dengan card review lain, tidak terlalu tinggi. */
@@ -94,33 +95,33 @@ body.laporan-bulanan-page .lb-review{
   height:auto!important;
 }
 body.laporan-bulanan-page .lb-review .lb-card-head{
-  min-height:42px!important;
-  padding:8px 14px!important;
+  min-height:40px!important;
+  padding:7px 12px!important;
 }
 body.laporan-bulanan-page .lb-review .lb-card-body{
-  padding:8px 12px 10px!important;
+  padding:7px 11px 8px!important;
 }
 body.laporan-bulanan-page .lb-review .lb-issues{
-  gap:7px!important;
+  gap:6px!important;
 }
 body.laporan-bulanan-page .lb-review .lb-issue{
-  min-height:44px!important;
-  padding:8px 12px 8px 44px!important;
+  min-height:42px!important;
+  padding:7px 11px 7px 42px!important;
   border-radius:10px!important;
 }
 body.laporan-bulanan-page .lb-review .lb-issue::before{
-  left:12px!important;
-  width:22px!important;
-  height:22px!important;
-  font-size:14px!important;
+  left:11px!important;
+  width:21px!important;
+  height:21px!important;
+  font-size:13px!important;
 }
 body.laporan-bulanan-page .lb-review .lb-issue strong{
   font-size:12.5px!important;
-  line-height:1.12!important;
+  line-height:1.1!important;
 }
 body.laporan-bulanan-page .lb-review .lb-issue span{
   font-size:12.5px!important;
-  line-height:1.18!important;
+  line-height:1.16!important;
 }
 
 /* =========================================================
