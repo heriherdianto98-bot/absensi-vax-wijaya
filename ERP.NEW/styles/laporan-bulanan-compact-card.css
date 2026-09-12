@@ -197,6 +197,69 @@ body.laporan-bulanan-page .lb-kpi small{
   body.laporan-bulanan-page .lb-kpi strong{font-size:22px!important}
 }
 
+/* =========================================================
+   FINAL NORMAL FLOW RESET — UI ONLY
+   Membersihkan semua offset/spacer sisa eksperimen freeze.
+   ========================================================= */
+body.laporan-bulanan-page .lb-wrap{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:8px 0 60px!important;
+}
+
+body.laporan-bulanan-page .lb-head,
+body.laporan-bulanan-page .lb-toolbar,
+body.laporan-bulanan-page #lbLoadState,
+body.laporan-bulanan-page .lb-kpis,
+body.laporan-bulanan-page .lb-view-switcher,
+body.laporan-bulanan-page .lb-grid,
+body.laporan-bulanan-page .lb-review,
+body.laporan-bulanan-page .lb-mapping{
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
+body.laporan-bulanan-page .lb-head,
+body.laporan-bulanan-page .lb-toolbar,
+body.laporan-bulanan-page .lb-kpis{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+}
+
+body.laporan-bulanan-page .lb-head{margin:0 0 10px!important}
+body.laporan-bulanan-page .lb-toolbar{margin:0 0 8px!important}
+body.laporan-bulanan-page #lbLoadState{margin:4px 0 6px!important}
+body.laporan-bulanan-page .lb-kpis{margin:0 0 12px!important}
+
+body.laporan-bulanan-page .lb-head + .lb-toolbar,
+body.laporan-bulanan-page .lb-toolbar + #lbLoadState,
+body.laporan-bulanan-page #lbLoadState + .lb-kpis,
+body.laporan-bulanan-page .lb-kpis + .lb-view-switcher{
+  margin-top:0!important;
+}
+
+/* Hanya Tampilan Laporan yang tetap sticky. */
+body.laporan-bulanan-page .lb-view-switcher{
+  position:sticky!important;
+  top:calc(var(--erp-top-header-h,72px) + 6px)!important;
+  left:auto!important;
+  right:auto!important;
+  z-index:940!important;
+  margin:0 0 14px!important;
+}
+
+@media(max-width:900px){
+  body.laporan-bulanan-page .lb-wrap{padding:8px 0 40px!important}
+  body.laporan-bulanan-page .lb-view-switcher{top:calc(var(--erp-top-header-h,72px) + 4px)!important}
+}
+
 @media print{
   body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body,
   body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
@@ -210,5 +273,9 @@ body.laporan-bulanan-page .lb-kpi small{
   body.laporan-bulanan-page .lb-kpi{
     height:auto!important;
     min-height:0!important;
+  }
+  body.laporan-bulanan-page .lb-view-switcher{
+    position:static!important;
+    top:auto!important;
   }
 }
