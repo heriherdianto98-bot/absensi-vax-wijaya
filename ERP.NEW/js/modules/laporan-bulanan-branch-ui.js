@@ -3,6 +3,8 @@
 
 (() => {
   const $=id=>document.getElementById(id);
+  let activeIndex=-1;
+  let scrollLockY=0;
 
   function injectStyle(){
     if(document.getElementById("lbBranchPickerStyle")) return;
@@ -44,19 +46,23 @@
         padding:0 12px;margin:2px 0;border:1px solid transparent;border-radius:10px;background:transparent;
         color:#d8e1e9;font:inherit;font-size:13.5px;font-weight:750;text-align:left;cursor:pointer;
       }
-      .lb-branch-option:hover{background:rgba(45,212,191,.08);border-color:rgba(45,212,191,.20);color:#fff}
+      .lb-branch-option:hover,.lb-branch-option.is-keyboard-active{background:rgba(45,212,191,.08);border-color:rgba(45,212,191,.20);color:#fff}
+      .lb-branch-option.is-keyboard-active{box-shadow:inset 3px 0 0 rgba(45,212,191,.78),0 0 14px rgba(45,212,191,.07)}
       .lb-branch-option.is-selected{
         color:#ffffff;border-color:rgba(45,212,191,.52);
         background:linear-gradient(90deg,rgba(45,212,191,.20),rgba(45,212,191,.07));
         box-shadow:inset 3px 0 0 #2dd4bf,0 0 14px rgba(45,212,191,.08);
       }
       .lb-branch-option.is-selected::after{content:"✓";color:#5eead4;font-size:13px;font-weight:900}
+      body.lb-branch-menu-open{overflow:hidden!important}
       @media(prefers-reduced-motion:reduce){.lb-branch-popover{animation:none}}
     `;
     document.head.appendChild(style);
   }
 
-  function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;","</":"&lt;/",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+  function options(){return Array.from(document.querySelectorAll(".lb-branch-option"));}
 
   function syncTrigger(){
     const select=$("lbBranch"),text=$("lbBranchTriggerText");
@@ -64,12 +70,25 @@
     text.textContent=select.selectedOptions?.[0]?.textContent?.trim()||"Pilih Cabang";
   }
 
+  function setActive(index,{scroll=true}={}){
+    const items=options();
+    if(!items.length){activeIndex=-1;return;}
+    activeIndex=Math.max(0,Math.min(index,items.length-1));
+    items.forEach((btn,i)=>btn.classList.toggle("is-keyboard-active",i===activeIndex));
+    if(scroll) items[activeIndex]?.scrollIntoView({block:"nearest",behavior:"smooth"});
+  }
+
   function renderOptions(){
     const select=$("lbBranch"),box=$("lbBranchOptions");
     if(!select||!box) return;
     const current=String(select.value||"");
     box.innerHTML=Array.from(select.options).map(o=>`<button type="button" class="lb-branch-option${String(o.value)===current?" is-selected":""}" data-value="${esc(o.value)}">${esc(o.textContent.trim())}</button>`).join("");
-    box.querySelectorAll(".lb-branch-option").forEach(btn=>btn.addEventListener("click",()=>choose(btn.dataset.value)));
+    box.querySelectorAll(".lb-branch-option").forEach((btn,i)=>{
+      btn.addEventListener("click",()=>choose(btn.dataset.value));
+      btn.addEventListener("mouseenter",()=>setActive(i,{scroll:false}));
+    });
+    const selectedIndex=options().findIndex(btn=>btn.classList.contains("is-selected"));
+    setActive(selectedIndex>=0?selectedIndex:0,{scroll:false});
   }
 
   function position(){
@@ -87,13 +106,28 @@
     });
   }
 
+  function lockPageScroll(){
+    scrollLockY=window.scrollY||document.documentElement.scrollTop||0;
+    document.body.classList.add("lb-branch-menu-open");
+  }
+  function unlockPageScroll(){
+    document.body.classList.remove("lb-branch-menu-open");
+    window.scrollTo(0,scrollLockY);
+  }
+
   function open(){
     const pop=$("lbBranchPopover"),trigger=$("lbBranchTrigger");
     if(!pop||!trigger) return;
     renderOptions();
-    pop.hidden=false;trigger.setAttribute("aria-expanded","true");position();
+    pop.hidden=false;trigger.setAttribute("aria-expanded","true");position();lockPageScroll();
+    requestAnimationFrame(()=>options()[activeIndex]?.scrollIntoView({block:"nearest"}));
   }
-  function close(){const pop=$("lbBranchPopover"),trigger=$("lbBranchTrigger");if(pop) pop.hidden=true;trigger?.setAttribute("aria-expanded","false");}
+  function close(){
+    const pop=$("lbBranchPopover"),trigger=$("lbBranchTrigger");
+    if(pop) pop.hidden=true;
+    trigger?.setAttribute("aria-expanded","false");
+    unlockPageScroll();
+  }
   function choose(value){
     const select=$("lbBranch");if(!select) return;
     if(String(select.value)!==String(value)){
@@ -101,6 +135,43 @@
       select.dispatchEvent(new Event("change",{bubbles:true}));
     }
     syncTrigger();close();
+  }
+
+  function handleKeydown(e){
+    const pop=$("lbBranchPopover");
+    const trigger=$("lbBranchTrigger");
+    const isOpen=pop && !pop.hidden;
+    const key=e.key;
+
+    if(!isOpen){
+      if((key==="ArrowDown"||key==="ArrowUp"||key==="Enter"||key===" ") && document.activeElement===trigger){
+        e.preventDefault();
+        open();
+      }
+      return;
+    }
+
+    if(["ArrowDown","ArrowUp","Home","End","PageDown","PageUp"," "].includes(key)) e.preventDefault();
+    if(key==="ArrowDown") setActive(activeIndex+1);
+    else if(key==="ArrowUp") setActive(activeIndex-1);
+    else if(key==="Home") setActive(0);
+    else if(key==="End") setActive(options().length-1);
+    else if(key==="PageDown") setActive(Math.min(activeIndex+5,options().length-1));
+    else if(key==="PageUp") setActive(Math.max(activeIndex-5,0));
+    else if(key==="Enter"||key===" "){
+      e.preventDefault();
+      const btn=options()[activeIndex];
+      if(btn) choose(btn.dataset.value);
+    }else if(key==="Escape"){
+      e.preventDefault();close();trigger?.focus();
+    }
+  }
+
+  function blockBackgroundWheel(e){
+    const pop=$("lbBranchPopover");
+    if(!pop||pop.hidden) return;
+    if(pop.contains(e.target)) return;
+    e.preventDefault();
   }
 
   function build(){
@@ -117,9 +188,9 @@
     select.addEventListener("change",()=>{syncTrigger();renderOptions();});
     const mo=new MutationObserver(()=>{syncTrigger();if(!pop.hidden) renderOptions();});mo.observe(select,{childList:true,subtree:true});
     document.addEventListener("pointerdown",e=>{if(pop.hidden) return;if(pop.contains(e.target)||trigger.contains(e.target)) return;close();});
-    document.addEventListener("keydown",e=>{if(e.key==="Escape") close();});
+    document.addEventListener("keydown",handleKeydown,true);
+    document.addEventListener("wheel",blockBackgroundWheel,{passive:false,capture:true});
     window.addEventListener("resize",()=>{if(!pop.hidden) position();});
-    window.addEventListener("scroll",()=>{if(!pop.hidden) position();},true);
     syncTrigger();
   }
 
