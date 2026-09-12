@@ -6,94 +6,195 @@
 body.laporan-bulanan-page .lb-view-switcher{
   display:grid;
   grid-template-columns:minmax(0,1fr) auto;
-  gap:12px;
-  align-items:end;
+  grid-template-rows:auto auto;
+  gap:7px 12px;
+  align-items:start;
   margin:0 0 14px;
   padding:14px 16px;
-  border:1px solid rgba(56,189,248,.22);
+  border:1px solid rgba(45,212,191,.24);
   border-radius:15px;
   background:linear-gradient(180deg,#0a0d11 0%,#050709 100%);
-  box-shadow:0 10px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035),0 0 18px rgba(56,189,248,.05);
+  box-shadow:0 10px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035),0 0 18px rgba(45,212,191,.05);
 }
-body.laporan-bulanan-page .lb-view-field{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
+body.laporan-bulanan-page .lb-view-field{display:contents}
 body.laporan-bulanan-page .lb-view-field > span{
+  grid-column:1;grid-row:1;
   color:#67e8f9;
   font-size:11px;
   font-weight:900;
   letter-spacing:.9px;
   text-transform:uppercase;
 }
-body.laporan-bulanan-page #lbSectionView{
-  width:100%;
-  height:44px;
-  padding:0 44px 0 13px;
-  border:1px solid rgba(56,189,248,.36);
-  border-radius:11px;
-  background:#0b1118;
-  color:#f8fafc;
-  font:inherit;
-  font-size:14px;
-  font-weight:900;
-  outline:none;
-  cursor:pointer;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
-  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
-}
-body.laporan-bulanan-page #lbSectionView:hover{
-  border-color:rgba(56,189,248,.62);
-}
-body.laporan-bulanan-page #lbSectionView:focus{
-  border-color:#f2c230;
-  box-shadow:0 0 0 3px rgba(242,194,48,.10),0 0 18px rgba(242,194,48,.10);
-}
-body.laporan-bulanan-page #lbSectionView option{
-  background:#0b1118;
-  color:#f8fafc;
-  font-weight:800;
-}
 body.laporan-bulanan-page .lb-view-hint{
-  align-self:center;
+  grid-column:2;grid-row:1;
+  align-self:start;
   color:#94a3b8;
   font-size:12px;
-  font-weight:700;
+  line-height:1.1;
+  font-weight:800;
   white-space:nowrap;
+  padding-top:1px;
 }
 
-/* Hanya satu card review utama yang tampil. Kelengkapan Data + Mapping tetap di luar grid. */
-body.laporan-bulanan-page .lb-grid.lb-single-view{
-  display:block!important;
+/* Native select tetap jadi source state, tapi visual diganti custom picker bertema seperti pilih cabang. */
+body.laporan-bulanan-page #lbSectionView.lb-section-native-hidden{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
 }
+body.laporan-bulanan-page .lb-section-trigger{
+  grid-column:1 / -1;grid-row:2;
+  width:100%;height:46px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 13px 0 15px;
+  border:1px solid rgba(45,212,191,.36);
+  border-radius:11px;
+  background:linear-gradient(180deg,rgba(45,212,191,.12),rgba(18,25,32,.96));
+  color:#f8fafc;font:inherit;font-size:14px;font-weight:900;cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 12px rgba(45,212,191,.05);
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+body.laporan-bulanan-page .lb-section-trigger:hover,
+body.laporan-bulanan-page .lb-section-trigger[aria-expanded="true"]{
+  border-color:rgba(45,212,191,.68);
+  box-shadow:0 0 0 2px rgba(45,212,191,.08),0 0 18px rgba(45,212,191,.14);
+}
+body.laporan-bulanan-page .lb-section-trigger-ico{
+  color:#5eead4;font-size:14px;font-weight:900;
+  filter:drop-shadow(0 0 5px rgba(45,212,191,.35));
+  transition:transform .16s ease;
+}
+body.laporan-bulanan-page .lb-section-trigger[aria-expanded="true"] .lb-section-trigger-ico{transform:rotate(180deg)}
+
+.lb-section-popover{
+  position:fixed;z-index:1820;
+  max-height:min(430px,70vh);overflow:auto;
+  padding:8px;
+  border:1px solid rgba(45,212,191,.44);
+  border-radius:14px;
+  background:radial-gradient(ellipse at 50% -15%,rgba(45,212,191,.13),transparent 46%),linear-gradient(165deg,#182128 0%,#10171d 68%,#0b1016 100%);
+  box-shadow:0 22px 54px rgba(0,0,0,.64),0 0 28px rgba(45,212,191,.12),inset 0 1px 0 rgba(255,255,255,.05);
+  color:#f8fafc;
+  animation:lbSectionPopoverIn .16s ease-out;
+  scrollbar-width:thin;scrollbar-color:#2dd4bf #0f151b;
+}
+.lb-section-popover[hidden]{display:none!important}
+@keyframes lbSectionPopoverIn{from{opacity:0;transform:translateY(-6px) scale(.988)}to{opacity:1;transform:none}}
+.lb-section-option{
+  width:100%;min-height:44px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 13px;margin:2px 0;
+  border:1px solid transparent;border-radius:10px;
+  background:transparent;color:#d8e1e9;
+  font:inherit;font-size:14px;font-weight:800;text-align:left;cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease;
+}
+.lb-section-option:hover{
+  background:rgba(45,212,191,.09);
+  border-color:rgba(45,212,191,.22);
+  color:#fff;
+  transform:translateX(2px);
+}
+.lb-section-option.is-selected{
+  color:#fff;
+  border-color:rgba(45,212,191,.54);
+  background:linear-gradient(90deg,rgba(45,212,191,.22),rgba(45,212,191,.07));
+  box-shadow:inset 3px 0 0 #2dd4bf,0 0 14px rgba(45,212,191,.09);
+}
+.lb-section-option.is-selected::after{content:"✓";color:#5eead4;font-size:13px;font-weight:900}
+
+/* Hanya satu card review utama yang tampil. Kelengkapan Data + Mapping tetap di luar grid. */
+body.laporan-bulanan-page .lb-grid.lb-single-view{display:block!important}
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card{
-  display:none!important;
-  width:100%!important;
-  min-width:0!important;
-  margin:0!important;
+  display:none!important;width:100%!important;min-width:0!important;margin:0!important;
 }
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{
   display:block!important;
   animation:lbSectionReveal .28s cubic-bezier(.2,.8,.2,1) both,lbCardBreath 4.2s ease-in-out .28s infinite;
 }
-
 @keyframes lbSectionReveal{
   from{opacity:0;transform:translateY(8px) scale(.995)}
   to{opacity:1;transform:translateY(0) scale(1)}
 }
 
+/* =========================================================
+   KELENGKAPAN DATA — ALERT MODE
+   UI ONLY: tampil merah saat ada issue, hilang otomatis saat sudah lengkap.
+   ========================================================= */
+@keyframes lbIssuePulse{
+  0%,100%{opacity:1;transform:translateY(0);box-shadow:0 0 0 1px rgba(239,68,68,.22),0 0 10px rgba(239,68,68,.07)}
+  50%{opacity:.62;transform:translateY(-1px);box-shadow:0 0 0 1px rgba(239,68,68,.58),0 0 24px rgba(239,68,68,.22)}
+}
+@keyframes lbIssueBang{
+  0%,100%{transform:scale(1);box-shadow:0 0 8px rgba(239,68,68,.38)}
+  50%{transform:scale(1.18);box-shadow:0 0 18px rgba(239,68,68,.72)}
+}
+body.laporan-bulanan-page .lb-review:has(#lbIssues:empty),
+body.laporan-bulanan-page .lb-review:has(#lbIssues > .lb-ok){display:none!important}
+
+body.laporan-bulanan-page .lb-review:has(.lb-issue){
+  --lb-card-accent:#ef4444!important;
+  border-color:rgba(239,68,68,.58)!important;
+  background:linear-gradient(165deg,#160708 0%,#090405 100%)!important;
+  box-shadow:0 0 0 1px rgba(239,68,68,.16),0 0 26px rgba(239,68,68,.12),0 12px 28px rgba(0,0,0,.34)!important;
+}
+body.laporan-bulanan-page .lb-review:has(.lb-issue) .lb-card-head{
+  border-bottom-color:rgba(239,68,68,.32)!important;
+  background:linear-gradient(180deg,rgba(239,68,68,.13),rgba(239,68,68,.035))!important;
+}
+body.laporan-bulanan-page .lb-review:has(.lb-issue) .lb-card-head h3{color:#ff7070!important}
+body.laporan-bulanan-page .lb-review:has(.lb-issue) .lb-card-head small{color:#fca5a5!important}
+body.laporan-bulanan-page .lb-review .lb-issues{display:grid!important;gap:10px!important}
+body.laporan-bulanan-page .lb-review .lb-issue{
+  position:relative!important;
+  min-height:58px!important;
+  padding:12px 14px 12px 52px!important;
+  border:1px solid rgba(239,68,68,.40)!important;
+  border-left:4px solid #ef4444!important;
+  border-radius:12px!important;
+  background:linear-gradient(90deg,rgba(239,68,68,.12),rgba(239,68,68,.035))!important;
+  animation:lbIssuePulse 1.25s ease-in-out infinite!important;
+}
+body.laporan-bulanan-page .lb-review .lb-issue::before{
+  content:"!";
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  width:25px;height:25px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#ef4444;color:#fff;
+  font-size:16px;font-weight:900;line-height:1;
+  animation:lbIssueBang 1.25s ease-in-out infinite;
+}
+body.laporan-bulanan-page .lb-review .lb-issue strong{color:#ff7373!important;font-size:13px!important;font-weight:900!important}
+body.laporan-bulanan-page .lb-review .lb-issue span{color:#fecaca!important;font-size:13px!important;font-weight:700!important}
+body.laporan-bulanan-page .lb-review .lb-issue:nth-child(2){animation-delay:.12s!important}
+body.laporan-bulanan-page .lb-review .lb-issue:nth-child(2)::before{animation-delay:.12s!important}
+body.laporan-bulanan-page .lb-review .lb-issue:nth-child(3){animation-delay:.24s!important}
+body.laporan-bulanan-page .lb-review .lb-issue:nth-child(3)::before{animation-delay:.24s!important}
+body.laporan-bulanan-page .lb-review .lb-issue:nth-child(4){animation-delay:.36s!important}
+body.laporan-bulanan-page .lb-review .lb-issue:nth-child(4)::before{animation-delay:.36s!important}
+
 @media(max-width:800px){
-  body.laporan-bulanan-page .lb-view-switcher{grid-template-columns:1fr}
-  body.laporan-bulanan-page .lb-view-hint{white-space:normal;align-self:start}
+  body.laporan-bulanan-page .lb-view-switcher{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+  body.laporan-bulanan-page .lb-view-field > span{grid-column:1;grid-row:1}
+  body.laporan-bulanan-page .lb-view-hint{grid-column:1;grid-row:2;white-space:normal;padding-top:0}
+  body.laporan-bulanan-page .lb-section-trigger{grid-column:1;grid-row:3}
 }
 
 @media(prefers-reduced-motion:reduce){
   body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{animation:none!important}
+  .lb-section-popover,
+  body.laporan-bulanan-page .lb-review .lb-issue,
+  body.laporan-bulanan-page .lb-review .lb-issue::before{animation:none!important}
 }
 
 @media print{
   body.laporan-bulanan-page .lb-view-switcher{display:none!important}
   body.laporan-bulanan-page .lb-grid.lb-single-view{display:grid!important}
   body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card{display:block!important}
+  body.laporan-bulanan-page .lb-review:has(#lbIssues > .lb-ok){display:none!important}
+  body.laporan-bulanan-page .lb-review .lb-issue,
+  body.laporan-bulanan-page .lb-review .lb-issue::before{animation:none!important}
 }
