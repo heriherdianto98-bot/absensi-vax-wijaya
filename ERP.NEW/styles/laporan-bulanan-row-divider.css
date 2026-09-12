@@ -131,7 +131,50 @@ body.laporan-bulanan-page .lb-status.is-review i{
 body.laporan-bulanan-page .lb-status.is-ready{animation:none!important}
 body.laporan-bulanan-page .lb-status.is-ready i{animation:none!important}
 
+/* =========================================================
+   RINGKASAN PERFORMANCE CABANG — INVESTOR MINI CARDS
+   UI ONLY: warna per-card + hover melayang + trend tone.
+   ========================================================= */
+body.laporan-bulanan-page .lb-performance > div{
+  --perf-accent:#94a3b8;
+  position:relative;
+  overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--perf-accent) 34%,#273244)!important;
+  border-left:4px solid var(--perf-accent)!important;
+  background:linear-gradient(165deg,#07090c 0%,#030405 100%)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.30),0 0 14px color-mix(in srgb,var(--perf-accent) 8%,transparent)!important;
+  transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s ease,border-color .22s ease!important;
+  will-change:transform
+}
+body.laporan-bulanan-page .lb-performance > div::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:0;height:2px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--perf-accent) 78%,transparent),transparent);
+  opacity:.72;pointer-events:none
+}
+body.laporan-bulanan-page .lb-performance > div:hover{
+  transform:translateY(-7px) scale(1.018);
+  border-color:color-mix(in srgb,var(--perf-accent) 64%,#334155)!important;
+  box-shadow:0 18px 34px rgba(0,0,0,.46),0 0 24px color-mix(in srgb,var(--perf-accent) 18%,transparent)!important;
+  z-index:3
+}
+body.laporan-bulanan-page .lb-performance > div:nth-child(1){--perf-accent:#a78bfa}
+body.laporan-bulanan-page .lb-performance > div:nth-child(2){--perf-accent:#fbbf24}
+body.laporan-bulanan-page .lb-performance > div:nth-child(3){--perf-accent:#38bdf8}
+body.laporan-bulanan-page .lb-performance > div:nth-child(4){--perf-accent:#22d3ee}
+body.laporan-bulanan-page .lb-performance > div:nth-child(5){--perf-accent:#f472b6}
+body.laporan-bulanan-page .lb-performance > div:nth-child(6){--perf-accent:#60a5fa}
+body.laporan-bulanan-page .lb-performance > div span{color:var(--perf-accent)!important;font-weight:900!important}
+body.laporan-bulanan-page .lb-performance > div strong{font-weight:900!important}
+body.laporan-bulanan-page .lb-performance > div.perf-up{--perf-accent:#34d399!important}
+body.laporan-bulanan-page .lb-performance > div.perf-up strong{color:#6ee7b7!important}
+body.laporan-bulanan-page .lb-performance > div.perf-down{--perf-accent:#ef4444!important}
+body.laporan-bulanan-page .lb-performance > div.perf-down strong{color:#f87171!important}
+body.laporan-bulanan-page .lb-performance > div.perf-flat{--perf-accent:#fbbf24!important}
+body.laporan-bulanan-page .lb-performance > div.perf-flat strong{color:#fde68a!important}
+
 @media(prefers-reduced-motion:reduce){
   body.laporan-bulanan-page .lb-status.is-review,
   body.laporan-bulanan-page .lb-status.is-review i{animation:none!important}
+  body.laporan-bulanan-page .lb-performance > div{transition:none!important}
+  body.laporan-bulanan-page .lb-performance > div:hover{transform:none!important}
 }
