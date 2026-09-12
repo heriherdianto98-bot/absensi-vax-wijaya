@@ -6,10 +6,10 @@
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
-  let branches=[],employees=[],currentReport=null,booted=false;
+  let branches=[],employees=[],currentReport=null,booted=false,headerSyncTimer=null;
 
   function monthLabel(value){ const [y,m]=String(value||"").split("-").map(Number); return y&&m?`${MONTHS[m-1]} ${y}`:"—"; }
-  function setText(id,value){ const node=el(id); if(node) node.textContent=value; }
+  function setText(id,value){ const node=el(id); if(node && node.textContent!==String(value)) node.textContent=value; }
   function setHtml(id,value){ const node=el(id); if(node) node.innerHTML=value; }
   function statusReady(report){ return report?.readiness?.finalReady===true; }
 
@@ -25,16 +25,25 @@
     setText("erpHeaderPeriode",period || "—");
   }
 
+  /*
+    IMPORTANT: jangan pakai MutationObserver pada subtree header lalu menulis kembali
+    ke header dari callback yang sama. Itu bisa membentuk mutation loop dan membuat
+    tab browser hang. Header global dimuat async, jadi cukup retry terbatas.
+  */
   function bindHeaderSync(){
-    const host=el("header");
-    if(host){
-      const observer=new MutationObserver(()=>syncHeaderContext());
-      observer.observe(host,{childList:true,subtree:true});
-    }
-    window.addEventListener("load",()=>syncHeaderContext());
-    setTimeout(()=>syncHeaderContext(),150);
-    setTimeout(()=>syncHeaderContext(),700);
-    setTimeout(()=>syncHeaderContext(),1500);
+    let tries=0;
+    const tick=()=>{
+      syncHeaderContext();
+      tries+=1;
+      if(tries>=12 && headerSyncTimer){
+        clearInterval(headerSyncTimer);
+        headerSyncTimer=null;
+      }
+    };
+    tick();
+    if(headerSyncTimer) clearInterval(headerSyncTimer);
+    headerSyncTimer=setInterval(tick,250);
+    window.addEventListener("load",()=>syncHeaderContext(),{once:true});
   }
 
   function withTimeout(promise,ms,label){
@@ -58,7 +67,6 @@
     select.innerHTML=branches.map(c=>`<option value="${Number(c.id)}">${esc(c.nama_cabang)}</option>`).join("");
     if(branches.some(c=>Number(c.id)===5)) select.value="5";
     else if(branches[0]) select.value=String(branches[0].id);
-    select.dispatchEvent(new Event("change",{bubbles:true}));
     syncHeaderContext();
   }
 
@@ -133,8 +141,8 @@
       await loadReport();
     }catch(err){ console.error(err); syncHeaderContext(); setText("lbLoadState",`Gagal memuat modul: ${err?.message||"unknown error"}`); setText("lbReportStatusText","GAGAL MEMUAT"); }
     el("lbRefresh")?.addEventListener("click",()=>loadReport());
-    el("lbBranch")?.addEventListener("change",()=>{syncHeaderContext(); if(booted) loadReport();});
-    el("lbMonth")?.addEventListener("change",()=>{syncHeaderContext(); if(booted) loadReport();});
+    el("lbBranch")?.addEventListener("change",()=>{syncHeaderContext();loadReport();});
+    el("lbMonth")?.addEventListener("change",()=>{syncHeaderContext();loadReport();});
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true}); else init();
