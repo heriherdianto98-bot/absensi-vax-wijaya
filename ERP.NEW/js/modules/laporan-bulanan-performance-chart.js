@@ -71,8 +71,40 @@ Tidak mengubah DashboardEngine, AI Insight, atau source data.
     }
   }
 
+  function showPointDetail(host,point,year){
+    const detail=host.querySelector(".lb-perf-point-detail");
+    if(!detail) return;
+    host.querySelectorAll(".lb-perf-point").forEach(node=>node.classList.toggle("is-active",Number(node.dataset.index)===point.i));
+
+    const leftPct=Math.max(10,Math.min(90,(point.x/1100)*100));
+    const topPct=Math.max(12,Math.min(76,(point.y/330)*100));
+    detail.style.left=`${leftPct}%`;
+    detail.style.top=`${topPct}%`;
+    detail.innerHTML=`<span>${MONTHS[point.i]} ${year}</span><strong>${money(point.v)}</strong><small>Omzet</small>`;
+    detail.classList.remove("is-show");
+    void detail.offsetWidth;
+    detail.classList.add("is-show");
+  }
+
+  function bindPointInteraction(host,points,year){
+    host.querySelectorAll(".lb-perf-hit[data-index]").forEach(hit=>{
+      const activate=()=>{
+        const idx=Number(hit.dataset.index);
+        const point=points[idx];
+        if(point) showPointDetail(host,point,year);
+      };
+      hit.addEventListener("click",activate);
+      hit.addEventListener("keydown",event=>{
+        if(event.key==="Enter"||event.key===" "){
+          event.preventDefault();
+          activate();
+        }
+      });
+    });
+  }
+
   function renderChart(host,{year,values}){
-    const W=1100,H=330,L=72,R=24,T=28,B=50;
+    const W=1100,H=330,L=84,R=24,T=28,B=58;
     const plotW=W-L-R,plotH=H-T-B;
     const maxRaw=Math.max(...values,0);
     const max=maxRaw>0?maxRaw:1;
@@ -102,13 +134,15 @@ Tidak mengubah DashboardEngine, AI Insight, atau source data.
             </linearGradient>
             <filter id="lbPerfGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           </defs>
-          ${ticks.map(t=>{const y=T+plotH-(t*plotH);return `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" class="lb-perf-grid"/><text x="${L-12}" y="${y+5}" text-anchor="end" class="lb-perf-axis-y">${compact(max*t)}</text>`}).join("")}
+          ${ticks.map(t=>{const y=T+plotH-(t*plotH);return `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" class="lb-perf-grid"/><text x="${L-14}" y="${y+6}" text-anchor="end" class="lb-perf-axis-y">${compact(max*t)}</text>`}).join("")}
           <path d="${area}" fill="url(#lbPerfArea)"/>
           <path d="${line}" class="lb-perf-line" filter="url(#lbPerfGlow)"/>
-          ${points.map(p=>`<g class="lb-perf-point"><circle cx="${p.x}" cy="${p.y}" r="6"/><circle cx="${p.x}" cy="${p.y}" r="15" class="lb-perf-hit"><title>${MONTHS[p.i]} ${year}: ${money(p.v)}</title></circle><text x="${p.x}" y="${H-20}" text-anchor="middle" class="lb-perf-axis-x">${MONTHS[p.i]}</text></g>`).join("")}
+          ${points.map(p=>`<g class="lb-perf-point" data-index="${p.i}"><circle cx="${p.x}" cy="${p.y}" r="6"/><circle cx="${p.x}" cy="${p.y}" r="18" class="lb-perf-hit" data-index="${p.i}" tabindex="0" role="button" aria-label="${MONTHS[p.i]} ${year}: ${money(p.v)}"><title>${MONTHS[p.i]} ${year}: ${money(p.v)}</title></circle><text x="${p.x}" y="${H-18}" text-anchor="middle" class="lb-perf-axis-x">${MONTHS[p.i]}</text></g>`).join("")}
         </svg>
+        <div class="lb-perf-point-detail" aria-live="polite"></div>
       </div>
     `;
+    bindPointInteraction(host,points,year);
   }
 
   function bind(){
