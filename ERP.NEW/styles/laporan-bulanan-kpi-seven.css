@@ -16,6 +16,7 @@ body.laporan-bulanan-page .lb-kpi{
   padding:9px 10px!important;
   border-radius:11px!important;
   gap:2px!important;
+  box-shadow:none!important;
 }
 
 body.laporan-bulanan-page .lb-kpi span{
@@ -41,6 +42,49 @@ body.laporan-bulanan-page .lb-kpi small{
   overflow:hidden!important;
   text-overflow:ellipsis!important;
 }
+
+/* Setiap KPI punya identitas warna sendiri supaya audit angka lebih cepat. */
+body.laporan-bulanan-page .lb-kpi:nth-child(1){
+  border-left-color:#f6c945!important;
+  background:linear-gradient(110deg,rgba(246,201,69,.10),#050607 35%)!important;
+}
+body.laporan-bulanan-page .lb-kpi:nth-child(1) strong{color:#ffd34f!important}
+
+body.laporan-bulanan-page .lb-kpi:nth-child(2){
+  border-left-color:#25d7f2!important;
+  background:linear-gradient(110deg,rgba(37,215,242,.10),#050607 35%)!important;
+}
+body.laporan-bulanan-page .lb-kpi:nth-child(2) strong{color:#35dcf4!important}
+
+body.laporan-bulanan-page .lb-kpi:nth-child(3){
+  border-left-color:#ff7849!important;
+  background:linear-gradient(110deg,rgba(255,120,73,.10),#050607 35%)!important;
+}
+body.laporan-bulanan-page .lb-kpi:nth-child(3) strong{color:#ff845c!important}
+
+body.laporan-bulanan-page .lb-kpi:nth-child(4){
+  border-left-color:#a981ff!important;
+  background:linear-gradient(110deg,rgba(169,129,255,.10),#050607 35%)!important;
+}
+body.laporan-bulanan-page .lb-kpi:nth-child(4) strong{color:#b792ff!important}
+
+body.laporan-bulanan-page .lb-kpi:nth-child(5){
+  border-left-color:#37d889!important;
+  background:linear-gradient(110deg,rgba(55,216,137,.10),#050607 35%)!important;
+}
+body.laporan-bulanan-page .lb-kpi:nth-child(5) strong{color:#48df95!important}
+
+body.laporan-bulanan-page .lb-kpi:nth-child(6){
+  border-left-color:#4e8cff!important;
+  background:linear-gradient(110deg,rgba(78,140,255,.10),#050607 35%)!important;
+}
+body.laporan-bulanan-page .lb-kpi:nth-child(6) strong{color:#6da0ff!important}
+
+body.laporan-bulanan-page .lb-kpi:nth-child(7){
+  border-left-color:#ff5fa7!important;
+  background:linear-gradient(110deg,rgba(255,95,167,.10),#050607 35%)!important;
+}
+body.laporan-bulanan-page .lb-kpi:nth-child(7) strong{color:#ff78b6!important}
 
 @media(max-width:1350px){
   body.laporan-bulanan-page .lb-kpis{grid-template-columns:repeat(4,minmax(0,1fr))!important}
