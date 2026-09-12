@@ -6,6 +6,41 @@ Read-only facade that composes the monthly engine with consumer-only bridges.
 Does not modify locked source engines.
 */
 const LaporanBulananConsumer = {
+  _masterBridgeInstalled:false,
+
+  installMasterReadBridge(client){
+    if(this._masterBridgeInstalled) return;
+    if(typeof LaporanBulananEngine==="undefined") return;
+
+    const supabase=client||(typeof db!=="undefined"?db:window.db);
+    if(!supabase?.rpc) throw new Error("Supabase RPC untuk Master Finance tidak tersedia.");
+
+    /*
+      IMPORTANT:
+      Master Sewa & Investor are LOCKED. Monthly consumer must not bypass or alter them.
+      Read through the existing SECURITY DEFINER RPC erp_master_finance_get(),
+      then resolve the row that was effective at the requested report date.
+    */
+    LaporanBulananEngine.loadMasters=async ({date,branchName}={})=>{
+      const {data,error}=await supabase.rpc("erp_master_finance_get");
+      if(error) throw error;
+      const payload=data||{};
+      const effectiveAt=(row)=>{
+        const from=String(row?.effective_from||"").slice(0,10);
+        const to=String(row?.effective_to||"").slice(0,10);
+        return (!from||from<=date)&&(!to||to>=date);
+      };
+      const sewaRows=(Array.isArray(payload.sewa)?payload.sewa:[]).filter(effectiveAt);
+      const investorRows=(Array.isArray(payload.investor)?payload.investor:[]).filter(effectiveAt);
+      return {
+        sewa:LaporanBulananEngine.pickBranchMaster(sewaRows,branchName),
+        investor:LaporanBulananEngine.pickBranchMaster(investorRows,branchName)
+      };
+    };
+
+    this._masterBridgeInstalled=true;
+  },
+
   async loadAdjustedPayroll(report){
     let adjustments={};
     if(typeof PayrollManualAdjustmentStore!=="undefined"&&typeof PayrollManualAdjustmentStore.loadMonth==="function"){
@@ -26,8 +61,10 @@ const LaporanBulananConsumer = {
     if(typeof LaporanBulananEngine==="undefined"||typeof LaporanBulananEngine.loadMonth!=="function"){
       throw new Error("Laporan Bulanan Engine tidak tersedia.");
     }
-    const report=await LaporanBulananEngine.loadMonth(args);
     const client=args.client||(typeof db!=="undefined"?db:window.db);
+    this.installMasterReadBridge(client);
+
+    const report=await LaporanBulananEngine.loadMonth(args);
     let payrollDataset=null;
 
     if(typeof PayrollUnifiedEngine!=="undefined"){
