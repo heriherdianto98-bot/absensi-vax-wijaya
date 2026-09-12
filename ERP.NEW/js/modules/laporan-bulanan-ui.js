@@ -13,6 +13,29 @@
   function setHtml(id,value){ const node=el(id); if(node) node.innerHTML=value; }
   function statusReady(report){ return report?.readiness?.finalReady===true; }
 
+  function selectedBranchLabel(){
+    const select=el("lbBranch");
+    return select?.selectedOptions?.[0]?.textContent?.trim() || currentReport?.branch?.name || "Semua Cabang";
+  }
+
+  function syncHeaderContext(report=currentReport){
+    const branch=report?.branch?.name || selectedBranchLabel();
+    const period=monthLabel(el("lbMonth")?.value);
+    setText("erpHeaderCabang",branch || "Semua Cabang");
+    setText("erpHeaderPeriode",period || "—");
+  }
+
+  function bindHeaderSync(){
+    const host=el("header");
+    if(host){
+      const observer=new MutationObserver(()=>syncHeaderContext());
+      observer.observe(host,{childList:true,subtree:true});
+    }
+    window.addEventListener("load",()=>syncHeaderContext());
+    setTimeout(()=>syncHeaderContext(),150);
+    setTimeout(()=>syncHeaderContext(),700);
+  }
+
   async function loadBase(){
     const [cabs,emps]=await Promise.all([PayrollUnifiedEngine.fetchCabang(),PayrollUnifiedEngine.fetchKaryawan()]);
     branches=(cabs||[]).filter(c=>!String(c.nama_cabang||"").toLowerCase().includes("floating"));
@@ -20,6 +43,7 @@
     const select=el("lbBranch");
     select.innerHTML=branches.map(c=>`<option value="${Number(c.id)}">${esc(c.nama_cabang)}</option>`).join("");
     if(branches.some(c=>Number(c.id)===5)) select.value="5";
+    syncHeaderContext();
   }
 
   function renderStatus(report){
@@ -91,36 +115,56 @@
     const box=el("lbProviderMapping");
     const pending=report?.gaji?.providerPendingDetail||[];
     if(!pending.length){ box.innerHTML='<div class="lb-ok">Tidak ada provider/capster backup yang perlu dimapping untuk cabang ini.</div>'; return; }
-    const mappings=await LaporanBulananProviderMapping.loadMonth({client:db,month:report.range.start});
-    const review=LaporanBulananProviderMapping.buildReview({pendingRows:pending,mappings,branches,employees});
-    LaporanBulananProviderMappingUI.render(box,{review,month:report.range.start,client:db,onSaved:async()=>{await loadReport(false);}});
-  }
-
-  function syncHeader(report){
-    const branch=report?.branch?.name||"—"; setText("erpHeaderCabang",branch); setText("erpHeaderPeriode",monthLabel(el("lbMonth").value));
+    try{
+      const mappings=await LaporanBulananProviderMapping.loadMonth({client:db,month:report.range.start});
+      const review=LaporanBulananProviderMapping.buildReview({pendingRows:pending,mappings,branches,employees});
+      LaporanBulananProviderMappingUI.render(box,{review,month:report.range.start,client:db,onSaved:async()=>{await loadReport(false);}});
+    }catch(err){
+      console.warn("[Laporan Bulanan Mapping]",err);
+      box.innerHTML=`<div class="lb-issue"><strong>MAPPING BELUM TERSEDIA</strong><span>${esc(err?.message||"Gagal membaca mapping provider.")}</span></div>`;
+    }
   }
 
   async function loadReport(showLoading=true){
     const branchId=Number(el("lbBranch").value||0),month=el("lbMonth").value;
     if(!branchId||!month) return;
+    syncHeaderContext();
     if(showLoading) setText("lbLoadState","Memuat laporan...");
     try{
       const [year,mon]=month.split("-").map(Number);
       const report=await LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId});
-      currentReport=report; renderStatus(report); renderKpis(report); renderFinance(report); renderReadiness(report); renderPerformance(report); await renderMapping(report); syncHeader(report);
+      currentReport=report;
+      renderStatus(report);
+      renderKpis(report);
+      renderFinance(report);
+      renderReadiness(report);
+      renderPerformance(report);
+      syncHeaderContext(report);
       setText("lbLoadState",`${report.branch.name} · ${monthLabel(month)} · consumer read only`);
+      await renderMapping(report);
     }catch(err){
-      console.error(err); setText("lbLoadState",err?.message||"Gagal memuat laporan.");
+      console.error(err);
+      syncHeaderContext();
+      setText("lbLoadState",err?.message||"Gagal memuat laporan.");
     }
   }
 
   async function init(){
     if(!el("lbBranch")) return;
-    try{ await loadBase(); el("lbMonth").value="2026-08"; await loadReport(); }
-    catch(err){ console.error(err); setText("lbLoadState",err?.message||"Gagal memuat modul."); }
+    bindHeaderSync();
+    try{
+      await loadBase();
+      el("lbMonth").value="2026-08";
+      syncHeaderContext();
+      await loadReport();
+    }catch(err){
+      console.error(err);
+      syncHeaderContext();
+      setText("lbLoadState",err?.message||"Gagal memuat modul.");
+    }
     el("lbRefresh")?.addEventListener("click",()=>loadReport());
-    el("lbBranch")?.addEventListener("change",()=>loadReport());
-    el("lbMonth")?.addEventListener("change",()=>loadReport());
+    el("lbBranch")?.addEventListener("change",()=>{syncHeaderContext();loadReport();});
+    el("lbMonth")?.addEventListener("change",()=>{syncHeaderContext();loadReport();});
   }
 
   document.readyState==="loading"?document.addEventListener("DOMContentLoaded",init):init();
