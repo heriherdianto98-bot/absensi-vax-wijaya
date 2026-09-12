@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Laporan Bulanan Investor | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/toolbar.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/ui-06-premium.css">
+<link rel="stylesheet" href="../styles/light-contrast.css">
+<link rel="stylesheet" href="../styles/laporan-bulanan.css?v=20260912-v1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="laporan-bulanan-page">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <main class="erp-content">
+    <section class="lb-wrap">
+      <header class="lb-head">
+        <div>
+          <p class="lb-eyebrow">LAPORAN INVESTOR · MONTHLY CONSUMER</p>
+          <h1 class="lb-title">Laporan Bulanan</h1>
+          <p class="lb-sub">Ringkasan keuangan dan performa cabang. Data sumber dibaca otomatis dari modul ERP existing.</p>
+        </div>
+        <div class="lb-status is-review" id="lbReportStatus"><i></i><span id="lbReportStatusText">MEMUAT...</span></div>
+      </header>
+
+      <section class="lb-toolbar">
+        <label class="lb-field"><span>Cabang</span><select id="lbBranch"></select></label>
+        <label class="lb-field"><span>Periode</span><input id="lbMonth" type="month" value="2026-08"></label>
+        <div class="lb-actions"><button type="button" class="lb-btn" id="lbRefresh">Refresh Data</button></div>
+      </section>
+      <p id="lbLoadState" class="lb-footnote">Memuat laporan...</p>
+
+      <section class="lb-kpis">
+        <article class="lb-kpi"><span>Total Pendapatan</span><strong id="lbRevenue">Rp0</strong><small id="lbCustomer">0 customer</small></article>
+        <article class="lb-kpi"><span>Total Biaya Gaji</span><strong id="lbPayroll">Rp0</strong><small>Payroll + protek + SVP + mapping</small></article>
+        <article class="lb-kpi"><span>Operasional</span><strong id="lbOpex">Rp0</strong><small id="lbTransactions">0 transaksi</small></article>
+        <article class="lb-kpi"><span>Sewa</span><strong id="lbRent">Rp0</strong><small>Master Sewa periode aktif</small></article>
+        <article class="lb-kpi" id="lbProfitCard"><span>Laba Bersih</span><strong id="lbProfit">Rp0</strong><small>Setelah gaji, operasional & sewa</small></article>
+      </section>
+
+      <section class="lb-grid">
+        <div class="lb-card"><div class="lb-card-head"><h3>Pendapatan</h3><small>DailyDataEngine</small></div><div class="lb-card-body lb-lines" id="lbIncomeLines"></div></div>
+        <div class="lb-card"><div class="lb-card-head"><h3>Biaya Gaji Karyawan</h3><small>Payroll + consumer mapping</small></div><div class="lb-card-body lb-lines" id="lbSalaryLines"></div></div>
+        <div class="lb-card"><div class="lb-card-head"><h3>Biaya Pengeluaran</h3><small>Cash Out yang sudah anti double-count</small></div><div class="lb-card-body lb-lines" id="lbExpenseLines"></div></div>
+        <div class="lb-card"><div class="lb-card-head"><h3>Hasil Bulan Berjalan</h3><small>Ringkasan laba rugi</small></div><div class="lb-card-body lb-lines" id="lbResultLines"></div></div>
+        <div class="lb-card"><div class="lb-card-head"><h3>Pembagian Investor</h3><small>Master Investor</small></div><div class="lb-card-body lb-lines" id="lbInvestorLines"></div></div>
+        <div class="lb-card"><div class="lb-card-head"><h3>Ringkasan Performance Cabang</h3><small>AI Insight · simple investor view</small></div><div class="lb-card-body"><div class="lb-performance" id="lbPerformance"></div><p class="lb-performance-note" id="lbPerformanceNote"></p></div></div>
+      </section>
+
+      <section class="lb-card lb-review">
+        <div class="lb-card-head"><h3>Kelengkapan Data</h3><small>Harus bersih sebelum laporan dianggap final</small></div>
+        <div class="lb-card-body"><div class="lb-issues" id="lbIssues"></div></div>
+      </section>
+
+      <section class="lb-card lb-mapping">
+        <div class="lb-card-head"><h3>Mapping Capster Backup</h3><small>Pilih cabang asal + nama karyawan untuk provider yang belum ter-mapping</small></div>
+        <div class="lb-card-body" id="lbProviderMapping"></div>
+      </section>
+      <p class="lb-footnote">Laporan Bulanan adalah consumer. Mapping manual hanya menyimpan metadata laporan bulanan dan tidak mengubah source provider / Payroll engine yang LOCK.</p>
+    </section>
+  </main>
+</div>
+
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/setoran-money-engine.js"></script>
+<script src="../js/modules/daily-data-engine.js"></script>
+<script src="../js/modules/payroll-manual-adjustment-store.js"></script>
+<script src="../js/modules/payroll-salary-master-store.js"></script>
+<script src="../js/modules/payroll-unified-engine.js"></script>
+<script src="../js/modules/proteksi-engine.js"></script>
+<script src="../js/modules/vax-ai-insight.js"></script>
+<script src="../js/modules/laporan-bulanan-provider-mapping.js"></script>
+<script src="../js/modules/laporan-bulanan-provider-mapping-ui.js"></script>
+<script src="../js/modules/laporan-bulanan-engine.js"></script>
+<script src="../js/modules/laporan-bulanan-backup-cashout-bridge.js"></script>
+<script src="../js/modules/laporan-bulanan-payroll-adjustment-bridge.js"></script>
+<script src="../js/modules/laporan-bulanan-readiness.js"></script>
+<script src="../js/modules/laporan-bulanan-consumer.js"></script>
+<script src="../js/modules/laporan-bulanan-ui.js?v=20260912-v1"></script>
+<script>
+Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]).then(()=>{
+  if(typeof OwnerAuth!=='undefined'){OwnerAuth.bindUi?.();OwnerAuth.syncHeader?.();OwnerAuth.applyAccessControl?.();}
+  initErpShellChrome?.(); markActiveSidebarLink?.();
+}).catch(()=>{});
+</script>
+</body>
+</html>
