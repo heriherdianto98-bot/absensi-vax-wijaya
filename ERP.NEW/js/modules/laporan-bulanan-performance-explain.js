@@ -5,15 +5,14 @@ VAX ERP — Laporan Bulanan Performance Explanation
 UI / READ ONLY consumer only.
 - Tidak mengubah DashboardEngine, AI Insight, DailyDataEngine, source data, atau formula.
 - Memperjelas angka customer periode aktif memakai summary + previousSummary Dashboard existing.
-- Membuat kesimpulan tahunan dari seri omzet Jan–Des yang sama dengan grafik Dashboard.
-- Render ke host khusus agar tidak ditimpa renderPerformance() UI utama.
+- Membuat kesimpulan tahunan dari seri omzet Dashboard, dibatasi sampai bulan laporan aktif.
 */
 (() => {
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
   const el=id=>document.getElementById(id);
   const idn=n=>Number(n||0).toLocaleString("id-ID");
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
-  let seq=0,refreshTimer=null,noteObserver=null;
+  let seq=0;
 
   function context(){
     const branchId=Number(el("lbBranch")?.value||0);
@@ -31,7 +30,7 @@ UI / READ ONLY consumer only.
 
   function renderCustomerDetail(){
     const host=el("lbPerformanceExplain");
-    if(!host || typeof DashboardEngine==="undefined") return false;
+    if(!host || typeof DashboardEngine==="undefined") return;
     const cur=Number(DashboardEngine.summary?.customer||0);
     const prev=Number(DashboardEngine.previousSummary?.customer||0);
     const tr=DashboardEngine.trends?.customer||{};
@@ -39,7 +38,7 @@ UI / READ ONLY consumer only.
     const pct=tr?.pct==null?null:Number(tr.pct);
     const t=tone(delta);
 
-    host.className="lb-performance-explain-host lb-performance-explain";
+    host.classList.add("lb-performance-explain");
     host.innerHTML=`
       <div class="lb-perf-explain-row ${t}">
         <span class="lb-perf-explain-icon">${arrow(delta)}</span>
@@ -49,25 +48,26 @@ UI / READ ONLY consumer only.
           <small>${delta===0?"Tidak berubah":`${delta>0?"Naik":"Turun"} ${signedPct(pct)} (${delta>0?"+":""}${idn(delta)} customer)`}.</small>
         </div>
       </div>
-      <div id="lbAnnualPerformanceConclusion" class="lb-perf-annual-conclusion is-loading">Menganalisis tren omzet Jan–Des…</div>
+      <div id="lbAnnualPerformanceConclusion" class="lb-perf-annual-conclusion is-loading">Menganalisis tren omzet sampai periode aktif…</div>
     `;
-    return true;
   }
 
   async function renderAnnualConclusion(){
     const run=++seq;
     const host=el("lbAnnualPerformanceConclusion");
-    const {branchId,year}=context();
-    if(!host||!branchId||!year||typeof DashboardEngine==="undefined") return;
+    const {branchId,year,month}=context();
+    if(!host||!branchId||!year||!month||typeof DashboardEngine==="undefined") return;
 
     try{
-      const rows=await DashboardEngine.fetchRecapRows(`${year}-01-01`,`${year}-12-31`,branchId);
+      const endMonth=String(month).padStart(2,"0");
+      const endDate=new Date(year,month,0).getDate();
+      const rows=await DashboardEngine.fetchRecapRows(`${year}-01-01`,`${year}-${endMonth}-${String(endDate).padStart(2,"0")}`,branchId);
       if(run!==seq) return;
       const sums=Array(12).fill(0),has=Array(12).fill(false);
       (rows||[]).forEach(row=>{
         const iso=String(row?.tanggal||"").slice(0,10);
         const m=Number(iso.slice(5,7));
-        if(m<1||m>12) return;
+        if(m<1||m>month) return;
         has[m-1]=true;
         const v=typeof DashboardEngine.minutesGrossOf==="function"
           ? DashboardEngine.minutesGrossOf(row)
@@ -75,72 +75,72 @@ UI / READ ONLY consumer only.
         sums[m-1]+=Number.isFinite(v)?v:0;
       });
 
-      const available=has.map((v,i)=>v?i:-1).filter(i=>i>=0);
+      const available=has.map((v,i)=>v&&i<month?i:-1).filter(i=>i>=0);
       if(!available.length){
         host.className="lb-perf-annual-conclusion is-flat";
-        host.innerHTML="<strong>Status Tahunan</strong><p>Belum ada data omzet untuk tahun ini.</p>";
+        host.innerHTML=`<strong>Status Periode</strong><p>Belum ada data omzet sampai ${MONTHS[month-1]} ${year}.</p>`;
         return;
       }
 
-      const first=available[0],last=available[available.length-1];
+      const first=available[0];
+      const activeIdx=month-1;
+      const last=has[activeIdx]?activeIdx:available[available.length-1];
       const start=sums[first],end=sums[last],delta=end-start;
       const pct=start>0?((delta/start)*100):null;
       let up=0,down=0;
       for(let k=1;k<available.length;k++){
-        const a=sums[available[k-1]],b=sums[available[k]];
+        const prevIdx=available[k-1],curIdx=available[k];
+        if(curIdx>activeIdx) break;
+        const a=sums[prevIdx],b=sums[curIdx];
         if(b>a) up++; else if(b<a) down++;
       }
-      const peakIdx=available.reduce((best,i)=>sums[i]>sums[best]?i:best,available[0]);
+      const eligible=available.filter(i=>i<=activeIdx);
+      const peakIdx=eligible.reduce((best,i)=>sums[i]>sums[best]?i:best,eligible[0]);
       let status="STABIL / FLUKTUATIF";
-      if(delta>0 && up>=down) status="TREN TAHUNAN MENGUAT";
-      else if(delta<0 && down>=up) status="TREN TAHUNAN MELEMAH";
+      if(delta>0 && up>=down) status="TREN PERIODE MENGUAT";
+      else if(delta<0 && down>=up) status="TREN PERIODE MELEMAH";
       const cls=delta>0&&up>=down?"is-up":delta<0&&down>=up?"is-down":"is-flat";
-      const coverage=available.length===12
-        ? `Data lengkap Jan–Des ${year}.`
-        : `Data tersedia ${MONTHS[first]}–${MONTHS[last]} ${year}; bulan setelah ${MONTHS[last]} belum memiliki data.`;
+      const activeLabel=MONTHS[activeIdx];
+      const dataEndLabel=MONTHS[last];
+      const coverage=last===activeIdx
+        ? `Analisis dibatasi sampai periode aktif ${activeLabel} ${year}. Bulan setelah ${activeLabel} tidak digunakan dalam kesimpulan laporan ini.`
+        : `Periode aktif ${activeLabel} ${year}, namun data terakhir yang tersedia sampai ${dataEndLabel}. Bulan setelah periode aktif tidak digunakan.`;
 
       host.className=`lb-perf-annual-conclusion ${cls}`;
       host.innerHTML=`
         <div class="lb-perf-annual-head"><span>${arrow(delta)}</span><strong>Status Cabang: ${status}</strong></div>
-        <p>Omzet ${MONTHS[first]} <b>${money(start)}</b> → ${MONTHS[last]} <b>${money(end)}</b>${pct==null?"":` · ${delta>=0?"naik":"turun"} <b>${signedPct(Math.round(pct))}</b> (${money(Math.abs(delta))})`}.</p>
-        <p>Dari bulan yang tersedia: <b>${up} bulan naik</b>, <b>${down} bulan turun</b>. Puncak omzet ada di <b>${MONTHS[peakIdx]} ${money(sums[peakIdx])}</b>.</p>
+        <p>Omzet ${MONTHS[first]} <b>${money(start)}</b> → ${dataEndLabel} <b>${money(end)}</b>${pct==null?"":` · ${delta>=0?"naik":"turun"} <b>${signedPct(Math.round(pct))}</b> (${money(Math.abs(delta))})`}.</p>
+        <p>Periode analisis <b>${MONTHS[first]}–${activeLabel} ${year}</b>: <b>${up} bulan naik</b>, <b>${down} bulan turun</b>. Puncak omzet periode ini ada di <b>${MONTHS[peakIdx]} ${money(sums[peakIdx])}</b>.</p>
         <small>${coverage} Kesimpulan ini hanya merangkum data omzet grafik Dashboard Utama secara read only.</small>
       `;
     }catch(err){
       if(run!==seq) return;
       host.className="lb-perf-annual-conclusion is-flat";
-      host.textContent=`Kesimpulan tahunan belum dapat dimuat · ${String(err?.message||"unknown error")}`;
+      host.textContent=`Kesimpulan periode belum dapat dimuat · ${String(err?.message||"unknown error")}`;
     }
   }
 
   async function refresh(){
-    for(let i=0;i<30;i++){
+    for(let i=0;i<20;i++){
       if(typeof DashboardEngine!=="undefined" && el("lbPerformanceExplain")) break;
       await new Promise(r=>setTimeout(r,100));
     }
-    if(!renderCustomerDetail()) return;
+    renderCustomerDetail();
     await renderAnnualConclusion();
   }
 
-  function scheduleRefresh(delay=180){
-    if(refreshTimer) clearTimeout(refreshTimer);
-    refreshTimer=setTimeout(()=>{ refreshTimer=null; refresh(); },delay);
-  }
-
   function bind(){
-    el("lbBranch")?.addEventListener("change",()=>scheduleRefresh(350));
-    el("lbMonth")?.addEventListener("change",()=>scheduleRefresh(350));
-    el("lbRefresh")?.addEventListener("click",()=>scheduleRefresh(350));
+    const later=()=>setTimeout(refresh,350);
+    el("lbBranch")?.addEventListener("change",later);
+    el("lbMonth")?.addEventListener("change",later);
+    el("lbRefresh")?.addEventListener("click",later);
 
-    // UI utama menulis finding ke lbPerformanceNote saat report selesai.
-    // Observe node itu hanya sebagai sinyal render selesai; hasil kita ditulis ke host lain.
     const note=el("lbPerformanceNote");
     if(note && typeof MutationObserver!=="undefined"){
-      noteObserver=new MutationObserver(()=>scheduleRefresh(120));
-      noteObserver.observe(note,{childList:true,characterData:true,subtree:true});
+      const observer=new MutationObserver(()=>setTimeout(refresh,220));
+      observer.observe(note,{childList:true,characterData:true,subtree:true});
     }
-
-    scheduleRefresh(1200);
+    setTimeout(refresh,1400);
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind,{once:true});
