@@ -1,0 +1,78 @@
+/* =========================================================
+   LAPORAN BULANAN — DATA ROW DIVIDER
+   UI ONLY. No engine/source/formula changes.
+   ========================================================= */
+
+/* Semua baris data di dalam card dibuat tegas dan mudah dipisahkan. */
+body.laporan-bulanan-page .lb-lines .lb-line{
+  position:relative;
+  min-height:46px;
+  padding:12px 4px!important;
+  border-bottom:2px solid rgba(255,255,255,.16)!important;
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.035)!important;
+}
+
+body.laporan-bulanan-page .lb-lines .lb-line:first-child{
+  border-top:2px solid rgba(255,255,255,.16)!important;
+}
+
+/* Pembatas mengikuti accent card supaya tetap satu tema. */
+body.laporan-bulanan-page .lb-card .lb-lines .lb-line::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-2px;
+  height:2px;
+  pointer-events:none;
+  background:linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb,var(--lb-accent) 42%,transparent) 12%,
+    color-mix(in srgb,var(--lb-accent) 72%,transparent) 50%,
+    color-mix(in srgb,var(--lb-accent) 42%,transparent) 88%,
+    transparent 100%
+  );
+  box-shadow:0 0 8px color-mix(in srgb,var(--lb-accent) 16%,transparent);
+  opacity:.78;
+}
+
+body.laporan-bulanan-page .lb-card .lb-lines .lb-line:first-child::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:-2px;
+  height:2px;
+  pointer-events:none;
+  background:linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb,var(--lb-accent) 42%,transparent) 12%,
+    color-mix(in srgb,var(--lb-accent) 72%,transparent) 50%,
+    color-mix(in srgb,var(--lb-accent) 42%,transparent) 88%,
+    transparent 100%
+  );
+  box-shadow:0 0 8px color-mix(in srgb,var(--lb-accent) 16%,transparent);
+  opacity:.78;
+}
+
+/* Total dibuat paling jelas. */
+body.laporan-bulanan-page .lb-lines .lb-line.total{
+  margin-top:8px;
+  padding-top:14px!important;
+  padding-bottom:14px!important;
+  border-top:3px solid color-mix(in srgb,var(--lb-accent) 72%,rgba(255,255,255,.18))!important;
+  border-bottom:3px solid color-mix(in srgb,var(--lb-accent) 72%,rgba(255,255,255,.18))!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--lb-accent) 5%,transparent),transparent 56%);
+}
+
+body.laporan-bulanan-page .lb-lines .lb-line.total::before,
+body.laporan-bulanan-page .lb-lines .lb-line.total::after{
+  display:none!important;
+}
+
+body.laporan-bulanan-page .lb-lines .lb-line.total span,
+body.laporan-bulanan-page .lb-lines .lb-line.total strong{
+  font-weight:900!important;
+}
