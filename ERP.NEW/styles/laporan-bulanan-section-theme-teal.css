@@ -57,32 +57,30 @@ body.laporan-bulanan-page .lb-section-trigger-ico{
 }
 
 /* =========================================================
-   FREEZE STACK — KPI + TAMPILAN LAPORAN
-   UI ONLY. 5 KPI tetap terlihat dan switcher tidak menutupi KPI.
+   KPI NORMAL FLOW + TAMPILAN LAPORAN STICKY
+   UI ONLY. KPI ikut scroll biasa; hanya switcher yang menempel di bawah judul.
    ========================================================= */
 body.laporan-bulanan-page .lb-kpis{
-  position:fixed!important;
-  top:calc(var(--erp-top-header-h,72px) + 226px)!important;
-  left:calc(var(--sidebar-width,220px) + 12px)!important;
-  right:12px!important;
-  z-index:936!important;
-  margin:0!important;
-  padding:8px 0 10px!important;
-  box-sizing:border-box!important;
-  background:#06080b!important;
-  isolation:isolate!important;
-  box-shadow:0 12px 0 #06080b,0 18px 28px rgba(0,0,0,.42)!important;
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  z-index:10!important;
+  margin-top:0!important;
+  padding:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
 }
 
 body.laporan-bulanan-page .lb-view-switcher{
-  position:fixed!important;
-  top:calc(var(--erp-top-header-h,72px) + 336px)!important;
-  left:calc(var(--sidebar-width,220px) + 12px)!important;
-  right:12px!important;
+  position:sticky!important;
+  top:calc(var(--erp-top-header-h,72px) + 118px)!important;
+  left:auto!important;
+  right:auto!important;
   z-index:934!important;
   isolation:isolate!important;
   overflow:visible!important;
-  margin:0!important;
+  margin:0 0 14px!important;
   box-sizing:border-box!important;
   background:#061014!important;
   backdrop-filter:none!important;
@@ -117,31 +115,16 @@ body.laporan-bulanan-page .lb-view-switcher::after{
   pointer-events:none;
 }
 
-/* KPI + switcher fixed keluar dari flow; sisakan ruang sebelum card aktif. */
 body.laporan-bulanan-page .lb-grid{
-  margin-top:205px!important;
-}
-
-body.sidebar-collapsed.laporan-bulanan-page .lb-kpis,
-body.sidebar-collapsed.laporan-bulanan-page .lb-view-switcher,
-body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-kpis,
-body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-view-switcher{
-  left:calc(var(--sidebar-collapse,72px) + 12px)!important;
+  margin-top:0!important;
 }
 
 @media(max-width:900px){
-  body.laporan-bulanan-page .lb-kpis{
-    top:calc(var(--erp-top-header-h,72px) + 226px)!important;
-    left:8px!important;
-    right:8px!important;
-  }
   body.laporan-bulanan-page .lb-view-switcher{
-    top:calc(var(--erp-top-header-h,72px) + 336px)!important;
-    left:8px!important;
-    right:8px!important;
+    top:calc(var(--erp-top-header-h,72px) + 118px)!important;
   }
   body.laporan-bulanan-page .lb-grid{
-    margin-top:205px!important;
+    margin-top:0!important;
   }
 }
 
