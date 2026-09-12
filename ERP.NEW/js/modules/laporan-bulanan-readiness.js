@@ -60,7 +60,14 @@ const LaporanBulananReadiness = {
       });
     }
 
-    const pendingProvider=Number(report?.providerMapping?.pendingRows||report?.diagnostics?.payrollPendingMapping?.rows||0);
+    // IMPORTANT: when provider mapping has already been evaluated for this report,
+    // pendingRows=0 is a valid resolved state and must NOT fall back to stale diagnostics.
+    const mappedPending=report?.providerMapping?.pendingRows;
+    const pendingProvider=Number(
+      mappedPending !== undefined && mappedPending !== null
+        ? mappedPending
+        : (report?.diagnostics?.payrollPendingMapping?.rows||0)
+    );
     if(pendingProvider>0){
       issues.push({
         code:"PENDING_PROVIDER_MAPPING",
