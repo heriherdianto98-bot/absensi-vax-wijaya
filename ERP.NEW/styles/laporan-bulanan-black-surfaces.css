@@ -17,6 +17,16 @@ body.laporan-bulanan-page .lb-review .lb-issue{
   background-image:none!important;
 }
 
+/* Tanda seru Kelengkapan Data dipusatkan vertikal pada tiap baris. */
+body.laporan-bulanan-page .lb-review .lb-issue::before{
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  line-height:1!important;
+}
+
 /* Kotak nominal Total Hak Bulan Ini hitam solid. */
 body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{
   background:#000!important;
