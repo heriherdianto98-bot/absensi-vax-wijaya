@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="../styles/laporan-bulanan-investor-total.css?v=20260912-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-section-switcher.css?v=20260913-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-section-theme-teal.css?v=20260913-v1">
-<link rel="stylesheet" href="../styles/laporan-bulanan-compact-card.css?v=20260913-v1">
+<link rel="stylesheet" href="../styles/laporan-bulanan-compact-card.css?v=20260913-v2">
 <link rel="stylesheet" href="../styles/laporan-bulanan-toolbar-left.css?v=20260913-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-black-surfaces.css?v=20260913-v1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -56,6 +56,8 @@
 
       <section class="lb-kpis">
         <article class="lb-kpi"><span>Total Pendapatan</span><strong id="lbRevenue">Rp0</strong><small id="lbCustomer">0 customer</small></article>
+        <article class="lb-kpi"><span>Pendapatan Cukur</span><strong id="lbServiceRevenue">Rp0</strong><small>Gross service</small></article>
+        <article class="lb-kpi"><span>Gross Produk</span><strong id="lbProductGross">Rp0</strong><small>Produk sebelum share</small></article>
         <article class="lb-kpi"><span>Total Biaya Gaji</span><strong id="lbPayroll">Rp0</strong><small>Payroll + protek + SVP + mapping</small></article>
         <article class="lb-kpi"><span>Operasional</span><strong id="lbOpex">Rp0</strong><small id="lbTransactions">0 transaksi</small></article>
         <article class="lb-kpi"><span>Sewa</span><strong id="lbRent">Rp0</strong><small>Master Sewa periode aktif</small></article>
@@ -118,8 +120,9 @@
 <script src="../js/modules/laporan-bulanan-payroll-adjustment-bridge.js"></script>
 <script src="../js/modules/laporan-bulanan-readiness.js"></script>
 <script src="../js/modules/laporan-bulanan-ai-insight-bridge.js?v=20260912-v1"></script>
-<script src="../js/modules/laporan-bulanan-consumer.js?v=20260912-v4"></script>
-<script src="../js/modules/laporan-bulanan-ui.js?v=20260912-v4"></script>
+<script src="../js/modules/laporan-bulanan-consumer.js?v=20260913-v5"></script>
+<script src="../js/modules/laporan-bulanan-operasional-payroll-dedup-bridge.js?v=20260913-v1"></script>
+<script src="../js/modules/laporan-bulanan-ui.js?v=20260913-v5"></script>
 <script src="../js/modules/laporan-bulanan-performance-chart.js?v=20260912-v1"></script>
 <script src="../js/modules/laporan-bulanan-performance-explain.js?v=20260912-v2"></script>
 <script src="../js/modules/laporan-bulanan-section-switcher.js?v=20260913-v1"></script>
