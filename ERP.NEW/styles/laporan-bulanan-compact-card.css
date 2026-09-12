@@ -282,6 +282,26 @@ body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-toolbar{
   }
 }
 
+/* =========================================================
+   TAMPILAN LAPORAN — BLACK CONTENT BACKGROUND
+   UI ONLY. Semua card yang dipilih dari Tampilan Laporan memakai
+   background hitam solid; warna aksen/border/text tetap dipertahankan.
+   ========================================================= */
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view],
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-card-head,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-card-body{
+  background:#000!important;
+  background-image:none!important;
+}
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-line,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-line.total,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-performance,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-perf-explain-row,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view] .lb-perf-annual-conclusion{
+  background-color:#000!important;
+  background-image:none!important;
+}
+
 @media print{
   body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body,
   body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
