@@ -67,7 +67,13 @@
 
   function renderKpis(report){
     const p=report?.pendapatan||{},g=report?.gaji||{},x=report?.pengeluaran||{},l=report?.laba||{};
-    setText("lbRevenue",money(p.total)); setText("lbPayroll",money(g.total)); setText("lbOpex",money(x.operasional)); setText("lbRent",money(x.sewa)); setText("lbProfit",money(l.labaBersih));
+    setText("lbRevenue",money(p.total));
+    setText("lbServiceRevenue",money(p.cukur));
+    setText("lbProductGross",money(p.produkGross));
+    setText("lbPayroll",money(g.total));
+    setText("lbOpex",money(x.operasional));
+    setText("lbRent",money(x.sewa));
+    setText("lbProfit",money(l.labaBersih));
     const card=el("lbProfitCard"); card?.classList.toggle("is-profit",Number(l.labaBersih||0)>=0); card?.classList.toggle("is-loss",Number(l.labaBersih||0)<0);
     setText("lbCustomer",`${Number(p.customer||0).toLocaleString("id-ID")} customer`); setText("lbTransactions",`${Number(p.transaction||0).toLocaleString("id-ID")} transaksi`);
   }
@@ -161,6 +167,9 @@
       if(typeof LaporanBulananConsumer==="undefined") throw new Error("Consumer Bulanan belum termuat.");
       const [year,mon]=month.split("-").map(Number);
       const report=await withTimeout(LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId}),30000,"Engine Laporan Bulanan");
+      if(typeof LaporanBulananOperasionalPayrollDedupBridge!=="undefined"){
+        LaporanBulananOperasionalPayrollDedupBridge.apply(report);
+      }
       currentReport=report; renderStatus(report); renderKpis(report); renderFinance(report); renderReadiness(report); renderPerformance(report); syncHeaderContext(report);
       setText("lbLoadState",`${report.branch.name} · ${monthLabel(month)} · consumer read only`);
       await renderMapping(report);
