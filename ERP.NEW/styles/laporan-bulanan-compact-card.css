@@ -63,18 +63,32 @@ body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-
   overflow:visible!important;
 }
 
-/* Performance tetap auto-height agar grafik + insight tampil utuh. */
+/* Investor + Performance harus selalu tampil penuh tanpa scrollbar internal. */
+body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card[data-lb-view="investor"].is-view-active .lb-card-body,
 body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card[data-lb-view="performance"].is-view-active .lb-card-body{
   max-height:none!important;
+  height:auto!important;
   overflow:visible!important;
+  scrollbar-width:none!important;
+}
+body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card[data-lb-view="investor"].is-view-active .lb-card-body::-webkit-scrollbar,
+body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card[data-lb-view="performance"].is-view-active .lb-card-body::-webkit-scrollbar{
+  display:none!important;
 }
 
-/* Mapping tetap compact; list panjang boleh scroll sendiri. */
+/* Mapping Capster Backup juga tampil seluruhnya tanpa scrollbar internal. */
+body.laporan-bulanan-page .lb-mapping.is-view-active{
+  min-height:0!important;
+  height:auto!important;
+}
 body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
-  max-height:470px!important;
-  overflow:auto!important;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(96,165,250,.38) transparent;
+  max-height:none!important;
+  height:auto!important;
+  overflow:visible!important;
+  scrollbar-width:none!important;
+}
+body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body::-webkit-scrollbar{
+  display:none!important;
 }
 
 /* Baris mapping juga dirapatkan sedikit tanpa mengubah field/action. */
