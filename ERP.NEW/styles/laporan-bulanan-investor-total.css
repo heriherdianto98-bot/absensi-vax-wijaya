@@ -14,6 +14,16 @@
   }
 }
 
+/* Card Pembagian Investor tidak ikut stretch setinggi card Performance di kolom sebelah. */
+body.laporan-bulanan-page .lb-grid > .lb-card:nth-child(5){
+  align-self:start!important;
+  height:auto!important;
+  min-height:0!important;
+}
+body.laporan-bulanan-page .lb-grid > .lb-card:nth-child(5) .lb-card-body{
+  padding-bottom:16px!important;
+}
+
 /* Total Hak Bulan Ini = label 1 baris besar + nominal di kotak hitam terpisah */
 body.laporan-bulanan-page #lbInvestorLines .lb-line.total{
   display:block!important;
