@@ -3,21 +3,21 @@
    UI ONLY · READ ONLY
    ========================================================= */
 body.laporan-bulanan-page .lb-performance-explain{
-  display:grid;gap:10px;margin:12px 0 0!important;color:#cbd5e1!important
+  display:grid;gap:12px;margin:14px 0 0!important;color:#cbd5e1!important
 }
 body.laporan-bulanan-page .lb-perf-explain-row,
 body.laporan-bulanan-page .lb-perf-annual-conclusion{
-  position:relative;padding:12px 14px;border-radius:12px;background:linear-gradient(165deg,#070a0d 0%,#030506 100%);
+  position:relative;padding:14px 16px;border-radius:12px;background:linear-gradient(165deg,#070a0d 0%,#030506 100%);
   border:1px solid rgba(148,163,184,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 8px 20px rgba(0,0,0,.24)
 }
-body.laporan-bulanan-page .lb-perf-explain-row{display:flex;align-items:flex-start;gap:10px}
-body.laporan-bulanan-page .lb-perf-explain-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;font-size:14px;font-weight:900;flex:0 0 auto}
+body.laporan-bulanan-page .lb-perf-explain-row{display:flex;align-items:flex-start;gap:12px}
+body.laporan-bulanan-page .lb-perf-explain-icon{display:grid;place-items:center;width:31px;height:31px;border-radius:9px;font-size:16px;font-weight:900;flex:0 0 auto}
 body.laporan-bulanan-page .lb-perf-explain-row strong,
-body.laporan-bulanan-page .lb-perf-annual-conclusion strong{font-size:13px;font-weight:900;color:#f8fafc}
+body.laporan-bulanan-page .lb-perf-annual-conclusion strong{font-size:16px;font-weight:900;color:#f8fafc}
 body.laporan-bulanan-page .lb-perf-explain-row p,
-body.laporan-bulanan-page .lb-perf-annual-conclusion p{margin:4px 0 0;font-size:13px;line-height:1.45;color:#cbd5e1}
+body.laporan-bulanan-page .lb-perf-annual-conclusion p{margin:6px 0 0;font-size:15px;line-height:1.55;color:#d7e0ea}
 body.laporan-bulanan-page .lb-perf-explain-row small,
-body.laporan-bulanan-page .lb-perf-annual-conclusion small{display:block;margin-top:4px;font-size:11px;line-height:1.45;color:#8492a2;font-weight:700}
+body.laporan-bulanan-page .lb-perf-annual-conclusion small{display:block;margin-top:6px;font-size:13px;line-height:1.5;color:#93a3b5;font-weight:750}
 body.laporan-bulanan-page .lb-perf-explain-row b,
 body.laporan-bulanan-page .lb-perf-annual-conclusion b{font-weight:900;color:#f8fafc}
 
@@ -38,5 +38,5 @@ body.laporan-bulanan-page .lb-perf-annual-conclusion.is-flat{border-color:rgba(2
 body.laporan-bulanan-page .lb-perf-explain-row.is-flat .lb-perf-explain-icon{color:#f2c230;background:rgba(242,194,48,.10)}
 body.laporan-bulanan-page .lb-perf-annual-conclusion.is-flat .lb-perf-annual-head{color:#f2c230}
 body.laporan-bulanan-page .lb-perf-annual-conclusion.is-loading{color:#8ea0af;border-style:dashed}
-body.laporan-bulanan-page .lb-perf-annual-head{display:flex;align-items:center;gap:8px;margin-bottom:3px;font-size:13px;font-weight:900}
-body.laporan-bulanan-page .lb-perf-annual-head>span{font-size:14px}
+body.laporan-bulanan-page .lb-perf-annual-head{display:flex;align-items:center;gap:9px;margin-bottom:4px;font-size:16px;font-weight:900}
+body.laporan-bulanan-page .lb-perf-annual-head>span{font-size:17px}
