@@ -2,12 +2,12 @@
 =========================================================
 VAX ERP — LAPORAN BULANAN PROVIDER MAPPING V1
 =========================================================
-Purpose:
-- Manual mapping ONLY for provider rows that are still AMBIGUOUS
-  in Payroll (example: "Backup" capster bantuan cabang lain).
-- Does NOT modify provider_sales_daily_source / Payroll engine.
-- Mapping is metadata owned by Laporan Bulanan consumer.
-- Owner chooses employee home branch + employee name.
+Consumer-only metadata for AMBIGUOUS provider rows.
+Does NOT modify provider_sales_daily_source / Payroll engine.
+Supports:
+- capster aktif
+- capster nonaktif/resign yang masih ada di master
+- nama historis manual bila data karyawan sudah tidak ada
 =========================================================
 */
 "use strict";
@@ -49,15 +49,20 @@ const LaporanBulananProviderMapping = {
         return Array.isArray(data) ? data : [];
     },
 
-    async save({ client, month, providerRow, employee, branch } = {}){
+    async save({ client, month, providerRow, employee, branch, manualName } = {}){
         const supabase = this.resolveClient(client);
         const periodMonth = this.normalizeMonth(month || providerRow?.tanggal || providerRow?.activity_date);
         const sourceId = String(providerRow?.sourceId || providerRow?.id || providerRow?.source_provider_row_id || "").trim();
-        const employeeId = Number(employee?.id || employee?.employeeId || 0);
-        const employeeBranchId = Number(branch?.id || employee?.cabang_id || employee?.homeCabangId || 0);
+        const employeeId = Number(employee?.id || employee?.employeeId || 0) || null;
+        const employeeBranchId = Number(branch?.id || employee?.cabang_id || employee?.homeCabangId || 0) || null;
+        const manualEmployeeName = String(manualName || "").trim();
+        const snapshotName = employee?.nama_karyawan || employee?.namaKaryawan || employee?.name || manualEmployeeName || null;
+        const snapshotBranch = branch?.nama_cabang || employee?.homeCabang || null;
+
         if(!periodMonth) throw new Error("Mapping Bulanan: periode tidak valid.");
         if(!sourceId) throw new Error("Mapping Bulanan: provider row tidak valid.");
-        if(!employeeId || !employeeBranchId) throw new Error("Mapping Bulanan: cabang dan karyawan wajib dipilih.");
+        if(!employeeBranchId) throw new Error("Mapping Bulanan: cabang asal wajib dipilih.");
+        if(!employeeId && !manualEmployeeName) throw new Error("Mapping Bulanan: pilih karyawan atau isi nama manual.");
 
         let uid = null;
         try{
@@ -73,8 +78,8 @@ const LaporanBulananProviderMapping = {
             source_provider_share: this.number(providerRow?.providerShare || providerRow?.provider_share),
             employee_id: employeeId,
             employee_cabang_id: employeeBranchId,
-            employee_name_snapshot: employee?.nama_karyawan || employee?.namaKaryawan || employee?.name || null,
-            branch_name_snapshot: branch?.nama_cabang || employee?.homeCabang || null,
+            employee_name_snapshot: snapshotName,
+            branch_name_snapshot: snapshotBranch,
             updated_by: uid,
             updated_at: new Date().toISOString()
         };
@@ -118,15 +123,18 @@ const LaporanBulananProviderMapping = {
         const mapBySource = new Map((mappings || []).map((row) => [String(row.source_provider_row_id || ""), row]));
         const branchRows = (branches || []).filter((row) => !String(row?.nama_cabang || "").toLowerCase().includes("floating"));
         const employeesByBranch = new Map();
+
         for(const employee of (employees || [])){
-            if(employee?.aktif === false) continue;
             if(String(employee?.jabatan || "").trim().toLowerCase() !== "capster") continue;
             const bid = Number(employee?.cabang_id || 0);
             if(!employeesByBranch.has(bid)) employeesByBranch.set(bid, []);
             employeesByBranch.get(bid).push(employee);
         }
         for(const list of employeesByBranch.values()){
-            list.sort((a,b) => String(a.nama_karyawan || "").localeCompare(String(b.nama_karyawan || ""), "id"));
+            list.sort((a,b) => {
+                if(Boolean(a?.aktif) !== Boolean(b?.aktif)) return a?.aktif === false ? 1 : -1;
+                return String(a.nama_karyawan || "").localeCompare(String(b.nama_karyawan || ""), "id");
+            });
         }
 
         const rows = (pendingRows || []).map((row) => {
@@ -142,7 +150,7 @@ const LaporanBulananProviderMapping = {
                 providerShare: this.number(row?.providerShare || row?.provider_share),
                 mappingStatus: row?.mappingStatus || row?.mapping_status || "AMBIGUOUS",
                 saved,
-                resolved: Boolean(saved?.employee_id)
+                resolved: Boolean(saved?.employee_id || String(saved?.employee_name_snapshot || "").trim())
             };
         });
 
