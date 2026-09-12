@@ -172,9 +172,55 @@ body.laporan-bulanan-page .lb-performance > div.perf-down strong{color:#f87171!i
 body.laporan-bulanan-page .lb-performance > div.perf-flat{--perf-accent:#fbbf24!important}
 body.laporan-bulanan-page .lb-performance > div.perf-flat strong{color:#fde68a!important}
 
+/* =========================================================
+   PEMBAGIAN INVESTOR — TOTAL HAK BULAN INI
+   UI ONLY: label di atas, nominal besar di bawah + animasi berulang.
+   ========================================================= */
+@keyframes lbInvestorTotalPulse{
+  0%,100%{
+    transform:translateY(0) scale(1);
+    text-shadow:0 0 0 rgba(242,194,48,0),0 0 10px rgba(242,194,48,.10);
+    filter:brightness(1)
+  }
+  50%{
+    transform:translateY(-2px) scale(1.045);
+    text-shadow:0 0 10px rgba(242,194,48,.42),0 0 24px rgba(167,139,250,.22);
+    filter:brightness(1.12)
+  }
+}
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:8px!important;
+  min-height:104px!important;
+  padding:15px 10px 16px!important
+}
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total span{
+  display:block!important;
+  width:100%!important;
+  font-size:16px!important;
+  line-height:1.15!important;
+  color:#d8dee9!important
+}
+body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  font-size:34px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  letter-spacing:.01em!important;
+  color:#FFD45A!important;
+  transform-origin:left center;
+  animation:lbInvestorTotalPulse 1.8s ease-in-out infinite
+}
+
 @media(prefers-reduced-motion:reduce){
   body.laporan-bulanan-page .lb-status.is-review,
   body.laporan-bulanan-page .lb-status.is-review i{animation:none!important}
   body.laporan-bulanan-page .lb-performance > div{transition:none!important}
   body.laporan-bulanan-page .lb-performance > div:hover{transform:none!important}
+  body.laporan-bulanan-page #lbInvestorLines .lb-line.total strong{animation:none!important}
 }
