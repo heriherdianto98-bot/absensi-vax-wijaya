@@ -1,23 +1,54 @@
 /* =========================================================
-   LAPORAN BULANAN — FREEZE TITLE OFFSET FIX
-   UI ONLY. Keeps title below the global fixed ERP header.
+   LAPORAN BULANAN — FIXED TITLE CARD
+   UI ONLY. Keeps title permanently frozen below global header.
    ========================================================= */
+
+/* Judul laporan dibuat fixed seperti global headbar, bukan sticky. */
 body.laporan-bulanan-page .lb-head{
-  position:sticky!important;
+  position:fixed!important;
   top:var(--erp-top-header-h,72px)!important;
-  z-index:900!important;
+  left:calc(var(--sidebar-width,220px) + var(--content-pad-x,14px) + 26px)!important;
+  right:calc(var(--content-pad-x,14px) + 26px)!important;
+  z-index:950!important;
+  margin:0!important;
+  padding:14px 10px 15px!important;
+  box-sizing:border-box!important;
 }
 
+/* Sisakan ruang agar toolbar/content tidak tertutup card judul fixed. */
+body.laporan-bulanan-page .lb-head + .lb-toolbar{
+  margin-top:132px!important;
+}
+
+/* Saat sidebar collapse, posisi fixed ikut bergeser mengikuti shell ERP. */
+body.sidebar-collapsed.laporan-bulanan-page .lb-head,
+body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper .lb-head{
+  left:calc(var(--sidebar-collapse,72px) + var(--content-pad-x,14px) + 26px)!important;
+}
+
+/* Mobile: sidebar tidak mengambil ruang kiri. */
 @media(max-width:900px){
   body.laporan-bulanan-page .lb-head{
+    left:12px!important;
+    right:12px!important;
     top:var(--erp-top-header-h,72px)!important;
+  }
+  body.laporan-bulanan-page .lb-head + .lb-toolbar{
+    margin-top:132px!important;
   }
 }
 
+/* Print/PDF tidak memakai freeze. */
 @media print{
   body.laporan-bulanan-page .lb-head{
     position:static!important;
     top:auto!important;
+    left:auto!important;
+    right:auto!important;
     z-index:auto!important;
+    margin:-2px -4px 18px!important;
+  }
+  body.laporan-bulanan-page .lb-head + .lb-toolbar{
+    margin-top:0!important;
   }
 }
