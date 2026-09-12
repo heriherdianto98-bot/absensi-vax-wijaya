@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="../styles/laporan-bulanan-chart-popup-theme.css?v=20260912-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-performance-explain.css?v=20260912-v2">
 <link rel="stylesheet" href="../styles/laporan-bulanan-investor-total.css?v=20260912-v1">
+<link rel="stylesheet" href="../styles/laporan-bulanan-section-switcher.css?v=20260913-v1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="laporan-bulanan-page">
@@ -57,13 +58,28 @@
         <article class="lb-kpi" id="lbProfitCard"><span>Laba Bersih</span><strong id="lbProfit">Rp0</strong><small>Setelah gaji, operasional & sewa</small></article>
       </section>
 
+      <section class="lb-view-switcher" aria-label="Pilih tampilan laporan bulanan">
+        <label class="lb-view-field">
+          <span>Tampilan Laporan</span>
+          <select id="lbSectionView">
+            <option value="income">Pendapatan</option>
+            <option value="salary">Gaji Karyawan</option>
+            <option value="expense">Biaya Pengeluaran</option>
+            <option value="result">Hasil Bulan Berjalan</option>
+            <option value="investor">Pembagian Investor</option>
+            <option value="performance">Ringkasan Performance Cabang</option>
+          </select>
+        </label>
+        <div class="lb-view-hint">Pilih satu bagian untuk fokus pemeriksaan</div>
+      </section>
+
       <section class="lb-grid">
-        <div class="lb-card"><div class="lb-card-head"><h3>Pendapatan</h3><small>DailyDataEngine</small></div><div class="lb-card-body lb-lines" id="lbIncomeLines"></div></div>
-        <div class="lb-card"><div class="lb-card-head"><h3>Biaya Gaji Karyawan</h3><small>Payroll + consumer mapping</small></div><div class="lb-card-body lb-lines" id="lbSalaryLines"></div></div>
-        <div class="lb-card"><div class="lb-card-head"><h3>Biaya Pengeluaran</h3><small>Cash Out yang sudah anti double-count</small></div><div class="lb-card-body lb-lines" id="lbExpenseLines"></div></div>
-        <div class="lb-card"><div class="lb-card-head"><h3>Hasil Bulan Berjalan</h3><small>Ringkasan laba rugi</small></div><div class="lb-card-body lb-lines" id="lbResultLines"></div></div>
-        <div class="lb-card"><div class="lb-card-head"><h3>Pembagian Investor</h3><small>Master Investor</small></div><div class="lb-card-body lb-lines" id="lbInvestorLines"></div></div>
-        <div class="lb-card"><div class="lb-card-head"><h3>Ringkasan Performance Cabang</h3><small>AI Insight · simple investor view</small></div><div class="lb-card-body"><div class="lb-performance" id="lbPerformance"></div><p class="lb-performance-note" id="lbPerformanceNote"></p><div id="lbPerformanceExplain" class="lb-performance-explain-host"></div><div id="lbPerformanceChart"></div></div></div>
+        <div class="lb-card" data-lb-view="income"><div class="lb-card-head"><h3>Pendapatan</h3><small>DailyDataEngine</small></div><div class="lb-card-body lb-lines" id="lbIncomeLines"></div></div>
+        <div class="lb-card" data-lb-view="salary"><div class="lb-card-head"><h3>Biaya Gaji Karyawan</h3><small>Payroll + consumer mapping</small></div><div class="lb-card-body lb-lines" id="lbSalaryLines"></div></div>
+        <div class="lb-card" data-lb-view="expense"><div class="lb-card-head"><h3>Biaya Pengeluaran</h3><small>Cash Out yang sudah anti double-count</small></div><div class="lb-card-body lb-lines" id="lbExpenseLines"></div></div>
+        <div class="lb-card" data-lb-view="result"><div class="lb-card-head"><h3>Hasil Bulan Berjalan</h3><small>Ringkasan laba rugi</small></div><div class="lb-card-body lb-lines" id="lbResultLines"></div></div>
+        <div class="lb-card" data-lb-view="investor"><div class="lb-card-head"><h3>Pembagian Investor</h3><small>Master Investor</small></div><div class="lb-card-body lb-lines" id="lbInvestorLines"></div></div>
+        <div class="lb-card" data-lb-view="performance"><div class="lb-card-head"><h3>Ringkasan Performance Cabang</h3><small>AI Insight · simple investor view</small></div><div class="lb-card-body"><div class="lb-performance" id="lbPerformance"></div><p class="lb-performance-note" id="lbPerformanceNote"></p><div id="lbPerformanceExplain" class="lb-performance-explain-host"></div><div id="lbPerformanceChart"></div></div></div>
       </section>
 
       <section class="lb-card lb-review">
@@ -102,6 +118,7 @@
 <script src="../js/modules/laporan-bulanan-ui.js?v=20260912-v4"></script>
 <script src="../js/modules/laporan-bulanan-performance-chart.js?v=20260912-v1"></script>
 <script src="../js/modules/laporan-bulanan-performance-explain.js?v=20260912-v2"></script>
+<script src="../js/modules/laporan-bulanan-section-switcher.js?v=20260913-v1"></script>
 <script src="../js/modules/laporan-bulanan-calendar-ui.js?v=20260912-v2"></script>
 <script src="../js/modules/laporan-bulanan-branch-ui.js?v=20260912-v1"></script>
 <script>
