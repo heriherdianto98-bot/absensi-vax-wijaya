@@ -67,57 +67,43 @@ Tidak menyentuh engine, source, query, formula, atau data.
         pointer-events:none;
       }
 
-      /* Compact single-section review: one block in view; long content scrolls inside the card. */
+      /* Single-section review: tampil penuh, tanpa clipping/scroll internal. */
+      body.laporan-bulanan-page .lb-grid.lb-single-view{
+        margin-bottom:30px!important;
+      }
       body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{
         width:100%!important;
-        max-height:310px!important;
+        max-height:none!important;
         min-height:0!important;
-        overflow:hidden!important;
+        height:auto!important;
+        overflow:visible!important;
       }
       body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-head{
-        padding:10px 14px!important;
-        min-height:46px!important;
+        padding:7px 12px!important;
+        min-height:38px!important;
       }
       body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body{
-        padding:10px 14px!important;
-        max-height:252px!important;
-        overflow-y:auto!important;
-        overscroll-behavior:contain;
-        scrollbar-width:thin;
-        scrollbar-color:rgba(167,139,250,.72) #080a0d;
-      }
-      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body::-webkit-scrollbar,
-      body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body::-webkit-scrollbar{
-        width:8px;
-      }
-      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body::-webkit-scrollbar-track,
-      body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body::-webkit-scrollbar-track{
-        background:#080a0d;
-      }
-      body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body::-webkit-scrollbar-thumb,
-      body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body::-webkit-scrollbar-thumb{
-        background:linear-gradient(180deg,#a78bfa,#f2c230);
-        border-radius:999px;
+        padding:6px 12px 8px!important;
+        max-height:none!important;
+        overflow:visible!important;
       }
 
-      /* Mapping follows the same compact viewport rule when selected. */
+      /* Mapping juga tampil penuh tanpa scrollbar internal saat dipilih. */
       body.laporan-bulanan-page .lb-mapping.is-view-active{
         width:100%!important;
-        max-height:340px!important;
+        max-height:none!important;
         min-height:0!important;
-        overflow:hidden!important;
+        height:auto!important;
+        overflow:visible!important;
       }
       body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-head{
-        padding:10px 14px!important;
-        min-height:46px!important;
+        padding:7px 12px!important;
+        min-height:38px!important;
       }
       body.laporan-bulanan-page .lb-mapping.is-view-active .lb-card-body{
-        padding:10px 14px!important;
-        max-height:282px!important;
-        overflow-y:auto!important;
-        overscroll-behavior:contain;
-        scrollbar-width:thin;
-        scrollbar-color:rgba(96,165,250,.72) #080a0d;
+        padding:6px 12px 8px!important;
+        max-height:none!important;
+        overflow:visible!important;
       }
 
       @media(max-width:900px){
@@ -130,17 +116,12 @@ Tidak menyentuh engine, source, query, formula, atau data.
           padding-left:8px!important;
           padding-right:8px!important;
         }
-        body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active{
-          max-height:360px!important;
-        }
-        body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body{
-          max-height:302px!important;
-        }
       }
 
       @media print{
         body.laporan-bulanan-page .erp-content{padding-left:inherit!important;padding-right:inherit!important}
         body.laporan-bulanan-page .lb-wrap{max-width:1500px!important;padding-left:26px!important;padding-right:26px!important}
+        body.laporan-bulanan-page .lb-grid.lb-single-view{margin-bottom:14px!important}
         body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active,
         body.laporan-bulanan-page .lb-grid.lb-single-view > .lb-card.is-view-active .lb-card-body,
         body.laporan-bulanan-page .lb-mapping.is-view-active,
