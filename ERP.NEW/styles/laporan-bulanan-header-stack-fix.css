@@ -1,24 +1,19 @@
-/* Laporan Bulanan — header freeze/stack fix. UI ONLY. */
+/* Laporan Bulanan — match Dashboard utama header + toolbar. UI ONLY. */
 
-/* Header Bulanan dibuat lebih compact tanpa menyentuh global header. */
-body.laporan-bulanan-page{
-  --erp-top-header-h:60px;
+/* Dashboard utama memakai header compact 42px. */
+body.laporan-bulanan-page .erp-wrapper{
+  padding-top:42px!important;
 }
 
-/*
-   erp.css memberi .erp-wrapper padding-top sebesar tinggi header.
-   Pada halaman Bulanan, #header berada di dalam .erp-wrapper sehingga fixed element
-   ikut terkena offset visual wrapper. Kompensasi hanya pada #header agar sejajar
-   dengan global header tanpa mengubah layout/engine lain.
-*/
 body.laporan-bulanan-page #header{
   position:fixed!important;
-  top:calc(-1 * var(--erp-top-header-h,60px))!important;
+  top:0!important;
   left:var(--sidebar-width,220px)!important;
   right:0!important;
   width:auto!important;
-  height:60px!important;
-  min-height:60px!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
   margin:0!important;
   padding:0!important;
   z-index:5000!important;
@@ -26,29 +21,113 @@ body.laporan-bulanan-page #header{
   overflow:visible!important;
 }
 
-body.laporan-bulanan-page #header .erp-header-vax{
+body.laporan-bulanan-page #header .erp-header-vax,
+body.laporan-bulanan-page #header .top-header,
+body.laporan-bulanan-page #header .erp-header{
   position:relative!important;
   top:0!important;
-  min-height:60px!important;
-  height:60px!important;
-  padding:5px 18px!important;
+  width:100%!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
   margin:0!important;
+  padding:0 12px!important;
+  box-sizing:border-box!important;
 }
 
-/* Chip header ikut dipadatkan agar proporsional dengan tinggi 60px. */
-body.laporan-bulanan-page #header .erp-header-vax .vax-chip{
-  padding:6px 12px!important;
+body.laporan-bulanan-page #header .vax-chip{
+  min-width:128px!important;
+  padding:5px 12px!important;
+  border-radius:11px!important;
 }
-body.laporan-bulanan-page #header .erp-header-vax .vax-logout{
-  height:38px!important;
+body.laporan-bulanan-page #header .vax-chip label{
+  margin-bottom:1px!important;
+  font-size:8px!important;
+  line-height:1!important;
+}
+body.laporan-bulanan-page #header .vax-chip strong{
+  font-size:13px!important;
+  line-height:1.05!important;
+}
+body.laporan-bulanan-page #header .vax-sync-copy strong{font-size:12px!important;}
+body.laporan-bulanan-page #header .vax-sync-copy span{font-size:8px!important;margin-top:1px!important;}
+body.laporan-bulanan-page #header .vax-owner{margin-left:16px!important;}
+body.laporan-bulanan-page #header .vax-owner strong{font-size:12px!important;}
+body.laporan-bulanan-page #header .vax-owner span{font-size:8px!important;margin-top:1px!important;}
+body.laporan-bulanan-page #header .vax-logout{
+  height:32px!important;
+  margin-left:10px!important;
+  padding:0 16px!important;
+  border-radius:9px!important;
 }
 
-/* Wrapper global tetap menyediakan ruang header; jangan tambahkan offset baru. */
+/* Toolbar Bulanan dibuat seperti toolbar Dashboard utama dan ditempatkan tepat di bawah header. */
+body.laporan-bulanan-page .lb-toolbar{
+  position:relative!important;
+  z-index:20!important;
+  display:grid!important;
+  grid-template-columns:235px 210px 1fr auto!important;
+  align-items:end!important;
+  gap:10px!important;
+  width:100%!important;
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
+  margin:0!important;
+  padding:3px 14px 4px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(212,168,38,.30)!important;
+  border-radius:0!important;
+  background:#0b0f14!important;
+  box-shadow:none!important;
+}
+body.laporan-bulanan-page .lb-toolbar .lb-field{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+}
+body.laporan-bulanan-page .lb-toolbar .lb-field > span{
+  font-size:8px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.9px!important;
+  color:#8994a3!important;
+  text-transform:uppercase!important;
+}
+body.laporan-bulanan-page .lb-toolbar select,
+body.laporan-bulanan-page .lb-toolbar input{
+  width:100%!important;
+  height:28px!important;
+  min-height:28px!important;
+  max-height:28px!important;
+  padding:0 34px 0 12px!important;
+  border-radius:9px!important;
+  font-size:14px!important;
+  font-weight:800!important;
+}
+body.laporan-bulanan-page .lb-toolbar .lb-actions{
+  grid-column:4!important;
+  align-self:end!important;
+}
+body.laporan-bulanan-page .lb-toolbar .lb-btn{
+  height:28px!important;
+  min-height:28px!important;
+  padding:0 16px!important;
+  border-radius:9px!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+
+/* Main content mulai persis setelah toolbar, tanpa offset tambahan. */
 body.laporan-bulanan-page .erp-content{
-  padding-top:var(--content-pad-y,12px)!important;
+  padding-top:2px!important;
+}
+body.laporan-bulanan-page .lb-wrap{
+  padding-top:0!important;
 }
 
-/* Tampilan Laporan dan card aktif tetap scroll normal di belakang header. */
+/* Tampilan Laporan + card isi tetap scroll normal di bawah chrome atas. */
 body.laporan-bulanan-page .lb-view-switcher,
 body.laporan-bulanan-page .lb-grid,
 body.laporan-bulanan-page .lb-grid > .lb-card,
@@ -57,11 +136,7 @@ body.laporan-bulanan-page .lb-mapping{
   top:auto!important;
   z-index:0!important;
 }
-
-/* Dropdown section tetap tampil di atas saat sengaja dibuka. */
-body.laporan-bulanan-page .lb-section-popover{
-  z-index:6000!important;
-}
+body.laporan-bulanan-page .lb-section-popover{z-index:6000!important;}
 
 body.laporan-bulanan-page.sidebar-collapsed #header,
 body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper #header{
@@ -70,20 +145,24 @@ body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper #header{
 
 @media(max-width:900px){
   body.laporan-bulanan-page #header{left:0!important;}
+  body.laporan-bulanan-page .lb-toolbar{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto!important;
+    height:auto!important;
+    min-height:40px!important;
+    max-height:none!important;
+  }
+  body.laporan-bulanan-page .lb-toolbar .lb-actions{grid-column:3!important;}
 }
 
 @media print{
+  body.laporan-bulanan-page .erp-wrapper{padding-top:0!important;}
   body.laporan-bulanan-page #header{
     position:static!important;
-    top:auto!important;
     left:auto!important;
     right:auto!important;
     width:auto!important;
     height:auto!important;
-    min-height:0!important;
+    max-height:none!important;
   }
-  body.laporan-bulanan-page #header .erp-header-vax{
-    height:auto!important;
-    min-height:0!important;
-  }
+  body.laporan-bulanan-page .lb-toolbar{height:auto!important;max-height:none!important;}
 }
