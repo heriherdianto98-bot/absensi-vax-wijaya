@@ -1,13 +1,9 @@
-/* VAX ERP — Historical Payroll Correction Result Bridge V1
+/* VAX ERP — Historical Payroll Correction Result Bridge V2
    Adapter only. Does NOT modify PayrollUnifiedEngine formulas or immutable snapshots.
-   Normalizes historical correction overlay into the returned payroll view-model,
-   then collapses an already-saved correction panel by default.
+   Exposes one deterministic normalizer for historical correction view-models
+   and collapses an already-saved correction panel by default.
 */
 (() => {
-  const engine = window.PayrollUnifiedEngine;
-  if(!engine || engine.__historicalCorrectionResultBridgeV1) return;
-
-  const previousLoadPeriod = engine.loadPeriod.bind(engine);
   const num = v => { const n=Number(v||0); return Number.isFinite(n)?n:0; };
 
   function applyCorrectionResult(result){
@@ -26,8 +22,11 @@
       if(corr.bonus_kpi_override !== null && corr.bonus_kpi_override !== undefined){
         s.bonusKpi = Math.max(0, num(corr.bonus_kpi_override));
       }
-      // Exact OWNER LOCK formula, applied only to the historical view-model.
-      s.gajiBersih = Math.round(num(s.gajiPokok) - num(s.denda) - num(s.kasbon) + num(s.bonusInsentif) + num(s.bonusKpi) + num(s.bonusProduk));
+      // Exact OWNER LOCK formula, applied only to historical result view-model.
+      s.gajiBersih = Math.round(
+        num(s.gajiPokok) - num(s.denda) - num(s.kasbon)
+        + num(s.bonusInsentif) + num(s.bonusKpi) + num(s.bonusProduk)
+      );
     });
 
     const totals=(result.payroll||[]).reduce((a,row)=>{
@@ -42,10 +41,7 @@
     return result;
   }
 
-  engine.loadPeriod = async function historicalCorrectionResultAware(options={}){
-    const result = await previousLoadPeriod(options);
-    return applyCorrectionResult(result);
-  };
+  window.PayrollHistoricalCorrectionResultBridge = Object.freeze({ applyCorrectionResult });
 
   function ensureStyle(){
     if(document.getElementById('histCorrectionCollapseStyle')) return;
@@ -63,7 +59,8 @@
   }
 
   function hasSavedCorrection(panel){
-    return [...panel.querySelectorAll('.hist-gaji,.hist-insentif,.hist-kpi,.hist-note')].some(input => String(input?.value||'').trim() !== '');
+    return [...panel.querySelectorAll('.hist-gaji,.hist-insentif,.hist-kpi,.hist-note')]
+      .some(input => String(input?.value||'').trim() !== '');
   }
 
   function enhancePanel(panel){
@@ -89,9 +86,9 @@
   const observer=new MutationObserver(()=>document.querySelectorAll('.hist-payroll-correction').forEach(enhancePanel));
   const start=()=>{
     document.querySelectorAll('.hist-payroll-correction').forEach(enhancePanel);
-    const root=document.getElementById('payrollList'); if(root) observer.observe(root,{childList:true,subtree:true});
+    const root=document.getElementById('payrollList');
+    if(root) observer.observe(root,{childList:true,subtree:true});
   };
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true}); else start();
-
-  Object.defineProperty(engine,'__historicalCorrectionResultBridgeV1',{value:true,enumerable:false,writable:false});
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true});
+  else start();
 })();
