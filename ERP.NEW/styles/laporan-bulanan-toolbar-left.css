@@ -1,16 +1,20 @@
 /* =========================================================
-   LAPORAN BULANAN — TOOLBAR ALIGN LEFT
+   LAPORAN BULANAN — TOOLBAR ALIGNMENT
    UI ONLY. Tidak menyentuh engine/data/formula.
-   Memindahkan toolbar Cabang/Periode ke kiri agar sejajar dengan
-   judul, KPI, dan card laporan.
+
+   Toolbar sekarang mengikuti layout Dashboard Utama: berada di dalam
+   area .erp-wrapper, tepat di bawah global header. Karena itu JANGAN
+   lagi translate ke kiri sebesar lebar sidebar.
    ========================================================= */
 
 body.laporan-bulanan-page .lb-toolbar{
-  transform:translateX(calc(-1 * var(--sidebar-width,220px)))!important;
+  transform:none!important;
   margin-left:0!important;
   margin-right:0!important;
   width:100%!important;
   max-width:none!important;
+  left:auto!important;
+  right:auto!important;
 }
 
 @media(max-width:900px){
