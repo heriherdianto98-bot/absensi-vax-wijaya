@@ -19,9 +19,20 @@ body.laporan-bulanan-page .lb-toolbar{
   right:auto!important;
 }
 
+/* UI ONLY — perkecil kontrol dropdown nama cabang. */
+html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
+  flex:0 0 190px!important;
+  width:190px!important;
+}
+
 @media(max-width:900px){
   body.laporan-bulanan-page .lb-toolbar{
     transform:none!important;
+  }
+
+  html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
+    flex:1 1 180px!important;
+    width:auto!important;
   }
 }
 
