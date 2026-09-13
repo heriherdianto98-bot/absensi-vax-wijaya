@@ -154,7 +154,7 @@ Tidak mengubah DashboardEngine, AI Insight, atau source data.
           ${ticks.map(t=>{const y=T+plotH-(t*plotH);return `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" class="lb-perf-grid"/><text x="${L-14}" y="${y+6}" text-anchor="end" class="lb-perf-axis-y">${compact(max*t)}</text>`}).join("")}
           <path d="${area}" fill="url(#lbPerfArea)"/>
           <path d="${line}" class="lb-perf-line" filter="url(#lbPerfGlow)"/>
-          ${points.map(p=>`<g class="lb-perf-point" data-index="${p.i}"><circle cx="${p.x}" cy="${p.y}" r="6"/><circle cx="${p.x}" cy="${p.y}" r="18" class="lb-perf-hit" data-index="${p.i}" tabindex="0" role="button" aria-label="${MONTHS[p.i]} ${year}: ${money(p.v)}"><title>${MONTHS[p.i]} ${year}: ${money(p.v)}</title></circle><text x="${p.x}" y="${H-18}" text-anchor="middle" class="lb-perf-axis-x">${MONTHS[p.i]}</text></g>`).join("")}
+          ${points.map(p=>`<g class="lb-perf-point" data-index="${p.i}"><circle cx="${p.x}" cy="${p.y}" r="6"/><circle cx="${p.x}" cy="${p.y}" r="18" class="lb-perf-hit" data-index="${p.i}" tabindex="0" role="button" aria-label="${MONTHS[p.i]} ${year}: ${money(p.v)}"></circle><text x="${p.x}" y="${H-18}" text-anchor="middle" class="lb-perf-axis-x">${MONTHS[p.i]}</text></g>`).join("")}
         </svg>
         <div class="lb-perf-point-detail" aria-live="polite"></div>
       </div>
