@@ -32,10 +32,13 @@
   function boot(){
     const host=document.getElementById("lbPerformance");
     if(!host) return;
-    const observer=new MutationObserver(()=>renderExtras());
-    observer.observe(host,{childList:true});
-    document.addEventListener("laporan-bulanan:performance-kpi",()=>setTimeout(renderExtras,0));
-    renderExtras();
+
+    document.addEventListener("laporan-bulanan:performance-kpi",()=>{
+      setTimeout(renderExtras,0);
+    });
+
+    // Fallback satu kali setelah renderer utama selesai.
+    setTimeout(renderExtras,250);
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot,{once:true});
