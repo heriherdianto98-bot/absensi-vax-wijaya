@@ -1,0 +1,28 @@
+/* Laporan Bulanan — header stacking fix. UI ONLY. */
+body.laporan-bulanan-page #header{
+  position:sticky!important;
+  top:0!important;
+  z-index:5000!important;
+  isolation:isolate!important;
+}
+
+body.laporan-bulanan-page .lb-view-switcher{
+  position:relative!important;
+  top:auto!important;
+  bottom:auto!important;
+  z-index:0!important;
+  transform:none!important;
+}
+
+/* Active report card stays in normal document flow below the sticky header. */
+body.laporan-bulanan-page .lb-grid,
+body.laporan-bulanan-page .lb-grid > .lb-card,
+body.laporan-bulanan-page .lb-mapping{
+  position:relative!important;
+  z-index:0!important;
+}
+
+/* Picker popover must still float when intentionally opened. */
+body.laporan-bulanan-page .lb-section-popover{
+  z-index:6000!important;
+}
