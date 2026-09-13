@@ -96,15 +96,15 @@ body.laporan-bulanan-page .lb-branch-option.is-selected{
   color:#fff!important;
 }
 
-/* Hanya kontrol Cabang di toolbar yang diperkecil. */
+/* Hanya kontrol Cabang di toolbar yang dilebarkan agar nama cabang terbaca penuh. */
 html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
-  flex:0 0 160px!important;
-  width:160px!important;
-  max-width:160px!important;
+  flex:0 0 230px!important;
+  width:230px!important;
+  max-width:230px!important;
 }
 
 html body.laporan-bulanan-page .lb-toolbar .lb-branch-trigger{
-  width:160px!important;
+  width:230px!important;
   height:36px!important;
   min-height:36px!important;
   max-height:36px!important;
@@ -134,7 +134,7 @@ html body.laporan-bulanan-page .lb-branch-trigger-ico{
 
 @media(max-width:900px){
   html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
-    flex:1 1 160px!important;
+    flex:1 1 230px!important;
     width:auto!important;
     max-width:none!important;
   }
