@@ -1,6 +1,6 @@
 /*
 =========================================================
-VAX ERP — Payroll Historical Original Bridge V1
+VAX ERP — Payroll Historical Original Bridge V2
 =========================================================
 Adapter only. The LOCKED PayrollUnifiedEngine source/formulas
 are not changed. For periods that have an immutable LOCKED
@@ -24,11 +24,11 @@ loadPeriod runs unchanged.
     if(root){
       root.querySelectorAll('.payroll-save,.payroll-salary-save').forEach(btn=>{
         btn.disabled=true;
-        btn.title='Periode original terkunci — perubahan diblokir';
+        btn.title='Periode original terkunci — perubahan langsung diblokir';
       });
       root.querySelectorAll('.payroll-manual input,.payroll-salary-form input,.payroll-salary-form select').forEach(input=>{
         input.disabled=true;
-        input.title='Periode original terkunci — read only';
+        input.title='Periode original terkunci — gunakan Koreksi Payroll Historis';
       });
     }
     const status=document.getElementById('payrollStatus');
@@ -36,7 +36,9 @@ loadPeriod runs unchanged.
       status.dataset.historicalOriginal='1';
       const base=status.textContent||'';
       const hash=String(lockedMeta?.hash||'').slice(0,10);
-      status.textContent=`DATA ORIGINAL TERKUNCI${hash?` · ${hash}`:''} · ${base}`;
+      const hasCorrection=Number(lockedMeta?.correction_count||0)>0;
+      const label=hasCorrection?'DATA ORIGINAL TERKUNCI + KOREKSI PAYROLL':'DATA ORIGINAL TERKUNCI';
+      status.textContent=`${label}${hash?` · ${hash}`:''} · ${base}`;
     }
   }
 
@@ -53,7 +55,9 @@ loadPeriod runs unchanged.
     if(result){
       lockedState=true;
       lockedMeta=result.snapshot||null;
-      window.__VAX_PAYROLL_HISTORICAL_LOCKED__={locked:true,snapshot:lockedMeta,source:'SNAPSHOT_ORIGINAL'};
+      window.__VAX_PAYROLL_HISTORICAL_LOCKED__={locked:true,snapshot:lockedMeta,source:'SNAPSHOT_ORIGINAL',corrections:Number(lockedMeta?.correction_count||0)};
+      const status=document.getElementById('payrollStatus');
+      if(status) delete status.dataset.historicalOriginal;
       requestAnimationFrame(applyHistoricalReadonlyUi);
       return result;
     }
