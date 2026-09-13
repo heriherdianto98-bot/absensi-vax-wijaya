@@ -10,18 +10,33 @@
     const inv=report?.investor;
     if(!host||!inv?.nama) return;
 
+    const hakInvestor=Number(inv.totalHakBulanIni||0);
+    const hakManajemen=Number(inv.nilaiManajemen||0);
+
     host.innerHTML=`
       <div class="lb-line"><span>Investor</span><strong>${esc(inv.nama)}</strong></div>
       <div class="lb-line"><span>Laba Bersih</span><strong>${money(report?.laba?.labaBersih)}</strong></div>
       <div class="lb-line"><span>Nett Produk</span><strong>${money(inv.nettProduk)}</strong></div>
       <div class="lb-line"><span>Modal Produk (${Number(inv.modalProdukRate||60)}% × Nett Produk)</span><strong>${money(inv.modalProduk)}</strong></div>
-      <div class="lb-line total"><span>Laba Dasar Pembagian</span><strong>${money(inv.labaDasarPembagian)}</strong></div>
+      <div class="lb-line total lb-investor-base-total"><span>Laba Dasar Pembagian</span><strong>${money(inv.labaDasarPembagian)}</strong></div>
       <div class="lb-line"><span>Porsi Investor</span><strong>${Number(inv.porsiInvestor||0)}%</strong></div>
       <div class="lb-line"><span>Nilai Investor</span><strong>${money(inv.nilaiInvestor)}</strong></div>
       <div class="lb-line"><span>Porsi Manajemen</span><strong>${Number(inv.porsiManajemen||0)}%</strong></div>
       <div class="lb-line"><span>Nilai Manajemen</span><strong>${money(inv.nilaiManajemen)}</strong></div>
       <div class="lb-line"><span>Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div>
-      <div class="lb-line total"><span>Total Hak Investor</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`;
+      <div class="lb-investor-rights-title">Total Hak Pembagian</div>
+      <div class="lb-investor-rights-grid">
+        <div class="lb-investor-rights-card is-investor">
+          <span>Hak Investor</span>
+          <strong>${money(hakInvestor)}</strong>
+          <small>Nilai Investor + Sewa</small>
+        </div>
+        <div class="lb-investor-rights-card is-management">
+          <span>Hak Manajemen</span>
+          <strong>${money(hakManajemen)}</strong>
+          <small>Nilai Manajemen</small>
+        </div>
+      </div>`;
   }
 
   function boot(){
