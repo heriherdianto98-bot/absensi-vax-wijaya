@@ -3,10 +3,10 @@
 /*
 VAX ERP — Laporan Bulanan Print Enhancements
 UI ONLY / READ ONLY.
-- Grafik Performance berwarna ikut Print/PDF dan disatukan dengan ringkasan Performance.
+- Seluruh Ringkasan Performance yang tampil di ERP ikut ke Print/PDF: 8 card, catatan, analisis customer,
+  analisis status cabang, grafik, dan kesimpulan bulan-ke-bulan.
 - Rekonsiliasi Cash Out cetak menampilkan Gaji SVP + Gaji Capster/Protek agar angka Operasional transparan.
-- Ringkasan akhir Performance memperjelas bulan sebelumnya vs bulan aktif, arah, nominal, dan persentase perubahan.
-- Tanda tangan Manajemen + Supervisor tetap di akhir laporan dan didorong ke area bawah kertas terakhir.
+- Tanda tangan Manajemen + Supervisor selalu ditempatkan di area paling bawah kertas terakhir.
 - Tidak mengubah engine, formula, source data, Cash Out, Payroll, atau bridge LOCK.
 */
 (() => {
@@ -22,10 +22,18 @@ UI ONLY / READ ONLY.
 
   function performanceSnapshot(){
     const branchValue=String(document.getElementById("lbBranch")?.value||"");
-    if(!branchValue || branchValue==="all") return "";
-    const host=document.getElementById("lbPerformanceChart");
-    if(!host?.querySelector("svg.lb-perf-chart-svg")) return "";
-    return host.innerHTML;
+    if(!branchValue || branchValue==="all") return null;
+    const cards=document.getElementById("lbPerformance");
+    const note=document.getElementById("lbPerformanceNote");
+    const explain=document.getElementById("lbPerformanceExplain");
+    const chart=document.getElementById("lbPerformanceChart");
+    if(!cards || !chart?.querySelector("svg.lb-perf-chart-svg")) return null;
+    return {
+      cardsHtml:cards.innerHTML,
+      noteText:String(note?.textContent||"").trim(),
+      explainHtml:explain?.innerHTML||"",
+      chartHtml:chart.innerHTML
+    };
   }
 
   function chartPointValue(host,index){
@@ -86,7 +94,28 @@ UI ONLY / READ ONLY.
   }
 
   function enhancementCss(){return `
-    .lb-print-performance-block{break-inside:avoid;page-break-inside:avoid;margin-top:1mm}
+    .lb-print-final-page{page-break-before:always;break-before:page;min-height:226mm;display:flex;flex-direction:column}
+    .lb-print-performance-block{break-inside:avoid;page-break-inside:avoid;margin-top:0}
+    .lb-print-performance-block>h3{margin-top:0}
+    .lb-print-performance-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8mm;margin-bottom:2mm}
+    .lb-print-performance-cards>div{min-height:15mm;padding:2.2mm 2.5mm;border:1px solid #cfd5da;border-left:1.2mm solid #3b82f6;border-radius:2mm;background:#fbfcfd;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    .lb-print-performance-cards>div:nth-child(1),.lb-print-performance-cards>div:nth-child(3){border-left-color:#2ea96f;background:#f2fbf6}
+    .lb-print-performance-cards>div:nth-child(2){border-left-color:#d4af37;background:#fffaf0}
+    .lb-print-performance-cards>div:nth-child(4),.lb-print-performance-cards>div:nth-child(7){border-left-color:#22b8cf;background:#f1fbfd}
+    .lb-print-performance-cards>div:nth-child(5){border-left-color:#d95a9c;background:#fff5fa}
+    .lb-print-performance-cards>div:nth-child(6){border-left-color:#4c8bd9;background:#f4f8fd}
+    .lb-print-performance-cards>div:nth-child(8){border-left-color:#f97316;background:#fff7f0}
+    .lb-print-performance-cards span{display:block;font-size:5.8pt;font-weight:900;letter-spacing:.03em;text-transform:uppercase;color:#66717d}
+    .lb-print-performance-cards strong{display:block;margin-top:1.2mm;font-size:8.7pt;font-weight:900;color:#172233}
+    .lb-print-performance-note{margin:1.5mm 0 2mm;padding:1.7mm 2.2mm;border:1px solid #d9dde1;background:#fafbfc;color:#3e4955;font-size:6.8pt;line-height:1.4}
+    .lb-print-performance-explain{display:grid;gap:2mm;margin-bottom:2mm}
+    .lb-print-performance-explain .lb-perf-explain-row,.lb-print-performance-explain .lb-perf-annual-conclusion{padding:2.3mm 2.7mm;border:1px solid #d4dadf;border-radius:2mm;background:#fafcfd;break-inside:avoid;page-break-inside:avoid}
+    .lb-print-performance-explain .is-up{border-color:#86cfa9;background:#f1fbf5}.lb-print-performance-explain .is-down{border-color:#e4a1a5;background:#fff4f5}.lb-print-performance-explain .is-flat{border-color:#ddc87b;background:#fffaf0}
+    .lb-print-performance-explain .lb-perf-explain-row{display:grid;grid-template-columns:8mm 1fr;gap:2mm;align-items:start}
+    .lb-print-performance-explain .lb-perf-explain-icon{font-size:10pt;font-weight:900;text-align:center}
+    .lb-print-performance-explain strong{font-size:7.6pt;color:#172233}.lb-print-performance-explain p{margin:1mm 0 0;font-size:6.6pt;line-height:1.45;color:#384452}.lb-print-performance-explain small{display:block;margin-top:1mm;font-size:5.9pt;line-height:1.4;color:#697481}.lb-print-performance-explain b{font-weight:900;color:#172233}
+    .lb-print-performance-explain .lb-perf-annual-head{display:flex;align-items:center;gap:1.5mm}.lb-print-performance-explain .lb-perf-annual-head span{font-weight:900}
+
     .lb-print-performance-chart{margin-top:2mm;padding:2.5mm;border:1px solid #17313a;border-radius:2.4mm;background:#04070a;break-inside:avoid;page-break-inside:avoid;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     .lb-print-performance-chart .lb-perf-chart-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:5mm;margin-bottom:2mm}
     .lb-print-performance-chart .lb-perf-chart-meta>div:first-child{display:flex;flex-direction:column;gap:.8mm}
@@ -116,7 +145,7 @@ UI ONLY / READ ONLY.
     .lb-print-final-summary .summary-delta{margin-top:1mm;font-size:8pt;font-weight:900;color:#8b6a00}
     .lb-print-final-summary.is-up .summary-delta{color:#167953}.lb-print-final-summary.is-down .summary-delta{color:#b63c45}
 
-    .lb-print-signatures{margin-top:48mm;padding-top:3mm;border-top:1px solid #d2d2d2;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid;page-break-before:avoid}
+    .lb-print-signatures{margin-top:auto;padding-top:3mm;padding-bottom:1mm;border-top:1px solid #d2d2d2;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid}
     .lb-print-sign-box{text-align:center;min-height:25mm}
     .lb-print-sign-box .who{font-size:7.2pt;font-weight:700;color:#172233}
     .lb-print-sign-box .auth-role{margin-top:.4mm;font-size:6.2pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
@@ -196,8 +225,8 @@ UI ONLY / READ ONLY.
     </div>`;
   }
 
-  function addPerformanceBlock(doc,chartHtml,comparison){
-    if(!chartHtml) return;
+  function addPerformanceBlock(doc,snapshot,comparison){
+    if(!snapshot) return;
     const branch=doc.querySelector(".branch-report");
     if(!branch) return;
     const headings=[...branch.querySelectorAll("h3")];
@@ -207,21 +236,45 @@ UI ONLY / READ ONLY.
 
     const wrapper=doc.createElement("div");
     wrapper.className="lb-print-performance-block";
-    branch.insertBefore(wrapper,performanceHeading);
-    let node=performanceHeading;
-    while(node&&node!==completenessHeading){
-      const next=node.nextSibling;
-      wrapper.appendChild(node);
-      node=next;
+    const title=doc.createElement("h3");
+    title.textContent="Ringkasan Performance Cabang";
+    wrapper.appendChild(title);
+
+    const cards=doc.createElement("div");
+    cards.className="lb-print-performance-cards";
+    cards.innerHTML=snapshot.cardsHtml||"";
+    wrapper.appendChild(cards);
+
+    if(snapshot.noteText){
+      const note=doc.createElement("div");
+      note.className="lb-print-performance-note";
+      note.textContent=snapshot.noteText;
+      wrapper.appendChild(note);
     }
+
+    if(snapshot.explainHtml){
+      const explain=doc.createElement("div");
+      explain.className="lb-print-performance-explain";
+      explain.innerHTML=snapshot.explainHtml;
+      wrapper.appendChild(explain);
+    }
+
     const chart=doc.createElement("div");
     chart.className="lb-print-performance-chart";
-    chart.innerHTML=chartHtml;
+    chart.innerHTML=snapshot.chartHtml||"";
     wrapper.appendChild(chart);
 
     const summary=doc.createElement("div");
     summary.innerHTML=finalSummaryHtml(comparison);
     if(summary.firstElementChild) wrapper.appendChild(summary.firstElementChild);
+
+    branch.insertBefore(wrapper,performanceHeading);
+    let node=performanceHeading;
+    while(node&&node!==completenessHeading){
+      const next=node.nextSibling;
+      node.remove();
+      node=next;
+    }
   }
 
   function addSignaturesAtReportEnd(doc){
@@ -233,7 +286,28 @@ UI ONLY / READ ONLY.
     if(holder.firstElementChild) lastBranch.appendChild(holder.firstElementChild);
   }
 
-  function transformPrintHtml(html,chartHtml,comparison){
+  function wrapLastPage(doc){
+    const branches=[...doc.querySelectorAll(".branch-report")];
+    const lastBranch=branches[branches.length-1];
+    if(!lastBranch||lastBranch.querySelector(".lb-print-final-page")) return;
+    const performance=lastBranch.querySelector(".lb-print-performance-block");
+    const completeness=[...lastBranch.querySelectorAll("h3")].find(h=>String(h.textContent||"").trim()==="Kelengkapan Data");
+    const signatures=lastBranch.querySelector(".lb-print-signatures");
+    if(!performance||!completeness||!signatures) return;
+
+    const finalPage=doc.createElement("div");
+    finalPage.className="lb-print-final-page";
+    lastBranch.insertBefore(finalPage,performance);
+
+    let node=performance;
+    while(node){
+      const next=node.nextSibling;
+      finalPage.appendChild(node);
+      node=next;
+    }
+  }
+
+  function transformPrintHtml(html,snapshot,comparison){
     const source=String(html||"");
     if(!source) return source;
     const doc=new DOMParser().parseFromString(source,"text/html");
@@ -242,8 +316,9 @@ UI ONLY / READ ONLY.
     doc.head.appendChild(style);
 
     addCashOutReconciliation(doc);
-    addPerformanceBlock(doc,chartHtml,comparison);
+    addPerformanceBlock(doc,snapshot,comparison);
     addSignaturesAtReportEnd(doc);
+    wrapLastPage(doc);
 
     return `<!doctype html>${doc.documentElement.outerHTML}`;
   }
@@ -252,7 +327,7 @@ UI ONLY / READ ONLY.
     const baseOpen=window.LaporanBulananPrintUI?.__baseOpen || window.LaporanBulananPrintUI?.open;
     if(typeof baseOpen!=="function") return;
 
-    const chartHtml=performanceSnapshot();
+    const snapshot=performanceSnapshot();
     const comparison=performanceComparison();
     const nativeOpen=window.open;
     window.open=function(...args){
@@ -260,7 +335,7 @@ UI ONLY / READ ONLY.
       if(!popup?.document) return popup;
       const nativeWrite=popup.document.write.bind(popup.document);
       popup.document.write=function(html){
-        return nativeWrite(transformPrintHtml(html,chartHtml,comparison));
+        return nativeWrite(transformPrintHtml(html,snapshot,comparison));
       };
       return popup;
     };
