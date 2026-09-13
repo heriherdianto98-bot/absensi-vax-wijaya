@@ -15,6 +15,9 @@ body.laporan-bulanan-page .lb-view-switcher{
   border-radius:15px;
   background:#000;
   box-shadow:0 10px 24px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.035),0 0 20px rgba(45,212,191,.05);
+  position:relative!important;
+  z-index:0!important;
+  isolation:auto!important;
 }
 body.laporan-bulanan-page .lb-view-field{display:contents}
 body.laporan-bulanan-page .lb-view-field > span{
