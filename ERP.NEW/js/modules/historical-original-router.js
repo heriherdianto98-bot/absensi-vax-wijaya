@@ -1,6 +1,6 @@
 /*
 =========================================================
-VAX ERP — Historical Original Router V2
+VAX ERP — Historical Original Router V3
 =========================================================
 READ ONLY bridge for immutable monthly snapshots plus an
 AUDITED payroll-correction overlay for data that was not yet
@@ -11,6 +11,8 @@ Rules:
 - NEVER changes immutable snapshot rows.
 - Locked snapshot data is read through secure Supabase RPC.
 - Historical corrections are stored separately with audit trail.
+- Historical Kasbon correction is payroll-only and NEVER creates
+  a Kasbon transaction or Arus Kas movement.
 - SELF scope is forced to the authenticated employee only.
 - Unsupported historical contexts fail closed.
 - Returning null means the requested period has no locked
@@ -123,6 +125,35 @@ Rules:
       });
   }
 
+  function applyKasbonCorrectionOverlay(rows,corrections,karyawan,start){
+    let adjusted=asArray(rows).slice();
+    asArray(corrections).forEach(corr=>{
+      if(corr.kasbon_override===null || corr.kasbon_override===undefined) return;
+      const employeeId=Number(corr.employee_id||0);
+      if(!employeeId) return;
+      const employee=asArray(karyawan).find(e=>Number(e.id)===employeeId);
+      adjusted=adjusted.filter(r=>Number(r.employee_id)!==employeeId);
+      const total=Math.max(0,number(corr.kasbon_override));
+      if(total<=0) return;
+      adjusted.push({
+        id:`historical-kasbon-correction-${employeeId}-${start}`,
+        employee_id:employeeId,
+        branch_id:Number(employee?.cabang_id)||null,
+        employee_name_snapshot:employee?.nama_karyawan||'',
+        position_snapshot:employee?.jabatan||'',
+        request_date:start,
+        approved_amount:total,
+        disbursement_date:start,
+        status:'AKTIF',
+        current_outstanding:total,
+        total_paid:0,
+        payment_method:'BULANAN',
+        source:'HISTORICAL_CORRECTION'
+      });
+    });
+    return adjusted;
+  }
+
   function applyCorrectionOverlay({engine,karyawan,salaryRows,manualMonth,corrections,start,end}){
     const correctionMap=new Map(asArray(corrections).map(c=>[Number(c.employee_id),c]));
     let adjustedSalaryRows=asArray(salaryRows).slice();
@@ -170,10 +201,11 @@ Rules:
     const providerRows = asArray(data.provider_sales_daily_source);
     const productRows = asArray(data.product_sales_source);
     const absensiRows = asArray(data.absensi);
-    const kasbonRows = historicalKasbonRows(data.employee_cash_advances,data.employee_cash_advance_payments,range.start,range.end);
     const cashOutRows = asArray(data.daily_recap_source);
     const manualMonth = manualMonthFrom(data.payroll_manual_adjustments, start);
     const corrections = asArray(payload?.historical_corrections);
+    const baseKasbonRows = historicalKasbonRows(data.employee_cash_advances,data.employee_cash_advance_payments,range.start,range.end);
+    const kasbonRows = applyKasbonCorrectionOverlay(baseKasbonRows,corrections,karyawan,range.start);
     const overlay=applyCorrectionOverlay({engine,karyawan,salaryRows:data.payroll_salary_master,manualMonth,corrections,start:range.start,end:range.end});
     const salaryData=overlay.salaryData;
     const adjustments=overlay.adjustments;
@@ -240,9 +272,9 @@ Rules:
       .hist-payroll-correction{margin:12px 18px 14px;padding:14px;border:1px solid rgba(217,180,50,.45);border-radius:12px;background:rgba(217,180,50,.07)}
       .hist-payroll-correction h4{margin:0 0 4px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#e3c24a}
       .hist-payroll-correction p{margin:0 0 12px;color:#9eabb7;font-size:12px}
-      .hist-payroll-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.hist-payroll-grid label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#99a8b5}.hist-payroll-grid input{min-width:0;border:1px solid #344552;border-radius:8px;background:#101820;color:#eef4f7;padding:9px 10px}
+      .hist-payroll-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.hist-payroll-grid label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#99a8b5}.hist-payroll-grid input{min-width:0;border:1px solid #344552;border-radius:8px;background:#101820;color:#eef4f7;padding:9px 10px}
       .hist-payroll-actions{display:flex;align-items:center;gap:10px;margin-top:10px}.hist-payroll-save{border:1px solid #d5b233;background:#d5b233;color:#101010;border-radius:8px;padding:9px 14px;font-weight:800;cursor:pointer}.hist-payroll-save:disabled{opacity:.6}.hist-payroll-msg{font-size:12px;color:#9eabb7}.hist-payroll-capster{padding:9px 10px;border:1px solid #344552;border-radius:8px;color:#9eabb7;background:#101820}
-      @media(max-width:800px){.hist-payroll-grid{grid-template-columns:1fr 1fr}}
+      @media(max-width:1000px){.hist-payroll-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.hist-payroll-grid{grid-template-columns:1fr}}
     `;document.head.appendChild(s);
   }
 
@@ -263,7 +295,7 @@ Rules:
       const gajiField=payrollRow.isCapster
         ? `<label><span>Gaji Pokok Historis</span><div class="hist-payroll-capster">Capster mengikuti snapshot Minutes (${money(payrollRow.summary?.gajiPokok)})</div></label>`
         : `<label><span>Gaji Pokok Historis</span><input class="hist-gaji" inputmode="numeric" value="${corr.gaji_pokok_override!=null?rupiahInput(corr.gaji_pokok_override):''}" placeholder="Kosong = data snapshot"></label>`;
-      wrap.innerHTML=`<h4>Koreksi Payroll Historis</h4><p>Snapshot asli tetap terkunci. Koreksi ini terpisah dan tercatat di audit trail.</p><div class="hist-payroll-grid">${gajiField}<label><span>Bonus Insentif</span><input class="hist-insentif" inputmode="numeric" value="${corr.bonus_insentif_override!=null?rupiahInput(corr.bonus_insentif_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Bonus KPI</span><input class="hist-kpi" inputmode="numeric" value="${corr.bonus_kpi_override!=null?rupiahInput(corr.bonus_kpi_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Catatan / Alasan</span><input class="hist-note" value="${escapeHtml(corr.note||'')}"></label></div><div class="hist-payroll-actions"><button type="button" class="hist-payroll-save">Simpan Koreksi Historis</button><span class="hist-payroll-msg"></span></div>`;
+      wrap.innerHTML=`<h4>Koreksi Payroll Historis</h4><p>Snapshot asli tetap terkunci. Koreksi ini terpisah dan tercatat di audit trail. Kasbon Historis adalah total kasbon payroll periode dan tidak membuat transaksi Kasbon/Arus Kas baru.</p><div class="hist-payroll-grid">${gajiField}<label><span>Kasbon Historis (Total)</span><input class="hist-kasbon" inputmode="numeric" value="${corr.kasbon_override!=null?rupiahInput(corr.kasbon_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Bonus Insentif</span><input class="hist-insentif" inputmode="numeric" value="${corr.bonus_insentif_override!=null?rupiahInput(corr.bonus_insentif_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Bonus KPI</span><input class="hist-kpi" inputmode="numeric" value="${corr.bonus_kpi_override!=null?rupiahInput(corr.bonus_kpi_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Catatan / Alasan</span><input class="hist-note" value="${escapeHtml(corr.note||'')}"></label></div><div class="hist-payroll-actions"><button type="button" class="hist-payroll-save">Simpan Koreksi Historis</button><span class="hist-payroll-msg"></span></div>`;
 
       const head=card.querySelector('.payroll-card-head');
       if(head?.nextSibling) card.insertBefore(wrap,head.nextSibling);
@@ -282,6 +314,7 @@ Rules:
             p_gaji_pokok_override:payrollRow.isCapster?null:nullableMoney('.hist-gaji'),
             p_bonus_insentif_override:nullableMoney('.hist-insentif'),
             p_bonus_kpi_override:nullableMoney('.hist-kpi'),
+            p_kasbon_override:nullableMoney('.hist-kasbon'),
             p_note:wrap.querySelector('.hist-note')?.value||null
           });
           if(error)throw error;
