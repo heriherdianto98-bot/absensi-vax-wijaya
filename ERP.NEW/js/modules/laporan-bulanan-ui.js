@@ -8,6 +8,71 @@
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
   let branches=[],employees=[],currentReport=null,booted=false,headerSyncTimer=null;
 
+  /*
+     Consumer-page read cache.
+     PERFORMANCE ONLY: engine source files/formula/data flow are not changed.
+     We memoize identical READ calls while user switches branches in the same month.
+     Refresh Data and month changes clear the cache so a fresh read still works.
+  */
+  const monthlyReadCache={
+    installed:false,
+    payroll:new Map(),
+    daily:new Map(),
+    originalPayrollLoad:null,
+    originalDailyLoad:null
+  };
+
+  function stableAdjustments(value){
+    if(!value||typeof value!=="object") return "{}";
+    const sorted={};
+    Object.keys(value).sort().forEach(key=>{
+      const row=value[key];
+      sorted[key]=row&&typeof row==="object"
+        ?Object.keys(row).sort().reduce((acc,k)=>{acc[k]=row[k];return acc;},{})
+        :row;
+    });
+    try{return JSON.stringify(sorted);}catch(_){return "{}";}
+  }
+
+  function installMonthlyReadCache(){
+    if(monthlyReadCache.installed) return;
+
+    if(typeof PayrollUnifiedEngine!=="undefined"&&typeof PayrollUnifiedEngine.loadPeriod==="function"){
+      monthlyReadCache.originalPayrollLoad=PayrollUnifiedEngine.loadPeriod;
+      PayrollUnifiedEngine.loadPeriod=function(args={}){
+        const key=[String(args.start||""),String(args.end||""),String(args.branchId??""),String(args.employeeId??""),stableAdjustments(args.adjustments)].join("|");
+        if(monthlyReadCache.payroll.has(key)) return monthlyReadCache.payroll.get(key);
+        const pending=Promise.resolve(monthlyReadCache.originalPayrollLoad.call(this,args)).catch(err=>{
+          monthlyReadCache.payroll.delete(key);
+          throw err;
+        });
+        monthlyReadCache.payroll.set(key,pending);
+        return pending;
+      };
+    }
+
+    if(typeof DailyDataEngine!=="undefined"&&typeof DailyDataEngine.load==="function"){
+      monthlyReadCache.originalDailyLoad=DailyDataEngine.load;
+      DailyDataEngine.load=function(args={}){
+        const key=[String(args.start||""),String(args.end||args.start||""),String(args.cabangId??"")].join("|");
+        if(monthlyReadCache.daily.has(key)) return monthlyReadCache.daily.get(key);
+        const pending=Promise.resolve(monthlyReadCache.originalDailyLoad.call(this,args)).catch(err=>{
+          monthlyReadCache.daily.delete(key);
+          throw err;
+        });
+        monthlyReadCache.daily.set(key,pending);
+        return pending;
+      };
+    }
+
+    monthlyReadCache.installed=true;
+  }
+
+  function clearMonthlyReadCache(){
+    monthlyReadCache.payroll.clear();
+    monthlyReadCache.daily.clear();
+  }
+
   function monthLabel(value){ const [y,m]=String(value||"").split("-").map(Number); return y&&m?`${MONTHS[m-1]} ${y}`:"—"; }
   function setText(id,value){ const node=el(id); if(node && node.textContent!==String(value)) node.textContent=value; }
   function setHtml(id,value){ const node=el(id); if(node) node.innerHTML=value; }
@@ -178,6 +243,7 @@
 
   async function init(){
     if(booted||!el("lbBranch")) return; booted=true;
+    installMonthlyReadCache();
     bindHeaderSync();
     try{
       setText("lbLoadState","Memuat master cabang...");
@@ -185,11 +251,11 @@
       el("lbMonth").value="2026-08"; syncHeaderContext();
       await loadReport();
     }catch(err){ console.error(err); syncHeaderContext(); setText("lbLoadState",`Gagal memuat modul: ${err?.message||"unknown error"}`); setText("lbReportStatusText","GAGAL MEMUAT"); }
-    el("lbRefresh")?.addEventListener("click",()=>loadReport());
+    el("lbRefresh")?.addEventListener("click",()=>{clearMonthlyReadCache();loadReport();});
     el("lbBranch")?.addEventListener("change",()=>{syncHeaderContext();loadReport();});
-    el("lbMonth")?.addEventListener("change",()=>{syncHeaderContext();loadReport();});
+    el("lbMonth")?.addEventListener("change",()=>{clearMonthlyReadCache();syncHeaderContext();loadReport();});
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true}); else init();
-  window.LaporanBulananUI={init,loadReport,syncHeaderContext};
+  window.LaporanBulananUI={init,loadReport,syncHeaderContext,clearMonthlyReadCache};
 })();
