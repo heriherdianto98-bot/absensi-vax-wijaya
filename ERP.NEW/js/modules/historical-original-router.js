@@ -196,8 +196,8 @@ Rules:
   }
 
   async function loadPayrollPeriod({start,end,branchId=null,employeeId=null}={}){
-    if(!window.db?.rpc) return null;
-    const {data,error}=await window.db.rpc(RPC,{p_period_start:start,p_period_end:end});
+    if(typeof db === 'undefined' || !db?.rpc) return null;
+    const {data,error}=await db.rpc(RPC,{p_period_start:start,p_period_end:end});
     if(error){
       if(isSnapshotNotFound(error)) return null;
       throw error;
