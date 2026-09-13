@@ -1,16 +1,18 @@
-/* Laporan Bulanan — header stacking/freeze fix. UI ONLY. */
+/* Laporan Bulanan — header freeze/stack fix. UI ONLY. */
 
-/* Header kembali menempel di paling atas viewport dan tetap freeze. */
+/*
+   erp.css sudah memberi .erp-wrapper padding-top sebesar tinggi header.
+   Jadi di sini JANGAN menambah padding-top lagi ke .erp-content.
+*/
 body.laporan-bulanan-page #header{
   position:fixed!important;
   top:0!important;
-  left:212px!important;
+  left:var(--sidebar-width,220px)!important;
   right:0!important;
   width:auto!important;
   margin:0!important;
   padding:0!important;
   z-index:5000!important;
-  isolation:isolate!important;
   background:#11161c!important;
 }
 
@@ -20,36 +22,33 @@ body.laporan-bulanan-page #header .erp-header-vax{
   margin:0!important;
 }
 
-/* Ganti ruang flow header yang hilang karena fixed, tanpa membuat blank di atas header. */
+/* Hilangkan offset tambahan percobaan sebelumnya. Wrapper global sudah menyediakan ruang header. */
 body.laporan-bulanan-page .erp-content{
-  padding-top:76px!important;
+  padding-top:var(--content-pad-y,12px)!important;
 }
 
-/* Tampilan Laporan ikut scroll biasa dan lewat di belakang header. */
-body.laporan-bulanan-page .lb-view-switcher{
-  position:relative!important;
-  top:auto!important;
-  bottom:auto!important;
-  z-index:0!important;
-  transform:none!important;
-}
-
+/* Tampilan Laporan dan card aktif tetap scroll normal di belakang header. */
+body.laporan-bulanan-page .lb-view-switcher,
 body.laporan-bulanan-page .lb-grid,
 body.laporan-bulanan-page .lb-grid > .lb-card,
 body.laporan-bulanan-page .lb-mapping{
   position:relative!important;
+  top:auto!important;
   z-index:0!important;
 }
 
-/* Picker popover tetap boleh muncul di atas saat sengaja dibuka. */
+/* Dropdown section tetap tampil di atas saat sengaja dibuka. */
 body.laporan-bulanan-page .lb-section-popover{
   z-index:6000!important;
 }
 
+body.laporan-bulanan-page.sidebar-collapsed #header,
+body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper #header{
+  left:var(--sidebar-collapse,72px)!important;
+}
+
 @media(max-width:900px){
-  body.laporan-bulanan-page #header{
-    left:0!important;
-  }
+  body.laporan-bulanan-page #header{left:0!important;}
 }
 
 @media print{
@@ -58,8 +57,5 @@ body.laporan-bulanan-page .lb-section-popover{
     left:auto!important;
     right:auto!important;
     width:auto!important;
-  }
-  body.laporan-bulanan-page .erp-content{
-    padding-top:0!important;
   }
 }
