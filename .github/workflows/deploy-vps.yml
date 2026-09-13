@@ -2,9 +2,6 @@ name: Deploy ERP VAX to VPS
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 concurrency:
   group: erp-vax-vps-deploy
