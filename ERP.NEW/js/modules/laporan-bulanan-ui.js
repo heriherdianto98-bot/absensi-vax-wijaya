@@ -18,6 +18,7 @@
     installed:false,
     payroll:new Map(),
     daily:new Map(),
+    report:new Map(),
     originalPayrollLoad:null,
     originalDailyLoad:null
   };
@@ -71,12 +72,14 @@
   function clearMonthlyReadCache(){
     monthlyReadCache.payroll.clear();
     monthlyReadCache.daily.clear();
+    monthlyReadCache.report.clear();
   }
 
   function monthLabel(value){ const [y,m]=String(value||"").split("-").map(Number); return y&&m?`${MONTHS[m-1]} ${y}`:"—"; }
   function setText(id,value){ const node=el(id); if(node && node.textContent!==String(value)) node.textContent=value; }
   function setHtml(id,value){ const node=el(id); if(node) node.innerHTML=value; }
   function statusReady(report){ return report?.readiness?.finalReady===true; }
+  function num(v){ const n=Number(v||0); return Number.isFinite(n)?n:0; }
 
   function selectedBranchLabel(){
     const select=el("lbBranch");
@@ -118,8 +121,8 @@
     employees=empsRes?.data||[];
     const select=el("lbBranch");
     if(!select) throw new Error("Filter cabang tidak ditemukan.");
-    select.innerHTML=branches.map(c=>`<option value="${Number(c.id)}">${esc(c.nama_cabang)}</option>`).join("");
-    if(branches.some(c=>Number(c.id)===5)) select.value="5"; else if(branches[0]) select.value=String(branches[0].id);
+    select.innerHTML=`<option value="all">Semua Cabang</option>${branches.map(c=>`<option value="${Number(c.id)}">${esc(c.nama_cabang)}</option>`).join("")}`;
+    if(branches.some(c=>Number(c.id)===5)) select.value="5"; else if(branches[0]) select.value=String(branches[0].id); else select.value="all";
     syncHeaderContext();
   }
 
@@ -188,7 +191,11 @@
     setHtml("lbSalaryLines",`${capsterRows}${nonCapsterRows}<div class="lb-line"><span>Gaji SVP</span><strong>${money(g.svp)}</strong></div><div class="lb-line"><span>Gaji Backup Kasir</span><strong>${money(g.backupNamedSupplement)}</strong></div><div class="lb-line total"><span>Total Biaya Gaji</span><strong>${money(g.total)}</strong></div>`);
 
     setHtml("lbExpenseLines",`<div class="lb-line"><span>Biaya Operasional</span><strong>${money(x.operasional)}</strong></div><div class="lb-line"><span>Sewa Tempat</span><strong>${money(x.sewa)}</strong></div><div class="lb-line total"><span>Total Pengeluaran Non-Gaji</span><strong>${money(x.total)}</strong></div>`);
-    setHtml("lbInvestorLines",inv?.nama?`<div class="lb-line"><span>Investor</span><strong>${esc(inv.nama)}</strong></div><div class="lb-line"><span>Persentase</span><strong>${Number(inv.persentase||0)}%</strong></div><div class="lb-line"><span>Bagi Hasil</span><strong>${money(inv.bagiHasil)}</strong></div><div class="lb-line"><span>Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div><div class="lb-line total"><span>Total Hak Bulan Ini</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`:'<div class="lb-ok">Cabang ini tidak memiliki investor aktif.</div>');
+    if(report?.isAllBranches){
+      setHtml("lbInvestorLines",`<div class="lb-line"><span>Cabang dengan Investor</span><strong>${Number(inv.branchCount||0)} cabang</strong></div><div class="lb-line"><span>Total Bagi Hasil Investor</span><strong>${money(inv.bagiHasil)}</strong></div><div class="lb-line"><span>Total Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div><div class="lb-line total"><span>Total Hak Investor Bulan Ini</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`);
+    }else{
+      setHtml("lbInvestorLines",inv?.nama?`<div class="lb-line"><span>Investor</span><strong>${esc(inv.nama)}</strong></div><div class="lb-line"><span>Persentase</span><strong>${Number(inv.persentase||0)}%</strong></div><div class="lb-line"><span>Bagi Hasil</span><strong>${money(inv.bagiHasil)}</strong></div><div class="lb-line"><span>Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div><div class="lb-line total"><span>Total Hak Bulan Ini</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`:'<div class="lb-ok">Cabang ini tidak memiliki investor aktif.</div>');
+    }
     setHtml("lbResultLines",`<div class="lb-line"><span>Total Pendapatan</span><strong>${money(l.totalPendapatan)}</strong></div><div class="lb-line"><span>Total Biaya</span><strong>${money(l.totalBiaya)}</strong></div><div class="lb-line total"><span>Laba Bersih</span><strong>${money(l.labaBersih)}</strong></div>`);
   }
 
@@ -215,28 +222,146 @@
 
   async function renderMapping(report){
     const box=el("lbProviderMapping"); if(!box) return;
+    if(report?.isAllBranches){
+      box.innerHTML='<div class="lb-ok">Mode Semua Cabang bersifat ringkasan. Pilih satu cabang untuk review atau mapping provider/capster backup.</div>';
+      return;
+    }
     const pending=report?.gaji?.providerPendingDetail||[];
     if(!pending.length){ box.innerHTML='<div class="lb-ok">Tidak ada provider/capster backup yang perlu dimapping untuk cabang ini.</div>'; return; }
     try{
       const mappings=await LaporanBulananProviderMapping.loadMonth({client:db,month:report.range.start});
       const review=LaporanBulananProviderMapping.buildReview({pendingRows:pending,mappings,branches,employees});
-      LaporanBulananProviderMappingUI.render(box,{review,month:report.range.start,client:db,onSaved:async()=>{await loadReport(false);}});
+      LaporanBulananProviderMappingUI.render(box,{review,month:report.range.start,client:db,onSaved:async()=>{clearMonthlyReadCache();await loadReport(false);}});
     }catch(err){ console.warn("[Laporan Bulanan Mapping]",err); box.innerHTML=`<div class="lb-issue"><strong>MAPPING BELUM TERSEDIA</strong><span>${esc(err?.message||"Gagal membaca mapping provider.")}</span></div>`; }
   }
 
+  function mergeCapsterDetails(reports){
+    const map=new Map();
+    reports.forEach(report=>(report?.gaji?.capsterDetail||[]).forEach(row=>{
+      const key=row?.employeeId?`id:${row.employeeId}`:`name:${String(row?.nama||"").toLowerCase()}`;
+      if(!map.has(key)) map.set(key,{...row,payroll:0,mapped:0,protek:0,total:0});
+      const target=map.get(key);
+      target.payroll+=num(row?.payroll);
+      target.mapped+=num(row?.mapped);
+      target.protek+=num(row?.protek);
+      target.total+=num(row?.total);
+      target.isBackup=Boolean(target.isBackup||row?.isBackup);
+    }));
+    return [...map.values()].sort((a,b)=>String(a.nama||"").localeCompare(String(b.nama||""),"id"));
+  }
+
+  function mergeNonCapsterDetails(reports){
+    const map=new Map();
+    reports.forEach(report=>(report?.gaji?.nonCapsterDetail||[]).forEach(row=>{
+      const key=row?.employeeId?`id:${row.employeeId}`:`name:${String(row?.nama||"").toLowerCase()}|${String(row?.jabatan||"").toLowerCase()}`;
+      if(!map.has(key)) map.set(key,{...row,amount:0,gajiPokok:0,denda:0,kasbon:0,bonusInsentif:0,bonusKpi:0,bonusProduk:0});
+      const target=map.get(key);
+      ["amount","gajiPokok","denda","kasbon","bonusInsentif","bonusKpi","bonusProduk"].forEach(field=>{target[field]+=num(row?.[field]);});
+    }));
+    return [...map.values()].sort((a,b)=>String(a.nama||"").localeCompare(String(b.nama||""),"id"));
+  }
+
+  function aggregateReports(reports){
+    const list=(reports||[]).filter(Boolean);
+    if(!list.length) throw new Error("Tidak ada laporan cabang yang dapat digabungkan.");
+    const sum=path=>list.reduce((total,report)=>{
+      const parts=path.split(".");
+      let value=report;
+      for(const part of parts) value=value?.[part];
+      return total+num(value);
+    },0);
+    const issues=[];
+    list.forEach(report=>(report?.readiness?.issues||[]).forEach(issue=>issues.push({...issue,message:`${report?.branch?.name||"Cabang"}: ${issue?.message||"Perlu review"}`})));
+    const investorBranches=list.filter(report=>report?.investor?.nama);
+    const omzet=sum("performance.omzet")||sum("pendapatan.total");
+    const customer=sum("pendapatan.customer");
+    const transaction=sum("pendapatan.transaction");
+
+    return {
+      isAllBranches:true,
+      branch:{id:null,name:"Semua Cabang",nama_cabang:"Semua Cabang"},
+      range:{...list[0].range},
+      pendapatan:{
+        cukur:sum("pendapatan.cukur"),
+        produkGross:sum("pendapatan.produkGross"),
+        produkNett:sum("pendapatan.produkNett"),
+        total:sum("pendapatan.total"),
+        customer,
+        transaction
+      },
+      gaji:{
+        payroll:sum("gaji.payroll"),
+        svp:sum("gaji.svp"),
+        backupNamedSupplement:sum("gaji.backupNamedSupplement"),
+        providerMapped:sum("gaji.providerMapped"),
+        protek:sum("gaji.protek"),
+        total:sum("gaji.total"),
+        capsterDetail:mergeCapsterDetails(list),
+        nonCapsterDetail:mergeNonCapsterDetails(list),
+        providerPendingDetail:list.flatMap(report=>report?.gaji?.providerPendingDetail||[])
+      },
+      pengeluaran:{
+        operasional:sum("pengeluaran.operasional"),
+        sewa:sum("pengeluaran.sewa"),
+        total:sum("pengeluaran.total")
+      },
+      laba:{
+        totalPendapatan:sum("laba.totalPendapatan"),
+        totalBiaya:sum("laba.totalBiaya"),
+        labaBersih:sum("laba.labaBersih")
+      },
+      investor:{
+        branchCount:investorBranches.length,
+        bagiHasil:sum("investor.bagiHasil"),
+        sewaDibayar:sum("investor.sewaDibayar"),
+        totalHakBulanIni:sum("investor.totalHakBulanIni")
+      },
+      performance:{
+        status:"Konsolidasi",
+        omzet,
+        growthPct:null,
+        customer,
+        avgTicket:transaction>0?Math.round(omzet/transaction):0,
+        finding:`Ringkasan konsolidasi ${list.length} cabang. Growth ditampilkan per cabang agar tidak menghasilkan persentase gabungan yang menyesatkan.`
+      },
+      readiness:{finalReady:list.every(statusReady),issues},
+      branchReports:list,
+      diagnostics:{aggregate:true,branchCount:list.length}
+    };
+  }
+
+  async function loadBranchReport(year,mon,branchId){
+    const key=`${year}-${String(mon).padStart(2,"0")}|${Number(branchId)}`;
+    if(monthlyReadCache.report.has(key)) return monthlyReadCache.report.get(key);
+    const pending=Promise.resolve(LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:Number(branchId)})).then(report=>{
+      if(typeof LaporanBulananOperasionalPayrollDedupBridge!=="undefined") LaporanBulananOperasionalPayrollDedupBridge.apply(report);
+      return report;
+    }).catch(err=>{
+      monthlyReadCache.report.delete(key);
+      throw err;
+    });
+    monthlyReadCache.report.set(key,pending);
+    return pending;
+  }
+
+  async function loadAllBranchesReport(year,mon){
+    const reports=await Promise.all(branches.map(branch=>loadBranchReport(year,mon,branch.id)));
+    return aggregateReports(reports);
+  }
+
   async function loadReport(showLoading=true){
-    const branchId=Number(el("lbBranch")?.value||0),month=el("lbMonth")?.value;
-    if(!branchId||!month){ setText("lbLoadState","Pilih cabang dan periode."); return; }
-    syncHeaderContext(); if(showLoading) setText("lbLoadState","Memuat laporan...");
+    const branchValue=String(el("lbBranch")?.value||""),month=el("lbMonth")?.value;
+    const isAll=branchValue==="all";
+    const branchId=isAll?null:Number(branchValue||0);
+    if((!isAll&&!branchId)||!month){ setText("lbLoadState","Pilih cabang dan periode."); return; }
+    syncHeaderContext(); if(showLoading) setText("lbLoadState",isAll?"Memuat semua cabang...":"Memuat laporan...");
     try{
       if(typeof LaporanBulananConsumer==="undefined") throw new Error("Consumer Bulanan belum termuat.");
       const [year,mon]=month.split("-").map(Number);
-      const report=await withTimeout(LaporanBulananConsumer.loadMonth({client:db,year,month:mon,cabangId:branchId}),30000,"Engine Laporan Bulanan");
-      if(typeof LaporanBulananOperasionalPayrollDedupBridge!=="undefined"){
-        LaporanBulananOperasionalPayrollDedupBridge.apply(report);
-      }
+      const task=isAll?loadAllBranchesReport(year,mon):loadBranchReport(year,mon,branchId);
+      const report=await withTimeout(task,isAll?60000:30000,isAll?"Laporan Semua Cabang":"Engine Laporan Bulanan");
       currentReport=report; renderStatus(report); renderKpis(report); renderFinance(report); renderReadiness(report); renderPerformance(report); syncHeaderContext(report);
-      setText("lbLoadState",`${report.branch.name} · ${monthLabel(month)} · consumer read only`);
+      setText("lbLoadState",isAll?`Semua Cabang · ${monthLabel(month)} · ${branches.length} cabang · consumer read only`:`${report.branch.name} · ${monthLabel(month)} · consumer read only`);
       await renderMapping(report);
     }catch(err){ console.error(err); syncHeaderContext(); setText("lbLoadState",`Gagal memuat: ${err?.message||"unknown error"}`); setText("lbReportStatusText","GAGAL MEMUAT"); }
   }
