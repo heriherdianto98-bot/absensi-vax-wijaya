@@ -1,14 +1,16 @@
 /*
 =========================================================
-VAX ERP — Historical Original Router V1
+VAX ERP — Historical Original Router V2
 =========================================================
-READ ONLY bridge for immutable monthly snapshots.
+READ ONLY bridge for immutable monthly snapshots plus an
+AUDITED payroll-correction overlay for data that was not yet
+configured when the snapshot was frozen.
 
 Rules:
 - NEVER changes PayrollUnifiedEngine / payroll formulas.
+- NEVER changes immutable snapshot rows.
 - Locked snapshot data is read through secure Supabase RPC.
-- When a locked snapshot is available, payroll is rebuilt by
-  the existing LOCKED PayrollUnifiedEngine formula methods.
+- Historical corrections are stored separately with audit trail.
 - SELF scope is forced to the authenticated employee only.
 - Unsupported historical contexts fail closed.
 - Returning null means the requested period has no locked
@@ -16,7 +18,9 @@ Rules:
 =========================================================
 */
 (() => {
-  const RPC = 'erp_read_locked_payroll_snapshot_v3';
+  const RPC = 'erp_read_locked_payroll_snapshot_v4';
+  const SAVE_RPC = 'erp_save_historical_payroll_correction';
+  let lastHistoricalResult = null;
 
   const asArray = value => Array.isArray(value) ? value : [];
   const number = value => {
@@ -28,6 +32,10 @@ Rules:
     return /^\d{4}-\d{2}-\d{2}/.test(s) ? s.slice(0, 10) : '';
   };
   const isSnapshotNotFound = err => /LOCKED_SNAPSHOT_NOT_FOUND/i.test(String(err?.message || err || ''));
+  const money = n => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(number(n));
+  const rupiahInput = n => `Rp ${new Intl.NumberFormat('id-ID',{maximumFractionDigits:0}).format(number(n))}`;
+  const parseRupiah = value => Number(String(value ?? '').replace(/[^0-9]/g,'') || 0);
+  const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   function salaryDataFrom(rows){
     const normalized = asArray(rows).map(row => {
@@ -80,8 +88,6 @@ Rules:
     return result;
   }
 
-  // Mirrors the already-approved PayrollKasbonMonthlyBridge view-model behavior,
-  // using ONLY immutable snapshot rows. No database writes are performed.
   function historicalKasbonRows(advances,payments,start,end){
     const payrollPayments=asArray(payments).filter(p =>
       String(p.payment_method||'').toUpperCase()==='BULANAN' &&
@@ -117,6 +123,43 @@ Rules:
       });
   }
 
+  function applyCorrectionOverlay({engine,karyawan,salaryRows,manualMonth,corrections,start,end}){
+    const correctionMap=new Map(asArray(corrections).map(c=>[Number(c.employee_id),c]));
+    let adjustedSalaryRows=asArray(salaryRows).slice();
+    const adjustments=adjustmentsFrom(manualMonth);
+
+    correctionMap.forEach((corr,employeeId)=>{
+      const employee=karyawan.find(e=>Number(e.id)===employeeId);
+      if(!employee)return;
+
+      if(corr.gaji_pokok_override!==null && corr.gaji_pokok_override!==undefined){
+        if(engine.isCapster(employee)){
+          throw new Error(`Koreksi Gaji Pokok Capster diblokir: ${employee.nama_karyawan}. Gaji Capster harus tetap mengikuti snapshot Minutes.`);
+        }
+        adjustedSalaryRows=adjustedSalaryRows.filter(r=>Number(r.employee_id)!==employeeId);
+        adjustedSalaryRows.push({
+          id:`historical-correction-${employeeId}-${start}`,
+          employee_id:employeeId,
+          pay_basis:'MONTHLY',
+          amount:number(corr.gaji_pokok_override),
+          effective_from:start,
+          effective_to:end,
+          active:true,
+          note:`Historical payroll correction: ${corr.note||''}`,
+          updated_at:corr.updated_at||null
+        });
+      }
+
+      const prev=adjustments[employeeId]||adjustments[String(employeeId)]||{bonusInsentif:0,bonusKpi:0};
+      adjustments[employeeId]={
+        bonusInsentif:(corr.bonus_insentif_override!==null&&corr.bonus_insentif_override!==undefined)?number(corr.bonus_insentif_override):number(prev.bonusInsentif),
+        bonusKpi:(corr.bonus_kpi_override!==null&&corr.bonus_kpi_override!==undefined)?number(corr.bonus_kpi_override):number(prev.bonusKpi)
+      };
+    });
+
+    return {salaryData:salaryDataFrom(adjustedSalaryRows),adjustments,correctionMap};
+  }
+
   function buildResult(payload,{start,end,branchId=null,employeeId=null}={}){
     if(!window.PayrollUnifiedEngine) throw new Error('PayrollUnifiedEngine belum tersedia');
     const engine = window.PayrollUnifiedEngine;
@@ -129,9 +172,11 @@ Rules:
     const absensiRows = asArray(data.absensi);
     const kasbonRows = historicalKasbonRows(data.employee_cash_advances,data.employee_cash_advance_payments,range.start,range.end);
     const cashOutRows = asArray(data.daily_recap_source);
-    const salaryData = salaryDataFrom(data.payroll_salary_master);
     const manualMonth = manualMonthFrom(data.payroll_manual_adjustments, start);
-    const adjustments = adjustmentsFrom(manualMonth);
+    const corrections = asArray(payload?.historical_corrections);
+    const overlay=applyCorrectionOverlay({engine,karyawan,salaryRows:data.payroll_salary_master,manualMonth,corrections,start:range.start,end:range.end});
+    const salaryData=overlay.salaryData;
+    const adjustments=overlay.adjustments;
     const cabangMap = new Map(cabang.map(r => [Number(r.id), r.nama_cabang]));
 
     const accessScope = String(payload?.access_scope || '').toUpperCase();
@@ -145,25 +190,15 @@ Rules:
 
     const backupAssignments = engine.buildBackupAssignments({karyawan,absensiRows,cashOutRows});
     let employees = karyawan.slice();
-    if(branchId!==null && branchId!==undefined && String(branchId).trim()!==''){
-      employees = employees.filter(r => Number(r.cabang_id)===Number(branchId));
-    }
-    if(effectiveEmployeeId!==null && effectiveEmployeeId!==undefined && String(effectiveEmployeeId).trim()!==''){
-      employees = employees.filter(r => Number(r.id)===Number(effectiveEmployeeId));
-    }
+    if(branchId!==null && branchId!==undefined && String(branchId).trim()!=='') employees = employees.filter(r => Number(r.cabang_id)===Number(branchId));
+    if(effectiveEmployeeId!==null && effectiveEmployeeId!==undefined && String(effectiveEmployeeId).trim()!=='') employees = employees.filter(r => Number(r.id)===Number(effectiveEmployeeId));
 
     const ctx = {range,cabangMap,providerRows,productRows,absensiRows,kasbonRows,backupAssignments,salaryData,adjustments};
     const payroll = employees.map(e => engine.buildEmployeePayroll(e,ctx));
 
     let pendingMapping = engine.buildPendingMapping(providerRows,cabangMap);
-    if(branchId!==null && branchId!==undefined && String(branchId).trim()!==''){
-      pendingMapping = pendingMapping.filter(r => Number(r.cabangId)===Number(branchId));
-    }
-    const pendingBackupAssignments = asArray(backupAssignments.pending).map(i => ({
-      ...i,
-      cabang:cabangMap.get(Number(i.cabangId))||'—',
-      mappingStatus:'AMBIGUOUS_BACKUP'
-    }));
+    if(branchId!==null && branchId!==undefined && String(branchId).trim()!=='') pendingMapping = pendingMapping.filter(r => Number(r.cabangId)===Number(branchId));
+    const pendingBackupAssignments = asArray(backupAssignments.pending).map(i => ({...i,cabang:cabangMap.get(Number(i.cabangId))||'—',mappingStatus:'AMBIGUOUS_BACKUP'}));
     const totals = payroll.reduce((a,r) => {
       const s=r.summary||{};
       a.gajiPokok+=engine.number(s.gajiPokok);a.denda+=engine.number(s.denda);a.kasbon+=engine.number(s.kasbon);
@@ -172,27 +207,19 @@ Rules:
     },{gajiPokok:0,denda:0,kasbon:0,bonusInsentif:0,bonusKpi:0,bonusProduk:0,gajiBersih:0});
     totals.gajiKotor=totals.gajiPokok;
 
-    return {
-      range,
-      branchId:branchId?Number(branchId):null,
-      payroll,
-      pendingMapping,
-      pendingBackupAssignments,
-      backupAssignments,
-      pendingSummary:{
-        rows:pendingMapping.length,
-        service:pendingMapping.reduce((s,r)=>s+engine.number(r.service),0),
-        providerShare:pendingMapping.reduce((s,r)=>s+engine.number(r.providerShare),0),
-        backupRows:pendingBackupAssignments.length
-      },
-      totals,
-      salaryData,
-      manualMonth,
-      source:'SNAPSHOT_ORIGINAL',
-      accessScope,
-      snapshot:payload.snapshot||null,
-      historicalLocked:true
+    const visibleCorrections=corrections.filter(c=>employees.some(e=>Number(e.id)===Number(c.employee_id)));
+    const snapshot={...(payload.snapshot||{}),correction_count:visibleCorrections.length};
+
+    const result={
+      range,branchId:branchId?Number(branchId):null,payroll,pendingMapping,pendingBackupAssignments,backupAssignments,
+      pendingSummary:{rows:pendingMapping.length,service:pendingMapping.reduce((s,r)=>s+engine.number(r.service),0),providerShare:pendingMapping.reduce((s,r)=>s+engine.number(r.providerShare),0),backupRows:pendingBackupAssignments.length},
+      totals,salaryData,manualMonth,source:'SNAPSHOT_ORIGINAL',accessScope,snapshot,historicalLocked:true,
+      historicalCorrections:visibleCorrections
     };
+    lastHistoricalResult=result;
+    window.__VAX_HISTORICAL_PAYROLL_RESULT__=result;
+    requestAnimationFrame(renderCorrectionPanels);
+    return result;
   }
 
   async function loadPayrollPeriod({start,end,branchId=null,employeeId=null}={}){
@@ -202,13 +229,65 @@ Rules:
       if(isSnapshotNotFound(error)) return null;
       throw error;
     }
-    const status=String(data?.status||'').toUpperCase();
-    if(status==='NOT_FOUND') return null;
-    if(!data || status!=='LOCKED'){
-      throw new Error('Snapshot historis tidak valid. LIVE fallback diblokir.');
-    }
+    if(data && String(data.status||'').toUpperCase()==='NOT_FOUND') return null;
+    if(!data || String(data.status||'').toUpperCase()!=='LOCKED') throw new Error('Snapshot historis tidak valid. LIVE fallback diblokir.');
     return buildResult(data,{start,end,branchId,employeeId});
   }
+
+  function ensureCorrectionStyle(){
+    if(document.getElementById('historicalPayrollCorrectionStyle'))return;
+    const s=document.createElement('style');s.id='historicalPayrollCorrectionStyle';s.textContent=`
+      .hist-payroll-correction{margin:14px 18px 18px;padding:14px;border:1px solid rgba(217,180,50,.35);border-radius:12px;background:rgba(217,180,50,.055)}
+      .hist-payroll-correction h4{margin:0 0 4px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#e3c24a}
+      .hist-payroll-correction p{margin:0 0 12px;color:#9eabb7;font-size:12px}
+      .hist-payroll-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.hist-payroll-grid label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#99a8b5}.hist-payroll-grid input{min-width:0;border:1px solid #344552;border-radius:8px;background:#101820;color:#eef4f7;padding:9px 10px}
+      .hist-payroll-actions{display:flex;align-items:center;gap:10px;margin-top:10px}.hist-payroll-save{border:1px solid #d5b233;background:#d5b233;color:#101010;border-radius:8px;padding:9px 14px;font-weight:800;cursor:pointer}.hist-payroll-save:disabled{opacity:.6}.hist-payroll-msg{font-size:12px;color:#9eabb7}.hist-payroll-capster{padding:9px 10px;border:1px solid #344552;border-radius:8px;color:#9eabb7;background:#101820}
+      @media(max-width:800px){.hist-payroll-grid{grid-template-columns:1fr 1fr}}
+    `;document.head.appendChild(s);
+  }
+
+  function renderCorrectionPanels(){
+    const result=lastHistoricalResult;
+    if(!result?.historicalLocked)return;
+    ensureCorrectionStyle();
+    const corrMap=new Map(asArray(result.historicalCorrections).map(c=>[Number(c.employee_id),c]));
+    document.querySelectorAll('.payroll-employee-card[data-employee-id]').forEach(card=>{
+      const employeeId=Number(card.dataset.employeeId||0);if(!employeeId)return;
+      const payrollRow=result.payroll.find(r=>Number(r.employeeId)===employeeId);if(!payrollRow)return;
+      const old=card.querySelector('.hist-payroll-correction');if(old)old.remove();
+      const corr=corrMap.get(employeeId)||{};
+      const wrap=document.createElement('section');wrap.className='hist-payroll-correction';
+      const gajiField=payrollRow.isCapster
+        ? `<label><span>Gaji Pokok Historis</span><div class="hist-payroll-capster">Capster mengikuti snapshot Minutes (${money(payrollRow.summary?.gajiPokok)})</div></label>`
+        : `<label><span>Gaji Pokok Historis</span><input class="hist-gaji" inputmode="numeric" value="${corr.gaji_pokok_override!=null?rupiahInput(corr.gaji_pokok_override):''}" placeholder="Kosong = data snapshot"></label>`;
+      wrap.innerHTML=`<h4>Koreksi Payroll Historis</h4><p>Snapshot asli tetap terkunci. Nilai di bawah adalah lapisan koreksi terpisah dengan audit trail.</p><div class="hist-payroll-grid">${gajiField}<label><span>Bonus Insentif</span><input class="hist-insentif" inputmode="numeric" value="${corr.bonus_insentif_override!=null?rupiahInput(corr.bonus_insentif_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Bonus KPI</span><input class="hist-kpi" inputmode="numeric" value="${corr.bonus_kpi_override!=null?rupiahInput(corr.bonus_kpi_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Catatan / Alasan</span><input class="hist-note" value="${escapeHtml(corr.note||'')}"></label></div><div class="hist-payroll-actions"><button type="button" class="hist-payroll-save">Simpan Koreksi Historis</button><span class="hist-payroll-msg"></span></div>`;
+      card.appendChild(wrap);
+      wrap.querySelectorAll('input[inputmode="numeric"]').forEach(input=>input.addEventListener('blur',()=>{if(input.value.trim())input.value=rupiahInput(parseRupiah(input.value));}));
+      wrap.querySelector('.hist-payroll-save')?.addEventListener('click',async e=>{
+        const btn=e.currentTarget,msg=wrap.querySelector('.hist-payroll-msg');
+        const nullableMoney=sel=>{const v=wrap.querySelector(sel)?.value?.trim()||'';return v?parseRupiah(v):null;};
+        try{
+          btn.disabled=true;msg.textContent='Menyimpan koreksi…';
+          const {data,error}=await db.rpc(SAVE_RPC,{
+            p_period_month:result.range.start,
+            p_employee_id:employeeId,
+            p_gaji_pokok_override:payrollRow.isCapster?null:nullableMoney('.hist-gaji'),
+            p_bonus_insentif_override:nullableMoney('.hist-insentif'),
+            p_bonus_kpi_override:nullableMoney('.hist-kpi'),
+            p_note:wrap.querySelector('.hist-note')?.value||null
+          });
+          if(error)throw error;
+          if(String(data?.status||'').toUpperCase()!=='OK')throw new Error('Koreksi historis gagal disimpan.');
+          msg.textContent='Tersimpan. Memuat ulang payroll…';
+          setTimeout(()=>document.getElementById('payrollRefresh')?.click(),250);
+        }catch(err){msg.textContent=err?.message||'Gagal menyimpan koreksi.';}finally{btn.disabled=false;}
+      });
+    });
+  }
+
+  const observer=new MutationObserver(()=>requestAnimationFrame(renderCorrectionPanels));
+  const startObserver=()=>{const list=document.getElementById('payrollList');if(list)observer.observe(list,{childList:true,subtree:true});};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startObserver,{once:true});else startObserver();
 
   window.HistoricalOriginalRouter = Object.freeze({loadPayrollPeriod,buildResult});
 })();
