@@ -59,8 +59,8 @@ body.laporan-bulanan-page .monthly-provider-map-row select option{
 }
 
 /* =========================================================
-   DROPDOWN CABANG — BLACK + NAMA CABANG LEBIH BESAR
-   UI ONLY. Menimpa style popover custom tanpa mengubah logic picker.
+   DROPDOWN CABANG — BLACK + COMPACT CONTROL
+   UI ONLY. Menimpa style visual picker tanpa mengubah logic picker.
    ========================================================= */
 body.laporan-bulanan-page .lb-branch-popover{
   background:#000!important;
@@ -88,12 +88,50 @@ body.laporan-bulanan-page .lb-branch-option.is-selected{
   color:#fff!important;
 }
 
-body.laporan-bulanan-page .lb-branch-trigger{
-  background:#000!important;
-  background-image:none!important;
+/* Hanya kontrol Cabang di toolbar yang diperkecil. */
+html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
+  flex:0 0 160px!important;
+  width:160px!important;
+  max-width:160px!important;
 }
 
-body.laporan-bulanan-page #lbBranchTriggerText{
-  font-size:15px!important;
-  font-weight:850!important;
+html body.laporan-bulanan-page .lb-toolbar .lb-branch-trigger{
+  width:160px!important;
+  height:36px!important;
+  min-height:36px!important;
+  max-height:36px!important;
+  padding:0 10px 0 10px!important;
+  border-radius:9px!important;
+  background:#000!important;
+  background-image:none!important;
+  font-size:12.5px!important;
+  line-height:36px!important;
+}
+
+html body.laporan-bulanan-page #lbBranchTriggerText{
+  display:block!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:12.5px!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+
+html body.laporan-bulanan-page .lb-branch-trigger-ico{
+  flex:0 0 auto!important;
+  font-size:11px!important;
+}
+
+@media(max-width:900px){
+  html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
+    flex:1 1 160px!important;
+    width:auto!important;
+    max-width:none!important;
+  }
+
+  html body.laporan-bulanan-page .lb-toolbar .lb-branch-trigger{
+    width:100%!important;
+  }
 }
