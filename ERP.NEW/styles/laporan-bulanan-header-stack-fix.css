@@ -1,11 +1,31 @@
-/* Laporan Bulanan — header stacking fix. UI ONLY. */
+/* Laporan Bulanan — header stacking/freeze fix. UI ONLY. */
+
+/* Header kembali menempel di paling atas viewport dan tetap freeze. */
 body.laporan-bulanan-page #header{
-  position:sticky!important;
+  position:fixed!important;
   top:0!important;
+  left:212px!important;
+  right:0!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
   z-index:5000!important;
   isolation:isolate!important;
+  background:#11161c!important;
 }
 
+body.laporan-bulanan-page #header .erp-header-vax{
+  position:relative!important;
+  top:0!important;
+  margin:0!important;
+}
+
+/* Ganti ruang flow header yang hilang karena fixed, tanpa membuat blank di atas header. */
+body.laporan-bulanan-page .erp-content{
+  padding-top:76px!important;
+}
+
+/* Tampilan Laporan ikut scroll biasa dan lewat di belakang header. */
 body.laporan-bulanan-page .lb-view-switcher{
   position:relative!important;
   top:auto!important;
@@ -14,7 +34,6 @@ body.laporan-bulanan-page .lb-view-switcher{
   transform:none!important;
 }
 
-/* Active report card stays in normal document flow below the sticky header. */
 body.laporan-bulanan-page .lb-grid,
 body.laporan-bulanan-page .lb-grid > .lb-card,
 body.laporan-bulanan-page .lb-mapping{
@@ -22,7 +41,25 @@ body.laporan-bulanan-page .lb-mapping{
   z-index:0!important;
 }
 
-/* Picker popover must still float when intentionally opened. */
+/* Picker popover tetap boleh muncul di atas saat sengaja dibuka. */
 body.laporan-bulanan-page .lb-section-popover{
   z-index:6000!important;
+}
+
+@media(max-width:900px){
+  body.laporan-bulanan-page #header{
+    left:0!important;
+  }
+}
+
+@media print{
+  body.laporan-bulanan-page #header{
+    position:static!important;
+    left:auto!important;
+    right:auto!important;
+    width:auto!important;
+  }
+  body.laporan-bulanan-page .erp-content{
+    padding-top:0!important;
+  }
 }
