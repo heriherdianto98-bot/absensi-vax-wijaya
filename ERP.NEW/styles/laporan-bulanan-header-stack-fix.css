@@ -1,12 +1,14 @@
 /* Laporan Bulanan — header freeze/stack fix. UI ONLY. */
 
 /*
-   erp.css sudah memberi .erp-wrapper padding-top sebesar tinggi header.
-   Jadi di sini JANGAN menambah padding-top lagi ke .erp-content.
+   erp.css memberi .erp-wrapper padding-top sebesar tinggi header.
+   Pada halaman Bulanan, #header berada di dalam .erp-wrapper sehingga fixed element
+   ikut terkena offset visual wrapper. Kompensasi hanya pada #header agar sejajar
+   dengan global header tanpa mengubah layout/engine lain.
 */
 body.laporan-bulanan-page #header{
   position:fixed!important;
-  top:0!important;
+  top:calc(-1 * var(--erp-top-header-h,72px))!important;
   left:var(--sidebar-width,220px)!important;
   right:0!important;
   width:auto!important;
@@ -22,7 +24,7 @@ body.laporan-bulanan-page #header .erp-header-vax{
   margin:0!important;
 }
 
-/* Hilangkan offset tambahan percobaan sebelumnya. Wrapper global sudah menyediakan ruang header. */
+/* Wrapper global tetap menyediakan ruang header; jangan tambahkan offset baru. */
 body.laporan-bulanan-page .erp-content{
   padding-top:var(--content-pad-y,12px)!important;
 }
@@ -54,6 +56,7 @@ body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper #header{
 @media print{
   body.laporan-bulanan-page #header{
     position:static!important;
+    top:auto!important;
     left:auto!important;
     right:auto!important;
     width:auto!important;
