@@ -3,12 +3,14 @@
 /*
 VAX ERP — Laporan Bulanan Print Enhancements
 UI ONLY / READ ONLY.
-- Menambahkan snapshot grafik Performance berwarna yang sedang tampil di browser ke hasil Print/PDF.
-- Menambahkan tanda tangan Manajemen + Supervisor di bagian paling akhir laporan.
+- Grafik Performance berwarna ikut Print/PDF dan disatukan dengan ringkasan Performance.
+- Rekonsiliasi Cash Out cetak menampilkan Gaji SVP + Gaji Capster/Protek agar angka Operasional transparan.
+- Tanda tangan Manajemen + Supervisor ditempatkan di akhir isi laporan, bukan halaman tanda tangan terpisah.
 - Tidak mengubah engine, formula, source data, Cash Out, Payroll, atau bridge LOCK.
 */
 (() => {
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]||c));
+  const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
   let installed=false;
 
   function absoluteAsset(path){
@@ -48,6 +50,7 @@ UI ONLY / READ ONLY.
   }
 
   function enhancementCss(){return `
+    .lb-print-performance-block{break-inside:avoid;page-break-inside:avoid;margin-top:1mm}
     .lb-print-performance-chart{margin-top:2mm;padding:2.5mm;border:1px solid #17313a;border-radius:2.4mm;background:#04070a;break-inside:avoid;page-break-inside:avoid;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     .lb-print-performance-chart .lb-perf-chart-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:5mm;margin-bottom:2mm}
     .lb-print-performance-chart .lb-perf-chart-meta>div:first-child{display:flex;flex-direction:column;gap:.8mm}
@@ -66,35 +69,113 @@ UI ONLY / READ ONLY.
     .lb-print-performance-chart .lb-perf-hit{fill:transparent;stroke:none}
     .lb-print-performance-chart .lb-perf-point-detail{display:none!important}
 
-    .lb-print-signatures{margin-top:10mm;padding-top:4mm;border-top:1px solid #d2d2d2;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid}
-    .lb-print-sign-box{text-align:center;min-height:29mm}
-    .lb-print-sign-box .who{font-size:7.5pt;font-weight:700;color:#172233}
-    .lb-print-sign-box .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
-    .lb-print-sign-box .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center;overflow:visible}
+    .lb-print-signatures{margin-top:5mm;padding-top:3mm;border-top:1px solid #d2d2d2;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid;page-break-before:avoid}
+    .lb-print-sign-box{text-align:center;min-height:25mm}
+    .lb-print-sign-box .who{font-size:7.2pt;font-weight:700;color:#172233}
+    .lb-print-sign-box .auth-role{margin-top:.4mm;font-size:6.2pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
+    .lb-print-sign-box .stage{height:12mm;width:100%;margin:.2mm auto .5mm;display:flex;align-items:center;justify-content:center;overflow:visible}
     .lb-print-sign-box .ttd img{display:block;object-fit:contain;object-position:center}
-    .lb-print-sign-box.supervisor-sign .ttd img{width:30mm;height:11mm}
-    .lb-print-sign-box.management-sign .ttd img{max-width:38mm;max-height:13.5mm}
-    .lb-print-sign-box .name{font-size:8.5pt;font-weight:800;color:#172233}
-    .lb-print-sign-box .signature-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}
-    .lb-print-sign-box .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
+    .lb-print-sign-box.supervisor-sign .ttd img{width:28mm;height:10mm}
+    .lb-print-sign-box.management-sign .ttd img{max-width:34mm;max-height:12mm}
+    .lb-print-sign-box .name{font-size:8.2pt;font-weight:800;color:#172233}
+    .lb-print-sign-box .signature-line{height:1px;background:#333;width:38mm;margin:.5mm auto .5mm}
+    .lb-print-sign-box .job{font-size:6.2pt;font-weight:900;letter-spacing:.16em;color:#697481}
   `;}
 
-  function transformPrintHtml(html,chartHtml){
-    let out=String(html||"");
-    if(!out) return out;
+  function parseMoneyText(v){
+    const digits=String(v||"").replace(/\D/g,"");
+    return digits?Number(digits):0;
+  }
 
-    out=out.replace("</style>",`${enhancementCss()}</style>`);
+  function makeLine(doc,label,value,cls=""){
+    const row=doc.createElement("div");
+    row.className=`line ${cls}`.trim();
+    const span=doc.createElement("span");
+    const strong=doc.createElement("strong");
+    span.textContent=label;
+    strong.textContent=value;
+    row.append(span,strong);
+    return row;
+  }
 
-    if(chartHtml){
-      const chartBlock=`<div class="lb-print-performance-chart">${chartHtml}</div>`;
-      out=out.replace(
-        "<h3>Kelengkapan Data</h3>",
-        `${chartBlock}<h3>Kelengkapan Data</h3>`
-      );
+  function addCashOutReconciliation(doc){
+    doc.querySelectorAll(".branch-report").forEach(branch=>{
+      const recon=branch.querySelector(".recon");
+      const cashout=branch.querySelector("table.cashout");
+      if(!recon||!cashout) return;
+      if(recon.querySelector('[data-print-recon="svp"]')) return;
+
+      let svp=0;
+      let protek=0;
+      cashout.querySelectorAll("tbody tr").forEach(tr=>{
+        const cells=tr.cells;
+        if(!cells||cells.length<4) return;
+        const pos=String(cells[2]?.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+        const nominal=parseMoneyText(cells[3]?.textContent||"");
+        if(pos==="gaji svp"||pos.startsWith("gaji svp ")) svp+=nominal;
+        if(pos.includes("gaji capster")||pos.includes("protek")) protek+=nominal;
+      });
+
+      const finalLine=recon.querySelector(".line.total");
+      if(svp>0){
+        const row=makeLine(doc,"Dikeluarkan ke Gaji SVP",money(svp));
+        row.dataset.printRecon="svp";
+        recon.insertBefore(row,finalLine);
+      }
+      if(protek>0){
+        const row=makeLine(doc,"Dikeluarkan ke Gaji Capster / Protek",money(protek));
+        row.dataset.printRecon="protek";
+        recon.insertBefore(row,finalLine);
+      }
+    });
+  }
+
+  function addPerformanceBlock(doc,chartHtml){
+    if(!chartHtml) return;
+    const branch=doc.querySelector(".branch-report");
+    if(!branch) return;
+    const headings=[...branch.querySelectorAll("h3")];
+    const performanceHeading=headings.find(h=>String(h.textContent||"").trim()==="Ringkasan Performance");
+    const completenessHeading=headings.find(h=>String(h.textContent||"").trim()==="Kelengkapan Data");
+    if(!performanceHeading||!completenessHeading) return;
+
+    const wrapper=doc.createElement("div");
+    wrapper.className="lb-print-performance-block";
+    branch.insertBefore(wrapper,performanceHeading);
+    let node=performanceHeading;
+    while(node&&node!==completenessHeading){
+      const next=node.nextSibling;
+      wrapper.appendChild(node);
+      node=next;
     }
+    const chart=doc.createElement("div");
+    chart.className="lb-print-performance-chart";
+    chart.innerHTML=chartHtml;
+    wrapper.appendChild(chart);
+  }
 
-    out=out.replace("</main>",`${signatureHtml()}</main>`);
-    return out;
+  function addSignaturesAtReportEnd(doc){
+    const branches=[...doc.querySelectorAll(".branch-report")];
+    const lastBranch=branches[branches.length-1];
+    if(!lastBranch||lastBranch.querySelector(".lb-print-signatures")) return;
+    const holder=doc.createElement("div");
+    holder.innerHTML=signatureHtml();
+    if(holder.firstElementChild) lastBranch.appendChild(holder.firstElementChild);
+  }
+
+  function transformPrintHtml(html,chartHtml){
+    const source=String(html||"");
+    if(!source) return source;
+    const doc=new DOMParser().parseFromString(source,"text/html");
+    const style=doc.createElement("style");
+    style.textContent=enhancementCss();
+    doc.head.appendChild(style);
+
+    addCashOutReconciliation(doc);
+    addPerformanceBlock(doc,chartHtml);
+    addSignaturesAtReportEnd(doc);
+
+    return `<!doctype html>${doc.documentElement.outerHTML}`;
   }
 
   async function enhancedOpen(mode){
