@@ -1,21 +1,32 @@
 /*
 =========================================================
-VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V2
+VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V3
 =========================================================
 Consumer-only bridge.
 - Reads Payroll with manual adjustments already applied.
+- Monthly investor report uses GROSS payroll cost:
+  Gaji Pokok + Bonus Insentif + Bonus KPI + Bonus Produk.
+- Denda and Kasbon remain payroll/slip deductions only and MUST NOT
+  reduce company payroll cost in Laporan Bulanan.
 - Reconciles report payroll amount to adjusted Payroll result.
 - Exposes per-employee payroll components for Monthly display.
 - For LOCKED historical periods, routes Monthly payroll reads through
   HistoricalOriginalRouter so audited Historical Payroll Corrections are read.
 - Does NOT modify PayrollUnifiedEngine, LaporanBulananEngine, formulas,
-  immutable snapshot rows, or payroll source tables.
+  immutable snapshot rows, Arus Kas, Kasbon, or payroll source tables.
 =========================================================
 */
 "use strict";
 
 const LaporanBulananPayrollAdjustmentBridge = {
   number(v){ const n=Number(v||0); return Number.isFinite(n)?n:0; },
+
+  grossPayrollCost({gajiPokok=0,bonusInsentif=0,bonusKpi=0,bonusProduk=0}={}){
+    return this.number(gajiPokok)
+      +this.number(bonusInsentif)
+      +this.number(bonusKpi)
+      +this.number(bonusProduk);
+  },
 
   payrollForBranch(payrollDataset,cabangId){
     const id=Number(cabangId);
@@ -35,7 +46,12 @@ const LaporanBulananPayrollAdjustmentBridge = {
         const employeeBonusInsentif=daily.reduce((sum,d)=>sum+this.number(d?.bonusInsentif),0);
         const employeeBonusKpi=daily.reduce((sum,d)=>sum+this.number(d?.bonusKpi),0);
         const employeeBonusProduk=daily.reduce((sum,d)=>sum+this.number(d?.bonusProduk),0);
-        const amount=gajiPokok-denda-kasbon+employeeBonusInsentif+employeeBonusKpi+employeeBonusProduk;
+        const amount=this.grossPayrollCost({
+          gajiPokok,
+          bonusInsentif:employeeBonusInsentif,
+          bonusKpi:employeeBonusKpi,
+          bonusProduk:employeeBonusProduk
+        });
         bonusInsentif+=employeeBonusInsentif;
         bonusKpi+=employeeBonusKpi;
         bonusProduk+=employeeBonusProduk;
@@ -50,7 +66,8 @@ const LaporanBulananPayrollAdjustmentBridge = {
             bonusInsentif:employeeBonusInsentif,
             bonusKpi:employeeBonusKpi,
             bonusProduk:employeeBonusProduk,
-            source:"PAYROLL_FLOATING_BRANCH_DAILY",
+            source:"PAYROLL_FLOATING_BRANCH_GROSS_COST",
+            payrollCostBasis:"GROSS_COMPENSATION_BEFORE_DEDUCTIONS",
             isCapster:Boolean(employee?.isCapster)
           });
         }
@@ -59,10 +76,18 @@ const LaporanBulananPayrollAdjustmentBridge = {
 
       if(Number(employee?.homeCabangId)!==id) continue;
       const summary=employee?.summary||{};
-      const amount=this.number(summary.gajiBersih);
+      const gajiPokok=this.number(summary.gajiPokok);
+      const denda=this.number(summary.denda);
+      const kasbon=this.number(summary.kasbon);
       const employeeBonusInsentif=this.number(summary.bonusInsentif);
       const employeeBonusKpi=this.number(summary.bonusKpi);
       const employeeBonusProduk=this.number(summary.bonusProduk);
+      const amount=this.grossPayrollCost({
+        gajiPokok,
+        bonusInsentif:employeeBonusInsentif,
+        bonusKpi:employeeBonusKpi,
+        bonusProduk:employeeBonusProduk
+      });
 
       total+=amount;
       bonusInsentif+=employeeBonusInsentif;
@@ -73,13 +98,14 @@ const LaporanBulananPayrollAdjustmentBridge = {
         nama:employee.namaKaryawan,
         jabatan:employee.jabatan,
         amount,
-        gajiPokok:this.number(summary.gajiPokok),
-        denda:this.number(summary.denda),
-        kasbon:this.number(summary.kasbon),
+        gajiPokok,
+        denda,
+        kasbon,
         bonusInsentif:employeeBonusInsentif,
         bonusKpi:employeeBonusKpi,
         bonusProduk:employeeBonusProduk,
-        source:"PAYROLL_HOME_BRANCH",
+        source:"PAYROLL_HOME_BRANCH_GROSS_COST",
+        payrollCostBasis:"GROSS_COMPENSATION_BEFORE_DEDUCTIONS",
         isCapster:Boolean(employee?.isCapster)
       });
     }
@@ -116,6 +142,8 @@ const LaporanBulananPayrollAdjustmentBridge = {
       previousPayroll:oldPayroll,
       adjustedPayroll:branch.total,
       delta,
+      payrollCostBasis:"GROSS_COMPENSATION_BEFORE_DEDUCTIONS",
+      deductionsExcludedFromMonthlyCost:["DENDA","KASBON"],
       bonusInsentif:report.gaji.bonusInsentif,
       bonusKpi:report.gaji.bonusKpi,
       bonusProduk:report.gaji.bonusProduk,
