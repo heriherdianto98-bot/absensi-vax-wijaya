@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="../styles/laporan-bulanan-hover.css?v=20260912-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-row-divider.css?v=20260912-v3">
 <link rel="stylesheet" href="../styles/laporan-bulanan-freeze-fix.css?v=20260912-v1">
-<link rel="stylesheet" href="../styles/laporan-bulanan-header-stack-fix.css?v=20260913-v2">
+<link rel="stylesheet" href="../styles/laporan-bulanan-header-stack-fix.css?v=20260913-v3">
 <link rel="stylesheet" href="../styles/laporan-bulanan-performance-chart.css?v=20260912-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-chart-popup-theme.css?v=20260912-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-performance-explain.css?v=20260912-v2">
@@ -39,6 +39,13 @@
 <div id="sidebar"></div>
 <div class="erp-wrapper">
   <div id="header"></div>
+
+  <section class="lb-toolbar" aria-label="Filter laporan bulanan">
+    <label class="lb-field"><span>Cabang</span><select id="lbBranch"></select></label>
+    <label class="lb-field"><span>Periode</span><input id="lbMonth" type="month" value="2026-08"></label>
+    <div class="lb-actions"><button type="button" class="lb-btn" id="lbRefresh">Refresh Data</button></div>
+  </section>
+
   <main class="erp-content">
     <section class="lb-wrap">
       <header class="lb-head">
@@ -50,11 +57,6 @@
         <div class="lb-status is-review" id="lbReportStatus"><i></i><span id="lbReportStatusText">MEMUAT...</span></div>
       </header>
 
-      <section class="lb-toolbar">
-        <label class="lb-field"><span>Cabang</span><select id="lbBranch"></select></label>
-        <label class="lb-field"><span>Periode</span><input id="lbMonth" type="month" value="2026-08"></label>
-        <div class="lb-actions"><button type="button" class="lb-btn" id="lbRefresh">Refresh Data</button></div>
-      </section>
       <p id="lbLoadState" class="lb-footnote">Memuat laporan...</p>
 
       <section class="lb-kpis">
