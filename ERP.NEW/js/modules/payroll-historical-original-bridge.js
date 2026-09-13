@@ -1,6 +1,6 @@
 /*
 =========================================================
-VAX ERP — Payroll Historical Original Bridge V2
+VAX ERP — Payroll Historical Original Bridge V3
 =========================================================
 Adapter only. The LOCKED PayrollUnifiedEngine source/formulas
 are not changed. For periods that have an immutable LOCKED
@@ -51,8 +51,10 @@ loadPeriod runs unchanged.
   else startObserver();
 
   engine.loadPeriod = async function historicalAwareLoadPeriod(options={}){
-    const result=await router.loadPayrollPeriod(options);
+    let result=await router.loadPayrollPeriod(options);
     if(result){
+      // Final correction overlay is normalized here before UI/print consume the result.
+      result=window.PayrollHistoricalCorrectionResultBridge?.applyCorrectionResult?.(result) || result;
       lockedState=true;
       lockedMeta=result.snapshot||null;
       window.__VAX_PAYROLL_HISTORICAL_LOCKED__={locked:true,snapshot:lockedMeta,source:'SNAPSHOT_ORIGINAL',corrections:Number(lockedMeta?.correction_count||0)};
