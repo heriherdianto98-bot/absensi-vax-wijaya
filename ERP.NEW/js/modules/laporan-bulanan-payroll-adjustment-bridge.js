@@ -1,6 +1,6 @@
 /*
 =========================================================
-VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V3
+VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V4
 =========================================================
 Consumer-only bridge.
 - Reads Payroll with manual adjustments already applied.
@@ -9,11 +9,13 @@ Consumer-only bridge.
 - Denda and Kasbon remain payroll/slip deductions only and MUST NOT
   reduce company payroll cost in Laporan Bulanan.
 - Reconciles report payroll amount to adjusted Payroll result.
-- Exposes per-employee payroll components for Monthly display.
+- Exposes per-employee MONTHLY COST components for Monthly display/print.
+- Preserves original payroll deductions separately as payrollDenda/payrollKasbon
+  for audit, without exposing them as monthly cost adjustments.
 - For LOCKED historical periods, routes Monthly payroll reads through
   HistoricalOriginalRouter so audited Historical Payroll Corrections are read.
 - Does NOT modify PayrollUnifiedEngine, LaporanBulananEngine, formulas,
-  immutable snapshot rows, Arus Kas, Kasbon, or payroll source tables.
+  immutable snapshot rows, Arus Kas, Kasbon, print engine, or UI layout.
 =========================================================
 */
 "use strict";
@@ -26,6 +28,31 @@ const LaporanBulananPayrollAdjustmentBridge = {
       +this.number(bonusInsentif)
       +this.number(bonusKpi)
       +this.number(bonusProduk);
+  },
+
+  monthlyCostDetail({employee,gajiPokok,denda,kasbon,bonusInsentif,bonusKpi,bonusProduk,amount,source}){
+    return {
+      employeeId:employee?.employeeId,
+      nama:employee?.namaKaryawan,
+      jabatan:employee?.jabatan,
+      amount,
+      gajiPokok,
+
+      // Monthly investor cost basis: deductions are NOT cost reductions.
+      denda:0,
+      kasbon:0,
+
+      // Preserve payroll/slip values for audit only.
+      payrollDenda:this.number(denda),
+      payrollKasbon:this.number(kasbon),
+
+      bonusInsentif:this.number(bonusInsentif),
+      bonusKpi:this.number(bonusKpi),
+      bonusProduk:this.number(bonusProduk),
+      source,
+      payrollCostBasis:"GROSS_COMPENSATION_BEFORE_DEDUCTIONS",
+      isCapster:Boolean(employee?.isCapster)
+    };
   },
 
   payrollForBranch(payrollDataset,cabangId){
@@ -57,19 +84,14 @@ const LaporanBulananPayrollAdjustmentBridge = {
         bonusProduk+=employeeBonusProduk;
         if(amount){
           total+=amount;
-          detail.push({
-            employeeId:employee.employeeId,
-            nama:employee.namaKaryawan,
-            jabatan:employee.jabatan,
-            amount,
-            gajiPokok,denda,kasbon,
+          detail.push(this.monthlyCostDetail({
+            employee,gajiPokok,denda,kasbon,
             bonusInsentif:employeeBonusInsentif,
             bonusKpi:employeeBonusKpi,
             bonusProduk:employeeBonusProduk,
-            source:"PAYROLL_FLOATING_BRANCH_GROSS_COST",
-            payrollCostBasis:"GROSS_COMPENSATION_BEFORE_DEDUCTIONS",
-            isCapster:Boolean(employee?.isCapster)
-          });
+            amount,
+            source:"PAYROLL_FLOATING_BRANCH_GROSS_COST"
+          }));
         }
         continue;
       }
@@ -93,21 +115,14 @@ const LaporanBulananPayrollAdjustmentBridge = {
       bonusInsentif+=employeeBonusInsentif;
       bonusKpi+=employeeBonusKpi;
       bonusProduk+=employeeBonusProduk;
-      detail.push({
-        employeeId:employee.employeeId,
-        nama:employee.namaKaryawan,
-        jabatan:employee.jabatan,
-        amount,
-        gajiPokok,
-        denda,
-        kasbon,
+      detail.push(this.monthlyCostDetail({
+        employee,gajiPokok,denda,kasbon,
         bonusInsentif:employeeBonusInsentif,
         bonusKpi:employeeBonusKpi,
         bonusProduk:employeeBonusProduk,
-        source:"PAYROLL_HOME_BRANCH_GROSS_COST",
-        payrollCostBasis:"GROSS_COMPENSATION_BEFORE_DEDUCTIONS",
-        isCapster:Boolean(employee?.isCapster)
-      });
+        amount,
+        source:"PAYROLL_HOME_BRANCH_GROSS_COST"
+      }));
     }
 
     return {total,detail,bonusInsentif,bonusKpi,bonusProduk};
