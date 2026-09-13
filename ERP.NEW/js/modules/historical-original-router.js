@@ -237,7 +237,7 @@ Rules:
   function ensureCorrectionStyle(){
     if(document.getElementById('historicalPayrollCorrectionStyle'))return;
     const s=document.createElement('style');s.id='historicalPayrollCorrectionStyle';s.textContent=`
-      .hist-payroll-correction{margin:14px 18px 18px;padding:14px;border:1px solid rgba(217,180,50,.35);border-radius:12px;background:rgba(217,180,50,.055)}
+      .hist-payroll-correction{margin:12px 18px 14px;padding:14px;border:1px solid rgba(217,180,50,.45);border-radius:12px;background:rgba(217,180,50,.07)}
       .hist-payroll-correction h4{margin:0 0 4px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#e3c24a}
       .hist-payroll-correction p{margin:0 0 12px;color:#9eabb7;font-size:12px}
       .hist-payroll-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.hist-payroll-grid label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#99a8b5}.hist-payroll-grid input{min-width:0;border:1px solid #344552;border-radius:8px;background:#101820;color:#eef4f7;padding:9px 10px}
@@ -248,7 +248,10 @@ Rules:
 
   function renderCorrectionPanels(){
     const result=lastHistoricalResult;
-    if(!result?.historicalLocked)return;
+    if(!result?.historicalLocked || String(result.accessScope||'').toUpperCase()!=='OWNER'){
+      document.querySelectorAll('.hist-payroll-correction').forEach(el=>el.remove());
+      return;
+    }
     ensureCorrectionStyle();
     const corrMap=new Map(asArray(result.historicalCorrections).map(c=>[Number(c.employee_id),c]));
     document.querySelectorAll('.payroll-employee-card[data-employee-id]').forEach(card=>{
@@ -260,8 +263,13 @@ Rules:
       const gajiField=payrollRow.isCapster
         ? `<label><span>Gaji Pokok Historis</span><div class="hist-payroll-capster">Capster mengikuti snapshot Minutes (${money(payrollRow.summary?.gajiPokok)})</div></label>`
         : `<label><span>Gaji Pokok Historis</span><input class="hist-gaji" inputmode="numeric" value="${corr.gaji_pokok_override!=null?rupiahInput(corr.gaji_pokok_override):''}" placeholder="Kosong = data snapshot"></label>`;
-      wrap.innerHTML=`<h4>Koreksi Payroll Historis</h4><p>Snapshot asli tetap terkunci. Nilai di bawah adalah lapisan koreksi terpisah dengan audit trail.</p><div class="hist-payroll-grid">${gajiField}<label><span>Bonus Insentif</span><input class="hist-insentif" inputmode="numeric" value="${corr.bonus_insentif_override!=null?rupiahInput(corr.bonus_insentif_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Bonus KPI</span><input class="hist-kpi" inputmode="numeric" value="${corr.bonus_kpi_override!=null?rupiahInput(corr.bonus_kpi_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Catatan / Alasan</span><input class="hist-note" value="${escapeHtml(corr.note||'')}"></label></div><div class="hist-payroll-actions"><button type="button" class="hist-payroll-save">Simpan Koreksi Historis</button><span class="hist-payroll-msg"></span></div>`;
-      card.appendChild(wrap);
+      wrap.innerHTML=`<h4>Koreksi Payroll Historis</h4><p>Snapshot asli tetap terkunci. Koreksi ini terpisah dan tercatat di audit trail.</p><div class="hist-payroll-grid">${gajiField}<label><span>Bonus Insentif</span><input class="hist-insentif" inputmode="numeric" value="${corr.bonus_insentif_override!=null?rupiahInput(corr.bonus_insentif_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Bonus KPI</span><input class="hist-kpi" inputmode="numeric" value="${corr.bonus_kpi_override!=null?rupiahInput(corr.bonus_kpi_override):''}" placeholder="Kosong = data snapshot"></label><label><span>Catatan / Alasan</span><input class="hist-note" value="${escapeHtml(corr.note||'')}"></label></div><div class="hist-payroll-actions"><button type="button" class="hist-payroll-save">Simpan Koreksi Historis</button><span class="hist-payroll-msg"></span></div>`;
+
+      const head=card.querySelector('.payroll-card-head');
+      if(head?.nextSibling) card.insertBefore(wrap,head.nextSibling);
+      else if(head) card.appendChild(wrap);
+      else card.prepend(wrap);
+
       wrap.querySelectorAll('input[inputmode="numeric"]').forEach(input=>input.addEventListener('blur',()=>{if(input.value.trim())input.value=rupiahInput(parseRupiah(input.value));}));
       wrap.querySelector('.hist-payroll-save')?.addEventListener('click',async e=>{
         const btn=e.currentTarget,msg=wrap.querySelector('.hist-payroll-msg');
