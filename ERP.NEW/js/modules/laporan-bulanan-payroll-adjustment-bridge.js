@@ -1,12 +1,15 @@
 /*
 =========================================================
-VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V1
+VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V2
 =========================================================
 Consumer-only bridge.
 - Reads Payroll with manual adjustments already applied.
 - Reconciles report payroll amount to adjusted Payroll result.
 - Exposes per-employee payroll components for Monthly display.
-- Does NOT modify Payroll engine or payroll tables.
+- For LOCKED historical periods, routes Monthly payroll reads through
+  HistoricalOriginalRouter so audited Historical Payroll Corrections are read.
+- Does NOT modify PayrollUnifiedEngine, LaporanBulananEngine, formulas,
+  immutable snapshot rows, or payroll source tables.
 =========================================================
 */
 "use strict";
@@ -115,10 +118,91 @@ const LaporanBulananPayrollAdjustmentBridge = {
       delta,
       bonusInsentif:report.gaji.bonusInsentif,
       bonusKpi:report.gaji.bonusKpi,
-      bonusProduk:report.gaji.bonusProduk
+      bonusProduk:report.gaji.bonusProduk,
+      historicalLocked:Boolean(payrollDataset?.historicalLocked),
+      historicalCorrections:Number(payrollDataset?.snapshot?.correction_count||0)
     };
     return report;
   }
 };
 
 if(typeof window!=="undefined") window.LaporanBulananPayrollAdjustmentBridge=LaporanBulananPayrollAdjustmentBridge;
+
+/*
+  Historical Monthly adapter installation.
+  This file is already loaded BEFORE laporan-bulanan-consumer.js, so we install
+  a one-time setter that patches the consumer as soon as it is exposed on window.
+  LIVE months continue through the original loadAdjustedPayroll unchanged.
+*/
+(() => {
+  if(typeof window==="undefined" || window.__VAX_MONTHLY_HISTORICAL_PAYROLL_ADAPTER_V1__) return;
+  window.__VAX_MONTHLY_HISTORICAL_PAYROLL_ADAPTER_V1__=true;
+
+  let routerPromise=null;
+  function ensureHistoricalRouter(){
+    if(window.HistoricalOriginalRouter?.loadPayrollPeriod) return Promise.resolve(window.HistoricalOriginalRouter);
+    if(routerPromise) return routerPromise;
+    routerPromise=new Promise((resolve,reject)=>{
+      const existing=document.querySelector('script[data-vax-historical-original-router="1"]');
+      if(existing){
+        existing.addEventListener('load',()=>resolve(window.HistoricalOriginalRouter),{once:true});
+        existing.addEventListener('error',()=>reject(new Error('HistoricalOriginalRouter gagal dimuat.')),{once:true});
+        return;
+      }
+      const script=document.createElement('script');
+      script.src='../js/modules/historical-original-router.js?v=20260914-monthly1';
+      script.async=false;
+      script.dataset.vaxHistoricalOriginalRouter='1';
+      script.onload=()=>{
+        if(window.HistoricalOriginalRouter?.loadPayrollPeriod) resolve(window.HistoricalOriginalRouter);
+        else reject(new Error('HistoricalOriginalRouter tidak tersedia setelah script dimuat.'));
+      };
+      script.onerror=()=>reject(new Error('HistoricalOriginalRouter gagal dimuat.'));
+      document.head.appendChild(script);
+    }).catch(err=>{routerPromise=null;throw err;});
+    return routerPromise;
+  }
+
+  function patchConsumer(consumer){
+    if(!consumer || consumer.__monthlyHistoricalPayrollAdapterV1) return consumer;
+    const liveLoad=consumer.loadAdjustedPayroll.bind(consumer);
+    consumer.loadAdjustedPayroll=async function historicalAwareMonthlyPayroll(report){
+      const start=String(report?.range?.start||'');
+      const end=String(report?.range?.end||'');
+      if(start&&end){
+        const router=await ensureHistoricalRouter();
+        const historical=await router.loadPayrollPeriod({start,end});
+        if(historical){
+          window.__VAX_LAPORAN_BULANAN_HISTORICAL_PAYROLL__={
+            locked:true,
+            source:historical.source||'SNAPSHOT_ORIGINAL',
+            snapshot:historical.snapshot||null,
+            corrections:Number(historical?.snapshot?.correction_count||0)
+          };
+          return historical;
+        }
+      }
+      window.__VAX_LAPORAN_BULANAN_HISTORICAL_PAYROLL__={locked:false,source:'LIVE'};
+      return liveLoad(report);
+    };
+    Object.defineProperty(consumer,'__monthlyHistoricalPayrollAdapterV1',{value:true,enumerable:false,writable:false});
+    return consumer;
+  }
+
+  if(window.LaporanBulananConsumer){
+    patchConsumer(window.LaporanBulananConsumer);
+    return;
+  }
+
+  let stored;
+  Object.defineProperty(window,'LaporanBulananConsumer',{
+    configurable:true,
+    enumerable:true,
+    get(){return stored;},
+    set(value){
+      stored=value;
+      patchConsumer(stored);
+      Object.defineProperty(window,'LaporanBulananConsumer',{value:stored,writable:true,configurable:true,enumerable:true});
+    }
+  });
+})();
