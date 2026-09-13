@@ -2,6 +2,12 @@
 VAX ERP — Laporan Bulanan Manual Mapping Bridge
 Consumer-only bridge. Allows historical manual employee-name snapshot
 (employee_id null) to resolve provider mapping without touching Payroll/provider source.
+
+OWNER correction 14 Sep 2026:
+- Provider AMBIGUOUS bernama generic "Capster" yang sudah dimapping manual
+  adalah backup capster valid dan harus ikut biaya gaji bulanan.
+- Ditandai sebagai "Backup Capster" pada detail hasil mapping agar consumer
+  tidak membuangnya saat rekonsiliasi aktivitas provider.
 */
 "use strict";
 
@@ -9,6 +15,13 @@ Consumer-only bridge. Allows historical manual employee-name snapshot
   if(typeof LaporanBulananEngine === "undefined" || typeof LaporanBulananEngine.applyProviderMappings !== "function") return;
 
   const original = LaporanBulananEngine.applyProviderMappings.bind(LaporanBulananEngine);
+  const normalize = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+  const mappedProviderLabel = (row) => {
+    const raw = String(row?.providerMinutes || row?.provider || "").trim();
+    const norm = normalize(raw);
+    if(norm === "capster") return "Backup Capster";
+    return raw || "Backup";
+  };
 
   LaporanBulananEngine.applyProviderMappings = function({ pendingRows, mappings, reportCabangId } = {}){
     const reportId = Number(reportCabangId);
@@ -23,6 +36,7 @@ Consumer-only bridge. Allows historical manual employee-name snapshot
       const amount = this.number(row?.providerShare);
       const snapshotName = String(mapping?.employee_name_snapshot || "").trim();
       const hasResolvedTarget = Boolean(mapping?.employee_id || snapshotName);
+      const providerLabel = mappedProviderLabel(row);
 
       if(hasResolvedTarget){
         resolved.push({
@@ -30,7 +44,7 @@ Consumer-only bridge. Allows historical manual employee-name snapshot
           tanggal: row?.tanggal || "",
           sourceCabangId: Number(row?.cabangId || 0) || null,
           sourceCabang: row?.cabang || "—",
-          provider: row?.providerMinutes || "Backup",
+          provider: providerLabel,
           service: this.number(row?.service),
           amount,
           employeeId: Number(mapping?.employee_id || 0) || null,
@@ -38,7 +52,8 @@ Consumer-only bridge. Allows historical manual employee-name snapshot
           employeeName: snapshotName || "—",
           employeeBranch: mapping?.branch_name_snapshot || "—",
           source: mapping?.employee_id ? "MONTHLY_PROVIDER_MAPPING" : "MONTHLY_PROVIDER_MAPPING_MANUAL",
-          manualHistorical: !mapping?.employee_id
+          manualHistorical: !mapping?.employee_id,
+          mappedAmbiguous: true
         });
       }else{
         pending.push({
@@ -46,7 +61,7 @@ Consumer-only bridge. Allows historical manual employee-name snapshot
           tanggal: row?.tanggal || "",
           sourceCabangId: Number(row?.cabangId || 0) || null,
           sourceCabang: row?.cabang || "—",
-          provider: row?.providerMinutes || "Backup",
+          provider: providerLabel,
           service: this.number(row?.service),
           amount
         });
