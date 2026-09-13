@@ -6,7 +6,7 @@ UI ONLY / READ ONLY.
 - Seluruh Ringkasan Performance yang tampil di ERP ikut ke Print/PDF: 8 card, catatan, analisis customer,
   analisis status cabang, grafik, dan kesimpulan bulan-ke-bulan.
 - Rekonsiliasi Cash Out cetak menampilkan Gaji SVP + Gaji Capster/Protek agar angka Operasional transparan.
-- Tanda tangan Manajemen + Supervisor selalu ditempatkan di area paling bawah kertas terakhir.
+- Tanda tangan Manajemen + Supervisor dikunci di area paling bawah kertas akhir laporan, tanpa membuat halaman TTD khusus.
 - Tidak mengubah engine, formula, source data, Cash Out, Payroll, atau bridge LOCK.
 */
 (() => {
@@ -94,38 +94,38 @@ UI ONLY / READ ONLY.
   }
 
   function enhancementCss(){return `
-    .lb-print-final-page{page-break-before:always;break-before:page;min-height:226mm;display:flex;flex-direction:column}
+    .lb-print-final-page{page-break-before:always;break-before:page;min-height:208mm;display:flex;flex-direction:column;break-inside:avoid;page-break-inside:avoid}
     .lb-print-performance-block{break-inside:avoid;page-break-inside:avoid;margin-top:0}
-    .lb-print-performance-block>h3{margin-top:0}
-    .lb-print-performance-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8mm;margin-bottom:2mm}
-    .lb-print-performance-cards>div{min-height:15mm;padding:2.2mm 2.5mm;border:1px solid #cfd5da;border-left:1.2mm solid #3b82f6;border-radius:2mm;background:#fbfcfd;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    .lb-print-performance-block>h3{margin-top:0;margin-bottom:1.2mm}
+    .lb-print-performance-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2mm;margin-bottom:1.2mm}
+    .lb-print-performance-cards>div{min-height:11.5mm;padding:1.5mm 2mm;border:1px solid #cfd5da;border-left:1.2mm solid #3b82f6;border-radius:1.6mm;background:#fbfcfd;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     .lb-print-performance-cards>div:nth-child(1),.lb-print-performance-cards>div:nth-child(3){border-left-color:#2ea96f;background:#f2fbf6}
     .lb-print-performance-cards>div:nth-child(2){border-left-color:#d4af37;background:#fffaf0}
     .lb-print-performance-cards>div:nth-child(4),.lb-print-performance-cards>div:nth-child(7){border-left-color:#22b8cf;background:#f1fbfd}
     .lb-print-performance-cards>div:nth-child(5){border-left-color:#d95a9c;background:#fff5fa}
     .lb-print-performance-cards>div:nth-child(6){border-left-color:#4c8bd9;background:#f4f8fd}
     .lb-print-performance-cards>div:nth-child(8){border-left-color:#f97316;background:#fff7f0}
-    .lb-print-performance-cards span{display:block;font-size:5.8pt;font-weight:900;letter-spacing:.03em;text-transform:uppercase;color:#66717d}
-    .lb-print-performance-cards strong{display:block;margin-top:1.2mm;font-size:8.7pt;font-weight:900;color:#172233}
-    .lb-print-performance-note{margin:1.5mm 0 2mm;padding:1.7mm 2.2mm;border:1px solid #d9dde1;background:#fafbfc;color:#3e4955;font-size:6.8pt;line-height:1.4}
-    .lb-print-performance-explain{display:grid;gap:2mm;margin-bottom:2mm}
-    .lb-print-performance-explain .lb-perf-explain-row,.lb-print-performance-explain .lb-perf-annual-conclusion{padding:2.3mm 2.7mm;border:1px solid #d4dadf;border-radius:2mm;background:#fafcfd;break-inside:avoid;page-break-inside:avoid}
+    .lb-print-performance-cards span{display:block;font-size:5.4pt;font-weight:900;letter-spacing:.03em;text-transform:uppercase;color:#66717d}
+    .lb-print-performance-cards strong{display:block;margin-top:.7mm;font-size:8.1pt;font-weight:900;color:#172233}
+    .lb-print-performance-note{margin:1mm 0 1.2mm;padding:1.2mm 1.8mm;border:1px solid #d9dde1;background:#fafbfc;color:#3e4955;font-size:6.3pt;line-height:1.3}
+    .lb-print-performance-explain{display:grid;gap:1.2mm;margin-bottom:1.2mm}
+    .lb-print-performance-explain .lb-perf-explain-row,.lb-print-performance-explain .lb-perf-annual-conclusion{padding:1.6mm 2mm;border:1px solid #d4dadf;border-radius:1.6mm;background:#fafcfd;break-inside:avoid;page-break-inside:avoid}
     .lb-print-performance-explain .is-up{border-color:#86cfa9;background:#f1fbf5}.lb-print-performance-explain .is-down{border-color:#e4a1a5;background:#fff4f5}.lb-print-performance-explain .is-flat{border-color:#ddc87b;background:#fffaf0}
-    .lb-print-performance-explain .lb-perf-explain-row{display:grid;grid-template-columns:8mm 1fr;gap:2mm;align-items:start}
-    .lb-print-performance-explain .lb-perf-explain-icon{font-size:10pt;font-weight:900;text-align:center}
-    .lb-print-performance-explain strong{font-size:7.6pt;color:#172233}.lb-print-performance-explain p{margin:1mm 0 0;font-size:6.6pt;line-height:1.45;color:#384452}.lb-print-performance-explain small{display:block;margin-top:1mm;font-size:5.9pt;line-height:1.4;color:#697481}.lb-print-performance-explain b{font-weight:900;color:#172233}
-    .lb-print-performance-explain .lb-perf-annual-head{display:flex;align-items:center;gap:1.5mm}.lb-print-performance-explain .lb-perf-annual-head span{font-weight:900}
+    .lb-print-performance-explain .lb-perf-explain-row{display:grid;grid-template-columns:7mm 1fr;gap:1.5mm;align-items:start}
+    .lb-print-performance-explain .lb-perf-explain-icon{font-size:9pt;font-weight:900;text-align:center}
+    .lb-print-performance-explain strong{font-size:7.1pt;color:#172233}.lb-print-performance-explain p{margin:.6mm 0 0;font-size:6.1pt;line-height:1.32;color:#384452}.lb-print-performance-explain small{display:block;margin-top:.6mm;font-size:5.5pt;line-height:1.3;color:#697481}.lb-print-performance-explain b{font-weight:900;color:#172233}
+    .lb-print-performance-explain .lb-perf-annual-head{display:flex;align-items:center;gap:1mm}.lb-print-performance-explain .lb-perf-annual-head span{font-weight:900}
 
-    .lb-print-performance-chart{margin-top:2mm;padding:2.5mm;border:1px solid #17313a;border-radius:2.4mm;background:#04070a;break-inside:avoid;page-break-inside:avoid;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-    .lb-print-performance-chart .lb-perf-chart-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:5mm;margin-bottom:2mm}
-    .lb-print-performance-chart .lb-perf-chart-meta>div:first-child{display:flex;flex-direction:column;gap:.8mm}
-    .lb-print-performance-chart .lb-perf-chart-meta strong{font-size:8.8pt;font-weight:900;color:#f8fafc}
-    .lb-print-performance-chart .lb-perf-chart-meta span{font-size:6.3pt;font-weight:800;color:#9aa8b6}
-    .lb-print-performance-chart .lb-perf-chart-chips{display:flex;gap:1.5mm;flex-wrap:wrap;justify-content:flex-end}
-    .lb-print-performance-chart .lb-perf-chart-chips span{display:inline-flex;align-items:center;gap:1.2mm;padding:1.2mm 1.6mm;border-radius:1.5mm;border:1px solid rgba(45,212,191,.20);background:#070a0d;color:#93a3b5!important;font-size:6.1pt!important;font-weight:800!important}
-    .lb-print-performance-chart .lb-perf-chart-chips b{font-size:6.1pt;font-weight:900;color:#e6fffb}
-    .lb-print-performance-chart .lb-perf-chart-svg-wrap{position:relative;border:1px solid rgba(34,211,238,.22);border-radius:2mm;background:linear-gradient(180deg,#07090c 0%,#020405 100%);overflow:hidden}
-    .lb-print-performance-chart .lb-perf-chart-svg{display:block;width:100%;height:auto;min-height:0}
+    .lb-print-performance-chart{margin-top:1.2mm;padding:1.8mm;border:1px solid #17313a;border-radius:2mm;background:#04070a;break-inside:avoid;page-break-inside:avoid;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    .lb-print-performance-chart .lb-perf-chart-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:4mm;margin-bottom:1.2mm}
+    .lb-print-performance-chart .lb-perf-chart-meta>div:first-child{display:flex;flex-direction:column;gap:.5mm}
+    .lb-print-performance-chart .lb-perf-chart-meta strong{font-size:8.2pt;font-weight:900;color:#f8fafc}
+    .lb-print-performance-chart .lb-perf-chart-meta span{font-size:5.9pt;font-weight:800;color:#9aa8b6}
+    .lb-print-performance-chart .lb-perf-chart-chips{display:flex;gap:1mm;flex-wrap:wrap;justify-content:flex-end}
+    .lb-print-performance-chart .lb-perf-chart-chips span{display:inline-flex;align-items:center;gap:1mm;padding:.8mm 1.2mm;border-radius:1.2mm;border:1px solid rgba(45,212,191,.20);background:#070a0d;color:#93a3b5!important;font-size:5.7pt!important;font-weight:800!important}
+    .lb-print-performance-chart .lb-perf-chart-chips b{font-size:5.7pt;font-weight:900;color:#e6fffb}
+    .lb-print-performance-chart .lb-perf-chart-svg-wrap{position:relative;border:1px solid rgba(34,211,238,.22);border-radius:1.6mm;background:linear-gradient(180deg,#07090c 0%,#020405 100%);overflow:hidden}
+    .lb-print-performance-chart .lb-perf-chart-svg{display:block;width:100%;height:49mm!important;min-height:0;object-fit:fill}
     .lb-print-performance-chart .lb-perf-grid{stroke:rgba(148,163,184,.22);stroke-width:1}
     .lb-print-performance-chart .lb-perf-axis-y{fill:#a8b4c2;font-size:15px;font-weight:900}
     .lb-print-performance-chart .lb-perf-axis-x{fill:#d4dde8;font-size:15px;font-weight:900;letter-spacing:.02em}
@@ -134,28 +134,30 @@ UI ONLY / READ ONLY.
     .lb-print-performance-chart .lb-perf-hit{fill:transparent;stroke:none}
     .lb-print-performance-chart .lb-perf-point-detail{display:none!important}
 
-    .lb-print-final-summary{margin-top:3mm;padding:3mm 3.5mm;border:1.2px solid #b88a13;border-left:1.8mm solid #d4af37;background:#fff9df;break-inside:avoid;page-break-inside:avoid;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    .lb-print-final-summary{margin-top:1.5mm;padding:2mm 2.5mm;border:1.2px solid #b88a13;border-left:1.8mm solid #d4af37;background:#fff9df;break-inside:avoid;page-break-inside:avoid;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     .lb-print-final-summary.is-up{border-color:#399a68;border-left-color:#2ea96f;background:#effaf4}
     .lb-print-final-summary.is-down{border-color:#c85c62;border-left-color:#d94e57;background:#fff2f3}
-    .lb-print-final-summary .summary-kicker{font-size:6.2pt;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#75612b}
+    .lb-print-final-summary .summary-kicker{font-size:5.8pt;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#75612b}
     .lb-print-final-summary.is-up .summary-kicker{color:#18764e}.lb-print-final-summary.is-down .summary-kicker{color:#9d3038}
-    .lb-print-final-summary .summary-title{margin-top:.8mm;font-size:10.2pt;font-weight:900;color:#172233}
-    .lb-print-final-summary .summary-detail{margin-top:1.2mm;font-size:7.4pt;font-weight:700;color:#364152;line-height:1.45}
+    .lb-print-final-summary .summary-title{margin-top:.5mm;font-size:9.3pt;font-weight:900;color:#172233}
+    .lb-print-final-summary .summary-detail{margin-top:.7mm;font-size:6.8pt;font-weight:700;color:#364152;line-height:1.3}
     .lb-print-final-summary .summary-detail strong{color:#172233}
-    .lb-print-final-summary .summary-delta{margin-top:1mm;font-size:8pt;font-weight:900;color:#8b6a00}
+    .lb-print-final-summary .summary-delta{margin-top:.6mm;font-size:7.4pt;font-weight:900;color:#8b6a00}
     .lb-print-final-summary.is-up .summary-delta{color:#167953}.lb-print-final-summary.is-down .summary-delta{color:#b63c45}
 
-    .lb-print-signatures{margin-top:auto;padding-top:3mm;padding-bottom:1mm;border-top:1px solid #d2d2d2;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid}
-    .lb-print-sign-box{text-align:center;min-height:25mm}
-    .lb-print-sign-box .who{font-size:7.2pt;font-weight:700;color:#172233}
-    .lb-print-sign-box .auth-role{margin-top:.4mm;font-size:6.2pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
-    .lb-print-sign-box .stage{height:12mm;width:100%;margin:.2mm auto .5mm;display:flex;align-items:center;justify-content:center;overflow:visible}
+    .lb-print-final-page>h3{margin:1.7mm 0 1mm}
+    .lb-print-final-page>.ready,.lb-print-final-page>.issues{margin-bottom:0}
+    .lb-print-signatures{margin-top:auto;padding-top:2mm;padding-bottom:.5mm;border-top:1px solid #d2d2d2;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid;page-break-before:avoid}
+    .lb-print-sign-box{text-align:center;min-height:22mm}
+    .lb-print-sign-box .who{font-size:6.8pt;font-weight:700;color:#172233}
+    .lb-print-sign-box .auth-role{margin-top:.3mm;font-size:5.9pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
+    .lb-print-sign-box .stage{height:10.5mm;width:100%;margin:.1mm auto .3mm;display:flex;align-items:center;justify-content:center;overflow:visible}
     .lb-print-sign-box .ttd img{display:block;object-fit:contain;object-position:center}
-    .lb-print-sign-box.supervisor-sign .ttd img{width:28mm;height:10mm}
-    .lb-print-sign-box.management-sign .ttd img{max-width:34mm;max-height:12mm}
-    .lb-print-sign-box .name{font-size:8.2pt;font-weight:800;color:#172233}
-    .lb-print-sign-box .signature-line{height:1px;background:#333;width:38mm;margin:.5mm auto .5mm}
-    .lb-print-sign-box .job{font-size:6.2pt;font-weight:900;letter-spacing:.16em;color:#697481}
+    .lb-print-sign-box.supervisor-sign .ttd img{width:26mm;height:9mm}
+    .lb-print-sign-box.management-sign .ttd img{max-width:32mm;max-height:10.5mm}
+    .lb-print-sign-box .name{font-size:7.8pt;font-weight:800;color:#172233}
+    .lb-print-sign-box .signature-line{height:1px;background:#333;width:36mm;margin:.35mm auto .35mm}
+    .lb-print-sign-box .job{font-size:5.9pt;font-weight:900;letter-spacing:.16em;color:#697481}
   `;}
 
   function parseMoneyText(v){
