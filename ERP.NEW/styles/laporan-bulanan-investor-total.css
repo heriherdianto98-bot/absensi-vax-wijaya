@@ -140,13 +140,17 @@ body.laporan-bulanan-page #lbInvestorLines .lb-investor-rights-card.is-investor 
 body.laporan-bulanan-page #lbInvestorLines .lb-investor-rights-card.is-investor strong{
   color:#67e8f9!important;
 }
+
+/* Hak Manajemen: solid green agar tegas seperti Hak Investor, bukan ungu pastel. */
 body.laporan-bulanan-page #lbInvestorLines .lb-investor-rights-card.is-management{
-  border:1px solid rgba(167,139,250,.32)!important;
-  border-left:4px solid #a78bfa!important;
+  border:1px solid rgba(34,197,94,.34)!important;
+  border-left:4px solid #22c55e!important;
+  background:#030a06!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 0 12px rgba(34,197,94,.045)!important;
 }
 body.laporan-bulanan-page #lbInvestorLines .lb-investor-rights-card.is-management span,
 body.laporan-bulanan-page #lbInvestorLines .lb-investor-rights-card.is-management strong{
-  color:#c4b5fd!important;
+  color:#4ade80!important;
 }
 
 @media(max-width:900px){
