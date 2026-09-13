@@ -1,0 +1,220 @@
+/* =========================================================
+   LAPORAN BULANAN — GLOBAL DASHBOARD CHROME COPY
+   UI ONLY. Scope hanya .laporan-bulanan-page.
+
+   Acuan:
+   - ERP.NEW/components/header.html (global header 76px)
+   - Dashboard Utama toolbar density (56px / control 44px)
+   ========================================================= */
+
+/* === HEADER GLOBAL === */
+html body.laporan-bulanan-page .erp-wrapper{
+  padding-top:76px!important;
+}
+
+html body.laporan-bulanan-page #header{
+  position:fixed!important;
+  top:0!important;
+  left:var(--sidebar-width,220px)!important;
+  right:0!important;
+  width:auto!important;
+  height:76px!important;
+  min-height:76px!important;
+  max-height:76px!important;
+  margin:0!important;
+  padding:0!important;
+  z-index:5000!important;
+}
+
+html body.laporan-bulanan-page #header .erp-header-vax,
+html body.laporan-bulanan-page #header .top-header,
+html body.laporan-bulanan-page #header .erp-header{
+  width:100%!important;
+  height:76px!important;
+  min-height:76px!important;
+  max-height:76px!important;
+  display:flex!important;
+  align-items:center!important;
+  margin:0!important;
+  padding:8px 18px!important;
+  box-sizing:border-box!important;
+  background:#11161c!important;
+  border-bottom:2px solid rgba(212,168,38,.72)!important;
+  overflow:hidden!important;
+}
+
+html body.laporan-bulanan-page #header .vax-context{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+
+html body.laporan-bulanan-page #header .vax-chip{
+  min-width:120px!important;
+  min-height:0!important;
+  padding:8px 14px!important;
+  border:1px solid rgba(212,168,38,.42)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.025)!important;
+  box-shadow:none!important;
+}
+
+html body.laporan-bulanan-page #header .vax-chip label{
+  display:block!important;
+  margin-bottom:3px!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  letter-spacing:1.4px!important;
+  color:#8f98a6!important;
+}
+
+html body.laporan-bulanan-page #header .vax-chip strong{
+  display:block!important;
+  font-size:15px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  color:#fff!important;
+  white-space:nowrap!important;
+}
+
+html body.laporan-bulanan-page #header .vax-sync{
+  margin-left:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+}
+
+html body.laporan-bulanan-page #header .vax-owner{
+  min-width:105px!important;
+  margin-left:22px!important;
+  text-align:right!important;
+}
+
+html body.laporan-bulanan-page #header .vax-logout{
+  height:42px!important;
+  min-height:42px!important;
+  margin-left:12px!important;
+  padding:0 18px!important;
+  border-radius:10px!important;
+}
+
+/* === TOOLBAR DASHBOARD === */
+html body.laporan-bulanan-page .lb-toolbar{
+  position:relative!important;
+  z-index:20!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  width:100%!important;
+  height:56px!important;
+  min-height:56px!important;
+  max-height:56px!important;
+  margin:0!important;
+  padding:5px 14px!important;
+  transform:none!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.06)!important;
+  border-radius:0!important;
+  background:#0b0f14!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+
+html body.laporan-bulanan-page .lb-toolbar .lb-field{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:0!important;
+  margin:0!important;
+  min-width:0!important;
+}
+
+html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
+  flex:0 0 235px!important;
+  width:235px!important;
+}
+
+html body.laporan-bulanan-page .lb-toolbar .lb-field:nth-child(2){
+  flex:0 0 210px!important;
+  width:210px!important;
+}
+
+html body.laporan-bulanan-page .lb-toolbar .lb-field > span{
+  display:none!important;
+}
+
+html body.laporan-bulanan-page .lb-toolbar select,
+html body.laporan-bulanan-page .lb-toolbar input,
+html body.laporan-bulanan-page .lb-toolbar .lb-branch-trigger{
+  width:100%!important;
+  height:44px!important;
+  min-height:44px!important;
+  max-height:44px!important;
+  margin:0!important;
+  padding:0 42px 0 14px!important;
+  border-radius:10px!important;
+  font-size:15px!important;
+  line-height:44px!important;
+  font-weight:700!important;
+  box-sizing:border-box!important;
+}
+
+html body.laporan-bulanan-page .lb-toolbar .lb-actions{
+  margin-left:auto!important;
+  display:flex!important;
+  align-items:center!important;
+}
+
+html body.laporan-bulanan-page .lb-toolbar .lb-btn{
+  height:36px!important;
+  min-height:36px!important;
+  margin:0!important;
+  padding:0 18px!important;
+  border-radius:9px!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+
+/* Konten mulai setelah toolbar, sama pola Dashboard. */
+html body.laporan-bulanan-page .erp-content{
+  padding-top:2px!important;
+}
+
+html body.laporan-bulanan-page.sidebar-collapsed #header,
+html body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper #header{
+  left:var(--sidebar-collapse,72px)!important;
+}
+
+@media(max-width:900px){
+  html body.laporan-bulanan-page #header{left:0!important;}
+  html body.laporan-bulanan-page .lb-toolbar{
+    height:auto!important;
+    min-height:56px!important;
+    max-height:none!important;
+    flex-wrap:wrap!important;
+  }
+  html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child,
+  html body.laporan-bulanan-page .lb-toolbar .lb-field:nth-child(2){
+    flex:1 1 180px!important;
+    width:auto!important;
+  }
+}
+
+@media print{
+  html body.laporan-bulanan-page .erp-wrapper{padding-top:0!important;}
+  html body.laporan-bulanan-page #header{
+    position:static!important;
+    left:auto!important;
+    right:auto!important;
+    width:auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  html body.laporan-bulanan-page .lb-toolbar{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+}
