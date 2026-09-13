@@ -257,7 +257,7 @@ Rules:
     document.querySelectorAll('.payroll-employee-card[data-employee-id]').forEach(card=>{
       const employeeId=Number(card.dataset.employeeId||0);if(!employeeId)return;
       const payrollRow=result.payroll.find(r=>Number(r.employeeId)===employeeId);if(!payrollRow)return;
-      const old=card.querySelector('.hist-payroll-correction');if(old)old.remove();
+      const old=card.querySelector('.hist-payroll-correction');if(old)return;
       const corr=corrMap.get(employeeId)||{};
       const wrap=document.createElement('section');wrap.className='hist-payroll-correction';
       const gajiField=payrollRow.isCapster
