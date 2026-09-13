@@ -16,7 +16,7 @@ Rules:
 =========================================================
 */
 (() => {
-  const RPC = 'erp_read_locked_payroll_snapshot_v2';
+  const RPC = 'erp_read_locked_payroll_snapshot_v3';
 
   const asArray = value => Array.isArray(value) ? value : [];
   const number = value => {
@@ -202,7 +202,9 @@ Rules:
       if(isSnapshotNotFound(error)) return null;
       throw error;
     }
-    if(!data || String(data.status||'').toUpperCase()!=='LOCKED'){
+    const status=String(data?.status||'').toUpperCase();
+    if(status==='NOT_FOUND') return null;
+    if(!data || status!=='LOCKED'){
       throw new Error('Snapshot historis tidak valid. LIVE fallback diblokir.');
     }
     return buildResult(data,{start,end,branchId,employeeId});
