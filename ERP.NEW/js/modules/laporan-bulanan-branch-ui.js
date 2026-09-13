@@ -23,7 +23,7 @@
         width:100%;height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;
         padding:0 12px 0 14px;border:1px solid rgba(45,212,191,.35);border-radius:11px;
         background:linear-gradient(180deg,rgba(45,212,191,.12),rgba(18,25,32,.96));
-        color:#f8fafc;font:inherit;font-size:14px;font-weight:800;cursor:pointer;
+        color:#f8fafc;font:inherit;font-size:11px;font-weight:800;line-height:1.1;cursor:pointer;
         box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 12px rgba(45,212,191,.05);
       }
       body.laporan-bulanan-page .lb-branch-trigger:hover,
