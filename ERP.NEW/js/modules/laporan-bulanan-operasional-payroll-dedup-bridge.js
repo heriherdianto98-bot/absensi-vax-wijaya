@@ -40,21 +40,26 @@ const LaporanBulananOperasionalPayrollDedupBridge = {
       rows:cashOut.matched.length
     };
 
-    if(dedup<=0) return report;
+    if(dedup>0){
+      report.pengeluaran=report.pengeluaran||{};
+      report.pengeluaran.operasional=Math.max(0,this.number(report.pengeluaran.operasional)-dedup);
+      report.pengeluaran.total=this.number(report.pengeluaran.operasional)+this.number(report.pengeluaran.sewa);
 
-    report.pengeluaran=report.pengeluaran||{};
-    report.pengeluaran.operasional=Math.max(0,this.number(report.pengeluaran.operasional)-dedup);
-    report.pengeluaran.total=this.number(report.pengeluaran.operasional)+this.number(report.pengeluaran.sewa);
-
-    report.laba=report.laba||{};
-    report.laba.totalBiaya=Math.max(0,this.number(report.laba.totalBiaya)-dedup);
-    report.laba.labaBersih=this.number(report.laba.totalPendapatan)-this.number(report.laba.totalBiaya);
+      report.laba=report.laba||{};
+      report.laba.totalBiaya=Math.max(0,this.number(report.laba.totalBiaya)-dedup);
+      report.laba.labaBersih=this.number(report.laba.totalPendapatan)-this.number(report.laba.totalBiaya);
+    }
 
     if(report.investor){
-      const pct=this.number(report.investor.persentase);
-      const share=report.laba.labaBersih>0&&pct>0?Math.round(report.laba.labaBersih*pct/100):0;
-      report.investor.bagiHasil=share;
-      report.investor.totalHakBulanIni=share+this.number(report.investor.sewaDibayar);
+      if(typeof LaporanBulananInvestorShareBridge!=="undefined"&&typeof LaporanBulananInvestorShareBridge.apply==="function"){
+        LaporanBulananInvestorShareBridge.apply(report);
+        LaporanBulananInvestorShareBridge.emit?.(report);
+      }else{
+        const pct=this.number(report.investor.persentase);
+        const share=report.laba.labaBersih>0&&pct>0?Math.round(report.laba.labaBersih*pct/100):0;
+        report.investor.bagiHasil=share;
+        report.investor.totalHakBulanIni=share+this.number(report.investor.sewaDibayar);
+      }
     }
 
     return report;
