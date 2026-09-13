@@ -13,6 +13,10 @@ Realisasi = SUM(price_with_discount) package Ultimate pada cabang + periode akti
 Progress = Realisasi / Target Bulanan * 100.
 */
 const LaporanBulananPerformanceKpiBridge = {
+  _installed:false,
+  _originalLoadMonth:null,
+  lastReport:null,
+
   number(v){ const n=Number(v||0); return Number.isFinite(n)?n:0; },
 
   isUltimatePackage(value){
@@ -80,8 +84,28 @@ const LaporanBulananPerformanceKpiBridge = {
       report.performance.ultimate={target:0,realisasi:0,progress:0,trx:0,error:true};
       report.performance.ultimateProgress=0;
     }
+
+    this.lastReport=report;
+    if(typeof document!=="undefined"){
+      document.dispatchEvent(new CustomEvent("laporan-bulanan:performance-kpi",{detail:report.performance}));
+    }
     return report;
+  },
+
+  install(){
+    if(this._installed) return;
+    if(typeof LaporanBulananConsumer==="undefined"||typeof LaporanBulananConsumer.loadMonth!=="function") return;
+    this._installed=true;
+    this._originalLoadMonth=LaporanBulananConsumer.loadMonth.bind(LaporanBulananConsumer);
+    LaporanBulananConsumer.loadMonth=async (args={})=>{
+      const report=await this._originalLoadMonth(args);
+      const client=args.client||(typeof db!=="undefined"?db:window.db);
+      return this.apply(report,client);
+    };
   }
 };
 
-if(typeof window!=="undefined") window.LaporanBulananPerformanceKpiBridge=LaporanBulananPerformanceKpiBridge;
+if(typeof window!=="undefined"){
+  window.LaporanBulananPerformanceKpiBridge=LaporanBulananPerformanceKpiBridge;
+  LaporanBulananPerformanceKpiBridge.install();
+}
