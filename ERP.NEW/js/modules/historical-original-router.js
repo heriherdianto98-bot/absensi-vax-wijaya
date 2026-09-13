@@ -16,7 +16,7 @@ Rules:
 =========================================================
 */
 (() => {
-  const RPC = 'erp_read_locked_payroll_snapshot';
+  const RPC = 'erp_read_locked_payroll_snapshot_v2';
 
   const asArray = value => Array.isArray(value) ? value : [];
   const number = value => {
@@ -80,6 +80,43 @@ Rules:
     return result;
   }
 
+  // Mirrors the already-approved PayrollKasbonMonthlyBridge view-model behavior,
+  // using ONLY immutable snapshot rows. No database writes are performed.
+  function historicalKasbonRows(advances,payments,start,end){
+    const payrollPayments=asArray(payments).filter(p =>
+      String(p.payment_method||'').toUpperCase()==='BULANAN' &&
+      String(p.source||'').toUpperCase()==='PAYROLL' &&
+      String(p.payroll_period||'')>=start && String(p.payroll_period||'')<=end
+    );
+    const paidByKasbon=new Map();
+    payrollPayments.forEach(p=>{
+      const key=String(p.kasbon_id||''); if(!key)return;
+      const prev=paidByKasbon.get(key)||{amount:0,paymentDate:null};
+      prev.amount+=number(p.amount);
+      const date=normalizeDate(p.payment_date);
+      if(date&&(!prev.paymentDate||date>prev.paymentDate))prev.paymentDate=date;
+      paidByKasbon.set(key,prev);
+    });
+
+    return asArray(advances)
+      .filter(r=>String(r.payment_method||'BULANAN').toUpperCase()==='BULANAN')
+      .flatMap(r=>{
+        const historical=paidByKasbon.get(String(r.id));
+        const outstanding=Math.max(0,number(r.current_outstanding));
+        const approved=Math.max(0,number(r.approved_amount));
+        const status=String(r.status||'').toUpperCase();
+        const disbursementDate=normalizeDate(r.disbursement_date);
+        const disbursedInPeriod=Boolean(disbursementDate&&disbursementDate>=start&&disbursementDate<=end);
+        let deduction=0,baseDate=disbursementDate||start;
+        if((historical?.amount||0)>0){deduction=number(historical.amount);baseDate=historical.paymentDate||baseDate;}
+        else if(outstanding>0) deduction=outstanding;
+        else if(status==='LUNAS'&&disbursedInPeriod&&approved>0) deduction=approved;
+        if(deduction<=0)return [];
+        const payrollDate=baseDate<start?start:(baseDate>end?end:baseDate);
+        return [{...r,status:'AKTIF',current_outstanding:deduction,disbursement_date:payrollDate}];
+      });
+  }
+
   function buildResult(payload,{start,end,branchId=null,employeeId=null}={}){
     if(!window.PayrollUnifiedEngine) throw new Error('PayrollUnifiedEngine belum tersedia');
     const engine = window.PayrollUnifiedEngine;
@@ -90,7 +127,7 @@ Rules:
     const providerRows = asArray(data.provider_sales_daily_source);
     const productRows = asArray(data.product_sales_source);
     const absensiRows = asArray(data.absensi);
-    const kasbonRows = asArray(data.employee_cash_advances);
+    const kasbonRows = historicalKasbonRows(data.employee_cash_advances,data.employee_cash_advance_payments,range.start,range.end);
     const cashOutRows = asArray(data.daily_recap_source);
     const salaryData = salaryDataFrom(data.payroll_salary_master);
     const manualMonth = manualMonthFrom(data.payroll_manual_adjustments, start);
@@ -171,8 +208,5 @@ Rules:
     return buildResult(data,{start,end,branchId,employeeId});
   }
 
-  window.HistoricalOriginalRouter = Object.freeze({
-    loadPayrollPeriod,
-    buildResult
-  });
+  window.HistoricalOriginalRouter = Object.freeze({loadPayrollPeriod,buildResult});
 })();
