@@ -58,6 +58,9 @@ const LaporanBulananProviderMapping = {
         const manualEmployeeName = String(manualName || "").trim();
         const snapshotName = employee?.nama_karyawan || employee?.namaKaryawan || employee?.name || manualEmployeeName || null;
         const snapshotBranch = branch?.nama_cabang || employee?.homeCabang || null;
+        const sourceCabangId = Number(providerRow?.sourceCabangId || providerRow?.cabangId || providerRow?.cabang_id || 0) || null;
+        const sourceProviderName = providerRow?.provider || providerRow?.providerMinutes || providerRow?.provider_name_raw || providerRow?.provider_name_normalized || "Backup";
+        const sourceProviderShare = this.number(providerRow?.providerShare ?? providerRow?.provider_share ?? providerRow?.amount);
 
         if(!periodMonth) throw new Error("Mapping Bulanan: periode tidak valid.");
         if(!sourceId) throw new Error("Mapping Bulanan: provider row tidak valid.");
@@ -73,9 +76,9 @@ const LaporanBulananProviderMapping = {
         const payload = {
             source_provider_row_id: sourceId,
             period_month: periodMonth,
-            source_cabang_id: Number(providerRow?.cabangId || providerRow?.cabang_id || 0) || null,
-            source_provider_name: providerRow?.providerMinutes || providerRow?.provider_name_raw || providerRow?.provider_name_normalized || "Backup",
-            source_provider_share: this.number(providerRow?.providerShare || providerRow?.provider_share),
+            source_cabang_id: sourceCabangId,
+            source_provider_name: sourceProviderName,
+            source_provider_share: sourceProviderShare,
             employee_id: employeeId,
             employee_cabang_id: employeeBranchId,
             employee_name_snapshot: snapshotName,
@@ -143,11 +146,11 @@ const LaporanBulananProviderMapping = {
             return {
                 sourceId,
                 tanggal: row?.tanggal || row?.activity_date || "",
-                sourceCabangId: Number(row?.cabangId || row?.cabang_id || 0) || null,
-                sourceCabang: row?.cabang || row?.cabang_minutes_name || "—",
-                provider: row?.providerMinutes || row?.provider_name_raw || row?.provider_name_normalized || "Backup",
+                sourceCabangId: Number(row?.sourceCabangId || row?.cabangId || row?.cabang_id || 0) || null,
+                sourceCabang: row?.sourceCabang || row?.cabang || row?.cabang_minutes_name || "—",
+                provider: row?.provider || row?.providerMinutes || row?.provider_name_raw || row?.provider_name_normalized || "Backup",
                 service: this.number(row?.service || row?.total_service),
-                providerShare: this.number(row?.providerShare || row?.provider_share),
+                providerShare: this.number(row?.providerShare ?? row?.provider_share ?? row?.amount),
                 mappingStatus: row?.mappingStatus || row?.mapping_status || "AMBIGUOUS",
                 saved,
                 resolved: Boolean(saved?.employee_id || String(saved?.employee_name_snapshot || "").trim())
