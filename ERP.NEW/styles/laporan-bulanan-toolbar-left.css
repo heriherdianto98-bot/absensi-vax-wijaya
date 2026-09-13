@@ -1,10 +1,12 @@
+@import url("./laporan-bulanan-global-chrome.css?v=20260913-v1");
+
 /* =========================================================
    LAPORAN BULANAN — TOOLBAR ALIGNMENT
    UI ONLY. Tidak menyentuh engine/data/formula.
 
-   Toolbar sekarang mengikuti layout Dashboard Utama: berada di dalam
-   area .erp-wrapper, tepat di bawah global header. Karena itu JANGAN
-   lagi translate ke kiri sebesar lebar sidebar.
+   Toolbar mengikuti layout Dashboard Utama: berada di dalam
+   area .erp-wrapper, tepat di bawah global header, tanpa
+   translate negatif yang memotong filter Cabang.
    ========================================================= */
 
 body.laporan-bulanan-page .lb-toolbar{
