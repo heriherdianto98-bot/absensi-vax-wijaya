@@ -1,6 +1,6 @@
 /*
 =========================================================
-VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V4
+VAX ERP — LAPORAN BULANAN PAYROLL ADJUSTMENT BRIDGE V5
 =========================================================
 Consumer-only bridge.
 - Reads Payroll with manual adjustments already applied.
@@ -8,6 +8,10 @@ Consumer-only bridge.
   Gaji Pokok + Bonus Insentif + Bonus KPI + Bonus Produk.
 - Denda and Kasbon remain payroll/slip deductions only and MUST NOT
   reduce company payroll cost in Laporan Bulanan.
+- Bonus Produk for LOCKED historical periods is canonicalized to
+  DAILY Provider Product Recap rows only (period_start = period_end),
+  matching the live PayrollUnifiedEngine fetch rule and preventing
+  monthly/detail product rows from being double-counted.
 - Reconciles report payroll amount to adjusted Payroll result.
 - Exposes per-employee MONTHLY COST components for Monthly display/print.
 - Preserves original payroll deductions separately as payrollDenda/payrollKasbon
@@ -159,6 +163,7 @@ const LaporanBulananPayrollAdjustmentBridge = {
       delta,
       payrollCostBasis:"GROSS_COMPENSATION_BEFORE_DEDUCTIONS",
       deductionsExcludedFromMonthlyCost:["DENDA","KASBON"],
+      bonusProdukSource:payrollDataset?.historicalLocked?"SNAPSHOT_DAILY_PROVIDER_PRODUCT_RECAP":"PAYROLL_UNIFIED_ENGINE_DAILY_PRODUCT_ROWS",
       bonusInsentif:report.gaji.bonusInsentif,
       bonusKpi:report.gaji.bonusKpi,
       bonusProduk:report.gaji.bonusProduk,
@@ -182,6 +187,9 @@ if(typeof window!=="undefined") window.LaporanBulananPayrollAdjustmentBridge=Lap
   window.__VAX_MONTHLY_HISTORICAL_PAYROLL_ADAPTER_V1__=true;
 
   let routerPromise=null;
+  const number=v=>{const n=Number(v||0);return Number.isFinite(n)?n:0;};
+  const normalizeDate=v=>{const s=String(v||'').trim();return /^\d{4}-\d{2}-\d{2}/.test(s)?s.slice(0,10):'';};
+
   function ensureHistoricalRouter(){
     if(window.HistoricalOriginalRouter?.loadPayrollPeriod) return Promise.resolve(window.HistoricalOriginalRouter);
     if(routerPromise) return routerPromise;
@@ -206,6 +214,74 @@ if(typeof window!=="undefined") window.LaporanBulananPayrollAdjustmentBridge=Lap
     return routerPromise;
   }
 
+  async function canonicalizeHistoricalBonusProduk(historical,start,end){
+    if(!historical?.historicalLocked || typeof db==='undefined' || !db?.rpc) return historical;
+
+    const {data,error}=await db.rpc('erp_read_locked_payroll_snapshot_v4',{
+      p_period_start:start,
+      p_period_end:end
+    });
+    if(error) throw error;
+    if(!data || String(data.status||'').toUpperCase()!=='LOCKED'){
+      throw new Error('Snapshot historis bonus produk tidak valid.');
+    }
+
+    const productRows=Array.isArray(data?.data?.product_sales_source)?data.data.product_sales_source:[];
+    const canonical=productRows.filter(row=>{
+      const s=normalizeDate(row?.period_start);
+      const e=normalizeDate(row?.period_end);
+      return s&&e&&s===e&&s>=start&&s<=end&&Number(row?.employee_id)>0&&String(row?.mapping_status||'').toUpperCase()==='MATCHED';
+    });
+
+    const byEmployee=new Map();
+    const byEmployeeDayBranch=new Map();
+    canonical.forEach(row=>{
+      const employeeId=Number(row.employee_id);
+      const date=normalizeDate(row.period_start);
+      const branchId=Number(row.cabang_id)||0;
+      const share=number(row.revenue_share);
+      byEmployee.set(employeeId,(byEmployee.get(employeeId)||0)+share);
+      const key=`${employeeId}|${date}|${branchId}`;
+      byEmployeeDayBranch.set(key,(byEmployeeDayBranch.get(key)||0)+share);
+    });
+
+    const payroll=Array.isArray(historical.payroll)?historical.payroll:[];
+    payroll.forEach(employee=>{
+      const employeeId=Number(employee?.employeeId||employee?.id||0);
+      const summary=employee?.summary||{};
+      const canonicalTotal=byEmployee.get(employeeId)||0;
+      summary.bonusProduk=canonicalTotal;
+      summary.gajiBersih=number(summary.gajiPokok)-number(summary.denda)-number(summary.kasbon)
+        +number(summary.bonusInsentif)+number(summary.bonusKpi)+canonicalTotal;
+      employee.summary=summary;
+
+      if(Array.isArray(employee.daily)){
+        employee.daily.forEach(day=>{
+          const date=normalizeDate(day?.tanggal);
+          const branchId=Number(day?.cabangId)||0;
+          day.bonusProduk=byEmployeeDayBranch.get(`${employeeId}|${date}|${branchId}`)||0;
+          if('gajiBersih' in day){
+            day.gajiBersih=number(day.gajiPokok)-number(day.denda)-number(day.kasbon)
+              +number(day.bonusInsentif)+number(day.bonusKpi)+number(day.bonusProduk);
+          }
+        });
+      }
+    });
+
+    if(historical.totals){
+      historical.totals.bonusProduk=payroll.reduce((sum,e)=>sum+number(e?.summary?.bonusProduk),0);
+      historical.totals.gajiBersih=payroll.reduce((sum,e)=>sum+number(e?.summary?.gajiBersih),0);
+    }
+
+    historical.productBonusCanonical={
+      source:'SNAPSHOT_DAILY_PROVIDER_PRODUCT_RECAP',
+      rows:canonical.length,
+      rule:'period_start = period_end',
+      range:{start,end}
+    };
+    return historical;
+  }
+
   function patchConsumer(consumer){
     if(!consumer || consumer.__monthlyHistoricalPayrollAdapterV1) return consumer;
     const liveLoad=consumer.loadAdjustedPayroll.bind(consumer);
@@ -214,13 +290,15 @@ if(typeof window!=="undefined") window.LaporanBulananPayrollAdjustmentBridge=Lap
       const end=String(report?.range?.end||'');
       if(start&&end){
         const router=await ensureHistoricalRouter();
-        const historical=await router.loadPayrollPeriod({start,end});
+        let historical=await router.loadPayrollPeriod({start,end});
         if(historical){
+          historical=await canonicalizeHistoricalBonusProduk(historical,start,end);
           window.__VAX_LAPORAN_BULANAN_HISTORICAL_PAYROLL__={
             locked:true,
             source:historical.source||'SNAPSHOT_ORIGINAL',
             snapshot:historical.snapshot||null,
-            corrections:Number(historical?.snapshot?.correction_count||0)
+            corrections:Number(historical?.snapshot?.correction_count||0),
+            bonusProdukSource:historical?.productBonusCanonical?.source||'SNAPSHOT_DAILY_PROVIDER_PRODUCT_RECAP'
           };
           return historical;
         }
