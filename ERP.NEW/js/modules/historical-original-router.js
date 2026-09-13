@@ -120,7 +120,7 @@ Rules:
   function buildResult(payload,{start,end,branchId=null,employeeId=null}={}){
     if(!window.PayrollUnifiedEngine) throw new Error('PayrollUnifiedEngine belum tersedia');
     const engine = window.PayrollUnifiedEngine;
-    const range = engine.validateRange({start,end});
+    const range = engine.validateRange(start,end);
     const data = payload?.data || {};
     const karyawan = asArray(data.karyawan);
     const cabang = asArray(data.cabang);
