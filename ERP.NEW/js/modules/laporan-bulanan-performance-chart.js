@@ -86,6 +86,11 @@ Tidak mengubah DashboardEngine, AI Insight, atau source data.
     detail.classList.add("is-show");
   }
 
+  function hidePointDetail(host){
+    host.querySelector(".lb-perf-point-detail")?.classList.remove("is-show");
+    host.querySelectorAll(".lb-perf-point").forEach(node=>node.classList.remove("is-active"));
+  }
+
   function bindPointInteraction(host,points,year){
     host.querySelectorAll(".lb-perf-hit[data-index]").forEach(hit=>{
       const activate=()=>{
@@ -93,11 +98,23 @@ Tidak mengubah DashboardEngine, AI Insight, atau source data.
         const point=points[idx];
         if(point) showPointDetail(host,point,year);
       };
+
+      // UI ONLY: desktop hover langsung menampilkan nilai titik grafik.
+      hit.addEventListener("mouseenter",activate);
+      hit.addEventListener("mouseleave",()=>hidePointDetail(host));
+      hit.addEventListener("focus",activate);
+      hit.addEventListener("blur",()=>hidePointDetail(host));
+
+      // Tetap pertahankan click/tap untuk mobile dan aksesibilitas.
       hit.addEventListener("click",activate);
       hit.addEventListener("keydown",event=>{
         if(event.key==="Enter"||event.key===" "){
           event.preventDefault();
           activate();
+        }
+        if(event.key==="Escape"){
+          hidePointDetail(host);
+          hit.blur();
         }
       });
     });
