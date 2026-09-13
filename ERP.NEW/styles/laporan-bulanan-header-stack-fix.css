@@ -1,5 +1,10 @@
 /* Laporan Bulanan — header freeze/stack fix. UI ONLY. */
 
+/* Header Bulanan dibuat lebih compact tanpa menyentuh global header. */
+body.laporan-bulanan-page{
+  --erp-top-header-h:60px;
+}
+
 /*
    erp.css memberi .erp-wrapper padding-top sebesar tinggi header.
    Pada halaman Bulanan, #header berada di dalam .erp-wrapper sehingga fixed element
@@ -8,20 +13,34 @@
 */
 body.laporan-bulanan-page #header{
   position:fixed!important;
-  top:calc(-1 * var(--erp-top-header-h,72px))!important;
+  top:calc(-1 * var(--erp-top-header-h,60px))!important;
   left:var(--sidebar-width,220px)!important;
   right:0!important;
   width:auto!important;
+  height:60px!important;
+  min-height:60px!important;
   margin:0!important;
   padding:0!important;
   z-index:5000!important;
   background:#11161c!important;
+  overflow:visible!important;
 }
 
 body.laporan-bulanan-page #header .erp-header-vax{
   position:relative!important;
   top:0!important;
+  min-height:60px!important;
+  height:60px!important;
+  padding:5px 18px!important;
   margin:0!important;
+}
+
+/* Chip header ikut dipadatkan agar proporsional dengan tinggi 60px. */
+body.laporan-bulanan-page #header .erp-header-vax .vax-chip{
+  padding:6px 12px!important;
+}
+body.laporan-bulanan-page #header .erp-header-vax .vax-logout{
+  height:38px!important;
 }
 
 /* Wrapper global tetap menyediakan ruang header; jangan tambahkan offset baru. */
@@ -60,5 +79,11 @@ body.laporan-bulanan-page .sidebar.collapsed ~ .erp-wrapper #header{
     left:auto!important;
     right:auto!important;
     width:auto!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+  body.laporan-bulanan-page #header .erp-header-vax{
+    height:auto!important;
+    min-height:0!important;
   }
 }
