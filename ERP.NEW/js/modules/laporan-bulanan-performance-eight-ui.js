@@ -4,7 +4,6 @@
 (() => {
   const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
   const count=n=>Number(n||0).toLocaleString("id-ID");
-  const pct=n=>`${Number(n||0).toLocaleString("id-ID",{minimumFractionDigits:1,maximumFractionDigits:1})}%`;
 
   function renderExtras(){
     const host=document.getElementById("lbPerformance");
@@ -23,8 +22,8 @@
     const ultimateCard=document.createElement("div");
     ultimateCard.className="perf-ultimate";
     ultimateCard.dataset.lbPerfExtra="ultimate";
-    ultimateCard.title=`Realisasi ${money(ultimate.realisasi)} dari target ${money(ultimate.target)} · ${count(ultimate.trx)} trx Ultimate`;
-    ultimateCard.innerHTML=`<span>KPI Pencapaian Ultimate</span><strong>${pct(ultimate.progress)}</strong>`;
+    ultimateCard.title=`Target ${money(ultimate.target)} · ${count(ultimate.trx)} trx Ultimate`;
+    ultimateCard.innerHTML=`<span>KPI Pencapaian Ultimate</span><strong>${money(ultimate.realisasi)}</strong>`;
 
     host.append(service,ultimateCard);
   }
