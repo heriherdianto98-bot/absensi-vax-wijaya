@@ -121,90 +121,80 @@ Scope: Kasbon only.
   }
 
   /* =====================================================
-     UI ONLY — Quick month/year navigation for Kasbon popup
-     - Does not alter filter source (#kasbonFilterStart/End)
-     - Does not alter query/load/payroll/kasbon data logic
-     - Adds direct month selection so historical periods such
-       as Agustus 2026 can be opened without repeated arrows.
+     UI ONLY — Custom Periode langsung (Dari / Sampai)
+     Mengganti popup kalender visual yang menyulitkan navigasi.
+     Source of truth tetap input existing #kasbonFilterStart / End.
+     Query, loadList, Supabase, Payroll, Arus Kas tidak diubah.
      ===================================================== */
-  if(!M.__rangeQuickMonthUiV1){
-    M.__rangeQuickMonthUiV1 = true;
+  if(!M.__directCustomPeriodUiV1){
+    M.__directCustomPeriodUiV1 = true;
 
-    function ensureRangeQuickUi(){
-      const head = document.querySelector("#kasbonRangePopup .kasbon-range-head");
-      const monthLabel = document.getElementById("kasbonRangeMonth");
-      if(!head || !monthLabel || document.getElementById("kasbonRangeQuickMonth")) return;
+    function installDirectPeriodUi(){
+      const wrap=document.getElementById("kasbonRangeWrap");
+      const start=document.getElementById("kasbonFilterStart");
+      const end=document.getElementById("kasbonFilterEnd");
+      if(!wrap || !start || !end || wrap.dataset.directPeriodUi==="1") return;
+      wrap.dataset.directPeriodUi="1";
 
-      const wrap = document.createElement("div");
-      wrap.className = "kasbon-range-quick-selects";
-      wrap.innerHTML = `
-        <select id="kasbonRangeQuickMonth" aria-label="Pilih bulan kalender">
-          ${M.MONTH_ID.map((name,i)=>`<option value="${i}">${name}</option>`).join("")}
-        </select>
-        <select id="kasbonRangeQuickYear" aria-label="Pilih tahun kalender"></select>
+      const trigger=document.getElementById("kasbonRangeTrigger");
+      const popup=document.getElementById("kasbonRangePopup");
+      if(trigger) trigger.hidden=true;
+      if(popup) popup.hidden=true;
+
+      start.classList.remove("kasbon-date-sr");
+      end.classList.remove("kasbon-date-sr");
+      start.removeAttribute("tabindex");
+      end.removeAttribute("tabindex");
+      start.removeAttribute("aria-hidden");
+      end.removeAttribute("aria-hidden");
+
+      const box=document.createElement("div");
+      box.className="kasbon-direct-period";
+      box.innerHTML=`
+        <label class="kasbon-direct-period-item">
+          <small>DARI</small>
+        </label>
+        <span class="kasbon-direct-period-sep">→</span>
+        <label class="kasbon-direct-period-item">
+          <small>SAMPAI</small>
+        </label>
       `;
-      monthLabel.replaceWith(wrap);
 
-      const monthSel = wrap.querySelector("#kasbonRangeQuickMonth");
-      const yearSel = wrap.querySelector("#kasbonRangeQuickYear");
-      const thisYear = new Date().getFullYear();
-      const minYear = Math.min(2024, thisYear - 2);
-      const maxYear = Math.max(2028, thisYear + 2);
-      for(let y=minYear;y<=maxYear;y++){
-        const opt=document.createElement("option");
-        opt.value=String(y);
-        opt.textContent=String(y);
-        yearSel.appendChild(opt);
-      }
+      const labels=box.querySelectorAll(".kasbon-direct-period-item");
+      labels[0].appendChild(start);
+      labels[1].appendChild(end);
+      wrap.appendChild(box);
 
-      const sync = () => {
-        if(Number.isInteger(M._rangeViewMonth)) monthSel.value=String(M._rangeViewMonth);
-        if(Number.isFinite(Number(M._rangeViewYear))) yearSel.value=String(M._rangeViewYear);
+      const sync=()=>{
+        if(start.value && end.value && end.value < start.value) end.value=start.value;
+        M.syncGlobalHeaderContext?.();
       };
-      sync();
+      start.addEventListener("change",sync);
+      end.addEventListener("change",sync);
 
-      [monthSel,yearSel].forEach(el=>{
-        el.addEventListener("click",e=>e.stopPropagation());
-        el.addEventListener("change",()=>{
-          M._rangeViewMonth=Number(monthSel.value);
-          M._rangeViewYear=Number(yearSel.value);
-          M.renderRangeCalendar();
-          sync();
-        });
-      });
-
-      if(!document.getElementById("kasbonRangeQuickMonthStyle")){
+      if(!document.getElementById("kasbonDirectPeriodStyle")){
         const style=document.createElement("style");
-        style.id="kasbonRangeQuickMonthStyle";
+        style.id="kasbonDirectPeriodStyle";
         style.textContent=`
-          .kasbon-range-quick-selects{display:flex;align-items:center;justify-content:center;gap:6px;min-width:172px}
-          .kasbon-range-quick-selects select{height:34px;border:1px solid rgba(212,175,55,.42);border-radius:9px;background:#17150d;color:#f8e7a2;padding:0 8px;font:800 12px/1 'Source Sans 3',sans-serif;outline:none;cursor:pointer}
-          .kasbon-range-quick-selects select:first-child{min-width:104px}
-          .kasbon-range-quick-selects select:focus{border-color:#f2c230;box-shadow:0 0 0 2px rgba(242,194,48,.12)}
+          #kasbonRangeWrap{min-width:430px}
+          #kasbonRangeWrap>span{display:block;margin-bottom:6px}
+          .kasbon-direct-period{display:grid;grid-template-columns:minmax(160px,1fr) auto minmax(160px,1fr);align-items:end;gap:10px}
+          .kasbon-direct-period-item{display:flex;flex-direction:column;gap:5px;min-width:0}
+          .kasbon-direct-period-item small{font-size:10px;font-weight:900;letter-spacing:.08em;color:#d4af37}
+          .kasbon-direct-period-item input[type="date"]{display:block!important;width:100%!important;height:42px!important;box-sizing:border-box;border:1px solid rgba(212,175,55,.35)!important;border-radius:10px!important;background:#121417!important;color:#f5f5f5!important;padding:0 12px!important;font:800 13px/1 'Source Sans 3',sans-serif!important;opacity:1!important;position:static!important;clip:auto!important;clip-path:none!important;overflow:visible!important}
+          .kasbon-direct-period-item input[type="date"]:focus{outline:none!important;border-color:#f2c230!important;box-shadow:0 0 0 2px rgba(242,194,48,.12)!important}
+          .kasbon-direct-period-item input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer;filter:invert(82%) sepia(67%) saturate(591%) hue-rotate(351deg) brightness(98%)}
+          .kasbon-direct-period-sep{padding-bottom:11px;color:#d4af37;font-size:18px;font-weight:900}
+          @media(max-width:900px){#kasbonRangeWrap{min-width:100%}.kasbon-direct-period{grid-template-columns:1fr}.kasbon-direct-period-sep{display:none}}
         `;
         document.head.appendChild(style);
       }
     }
 
-    const originalOpenRangePopup = M.openRangePopup.bind(M);
-    M.openRangePopup = function(...args){
-      const result = originalOpenRangePopup(...args);
-      ensureRangeQuickUi();
-      const monthSel=document.getElementById("kasbonRangeQuickMonth");
-      const yearSel=document.getElementById("kasbonRangeQuickYear");
-      if(monthSel) monthSel.value=String(this._rangeViewMonth);
-      if(yearSel) yearSel.value=String(this._rangeViewYear);
-      return result;
-    };
-
-    const originalRenderRangeCalendar = M.renderRangeCalendar.bind(M);
-    M.renderRangeCalendar = function(...args){
-      const result=originalRenderRangeCalendar(...args);
-      ensureRangeQuickUi();
-      const monthSel=document.getElementById("kasbonRangeQuickMonth");
-      const yearSel=document.getElementById("kasbonRangeQuickYear");
-      if(monthSel) monthSel.value=String(this._rangeViewMonth);
-      if(yearSel) yearSel.value=String(this._rangeViewYear);
+    const originalMountUi=M.mountUi.bind(M);
+    M.mountUi=async function(...args){
+      const result=await originalMountUi(...args);
+      installDirectPeriodUi();
       return result;
     };
   }
