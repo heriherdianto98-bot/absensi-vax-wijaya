@@ -1,8 +1,9 @@
-/* VAX ERP — Payroll Toolbar Compact UI V3
+/* VAX ERP — Payroll Toolbar Compact UI V4
    UI ONLY.
    - Compact toolbar action buttons/icons.
    - Refresh icon spins when Refresh is clicked.
-   - Prevent horizontal page scroll on Payroll viewport.
+   - Prevent horizontal page scroll without clipping custom dropdowns.
+   - Calmer payroll background for easier viewing.
    - Does NOT touch Payroll engine, Kasbon flow, Print/PDF logic, or data.
 */
 (() => {
@@ -53,16 +54,45 @@
       style.id='payrollToolbarCompactUiStyle';
       style.textContent=`
         html,body{max-width:100vw!important;overflow-x:hidden!important}
+        body.payroll-aruskas-theme{background:#10161d!important}
         body.payroll-aruskas-theme .erp-wrapper,
-        body.payroll-aruskas-theme .erp-content,
+        body.payroll-aruskas-theme .erp-content{
+          max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+          background:#10161d!important;
+        }
         body.payroll-aruskas-theme #payrollPage,
         body.payroll-aruskas-theme .payroll-panel,
         body.payroll-aruskas-theme .payroll-toolbar{
           max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
         }
-        body.payroll-aruskas-theme .erp-wrapper{overflow-x:hidden!important}
-        body.payroll-aruskas-theme .erp-content{overflow-x:hidden!important}
-        body.payroll-aruskas-theme #payrollPage{overflow-x:hidden!important}
+        body.payroll-aruskas-theme .erp-wrapper,
+        body.payroll-aruskas-theme .erp-content,
+        body.payroll-aruskas-theme #payrollPage{
+          overflow-x:clip!important;
+          overflow-y:visible!important;
+        }
+        body.payroll-aruskas-theme .payroll-page-head,
+        body.payroll-aruskas-theme .payroll-panel,
+        body.payroll-aruskas-theme .payroll-employee-card,
+        body.payroll-aruskas-theme .erp-metric-card{
+          background:#141c24!important;
+        }
+        body.payroll-aruskas-theme .payroll-filter-card,
+        body.payroll-aruskas-theme .payroll-period-field{
+          background:#17212b!important;
+          overflow:visible!important;
+        }
+        body.payroll-aruskas-theme .payroll-toolbar,
+        body.payroll-aruskas-theme .payroll-panel{
+          overflow:visible!important;
+        }
+        body.payroll-aruskas-theme .payroll-select-shell,
+        body.payroll-aruskas-theme .payroll-select-shell.is-open{
+          overflow:visible!important;
+        }
+        body.payroll-aruskas-theme .payroll-select-menu{
+          z-index:9999!important;
+        }
         .payroll-toolbar{display:grid!important;grid-template-columns:minmax(210px,1fr) minmax(260px,1.2fr) minmax(210px,.85fr) auto!important;gap:10px!important;align-items:end!important}
         .payroll-toolbar>*{min-width:0!important}
         .payroll-toolbar-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important;flex-wrap:nowrap!important;min-width:0!important;max-width:100%!important}
