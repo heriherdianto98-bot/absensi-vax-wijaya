@@ -8,9 +8,9 @@ Does NOT modify Payroll, Cash Out, DailyDataEngine, Monthly engine, or Master da
 Historical-period rule:
 - Only non-capster employees with actual payroll evidence inside the selected
   month may produce MISSING_FIXED_SALARY.
-- A current employee with no row/activity/value in the selected historical
-  month must be ignored by readiness. Example: Fariz joins Sep 2026, therefore
-  he must not block Mekarwangi Aug 2026 where Arya is the historical cashier.
+- Product share alone is NOT sufficient evidence that a fixed-salary employee
+  was active in that historical month. This prevents training/backfill product
+  rows from creating false salary blockers.
 =========================================================
 */
 "use strict";
@@ -34,12 +34,30 @@ const LaporanBulananReadiness = {
     return Boolean(d && (!start||d>=start) && (!end||d<=end));
   },
 
-  hasPeriodPayrollEvidence(row,start,end){
+  hasFixedSalaryPeriodEvidence(row,start,end){
     if(!row)return false;
-    if(Array.isArray(row.daily) && row.daily.some(d=>this.rowInRange(d,start,end))) return true;
+    const daily=(Array.isArray(row.daily)?row.daily:[]).filter(d=>this.rowInRange(d,start,end));
+
+    // Daily evidence that really belongs to payroll employment for a fixed-salary
+    // worker. Product share by itself is intentionally excluded because product
+    // training/backfill rows can be created after the historical period.
+    if(daily.some(d=>[
+      d?.gajiPokok,
+      d?.denda,
+      d?.kasbon,
+      d?.bonusInsentif,
+      d?.bonusKpi
+    ].some(v=>Math.abs(this.number(v))>0))) return true;
+
     const s=row.summary||{};
-    return [s.gajiPokok,s.gajiKotor,s.denda,s.kasbon,s.bonusInsentif,s.bonusKpi,s.bonusProduk,s.gajiBersih,s.totalService]
-      .some(v=>Math.abs(this.number(v))>0);
+    return [
+      s.gajiPokok,
+      s.gajiKotor,
+      s.denda,
+      s.kasbon,
+      s.bonusInsentif,
+      s.bonusKpi
+    ].some(v=>Math.abs(this.number(v))>0);
   },
 
   validate({report,payrollDataset,cabangId}={}){
@@ -49,7 +67,7 @@ const LaporanBulananReadiness = {
     const payrollRows=Array.isArray(payrollDataset?.payroll)?payrollDataset.payroll:[];
     const branchRows=payrollRows.filter(r=>Number(r?.homeCabangId)===id && !r?.isBackupCashoutFloating);
     const nonCapster=branchRows.filter(r=>!r?.isCapster);
-    const periodRelevantNonCapster=nonCapster.filter(r=>this.hasPeriodPayrollEvidence(r,start,end));
+    const periodRelevantNonCapster=nonCapster.filter(r=>this.hasFixedSalaryPeriodEvidence(r,start,end));
     const missingFixedSalary=periodRelevantNonCapster.filter(r=>Boolean(r?.salaryMissing) || String(r?.salarySource||"").toUpperCase()==="MISSING");
     const signals=this.cashOutSignals(report?.pengeluaran?.detail||[]);
 
