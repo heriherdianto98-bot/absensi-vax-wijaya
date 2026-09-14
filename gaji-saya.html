@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gaji Saya | VAX WIJAYA</title>
+    <link rel="stylesheet" href="gaji-saya.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="app">
+    <header class="page-head">
+        <div class="topbar">
+            <div class="topbar-brand"><strong>VAX WIJAYA</strong></div>
+            <div class="topbar-meta"><small>EMPLOYEE</small><b>GAJI</b></div>
+        </div>
+        <h1>GAJI SAYA</h1>
+        <div class="identitas">
+            <p id="namaGaji">Loading...</p>
+            <div class="identitas-meta">
+                <div class="identitas-line"><i class="fa-solid fa-user-tie"></i><span id="jabatanGaji">—</span></div>
+                <div class="identitas-line"><i class="fa-solid fa-location-dot"></i><span id="cabangGaji">—</span></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="gaji-body">
+        <section class="panel period-panel" aria-label="Pilih Periode">
+            <div class="period-head">
+                <h2>Pilih Periode</h2>
+                <p class="period-range" id="periodRangeLabel">—</p>
+            </div>
+            <div class="period-grid">
+                <label class="period-field" for="periodeDari">
+                    <span>Dari</span>
+                    <span class="period-input">
+                        <span id="dariDisplay">—</span>
+                        <input id="periodeDari" type="date" autocomplete="off">
+                    </span>
+                </label>
+                <label class="period-field" for="periodeSampai">
+                    <span>Sampai</span>
+                    <span class="period-input">
+                        <span id="sampaiDisplay">—</span>
+                        <input id="periodeSampai" type="date" autocomplete="off">
+                    </span>
+                </label>
+            </div>
+            <div class="period-actions">
+                <button type="button" id="btnTerapkan" class="btn-apply">Terapkan</button>
+                <button type="button" id="btnCetakSlip" class="btn-print">
+                    <i class="fa-solid fa-print" aria-hidden="true"></i>
+                    <span>Cetak Slip Gaji</span>
+                </button>
+            </div>
+            <p id="periodMessage" class="period-msg" hidden></p>
+        </section>
+
+        <section class="ringkasan" aria-label="Ringkasan Pendapatan">
+            <div class="sum-grid">
+                <article class="sum-card sum-bruto">
+                    <small>SHARE BRUTO</small>
+                    <strong id="valShareBruto">Rp0</strong>
+                </article>
+                <article class="sum-card sum-denda">
+                    <small>TOTAL DENDA</small>
+                    <strong id="valTotalDenda">Rp0</strong>
+                </article>
+            </div>
+            <article class="sum-card sum-net">
+                <small>NET DITERIMA</small>
+                <strong id="valNetDiterima">Rp0</strong>
+                <span class="sum-ghost" aria-hidden="true"><i class="fa-solid fa-wallet"></i></span>
+            </article>
+            <p class="sum-helper">Net = Share Bruto - Total Denda</p>
+        </section>
+
+        <section class="panel cmp-panel" aria-label="Perbandingan Periode">
+            <h2>Perbandingan Periode</h2>
+            <ul class="cmp-list">
+                <li>
+                    <span>Periode Ini</span>
+                    <b id="cmpPeriodeIni">Rp0</b>
+                </li>
+                <li>
+                    <span>Periode Sebelumnya</span>
+                    <b id="cmpPeriodePrev">Rp0</b>
+                </li>
+                <li>
+                    <span>Selisih</span>
+                    <b id="cmpSelisih">Rp0</b>
+                </li>
+                <li>
+                    <span>Perubahan</span>
+                    <b class="cmp-change">
+                        <span class="cmp-trend is-flat" aria-hidden="true"><i class="fa-solid fa-minus"></i></span>
+                        <span id="cmpPerubahan">0%</span>
+                    </b>
+                </li>
+            </ul>
+        </section>
+
+        <section class="panel daily-panel" aria-label="Rincian Harian">
+            <div class="daily-head">
+                <h2>Rincian Harian</h2>
+                <p class="gaji-note">Nilai pada halaman ini akan mengikuti data penghasilan dan denda yang tercatat di ERP.</p>
+            </div>
+            <div class="daily-scroll">
+                <div id="listHarian" class="daily-list" hidden></div>
+                <div id="harianEmpty" class="daily-empty">
+                    <i class="fa-solid fa-receipt"></i>
+                    <p>Belum ada data untuk periode ini.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav id="bottomNav" aria-label="Navigasi Karyawan">
+        <a href="dashboard-karyawan.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a href="absensi.html"><i class="fa-solid fa-fingerprint"></i><span>Absensi</span></a>
+        <a href="gaji-saya.html" class="active" aria-current="page"><i class="fa-solid fa-file-invoice"></i><span>Gaji Saya</span></a>
+        <a href="profil.html"><i class="fa-solid fa-user"></i><span>Profil</span></a>
+    </nav>
+</div>
+
+<div id="slipPrint" hidden>
+    <footer class="foot" aria-hidden="true">
+        <div><b>ERP VAX WIJAYA</b>SLIP GAJI</div>
+        <div class="c">INTERNAL / CONFIDENTIAL<br>Dokumen self-service karyawan</div>
+        <div class="r"><span id="slipFootDate">—</span><br><span id="slipFootTime">—</span></div>
+    </footer>
+    <div class="sheet">
+        <header class="head">
+            <div class="brand">
+                <img src="ERP.NEW/assets/brand/erp-vax-wijaya.png" alt="ERP VAX WIJAYA" onerror="this.style.display='none'">
+                <div class="copy">
+                    <h1>ERP VAX WIJAYA</h1>
+                    <div class="doc">VAX WIJAYA</div>
+                    <div class="sys">Enterprise Management System</div>
+                </div>
+            </div>
+            <div class="head-right">
+                <div class="mark">Dokumen Karyawan<em>Internal</em></div>
+            </div>
+        </header>
+        <div class="rule"></div>
+        <div class="title-wrap">
+            <div class="t1">SLIP GAJI KARYAWAN</div>
+            <p class="sub">Bukti penghasilan sesuai periode aktif pada Gaji Saya.</p>
+        </div>
+        <section class="meta">
+            <div>
+                <div class="item"><span class="lbl">Nama</span><span class="val" id="slipNama">—</span></div>
+                <div class="item"><span class="lbl">Jabatan</span><span class="val" id="slipJabatan">—</span></div>
+                <div class="item"><span class="lbl">Cabang</span><span class="val" id="slipCabang">—</span></div>
+            </div>
+            <div>
+                <div class="item"><span class="lbl">Periode</span><span class="val" id="slipPeriode">—</span></div>
+                <div class="item"><span class="lbl">Tanggal Cetak</span><span class="val" id="slipPrintDate">—</span></div>
+                <div class="item"><span class="lbl">Waktu Cetak</span><span class="val" id="slipPrintTime">—</span></div>
+            </div>
+        </section>
+        <section class="summary keep">
+            <div class="sum"><span class="lbl">Share Bruto</span><span class="val sm" id="slipShare">Rp0</span></div>
+            <div class="sum"><span class="lbl">Total Denda</span><span class="val sm" id="slipDenda">Rp0</span></div>
+            <div class="sum is-main"><span class="lbl">Net Diterima</span><span class="val sm" id="slipNet">Rp0</span></div>
+        </section>
+        <table class="rpt">
+            <thead>
+                <tr>
+                    <th class="col-date">Tanggal</th>
+                    <th class="num">Share Bruto</th>
+                    <th class="num">Denda</th>
+                    <th class="num">Net Harian</th>
+                </tr>
+            </thead>
+            <tbody id="slipDailyBody">
+                <tr><td colspan="4" class="empty">Belum ada data untuk periode ini.</td></tr>
+            </tbody>
+        </table>
+        <p class="audit-note keep">Nilai pada slip ini mengikuti data penghasilan dan denda yang tercatat di ERP untuk karyawan pemegang akun.</p>
+        <section class="sign keep">
+            <div class="box">
+                <div class="who">Disiapkan oleh,</div>
+                <div class="role">Karyawan</div>
+                <div class="space"></div>
+                <div class="name" id="slipSignName">—</div>
+                <div class="line"></div>
+            </div>
+            <div class="box">
+                <div class="who">Mengetahui,</div>
+                <div class="role">Owner</div>
+                <div class="space"></div>
+                <div class="name">Heri Herdianto</div>
+                <div class="line"></div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="karyawan-session.js"></script>
+<script src="gaji-saya.js"></script>
+</body>
+</html>

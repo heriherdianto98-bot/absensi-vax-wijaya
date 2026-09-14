@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Absensi Karyawan</title>
+<link rel="stylesheet" href="absensi.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ================= 1. TOP BAR — sama dengan Home ================= -->
+
+<header class="topbar">
+    <div class="topbar-brand">
+        <strong>VAX WIJAYA</strong>
+    </div>
+    <div class="topbar-meta">
+        <small>Powered by <b>Heri Herdianto</b></small>
+    </div>
+</header>
+
+<!-- ================= 2. PROFILE / SESSION ================= -->
+
+<section class="profile-card" aria-label="Profil karyawan">
+    <img
+        id="fotoKaryawan"
+        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23111111'/%3E%3Ccircle cx='32' cy='24' r='10' fill='%23d4a017'/%3E%3Cpath d='M14 56c2.4-12 12.2-18 18-18s15.6 6 18 18' fill='%23d4a017'/%3E%3C/svg%3E"
+        alt="Foto profil">
+
+    <div class="profile-copy">
+        <p class="home-greet" id="greetingTitle">Selamat Pagi</p>
+        <h1 id="namaKaryawan">Loading...</h1>
+        <p class="profile-line">
+            <i class="fas fa-briefcase" aria-hidden="true"></i>
+            <span id="jabatan"></span>
+        </p>
+        <p class="profile-line">
+            <i class="fas fa-location-dot" aria-hidden="true"></i>
+            <span id="kodeCabang"></span>
+        </p>
+        <label id="statusKaryawan">Karyawan Aktif</label>
+    </div>
+</section>
+
+<p id="greetingMessage" class="sr-only">Semoga hari ini penuh semangat.</p>
+<span id="emojiGreeting" hidden>☀️</span>
+
+<main class="absen-body">
+
+    <h2 class="room-title">Absensi</h2>
+
+    <div class="absen-hero">
+        <section class="card cabang" aria-label="Cabang operasional">
+            <div class="left">
+                <p>Cabang</p>
+                <h3 id="namaCabang">Mendeteksi cabang...</h3>
+                <p>Jam Masuk</p>
+                <h4 id="jamMasuk">10:00 WIB</h4>
+            </div>
+        </section>
+
+        <section class="card card-jam" aria-label="Waktu sekarang">
+            <small>WAKTU SEKARANG</small>
+            <h1 id="jam"></h1>
+            <span id="tanggal"></span>
+        </section>
+    </div>
+
+    <!-- ================= LOKASI ================= -->
+
+    <section class="card lokasi" aria-label="Lokasi GPS">
+        <div class="lokasi-left">
+            <small>Lokasi Anda</small>
+            <p class="green" id="statusLokasi">Mendeteksi lokasi...</p>
+            <small>Jarak ke Cabang</small>
+            <h2 id="jarak">-</h2>
+            <small id="radiusInfo">Radius maksimal - meter</small>
+        </div>
+        <div class="lokasi-right">
+            <div class="radar">
+                <div class="wave wave1"></div>
+                <div class="wave wave2"></div>
+                <div class="wave wave3"></div>
+                <div class="center-dot">
+                    <i class="fas fa-location-dot"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= BULAN INI ================= -->
+
+    <section class="card statistik" aria-label="Ringkasan bulan ini">
+        <h3>Ringkasan Bulan Ini</h3>
+        <div class="grid-stat">
+            <div class="item item-hadir">
+                <h2 id="hadir">0</h2>
+                <span>Masuk</span>
+            </div>
+            <div class="item item-late">
+                <h2 id="terlambat">0</h2>
+                <span>Terlambat</span>
+            </div>
+            <div class="item item-izin">
+                <h2 id="izin">0</h2>
+                <span>Izin</span>
+            </div>
+            <div class="item item-sakit">
+                <h2 id="sakit">0</h2>
+                <span>Sakit</span>
+            </div>
+            <div class="item item-libur">
+                <h2 id="libur">0</h2>
+                <span>Libur</span>
+            </div>
+            <div class="item item-denda">
+                <h2 id="denda">Rp0</h2>
+                <span>Total Denda</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="card info">
+        <div class="today-clock" aria-label="Jam absensi hari ini">
+            <span>Jam Masuk <b id="jamMasukHariIni">—</b></span>
+            <span>Jam Pulang <b id="jamPulangHariIni">—</b></span>
+        </div>
+        <p id="infoAbsen">Pastikan Anda berada dalam area cabang untuk melakukan absensi.</p>
+    </section>
+
+    <div class="absen-action">
+        <a href="izin.html" id="btnAjukanIzinLibur" class="izin-shortcut" aria-label="Ajukan Izin, Libur, atau Sakit">
+            <i class="fas fa-file-signature" aria-hidden="true"></i>
+            <span>Ajukan Izin / Libur / Sakit</span>
+        </a>
+
+        <div class="slider" id="slider">
+            <div class="thumb" id="thumb">
+                <i class="fas fa-fingerprint"></i>
+            </div>
+            <span class="slider-text">Geser untuk Absen Masuk</span>
+        </div>
+
+        <div class="footer-text" id="footerInfo">
+            Absensi hanya dapat dilakukan 1x masuk dan 1x pulang setiap hari.
+        </div>
+    </div>
+
+</main>
+
+<!-- ================= BOTTOM NAV — sama dengan Home ================= -->
+
+<nav id="bottomNav" aria-label="Navigasi utama">
+    <a href="dashboard-karyawan.html">
+        <i class="fas fa-house" aria-hidden="true"></i>
+        <span>Dashboard</span>
+    </a>
+    <a href="absensi.html" class="active" aria-current="page">
+        <i class="fas fa-clock" aria-hidden="true"></i>
+        <span>Absensi</span>
+    </a>
+    <a href="gaji-saya.html">
+        <i class="fas fa-file-invoice" aria-hidden="true"></i>
+        <span>Gaji Saya</span>
+    </a>
+    <a href="profil.html">
+        <i class="fas fa-user" aria-hidden="true"></i>
+        <span>Profil</span>
+    </a>
+</nav>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="karyawan-session.js"></script>
+<script src="absensi.js"></script>
+
+</body>
+</html>

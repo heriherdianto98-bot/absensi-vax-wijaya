@@ -1,238 +1,129 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dashboard Karyawan</title>
-
-<link rel="stylesheet" href="dashboard-karyawan.css">
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Dashboard Karyawan | VAX WIJAYA</title>
+    <link rel="stylesheet" href="dashboard-karyawan.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-
 <body>
-
 <div class="app">
-
-<!-- ================= HEADER ================= -->
-
-<header>
-
-    <div>
-
-        <small>Selamat Datang</small>
-
-        <h2 id="namaKaryawan">
-
-            Loading...
-
-        </h2>
-        <p id="jabatanKaryawan"></p>
-        <p id="cabangKaryawan"></p>
+    <div class="topbar">
+        <div class="topbar-brand"><strong>VAX WIJAYA</strong></div>
+        <div class="topbar-meta"><small>EMPLOYEE</small><b>ONLINE</b></div>
     </div>
 
-    <img
-        id="fotoKaryawan"
-        src="img/default-profile.png"
-        alt="Foto">
-
-</header>
-
-
-
-<!-- ================= GREETING ================= -->
-
-<section class="card greeting">
-
-    <h2 id="greetingTitle">
-
-        Selamat Pagi ☀️
-
-    </h2>
-
-    <p id="greetingMessage">
-
-        Semoga hari ini penuh semangat.
-
-    </p>
-
-</section>
-
-
-
-<!-- ================= STATUS ================= -->
-
-<section class="card">
-
-    <small>Status Hari Ini</small>
-
-    <h2 id="statusAbsen">
-
-        BELUM ABSEN
-
-    </h2>
-
-    <p>
-
-        Jam Kerja :
-        <span id="jamKerja">
-
-            10:00 - 22:00
-
-        </span>
-
-    </p>
-
-    <button id="btnAbsen">
-
-        ABSEN SEKARANG
-
-    </button>
-
-</section>
-
-
-
-<!-- ================= RINGKASAN ================= -->
-
-<section class="card">
-
-<!-- ================= RINGKASAN ================= -->
-
-<section class="card">
-
-    <h3>Ringkasan Bulan Ini</h3>
-
-    <div class="grid">
-
-        <div class="item">
-            <h2 id="totalMasuk">0</h2>
-            <span>Masuk</span>
+    <section class="profile-card">
+        <img id="fotoKaryawan" alt="Foto Karyawan">
+        <div class="profile-copy">
+            <div id="greetingTitle" class="home-greet">Selamat Datang,</div>
+            <h1 id="namaKaryawan">Loading...</h1>
+            <div class="profile-line"><i class="fa-solid fa-user-tie"></i><span id="jabatanKaryawan"></span></div>
+            <div class="profile-line"><i class="fa-solid fa-location-dot"></i><span id="cabangKaryawan"></span></div>
+            <span id="greetingMessage" class="sr-only">Semoga hari ini penuh semangat.</span>
         </div>
+    </section>
 
-        <div class="item">
-            <h2 id="totalLibur">0</h2>
-            <span>Libur</span>
+    <section id="tutupOperasionalBanner" class="profile-card tutup-ops-banner" hidden>
+        <div>
+            <small id="tutupOpsJenis">LIBUR NASIONAL</small>
+            <h2 id="tutupOpsJudul"></h2>
+            <p id="tutupOpsTeks"></p>
         </div>
+    </section>
 
-        <div class="item">
-            <h2 id="totalTerlambat">0</h2>
-            <span>Terlambat</span>
-        </div>
+    <main class="dash-body">
+        <section class="today-section">
+            <h2 class="today-title">Hari Ini</h2>
 
-        <div class="item">
-            <h2 id="totalDenda">Rp0</h2>
-            <span>Denda</span>
-        </div>
+            <div id="kpiCapster" class="today-grid" hidden>
+                <article class="today-item kpi-customer">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-users"></i></span><span class="kpi-label">Customer Hari Ini</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-users"></i></span>
+                    <strong id="todayCustomer" class="kpi-main-value">…</strong>
+                </article>
+                <article class="today-item kpi-service" id="kpiHariIni">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-scissors"></i></span><span class="kpi-label">Service Hari Ini</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-scissors"></i></span>
+                    <div id="todayService" class="service-detail-list"></div>
+                </article>
+                <article class="today-item kpi-share">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-coins"></i></span><span class="kpi-label">Share Bruto</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-coins"></i></span>
+                    <strong id="todayShare" class="kpi-main-value">…</strong>
+                </article>
+                <article class="today-item kpi-pay">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-wallet"></i></span><span class="kpi-label">Hak Dibayar</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-wallet"></i></span>
+                    <strong id="todayPayable" class="kpi-main-value">—</strong>
+                </article>
+            </div>
+            <span id="closingStatus" class="sr-only"></span>
 
-    </div>
+            <div id="kpiKasir" class="today-grid" hidden>
+                <article class="today-item kpi-customer">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-fingerprint"></i></span><span class="kpi-label">Status Absensi</span></div>
+                    <strong id="statusAbsenKasir">BELUM ABSEN</strong>
+                </article>
+                <article class="today-item kpi-service">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-clock"></i></span><span class="kpi-label">Jam Kerja</span></div>
+                    <strong>10:00 - 22:00</strong>
+                </article>
+                <article class="today-item kpi-share">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-calendar-check"></i></span><span class="kpi-label">Masuk Bulan Ini</span></div>
+                    <strong id="totalMasukKasir">0</strong>
+                </article>
+                <article class="today-item kpi-pay">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-coins"></i></span><span class="kpi-label">Denda</span></div>
+                    <strong id="totalDendaKasir">Rp0</strong>
+                </article>
+            </div>
+        </section>
 
-</section>
+        <section class="comm-row" aria-label="Pengumuman dan Riwayat">
+            <article class="comm-card comm-announce" id="cardPengumuman" role="link" tabindex="0" aria-label="Buka Pengumuman">
+                <span id="pengumumanBadge" class="comm-new" hidden>0</span>
+                <div class="comm-announce-inner">
+                    <div class="comm-head">
+                        <span class="comm-icon"><i class="fa-solid fa-bullhorn"></i></span>
+                        <h3>Pengumuman</h3>
+                    </div>
+                    <p id="pengumumanPreview">Tidak ada pengumuman baru.</p>
+                    <span class="comm-link">Buka pengumuman <i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <span class="comm-art"><i class="fa-solid fa-bullhorn"></i></span>
+            </article>
 
+            <article class="comm-card comm-ticket" onclick="window.location.href='riwayat.html'">
+                <div class="comm-head"><span class="comm-icon"><i class="fa-solid fa-clock-rotate-left"></i></span><h3>Riwayat</h3></div>
+                <p>Lihat detail kehadiran, izin, libur dan denda.</p>
+                <span class="comm-link">Buka riwayat <i class="fa-solid fa-chevron-right"></i></span>
+                <span class="comm-art"><i class="fa-solid fa-receipt"></i></span>
+            </article>
+        </section>
 
-<!-- ================= MENU CEPAT ================= -->
+        <button type="button" id="btnAbsen" class="ai-hero" aria-label="Buka Absensi">
+            <span class="ai-hero-avatar"><i class="fa-solid fa-fingerprint"></i></span>
+            <span class="ai-hero-copy"><strong>Absensi Sekarang</strong><small>Masuk, pulang, izin atau libur</small></span>
+            <span class="ai-hero-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="ai-hero-mic"><i class="fa-solid fa-chevron-right"></i></span>
+        </button>
 
-<section class="card">
+        <p id="pengumuman" class="home-legacy">Belum ada pengumuman.</p>
+    </main>
 
-<h3>Menu Cepat</h3>
-
-<div class="menu-grid">
-
-<a href="absensi.html">
-
-<i class="fas fa-fingerprint"></i>
-
-<span>Absensi</span>
-
-</a>
-
-<a href="riwayat.html">
-
-<i class="fas fa-clock-rotate-left"></i>
-
-<span>Riwayat</span>
-
-</a>
-
-<a href="profil.html">
-
-<i class="fas fa-user"></i>
-
-<span>Profil</span>
-
-</a>
-
+    <nav id="bottomNav" aria-label="Navigasi Karyawan">
+        <a href="dashboard-karyawan.html" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a href="absensi.html"><i class="fa-solid fa-fingerprint"></i><span>Absensi</span></a>
+        <a href="gaji-saya.html"><i class="fa-solid fa-file-invoice"></i><span>Gaji Saya</span></a>
+        <a href="profil.html"><i class="fa-solid fa-user"></i><span>Profil</span></a>
+    </nav>
 </div>
 
-</section>
-
-
-
-<!-- ================= PENGUMUMAN ================= -->
-
-<section class="card">
-
-<h3>Pengumuman</h3>
-
-<p id="pengumuman">
-
-Belum ada pengumuman.
-
-</p>
-
-</section>
-
-
-
-<!-- ================= BOTTOM MENU ================= -->
-
-<nav id="bottomNav">
-
-<a class="active">
-
-<i class="fas fa-house"></i>
-
-<span>Dashboard</span>
-
-</a>
-
-<a href="absensi.html">
-
-<i class="fas fa-fingerprint"></i>
-
-<span>Absensi</span>
-
-</a>
-
-<a href="riwayat.html">
-
-<i class="fas fa-clock-rotate-left"></i>
-
-<span>Riwayat</span>
-
-</a>
-
-<a href="profil.html">
-
-<i class="fas fa-user"></i>
-
-<span>Profil</span>
-
-</a>
-
-</nav>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-
+<script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan.js"></script>
-
 </body>
 </html>
