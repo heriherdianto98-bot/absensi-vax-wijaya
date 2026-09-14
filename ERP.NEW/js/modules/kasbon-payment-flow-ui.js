@@ -322,6 +322,13 @@ Scope: Kasbon UI integration only.
   const originalLoadList = M.loadList.bind(M);
   M.loadList = async function(...args){
     const result = await originalLoadList(...args);
+    const visibleRows = (M.rows || []).filter(row => String(row?.status || "").toUpperCase() !== "LUNAS");
+    if(visibleRows.length !== (M.rows || []).length){
+      M.rows = visibleRows;
+      M.renderSummary?.();
+      M.renderOwnerQueue?.();
+      M.renderTable?.();
+    }
     ensureUi();
     addMethodBadges();
     return result;
