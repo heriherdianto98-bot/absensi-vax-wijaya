@@ -9,11 +9,11 @@ Tujuan:
 - Tidak mengubah total gaji, biaya, laba, Cash Out source, Payroll source,
   LaporanBulananEngine, immutable snapshot, atau print engine yang LOCK.
 
-Cara kerja:
-- Menyimpan referensi report consumer yang sudah final.
-- Tepat sebelum presenter Print/PDF membaca report, nilai ADJ capster sementara
-  = mapped backup + Free Point.
-- Setelah HTML print selesai dibentuk, nilai mapped dikembalikan persis seperti semula.
+Catatan:
+- Print Enhancements mengganti event handler tombol Print/PDF langsung ke enhancedOpen.
+- Karena itu bridge ini dipasang SETELAH enhancement dan mengganti handler tombol saja.
+- Saat print berjalan, mapped capster sementara = mapped backup + Free Point.
+- Setelah HTML print selesai dibentuk, mapped dikembalikan persis seperti semula.
 */
 (() => {
   if(typeof window==="undefined" || window.__VAX_LB_PRINT_FREEPOINT_BRIDGE__) return;
@@ -31,8 +31,14 @@ Cara kerja:
     if(report) reports.add(report);
   }
 
-  async function withPrintAdjustment(baseOpen,context,mode){
+  function collectLastReport(){
+    collect(window.LaporanBulananInvestorShareBridge?.lastReport);
+  }
+
+  async function runWithFreePoint(openFn,mode){
+    collectLastReport();
     const changed=[];
+
     for(const report of reports){
       const rows=Array.isArray(report?.gaji?.capsterDetail)?report.gaji.capsterDetail:[];
       for(const row of rows){
@@ -44,38 +50,48 @@ Cara kerja:
     }
 
     try{
-      return await baseOpen.call(context,mode);
+      return await openFn(mode);
     }finally{
       for(const item of changed) item.row.mapped=item.mapped;
     }
+  }
+
+  function replaceAction(id,mode){
+    const current=document.getElementById(id);
+    if(!current) return false;
+    if(current.dataset.freePointPrintBridge==="1") return true;
+
+    const fresh=current.cloneNode(true);
+    fresh.dataset.freePointPrintBridge="1";
+    current.replaceWith(fresh);
+    fresh.addEventListener("click",()=>{
+      const api=window.LaporanBulananPrintUI;
+      const openFn=api?.open;
+      if(typeof openFn!=="function") return;
+      runWithFreePoint(openFn,mode);
+    });
+    return true;
   }
 
   function install(){
     if(installed) return true;
     const api=window.LaporanBulananPrintUI;
     if(!api || typeof api.open!=="function") return false;
-    const baseOpen=api.open;
-    if(baseOpen.__freePointPrintBridge) { installed=true; return true; }
 
-    const wrapped=async function(mode="print"){
-      return withPrintAdjustment(baseOpen,api,mode);
-    };
-    Object.defineProperty(wrapped,"__freePointPrintBridge",{value:true});
-    api.open=wrapped;
-    installed=true;
-    return true;
+    const printOk=replaceAction("lbPrintMonthly","print");
+    const pdfOk=replaceAction("lbPdfMonthly","pdf");
+    installed=printOk&&pdfOk;
+    return installed;
   }
 
   document.addEventListener("laporan-bulanan:investor-share",event=>{
     collect(event.detail);
-    install();
+    if(!installed) install();
   });
 
-  if(!install()){
-    let tries=0;
-    const timer=setInterval(()=>{
-      tries+=1;
-      if(install()||tries>=30) clearInterval(timer);
-    },100);
-  }
+  let tries=0;
+  const timer=setInterval(()=>{
+    tries+=1;
+    if(install()||tries>=50) clearInterval(timer);
+  },100);
 })();
