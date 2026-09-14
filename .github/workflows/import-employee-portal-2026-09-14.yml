@@ -1,22 +1,23 @@
 name: Import approved employee portal baseline
 
 on:
-  push:
+  pull_request:
     branches: [main]
-    paths:
-      - '.github/workflows/import-employee-portal-2026-09-14.yml'
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
+  pull-requests: read
 
 jobs:
   import-portal:
+    if: github.head_ref == 'import/employee-portal-2026-09-14'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout canonical ERP-VAX
+      - name: Checkout import branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
       - name: Fetch approved portal baseline only
@@ -54,7 +55,9 @@ jobs:
             cp -f "/tmp/employee-portal-src/$f" "$f"
           done
 
-      - name: Commit only approved portal files to canonical main
+          rm -f ERP.NEW/PORTAL_IMPORT_REQUEST_2026-09-14.md
+
+      - name: Commit only approved portal files
         shell: bash
         run: |
           set -euo pipefail
@@ -78,12 +81,13 @@ jobs:
             riwayat.css \
             riwayat.html \
             riwayat.js \
-            ERP.NEW/assets/brand/erp-vax-wijaya.png
+            ERP.NEW/assets/brand/erp-vax-wijaya.png \
+            ERP.NEW/PORTAL_IMPORT_REQUEST_2026-09-14.md
 
           if git diff --cached --quiet; then
-            echo "Canonical already matches approved portal baseline."
+            echo "Canonical import branch already matches approved portal baseline."
             exit 0
           fi
 
           git commit -m "Import approved employee portal baseline into canonical ERP-VAX"
-          git push origin HEAD:main
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
