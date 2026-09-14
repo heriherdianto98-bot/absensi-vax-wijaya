@@ -47,7 +47,15 @@
     .supervisor-sign .who,.owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}.supervisor-sign .auth-role,.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
     .supervisor-sign .stage,.owner-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center;overflow:visible}.supervisor-sign .ttd img{display:block;width:30mm;height:11mm;object-fit:contain;object-position:center}.owner-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}
     .supervisor-sign .name,.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}.supervisor-sign .supervisor-line,.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}.supervisor-sign .job,.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
-    @media print{.sign{position:fixed;left:0;right:0;bottom:11mm;z-index:4;margin-top:0}.master-foot{position:fixed;left:0;right:0;bottom:0;z-index:5}}
+    @media print{
+      .employee{break-inside:auto;page-break-inside:auto;margin-bottom:1mm}
+      .report-title{margin-bottom:1.3mm}.report-title h2{font-size:12pt}.report-title p{margin-top:.25mm;font-size:6.6pt}
+      .meta{gap:.7mm 8mm;padding:1.2mm 3mm;margin-bottom:1.2mm;font-size:7.1pt}.meta .item{gap:3mm}
+      .emp-head{padding:1mm 3mm}.emp-head h3{font-size:9.6pt}.emp-head p{margin:.2mm 0 0;font-size:6.2pt}.net span{font-size:6.2pt}.net strong{font-size:10.6pt}
+      .tbl th,.tbl td{padding:.43mm .8mm;font-size:5.9pt;line-height:1.04}.tbl th{font-size:5.4pt}.tbl tr{break-inside:avoid;page-break-inside:avoid}
+      .summary{gap:.65mm;padding:.8mm}.sum{padding:.65mm;border-top-width:1mm}.sum span{font-size:5.3pt}.sum strong{margin-top:.2mm;font-size:7.1pt}
+      .sign{position:fixed;left:0;right:0;bottom:11mm;z-index:4;margin-top:0}.master-foot{position:fixed;left:0;right:0;bottom:0;z-index:5}
+    }
     @media screen{body{padding:16px;background:#f3f1ea}.page-frame{background:#fff;max-width:210mm;margin:auto;box-shadow:0 8px 28px rgba(0,0,0,.12)}.page-frame>thead,.page-frame>tfoot{display:table-row-group}.head-space,.foot-space{height:auto}.master-head{height:auto;padding:16px 20px 0}.master-foot{height:auto;margin:0 20px;padding:10px 0 16px}.content{padding:0 20px 20px}}
   `;}
 
