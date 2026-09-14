@@ -20,6 +20,10 @@ Owner-confirmed historical payroll (manual August 2026 sheet):
 - Komisi Produk Rp    45.000
 TOTAL           Rp20.745.000
 
+Owner-confirmed historical non-payroll operational cost:
+- Operasional   Rp 4.915.500
+- Sewa tetap mengikuti Master Sewa ERP aktif.
+
 PENTING:
 - Agustus Mekarwangi masih memakai gaji bulanan untuk tukang cukur.
 - Anugrah tetap masuk sebagai biaya gaji capster Agustus walau kemudian resign.
@@ -52,6 +56,7 @@ PENTING:
   const BACKUP_KASIR=300000;
   const PRODUCT_COMMISSION=45000;
   const TOTAL=20745000;
+  const OPERATIONAL=4915500;
 
   function isTarget(report){
     return Number(report?.branch?.id||0)===10
@@ -60,9 +65,12 @@ PENTING:
   }
 
   function recalc(report){
+    report.pengeluaran=report.pengeluaran||{};
+    report.pengeluaran.operasional=OPERATIONAL;
+    report.pengeluaran.total=OPERATIONAL+num(report.pengeluaran.sewa);
+
     report.laba=report.laba||{};
-    const nonPayrollCost=num(report?.pengeluaran?.operasional)+num(report?.pengeluaran?.sewa);
-    report.laba.totalBiaya=TOTAL+nonPayrollCost;
+    report.laba.totalBiaya=TOTAL+report.pengeluaran.total;
     report.laba.totalPendapatan=num(report?.pendapatan?.total);
     report.laba.labaBersih=report.laba.totalPendapatan-report.laba.totalBiaya;
 
@@ -136,6 +144,8 @@ PENTING:
       backupKasir:BACKUP_KASIR,
       productCommission:PRODUCT_COMMISSION,
       totalPayroll:TOTAL,
+      historicalOperational:OPERATIONAL,
+      rentSource:"MASTER_SEWA_ERP_ACTIVE",
       farizAugustProductOnlyExcludedFromEmployeePayroll:true,
       source:"OWNER_CONFIRMED_LABA_RUGI_MEKARWANGI_AUG2026"
     };
