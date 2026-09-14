@@ -1,0 +1,186 @@
+/* VAX WIJAYA — Gaji Saya custom calendar
+   UI-only: keeps existing periodeDari/periodeSampai values and events. */
+
+.period-input{
+    cursor:pointer;
+}
+
+.period-input::after{
+    content:"\f073";
+    font-family:"Font Awesome 6 Free";
+    font-weight:900;
+    margin-left:auto;
+    padding-left:8px;
+    color:var(--gold);
+    font-size:12px;
+    opacity:.92;
+    pointer-events:none;
+}
+
+.period-input input[type="date"]{
+    pointer-events:none !important;
+}
+
+.vax-calendar-backdrop{
+    position:fixed;
+    inset:0;
+    z-index:9998;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
+}
+
+.vax-calendar-backdrop[hidden]{display:none !important;}
+
+.vax-calendar{
+    width:min(330px, calc(100vw - 34px));
+    border-radius:20px;
+    overflow:hidden;
+    background:
+        radial-gradient(90% 60% at 50% 0%,rgba(255,217,92,.11),transparent 52%),
+        #0b0b0b;
+    border:1px solid rgba(255,217,92,.55);
+    box-shadow:0 22px 70px rgba(0,0,0,.72),0 0 0 1px rgba(255,255,255,.025) inset;
+    color:#fff;
+}
+
+.vax-cal-head{
+    display:grid;
+    grid-template-columns:38px 1fr 38px;
+    align-items:center;
+    gap:6px;
+    padding:13px 13px 11px;
+    border-bottom:1px solid rgba(255,217,92,.18);
+}
+
+.vax-cal-nav{
+    width:36px;
+    height:36px;
+    display:grid;
+    place-items:center;
+    border-radius:11px;
+    border:1px solid rgba(255,217,92,.28);
+    background:#121212;
+    color:var(--gold);
+    cursor:pointer;
+}
+
+.vax-cal-nav:active{transform:scale(.96);}
+
+.vax-cal-title{
+    text-align:center;
+    min-width:0;
+}
+
+.vax-cal-title strong{
+    display:block;
+    color:#fff;
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:.02em;
+}
+
+.vax-cal-title small{
+    display:block;
+    margin-top:2px;
+    color:var(--gold);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+}
+
+.vax-cal-body{padding:10px 12px 12px;}
+
+.vax-cal-week,
+.vax-cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:4px;
+}
+
+.vax-cal-week{
+    margin-bottom:5px;
+}
+
+.vax-cal-week span{
+    text-align:center;
+    color:#8e8e8e;
+    font-size:10px;
+    font-weight:700;
+    line-height:24px;
+}
+
+.vax-cal-day{
+    aspect-ratio:1;
+    min-width:0;
+    display:grid;
+    place-items:center;
+    border:0;
+    border-radius:10px;
+    background:transparent;
+    color:#eee;
+    font-size:13px;
+    font-weight:650;
+    cursor:pointer;
+}
+
+.vax-cal-day:hover{
+    background:rgba(255,217,92,.09);
+    color:#fff;
+}
+
+.vax-cal-day.is-outside{
+    color:#555;
+}
+
+.vax-cal-day.is-today{
+    box-shadow:inset 0 0 0 1px rgba(255,217,92,.5);
+    color:var(--gold-soft);
+}
+
+.vax-cal-day.is-selected{
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold));
+    color:#111;
+    font-weight:900;
+    box-shadow:0 5px 14px rgba(255,217,92,.18);
+}
+
+.vax-cal-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:10px 12px 12px;
+    border-top:1px solid rgba(255,217,92,.13);
+}
+
+.vax-cal-action{
+    min-height:34px;
+    padding:0 12px;
+    border-radius:10px;
+    border:1px solid rgba(255,217,92,.25);
+    background:#121212;
+    color:#d7d7d7;
+    font-size:11px;
+    font-weight:750;
+    cursor:pointer;
+}
+
+.vax-cal-action.is-today{
+    margin-left:auto;
+    color:#151515;
+    border-color:var(--gold);
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold));
+}
+
+@media (max-width:380px){
+    .vax-calendar-backdrop{padding:12px;}
+    .vax-calendar{width:min(316px, calc(100vw - 24px));}
+    .vax-cal-body{padding:9px 10px 10px;}
+    .vax-cal-grid,.vax-cal-week{gap:3px;}
+}
