@@ -9,21 +9,24 @@ Scope sangat sempit:
 - Periode 2026-08-01 s.d. 2026-08-31
 
 Owner-confirmed historical payroll (manual August 2026 sheet):
-- Anugrah       Rp   600.000
-- Anwar         Rp 3.750.000
-- Tian          Rp 4.200.000
-- Irpan         Rp 4.350.000
-- Buton         Rp 4.650.000
-- Tim Akunting  Rp   500.000
-- Arya          Rp 2.350.000 (Gaji Pokok 2.200.000 + Bonus KPI 150.000)
+- Anugrah       Rp   600.000  (Tukang Cukur; resign setelah periode ini)
+- Anwar         Rp 3.750.000  (Tukang Cukur)
+- Tian          Rp 4.200.000  (Tukang Cukur)
+- Irpan         Rp 4.350.000  (Tukang Cukur)
+- Buton         Rp 4.650.000  (Tukang Cukur)
+- Tim Akunting  Rp   500.000  (SVP)
+- Arya          Rp 2.350.000  (Kasir; Gaji Pokok 2.200.000 + Bonus KPI 150.000)
 - Backup Kasir  Rp   300.000
 - Komisi Produk Rp    45.000
 TOTAL           Rp20.745.000
 
 PENTING:
 - Agustus Mekarwangi masih memakai gaji bulanan untuk tukang cukur.
+- Anugrah tetap masuk sebagai biaya gaji capster Agustus walau kemudian resign.
+- Tim Akunting Rp500.000 diklasifikasikan sebagai Gaji SVP, bukan payroll kasir/capster.
 - Fariz baru mulai September; row product-only training/backfill Agustus tidak
   boleh mengubah historical payroll ownership Agustus.
+- Mulai September Mekarwangi kembali mengikuti engine payroll/provider normal.
 - Tidak mengubah PayrollUnifiedEngine, LaporanBulananEngine, DailyDataEngine,
   Supabase source, Cash Out, Arus Kas, maupun snapshot immutable.
 */
@@ -37,7 +40,7 @@ PENTING:
   const baseLoad=api.loadMonth.bind(api);
   const num=v=>{const n=Number(v||0);return Number.isFinite(n)?n:0;};
   const CAPSTERS=[
-    {nama:"Anugrah",amount:600000},
+    {nama:"Anugrah",amount:600000,statusHistoris:"RESIGN_AFTER_AUGUST_2026"},
     {nama:"Anwar",amount:3750000},
     {nama:"Tian",amount:4200000},
     {nama:"Irpan",amount:4350000},
@@ -45,7 +48,7 @@ PENTING:
   ];
   const CAPSTER_TOTAL=CAPSTERS.reduce((s,r)=>s+r.amount,0); // 17.550.000
   const ARYA_TOTAL=2350000;
-  const SVP=500000;
+  const SVP=500000; // Tim Akunting = SVP
   const BACKUP_KASIR=300000;
   const PRODUCT_COMMISSION=45000;
   const TOTAL=20745000;
@@ -92,6 +95,7 @@ PENTING:
       protek:0,
       total:row.amount,
       isBackup:false,
+      statusHistoris:row.statusHistoris||null,
       source:"OWNER_CONFIRMED_MONTHLY_SALARY_MEKARWANGI_AUG2026"
     }));
     report.gaji.capsterDetailTotal=CAPSTER_TOTAL;
@@ -111,7 +115,7 @@ PENTING:
     }];
     report.gaji.nonCapsterPayroll=ARYA_TOTAL;
 
-    // Historical August product commission is kept as a branch payroll cost,
+    // Historical August product commission is kept as branch payroll cost,
     // but is not attributed to Fariz because he starts in September.
     report.gaji.payrollDetail=(report.gaji.payrollDetail||[]).filter(row=>Number(row?.employeeId)!==48);
 
@@ -123,9 +127,12 @@ PENTING:
       branchId:10,
       period:"2026-08",
       model:"MONTHLY_SALARY_ALL_STAFF",
+      temporaryHistoricalOnly:true,
+      septemberAndLaterUseNormalEngine:true,
       capsterMonthlySalary:CAPSTER_TOTAL,
+      anugrah:{amount:600000,role:"CAPSTER",status:"RESIGN_AFTER_AUGUST_2026"},
       aryaSalary:ARYA_TOTAL,
-      svp:SVP,
+      svp:{label:"Tim Akunting",amount:SVP,role:"SVP"},
       backupKasir:BACKUP_KASIR,
       productCommission:PRODUCT_COMMISSION,
       totalPayroll:TOTAL,
