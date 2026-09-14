@@ -1,4 +1,4 @@
-/* VAX ERP — Payroll Kasbon Monthly Bridge V3
+/* VAX ERP — Payroll Kasbon Monthly Bridge V4
    UI/engine bridge only. Keeps locked payroll formula/source ownership intact.
    BULANAN kasbon is deducted by Payroll; HARIAN is paid via SVP daily flow and must not be deducted here.
 
@@ -8,7 +8,9 @@
    - Jika sudah diposting payroll dan outstanding menjadi 0/LUNAS, sumber historis potongan = employee_cash_advance_payments source PAYROLL.
    - Fallback untuk data LUNAS langsung/manual tanpa history PAYROLL: gunakan approved_amount HANYA pada bulan pencairan,
      agar potongan tidak hilang dari payroll bulan terkait dan tidak terbawa berulang ke bulan berikutnya.
-   - Tidak mengubah formula PayrollUnifiedEngine dan tidak menulis Arus Kas.
+   - Begitu payroll periode berhasil dimuat dan kasbon BULANAN benar-benar menjadi potongan payroll,
+     outstanding otomatis diposting melalui RPC canonical lalu status kasbon menjadi LUNAS/nonaktif.
+   - Tidak mengubah formula PayrollUnifiedEngine dan tidak menulis Arus Kas langsung.
 */
 (() => {
   if (typeof PayrollUnifiedEngine === 'undefined' || typeof db === 'undefined') return;
@@ -67,8 +69,6 @@
         deduction=outstanding;
         deductionSource='CURRENT_OUTSTANDING';
       }else if(status==='LUNAS' && disbursedInPeriod && approved>0){
-        // Legacy/direct LUNAS fallback: tombol LUNAS lama dapat menghilangkan outstanding tanpa membuat history PAYROLL.
-        // Simpan efek payroll hanya di bulan pencairannya; jangan carry ke periode berikutnya.
         deduction=approved;
         deductionSource='LUNAS_PERIOD_APPROVED_FALLBACK';
       }
@@ -84,8 +84,6 @@
         original_disbursement_date:r.disbursement_date,
         payroll_deduction_source:deductionSource,
         payroll_payment_amount:historical?.amount||0,
-        // Payroll core memang memproses hanya status AKTIF + current_outstanding > 0.
-        // Normalisasi ini hanya view-model payroll; status database tetap tidak diubah.
         status:'AKTIF',
         current_outstanding:deduction,
         disbursement_date:payrollDate
@@ -113,4 +111,29 @@
       return Number(data||0);
     }
   };
+
+  if(!PayrollUnifiedEngine.__kasbonAutoCloseV1){
+    PayrollUnifiedEngine.__kasbonAutoCloseV1=true;
+    const originalLoadPeriod=PayrollUnifiedEngine.loadPeriod.bind(PayrollUnifiedEngine);
+    PayrollUnifiedEngine.loadPeriod=async function(opts={}){
+      const result=await originalLoadPeriod(opts);
+      const start=String(opts.start||'');
+      const end=String(opts.end||'');
+      const payrollRows=Array.isArray(result?.payroll)?result.payroll:[];
+
+      for(const row of payrollRows){
+        const employeeId=Number(row?.employeeId||0);
+        const payrollKasbon=Number(row?.summary?.kasbon||0);
+        if(!(employeeId>0) || !(payrollKasbon>0)) continue;
+        try{
+          const due=await window.PayrollKasbonMonthlyBridge.getDue(employeeId,end||null);
+          if(!Array.isArray(due) || !due.length) continue;
+          await window.PayrollKasbonMonthlyBridge.postPaidPayroll(employeeId,start||end||null,end||null);
+        }catch(err){
+          console.error('[PayrollKasbonMonthlyBridge] auto-close gagal',employeeId,err);
+        }
+      }
+      return result;
+    };
+  }
 })();
