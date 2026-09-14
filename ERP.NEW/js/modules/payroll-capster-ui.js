@@ -109,19 +109,19 @@
       <td class="num">${money(Math.round(d.gajiPokok||0))}</td>
       <td class="num is-denda">${money(d.denda)}</td>
       <td class="num is-kasbon">${money(d.kasbon)}</td>
-      <td class="num is-product">${money(d.bonusProduk)}</td>
+      <td class="num is-product" title="Sumber harian: product_sales_source.revenue_share">${money(d.bonusProduk||0)}</td>
     </tr>`).join(''):'<tr><td colspan="7" class="payroll-empty">Tidak ada aktivitas pada periode ini.</td></tr>';
     return `<article class="payroll-employee-card" data-employee-id="${row.employeeId}" data-base-net="${Number(s.gajiBersih||0)}" data-base-insentif="${Number(s.bonusInsentif||0)}" data-base-kpi="${Number(s.bonusKpi||0)}">
       <div class="payroll-card-head"><div class="payroll-person"><h3>${escapeHtml(row.namaKaryawan)}</h3><p>${escapeHtml(row.homeCabang)} · ${escapeHtml(row.jabatan)}${row.aktif?'':' · nonaktif'}</p></div><div class="payroll-net"><span>Gaji Bersih</span><strong class="js-net-value">${money(s.gajiBersih)}</strong></div></div>
       ${salaryMasterHtml(row)}
-      <div class="payroll-table-wrap"><table class="payroll-table"><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th class="num">Service</th><th class="num">Gaji Pokok</th><th class="num">Denda</th><th class="num">Kasbon</th><th class="num">Bonus Produk</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="payroll-table-wrap"><table class="payroll-table"><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th class="num">Service</th><th class="num">Gaji Pokok</th><th class="num">Denda</th><th class="num">Kasbon</th><th class="num" title="Share produk per hari dari product_sales_source">Share Produk</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="payroll-summary payroll-summary-unified">
         <div class="payroll-sum"><span>Gaji Pokok</span><strong>${money(s.gajiPokok)}</strong></div>
         <div class="payroll-sum is-denda-card"><span>Denda</span><strong>${money(s.denda)}</strong></div>
         <div class="payroll-sum is-kasbon-card"><span>Kasbon</span><strong>${money(s.kasbon)}</strong></div>
         <div class="payroll-sum is-insentif-card"><span>Bonus Insentif</span><strong class="js-sum-insentif">${money(s.bonusInsentif)}</strong></div>
         <div class="payroll-sum is-kpi-card"><span>Bonus KPI</span><strong class="js-sum-kpi">${money(s.bonusKpi)}</strong></div>
-        <div class="payroll-sum is-product-card"><span>Bonus Produk</span><strong>${money(s.bonusProduk)}</strong></div>
+        <div class="payroll-sum is-product-card"><span>Share Produk</span><strong>${money(s.bonusProduk)}</strong></div>
         <div class="payroll-sum is-net"><span>Gaji Bersih</span><strong class="js-sum-net">${money(s.gajiBersih)}</strong></div>
       </div>
       <div class="payroll-manual"><label><span>Bonus Insentif</span><input class="js-insentif js-money-input" inputmode="numeric" autocomplete="off" value="${rupiahInput(s.bonusInsentif)}"></label><label><span>Bonus KPI</span><input class="js-kpi js-money-input" inputmode="numeric" autocomplete="off" value="${rupiahInput(s.bonusKpi)}"></label><label><span>Catatan</span><input class="js-note" value="${escapeHtml(manualMonth?.byEmployee?.[String(row.employeeId)]?.note||'')}"></label><button type="button" class="payroll-save">Simpan Bonus</button><p class="payroll-save-msg"></p></div>
