@@ -19,6 +19,8 @@ Source audit:
   bonus tersebut ke Hairi agar tidak double count.
 
 PENTING:
+- Hairi historis Cinangsi dan Hairi Backup/Floating adalah dua komponen berbeda.
+  Row backup/floating existing TIDAK boleh diganti atau dihapus.
 - Tidak mengubah PayrollUnifiedEngine.
 - Tidak mengubah LaporanBulananEngine.
 - Tidak mengubah immutable snapshot / Supabase / Arus Kas / Cash Out.
@@ -36,6 +38,7 @@ PENTING:
   const baseApply=api.apply.bind(api);
   const num=v=>{const n=Number(v||0);return Number.isFinite(n)?n:0;};
   const norm=v=>String(v||"").toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+  const HAIRI_HIST_SOURCE="HISTORICAL_CINANGSI_AUG2026_CASHOUT_OWNER_CONFIRMED";
 
   function isTarget(report,payrollDataset){
     const branchId=Number(report?.branch?.id||0);
@@ -64,7 +67,7 @@ PENTING:
     }
   }
 
-  function makeHairiRow(template={}){
+  function makeHairiHistoricalRow(){
     return {
       employeeId:32,
       nama:"Hairi",
@@ -78,10 +81,9 @@ PENTING:
       bonusInsentif:0,
       bonusKpi:150000,
       bonusProduk:0,
-      source:"HISTORICAL_CINANGSI_AUG2026_CASHOUT_OWNER_CONFIRMED",
+      source:HAIRI_HIST_SOURCE,
       payrollCostBasis:"GROSS_COMPENSATION_BEFORE_DEDUCTIONS",
-      isCapster:false,
-      ...template
+      isCapster:false
     };
   }
 
@@ -93,7 +95,7 @@ PENTING:
     const detail=Array.isArray(out.gaji.payrollDetail)?out.gaji.payrollDetail:[];
     let delta=0;
 
-    // 1) Bonus Rp150.000 yang salah melekat ke Rafikri dipindah ke Hairi.
+    // 1) Bonus Rp150.000 yang salah melekat ke Rafikri dipindah ke Hairi historis.
     const rafikri=detail.find(row=>norm(row?.nama)==="rafikri");
     if(rafikri && num(rafikri.bonusKpi)===150000){
       rafikri.bonusKpi=0;
@@ -103,22 +105,14 @@ PENTING:
       delta-=150000;
     }
 
-    // 2) Hairi kasir historis Cinangsi: gaji pokok Rp1.246.154 + bonus Rp150.000.
-    let hairi=detail.find(row=>norm(row?.nama)==="hairi");
-    if(!hairi){
-      hairi=makeHairiRow();
-      detail.push(hairi);
+    // 2) Tambahkan Hairi historis sebagai ROW TERPISAH.
+    // Jangan pernah reuse row Hairi Backup/Floating existing (mis. Rp400.000).
+    let hairiHistorical=detail.find(row=>String(row?.source||"")===HAIRI_HIST_SOURCE);
+    if(!hairiHistorical){
+      hairiHistorical=makeHairiHistoricalRow();
+      detail.push(hairiHistorical);
       out.gaji.bonusKpi=num(out.gaji.bonusKpi)+150000;
       delta+=1396154;
-    }else{
-      const before=num(hairi.amount);
-      const productBonus=num(hairi.bonusProduk); // canonical existing tetap dipertahankan bila ada
-      hairi.gajiPokok=1246154;
-      hairi.bonusKpi=150000;
-      hairi.amount=1246154+150000+productBonus;
-      hairi.source="HISTORICAL_CINANGSI_AUG2026_CASHOUT_OWNER_CONFIRMED";
-      out.gaji.bonusKpi=num(out.gaji.bonusKpi)+Math.max(0,150000-num(hairi.bonusKpi||0));
-      delta+=hairi.amount-before;
     }
 
     out.gaji.payrollDetail=detail;
@@ -129,9 +123,11 @@ PENTING:
       applied:true,
       branchId:9,
       period:"2026-08",
+      hairiHistoricalSeparateRow:true,
       hairiGajiPokok:1246154,
       hairiBonusKpi:150000,
       rafikriBonusKpiMovedToHairi:true,
+      backupFloatingPreserved:true,
       deltaPayroll:delta,
       productBonusUntouched:true,
       source:"MINUTES_HISTORICAL_CASHOUT_2026-08-30"
