@@ -1,18 +1,12 @@
 /* VAX ERP — Payroll Kasbon Monthly Bridge V5
-   Bridge only. Keeps locked payroll formula/source ownership intact.
-   BULANAN kasbon is deducted by Payroll; HARIAN is paid via SVP daily flow and must not be deducted here.
+   Bridge data Kasbon BULANAN untuk Payroll.
 
-   Owner rule:
-   - Kasbon BULANAN tetap tercatat sebagai potongan payroll pada periode terkait walau status sudah LUNAS.
-   - Jika belum diposting payroll, sumber potongan = current_outstanding.
-   - Jika sudah diposting payroll dan outstanding menjadi 0/LUNAS, sumber historis potongan = employee_cash_advance_payments source PAYROLL.
-   - Fallback untuk data LUNAS langsung/manual tanpa history PAYROLL: gunakan approved_amount HANYA pada bulan pencairan,
-     agar potongan tidak hilang dari payroll bulan terkait dan tidak terbawa berulang ke bulan berikutnya.
-   - Begitu payroll periode berhasil dimuat, semua kasbon BULANAN outstanding yang jatuh pada / sebelum akhir periode
-     direkonsiliasi GLOBAL berdasarkan employee_id (tidak tergantung cabang aktif/current master/floating).
-   - Posting tetap melalui RPC canonical erp_kasbon_post_monthly_payroll, sehingga payment history, outstanding,
-     status LUNAS, settled_at dan Arus Kas tetap ditangani backend canonical.
-   - Tidak mengubah formula PayrollUnifiedEngine dan tidak menulis Arus Kas langsung.
+   RULE OWNER:
+   - Pencairan/ACC Kasbon dan Arus Kas TIDAK disentuh di file ini.
+   - Kasbon BULANAN tetap menjadi potongan Payroll sesuai source existing.
+   - Membuka / refresh / print / PDF Payroll TIDAK BOLEH mengubah status Kasbon.
+   - Settlement Kasbon hanya dipanggil oleh aksi finalisasi eksplisit Owner.
+   - Formula PayrollUnifiedEngine tetap LOCK dan tidak diubah.
 */
 (() => {
   if (typeof PayrollUnifiedEngine === 'undefined' || typeof db === 'undefined') return;
@@ -71,6 +65,7 @@
         deduction=outstanding;
         deductionSource='CURRENT_OUTSTANDING';
       }else if(status==='LUNAS' && disbursedInPeriod && approved>0){
+        // Legacy/manual LUNAS fallback: efek potongan tetap terlihat pada bulan pencairan.
         deduction=approved;
         deductionSource='LUNAS_PERIOD_APPROVED_FALLBACK';
       }
@@ -86,7 +81,7 @@
         original_disbursement_date:r.disbursement_date,
         payroll_deduction_source:deductionSource,
         payroll_payment_amount:historical?.amount||0,
-        // View-model payroll only. DB status remains canonical.
+        // Normalisasi view-model Payroll saja. Tidak menulis status database.
         status:'AKTIF',
         current_outstanding:deduction,
         disbursement_date:payrollDate
@@ -112,55 +107,6 @@
       });
       if(error) throw error;
       return Number(data||0);
-    },
-
-    async getGlobalDueEmployees(periodEnd){
-      let q=db
-        .from('employee_cash_advances')
-        .select('employee_id,disbursement_date,request_date,status,current_outstanding,payment_method')
-        .eq('payment_method','BULANAN')
-        .in('status',['DICAIRKAN','AKTIF'])
-        .gt('current_outstanding',0);
-      if(periodEnd) q=q.lte('disbursement_date',periodEnd);
-      const {data,error}=await q;
-      if(error) throw error;
-      return [...new Set((Array.isArray(data)?data:[])
-        .map(r=>Number(r.employee_id||0))
-        .filter(id=>id>0))];
-    },
-
-    async settleGlobalPeriod(payrollPeriod,periodEnd){
-      const employeeIds=await this.getGlobalDueEmployees(periodEnd||null);
-      let totalPosted=0;
-      const errors=[];
-      for(const employeeId of employeeIds){
-        try{
-          totalPosted += await this.postPaidPayroll(employeeId,payrollPeriod,periodEnd||null);
-        }catch(err){
-          errors.push({employeeId,error:err});
-          console.error('[PayrollKasbonMonthlyBridge] global auto-settle gagal',employeeId,err);
-        }
-      }
-      return {employeeIds,totalPosted,errors};
     }
   };
-
-  if(!PayrollUnifiedEngine.__kasbonAutoCloseGlobalV2){
-    PayrollUnifiedEngine.__kasbonAutoCloseGlobalV2=true;
-    const originalLoadPeriod=PayrollUnifiedEngine.loadPeriod.bind(PayrollUnifiedEngine);
-    PayrollUnifiedEngine.loadPeriod=async function(opts={}){
-      const result=await originalLoadPeriod(opts);
-      const start=String(opts.start||'');
-      const end=String(opts.end||'');
-      if(!start || !end) return result;
-
-      try{
-        // GLOBAL: tidak memakai branchId / employeeId filter halaman.
-        await window.PayrollKasbonMonthlyBridge.settleGlobalPeriod(start,end);
-      }catch(err){
-        console.error('[PayrollKasbonMonthlyBridge] global period settle gagal',err);
-      }
-      return result;
-    };
-  }
 })();
