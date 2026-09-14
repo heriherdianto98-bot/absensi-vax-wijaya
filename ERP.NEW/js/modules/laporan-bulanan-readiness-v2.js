@@ -8,9 +8,8 @@ Does NOT modify Payroll, Cash Out, DailyDataEngine, Monthly engine, or Master da
 Historical-period rule:
 - Only non-capster employees with actual payroll evidence inside the selected
   month may produce MISSING_FIXED_SALARY.
-- Product share alone is NOT sufficient evidence that a fixed-salary employee
-  was active in that historical month. This prevents training/backfill product
-  rows from creating false salary blockers.
+- Product-only evidence is not enough to prove a fixed-salary employee belonged
+  to that historical payroll period (training/backfill rows can exist).
 =========================================================
 */
 "use strict";
@@ -34,19 +33,17 @@ const LaporanBulananReadiness = {
     return Boolean(d && (!start||d>=start) && (!end||d<=end));
   },
 
-  hasFixedSalaryPeriodEvidence(row,start,end){
+  hasPeriodPayrollEvidence(row,start,end){
     if(!row)return false;
-    const daily=(Array.isArray(row.daily)?row.daily:[]).filter(d=>this.rowInRange(d,start,end));
 
-    // Daily evidence that really belongs to payroll employment for a fixed-salary
-    // worker. Product share by itself is intentionally excluded because product
-    // training/backfill rows can be created after the historical period.
+    // Product-only/training/backfill rows must not make a fixed-salary employee
+    // historical-period relevant by themselves.
+    const daily=Array.isArray(row.daily)?row.daily.filter(d=>this.rowInRange(d,start,end)):[];
     if(daily.some(d=>[
       d?.gajiPokok,
       d?.denda,
       d?.kasbon,
-      d?.bonusInsentif,
-      d?.bonusKpi
+      d?.service
     ].some(v=>Math.abs(this.number(v))>0))) return true;
 
     const s=row.summary||{};
@@ -56,7 +53,8 @@ const LaporanBulananReadiness = {
       s.denda,
       s.kasbon,
       s.bonusInsentif,
-      s.bonusKpi
+      s.bonusKpi,
+      s.totalService
     ].some(v=>Math.abs(this.number(v))>0);
   },
 
@@ -67,7 +65,7 @@ const LaporanBulananReadiness = {
     const payrollRows=Array.isArray(payrollDataset?.payroll)?payrollDataset.payroll:[];
     const branchRows=payrollRows.filter(r=>Number(r?.homeCabangId)===id && !r?.isBackupCashoutFloating);
     const nonCapster=branchRows.filter(r=>!r?.isCapster);
-    const periodRelevantNonCapster=nonCapster.filter(r=>this.hasFixedSalaryPeriodEvidence(r,start,end));
+    const periodRelevantNonCapster=nonCapster.filter(r=>this.hasPeriodPayrollEvidence(r,start,end));
     const missingFixedSalary=periodRelevantNonCapster.filter(r=>Boolean(r?.salaryMissing) || String(r?.salarySource||"").toUpperCase()==="MISSING");
     const signals=this.cashOutSignals(report?.pengeluaran?.detail||[]);
 
@@ -109,4 +107,20 @@ const LaporanBulananReadiness = {
   }
 };
 
-if(typeof window!=="undefined") window.LaporanBulananReadiness=LaporanBulananReadiness;
+if(typeof window!=="undefined"){
+  window.LaporanBulananReadiness=LaporanBulananReadiness;
+
+  // Load the isolated Mekarwangi Aug-2026 historical payroll adapter only after
+  // all synchronous monthly consumer scripts are available. This remains
+  // consumer-only and does not touch locked engines or source data.
+  const loadMekarwangiHistoricalBridge=()=>{
+    if(window.__VAX_MEKARWANGI_AUG2026_BRIDGE_SCRIPT__) return;
+    window.__VAX_MEKARWANGI_AUG2026_BRIDGE_SCRIPT__=true;
+    const s=document.createElement("script");
+    s.src="../js/modules/laporan-bulanan-mekarwangi-aug-2026-payroll-bridge.js?v=20260914-v1";
+    s.async=false;
+    document.head.appendChild(s);
+  };
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",loadMekarwangiHistoricalBridge,{once:true});
+  else loadMekarwangiHistoricalBridge();
+}
