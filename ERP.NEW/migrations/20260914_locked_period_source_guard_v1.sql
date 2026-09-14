@@ -66,6 +66,12 @@ create trigger trg_guard_locked_daily_recap_source
 before insert or update or delete on public.daily_recap_source
 for each row execute function public.erp_guard_locked_period_source('tanggal');
 
+-- Raw Minutes daily mirror: protect the same historical period from later backfill drift.
+drop trigger if exists trg_guard_locked_minutes_daily on public.minutes_daily;
+create trigger trg_guard_locked_minutes_daily
+before insert or update or delete on public.minutes_daily
+for each row execute function public.erp_guard_locked_period_source('tanggal');
+
 -- Sources used by historical payroll/share/product presenters.
 drop trigger if exists trg_guard_locked_provider_sales_daily_source on public.provider_sales_daily_source;
 create trigger trg_guard_locked_provider_sales_daily_source
@@ -80,6 +86,12 @@ for each row execute function public.erp_guard_locked_period_source('period_star
 drop trigger if exists trg_guard_locked_product_sales_daily_source on public.product_sales_daily_source;
 create trigger trg_guard_locked_product_sales_daily_source
 before insert or update or delete on public.product_sales_daily_source
+for each row execute function public.erp_guard_locked_period_source('activity_date');
+
+-- KPI Ultimate detail is rendered on Tabel Harian and must remain historical too.
+drop trigger if exists trg_guard_locked_kpi_ultimate_sales_source on public.kpi_ultimate_sales_source;
+create trigger trg_guard_locked_kpi_ultimate_sales_source
+before insert or update or delete on public.kpi_ultimate_sales_source
 for each row execute function public.erp_guard_locked_period_source('activity_date');
 
 comment on function public.erp_guard_locked_period_source() is
