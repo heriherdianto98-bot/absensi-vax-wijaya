@@ -10,6 +10,8 @@ Current owner rules:
 - Bonus KPI/Insentif must come from Payroll manual adjustments.
 - Cash Out salary/bonus rows can be used as evidence that data is still
   incomplete, but must not silently replace Payroll.
+- Fixed-salary readiness is period-aware: current employees with zero payroll
+  evidence in the selected month must not create a false blocker for history.
 =========================================================
 */
 "use strict";
@@ -28,12 +30,37 @@ const LaporanBulananReadiness = {
     return out;
   },
 
+  hasPeriodPayrollEvidence(row){
+    if(!row)return false;
+    if(Array.isArray(row.daily) && row.daily.length>0)return true;
+    const s=row.summary||{};
+    return [
+      s.gajiPokok,
+      s.gajiKotor,
+      s.denda,
+      s.kasbon,
+      s.bonusInsentif,
+      s.bonusKpi,
+      s.bonusProduk,
+      s.gajiBersih,
+      s.totalService
+    ].some(v=>Math.abs(this.number(v))>0);
+  },
+
   validate({report,payrollDataset,cabangId}={}){
     const id=Number(cabangId||report?.branch?.id||0);
     const payrollRows=Array.isArray(payrollDataset?.payroll)?payrollDataset.payroll:[];
     const branchRows=payrollRows.filter(r=>Number(r?.homeCabangId)===id && !r?.isBackupCashoutFloating);
     const nonCapster=branchRows.filter(r=>!r?.isCapster);
-    const missingFixedSalary=nonCapster.filter(r=>Boolean(r?.salaryMissing) || String(r?.salarySource||"").toUpperCase()==="MISSING");
+
+    // Historical-period guard:
+    // PayrollUnifiedEngine also returns employees that belong to the branch today.
+    // If an employee had no payroll evidence at all in the selected month, a missing
+    // current master salary must not block an older report (e.g. Fariz Sep join vs
+    // Arya as Mekarwangi cashier in Aug). Historical payroll rows/corrections that
+    // actually belong to the month remain eligible for readiness validation.
+    const periodRelevantNonCapster=nonCapster.filter(r=>this.hasPeriodPayrollEvidence(r));
+    const missingFixedSalary=periodRelevantNonCapster.filter(r=>Boolean(r?.salaryMissing) || String(r?.salarySource||"").toUpperCase()==="MISSING");
     const signals=this.cashOutSignals(report?.pengeluaran?.detail||[]);
 
     const payrollBonusTotal=branchRows.reduce((sum,r)=>sum+this.number(r?.summary?.bonusInsentif)+this.number(r?.summary?.bonusKpi),0);
@@ -97,6 +124,7 @@ const LaporanBulananReadiness = {
       issues,
       evidence:{
         fixedSalaryMissingCount:missingFixedSalary.length,
+        fixedSalaryPeriodRelevantCount:periodRelevantNonCapster.length,
         cashoutCashierSalary:signals.cashierSalary.reduce((s,r)=>s+this.number(r.nominal),0),
         cashoutCashierBonus:cashoutBonusTotal,
         payrollBonus:payrollBonusTotal,
