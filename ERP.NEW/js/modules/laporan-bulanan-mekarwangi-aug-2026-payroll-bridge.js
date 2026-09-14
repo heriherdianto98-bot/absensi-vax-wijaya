@@ -24,6 +24,12 @@ Owner-confirmed historical non-payroll operational cost:
 - Operasional   Rp 4.915.500
 - Sewa tetap mengikuti Master Sewa ERP aktif.
 
+Owner-confirmed investor treatment for this loss month:
+- Beban sewa tetap masuk P&L.
+- Karena cabang rugi, sewa investor bulan ini TIDAK dianggap kas dibayar.
+- Nilai sewa tetap dicatat sebagai kewajiban/hak tertunda investor.
+- Bagi hasil investor/manajemen bulan ini = Rp0.
+
 PENTING:
 - Agustus Mekarwangi masih memakai gaji bulanan untuk tukang cukur.
 - Anugrah tetap masuk sebagai biaya gaji capster Agustus walau kemudian resign.
@@ -43,6 +49,7 @@ PENTING:
 
   const baseLoad=api.loadMonth.bind(api);
   const num=v=>{const n=Number(v||0);return Number.isFinite(n)?n:0;};
+  const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n||0));
   const CAPSTERS=[
     {nama:"Anugrah",amount:600000,statusHistoris:"RESIGN_AFTER_AUGUST_2026"},
     {nama:"Anwar",amount:3750000},
@@ -79,6 +86,65 @@ PENTING:
       const share=report.laba.labaBersih>0&&pct>0?Math.round(report.laba.labaBersih*pct/100):0;
       report.investor.bagiHasil=share;
       report.investor.totalHakBulanIni=share+num(report.investor.sewaDibayar);
+    }
+  }
+
+  function applyInvestorDeferral(report){
+    if(!isTarget(report) || !report?.investor) return report;
+    const rent=num(report.investor.sewaDibayar);
+    const base=num(report.investor.labaDasarPembagian);
+    if(base>0) return report;
+
+    report.investor.sewaKewajiban=rent;
+    report.investor.sewaDibayarAktual=0;
+    report.investor.sewaDitangguhkan=rent;
+    report.investor.statusPembayaranSewa="DITANGGUHKAN_KARENA_RUGI";
+    report.investor.nilaiInvestor=0;
+    report.investor.nilaiManajemen=0;
+    report.investor.bagiHasil=0;
+    report.investor.totalHakBulanIni=0;
+
+    report.diagnostics=report.diagnostics||{};
+    report.diagnostics.mekarwangiAug2026InvestorDeferral={
+      applied:true,
+      bebanSewaTetapDiPnl:true,
+      sewaKewajiban:rent,
+      sewaDibayarAktual:0,
+      sewaDitangguhkan:rent,
+      status:"DITANGGUHKAN_KARENA_RUGI"
+    };
+    return report;
+  }
+
+  function patchInvestorUi(report){
+    if(!isTarget(report) || report?.investor?.statusPembayaranSewa!=="DITANGGUHKAN_KARENA_RUGI") return;
+    const host=document.getElementById("lbInvestorLines");
+    if(!host) return;
+
+    for(const line of host.querySelectorAll(".lb-line")){
+      const span=line.querySelector("span");
+      const strong=line.querySelector("strong");
+      if(String(span?.textContent||"").trim()==="Sewa Dibayar"){
+        span.textContent="Kewajiban Sewa Investor";
+        if(strong) strong.textContent=money(report.investor.sewaKewajiban);
+      }
+    }
+
+    const card=[...host.querySelectorAll(".lb-investor-rights-card")].find(x=>/Hak Investor/i.test(x.querySelector("span")?.textContent||""));
+    if(card){
+      const strong=card.querySelector("strong");
+      const small=card.querySelector("small");
+      if(strong) strong.textContent=money(0);
+      if(small) small.textContent="Tidak dibayar bulan ini · sewa ditangguhkan karena cabang rugi";
+    }
+
+    if(!host.querySelector("[data-vax-rent-deferral-note]")){
+      const note=document.createElement("div");
+      note.className="lb-line";
+      note.setAttribute("data-vax-rent-deferral-note","1");
+      note.innerHTML=`<span>Status Pembayaran Sewa</span><strong>DITANGGUHKAN · ${money(report.investor.sewaDitangguhkan)}</strong>`;
+      const title=host.querySelector(".lb-investor-rights-title");
+      host.insertBefore(note,title||null);
     }
   }
 
@@ -123,8 +189,6 @@ PENTING:
     }];
     report.gaji.nonCapsterPayroll=ARYA_TOTAL;
 
-    // Historical August product commission is kept as branch payroll cost,
-    // but is not attributed to Fariz because he starts in September.
     report.gaji.payrollDetail=(report.gaji.payrollDetail||[]).filter(row=>Number(row?.employeeId)!==48);
 
     recalc(report);
@@ -155,4 +219,11 @@ PENTING:
 
   Object.defineProperty(wrapped,"__mekarwangiAug2026HistoricalFix",{value:true});
   api.loadMonth=wrapped;
+
+  // Investor Share Bridge is loaded after this file. Listen to its final event,
+  // then apply the owner-approved loss-month rent deferral and patch only this UI.
+  document.addEventListener("laporan-bulanan:investor-share",e=>{
+    const report=applyInvestorDeferral(e.detail);
+    setTimeout(()=>patchInvestorUi(report),0);
+  });
 })();
