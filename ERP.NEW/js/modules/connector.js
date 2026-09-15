@@ -19,7 +19,7 @@ const db = window.supabase.createClient(
 /* Page-scoped helper autoload. Tidak menyentuh money engine / Minutes source. */
 (function(){
     const path = String(window.location.pathname || "").toLowerCase();
-    const ASSET_VERSION = "20260915-investor-wa1";
+    const ASSET_VERSION = "20260915-investor-wa-pdf2";
     const loadScript = (src) => new Promise((resolve, reject) => {
         const key = `${src}?v=${ASSET_VERSION}`;
         if(document.querySelector(`script[data-vax-src="${key}"]`)){
@@ -69,6 +69,7 @@ const db = window.supabase.createClient(
 
             if(path.endsWith("/laporan-bulanan-investor.html")){
                 await loadScript("../js/modules/laporan-bulanan-investor-whatsapp-fix.js");
+                await loadScript("../js/modules/laporan-bulanan-investor-pdf-download.js");
             }
         }catch(err){
             console.error("ERP helper autoload gagal:", err);
