@@ -55,7 +55,24 @@
       }
       .lb-branch-option.is-selected::after{content:"✓";color:#5eead4;font-size:13px;font-weight:900}
 
-      /* Investor Revised — dropdown hitam + nama cabang gold, UI ONLY */
+      /* Investor Revised — trigger + dropdown hitam, nama cabang gold, UI ONLY */
+      body.laporan-bulanan-investor-page .lb-branch-trigger{
+        background:#050708!important;
+        color:#e8bd3f!important;
+        border-color:rgba(214,173,47,.55)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 12px rgba(214,173,47,.08)!important;
+      }
+      body.laporan-bulanan-investor-page .lb-branch-trigger:hover,
+      body.laporan-bulanan-investor-page .lb-branch-trigger[aria-expanded="true"]{
+        background:#07090b!important;
+        color:#ffd75a!important;
+        border-color:#d6ad2f!important;
+        box-shadow:0 0 0 2px rgba(214,173,47,.08),0 0 16px rgba(214,173,47,.12)!important;
+      }
+      body.laporan-bulanan-investor-page .lb-branch-trigger-ico{
+        color:#ffd75a!important;
+        filter:drop-shadow(0 0 5px rgba(214,173,47,.35))!important;
+      }
       body.laporan-bulanan-investor-page .lb-branch-popover{
         border-color:rgba(214,173,47,.55)!important;
         background:linear-gradient(165deg,#111315 0%,#080a0c 68%,#050607 100%)!important;
