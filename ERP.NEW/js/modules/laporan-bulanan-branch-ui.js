@@ -54,6 +54,39 @@
         box-shadow:inset 3px 0 0 #2dd4bf,0 0 14px rgba(45,212,191,.08);
       }
       .lb-branch-option.is-selected::after{content:"✓";color:#5eead4;font-size:13px;font-weight:900}
+
+      /* Investor Revised — dropdown cabang GOLD / text hitam, UI ONLY */
+      body.laporan-bulanan-investor-page .lb-branch-popover{
+        border-color:#d6ad2f!important;
+        background:linear-gradient(180deg,#f2cf58 0%,#d9ad2f 100%)!important;
+        color:#090909!important;
+        box-shadow:0 22px 54px rgba(0,0,0,.58),0 0 24px rgba(214,173,47,.22),inset 0 1px 0 rgba(255,255,255,.42)!important;
+        scrollbar-color:#8d6810 #d9ad2f!important;
+      }
+      body.laporan-bulanan-investor-page .lb-branch-option{
+        color:#090909!important;
+        background:transparent!important;
+        font-weight:800!important;
+      }
+      body.laporan-bulanan-investor-page .lb-branch-option:hover,
+      body.laporan-bulanan-investor-page .lb-branch-option.is-keyboard-active{
+        background:rgba(255,255,255,.24)!important;
+        border-color:rgba(74,52,0,.28)!important;
+        color:#000!important;
+      }
+      body.laporan-bulanan-investor-page .lb-branch-option.is-keyboard-active{
+        box-shadow:inset 3px 0 0 #6e5000,0 0 12px rgba(74,52,0,.10)!important;
+      }
+      body.laporan-bulanan-investor-page .lb-branch-option.is-selected{
+        color:#000!important;
+        border-color:rgba(58,42,0,.42)!important;
+        background:rgba(255,255,255,.30)!important;
+        box-shadow:inset 3px 0 0 #5d4300!important;
+      }
+      body.laporan-bulanan-investor-page .lb-branch-option.is-selected::after{
+        color:#000!important;
+      }
+
       body.lb-branch-menu-open{overflow:hidden!important}
       @media(prefers-reduced-motion:reduce){.lb-branch-popover{animation:none}}
     `;
