@@ -3,6 +3,7 @@
 
   const state={status:'idle',lastFetchedAt:null,dataset:null,error:null,source:null,snapshot:null};
   let navObserver=null;
+  let waTarget=null;
 
   function qs(id){return document.getElementById(id);}
   function branchLabel(){return qs('lbBranch')?.selectedOptions?.[0]?.textContent?.trim()||'Cabang';}
@@ -12,6 +13,110 @@
     if(window.INVESTOR_MINUTES_READONLY_API)return String(window.INVESTOR_MINUTES_READONLY_API).replace(/\/$/,'');
     const local=['127.0.0.1','localhost'].includes(location.hostname);
     return local?'http://127.0.0.1:8788':`${location.origin}/api/investor-revised`;
+  }
+
+  function normalizeBranch(value){
+    return String(value||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim()
+      .replace(/^vax wijaya /,'').replace(/^vax wijiaya /,'').replace(/^vax /,'')
+      .replace(/rawa badak/g,'rawabadak').replace(/spbu pagaden/g,'pagaden').replace(/\bsoklat\b/g,'barsel').trim();
+  }
+
+  function normalizePhone(value){
+    let digits=String(value||'').replace(/\D/g,'');
+    if(digits.startsWith('0'))digits=`62${digits.slice(1)}`;
+    return digits;
+  }
+
+  function periodEnd(month){
+    if(!/^\d{4}-\d{2}$/.test(String(month||'')))return '';
+    const [year,mon]=month.split('-').map(Number);
+    const last=new Date(Date.UTC(year,mon,0)).getUTCDate();
+    return `${year}-${String(mon).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
+  }
+
+  async function resolveInvestorWhatsapp(){
+    const branch=branchLabel();
+    const month=monthLabel();
+    const date=periodEnd(month);
+    if(!branch||branch==='Semua Cabang'||!date||!window.db?.from)return null;
+    const {data,error}=await window.db.from('master_investor')
+      .select('branch_name,investor_name,phone_number,effective_from,effective_to,status');
+    if(error)throw error;
+    const want=normalizeBranch(branch);
+    const rows=(data||[]).filter(row=>{
+      if(normalizeBranch(row?.branch_name)!==want)return false;
+      const from=String(row?.effective_from||'0000-00-00').slice(0,10);
+      const to=String(row?.effective_to||'9999-12-31').slice(0,10);
+      return from<=date&&to>=date;
+    }).sort((a,b)=>String(b?.effective_from||'0000-00-00').localeCompare(String(a?.effective_from||'0000-00-00')));
+    const row=rows[0]||null;
+    if(!row)return null;
+    const phone=normalizePhone(row.phone_number);
+    return phone?{phone,name:String(row.investor_name||'Investor').trim(),branch:String(row.branch_name||branch).trim()}:null;
+  }
+
+  function ensureWhatsappStyle(){
+    if(document.getElementById('investor-wa-toolbar-style'))return;
+    const style=document.createElement('style');
+    style.id='investor-wa-toolbar-style';
+    style.textContent=`
+      .laporan-bulanan-investor-page .lb-btn.lb-btn-wa{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;background:linear-gradient(180deg,#24c76a,#15924a)!important;border-color:#43db83!important;color:#fff!important;font-weight:900!important;box-shadow:0 0 14px rgba(36,199,106,.16)!important}
+      .laporan-bulanan-investor-page .lb-btn.lb-btn-wa:hover{background:linear-gradient(180deg,#2bd875,#18a153)!important;border-color:#63e69a!important}
+      .laporan-bulanan-investor-page .lb-btn.lb-btn-wa svg{width:17px;height:17px;display:block;fill:currentColor}
+      .laporan-bulanan-investor-page .lb-btn.lb-btn-wa[disabled]{filter:grayscale(.35);opacity:.48!important}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function ensureWhatsappButton(){
+    let button=qs('lbInvestorWhatsapp');
+    if(button)return button;
+    const actions=document.querySelector('.laporan-bulanan-investor-page .lb-toolbar .lb-actions');
+    if(!actions)return null;
+    ensureWhatsappStyle();
+    button=document.createElement('button');
+    button.type='button';
+    button.id='lbInvestorWhatsapp';
+    button.className='lb-btn lb-btn-wa';
+    button.disabled=true;
+    button.title='WhatsApp Investor';
+    button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a9.5 9.5 0 0 0-8.2 14.3L2.5 21.5l5.3-1.4A9.5 9.5 0 1 0 12 2Zm0 17.2c-1.4 0-2.8-.4-4-1.1l-.3-.2-3.1.8.8-3-.2-.3A7.7 7.7 0 1 1 12 19.2Zm4.3-5.7c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1-1.3-.7-2.3-1.5-3.1-2.7-.2-.3.2-.5.6-1 .1-.1.1-.3 0-.4l-.7-1.6c-.1-.3-.3-.3-.5-.3h-.4c-.2 0-.4.1-.6.3-.6.6-.9 1.3-.9 2.1 0 2.1 1.5 4.1 1.8 4.4.2.3 3 4.6 7.4 6.3 1 .4 1.8.6 2.5.7 1 .1 2-.1 2.7-.6.8-.5 1.3-1.3 1.4-2 .1-.2.1-.4 0-.5-.1-.1-.2-.2-.4-.3Z"/></svg><span>WhatsApp Investor</span>';
+    actions.appendChild(button);
+    button.addEventListener('click',async()=>{
+      const popup=window.open('about:blank','_blank');
+      try{
+        const target=waTarget||await resolveInvestorWhatsapp();
+        if(!target)throw new Error('Nomor WhatsApp Investor belum tersedia di Master Investor untuk cabang/periode ini.');
+        const url=`https://wa.me/${target.phone}`;
+        if(popup)popup.location.href=url;
+        else window.location.href=url;
+      }catch(err){
+        try{popup?.close();}catch(_e){}
+        window.alert(err?.message||'Gagal membuka WhatsApp Investor.');
+      }
+    });
+    return button;
+  }
+
+  async function syncWhatsappButton(){
+    const button=ensureWhatsappButton();
+    if(!button)return;
+    waTarget=null;
+    button.disabled=true;
+    button.title='Membaca nomor Investor dari Master Investor...';
+    try{
+      const target=await resolveInvestorWhatsapp();
+      waTarget=target;
+      if(!target){
+        button.title='Nomor WhatsApp Investor belum tersedia untuk cabang/periode ini';
+        return;
+      }
+      button.disabled=false;
+      button.title=`WhatsApp ${target.name} · +${target.phone}`;
+    }catch(err){
+      console.warn('[Investor WhatsApp]',err?.message||err);
+      button.title='Gagal membaca nomor WhatsApp Investor';
+    }
   }
 
   function activateInvestorSidebar(){
@@ -252,6 +357,7 @@
   async function restoreSnapshot(){
     state.status='idle';state.dataset=null;state.lastFetchedAt=null;state.error=null;state.source=null;state.snapshot=null;
     render();
+    void syncWhatsappButton();
     if(await loadPermanentSnapshot())return;
     if(await loadSessionCache())return;
     render();
@@ -290,9 +396,11 @@
     const allowed=await enforceOwnerOnly();
     if(!allowed)return;
     ensureInvestorSidebarActive();
+    ensureWhatsappButton();
     qs('lbFetchMinutes')?.addEventListener('click',onFetchClick);
     qs('lbBranch')?.addEventListener('change',()=>void restoreSnapshot());
     qs('lbMonth')?.addEventListener('change',()=>void restoreSnapshot());
+    await syncWhatsappButton();
     await restoreSnapshot();
   }
 
