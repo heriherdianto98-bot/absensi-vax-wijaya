@@ -19,7 +19,7 @@ const db = window.supabase.createClient(
 /* Page-scoped helper autoload. Tidak menyentuh money engine / Minutes source. */
 (function(){
     const path = String(window.location.pathname || "").toLowerCase();
-    const ASSET_VERSION = "20260905-bri-daily4";
+    const ASSET_VERSION = "20260915-investor-wa1";
     const loadScript = (src) => new Promise((resolve, reject) => {
         const key = `${src}?v=${ASSET_VERSION}`;
         if(document.querySelector(`script[data-vax-src="${key}"]`)){
@@ -64,6 +64,11 @@ const db = window.supabase.createClient(
             if(path.endsWith("/setoran-3-harian.html")){
                 await loadScript("../js/modules/bri-merchant-daily.js");
                 await loadScript("../js/modules/setoran-bri-daily-bridge.js");
+                return;
+            }
+
+            if(path.endsWith("/laporan-bulanan-investor.html")){
+                await loadScript("../js/modules/laporan-bulanan-investor-whatsapp-fix.js");
             }
         }catch(err){
             console.error("ERP helper autoload gagal:", err);
