@@ -25,41 +25,89 @@ html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
   width:190px!important;
 }
 
-/* Investor toolbar — WhatsApp icon only. Function/target logic untouched. */
+/* =========================================================
+   INVESTOR — WHATSAPP ICON 3D
+   UI ONLY. Function / target / master lookup untouched.
+   ========================================================= */
 html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp{
-  flex:0 0 44px!important;
-  width:44px!important;
-  min-width:44px!important;
-  max-width:44px!important;
-  height:40px!important;
+  flex:0 0 48px!important;
+  width:48px!important;
+  min-width:48px!important;
+  max-width:48px!important;
+  height:48px!important;
   padding:0!important;
   gap:0!important;
-  border-radius:10px!important;
+  border-radius:14px!important;
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
-  background:#25d366!important;
-  border:1px solid #25d366!important;
+  position:relative!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#54ef8c 0%,#25d366 46%,#16b653 100%)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
   color:#fff!important;
-  box-shadow:0 0 12px rgba(37,211,102,.24)!important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.34),
+    inset 0 -5px 8px rgba(0,0,0,.17),
+    0 7px 15px rgba(37,211,102,.30),
+    0 3px 7px rgba(0,0,0,.24)!important;
+  transform:translateY(0)!important;
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important;
 }
+
+/* glossy highlight */
+html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:0!important;
+  left:7px!important;
+  right:7px!important;
+  top:4px!important;
+  height:16px!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.40),rgba(255,255,255,.04))!important;
+  pointer-events:none!important;
+}
+
 html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp span{
   display:none!important;
 }
+
 html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp svg{
-  width:24px!important;
-  height:24px!important;
+  width:29px!important;
+  height:29px!important;
   margin:0!important;
   display:block!important;
+  position:relative!important;
+  z-index:2!important;
   fill:#fff!important;
+  color:#fff!important;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.22))!important;
 }
+
 html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp:hover{
-  background:#20bd5a!important;
-  border-color:#20bd5a!important;
+  background:linear-gradient(180deg,#60f596 0%,#28d86b 46%,#18bc57 100%)!important;
+  border-color:rgba(255,255,255,.32)!important;
+  transform:translateY(-1px)!important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.38),
+    inset 0 -5px 8px rgba(0,0,0,.16),
+    0 10px 20px rgba(37,211,102,.38),
+    0 4px 9px rgba(0,0,0,.25)!important;
 }
+
+html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp:active{
+  transform:translateY(1px)!important;
+  box-shadow:
+    inset 0 3px 6px rgba(0,0,0,.16),
+    inset 0 -2px 4px rgba(255,255,255,.12),
+    0 4px 9px rgba(37,211,102,.22),
+    0 2px 4px rgba(0,0,0,.20)!important;
+}
+
 html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp[disabled]{
-  background:#25d366!important;
-  border-color:#25d366!important;
+  background:linear-gradient(180deg,#54ef8c 0%,#25d366 46%,#16b653 100%)!important;
+  border-color:rgba(255,255,255,.22)!important;
   color:#fff!important;
   filter:none!important;
   opacity:1!important;
