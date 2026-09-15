@@ -122,7 +122,7 @@
     const select=el("lbBranch");
     if(!select) throw new Error("Filter cabang tidak ditemukan.");
     select.innerHTML=`<option value="all">Semua Cabang</option>${branches.map(c=>`<option value="${Number(c.id)}">${esc(c.nama_cabang)}</option>`).join("")}`;
-    if(branches.some(c=>Number(c.id)===5)) select.value="5"; else if(branches[0]) select.value=String(branches[0].id); else select.value="all";
+    if(branches[0]) select.value=String(branches[0].id); else select.value="all";
     syncHeaderContext();
   }
 
