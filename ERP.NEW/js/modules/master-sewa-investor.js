@@ -7,6 +7,15 @@
   const dateLabel=v=>{if(!v)return 'Awal data';const [y,m,d]=String(v).slice(0,10).split('-');return `${d}-${m}-${y}`;};
   const parseMoney=v=>Number(String(v??'').replace(/[^0-9]/g,'')||0);
   const human=v=>String(v??'').replaceAll('_',' ');
+  const phoneLabel=v=>{
+    const raw=String(v||'').trim();
+    if(!raw)return '—';
+    const digits=raw.replace(/\D/g,'');
+    if(!digits)return raw;
+    if(digits.startsWith('62'))return `+${digits}`;
+    if(digits.startsWith('0'))return `+62${digits.slice(1)}`;
+    return raw;
+  };
   let state={sewa:[],investor:[]};
 
   function normalizePayload(raw){
@@ -20,6 +29,44 @@
       sewa:Array.isArray(data?.sewa)?data.sewa:[],
       investor:Array.isArray(data?.investor)?data.investor:[]
     };
+  }
+
+  function ensurePhoneUi(){
+    const activeHead=el('investorBody')?.closest('table')?.querySelector('thead tr');
+    if(activeHead&&!activeHead.querySelector('[data-investor-phone-head]')){
+      const investorTh=activeHead.children[1];
+      const th=document.createElement('th');
+      th.textContent='No. WhatsApp';
+      th.dataset.investorPhoneHead='1';
+      investorTh?.after(th);
+    }
+
+    const historyHead=el('investorHistory')?.closest('table')?.querySelector('thead tr');
+    if(historyHead&&!historyHead.querySelector('[data-investor-phone-head]')){
+      const investorTh=historyHead.children[1];
+      const th=document.createElement('th');
+      th.textContent='No. WhatsApp';
+      th.dataset.investorPhoneHead='1';
+      investorTh?.after(th);
+    }
+
+    if(!el('modalInvestorPhone')){
+      const nameInput=el('modalInvestorName');
+      const nameLabel=nameInput?.closest('label');
+      if(nameLabel){
+        const phoneLabelNode=document.createElement('label');
+        phoneLabelNode.className='msi-span-2';
+        phoneLabelNode.textContent='No. WhatsApp';
+        const input=document.createElement('input');
+        input.id='modalInvestorPhone';
+        input.type='tel';
+        input.readOnly=true;
+        input.setAttribute('aria-readonly','true');
+        input.placeholder='Belum ada nomor';
+        phoneLabelNode.appendChild(input);
+        nameLabel.after(phoneLabelNode);
+      }
+    }
   }
 
   function setLoadState(msg='',kind=''){
@@ -51,6 +98,7 @@
   const historyRows=rows=>rows.slice().sort((a,b)=>String(a.branch_name||'').localeCompare(String(b.branch_name||''),'id')||String(b.effective_from||'').localeCompare(String(a.effective_from||'')));
 
   function render(){
+    ensurePhoneUi();
     const sewa=activeRows(state.sewa||[]), inv=activeRows(state.investor||[]);
     el('sewaCount').textContent=`${sewa.length} cabang`;
     el('investorCount').textContent=`${inv.length} cabang`;
@@ -68,16 +116,17 @@
     el('investorBody').innerHTML=inv.length?inv.map(r=>`<tr>
       <td><strong>${esc(r.branch_name)}</strong></td>
       <td><strong>${esc(r.investor_name)}</strong></td>
+      <td>${esc(phoneLabel(r.phone_number))}</td>
       <td class="num"><strong>${pct(r.profit_share_percent)}</strong></td>
       <td>${r.rent_entitlement?'Ya':'Tidak'}</td>
       <td>${esc(human(r.profit_basis||'LABA_BERSIH'))}</td>
       <td>${r.payment_day_start}–${r.payment_day_end} ${esc(human(r.payment_timing||'AWAL_BULAN').toLowerCase())}</td>
       <td>${esc(dateLabel(r.effective_from))} — seterusnya</td>
       <td><button class="msi-edit" data-edit-investor="${esc(r.branch_code)}">Edit</button></td>
-    </tr>`).join(''):'<tr><td colspan="8" class="msi-empty">Belum ada data investor.</td></tr>';
+    </tr>`).join(''):'<tr><td colspan="9" class="msi-empty">Belum ada data investor.</td></tr>';
 
     el('sewaHistory').innerHTML=historyRows(state.sewa||[]).map(r=>`<tr><td>${esc(r.branch_name)}</td><td class="num">${money(r.monthly_rent)}</td><td>${esc(dateLabel(r.effective_from))}</td><td>${r.effective_to?esc(dateLabel(r.effective_to)):'Seterusnya'}</td><td><span class="msi-pill">${esc(r.status)}</span></td><td>${esc(r.notes||'—')}</td></tr>`).join('')||'<tr><td colspan="6" class="msi-empty">Belum ada riwayat.</td></tr>';
-    el('investorHistory').innerHTML=historyRows(state.investor||[]).map(r=>`<tr><td>${esc(r.branch_name)}</td><td>${esc(r.investor_name)}</td><td class="num">${pct(r.profit_share_percent)}</td><td>${esc(dateLabel(r.effective_from))}</td><td>${r.effective_to?esc(dateLabel(r.effective_to)):'Seterusnya'}</td><td><span class="msi-pill">${esc(r.status)}</span></td><td>${esc(r.notes||'—')}</td></tr>`).join('')||'<tr><td colspan="7" class="msi-empty">Belum ada riwayat.</td></tr>';
+    el('investorHistory').innerHTML=historyRows(state.investor||[]).map(r=>`<tr><td>${esc(r.branch_name)}</td><td>${esc(r.investor_name)}</td><td>${esc(phoneLabel(r.phone_number))}</td><td class="num">${pct(r.profit_share_percent)}</td><td>${esc(dateLabel(r.effective_from))}</td><td>${r.effective_to?esc(dateLabel(r.effective_to)):'Seterusnya'}</td><td><span class="msi-pill">${esc(r.status)}</span></td><td>${esc(r.notes||'—')}</td></tr>`).join('')||'<tr><td colspan="8" class="msi-empty">Belum ada riwayat.</td></tr>';
 
     document.querySelectorAll('[data-edit-sewa]').forEach(b=>b.onclick=()=>openEdit('sewa',b.dataset.editSewa));
     document.querySelectorAll('[data-edit-investor]').forEach(b=>b.onclick=()=>openEdit('investor',b.dataset.editInvestor));
@@ -109,6 +158,7 @@
       el('modalLossRule').value=row.loss_rule||'JADI_HUTANG_BULAN_BERIKUTNYA';
     }else{
       el('modalInvestorName').value=row.investor_name||'';
+      if(el('modalInvestorPhone'))el('modalInvestorPhone').value=phoneLabel(row.phone_number)==='—'?'':phoneLabel(row.phone_number);
       el('modalShare').value=Number(row.profit_share_percent||0);
       el('modalRentEntitlement').value=row.rent_entitlement?'true':'false';
       el('modalProfitBasis').value=row.profit_basis||'LABA_BERSIH';
@@ -176,6 +226,7 @@
   }
 
   function bind(){
+    ensurePhoneUi();
     document.querySelectorAll('.msi-tabs button').forEach(b=>b.onclick=()=>{
       document.querySelectorAll('.msi-tabs button').forEach(x=>x.classList.toggle('is-active',x===b));
       el('panelSewa').classList.toggle('is-active',b.dataset.tab==='sewa');
@@ -192,7 +243,7 @@
     console.error('[Master Sewa Investor]',err);
     setLoadState(err?.message||'Gagal memuat master.','error');
     el('sewaBody').innerHTML='<tr><td colspan="7" class="msi-empty">Gagal memuat data. Klik Muat Ulang.</td></tr>';
-    el('investorBody').innerHTML='<tr><td colspan="8" class="msi-empty">Gagal memuat data. Klik Muat Ulang.</td></tr>';
+    el('investorBody').innerHTML='<tr><td colspan="9" class="msi-empty">Gagal memuat data. Klik Muat Ulang.</td></tr>';
   }
 
   async function init(){
