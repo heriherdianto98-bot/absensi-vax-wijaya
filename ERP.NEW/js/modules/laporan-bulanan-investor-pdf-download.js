@@ -19,20 +19,6 @@
     return {raw,label:`${monthName} ${year}`,monthName,year};
   }
 
-  function cleanPart(value){
-    return String(value||'')
-      .trim()
-      .replace(/^VAX\s+WIJAYA\s+/i,'')
-      .replace(/[^a-zA-Z0-9]+/g,'-')
-      .replace(/^-+|-+$/g,'')||'Cabang';
-  }
-
-  function fileName(){
-    const branch=qs('lbBranch')?.selectedOptions?.[0]?.textContent?.trim()||'Cabang';
-    const period=activePeriod();
-    return `Laporan-Investor-${cleanPart(branch)}-${cleanPart(period.monthName)}-${period.year}.pdf`.replace(/--+/g,'-');
-  }
-
   function normalizePhone(value){
     let digits=String(value||'').replace(/\D/g,'');
     if(digits.startsWith('0'))digits=`62${digits.slice(1)}`;
@@ -85,142 +71,6 @@
     return {phone,name:String(row.investor_name||'Investor').trim(),branch:String(row.branch_name||branch).trim()};
   }
 
-  function loadHtml2Pdf(){
-    if(window.html2pdf)return Promise.resolve(window.html2pdf);
-    const existing=document.querySelector('script[data-vax-html2pdf="1"]');
-    if(existing){
-      return new Promise((resolve,reject)=>{
-        existing.addEventListener('load',()=>resolve(window.html2pdf),{once:true});
-        existing.addEventListener('error',()=>reject(new Error('Library PDF gagal dimuat.')),{once:true});
-      });
-    }
-    return new Promise((resolve,reject)=>{
-      const s=document.createElement('script');
-      s.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-      s.async=true;
-      s.dataset.vaxHtml2pdf='1';
-      s.onload=()=>window.html2pdf?resolve(window.html2pdf):reject(new Error('Library PDF tidak tersedia.'));
-      s.onerror=()=>reject(new Error('Library PDF gagal dimuat. Periksa koneksi internet.'));
-      document.head.appendChild(s);
-    });
-  }
-
-  async function captureFinalPrintHtml(){
-    const api=window.LaporanBulananPrintUI;
-    if(!api||typeof api.open!=='function')throw new Error('Presenter PDF Laporan Investor belum siap.');
-    let captured='';
-    const fakeWindow={
-      document:{open(){},close(){},write(html){captured=String(html||'');}},
-      closed:false,
-      close(){this.closed=true;},
-      focus(){},
-      print(){}
-    };
-    const nativeOpen=window.open;
-    window.open=()=>fakeWindow;
-    try{await api.open('pdf');}
-    finally{window.open=nativeOpen;}
-    if(!captured)throw new Error('HTML final laporan gagal diambil dari presenter PDF.');
-    return captured;
-  }
-
-  function sanitizePrintHtml(html){
-    let source=String(html||'');
-    source=source.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');
-    source=source.replace(/<head([^>]*)>/i,`<head$1><base href="${location.href}">`);
-    source=source.replace(/<\/head>/i,`<style id="vax-wa-pdf-base">
-      html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;max-width:210mm!important;color:#111!important}
-      body{font-family:Arial,Helvetica,sans-serif!important;overflow:visible!important}
-      .page-frame{width:210mm!important;max-width:210mm!important;margin:0!important;box-shadow:none!important;background:#fff!important}
-      .page-frame>thead{display:table-header-group!important}.page-frame>tfoot{display:table-footer-group!important}
-      .head-space{height:24mm!important}.foot-space{height:18mm!important}
-      .master-head{height:20mm!important;padding:0!important}.master-foot{height:10mm!important;margin:0!important}
-      .content{padding:0!important}
-    </style></head>`);
-    return source;
-  }
-
-  function collectPrintRules(doc){
-    const out=[];
-    const walk=rules=>{
-      for(const rule of Array.from(rules||[])){
-        try{
-          const type=Number(rule.type||0);
-          const condition=String(rule.conditionText||rule.media?.mediaText||'').toLowerCase();
-          if((type===4||rule.constructor?.name==='CSSMediaRule')&&condition.includes('print')){
-            for(const child of Array.from(rule.cssRules||[]))out.push(child.cssText);
-            continue;
-          }
-          if(type===12||rule.constructor?.name==='CSSSupportsRule'){
-            walk(rule.cssRules);
-          }
-        }catch(_e){}
-      }
-    };
-    for(const sheet of Array.from(doc.styleSheets||[])){
-      try{walk(sheet.cssRules);}catch(_e){}
-    }
-    return out.join('\n');
-  }
-
-  function forcePrintPresentation(doc){
-    const printCss=collectPrintRules(doc);
-    const style=doc.createElement('style');
-    style.id='vax-wa-force-print';
-    style.textContent=`
-      ${printCss}
-      html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;max-width:210mm!important;overflow:visible!important}
-      body{color:#111!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-      .page-frame{display:table!important;width:210mm!important;max-width:210mm!important;margin:0!important;background:#fff!important;box-shadow:none!important}
-      .page-frame>thead{display:table-header-group!important}
-      .page-frame>tfoot{display:table-footer-group!important}
-      .branch-report{background:#fff!important;color:#111!important}
-    `;
-    doc.head.appendChild(style);
-  }
-
-  function waitForFrame(frame){
-    return new Promise((resolve,reject)=>{
-      const timer=setTimeout(()=>reject(new Error('Render PDF terlalu lama.')),15000);
-      frame.addEventListener('load',()=>{clearTimeout(timer);resolve();},{once:true});
-    });
-  }
-
-  async function waitForAssets(doc){
-    try{await doc.fonts?.ready;}catch(_e){}
-    await Promise.all([...doc.images].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{
-      img.addEventListener('load',resolve,{once:true});
-      img.addEventListener('error',resolve,{once:true});
-    })));
-  }
-
-  async function downloadRealPdf(html,filename){
-    const html2pdf=await loadHtml2Pdf();
-    const frame=document.createElement('iframe');
-    frame.setAttribute('aria-hidden','true');
-    Object.assign(frame.style,{position:'fixed',left:'-12000px',top:'0',width:'794px',height:'1123px',border:'0',background:'#fff'});
-    document.body.appendChild(frame);
-    try{
-      const loaded=waitForFrame(frame);
-      frame.srcdoc=sanitizePrintHtml(html);
-      await loaded;
-      const doc=frame.contentDocument;
-      if(!doc?.body)throw new Error('Dokumen PDF gagal dirender.');
-      forcePrintPresentation(doc);
-      await waitForAssets(doc);
-      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-      const root=doc.querySelector('.page-frame')||doc.body;
-      await html2pdf().set({
-        margin:0,
-        filename,
-        image:{type:'jpeg',quality:0.99},
-        html2canvas:{scale:1.5,useCORS:true,logging:false,backgroundColor:'#ffffff',windowWidth:794,scrollX:0,scrollY:0},
-        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-        pagebreak:{mode:['css','legacy','avoid-all']}
-      }).from(root).save();
-    }finally{frame.remove();}
-  }
-
   function applyOwnedState(button){
     if(!button||button!==ownedButton)return;
     button.style.setProperty('background','#25D366','important');
@@ -232,7 +82,7 @@
       button.disabled=false;
       button.removeAttribute('disabled');
       button.setAttribute('aria-disabled','false');
-      button.title='Download PDF laporan lalu buka WhatsApp Investor';
+      button.title='Buka WhatsApp Investor';
     }
   }
 
@@ -263,18 +113,16 @@
       busy=true;
       button.disabled=true;
       button.setAttribute('aria-disabled','true');
-      button.title='Menyiapkan file PDF laporan...';
+      button.title='Membuka WhatsApp Investor...';
       try{
         const target=await resolveTarget();
         if(!target)throw new Error('Nomor WhatsApp Investor belum tersedia untuk cabang/periode ini.');
-        const html=await captureFinalPrintHtml();
-        await downloadRealPdf(html,fileName());
         const period=activePeriod();
         const message=`Laporan Investor ${target.branch} periode ${period.label}`;
         window.location.assign(`https://wa.me/${target.phone}?text=${encodeURIComponent(message)}`);
       }catch(err){
-        console.error('[Investor PDF Download]',err);
-        window.alert(err?.message||'Gagal membuat PDF Laporan Investor.');
+        console.error('[Investor WhatsApp]',err);
+        window.alert(err?.message||'Gagal membuka WhatsApp Investor.');
       }finally{
         busy=false;
         applyOwnedState(button);
