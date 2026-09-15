@@ -149,22 +149,15 @@
     applyWhatsAppVisual(button);
 
     button.addEventListener('click',async()=>{
-      /* Both windows are created synchronously from the same real user click. */
+      /* Only one popup is used: the PDF window. WhatsApp uses the current ERP tab. */
       const pdfWindow=window.open('about:blank','vaxInvestorPdf');
-      const waWindow=window.open('about:blank','vaxInvestorWhatsapp');
 
       try{
         if(!pdfWindow)throw new Error('Popup PDF diblokir browser. Izinkan popup untuk ERP VAX lalu coba lagi.');
-        if(!waWindow){
-          try{pdfWindow.close();}catch(_e){}
-          throw new Error('Popup WhatsApp diblokir browser. Izinkan popup untuk ERP VAX lalu coba lagi.');
-        }
 
         try{
           pdfWindow.document.title='Menyiapkan PDF Laporan Investor';
           pdfWindow.document.body.innerHTML='<div style="font-family:Arial;padding:24px">Menyiapkan PDF Laporan Investor...</div>';
-          waWindow.document.title='Menyiapkan WhatsApp Investor';
-          waWindow.document.body.innerHTML='<div style="font-family:Arial;padding:24px">Menyiapkan WhatsApp Investor...</div>';
         }catch(_e){}
 
         const resolved=target||await resolveTarget();
@@ -172,17 +165,15 @@
 
         const period=activePeriod();
         const message=`Laporan Investor ${resolved.branch} periode ${period.label||period.raw}`;
+        const waUrl=`https://wa.me/${resolved.phone}?text=${encodeURIComponent(message)}`;
 
-        /* Navigate WhatsApp BEFORE print dialog starts blocking JavaScript. */
-        waWindow.location.replace(`https://wa.me/${resolved.phone}?text=${encodeURIComponent(message)}`);
-
+        /* Build the PDF first. openPrint writes the document and returns before the delayed print dialog opens. */
         await openPdfForActiveReport(resolved,pdfWindow);
 
-        /* After the print dialog closes, bring the already-open WhatsApp tab forward. */
-        try{waWindow.focus();}catch(_e){}
+        /* Reuse the existing ERP tab for WhatsApp, so there is no second popup to block. */
+        window.location.assign(waUrl);
       }catch(err){
         try{if(pdfWindow&&!pdfWindow.closed)pdfWindow.close();}catch(_e){}
-        try{if(waWindow&&!waWindow.closed)waWindow.close();}catch(_e){}
         window.alert(err?.message||'Gagal menyiapkan PDF / WhatsApp Investor.');
       }
     });
