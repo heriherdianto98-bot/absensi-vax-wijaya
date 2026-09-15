@@ -25,6 +25,39 @@ html body.laporan-bulanan-page .lb-toolbar .lb-field:first-child{
   width:190px!important;
 }
 
+/* Investor toolbar — WhatsApp icon only. Function/target logic untouched. */
+html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp{
+  flex:0 0 44px!important;
+  width:44px!important;
+  min-width:44px!important;
+  max-width:44px!important;
+  height:40px!important;
+  padding:0!important;
+  gap:0!important;
+  border-radius:10px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#25d366!important;
+  border:1px solid #45e47f!important;
+  color:#fff!important;
+  box-shadow:0 0 12px rgba(37,211,102,.18)!important;
+}
+html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp span{
+  display:none!important;
+}
+html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp svg{
+  width:24px!important;
+  height:24px!important;
+  margin:0!important;
+  display:block!important;
+  fill:#fff!important;
+}
+html body.laporan-bulanan-investor-page .lb-toolbar #lbInvestorWhatsapp:hover{
+  background:#20c45d!important;
+  border-color:#63ee98!important;
+}
+
 @media(max-width:900px){
   body.laporan-bulanan-page .lb-toolbar{
     transform:none!important;
