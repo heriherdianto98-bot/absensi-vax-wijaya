@@ -61,6 +61,7 @@
         color:#e8bd3f!important;
         border-color:rgba(214,173,47,.55)!important;
         box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 12px rgba(214,173,47,.08)!important;
+        font-size:14px!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-trigger:hover,
       body.laporan-bulanan-investor-page .lb-branch-trigger[aria-expanded="true"]{
@@ -84,6 +85,7 @@
         color:#e8bd3f!important;
         background:transparent!important;
         font-weight:800!important;
+        font-size:15px!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-option:hover,
       body.laporan-bulanan-investor-page .lb-branch-option.is-keyboard-active{
