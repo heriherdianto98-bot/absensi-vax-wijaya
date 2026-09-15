@@ -104,14 +104,21 @@
     button.style.setProperty('box-shadow','0 0 14px rgba(37,211,102,.28)','important');
   }
 
-  async function openPdfForActiveReport(resolved){
+  async function openPdfForActiveReport(resolved,pdfWindow){
     const api=window.LaporanBulananPrintUI;
     if(!api||typeof api.open!=='function')throw new Error('PDF Laporan Investor belum siap. Muat ulang halaman lalu coba lagi.');
 
     const wantedTitle=pdfDocumentTitle(resolved);
     const nativeOpen=window.open;
+    let usedPrepared=false;
     window.open=function(...args){
-      const popup=nativeOpen.apply(window,args);
+      let popup=null;
+      if(pdfWindow&&!usedPrepared){
+        popup=pdfWindow;
+        usedPrepared=true;
+      }else{
+        popup=nativeOpen.apply(window,args);
+      }
       if(!popup?.document)return popup;
       const nativeWrite=popup.document.write.bind(popup.document);
       popup.document.write=function(html){
@@ -142,18 +149,26 @@
     applyWhatsAppVisual(button);
 
     button.addEventListener('click',async()=>{
-      let waWindow=null;
+      let pdfWindow=null;
       try{
         const resolved=target||await resolveTarget();
         if(!resolved)throw new Error('Nomor WhatsApp Investor belum tersedia di Master Investor untuk cabang/periode ini.');
 
+        /* Pre-open PDF window inside the real user click so Edge/Chrome does not block it. */
+        pdfWindow=window.open('about:blank','_blank');
+        if(!pdfWindow)throw new Error('Popup PDF diblokir browser. Izinkan popup untuk ERP VAX lalu coba lagi.');
+        try{
+          pdfWindow.document.title=pdfDocumentTitle(resolved);
+          pdfWindow.document.body.innerHTML='<div style="font-family:Arial;padding:24px">Menyiapkan PDF Laporan Investor...</div>';
+        }catch(_e){}
+
+        await openPdfForActiveReport(resolved,pdfWindow);
+
         const period=activePeriod();
         const message=`Laporan Investor ${resolved.branch} periode ${period.label||period.raw}`;
-        waWindow=window.open(`https://wa.me/${resolved.phone}?text=${encodeURIComponent(message)}`,'_blank','noopener');
-
-        await openPdfForActiveReport(resolved);
+        window.open(`https://wa.me/${resolved.phone}?text=${encodeURIComponent(message)}`,'_blank','noopener');
       }catch(err){
-        try{if(waWindow&&waWindow.location?.href==='about:blank')waWindow.close();}catch(_e){}
+        try{if(pdfWindow&&!pdfWindow.closed)pdfWindow.close();}catch(_e){}
         window.alert(err?.message||'Gagal menyiapkan PDF / WhatsApp Investor.');
       }
     });
