@@ -9,6 +9,7 @@
   function branchLabel(){return qs('lbBranch')?.selectedOptions?.[0]?.textContent?.trim()||'Cabang';}
   function monthLabel(){return qs('lbMonth')?.value||'';}
   function cacheKey(){return `erp-vax:investor-revised:${branchLabel()}:${monthLabel()}`;}
+  function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
   function apiBase(){
     if(window.INVESTOR_MINUTES_READONLY_API)return String(window.INVESTOR_MINUTES_READONLY_API).replace(/\/$/,'');
     const local=['127.0.0.1','localhost'].includes(location.hostname);
@@ -323,24 +324,44 @@
     return payload;
   }
 
-  async function loadPermanentSnapshot(){
+  async function waitForRestoreContext({attempts=24,delayMs=250}={}){
+    for(let i=0;i<attempts;i++){
+      const select=qs('lbBranch');
+      const branch=branchLabel();
+      const month=monthLabel();
+      const branchReady=!!select&&select.options.length>1&&branch&&branch!=='Cabang'&&branch!=='Semua Cabang';
+      const monthReady=/^\d{4}-\d{2}$/.test(month);
+      if(branchReady&&monthReady)return true;
+      await sleep(delayMs);
+    }
+    return false;
+  }
+
+  async function loadPermanentSnapshot({attempts=6,delayMs=750}={}){
     const branch=branchLabel();
     const month=monthLabel();
-    if(!branch||branch==='Semua Cabang'||!/^\d{4}-\d{2}$/.test(month))return false;
-    try{
-      const response=await fetch(`${apiBase()}/investor/snapshot-latest`,{
-        method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({branch,month})
-      });
-      const result=await response.json().catch(()=>({}));
-      if(!response.ok||result?.ok!==true)throw new Error(result?.error||`HTTP ${response.status}`);
-      if(!result?.found||!result?.snapshot?.payload)return false;
-      const snap=result.snapshot;
-      await applyReady(snap.payload,{source:'SNAPSHOT_DB',fetchedAt:snap.source_fetched_at||snap.created_at,snapshot:snap});
-      saveCache(snap.payload);
-      return true;
-    }catch(_e){
-      return false;
+    if(!branch||branch==='Cabang'||branch==='Semua Cabang'||!/^\d{4}-\d{2}$/.test(month))return false;
+    for(let attempt=1;attempt<=attempts;attempt++){
+      try{
+        const response=await fetch(`${apiBase()}/investor/snapshot-latest`,{
+          method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({branch,month})
+        });
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok||result?.ok!==true)throw new Error(result?.error||`HTTP ${response.status}`);
+        if(!result?.found||!result?.snapshot?.payload)return false;
+        const snap=result.snapshot;
+        await applyReady(snap.payload,{source:'SNAPSHOT_DB',fetchedAt:snap.source_fetched_at||snap.created_at,snapshot:snap});
+        saveCache(snap.payload);
+        return true;
+      }catch(err){
+        if(attempt>=attempts){
+          console.warn('[Investor Revised] Snapshot restore belum tersedia setelah retry:',err?.message||err);
+          return false;
+        }
+        await sleep(delayMs);
+      }
     }
+    return false;
   }
 
   async function loadSessionCache(){
@@ -358,6 +379,7 @@
     state.status='idle';state.dataset=null;state.lastFetchedAt=null;state.error=null;state.source=null;state.snapshot=null;
     render();
     void syncWhatsappButton();
+    await waitForRestoreContext();
     if(await loadPermanentSnapshot())return;
     if(await loadSessionCache())return;
     render();
