@@ -1,1 +1,283 @@
-/* canonicalized via approved Investor Revised module */
+/*
+ * Laporan Bulanan Investor — UI ONLY
+ * Scope ketat ke .laporan-bulanan-investor-page.
+ * Tidak mengubah engine, formula, source, auth, connector, atau halaman original.
+ */
+
+.laporan-bulanan-investor-page{
+  --inv-bg:#0b1822;
+  --inv-surface:#173246;
+  --inv-border:#3a6176;
+  --inv-text:#edf4f7;
+  --inv-muted:#a7bbc6;
+  --inv-cyan:#49c6d2;
+  --inv-blue:#62a8d8;
+  --inv-green:#55c89a;
+}
+
+.laporan-bulanan-investor-page .erp-wrapper{
+  background:
+    radial-gradient(circle at 82% 4%,rgba(73,198,210,.055),transparent 24%),
+    radial-gradient(circle at 24% 26%,rgba(98,168,216,.04),transparent 26%),
+    linear-gradient(180deg,var(--inv-bg) 0%,#0d1d28 100%)!important;
+}
+.laporan-bulanan-investor-page .erp-content{background:transparent!important;}
+.laporan-bulanan-investor-page .lb-wrap{color:var(--inv-text)!important;}
+
+/* Toolbar */
+.laporan-bulanan-investor-page .lb-toolbar{
+  align-items:end;
+  background:#102431!important;
+  border-top:1px solid #274759!important;
+  border-bottom:2px solid var(--inv-cyan)!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.16)!important;
+}
+.laporan-bulanan-investor-page .lb-field>span{color:#9eb4bf!important;}
+.laporan-bulanan-investor-page .lb-field select,
+.laporan-bulanan-investor-page .lb-field input{
+  background:#173142!important;
+  color:#eef5f8!important;
+  border:1px solid #3b6073!important;
+  box-shadow:none!important;
+}
+.laporan-bulanan-investor-page .lb-field select:focus,
+.laporan-bulanan-investor-page .lb-field input:focus{
+  border-color:var(--inv-cyan)!important;
+  box-shadow:0 0 0 3px rgba(73,198,210,.10)!important;
+}
+.laporan-bulanan-investor-page .lb-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.laporan-bulanan-investor-page .lb-btn{
+  background:#173142!important;
+  color:#e2edf2!important;
+  border:1px solid #3b6073!important;
+  box-shadow:none!important;
+}
+.laporan-bulanan-investor-page .lb-btn:hover{background:#1b3a4d!important;border-color:#568299!important;}
+.laporan-bulanan-investor-page .lb-btn.lb-btn-minutes{
+  background:linear-gradient(180deg,#4eb9c4,#348c9b)!important;
+  color:#fff!important;
+  border-color:#63cbd5!important;
+  font-weight:900!important;
+  box-shadow:0 0 14px rgba(73,198,210,.12)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+.laporan-bulanan-investor-page .lb-btn.lb-btn-minutes.is-loading::before{
+  content:"";
+  width:14px;
+  height:14px;
+  border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:investorMinutesSpin .75s linear infinite;
+  flex:0 0 auto;
+}
+@keyframes investorMinutesSpin{to{transform:rotate(360deg)}}
+
+/* Header */
+.laporan-bulanan-investor-page .lb-head{
+  background:linear-gradient(105deg,#173246 0%,#1b3d50 58%,#183749 100%)!important;
+  border:1px solid #3c6276!important;
+  border-left:5px solid var(--inv-cyan)!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.18)!important;
+}
+.laporan-bulanan-investor-page .lb-eyebrow{color:#8edbe2!important;letter-spacing:.14em!important;}
+.laporan-bulanan-investor-page .lb-title{color:#f7fbfc!important;text-shadow:none!important;}
+.laporan-bulanan-investor-page .lb-sub{color:#c1d2da!important;}
+.laporan-bulanan-investor-page .lb-investor-note{color:#8fb2bf!important;}
+.laporan-bulanan-investor-page .lb-status{background:#1c4052!important;color:#e4f3f6!important;border-color:#4a7487!important;}
+
+/* Revised source strip */
+.laporan-bulanan-investor-page .lb-source-strip{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:10px 0 0;padding:11px 13px;
+  border:1px solid #426d82!important;border-left:5px solid var(--inv-blue)!important;
+  border-radius:12px;
+  background:linear-gradient(90deg,#1a3b4e,#173245)!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.11)!important;
+  color:#bad0d9!important;
+}
+.laporan-bulanan-investor-page .lb-source-main{display:flex;align-items:center;gap:10px;min-width:0}
+.laporan-bulanan-investor-page .lb-source-dot{width:10px;height:10px;border-radius:50%;background:var(--inv-blue)!important;box-shadow:0 0 0 4px rgba(98,168,216,.11)!important;flex:0 0 auto;}
+.laporan-bulanan-investor-page .lb-source-title{font-weight:900;color:#eef7fa!important;}
+.laporan-bulanan-investor-page .lb-source-meta{color:#abc1cc!important;}
+.laporan-bulanan-investor-page .lb-source-badge{border:1px solid #4f7890!important;color:#d0e8f0!important;background:#21485c!important;}
+.laporan-bulanan-investor-page .lb-source-strip.is-ready{border-left-color:var(--inv-green)!important;}
+
+/* REVISED READY screen indicator — UI ONLY */
+@media screen{
+  .laporan-bulanan-investor-page .lb-source-strip.is-ready .lb-source-badge{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:7px!important;
+    font-weight:900!important;
+    animation:investorReadyBlink 1.15s ease-in-out infinite!important;
+  }
+  .laporan-bulanan-investor-page .lb-source-strip.is-ready .lb-source-badge::before{
+    content:"";
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#ff3b3b;
+    box-shadow:0 0 0 3px rgba(255,59,59,.14),0 0 10px rgba(255,59,59,.95);
+    flex:0 0 auto;
+    animation:investorReadyRedPulse .85s ease-in-out infinite!important;
+  }
+}
+@keyframes investorReadyBlink{
+  0%,100%{opacity:1;filter:brightness(1)}
+  50%{opacity:.58;filter:brightness(1.22)}
+}
+@keyframes investorReadyRedPulse{
+  0%,100%{transform:scale(.82);opacity:.7}
+  50%{transform:scale(1.18);opacity:1}
+}
+
+/* KPI */
+.laporan-bulanan-investor-page .lb-kpi{
+  background:linear-gradient(155deg,#1d4054,#173447)!important;
+  border:1px solid #3b6073!important;
+  box-shadow:0 6px 16px rgba(0,0,0,.13)!important;
+}
+.laporan-bulanan-investor-page .lb-kpi>span,
+.laporan-bulanan-investor-page .lb-kpi>small{color:#afc3cc!important;}
+
+/* Tampilan laporan selector */
+.laporan-bulanan-investor-page .lb-view-switcher{
+  background:#102431!important;
+  border:1px solid #31576c!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.13)!important;
+}
+.laporan-bulanan-investor-page .lb-view-field>span,
+.laporan-bulanan-investor-page .lb-view-hint{color:#9bd7dc!important;}
+.laporan-bulanan-investor-page #lbSectionView{
+  background:#0b0f13!important;
+  color:#fff!important;
+  border:1px solid #4c7488!important;
+}
+
+/* CARD TAMPILAN LAPORAN: satu bidang hitam penuh. */
+.laporan-bulanan-investor-page .lb-card,
+.laporan-bulanan-investor-page .lb-card-head,
+.laporan-bulanan-investor-page .lb-card-body,
+.laporan-bulanan-investor-page .lb-lines,
+.laporan-bulanan-investor-page #lbIncomeLines,
+.laporan-bulanan-investor-page #lbSalaryLines,
+.laporan-bulanan-investor-page #lbExpenseLines,
+.laporan-bulanan-investor-page #lbResultLines,
+.laporan-bulanan-investor-page #lbInvestorLines,
+.laporan-bulanan-investor-page #lbPerformance,
+.laporan-bulanan-investor-page #lbIssues,
+.laporan-bulanan-investor-page #lbProviderMapping{
+  background:#050708!important;
+  background-color:#050708!important;
+  color:#fff!important;
+}
+.laporan-bulanan-investor-page .lb-card{
+  border:1px solid #244758!important;
+  border-left:5px solid var(--inv-blue)!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.18)!important;
+}
+.laporan-bulanan-investor-page .lb-card-head{border-bottom:1px solid rgba(135,180,201,.24)!important;}
+.laporan-bulanan-investor-page .lb-card-head h3{color:#8edbe2!important;}
+.laporan-bulanan-investor-page .lb-card-head small{color:#9db4bf!important;}
+
+/* Row transparan + dotted separator */
+.laporan-bulanan-investor-page .lb-lines .lb-line,
+.laporan-bulanan-investor-page .lb-lines > .lb-line,
+.laporan-bulanan-investor-page #lbIncomeLines > .lb-line,
+.laporan-bulanan-investor-page #lbSalaryLines > .lb-line,
+.laporan-bulanan-investor-page #lbExpenseLines > .lb-line,
+.laporan-bulanan-investor-page #lbResultLines > .lb-line,
+.laporan-bulanan-investor-page #lbInvestorLines > .lb-line{
+  background:transparent!important;
+  background-color:transparent!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  border-bottom:1px dotted rgba(205,224,232,.34)!important;
+  box-shadow:none!important;
+}
+.laporan-bulanan-investor-page .lb-lines .lb-line:nth-child(even),
+.laporan-bulanan-investor-page .lb-lines .lb-line:nth-child(odd){background:transparent!important;}
+.laporan-bulanan-investor-page .lb-lines .lb-line:last-child{border-bottom:0!important;}
+.laporan-bulanan-investor-page .lb-lines .lb-line span,
+.laporan-bulanan-investor-page .lb-lines .lb-line strong,
+.laporan-bulanan-investor-page #lbInvestorLines,
+.laporan-bulanan-investor-page #lbInvestorLines *{color:#fff!important;text-shadow:none!important;}
+
+/* Total tetap hitam; hanya garis cyan tipis. */
+.laporan-bulanan-investor-page .lb-lines .lb-line.total,
+.laporan-bulanan-investor-page .lb-card .lb-total,
+.laporan-bulanan-investor-page .lb-card .lb-total-box,
+.laporan-bulanan-investor-page .lb-card .lb-investor-total,
+.laporan-bulanan-investor-page .lb-card .lb-highlight,
+.laporan-bulanan-investor-page .lb-card .lb-summary,
+.laporan-bulanan-investor-page .lb-card .lb-summary-box{
+  background:#050708!important;
+  background-color:#050708!important;
+  color:#fff!important;
+  border:1px solid rgba(73,198,210,.36)!important;
+  box-shadow:none!important;
+}
+
+/* Tabel internal ikut bidang hitam yang sama. */
+.laporan-bulanan-investor-page .lb-card table,
+.laporan-bulanan-investor-page .lb-card thead,
+.laporan-bulanan-investor-page .lb-card tbody,
+.laporan-bulanan-investor-page .lb-card tr,
+.laporan-bulanan-investor-page .lb-card td,
+.laporan-bulanan-investor-page .lb-card th{
+  background:#050708!important;
+  background-color:#050708!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.laporan-bulanan-investor-page .lb-card td,
+.laporan-bulanan-investor-page .lb-card th{
+  border:0!important;
+  border-bottom:1px dotted rgba(205,224,232,.30)!important;
+}
+
+/* Pembagian Investor: samakan Laba Dasar + Hak Manajemen sepenuhnya dengan Hak Investor. */
+body.laporan-bulanan-investor-page #lbInvestorLines .lb-investor-base-total strong{
+  color:#67e8f9!important;
+  background:#03070a!important;
+  border-color:rgba(34,211,238,.30)!important;
+  border-left-color:#22d3ee!important;
+  text-shadow:0 0 8px rgba(34,211,238,.12)!important;
+}
+body.laporan-bulanan-investor-page #lbInvestorLines .lb-investor-rights-card.is-management{
+  background:#03070a!important;
+  border:1px solid rgba(34,211,238,.30)!important;
+  border-left:4px solid #22d3ee!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+body.laporan-bulanan-investor-page #lbInvestorLines .lb-investor-rights-card.is-management span,
+body.laporan-bulanan-investor-page #lbInvestorLines .lb-investor-rights-card.is-management strong{
+  color:#67e8f9!important;
+}
+
+.laporan-bulanan-investor-page .lb-footnote{color:#87a1ad!important;}
+
+/* Active menu Investor */
+.laporan-bulanan-investor-page .sidebar [data-erp-nav="laporan-bulanan-investor"].active{
+  background:linear-gradient(90deg,rgba(79,145,191,.28),rgba(73,198,210,.09))!important;
+  border-color:#62a8d8!important;
+  box-shadow:inset 3px 0 0 #49c6d2,0 0 13px rgba(73,198,210,.13)!important;
+}
+.laporan-bulanan-investor-page .sidebar [data-erp-nav="laporan-bulanan-investor"].active .text,
+.laporan-bulanan-investor-page .sidebar [data-erp-nav="laporan-bulanan-investor"].active .icon{color:#8edbe2!important;}
+.laporan-bulanan-investor-page .sidebar [data-erp-nav="laporan-bulanan-investor"].active::before{border-left-color:#49c6d2!important;}
+.laporan-bulanan-investor-page .sidebar [data-erp-nav="laporan-bulanan-investor"].active::after{background:#49c6d2!important;box-shadow:0 0 4px #49c6d2,0 0 9px rgba(73,198,210,.90),0 0 15px rgba(98,168,216,.50)!important;}
+
+.laporan-bulanan-investor-page .lb-btn[disabled]{opacity:.55;cursor:not-allowed;transform:none}
+
+@media(max-width:900px){
+  .laporan-bulanan-investor-page .lb-source-strip{align-items:flex-start;flex-direction:column}
+  .laporan-bulanan-investor-page .lb-source-meta{white-space:normal}
+  .laporan-bulanan-investor-page .lb-actions{width:100%}
+  .laporan-bulanan-investor-page .lb-actions .lb-btn{flex:1 1 160px}
+}

@@ -1,0 +1,24 @@
+[Unit]
+Description=ERP VAX Investor Revised API (isolated, Minutes READ ONLY)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/investor-revised-api
+EnvironmentFile=/etc/erp-vax/investor-revised.env
+Environment=NODE_ENV=production
+Environment=INVESTOR_READONLY_HOST=127.0.0.1
+Environment=INVESTOR_READONLY_PORT=8788
+Environment=INVESTOR_READONLY_RUNNER=/var/www/investor-revised-api/investor-monthly-dataset-yeartrend-compatible-readonly.js
+ExecStart=/usr/bin/node /var/www/investor-revised-api/investor-readonly-api.js
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
