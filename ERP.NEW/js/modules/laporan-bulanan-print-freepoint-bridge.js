@@ -10,6 +10,9 @@ Tujuan:
   bukan Operasional.
 - Menghilangkan kebutuhan baris penyesuaian konsolidasi untuk nominal yang sebenarnya
   hanya beda klasifikasi presentasi.
+- Menjaga posisi TTD Supervisor + Manajemen pada laporan Investor tetap di area bawah
+  halaman akhir, sama seperti format final Laporan Bulanan, termasuk saat blok Performance
+  tidak ikut terbentuk pada jalur print.
 - Tidak mengubah total gaji, biaya, laba, Cash Out source, Payroll source,
   LaporanBulananEngine, immutable snapshot, atau print engine yang LOCK.
 
@@ -69,6 +72,66 @@ Catatan:
     }
   }
 
+  function anchorInvestorSignatureHtml(html){
+    try{
+      const parser=new DOMParser();
+      const doc=parser.parseFromString(String(html||""),"text/html");
+      const branches=[...doc.querySelectorAll(".branch-report")];
+      const lastBranch=branches[branches.length-1];
+      const signatures=lastBranch?.querySelector(".lb-print-signatures");
+      if(!lastBranch||!signatures||lastBranch.querySelector(".lb-print-final-page")) return html;
+
+      const headings=[...lastBranch.querySelectorAll("h3")];
+      const investorHeading=headings.find(h=>String(h.textContent||"").trim()==="Pembagian Investor / Manajemen");
+      const completenessHeading=headings.find(h=>String(h.textContent||"").trim()==="Kelengkapan Data");
+      const start=investorHeading||completenessHeading||signatures;
+      if(!start) return html;
+
+      const finalPage=doc.createElement("div");
+      finalPage.className="lb-print-final-page lb-print-investor-final-page";
+      lastBranch.insertBefore(finalPage,start);
+
+      let node=start;
+      while(node){
+        const next=node.nextSibling;
+        finalPage.appendChild(node);
+        node=next;
+      }
+
+      return `<!doctype html>${doc.documentElement.outerHTML}`;
+    }catch(err){
+      console.warn("[Laporan Investor TTD Anchor] fallback gagal, pakai HTML asli.",err);
+      return html;
+    }
+  }
+
+  function patchInvestorSignatureAnchor(){
+    const api=window.LaporanBulananPrintUI;
+    if(!api||typeof api.open!=="function") return false;
+    if(api.__investorSignatureAnchorPatched===true) return true;
+
+    const enhancedOpen=api.open;
+    api.open=async function investorSignatureSafeOpen(mode){
+      const nativeWindowOpen=window.open;
+      window.open=function(...args){
+        const popup=nativeWindowOpen.apply(window,args);
+        if(!popup?.document) return popup;
+        const nativeWrite=popup.document.write.bind(popup.document);
+        popup.document.write=function(html){
+          return nativeWrite(anchorInvestorSignatureHtml(html));
+        };
+        return popup;
+      };
+      try{
+        return await enhancedOpen(mode);
+      }finally{
+        window.open=nativeWindowOpen;
+      }
+    };
+    api.__investorSignatureAnchorPatched=true;
+    return true;
+  }
+
   async function runWithFreePoint(openFn,mode){
     collectLastReport();
     const changedSalary=[];
@@ -116,6 +179,7 @@ Catatan:
     const api=window.LaporanBulananPrintUI;
     if(!api || typeof api.open!=="function") return false;
 
+    if(!patchInvestorSignatureAnchor()) return false;
     const printOk=replaceAction("lbPrintMonthly","print");
     const pdfOk=replaceAction("lbPdfMonthly","pdf");
     installed=printOk&&pdfOk;
