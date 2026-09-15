@@ -128,9 +128,9 @@
     let source=String(html||'');
     source=source.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');
     source=source.replace(/<head([^>]*)>/i,`<head$1><base href="${location.href}">`);
-    source=source.replace(/<\/head>/i,`<style>
-      html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;max-width:210mm!important}
-      body{font-family:Arial,Helvetica,sans-serif!important}
+    source=source.replace(/<\/head>/i,`<style id="vax-wa-pdf-base">
+      html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;max-width:210mm!important;color:#111!important}
+      body{font-family:Arial,Helvetica,sans-serif!important;overflow:visible!important}
       .page-frame{width:210mm!important;max-width:210mm!important;margin:0!important;box-shadow:none!important;background:#fff!important}
       .page-frame>thead{display:table-header-group!important}.page-frame>tfoot{display:table-footer-group!important}
       .head-space{height:24mm!important}.foot-space{height:18mm!important}
@@ -138,6 +138,45 @@
       .content{padding:0!important}
     </style></head>`);
     return source;
+  }
+
+  function collectPrintRules(doc){
+    const out=[];
+    const walk=rules=>{
+      for(const rule of Array.from(rules||[])){
+        try{
+          const type=Number(rule.type||0);
+          const condition=String(rule.conditionText||rule.media?.mediaText||'').toLowerCase();
+          if((type===4||rule.constructor?.name==='CSSMediaRule')&&condition.includes('print')){
+            for(const child of Array.from(rule.cssRules||[]))out.push(child.cssText);
+            continue;
+          }
+          if(type===12||rule.constructor?.name==='CSSSupportsRule'){
+            walk(rule.cssRules);
+          }
+        }catch(_e){}
+      }
+    };
+    for(const sheet of Array.from(doc.styleSheets||[])){
+      try{walk(sheet.cssRules);}catch(_e){}
+    }
+    return out.join('\n');
+  }
+
+  function forcePrintPresentation(doc){
+    const printCss=collectPrintRules(doc);
+    const style=doc.createElement('style');
+    style.id='vax-wa-force-print';
+    style.textContent=`
+      ${printCss}
+      html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;max-width:210mm!important;overflow:visible!important}
+      body{color:#111!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+      .page-frame{display:table!important;width:210mm!important;max-width:210mm!important;margin:0!important;background:#fff!important;box-shadow:none!important}
+      .page-frame>thead{display:table-header-group!important}
+      .page-frame>tfoot{display:table-footer-group!important}
+      .branch-report{background:#fff!important;color:#111!important}
+    `;
+    doc.head.appendChild(style);
   }
 
   function waitForFrame(frame){
@@ -167,15 +206,18 @@
       await loaded;
       const doc=frame.contentDocument;
       if(!doc?.body)throw new Error('Dokumen PDF gagal dirender.');
+      forcePrintPresentation(doc);
       await waitForAssets(doc);
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      const root=doc.querySelector('.page-frame')||doc.body;
       await html2pdf().set({
         margin:0,
         filename,
-        image:{type:'jpeg',quality:0.98},
-        html2canvas:{scale:1.35,useCORS:true,logging:false,backgroundColor:'#ffffff',windowWidth:794},
+        image:{type:'jpeg',quality:0.99},
+        html2canvas:{scale:1.5,useCORS:true,logging:false,backgroundColor:'#ffffff',windowWidth:794,scrollX:0,scrollY:0},
         jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-        pagebreak:{mode:['css','legacy']}
-      }).from(doc.body).save();
+        pagebreak:{mode:['css','legacy','avoid-all']}
+      }).from(root).save();
     }finally{frame.remove();}
   }
 
