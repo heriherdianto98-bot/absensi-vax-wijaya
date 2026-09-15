@@ -55,7 +55,10 @@ if (-not (Test-Path $EnvFile)) {
 $node = Get-Command node -ErrorAction Stop
 
 if ($InstallAutoStart) {
-  $cmd = "@echo off`r`nstart \"\" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$ScriptPath\"`r`n"
+  $cmd = @"
+@echo off
+start "" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$ScriptPath"
+"@
   Set-Content -Path $StartupFile -Value $cmd -Encoding ASCII
   Write-Host "Investor Revised auto-start installed: $StartupFile"
 }
