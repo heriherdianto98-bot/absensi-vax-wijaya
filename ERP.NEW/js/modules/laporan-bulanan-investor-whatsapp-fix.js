@@ -2,6 +2,7 @@
   'use strict';
 
   const PAGE='.laporan-bulanan-investor-page';
+  const MONTHS=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
   let target=null;
   let currentButton=null;
 
@@ -30,6 +31,29 @@
     const last=new Date(Date.UTC(year,mon,0)).getUTCDate();
     return `${year}-${String(mon).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
   };
+
+  function activePeriod(){
+    const raw=String(qs('lbMonth')?.value||'');
+    const match=raw.match(/^(\d{4})-(\d{2})$/);
+    if(!match)return {raw,label:'',monthName:'',year:''};
+    const year=match[1];
+    const monthNumber=Number(match[2]);
+    const monthName=MONTHS[monthNumber-1]||'';
+    return {raw,label:monthName?`${monthName} ${year}`:raw,monthName,year};
+  }
+
+  function filePart(value){
+    return String(value||'')
+      .trim()
+      .replace(/^VAX\s+WIJAYA\s+/i,'')
+      .replace(/[^a-zA-Z0-9]+/g,'-')
+      .replace(/^-+|-+$/g,'')||'Cabang';
+  }
+
+  function pdfDocumentTitle(resolved){
+    const period=activePeriod();
+    return `Laporan-Investor-${filePart(resolved?.branch||'Cabang')}-${filePart(period.monthName||period.raw)}-${period.year||''}`.replace(/-+$/,'');
+  }
 
   function parseMasterPayload(raw){
     let data=raw;
@@ -80,6 +104,33 @@
     button.style.setProperty('box-shadow','0 0 14px rgba(37,211,102,.28)','important');
   }
 
+  async function openPdfForActiveReport(resolved){
+    const api=window.LaporanBulananPrintUI;
+    if(!api||typeof api.open!=='function')throw new Error('PDF Laporan Investor belum siap. Muat ulang halaman lalu coba lagi.');
+
+    const wantedTitle=pdfDocumentTitle(resolved);
+    const nativeOpen=window.open;
+    window.open=function(...args){
+      const popup=nativeOpen.apply(window,args);
+      if(!popup?.document)return popup;
+      const nativeWrite=popup.document.write.bind(popup.document);
+      popup.document.write=function(html){
+        let source=String(html||'');
+        if(/<title>[\s\S]*?<\/title>/i.test(source)){
+          source=source.replace(/<title>[\s\S]*?<\/title>/i,`<title>${wantedTitle}</title>`);
+        }
+        return nativeWrite(source);
+      };
+      return popup;
+    };
+
+    try{
+      return await api.open('pdf');
+    }finally{
+      window.open=nativeOpen;
+    }
+  }
+
   function replaceButton(){
     const old=qs('lbInvestorWhatsapp');
     if(!old)return null;
@@ -91,12 +142,19 @@
     applyWhatsAppVisual(button);
 
     button.addEventListener('click',async()=>{
+      let waWindow=null;
       try{
         const resolved=target||await resolveTarget();
         if(!resolved)throw new Error('Nomor WhatsApp Investor belum tersedia di Master Investor untuk cabang/periode ini.');
-        window.open(`https://wa.me/${resolved.phone}`,'_blank','noopener');
+
+        const period=activePeriod();
+        const message=`Laporan Investor ${resolved.branch} periode ${period.label||period.raw}`;
+        waWindow=window.open(`https://wa.me/${resolved.phone}?text=${encodeURIComponent(message)}`,'_blank','noopener');
+
+        await openPdfForActiveReport(resolved);
       }catch(err){
-        window.alert(err?.message||'Gagal membuka WhatsApp Investor.');
+        try{if(waWindow&&waWindow.location?.href==='about:blank')waWindow.close();}catch(_e){}
+        window.alert(err?.message||'Gagal menyiapkan PDF / WhatsApp Investor.');
       }
     });
     return button;
@@ -117,7 +175,8 @@
       }
       button.disabled=false;
       applyWhatsAppVisual(button);
-      button.title=`WhatsApp ${target.name} · +${target.phone}`;
+      const period=activePeriod();
+      button.title=`Siapkan PDF ${target.branch} · ${period.label||period.raw} lalu buka WhatsApp ${target.name}`;
     }catch(err){
       console.warn('[Investor WhatsApp Fix]',err?.message||err);
       button.title='Gagal membaca nomor WhatsApp Investor';
