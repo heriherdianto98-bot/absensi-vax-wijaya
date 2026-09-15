@@ -9,6 +9,8 @@ $ScriptPath = $MyInvocation.MyCommand.Path
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $ConnectorDir = Join-Path $RepoRoot 'minutes-connector'
 $ApiFile = Join-Path $ConnectorDir 'investor-readonly-api.js'
+$RunnerFile = Join-Path $ConnectorDir 'investor-monthly-dataset-yeartrend-compatible-readonly.js'
+$ExpectedRunner = Split-Path $RunnerFile -Leaf
 $EnvFile = Join-Path $ConnectorDir '.env'
 $StartupDir = [Environment]::GetFolderPath('Startup')
 $StartupFile = Join-Path $StartupDir 'ERP-VAX-Investor-Revised.cmd'
@@ -17,13 +19,17 @@ $OutLog = Join-Path $LogDir 'investor-readonly-api.out.log'
 $ErrLog = Join-Path $LogDir 'investor-readonly-api.err.log'
 $HealthUrl = 'http://127.0.0.1:8788/health'
 
-function Test-ApiHealth {
+function Get-ApiHealth {
   try {
-    $response = Invoke-RestMethod -Uri $HealthUrl -Method Get -TimeoutSec 3
-    return [bool]$response.ok
+    return Invoke-RestMethod -Uri $HealthUrl -Method Get -TimeoutSec 3
   } catch {
-    return $false
+    return $null
   }
+}
+
+function Test-ApiHealth {
+  $response = Get-ApiHealth
+  return [bool]($response -and $response.ok -and $response.runner -eq $ExpectedRunner)
 }
 
 function Wait-ApiHealth {
@@ -33,6 +39,20 @@ function Wait-ApiHealth {
     Start-Sleep -Seconds 1
   }
   return $false
+}
+
+function Stop-StaleInvestorApi {
+  $health = Get-ApiHealth
+  if (-not $health -or $health.runner -eq $ExpectedRunner) { return }
+
+  $apiPattern = [regex]::Escape($ApiFile)
+  $procs = Get-CimInstance Win32_Process | Where-Object {
+    $_.Name -eq 'node.exe' -and $_.CommandLine -match $apiPattern
+  }
+  foreach ($proc in $procs) {
+    Stop-Process -Id $proc.ProcessId -Force
+  }
+  if ($procs) { Start-Sleep -Seconds 1 }
 }
 
 if ($RemoveAutoStart) {
@@ -47,6 +67,9 @@ if ($RemoveAutoStart) {
 
 if (-not (Test-Path $ApiFile)) {
   throw "Investor Revised API file not found: $ApiFile"
+}
+if (-not (Test-Path $RunnerFile)) {
+  throw "Investor Revised READ ONLY runner not found: $RunnerFile"
 }
 if (-not (Test-Path $EnvFile)) {
   throw "Investor Revised .env not found: $EnvFile"
@@ -64,14 +87,20 @@ start "" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$ScriptPa
 }
 
 if (Test-ApiHealth) {
-  Write-Host 'Investor Revised API already healthy on 127.0.0.1:8788.'
+  Write-Host "Investor Revised API already healthy on 127.0.0.1:8788 with runner $ExpectedRunner."
   exit 0
 }
 
+# If an older Investor Revised API instance is alive with the obsolete runner,
+# stop only that isolated API process. Main ERP sync/scheduler are not touched.
+Stop-StaleInvestorApi
+
 New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
 
-# Isolated service only. This does not start/stop the main ERP sync, scheduler,
-# or any locked ERP engine. It only launches minutes-connector/investor-readonly-api.js.
+# Process-scoped configuration only for Investor Revised API.
+# This does not edit .env, sync.js, scheduler.js, DailyDataEngine, or LOCKED engines.
+$env:INVESTOR_READONLY_RUNNER = $RunnerFile
+
 Start-Process -FilePath $node.Source `
   -ArgumentList @($ApiFile) `
   -WorkingDirectory $ConnectorDir `
@@ -80,10 +109,11 @@ Start-Process -FilePath $node.Source `
   -RedirectStandardError $ErrLog
 
 if (-not (Wait-ApiHealth -Seconds 15)) {
-  Write-Host 'Investor Revised API failed to become healthy.' -ForegroundColor Red
+  Write-Host 'Investor Revised API failed to become healthy with the expected READ ONLY runner.' -ForegroundColor Red
+  Write-Host "Expected runner: $ExpectedRunner"
   Write-Host "Check log: $ErrLog"
   exit 1
 }
 
-Write-Host 'Investor Revised API healthy on 127.0.0.1:8788.' -ForegroundColor Green
-Write-Host 'Main ERP sync/scheduler were not touched.'
+Write-Host "Investor Revised API healthy on 127.0.0.1:8788 with runner $ExpectedRunner." -ForegroundColor Green
+Write-Host 'Main ERP sync/scheduler and LOCKED engines were not touched.'
