@@ -13,14 +13,17 @@
       #mtInvoiceList .mt-inbox-active{padding:12px;border-bottom:1px solid #273843}
       #mtInvoiceList .mt-inbox-active > strong{display:block;margin:0 0 8px;color:#e9f5fc;font-size:12px;letter-spacing:.06em}
       #mtInvoiceList .mt-inbox-active .mt-invoice-row{margin:6px 0}
-      #mtInvoiceList .mt-inbox-drafts{border-top:1px solid #273843;background:#0e171e}
-      #mtInvoiceList .mt-inbox-drafts summary{cursor:pointer;list-style:none;padding:12px 18px;color:#b9cbd6;font-size:12px;font-weight:800;display:flex;justify-content:space-between}
+      #mtInvoiceList .mt-inbox-drafts{border-top:1px solid #698ba1;background:#263b49;border-radius:9px;overflow:hidden;margin:5px 12px}
+      #mtInvoiceList .mt-inbox-drafts summary{cursor:pointer;list-style:none;padding:14px 18px;color:#f7fbff;font-size:14px;font-weight:900;display:flex;justify-content:space-between;background:#304c5e;border:1px solid #7195ab;border-radius:9px}
+      #mtInvoiceList .mt-inbox-drafts summary:hover{background:#3a5a6e;border-color:#9cbed2}
+      #mtInvoiceList .mt-inbox-drafts summary:focus-visible{outline:2px solid #ffd77b;outline-offset:-3px}
       #mtInvoiceList .mt-inbox-drafts summary::-webkit-details-marker{display:none}
-      #mtInvoiceList .mt-inbox-drafts summary::after{content:'⌄';color:#f0c454}
+      #mtInvoiceList .mt-inbox-drafts summary::after{content:'⌄';color:#ffe08a;font-size:17px}
       #mtInvoiceList .mt-inbox-drafts[open] summary::after{content:'⌃'}
-      #mtInvoiceList .mt-inbox-drafts .mt-invoice-active{padding:0 12px 12px}
-      #mtInvoiceList .mt-inbox-drafts .mt-invoice-row{margin-top:5px}
-      #mtInvoiceList .mt-inbox-empty{padding:12px 16px;color:#8da6b5;font-size:12px}
+      #mtInvoiceList .mt-inbox-drafts .mt-invoice-active{padding:10px 12px 12px;background:#263b49}
+      #mtInvoiceList .mt-inbox-drafts .mt-invoice-row{margin-top:5px;background:#304a5d;border:1px solid #7897ac;border-radius:10px}
+      #mtInvoiceList .mt-inbox-drafts .mt-invoice-empty{color:#f0f8fc;background:#304a5d;border-radius:9px;font-size:13px}
+      #mtInvoiceList .mt-inbox-empty{padding:12px 16px;color:#b8cbd8;font-size:12px}
       #mtInvoiceList .mt-inbox-active .mt-invoice-status.sent{background:#173548;color:#84d8ff}
     `;
     document.head.appendChild(el);
