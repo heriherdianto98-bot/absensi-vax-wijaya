@@ -1,5 +1,5 @@
-/* ERP VAX internal invoice lifecycle. Standalone presentation + restricted invoice RPCs only.
- * Does not call Cash Out, Arus Kas, payroll, or payment endpoints.
+/* ERP VAX internal invoice lifecycle. Presentation + existing restricted invoice RPCs only.
+ * No Cash Out, Arus Kas, payroll, payment, or database changes.
  */
 'use strict';
 (() => {
@@ -21,19 +21,15 @@
       #mtInvoiceList .mt-internal-drafts[open] summary::after{content:'⌃'}
       #mtInvoiceList .mt-internal-drafts .mt-invoice-row{margin:6px 12px 12px}
       #mtInvoiceList .mt-internal-receipt{display:block;font-size:11px;color:#81a8bc;margin-top:4px;white-space:normal}
-      #mtInvoiceList .mt-internal-receipt.read{color:#6dcaff}
       #mtInvoiceList .mt-internal-receipt.done{color:#8be6b1}
-      #mtInvoiceList .mt-internal-check{font-weight:900;font-size:16px;margin-right:5px;color:#b8cbd5}
-      #mtInvoiceList .mt-internal-check.read{color:#48beff}
-      #mtInvoiceList .mt-internal-check.done{color:#66dca0}
       #mtInvoiceList .mt-internal-view{border-color:#347d9b!important;color:#adebff!important}
       #mtInvoiceList .mt-internal-view:hover{background:#16435a!important}
       #mtInvoiceList .mt-invoice-row .mt-ui-mail-added{display:none!important}
       #mtInvoiceList .mt-internal-history-row{opacity:.94}
       #mtInvoiceList .mt-internal-active .mt-invoice-row{margin:7px 0}
       #mtInvoiceList .mt-internal-active .mt-invoice-buttons{gap:8px!important}
-      #mtInvoiceList .mt-internal-active .mt-invoice-status{max-width:none!important}
-      #mtInvoiceList .mt-internal-active .mt-internal-status-cell{padding-left:24px;box-sizing:border-box}
+      #mtInvoiceList .mt-internal-delivered{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:31px;height:31px;border-radius:9px;border:1px solid #286c49;background:#153b2a;color:#5ee39b;font-size:20px;font-weight:900;line-height:1;cursor:default}
+      #mtInvoiceList .mt-internal-delivered:focus-visible{outline:2px solid #5ee39b;outline-offset:2px}
     `;document.head.appendChild(style);
   };
   function install(){
@@ -51,16 +47,14 @@
       const rowHtml=(r,archive=false)=>{
         const st=String(r.status||'draft').toLowerCase();
         const dir=sender(r)==='owner'?'OWNER → SVP':'SVP → OWNER';
-        const done=st==='completed',old=st==='paid';
-        const mark=done?'✓✓':st==='sent'?'✓':'';
-        const state=done?'SELESAI':old?'DIBAYAR (ARSIP LAMA)':st==='sent'?'TERKIRIM':'DRAFT';
+        const done=st==='completed';
         const receipt=done?`Selesai ${dated(r.completed_at)}`:'';
-        const statusClass=done?'done':'';
         const url=`${VIEW}?id=${encodeURIComponent(r.id)}`;
         const view=`<a class="mt-action mt-internal-view" href="${url}" target="_blank" rel="noopener noreferrer" title="Buka detail invoice">Lihat</a>`;
         const draftActions=mine(r)&&st==='draft'?`<button class="mt-action" data-inv-action="edit" data-id="${r.id}">Edit</button><button class="mt-action" data-inv-action="send" data-id="${r.id}">Kirim Email</button>`:'';
+        const delivery=st==='sent'?'<span class="mt-internal-delivered" role="img" aria-label="Terkirim" title="Terkirim">✓</span>':'';
         const wa=mine(r)?`<button class="mt-action mt-action-wa" data-wa-id="${r.id}">WhatsApp</button>`:'';
-        return `<div class="mt-invoice-row ${archive?'mt-internal-history-row':''}"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${dir} · ${this.esc(r.title||'INVOICE')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div class="mt-internal-status-cell"><span class="mt-invoice-status ${statusClass}"><span class="mt-internal-check ${statusClass}" aria-hidden="true">${mark}</span>${state}</span>${receipt?`<small class="mt-internal-receipt ${statusClass}">${this.esc(receipt)}</small>`:''}</div><div class="mt-invoice-buttons">${draftActions}${view}${wa}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`;
+        return `<div class="mt-invoice-row ${archive?'mt-internal-history-row':''}"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${dir} · ${this.esc(r.title||'INVOICE')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div class="mt-internal-status-cell">${receipt?`<small class="mt-internal-receipt done">${this.esc(receipt)}</small>`:''}</div><div class="mt-invoice-buttons">${draftActions}${delivery}${view}${wa}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`;
       };
       root.innerHTML=`<div class="mt-internal-active"><strong>INVOICE AKTIF · OWNER ↔ SVP</strong>${active.length?active.map(r=>rowHtml(r)).join(''):'<div class="mt-internal-empty">Tidak ada invoice aktif yang menunggu tindak lanjut.</div>'}</div><details class="mt-internal-drafts"><summary>Draft invoice · belum dikirim (${draft.length})</summary>${draft.length?draft.map(r=>rowHtml(r)).join(''):'<div class="mt-internal-empty">Tidak ada draft.</div>'}</details><div class="mt-invoice-history"><button type="button" class="mt-invoice-history-toggle" data-history-toggle><span>Riwayat Invoice</span><b>${archived.length}</b><i>${this.historyOpen?'▲':'▼'}</i></button><div class="mt-invoice-history-list" ${this.historyOpen?'':'hidden'}>${archived.map(r=>rowHtml(r,true)).join('')||'<div class="mt-internal-empty">Belum ada invoice selesai.</div>'}</div></div>`;
     };
