@@ -35,3 +35,71 @@
 
   document.addEventListener('erp:components-ready', bind);
 })();
+
+/*
+ * Setoran 3 Harian — smooth horizontal scrollbar sync.
+ * UI ONLY: tidak menyentuh data, engine, rumus, Supabase, atau workflow Setoran.
+ *
+ * Halaman memiliki dua area scroll horizontal: worksheet asli dan controller
+ * scrollbar di bawah. Handler lama menyamakan scrollLeft pada setiap event
+ * mentah sehingga repaint tabel lebar dapat terasa patah-patah. Layer ini
+ * mengambil event lebih awal dan membatasi sinkronisasi maksimal sekali per
+ * animation frame.
+ */
+(() => {
+  function bindSmoothHorizontalScroll() {
+    const tableWrap = document.querySelector('.s3sheet-table-wrap');
+    const bottom = document.getElementById('s3sheetBottomScroll');
+    if (!tableWrap || !bottom || bottom.dataset.s3SmoothSyncBound === '1') return;
+
+    bottom.dataset.s3SmoothSyncBound = '1';
+    tableWrap.dataset.s3SmoothSyncBound = '1';
+
+    let rafId = 0;
+    let pendingFrom = null;
+    let pendingTo = null;
+
+    const flush = () => {
+      rafId = 0;
+      const from = pendingFrom;
+      const to = pendingTo;
+      pendingFrom = null;
+      pendingTo = null;
+      if (!from || !to) return;
+
+      const x = from.scrollLeft;
+      if (Math.abs(to.scrollLeft - x) > 0.5) to.scrollLeft = x;
+    };
+
+    const queueSync = (from, to, event) => {
+      // Hentikan handler sinkronisasi lama pada target yang sama; native scroll
+      // tetap berjalan karena event listener bersifat passive dan tidak dicegah.
+      event.stopImmediatePropagation();
+
+      if (Math.abs(to.scrollLeft - from.scrollLeft) <= 0.5) return;
+      pendingFrom = from;
+      pendingTo = to;
+      if (!rafId) rafId = requestAnimationFrame(flush);
+    };
+
+    tableWrap.addEventListener(
+      'scroll',
+      event => queueSync(tableWrap, bottom, event),
+      { capture: true, passive: true }
+    );
+
+    bottom.addEventListener(
+      'scroll',
+      event => queueSync(bottom, tableWrap, event),
+      { capture: true, passive: true }
+    );
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindSmoothHorizontalScroll, { once: true });
+  } else {
+    bindSmoothHorizontalScroll();
+  }
+
+  document.addEventListener('erp:components-ready', bindSmoothHorizontalScroll);
+})();
