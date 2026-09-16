@@ -1,5 +1,5 @@
-/* Kalijati investor diagram V9 — typography and icon alignment, screen only.
-   Does not alter calculation, layout connectors, other branches, or print/PDF. */
+/* Kalijati investor diagram V10 — typography and exact branch icon alignment, screen only.
+   Does not alter calculation, connectors, other branches, or print/PDF. */
 @media screen and (min-width:761px) {
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) {
     position:relative;
@@ -50,7 +50,13 @@
     color:#ffe58d!important;
     font-size:clamp(27px,2.25vw,33px)!important;
   }
-  /* Both branch icons share the same 15px inset, independent of card width. */
+  /* V10: all cards in each branch have one left edge. Previously the 82%-wide
+     centered share card shifted its icon despite identical 15px icon insets.
+     Equal widths also keep share/value connector centers aligned. */
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-side .vax-flow-node.vax-share {
+    width:100%!important;
+    align-self:stretch!important;
+  }
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-side .vax-flow-node:not(.vax-capital) > .vax-icon-wrap {
     left:15px!important;
   }
