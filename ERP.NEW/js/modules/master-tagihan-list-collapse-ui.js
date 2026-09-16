@@ -97,12 +97,20 @@
   }
 
   function ensureInvoiceHistoryUi(){
-    if(document.querySelector('script[data-invoice-history-search-ui]')) return;
-    const s=document.createElement('script');
-    s.src='../js/modules/master-tagihan-invoice-history-search-ui.js?v=20260911-1';
-    s.async=false;
-    s.dataset.invoiceHistorySearchUi='1';
-    document.head.appendChild(s);
+    if(!document.querySelector('script[data-invoice-history-search-ui]')){
+      const s=document.createElement('script');
+      s.src='../js/modules/master-tagihan-invoice-history-search-ui.js?v=20260911-1';
+      s.async=false;
+      s.dataset.invoiceHistorySearchUi='1';
+      document.head.appendChild(s);
+    }
+    if(!document.querySelector('script[data-invoice-inbox-ui]')){
+      const inbox=document.createElement('script');
+      inbox.src='../js/modules/master-tagihan-invoice-inbox-ui.js?v=20260916-1';
+      inbox.async=false;
+      inbox.dataset.invoiceInboxUi='1';
+      document.head.appendChild(inbox);
+    }
   }
 
   let tries=0;
