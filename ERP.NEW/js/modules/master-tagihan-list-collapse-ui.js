@@ -111,6 +111,13 @@
       inbox.dataset.invoiceInboxUi='1';
       document.head.appendChild(inbox);
     }
+    if(!document.querySelector('script[data-invoice-read-complete-ui]')){
+      const lifecycle=document.createElement('script');
+      lifecycle.src='../js/modules/master-tagihan-invoice-read-complete-ui.js?v=20260916-1';
+      lifecycle.async=false;
+      lifecycle.dataset.invoiceReadCompleteUi='1';
+      document.head.appendChild(lifecycle);
+    }
   }
 
   let tries=0;
