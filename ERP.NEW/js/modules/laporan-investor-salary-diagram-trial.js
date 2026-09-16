@@ -33,6 +33,9 @@
   }
   function sync(){const r=window.InvestorRevisedReport;if(valid(r))render(r);else hide();}
   function boot(){
+    if(!document.getElementById('vax-salary-depth-brand-style')){
+      const style=document.createElement('link');style.id='vax-salary-depth-brand-style';style.rel='stylesheet';style.media='screen';style.href='../styles/laporan-investor-salary-depth-brand-v2.css?v=20260917-v1';document.head.appendChild(style);
+    }
     document.addEventListener('laporan-investor:revised-report-applied',e=>render(e.detail?.report));
     document.getElementById('lbBranch')?.addEventListener('change',()=>{hide();requestAnimationFrame(sync);});
     document.getElementById('lbMonth')?.addEventListener('change',()=>{hide();requestAnimationFrame(sync);});
