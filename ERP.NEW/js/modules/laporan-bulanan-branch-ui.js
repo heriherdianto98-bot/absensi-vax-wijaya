@@ -55,10 +55,10 @@
       }
       .lb-branch-option.is-selected::after{content:"✓";color:#5eead4;font-size:13px;font-weight:900}
 
-      /* Investor Revised — trigger + dropdown hitam, nama cabang gold, UI ONLY */
+      /* Investor Revised — trigger + dropdown hitam, nama cabang putih, UI ONLY */
       body.laporan-bulanan-investor-page .lb-branch-trigger{
         background:#050708!important;
-        color:#e8bd3f!important;
+        color:#fff!important;
         border-color:rgba(214,173,47,.55)!important;
         box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 12px rgba(214,173,47,.08)!important;
         font-size:14px!important;
@@ -66,7 +66,7 @@
       body.laporan-bulanan-investor-page .lb-branch-trigger:hover,
       body.laporan-bulanan-investor-page .lb-branch-trigger[aria-expanded="true"]{
         background:#07090b!important;
-        color:#ffd75a!important;
+        color:#fff!important;
         border-color:#d6ad2f!important;
         box-shadow:0 0 0 2px rgba(214,173,47,.08),0 0 16px rgba(214,173,47,.12)!important;
       }
@@ -77,12 +77,12 @@
       body.laporan-bulanan-investor-page .lb-branch-popover{
         border-color:rgba(214,173,47,.55)!important;
         background:linear-gradient(165deg,#111315 0%,#080a0c 68%,#050607 100%)!important;
-        color:#e8bd3f!important;
+        color:#fff!important;
         box-shadow:0 22px 54px rgba(0,0,0,.68),0 0 20px rgba(214,173,47,.10),inset 0 1px 0 rgba(255,255,255,.04)!important;
         scrollbar-color:#c89d25 #090b0d!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-option{
-        color:#e8bd3f!important;
+        color:#fff!important;
         background:transparent!important;
         font-weight:800!important;
         font-size:15px!important;
@@ -91,13 +91,13 @@
       body.laporan-bulanan-investor-page .lb-branch-option.is-keyboard-active{
         background:rgba(214,173,47,.10)!important;
         border-color:rgba(214,173,47,.32)!important;
-        color:#ffd75a!important;
+        color:#fff!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-option.is-keyboard-active{
         box-shadow:inset 3px 0 0 #d6ad2f,0 0 12px rgba(214,173,47,.08)!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-option.is-selected{
-        color:#ffd75a!important;
+        color:#fff!important;
         border-color:rgba(214,173,47,.52)!important;
         background:rgba(214,173,47,.13)!important;
         box-shadow:inset 3px 0 0 #d6ad2f!important;
