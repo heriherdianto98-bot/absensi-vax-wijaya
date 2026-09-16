@@ -1,5 +1,5 @@
-/* Kalijati Investor V7: screen-only compact diagram, restrained 3D depth and hover glow.
-   No changes to source, presenter, calculations, other branches or Print/PDF. */
+/* Kalijati Investor V8: screen-only diagram, centered legible card typography and V7 3D depth.
+   Preserve original report presenter, calculations, other branches and Print/PDF. */
 @media screen {
  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #lbInvestorLines{display:none!important}
  body.laporan-bulanan-investor-page.vax-investor-diagram-ready .lb-grid>.lb-card[data-lb-view="investor"]>.lb-card-head{display:none!important}
@@ -51,39 +51,29 @@
  #vax-investor-diagram .vax-flow-side .vax-total{min-height:73px;border:1px solid #4ed9ec;background:linear-gradient(135deg,#0b2734,#081a23)}
  #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-label{color:#bfeaf1}
  #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-copy strong{color:#93f0f8;font-size:clamp(20px,1.75vw,25px)}
- /* V7: visual depth only. No geometry changes or transforms: SVG connectors remain aligned. */
- #vax-investor-diagram .vax-flow-node{
-   background:linear-gradient(180deg,rgba(255,255,255,.075),transparent 29%),linear-gradient(145deg,#183549 0%,#102535 50%,#0a1620 100%)!important;
-   border-color:rgba(75,151,185,.52)!important;
-   box-shadow:inset 0 1px 0 rgba(242,252,255,.13),inset 0 -9px 15px rgba(0,0,0,.19),0 8px 15px rgba(0,0,0,.27),0 2px 4px rgba(0,0,0,.15)!important;
- }
- #vax-investor-diagram .vax-investor-name{
-   background:linear-gradient(180deg,rgba(255,255,255,.07),transparent 29%),linear-gradient(145deg,#173044,#0b1923)!important;
-   border-color:rgba(75,151,185,.37)!important;
-   box-shadow:inset 0 1px 0 rgba(242,252,255,.10),inset 0 -8px 14px rgba(0,0,0,.18),0 8px 15px rgba(0,0,0,.24)!important;
-   transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
- }
- #vax-investor-diagram .vax-icon-wrap{
-   background:linear-gradient(180deg,rgba(255,255,255,.09),transparent 34%),linear-gradient(145deg,#174056,#0d2433)!important;
-   border-color:rgba(88,179,214,.27)!important;
-   box-shadow:inset 0 1px 0 rgba(255,255,255,.13),inset 0 -5px 10px rgba(0,0,0,.15),0 4px 8px rgba(0,0,0,.18)!important;
- }
- #vax-investor-diagram .vax-flow-node.vax-base{
-   background:linear-gradient(180deg,rgba(255,239,189,.12),transparent 30%),linear-gradient(130deg,#3b321d,#1b1c17)!important;
-   border-color:#d8af4e!important;
-   box-shadow:inset 0 1px 0 rgba(255,237,184,.18),inset 0 -10px 17px rgba(0,0,0,.18),0 10px 19px rgba(0,0,0,.29),0 0 17px rgba(224,169,61,.12)!important;
- }
- #vax-investor-diagram .vax-base .vax-icon-wrap{
-   background:linear-gradient(180deg,rgba(255,239,189,.12),transparent 30%),linear-gradient(145deg,#4b3c1d,#29251a)!important;
-   border-color:rgba(236,183,72,.29)!important;color:#ffdc77!important;
-   box-shadow:inset 0 1px 0 rgba(255,237,184,.15),inset 0 -5px 9px rgba(0,0,0,.18),0 4px 9px rgba(0,0,0,.2)!important;
- }
- #vax-investor-diagram .vax-flow-side .vax-total{
-   background:linear-gradient(180deg,rgba(255,255,255,.07),transparent 30%),linear-gradient(135deg,#113545,#081b25)!important;
-   border-color:#4ed9ec!important;
-   box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -9px 15px rgba(0,0,0,.18),0 9px 17px rgba(0,0,0,.28),0 0 11px rgba(78,217,236,.08)!important;
- }
- /* Hover is visual feedback only: no click behaviour, no motion of connected nodes. */
+ /* V7 3D surface: geometry and connector anchors unchanged. */
+ #vax-investor-diagram .vax-flow-node{background:linear-gradient(180deg,rgba(255,255,255,.075),transparent 29%),linear-gradient(145deg,#183549 0%,#102535 50%,#0a1620 100%)!important;border-color:rgba(75,151,185,.52)!important;box-shadow:inset 0 1px 0 rgba(242,252,255,.13),inset 0 -9px 15px rgba(0,0,0,.19),0 8px 15px rgba(0,0,0,.27),0 2px 4px rgba(0,0,0,.15)!important}
+ #vax-investor-diagram .vax-investor-name{background:linear-gradient(180deg,rgba(255,255,255,.07),transparent 29%),linear-gradient(145deg,#173044,#0b1923)!important;border-color:rgba(75,151,185,.37)!important;box-shadow:inset 0 1px 0 rgba(242,252,255,.10),inset 0 -8px 14px rgba(0,0,0,.18),0 8px 15px rgba(0,0,0,.24)!important;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
+ #vax-investor-diagram .vax-icon-wrap{background:linear-gradient(180deg,rgba(255,255,255,.09),transparent 34%),linear-gradient(145deg,#174056,#0d2433)!important;border-color:rgba(88,179,214,.27)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),inset 0 -5px 10px rgba(0,0,0,.15),0 4px 8px rgba(0,0,0,.18)!important}
+ #vax-investor-diagram .vax-flow-node.vax-base{background:linear-gradient(180deg,rgba(255,239,189,.12),transparent 30%),linear-gradient(130deg,#3b321d,#1b1c17)!important;border-color:#d8af4e!important;box-shadow:inset 0 1px 0 rgba(255,237,184,.18),inset 0 -10px 17px rgba(0,0,0,.18),0 10px 19px rgba(0,0,0,.29),0 0 17px rgba(224,169,61,.12)!important}
+ #vax-investor-diagram .vax-base .vax-icon-wrap{background:linear-gradient(180deg,rgba(255,239,189,.12),transparent 30%),linear-gradient(145deg,#4b3c1d,#29251a)!important;border-color:rgba(236,183,72,.29)!important;color:#ffdc77!important;box-shadow:inset 0 1px 0 rgba(255,237,184,.15),inset 0 -5px 9px rgba(0,0,0,.18),0 4px 9px rgba(0,0,0,.2)!important}
+ #vax-investor-diagram .vax-flow-side .vax-total{background:linear-gradient(180deg,rgba(255,255,255,.07),transparent 30%),linear-gradient(135deg,#113545,#081b25)!important;border-color:#4ed9ec!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -9px 15px rgba(0,0,0,.18),0 9px 17px rgba(0,0,0,.28),0 0 11px rgba(78,217,236,.08)!important}
+ /* V8: text sits at the true center of each side card; icons stay anchored left. */
+ #vax-investor-diagram .vax-flow-side .vax-flow-node{justify-content:center!important;padding:7px 53px!important;gap:0!important;text-align:center!important}
+ #vax-investor-diagram .vax-flow-side .vax-flow-node>.vax-icon-wrap{position:absolute!important;left:13px;top:50%;transform:translateY(-50%);margin:0!important}
+ #vax-investor-diagram .vax-flow-side .vax-flow-copy{width:100%;max-width:100%;min-width:0;align-items:center!important;justify-content:center!important;gap:3px!important;text-align:center!important}
+ #vax-investor-diagram .vax-flow-side .vax-flow-label{font-size:clamp(14px,1.15vw,16px)!important;line-height:1.15!important;font-weight:800!important;color:#e2edf5!important;text-align:center!important}
+ #vax-investor-diagram .vax-flow-side .vax-flow-copy strong{font-size:clamp(21px,1.7vw,25px)!important;line-height:1.13!important;font-weight:900!important;letter-spacing:.005em;text-align:center!important;font-variant-numeric:tabular-nums;white-space:nowrap}
+ #vax-investor-diagram .vax-flow-side .vax-share .vax-flow-copy strong{font-size:clamp(25px,2vw,30px)!important;color:#a0f2fb!important}
+ #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-label{font-size:clamp(15px,1.22vw,17px)!important;color:#e2faff!important}
+ #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-copy strong{font-size:clamp(23px,1.95vw,29px)!important;color:#a0f2fb!important}
+ /* Center the other single-value nodes without changing the split capital card. */
+ #vax-investor-diagram .vax-profit,#vax-investor-diagram .vax-base{padding-inline:62px!important;text-align:center!important}
+ #vax-investor-diagram .vax-profit>.vax-icon-wrap,#vax-investor-diagram .vax-base>.vax-icon-wrap{position:absolute;left:15px;top:50%;transform:translateY(-50%)}
+ #vax-investor-diagram .vax-profit .vax-flow-copy,#vax-investor-diagram .vax-base .vax-flow-copy{width:100%;align-items:center;text-align:center}
+ #vax-investor-diagram .vax-profit .vax-flow-label{font-size:14px;font-weight:800;color:#e2edf5}
+ #vax-investor-diagram .vax-profit .vax-flow-copy strong{font-size:23px}
+ /* Hover feedback stays visual only; no card translation, so connector lines remain aligned. */
  @media(hover:hover) and (pointer:fine){
   #vax-investor-diagram .vax-flow-node:hover,#vax-investor-diagram .vax-investor-name:hover{border-color:rgba(102,229,248,.78)!important;background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 30%),linear-gradient(145deg,#204454,#112b39)!important;box-shadow:inset 0 1px 0 rgba(220,249,255,.17),inset 0 -9px 15px rgba(0,0,0,.2),0 11px 19px rgba(0,0,0,.32),0 0 19px rgba(52,203,229,.23)!important}
   #vax-investor-diagram .vax-flow-node:hover .vax-icon-wrap,#vax-investor-diagram .vax-investor-name:hover .vax-icon-wrap{background:linear-gradient(145deg,#20506a,#123244)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 0 11px rgba(64,215,245,.19)!important}
