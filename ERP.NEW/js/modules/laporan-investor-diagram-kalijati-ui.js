@@ -1,9 +1,8 @@
-/* VAX Investor diagram trial — Kalijati only. Screen presentation only.
- * Reads existing calculated report; never modifies source, original presenter or print DOM.
+/* VAX Investor diagram — locked Kalijati UI shared by individual branches.
+ * Screen presentation only. Original report, calculation, presenter and print DOM remain unchanged.
  */
 "use strict";
 (() => {
-  const BRANCH = "1";
   const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
   const money = value => new Intl.NumberFormat("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(value || 0));
   const ico = (name) => {
@@ -22,14 +21,20 @@
   let raf = 0;
   let lastRenderedReport = null;
   const branchSelect = () => document.getElementById("lbBranch");
-  const isTrial = () => String(branchSelect()?.value ?? "") === BRANCH;
+  const selectedBranch = () => {
+    const select = branchSelect();
+    const id = String(select?.value ?? "").trim();
+    const label = String(select?.selectedOptions?.[0]?.textContent ?? "").trim();
+    if (!id || /^(all|semua)$/i.test(id) || /^semua cabang$/i.test(label)) return "";
+    return id;
+  };
   const monthMatches = report => {
     const selected = String(document.getElementById("lbMonth")?.value || "");
     const reportPeriod = String(report?.range?.start || report?.range?.end || "").slice(0,7);
     return !selected || !reportPeriod || selected === reportPeriod;
   };
-  const getReport = () => [window.InvestorRevisedReport, window.LaporanBulananInvestorShareBridge?.lastReport]
-    .find(report => String(report?.branch?.id ?? "") === BRANCH && monthMatches(report) && report?.investor?.nama);
+  const matchesSelected = report => !!selectedBranch() && String(report?.branch?.id ?? "") === selectedBranch() && monthMatches(report) && !!report?.investor?.nama;
+  const getReport = () => [window.InvestorRevisedReport, window.LaporanBulananInvestorShareBridge?.lastReport].find(matchesSelected);
   function draw() {
     const stage = document.querySelector("#vax-investor-diagram .vax-flow-stage");
     const svg = stage?.querySelector(".vax-flow-connectors");
@@ -54,14 +59,15 @@
     document.body.classList.remove("vax-investor-diagram-ready");
     document.getElementById("vax-investor-diagram")?.remove();
     resizeObserver?.disconnect(); resizeObserver=null;
+    lastRenderedReport=null;
   }
   function render(report) {
-    if (!isTrial() || !report || String(report?.branch?.id ?? "") !== BRANCH || !monthMatches(report) || !report.investor?.nama) { hide(); return; }
+    if (!matchesSelected(report)) { hide(); return; }
     const original=document.getElementById("lbInvestorLines");
     if (!original || !original.closest('[data-lb-view="investor"]')) return;
     const inv=report.investor;
     let host=document.getElementById("vax-investor-diagram");
-    if (!host) { host=document.createElement("section"); host.id="vax-investor-diagram";host.setAttribute("aria-label","Diagram Pembagian Investor Kalijati"); original.insertAdjacentElement("afterend",host); }
+    if (!host) { host=document.createElement("section"); host.id="vax-investor-diagram";host.setAttribute("aria-label","Diagram Pembagian Investor"); original.insertAdjacentElement("afterend",host); }
     host.innerHTML=`<div class="vax-diagram-heading"><div class="vax-diagram-heading-copy"><span class="vax-eyebrow">LAPORAN BULANAN INVESTOR</span><h3>Pembagian Investor</h3><p>Rincian perhitungan hak investor dan manajemen dari laba usaha<br>berdasarkan data realisasi.</p></div><div class="vax-investor-name"><span class="vax-icon-wrap">${ico("person")}</span><span><small>Master Investor</small><strong>${esc(inv.nama)}</strong></span></div></div>
       <div class="vax-flow-stage"><svg class="vax-flow-connectors" aria-hidden="true"></svg>
         ${node("profit","coins","Laba Bersih",money(report.laba?.labaBersih),"vax-profit")}
@@ -83,15 +89,15 @@
     if ("ResizeObserver" in window) { resizeObserver=new ResizeObserver(scheduleDraw); resizeObserver.observe(host); }
     scheduleDraw();
   }
-  function sync() { if (!isTrial()) { hide();return; } const report=getReport(); if (!report) { hide();return; } render(report); }
+  function sync() { const report=getReport(); if (!report) { hide();return; } render(report); }
   function boot() {
-    document.addEventListener("laporan-bulanan:investor-share",event=>{ const r=event.detail; if (isTrial() && String(r?.branch?.id ?? "")===BRANCH && monthMatches(r)) render(r); });
-    document.addEventListener("laporan-investor:revised-report-applied",event=>{ const r=event.detail?.report; if (isTrial() && String(r?.branch?.id ?? "")===BRANCH && monthMatches(r)) render(r); });
+    document.addEventListener("laporan-bulanan:investor-share",event=>{ const r=event.detail; if (matchesSelected(r)) render(r); });
+    document.addEventListener("laporan-investor:revised-report-applied",event=>{ const r=event.detail?.report; if (matchesSelected(r)) render(r); });
     branchSelect()?.addEventListener("change",()=>{ hide();requestAnimationFrame(sync); });
     document.getElementById("lbMonth")?.addEventListener("change",()=>{ hide();requestAnimationFrame(sync); });
     window.addEventListener("resize",scheduleDraw);
     window.addEventListener("beforeprint",()=>document.body.classList.remove("vax-investor-diagram-ready"));
-    window.addEventListener("afterprint",()=>{ if (lastRenderedReport && isTrial()) document.body.classList.add("vax-investor-diagram-ready");scheduleDraw(); });
+    window.addEventListener("afterprint",()=>{ if (matchesSelected(lastRenderedReport)) document.body.classList.add("vax-investor-diagram-ready");scheduleDraw(); });
     sync();
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded",boot,{once:true}) : boot();
