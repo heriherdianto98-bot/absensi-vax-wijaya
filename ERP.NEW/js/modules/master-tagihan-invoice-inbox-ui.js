@@ -10,49 +10,53 @@
     const el = document.createElement('style');
     el.id = STYLE_ID;
     el.textContent = `
-      #mtInvoiceList .mt-inbox-active{padding:12px;border-bottom:1px solid #6c5032}
-      #mtInvoiceList .mt-inbox-active > strong{display:block;margin:0 0 8px;color:#fff0d7;font-size:12px;letter-spacing:.06em}
+      #mtInvoiceList .mt-inbox-active{padding:12px;border-bottom:1px solid #424952}
+      #mtInvoiceList .mt-inbox-active > strong{display:block;margin:0 0 8px;color:#f5f7fb;font-size:12px;letter-spacing:.06em}
       #mtInvoiceList .mt-inbox-active .mt-invoice-row{margin:6px 0}
-      #mtInvoiceList .mt-inbox-drafts{border-top:1px solid #9a754a;background:#372b21;border-radius:9px;overflow:hidden;margin:5px 12px}
-      #mtInvoiceList .mt-inbox-drafts summary{cursor:pointer;list-style:none;padding:14px 18px;color:#fff5e6;font-size:14px;font-weight:900;display:flex;justify-content:space-between;background:#61452c;border:1px solid #b18b52;border-radius:9px}
-      #mtInvoiceList .mt-inbox-drafts summary:hover{background:#745336;border-color:#d8b675}
-      #mtInvoiceList .mt-inbox-drafts summary:focus-visible{outline:2px solid #ffe0a1;outline-offset:-3px}
+      #mtInvoiceList .mt-inbox-drafts{border-top:1px solid #59616c;background:#20252c;border-radius:9px;overflow:hidden;margin:5px 12px}
+      #mtInvoiceList .mt-inbox-drafts summary{cursor:pointer;list-style:none;padding:14px 18px;color:#f5f7fb;font-size:14px;font-weight:900;display:flex;justify-content:space-between;background:#303741;border:1px solid #626c78;border-radius:9px}
+      #mtInvoiceList .mt-inbox-drafts summary:hover{background:#3b444f;border-color:#9ba5b2}
+      #mtInvoiceList .mt-inbox-drafts summary:focus-visible{outline:2px solid #f4f6f9;outline-offset:-3px}
       #mtInvoiceList .mt-inbox-drafts summary::-webkit-details-marker{display:none}
-      #mtInvoiceList .mt-inbox-drafts summary::after{content:'⌄';color:#ffdf9b;font-size:17px}
+      #mtInvoiceList .mt-inbox-drafts summary::after{content:'⌄';color:#f5f7fb;font-size:17px}
       #mtInvoiceList .mt-inbox-drafts[open] summary::after{content:'⌃'}
-      #mtInvoiceList .mt-inbox-drafts .mt-invoice-active{padding:10px 12px 12px;background:#372b21}
-      #mtInvoiceList .mt-inbox-drafts .mt-invoice-row{margin-top:5px;background:#493728;border:1px solid #98764e;border-radius:10px}
-      #mtInvoiceList .mt-inbox-drafts .mt-invoice-empty{color:#fff1dc;background:#493728;border-radius:9px;font-size:13px}
-      #mtInvoiceList .mt-inbox-empty{padding:12px 16px;color:#e6d6c0;font-size:12px}
+      #mtInvoiceList .mt-inbox-drafts .mt-invoice-active{padding:10px 12px 12px;background:#20252c}
+      #mtInvoiceList .mt-inbox-drafts .mt-invoice-row{margin-top:5px;background:#2b323b;border:1px solid #606b78;border-radius:10px}
+      #mtInvoiceList .mt-inbox-drafts .mt-invoice-empty{color:#ecf1f6;background:#2b323b;border-radius:9px;font-size:13px}
+      #mtInvoiceList .mt-inbox-empty{padding:12px 16px;color:#c8d0d9;font-size:12px}
       #mtInvoiceList .mt-inbox-active .mt-invoice-status.sent{background:#173548;color:#84d8ff}
 
-      /* Invoice panel only: warm charcoal/copper instead of the previous blue card. */
-      .page-master-tagihan #mtInvoiceCard{background:#29231d!important;border-color:#927247!important;box-shadow:0 12px 28px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,238,208,.05)}
+      /* Monochrome invoice panel only. Higher specificity overrides earlier draft UI.
+         Do not change status badge semantics, action buttons, history data or PDF. */
+      .page-master-tagihan #mtInvoiceCard{background:#171a1f!important;border-color:#414953!important;box-shadow:0 12px 28px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.04)!important}
       .page-master-tagihan #mtInvoiceCard::before,.page-master-tagihan #mtInvoiceCard::after{opacity:0!important;animation:none!important}
-      .page-master-tagihan #mtInvoiceCard:hover{border-color:#c29a5d!important;box-shadow:0 16px 32px rgba(0,0,0,.3),0 0 0 1px rgba(230,182,101,.12)!important}
-      .page-master-tagihan #mtInvoiceCard .mt-invoice-head{background:#35291f!important;border-bottom-color:#80603e!important}
-      .page-master-tagihan #mtInvoiceCard .mt-invoice-head strong{color:#fff0d5!important}
-      .page-master-tagihan #mtInvoiceCard .mt-invoice-head small{color:#e0cdb3!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList{background:#30261e!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-active{background:#392d22!important;border-bottom-color:#80603e!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-active > strong{color:#ffe2a4!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-empty{color:#eadbc7!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts{background:#3b2e22!important;border-color:#aa8250!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts summary{background:#62472d!important;color:#fff3db!important;border-color:#bc9258!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts summary:hover{background:#795638!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-active{background:#3b2e22!important}
+      .page-master-tagihan #mtInvoiceCard:hover{border-color:#818b98!important;box-shadow:0 16px 32px rgba(0,0,0,.30),0 0 0 1px rgba(218,225,232,.07)!important}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-head{background:#222831!important;border-bottom-color:#454e59!important}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-head strong{color:#f5f7fb!important}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-head small{color:#c2cad4!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList{background:#1d2229!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-active{background:#252b33!important;border-bottom-color:#414953!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-active > strong{color:#f5f7fb!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-empty{color:#cbd3dc!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts{background:#252b33!important;border-color:#68727f!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts summary{background:#343c47!important;color:#f5f7fb!important;border-color:#68727f!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts summary:hover{background:#434c58!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts summary::after{color:#f5f7fb!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-active{background:#252b33!important}
       .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-row,
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-empty{background:#4d3928!important;border-color:#aa8250!important;color:#fff1d9!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-empty{background:#303741!important;border-color:#697582!important;color:#f5f7fb!important}
       .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-row small,
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-row>div:nth-child(2){color:#fff0db!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-no{color:#ffe0a1!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-total{color:#fff0cc!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history{background:#30261e!important;border-top-color:#785a37!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-toggle{background:#392d22!important;color:#f4e3ca!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-toggle:hover{background:#483626!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-row{background:#35291f!important;border-top-color:#6e5436!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-row:hover{background:#433323!important}
-      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-row small{color:#e4cfb0!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-row>div:nth-child(2){color:#e4eaf0!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-no{color:#f5f7fb!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-inbox-drafts .mt-invoice-total{color:#f5f7fb!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history{background:#1d2229!important;border-top-color:#424b56!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-toggle{background:#252c34!important;color:#f5f7fb!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-toggle:hover{background:#333c46!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-row{background:#252b33!important;border-top-color:#424b56!important;border-left-color:#667381!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-row:hover{background:#333b45!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-row small{color:#c6cfd9!important}
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-row .mt-invoice-no,
+      .page-master-tagihan #mtInvoiceCard #mtInvoiceList .mt-invoice-history-row .mt-invoice-total{color:#f5f7fb!important}
     `;
     document.head.appendChild(el);
   };
