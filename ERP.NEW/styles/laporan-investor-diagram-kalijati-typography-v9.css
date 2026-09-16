@@ -1,0 +1,61 @@
+/* Kalijati investor diagram V9 — typography and icon alignment, screen only.
+   Does not alter calculation, layout connectors, other branches, or print/PDF. */
+@media screen and (min-width:761px) {
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) {
+    position:relative;
+    justify-content:center!important;
+    padding-inline:60px!important;
+    gap:0!important;
+  }
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) > .vax-icon-wrap {
+    position:absolute!important;
+    left:15px!important;
+    top:50%!important;
+    transform:translateY(-50%);
+    margin:0!important;
+  }
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) > .vax-flow-copy {
+    flex:1 1 auto!important;
+    width:100%!important;
+    min-width:0;
+    align-items:center!important;
+    justify-content:center!important;
+    text-align:center!important;
+    gap:3px!important;
+  }
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) .vax-flow-label {
+    color:#adc2d0!important;
+    font-size:clamp(13px,1vw,15px)!important;
+    font-weight:700!important;
+    line-height:1.2!important;
+    text-align:center!important;
+  }
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) .vax-flow-copy > strong {
+    color:#f9fdff!important;
+    font-size:clamp(20px,1.6vw,24px)!important;
+    font-weight:900!important;
+    line-height:1.15!important;
+    text-align:center!important;
+    font-variant-numeric:tabular-nums;
+  }
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-side .vax-share .vax-flow-copy > strong,
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-copy > strong {
+    color:#9af1fb!important;
+    font-size:clamp(23px,1.85vw,28px)!important;
+  }
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node.vax-base .vax-flow-label {
+    color:#ffe2a0!important;
+  }
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node.vax-base .vax-flow-copy > strong {
+    color:#ffe58d!important;
+    font-size:clamp(27px,2.25vw,33px)!important;
+  }
+  /* Both branch icons share the same 15px inset, independent of card width. */
+  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-side .vax-flow-node:not(.vax-capital) > .vax-icon-wrap {
+    left:15px!important;
+  }
+  @media (max-width:1000px) {
+    body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) {padding-inline:54px!important;}
+    body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) > .vax-icon-wrap {left:10px!important;}
+  }
+}
