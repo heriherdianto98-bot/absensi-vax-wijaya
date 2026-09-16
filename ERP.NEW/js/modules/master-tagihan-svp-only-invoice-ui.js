@@ -19,6 +19,10 @@
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-invoice-head small {
         font-size:14px!important;line-height:1.5!important;margin-top:7px!important;color:#c0ccd7!important;
       }
+      /* Hide only the redundant Lihat link when the same row has the eye action. */
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-invoice-buttons:has(.mt-action-svp-view) > .mt-internal-view {
+        display:none!important;
+      }
       /* Draft accordion only: red panel and a proper heading, including the zero-draft state. */
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-internal-drafts,
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-inbox-drafts {
