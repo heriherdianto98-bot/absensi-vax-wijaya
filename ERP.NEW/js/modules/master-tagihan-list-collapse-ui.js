@@ -1,4 +1,4 @@
-/* ERP VAX — UI ONLY: collapsible Daftar Master Tagihan card + global header role sync. */
+/* ERP VAX — UI ONLY: collapsible master list, authenticated header, readable invoice draft. */
 "use strict";
 (() => {
   const STYLE_ID = "masterTagihanListCollapseUiStyle";
@@ -18,6 +18,33 @@
       .page-master-tagihan .mt-card.mt-list-collapsible.is-collapsed .mt-table-wrap{display:none!important}
       .page-master-tagihan .mt-card.mt-list-collapsible.is-collapsed .mt-list-collapse-toggle{transform:translateY(-50%) rotate(-90deg)}
       .page-master-tagihan .mt-card.mt-list-collapsible.is-collapsed{min-height:0!important}
+
+      /* Draft list only: brighter slate surface and high-contrast invoice details. */
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-active{background:#202e3a!important;border-top:1px solid #64849b}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-active .mt-invoice-row{background:#263745!important;border:1px solid #7894a8!important;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 5px 14px rgba(0,0,0,.16);opacity:1!important}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-active .mt-invoice-no{color:#ffe08a!important;font-size:15px;font-weight:900}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-active .mt-invoice-row small,
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-active .mt-invoice-row>div:nth-child(2){color:#f0f7fc!important;font-size:13px!important}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-active .mt-invoice-total{color:#fff2bd!important;font-size:17px!important;font-weight:900}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-active .mt-invoice-status.draft{background:#ffe3a0!important;color:#392a0b!important;border:1px solid #ffedbf;font-weight:900;font-size:12px}
+      .page-master-tagihan #mtInvoiceCard .mt-invoice-active .mt-invoice-empty{background:#223340;color:#e9f4fa!important;font-size:14px}
+
+      /* Draft editor only; read-only viewing, invoice history and print remain unchanged. */
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-dialog{background:#243440!important;border:1px solid #91aaba!important}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-dialog-head{background:#314858!important;border-bottom:1px solid #88a3b5!important}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-dialog-head h2{color:#ffffff!important}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-form label span,
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-item-head{color:#edf6fc!important;font-size:12px!important}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-form input,
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-form textarea,
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-date-trigger{background:#f0f5f8!important;color:#172b3a!important;border:1px solid #aec3d1!important;font-weight:700}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-form input::placeholder,
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-form textarea::placeholder{color:#546b7a!important}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-items{background:#344b5b!important;border-color:#7894a6!important}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-item-row{border-color:#607e91!important}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-item-amount,
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-totalbar strong{color:#ffe08a!important;text-shadow:none!important}
+      .page-master-tagihan #mtInvoiceModal:not([data-owner-view-only="1"]):not([data-svp-view-only="1"]) .mt-invoice-totalbar{color:#f0f7fc!important}
     `;
     document.head.appendChild(s);
   }
@@ -66,7 +93,7 @@
     return true;
   }
 
-  /* Display only. Trust the authenticated profile, never the hardcoded HTML header text. */
+  /* Display only: use the authenticated profile for both Owner and SVP. */
   function showAuthenticatedDisplayName(){
     if(!document.body.classList.contains('page-master-tagihan'))return;
     const profile=window.OwnerAuth?.profile;
@@ -76,9 +103,9 @@
     const name=document.getElementById('ownerAuthName');
     if(!role||!name)return;
     const displayedRole=normalized==='owner'?'OWNER':'SPV';
-    const displayedName=normalized==='owner'?'Heri Herdianto':String(profile.nama||'').trim();
+    const displayedName=String(profile.nama||'').trim()||String(window.OwnerAuth?.session?.user?.email||'').trim()||'Pengguna';
     if(role.textContent!==displayedRole)role.textContent=displayedRole;
-    if(displayedName&&name.textContent!==displayedName)name.textContent=displayedName;
+    if(name.textContent!==displayedName)name.textContent=displayedName;
   }
 
   function observeAuthenticatedDisplayName(){
