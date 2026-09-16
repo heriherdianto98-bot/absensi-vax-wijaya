@@ -1,24 +1,40 @@
 /* Investor Revised / Gaji Karyawan — locked screen UI shared by individual branches.
- * Read-only presenter. Prefer the applied Revised report; fall back to the matching
- * monthly consumer report when a branch has no applied Revised snapshot.
+ * Read-only presenter: handle the report carried by each event rather than a mutable
+ * global lastReport; support the documented Soklat/Barsel branch label alias.
  * Never writes payroll, investor UI, source reports or print DOM.
  */
 "use strict";
 (() => {
   const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const money = v => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(v || 0));
-  const selectedBranch = () => {
+  const selected = () => {
     const select = document.getElementById('lbBranch');
     const id = String(select?.value ?? '').trim();
     const label = String(select?.selectedOptions?.[0]?.textContent ?? '').trim();
-    return !id || /^(all|semua)$/i.test(id) || /^semua cabang$/i.test(label) ? '' : id;
+    return !id || /^(all|semua)$/i.test(id) || /^semua cabang$/i.test(label) ? null : {id,label};
   };
+  const normalizeBranch = value => String(value ?? '').toLowerCase()
+    .replace(/[^a-z0-9]+/g,' ').trim()
+    .replace(/^vax\s+(?:wijaya|wijiaya)\s+/,'').replace(/^spbu\s+/,'')
+    .replace(/rawa\s+badak/g,'rawabadak').replace(/\bsoklat\b/g,'barsel')
+    .replace(/\s+/g,' ').trim();
   const month = () => String(document.getElementById('lbMonth')?.value ?? '');
-  const valid = r => !!selectedBranch() && String(r?.branch?.id ?? '') === selectedBranch() && !r?.isAllBranches && !!r?.gaji && (!r?.range?.start || !month() || String(r.range.start).slice(0,7) === month());
+  const valid = r => {
+    const choice = selected();
+    if(!choice || !r || r.isAllBranches || !r.gaji)return false;
+    const reportId = String(r.branch?.id ?? '').trim();
+    const reportLabel = normalizeBranch(r.branch?.name ?? r.branch?.nama_cabang);
+    const choiceLabel = normalizeBranch(choice.label);
+    const sameBranch = (reportId && reportId === choice.id) || (reportLabel && choiceLabel && reportLabel === choiceLabel);
+    const reportPeriod = String(r.range?.start || r.range?.end || '').slice(0,7);
+    return !!sameBranch && (!month() || !reportPeriod || reportPeriod === month());
+  };
   const revised = r => valid(r) && r?.diagnostics?.investorRevised?.applied === true;
+  let lastMatched = null;
   const currentReport = () => {
     const applied = window.InvestorRevisedReport;
-    if (revised(applied)) return applied;
+    if(revised(applied))return applied;
+    if(valid(lastMatched))return lastMatched;
     const monthly = window.LaporanBulananInvestorShareBridge?.lastReport;
     return valid(monthly) ? monthly : valid(applied) ? applied : null;
   };
@@ -35,7 +51,7 @@
   const other = (title,amount) => `<article class="vax-salary-card vax-salary-allocation"><div class="vax-salary-identity"><span class="vax-salary-icon">${icon}</span><div><h4>${esc(title)}</h4><small>Alokasi laporan · bukan rincian per orang</small></div></div><div class="vax-salary-card-total"><span>Nominal</span><strong>${money(amount)}</strong></div></article>`;
   function hide(){document.body.classList.remove('vax-salary-diagram-ready');document.getElementById('vax-salary-diagram')?.remove();}
   function render(report){
-    if(!valid(report)){hide();return;}
+    if(!valid(report))return;
     const original=document.getElementById('lbSalaryLines');
     if(!original?.closest('[data-lb-view="salary"]'))return;
     const g=report.gaji, cap=Array.isArray(g.capsterDetail)?g.capsterDetail:[], non=Array.isArray(g.nonCapsterDetail)?g.nonCapsterDetail:[];
@@ -43,10 +59,17 @@
     if(!host){host=document.createElement('section');host.id='vax-salary-diagram';host.setAttribute('aria-label','Diagram Gaji Karyawan');original.insertAdjacentElement('afterend',host);}
     const allocations=Number(g.svp||0)!==0||Number(g.backupNamedSupplement||0)!==0
       ? `<section class="vax-salary-group vax-salary-other"><header class="vax-salary-group-head"><h3>Alokasi Gaji Lainnya</h3></header><div class="vax-salary-grid">${Number(g.svp||0)!==0?other('Gaji SVP',g.svp):''}${Number(g.backupNamedSupplement||0)!==0?other('Gaji Backup Kasir',g.backupNamedSupplement):''}</div></section>` : '';
-    host.innerHTML=`<header class="vax-salary-heading"><div><span class="vax-salary-eyebrow">LAPORAN BULANAN INVESTOR</span><h2>Gaji Karyawan</h2><p>Rincian gaji berdasarkan data laporan periode terpilih</p></div><span class="vax-salary-branch">${esc(report.branch?.name||'Cabang')}</span></header><div class="vax-salary-top"><span class="vax-salary-top-icon" aria-hidden="true">${moneyIcon}</span><div class="vax-salary-top-copy"><span>TOTAL BIAYA GAJI</span><strong>${money(g.total)}</strong></div></div><div class="vax-salary-stem" aria-hidden="true"></div><div class="vax-salary-groups${allocations?' vax-salary-has-allocation':''}">${group('Gaji Capster',cap,true)}${allocations}<div class="vax-salary-right">${group('Gaji Kasir & Karyawan',non,false)}<div class="vax-salary-brand" aria-label="Enterprise Management System · VAX Wijaya Barbershop"><strong>ENTERPRISE MANAGEMENT SYSTEM</strong><small>VAX WIJAYA BARBERSHOP</small></div></div></div>`;
+    host.innerHTML=`<header class="vax-salary-heading"><div><span class="vax-salary-eyebrow">LAPORAN BULANAN INVESTOR</span><h2>Gaji Karyawan</h2><p>Rincian gaji berdasarkan data laporan periode terpilih</p></div><span class="vax-salary-branch">${esc(report.branch?.name||report.branch?.nama_cabang||'Cabang')}</span></header><div class="vax-salary-top"><span class="vax-salary-top-icon" aria-hidden="true">${moneyIcon}</span><div class="vax-salary-top-copy"><span>TOTAL BIAYA GAJI</span><strong>${money(g.total)}</strong></div></div><div class="vax-salary-stem" aria-hidden="true"></div><div class="vax-salary-groups${allocations?' vax-salary-has-allocation':''}">${group('Gaji Capster',cap,true)}${allocations}<div class="vax-salary-right">${group('Gaji Kasir & Karyawan',non,false)}<div class="vax-salary-brand" aria-label="Enterprise Management System · VAX Wijaya Barbershop"><strong>ENTERPRISE MANAGEMENT SYSTEM</strong><small>VAX WIJAYA BARBERSHOP</small></div></div></div>`;
+    lastMatched=report;
     document.body.classList.add('vax-salary-diagram-ready');
   }
-  function sync(){const r=currentReport();if(r)render(r);else hide();}
+  function accept(report){
+    if(!valid(report))return;
+    // A late monthly event must never replace an applied Revised report for this branch/period.
+    const applied=window.InvestorRevisedReport;
+    render(revised(applied) ? applied : report);
+  }
+  function sync(){const report=currentReport();if(report)render(report);else hide();}
   function boot(){
     if(!document.getElementById('vax-salary-depth-brand-style')){
       const style=document.createElement('link');style.id='vax-salary-depth-brand-style';style.rel='stylesheet';style.media='screen';style.href='../styles/laporan-investor-salary-depth-brand-v2.css?v=20260917-v1';document.head.appendChild(style);
@@ -54,10 +77,10 @@
     if(!document.getElementById('vax-salary-money-icon-style')){
       const style=document.createElement('link');style.id='vax-salary-money-icon-style';style.rel='stylesheet';style.media='screen';style.href='../styles/laporan-investor-salary-money-icon-v3.css?v=20260917-v1';document.head.appendChild(style);
     }
-    document.addEventListener('laporan-investor:revised-report-applied',e=>{if(valid(e.detail?.report))render(e.detail.report);});
-    document.addEventListener('laporan-bulanan:investor-share',e=>{if(valid(e.detail))sync();});
-    document.getElementById('lbBranch')?.addEventListener('change',()=>{hide();requestAnimationFrame(sync);});
-    document.getElementById('lbMonth')?.addEventListener('change',()=>{hide();requestAnimationFrame(sync);});
+    document.addEventListener('laporan-investor:revised-report-applied',event=>accept(event.detail?.report));
+    document.addEventListener('laporan-bulanan:investor-share',event=>accept(event.detail));
+    document.getElementById('lbBranch')?.addEventListener('change',()=>{lastMatched=null;hide();requestAnimationFrame(sync);});
+    document.getElementById('lbMonth')?.addEventListener('change',()=>{lastMatched=null;hide();requestAnimationFrame(sync);});
     window.addEventListener('beforeprint',()=>document.body.classList.remove('vax-salary-diagram-ready'));
     window.addEventListener('afterprint',sync);
     sync();
