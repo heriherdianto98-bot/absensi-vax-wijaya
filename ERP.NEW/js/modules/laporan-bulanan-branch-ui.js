@@ -55,32 +55,36 @@
       }
       .lb-branch-option.is-selected::after{content:"✓";color:#5eead4;font-size:13px;font-weight:900}
 
-      /* Investor Revised — trigger + dropdown hitam, nama cabang putih, UI ONLY */
+      /* Investor Revised only — neutral slate borders + teal selection; names stay white. */
       body.laporan-bulanan-investor-page .lb-branch-trigger{
         background:#050708!important;
         color:#fff!important;
-        border-color:rgba(214,173,47,.55)!important;
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 12px rgba(214,173,47,.08)!important;
+        border-color:#536978!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
         font-size:14px!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-trigger:hover,
       body.laporan-bulanan-investor-page .lb-branch-trigger[aria-expanded="true"]{
-        background:#07090b!important;
+        background:#070d12!important;
         color:#fff!important;
-        border-color:#d6ad2f!important;
-        box-shadow:0 0 0 2px rgba(214,173,47,.08),0 0 16px rgba(214,173,47,.12)!important;
+        border-color:#55c9d5!important;
+        box-shadow:0 0 0 2px rgba(85,201,213,.10),0 0 12px rgba(85,201,213,.10)!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-trigger-ico{
-        color:#ffd75a!important;
-        filter:drop-shadow(0 0 5px rgba(214,173,47,.35))!important;
+        color:#79dce4!important;
+        filter:none!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-popover{
-        border-color:rgba(214,173,47,.55)!important;
-        background:linear-gradient(165deg,#111315 0%,#080a0c 68%,#050607 100%)!important;
+        border-color:#466779!important;
+        background:linear-gradient(165deg,#111b23 0%,#0a1117 68%,#05090d 100%)!important;
         color:#fff!important;
-        box-shadow:0 22px 54px rgba(0,0,0,.68),0 0 20px rgba(214,173,47,.10),inset 0 1px 0 rgba(255,255,255,.04)!important;
-        scrollbar-color:#c89d25 #090b0d!important;
+        box-shadow:0 22px 54px rgba(0,0,0,.68),0 0 16px rgba(85,201,213,.07),inset 0 1px 0 rgba(255,255,255,.04)!important;
+        scrollbar-color:#5297a9 #101b24!important;
       }
+      body.laporan-bulanan-investor-page .lb-branch-popover::-webkit-scrollbar{width:8px}
+      body.laporan-bulanan-investor-page .lb-branch-popover::-webkit-scrollbar-track{background:#101b24;border-radius:8px}
+      body.laporan-bulanan-investor-page .lb-branch-popover::-webkit-scrollbar-thumb{background:#5297a9;border-radius:8px;border:2px solid #101b24}
+      body.laporan-bulanan-investor-page .lb-branch-popover::-webkit-scrollbar-thumb:hover{background:#65c8d5}
       body.laporan-bulanan-investor-page .lb-branch-option{
         color:#fff!important;
         background:transparent!important;
@@ -89,21 +93,23 @@
       }
       body.laporan-bulanan-investor-page .lb-branch-option:hover,
       body.laporan-bulanan-investor-page .lb-branch-option.is-keyboard-active{
-        background:rgba(214,173,47,.10)!important;
-        border-color:rgba(214,173,47,.32)!important;
+        background:rgba(85,201,213,.09)!important;
+        border-color:rgba(85,201,213,.26)!important;
         color:#fff!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-option.is-keyboard-active{
-        box-shadow:inset 3px 0 0 #d6ad2f,0 0 12px rgba(214,173,47,.08)!important;
+        box-shadow:inset 3px 0 0 #55c9d5,0 0 10px rgba(85,201,213,.07)!important;
       }
-      body.laporan-bulanan-investor-page .lb-branch-option.is-selected{
+      body.laporan-bulanan-investor-page .lb-branch-option.is-selected,
+      body.laporan-bulanan-investor-page .lb-branch-option.is-selected:hover,
+      body.laporan-bulanan-investor-page .lb-branch-option.is-selected.is-keyboard-active{
         color:#fff!important;
-        border-color:rgba(214,173,47,.52)!important;
-        background:rgba(214,173,47,.13)!important;
-        box-shadow:inset 3px 0 0 #d6ad2f!important;
+        border-color:#55c9d5!important;
+        background:linear-gradient(90deg,rgba(54,145,163,.36),rgba(54,145,163,.15))!important;
+        box-shadow:inset 4px 0 0 #55c9d5,0 0 0 1px rgba(85,201,213,.10)!important;
       }
       body.laporan-bulanan-investor-page .lb-branch-option.is-selected::after{
-        color:#ffd75a!important;
+        color:#84e6ed!important;
       }
 
       body.lb-branch-menu-open{overflow:hidden!important}
