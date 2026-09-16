@@ -1,13 +1,18 @@
-/* Investor Revised / Gaji Karyawan — Kalijati screen-only trial.
+/* Investor Revised / Gaji Karyawan — locked Kalijati screen UI shared by individual branches.
  * Reads the calculated report; never writes payroll, locked investor UI or print DOM.
  */
 "use strict";
 (() => {
   const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const money = v => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(v || 0));
-  const branch = () => String(document.getElementById('lbBranch')?.value ?? '');
+  const selectedBranch = () => {
+    const select = document.getElementById('lbBranch');
+    const id = String(select?.value ?? '').trim();
+    const label = String(select?.selectedOptions?.[0]?.textContent ?? '').trim();
+    return !id || /^(all|semua)$/i.test(id) || /^semua cabang$/i.test(label) ? '' : id;
+  };
   const month = () => String(document.getElementById('lbMonth')?.value ?? '');
-  const valid = r => branch() === '1' && String(r?.branch?.id ?? '') === '1' && !r?.isAllBranches && !!r?.gaji && (!r?.range?.start || String(r.range.start).slice(0,7) === month());
+  const valid = r => !!selectedBranch() && String(r?.branch?.id ?? '') === selectedBranch() && !r?.isAllBranches && !!r?.gaji && (!r?.range?.start || !month() || String(r.range.start).slice(0,7) === month());
   const icon = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2c0-7 16-7 16 0v2"/></svg>';
   const moneyIcon = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M7 10h.01M17 14h.01"/></svg>';
   const item = (label,value) => `<div class="vax-salary-detail"><span>${esc(label)}</span><strong>${money(value)}</strong></div>`;
@@ -26,10 +31,10 @@
     if(!original?.closest('[data-lb-view="salary"]'))return;
     const g=report.gaji, cap=Array.isArray(g.capsterDetail)?g.capsterDetail:[], non=Array.isArray(g.nonCapsterDetail)?g.nonCapsterDetail:[];
     let host=document.getElementById('vax-salary-diagram');
-    if(!host){host=document.createElement('section');host.id='vax-salary-diagram';host.setAttribute('aria-label','Diagram Gaji Karyawan Kalijati');original.insertAdjacentElement('afterend',host);}
+    if(!host){host=document.createElement('section');host.id='vax-salary-diagram';host.setAttribute('aria-label','Diagram Gaji Karyawan');original.insertAdjacentElement('afterend',host);}
     const allocations=Number(g.svp||0)!==0||Number(g.backupNamedSupplement||0)!==0
       ? `<section class="vax-salary-group vax-salary-other"><header class="vax-salary-group-head"><h3>Alokasi Gaji Lainnya</h3></header><div class="vax-salary-grid">${Number(g.svp||0)!==0?other('Gaji SVP',g.svp):''}${Number(g.backupNamedSupplement||0)!==0?other('Gaji Backup Kasir',g.backupNamedSupplement):''}</div></section>` : '';
-    host.innerHTML=`<header class="vax-salary-heading"><div><span class="vax-salary-eyebrow">LAPORAN BULANAN INVESTOR</span><h2>Gaji Karyawan</h2><p>Rincian gaji berdasarkan data laporan periode terpilih</p></div><span class="vax-salary-branch">${esc(report.branch?.name||'Kalijati')}</span></header><div class="vax-salary-top"><span class="vax-salary-top-icon" aria-hidden="true">${moneyIcon}</span><div class="vax-salary-top-copy"><span>TOTAL BIAYA GAJI</span><strong>${money(g.total)}</strong></div></div><div class="vax-salary-stem" aria-hidden="true"></div><div class="vax-salary-groups${allocations?' vax-salary-has-allocation':''}">${group('Gaji Capster',cap,true)}${allocations}<div class="vax-salary-right">${group('Gaji Kasir & Karyawan',non,false)}<div class="vax-salary-brand" aria-label="Enterprise Management System · VAX Wijaya Barbershop"><strong>ENTERPRISE MANAGEMENT SYSTEM</strong><small>VAX WIJAYA BARBERSHOP</small></div></div></div>`;
+    host.innerHTML=`<header class="vax-salary-heading"><div><span class="vax-salary-eyebrow">LAPORAN BULANAN INVESTOR</span><h2>Gaji Karyawan</h2><p>Rincian gaji berdasarkan data laporan periode terpilih</p></div><span class="vax-salary-branch">${esc(report.branch?.name||'Cabang')}</span></header><div class="vax-salary-top"><span class="vax-salary-top-icon" aria-hidden="true">${moneyIcon}</span><div class="vax-salary-top-copy"><span>TOTAL BIAYA GAJI</span><strong>${money(g.total)}</strong></div></div><div class="vax-salary-stem" aria-hidden="true"></div><div class="vax-salary-groups${allocations?' vax-salary-has-allocation':''}">${group('Gaji Capster',cap,true)}${allocations}<div class="vax-salary-right">${group('Gaji Kasir & Karyawan',non,false)}<div class="vax-salary-brand" aria-label="Enterprise Management System · VAX Wijaya Barbershop"><strong>ENTERPRISE MANAGEMENT SYSTEM</strong><small>VAX WIJAYA BARBERSHOP</small></div></div></div>`;
     document.body.classList.add('vax-salary-diagram-ready');
   }
   function sync(){const r=window.InvestorRevisedReport;if(valid(r))render(r);else hide();}
