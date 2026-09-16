@@ -22,9 +22,9 @@
 <link rel="stylesheet" href="../styles/master-tagihan-svp-invoice.css?v=20260909-3">
 <link rel="stylesheet" href="../styles/master-tagihan-invoice-history-polish.css?v=20260911-1">
 <style>
-/* UI only. Default hidden until OwnerAuth confirms SPV; invoice data and workflow remain intact. */
-body.page-master-tagihan:not(.erp-role-spv) #mtInvoiceCard,
-body.page-master-tagihan:not(.erp-role-spv) .mt-invoice-top-btn{display:none!important}
+/* UI only: reveal invoice only after MasterTagihan confirms the authenticated SVP role. */
+body.page-master-tagihan:not([data-mt-invoice-role="svp"]) #mtInvoiceCard,
+body.page-master-tagihan:not([data-mt-invoice-role="svp"]) .mt-invoice-top-btn{display:none!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -154,6 +154,8 @@ function ensureMasterTagihanSidebarEntry(){
     const cabang=document.getElementById('erpHeaderCabang'); if(cabang)cabang.textContent='Semua Cabang';
     const periode=document.getElementById('erpHeaderPeriode'); if(periode)periode.textContent='Master Data';
     await MasterTagihan.init();
+    /* Identity already validated against the logged-in Supabase user by MasterTagihan.loadIdentity(). */
+    document.body.dataset.mtInvoiceRole=MasterTagihan.role==='svp'?'svp':'owner';
     OwnerAuth?.syncHeader?.();
   }catch(err){console.error('Master Tagihan boot error',err);}
 })();
