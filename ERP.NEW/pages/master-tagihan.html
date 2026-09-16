@@ -145,6 +145,22 @@ function ensureMasterTagihanSidebarEntry(){
   link.innerHTML='<span class="icon" style="color:#f0b94b">▤</span><span class="text">Master Tagihan</span>';
   anchor.insertAdjacentElement('afterend',link);
 }
+/* Owner -> SVP is retired on this page. Guard the actual UI methods as well as hiding buttons.
+   Install only after the authenticated MasterTagihan role and invoice workflow resolve. */
+function disableOwnerInvoiceActions(){
+  if(window.MasterTagihan?.role!=='owner')return false;
+  const invoice=window.SvPInvoice;
+  if(!invoice||invoice.role!=='owner'||!invoice.__workflowV2)return false;
+  if(invoice.__ownerToSvpUiDisabled)return true;
+  invoice.__ownerToSvpUiDisabled=true;
+  invoice.open=async()=>false;
+  invoice.save=async()=>false;
+  invoice.send=async()=>false;
+  invoice.openWhatsapp=()=>false;
+  const modal=document.getElementById('mtInvoiceModal');
+  if(modal)modal.hidden=true;
+  return true;
+}
 (async()=>{
   try{
     await Promise.all([loadComponent('sidebar','../components/sidebar.html'),loadComponent('header','../components/header.html')]);
@@ -156,6 +172,10 @@ function ensureMasterTagihanSidebarEntry(){
     await MasterTagihan.init();
     /* Identity already validated against the logged-in Supabase user by MasterTagihan.loadIdentity(). */
     document.body.dataset.mtInvoiceRole=MasterTagihan.role==='svp'?'svp':'owner';
+    if(MasterTagihan.role==='owner'&&!disableOwnerInvoiceActions()){
+      let tries=0;
+      const guard=setInterval(()=>{if(disableOwnerInvoiceActions()||++tries>180)clearInterval(guard)},100);
+    }
     OwnerAuth?.syncHeader?.();
   }catch(err){console.error('Master Tagihan boot error',err);}
 })();
