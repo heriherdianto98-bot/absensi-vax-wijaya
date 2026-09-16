@@ -1,12 +1,14 @@
-/* ERP VAX — SVP invoice presentation only; no changes to locked engines or send/payment workflows. */
+/* ERP VAX — SVP invoice UI only; leave locked engines and send/payment workflows unchanged. */
 "use strict";
 (() => {
-  /* MasterTagihan is declared with top-level const, not necessarily on window. */
   const masterRole = () => typeof MasterTagihan !== 'undefined'
     ? MasterTagihan?.role : window.MasterTagihan?.role;
   const isSvp = role => ['svp','spv'].includes(String(role || '').toLowerCase());
   const isOwnSvpInvoice = (row, userId) =>
     isSvp(row?.sender_role) && String(row?.created_by || '') === String(userId || '');
+  const historyFilter = { query:'', from:'', to:'', itemNames:new Map(), pending:new Set(), loading:false };
+  const normalize = value => String(value ?? '').toLocaleLowerCase('id-ID').trim();
+  const archived = row => ['paid','completed'].includes(normalize(row?.status));
 
   function ensureInvoiceHeadingStyle() {
     if (document.getElementById('mtSvpInvoiceHeadingTypography')) return;
@@ -19,11 +21,9 @@
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-invoice-head small {
         font-size:14px!important;line-height:1.5!important;margin-top:7px!important;color:#c0ccd7!important;
       }
-      /* Hide only the redundant Lihat link when the same row has the eye action. */
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-invoice-buttons:has(.mt-action-svp-view) > .mt-internal-view {
         display:none!important;
       }
-      /* Draft accordion only: red panel and a proper heading, including the zero-draft state. */
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-internal-drafts,
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-inbox-drafts {
         background:#271417!important;border-top:1px solid #a84750!important;border-bottom:1px solid #a84750!important;
@@ -57,6 +57,44 @@
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-svp-delete-draft:disabled {
         opacity:.55!important;cursor:wait!important;
       }
+      /* Search lives only in the SVP invoice header. The date panel is deliberately compact. */
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-invoice-head {
+        display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;flex-wrap:wrap;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-tools {
+        display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-search {
+        box-sizing:border-box;width:min(300px,55vw);height:40px;padding:0 13px;border-radius:10px;
+        background:#101921;border:1px solid #456070;color:#f6fbff;font:inherit;font-size:13px;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-search::placeholder {color:#a9bac7;opacity:1}
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-search:focus-visible {outline:2px solid #7cc7e4;outline-offset:1px}
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-calendar {position:relative}
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-calendar > summary {
+        list-style:none;display:flex;align-items:center;gap:6px;height:40px;box-sizing:border-box;
+        padding:0 12px;border:1px solid #456070;border-radius:10px;background:#152630;
+        color:#eef8ff;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-calendar > summary::-webkit-details-marker {display:none}
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-calendar[open] > summary {border-color:#78c8e5}
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-popup {
+        box-sizing:border-box;position:absolute;right:0;top:46px;width:245px;max-width:calc(100vw - 35px);
+        z-index:150;padding:13px;border-radius:12px;border:1px solid #456070;
+        background:#151e27;box-shadow:0 16px 36px rgba(0,0,0,.65);
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-popup label {
+        display:block;font-size:12px;font-weight:750;color:#e0eaf2;margin-bottom:10px;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-popup input {
+        display:block;box-sizing:border-box;width:100%;height:35px;margin-top:4px;padding:4px 7px;
+        font-size:12px;color:#f4f8ff;background:#24313e;border:1px solid #526579;border-radius:7px;color-scheme:dark;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-reset {
+        width:100%;padding:8px;border-radius:8px;border:1px solid #566978;
+        background:#273440;color:#f4f8ff;font-size:12px;font-weight:800;cursor:pointer;
+      }
+      @media(max-width:700px){body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-svp-history-tools{margin-left:0;width:100%}}
     `;
     document.head.appendChild(style);
   }
@@ -74,18 +112,92 @@
     }
   }
 
+  function historyMatches(row) {
+    const date = String(row.invoice_date || '').slice(0,10);
+    if (historyFilter.from && (!date || date < historyFilter.from)) return false;
+    if (historyFilter.to && (!date || date > historyFilter.to)) return false;
+    const q = normalize(historyFilter.query);
+    if (!q) return true;
+    const nominal = Number(row.total || 0);
+    const numeric = q.replace(/[^\d]/g,'');
+    const amountMatch = /^\s*(?:rp\s*)?[\d.,\s]+$/i.test(q) && numeric && String(nominal).includes(numeric);
+    const haystack = normalize([row.invoice_no,row.title,row.notes,historyFilter.itemNames.get(String(row.id))].join(' '));
+    return haystack.includes(q) || !!amountMatch;
+  }
+
+  /* Read-only item lookup lets a name inside an invoice line be searched too. */
+  async function loadItemNames() {
+    const inv = window.SvPInvoice;
+    if (!historyFilter.query || historyFilter.loading || !inv?.user?.id || typeof db === 'undefined') return;
+    const ids = (inv.rows || []).filter(row => archived(row) && isOwnSvpInvoice(row,inv.user.id))
+      .map(row => String(row.id)).filter(id => id && !historyFilter.itemNames.has(id) && !historyFilter.pending.has(id));
+    if (!ids.length) return;
+    historyFilter.loading = true;
+    try {
+      for (let i=0;i<ids.length;i+=50) {
+        const batch = ids.slice(i,i+50);
+        batch.forEach(id => historyFilter.pending.add(id));
+        const {data,error} = await db.from('svp_invoice_items').select('invoice_id,item_name').in('invoice_id',batch);
+        if (error) throw error;
+        const names = new Map(batch.map(id=>[id,[]]));
+        (data || []).forEach(item=>{const id=String(item.invoice_id);if(names.has(id))names.get(id).push(item.item_name || '')});
+        names.forEach((values,id)=>historyFilter.itemNames.set(id,values.join(' ')));
+        batch.forEach(id => historyFilter.pending.delete(id));
+      }
+      if (historyFilter.query) inv.render();
+    } catch (error) {
+      console.warn('[SVP invoice search] Item names could not be loaded:',error);
+    } finally {
+      historyFilter.pending.clear();historyFilter.loading = false;
+    }
+  }
+
+  function installHistorySearch(inv) {
+    const head = document.querySelector('#mtInvoiceCard .mt-invoice-head');
+    if (!head || head.querySelector('.mt-svp-history-tools')) return;
+    const tools = document.createElement('div');
+    tools.className = 'mt-svp-history-tools';
+    tools.innerHTML = `<input class="mt-svp-history-search" type="search" aria-label="Cari riwayat invoice" placeholder="Cari nomor, nama, nominal…" autocomplete="off"><details class="mt-svp-history-calendar"><summary>▦ Periode</summary><div class="mt-svp-history-popup"><label>Dari tanggal<input type="date" data-history-from aria-label="Dari tanggal invoice"></label><label>Sampai tanggal<input type="date" data-history-to aria-label="Sampai tanggal invoice"></label><button type="button" class="mt-svp-history-reset">Reset tanggal</button></div></details>`;
+    (head.querySelector('.mt-invoice-actions') || head).appendChild(tools);
+    const search = tools.querySelector('.mt-svp-history-search');
+    let debounce;
+    search.addEventListener('input',()=>{
+      historyFilter.query = search.value.trim();
+      clearTimeout(debounce);
+      debounce = setTimeout(()=>{
+        inv.historyOpen = true;
+        inv.render();
+        void loadItemNames();
+      },180);
+    });
+    const from = tools.querySelector('[data-history-from]');
+    const to = tools.querySelector('[data-history-to]');
+    const applyDate = () => {
+      historyFilter.from = from.value;
+      historyFilter.to = to.value;
+      inv.historyOpen = true;
+      inv.render();
+    };
+    from.addEventListener('change',applyDate);
+    to.addEventListener('change',applyDate);
+    tools.querySelector('.mt-svp-history-reset').addEventListener('click',()=>{
+      from.value='';to.value='';applyDate();
+    });
+    const calendar = tools.querySelector('.mt-svp-history-calendar');
+    document.addEventListener('click',event=>{if(calendar.open && !calendar.contains(event.target))calendar.open=false});
+  }
+
   function decorateDraftDelete() {
     const inv = window.SvPInvoice;
     if (!isSvp(masterRole()) || !isSvp(inv?.role) || !inv?.user?.id) return;
     const list = document.getElementById('mtInvoiceList');
     if (!list) return;
-    /* Do not add delete to active, sent, completed, paid, or history rows. */
     list.querySelectorAll('.mt-internal-drafts .mt-invoice-row, .mt-inbox-drafts .mt-invoice-row').forEach(rowEl => {
       const actions = rowEl.querySelector('.mt-invoice-buttons');
       if (!actions || actions.querySelector('[data-svp-draft-delete]')) return;
       const candidateId = rowEl.querySelector('[data-inv-action="edit"][data-id]')?.dataset.id;
       const row = (inv.rows || []).find(x => String(x.id) === String(candidateId));
-      if (!candidateId || !row || String(row.status || '').toLowerCase() !== 'draft'
+      if (!candidateId || !row || normalize(row.status) !== 'draft'
           || !isOwnSvpInvoice(row, inv.user.id)) return;
       const button = document.createElement('button');
       button.type = 'button';
@@ -102,18 +214,15 @@
     const id = button.dataset.svpDraftDelete;
     if (!isSvp(masterRole()) || !isSvp(inv?.role) || !inv?.user?.id || !id || button.disabled) return;
     const row = (inv.rows || []).find(x => String(x.id) === String(id));
-    if (!row || String(row.status || '').toLowerCase() !== 'draft'
-        || !isOwnSvpInvoice(row, inv.user.id)) return;
+    if (!row || normalize(row.status) !== 'draft' || !isOwnSvpInvoice(row, inv.user.id)) return;
     if (!window.confirm(`Hapus draft invoice ${row.invoice_no || ''}?\nDraft yang dihapus tidak dapat dikembalikan.`)) return;
     button.disabled = true;
     button.textContent = 'Menghapus...';
     try {
-      /* Revalidate on the database, then condition DELETE on owner and draft status.
-         Parent delete is attempted first: if FK/RLS blocks it, leave item records intact. */
       const {data:current,error:readError} = await db.from('svp_invoices')
         .select('id,status,sender_role,created_by').eq('id',id).maybeSingle();
       if (readError) throw readError;
-      if (!current || String(current.status || '').toLowerCase() !== 'draft'
+      if (!current || normalize(current.status) !== 'draft'
           || !isOwnSvpInvoice(current, inv.user.id)) throw new Error('Draft tidak tersedia atau statusnya sudah berubah.');
       const {data:deleted,error:deleteError} = await db.from('svp_invoices')
         .delete().eq('id',id).eq('status','draft')
@@ -141,9 +250,19 @@
       if (!isSvp(this.role)) return render.apply(this, args);
       const originalRows = this.rows;
       this.rows = (Array.isArray(originalRows) ? originalRows : [])
-        .filter(row => isOwnSvpInvoice(row, this.user?.id));
+        .filter(row => isOwnSvpInvoice(row, this.user?.id) && (!archived(row) || historyMatches(row)));
       try { return render.apply(this, args); }
-      finally { this.rows = originalRows; labels(); decorateDraftDelete(); }
+      finally {
+        this.rows = originalRows;
+        labels();decorateDraftDelete();
+        if (historyFilter.query || historyFilter.from || historyFilter.to) {
+          const list = document.querySelector('#mtInvoiceList .mt-invoice-history-list');
+          if (list && !list.querySelector('.mt-invoice-row')) {
+            const empty = list.querySelector('.mt-internal-empty');
+            if (empty) empty.textContent = 'Tidak ada riwayat invoice yang cocok dengan pencarian / tanggal.';
+          }
+        }
+      }
     };
     const list = document.getElementById('mtInvoiceList');
     if (list) {
@@ -155,6 +274,7 @@
       }, true);
       new MutationObserver(decorateDraftDelete).observe(list,{childList:true,subtree:true});
     }
+    installHistorySearch(invoice);
     invoice.render();
     labels();
     decorateDraftDelete();
