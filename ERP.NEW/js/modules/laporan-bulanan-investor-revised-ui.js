@@ -69,6 +69,38 @@
     document.head.appendChild(style);
   }
 
+  function ensureSnapshotPulseStyle(){
+    if(document.getElementById('investor-snapshot-pulse-style'))return;
+    const style=document.createElement('style');
+    style.id='investor-snapshot-pulse-style';
+    style.textContent=`
+      @media screen{
+        .laporan-bulanan-investor-page .lb-source-strip.is-snapshot-ready{
+          animation:investorSnapshotPanelPulse 1.35s ease-in-out infinite!important;
+          will-change:box-shadow,border-color,filter;
+        }
+      }
+      @keyframes investorSnapshotPanelPulse{
+        0%,100%{
+          border-color:#426d82!important;
+          border-left-color:#55c89a!important;
+          box-shadow:0 5px 14px rgba(0,0,0,.11),0 0 0 rgba(85,200,154,0)!important;
+          filter:brightness(1);
+        }
+        50%{
+          border-color:#68d8ad!important;
+          border-left-color:#7cf0bf!important;
+          box-shadow:0 5px 14px rgba(0,0,0,.11),0 0 16px rgba(85,200,154,.58),inset 0 0 16px rgba(85,200,154,.10)!important;
+          filter:brightness(1.12);
+        }
+      }
+      @media (prefers-reduced-motion:reduce){
+        .laporan-bulanan-investor-page .lb-source-strip.is-snapshot-ready{animation:none!important;}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function ensureWhatsappButton(){
     let button=qs('lbInvestorWhatsapp');
     if(button)return button;
@@ -202,7 +234,7 @@
     const badge=qs('lbInvestorSourceBadge');
     const button=qs('lbFetchMinutes');
     if(!strip||!meta||!badge||!button)return;
-    strip.classList.remove('is-ready','is-loading');
+    strip.classList.remove('is-ready','is-loading','is-snapshot-ready');
     button.classList.toggle('is-loading',state.status==='loading');
     button.setAttribute('aria-busy',state.status==='loading'?'true':'false');
     if(state.status==='loading'){
@@ -213,9 +245,10 @@
       return;
     }
     if(state.status==='ready'){
-      strip.classList.add('is-ready');
-      const summary=summaryText(state.dataset);
       const permanent=state.source==='SNAPSHOT_DB';
+      strip.classList.add('is-ready');
+      if(permanent)strip.classList.add('is-snapshot-ready');
+      const summary=summaryText(state.dataset);
       const revision=state.snapshot?.revision_no?` · Rev ${state.snapshot.revision_no}`:'';
       meta.textContent=`Minutes Revised terbaca · ${branchLabel()} · ${monthLabel()}${summary?` · ${summary}`:''}${revision} · ${state.lastFetchedAt||''}`;
       badge.textContent=permanent?'REVISED READY · SNAPSHOT':'REVISED READY';
@@ -418,6 +451,7 @@
     const allowed=await enforceOwnerOnly();
     if(!allowed)return;
     ensureInvestorSidebarActive();
+    ensureSnapshotPulseStyle();
     ensureWhatsappButton();
     qs('lbFetchMinutes')?.addEventListener('click',onFetchClick);
     qs('lbBranch')?.addEventListener('change',()=>void restoreSnapshot());
