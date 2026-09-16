@@ -1,5 +1,5 @@
-/* Kalijati investor diagram V12 — typography, fixed card dimensions and branch icon alignment, screen only.
-   Calculation, other branches and print/PDF remain unchanged. */
+/* Kalijati investor diagram V12 — typography and exact branch icon alignment, screen only.
+   Does not alter calculation, connectors, other branches, or print/PDF. */
 @media screen and (min-width:761px) {
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) {
     position:relative;
@@ -55,25 +55,33 @@
     body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) {padding-inline:54px!important;}
     body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-flow-node:not(.vax-capital) > .vax-icon-wrap {left:10px!important;}
   }
+  /* V11: only the two upper cards — enlarge labels and amounts without
+     scaling the diagram, changing data, or displacing the SVG connectors. */
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-profit .vax-flow-label {
-    font-size:clamp(16px,1.25vw,18px)!important;color:#cbdce7!important;
+    font-size:clamp(18px,1.4vw,21px)!important;
+    color:#cbdce7!important;
   }
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-profit .vax-flow-copy > strong {
-    font-size:clamp(23px,1.8vw,27px)!important;color:#fff!important;
+    font-size:clamp(27px,2vw,32px)!important;
+    color:#fff!important;
   }
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-capital .vax-capital-text b {
-    font-size:clamp(17px,1.25vw,19px)!important;color:#fff!important;
+    font-size:clamp(19px,1.4vw,22px)!important;
+    color:#fff!important;
   }
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-capital .vax-capital-text small {
-    font-size:clamp(12px,1vw,14px)!important;color:#c6d6e0!important;
+    font-size:clamp(14px,1.08vw,17px)!important;
+    color:#c6d6e0!important;
   }
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-capital .vax-capital-values small {
-    font-size:clamp(12px,1vw,14px)!important;color:#c6d6e0!important;
+    font-size:clamp(15px,1.1vw,17px)!important;
+    color:#c6d6e0!important;
   }
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-capital .vax-capital-values strong {
-    font-size:clamp(21px,1.65vw,24px)!important;color:#fff!important;
+    font-size:clamp(25px,1.9vw,30px)!important;
+    color:#fff!important;
   }
-  /* Only restore the original V10 geometry. Typography must not stretch cards or move SVG endpoints. */
+  /* V12: restore exact V10 card dimensions despite the larger font. */
   body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram .vax-profit {
     height:60px!important;min-height:60px!important;max-height:60px!important;
   }
