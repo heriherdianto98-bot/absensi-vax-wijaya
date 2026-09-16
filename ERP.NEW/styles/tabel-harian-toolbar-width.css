@@ -399,3 +399,149 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
         overflow:visible!important;
     }
 }
+
+/* =========================================================
+   Desktop compact density for browser zoom ~80% on 1600px-class display
+   UI ONLY — no engine/data/render changes, no transform scaling.
+   At ~67% the CSS viewport is wider and this block intentionally stops.
+   ========================================================= */
+@media screen and (pointer:fine) and (min-width:1800px) and (max-width:2200px){
+    .thc-page{
+        --thc-freeze-tanggal-w:100px;
+        --thc-freeze-cabang-w:126px;
+        --thc-pin-stack-h:88px;
+        --thc-thead-top:calc(var(--erp-top-header-h,58px) + var(--thc-pin-stack-h,88px) - 1px);
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
+    .erp-wrapper .thc-page .thc-page-head,
+    .thc-page .thc-page-head{
+        min-height:72px!important;
+        padding:10px 14px!important;
+        gap:12px!important;
+        margin-bottom:10px!important;
+    }
+    .thc-page .thc-page-head-copy{gap:2px!important;}
+    .thc-page .thc-page-eyebrow{font-size:9px!important;}
+    .thc-page .thc-page-title{font-size:20px!important;line-height:1.08!important;}
+    .thc-page .thc-page-sub{font-size:11px!important;line-height:1.15!important;}
+
+    .thc-page .thc-page-head .thc-tb-actions,
+    .thc-page .thc-tb-actions{gap:6px!important;}
+    .thc-page .thc-action-btn{
+        min-height:30px!important;
+        height:30px!important;
+        padding:0 12px!important;
+        font-size:10px!important;
+        border-radius:8px!important;
+    }
+
+    .thc-page .thc-table-toolbar{
+        gap:4px!important;
+        padding:10px 12px 8px!important;
+    }
+    .thc-page .thc-unified-toolbar{gap:7px 9px!important;}
+    .thc-page .thc-tb-field{gap:3px!important;}
+    .thc-page .thc-tb-label{font-size:9px!important;line-height:1.05!important;}
+    .thc-page .thc-tb-field select,
+    .thc-page .thc-jump-trigger{
+        height:32px!important;
+        min-height:32px!important;
+        padding-left:9px!important;
+        padding-right:9px!important;
+        font-size:11.5px!important;
+        border-radius:8px!important;
+    }
+    .thc-page .thc-tb-cabang{flex-basis:184px!important;max-width:190px!important;}
+    .thc-page .thc-tb-periode{flex-basis:172px!important;max-width:178px!important;}
+    .thc-page .thc-tb-jump{flex-basis:150px!important;max-width:156px!important;}
+    .thc-page .thc-tb-lastsync{min-width:132px!important;}
+    .thc-page .thc-tb-lastsync-value{font-size:11px!important;}
+    .thc-page .thc-row-meta{font-size:10px!important;line-height:1.05!important;}
+
+    .thc-page #thcTable{
+        font-size:11px!important;
+    }
+    .thc-page #thcTable thead th{
+        height:39px!important;
+        min-height:39px!important;
+        padding:7px 8px!important;
+        font-size:9.8px!important;
+        line-height:1.08!important;
+        white-space:nowrap!important;
+    }
+    .thc-page #thcTable tbody td{
+        height:36px!important;
+        min-height:36px!important;
+        padding:6px 8px!important;
+        font-size:11px!important;
+        line-height:1.08!important;
+        white-space:nowrap!important;
+    }
+    .thc-page #thcTable tbody td:nth-child(1){font-size:10.5px!important;}
+    .thc-page #thcTable tbody td:nth-child(2){font-size:12.5px!important;}
+
+    .thc-page #thcTable thead th:nth-child(1),
+    .thc-page #thcTable tbody td:nth-child(1){
+        width:100px!important;min-width:100px!important;max-width:100px!important;
+    }
+    .thc-page #thcTable thead th:nth-child(2),
+    .thc-page #thcTable tbody td:nth-child(2){
+        width:126px!important;min-width:126px!important;max-width:126px!important;
+    }
+    .thc-page #thcTable thead th:nth-child(n+3),
+    .thc-page #thcTable tbody td:nth-child(n+3){
+        padding-left:7px!important;
+        padding-right:7px!important;
+    }
+    .thc-page #thcTable thead th.thc-bri-daily-head + th,
+    .thc-page #thcTable tbody td.thc-bri-daily-cell + td{
+        width:96px!important;min-width:96px!important;max-width:96px!important;
+        padding-left:7px!important;padding-right:7px!important;
+    }
+    .thc-page #thcTable thead th:has(+ th.thc-bri-daily-head)::after{
+        font-size:9.8px!important;
+        line-height:1.05!important;
+    }
+
+    .thc-page .thc-source-help,
+    .thc-page .thc-cashout-help,
+    .thc-page .thc-incomplete-note{
+        font-size:10px!important;
+        line-height:1.15!important;
+    }
+
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals{
+        width:calc(100vw - 230px)!important;
+        max-width:calc(100vw - 230px)!important;
+        padding:6px 8px 8px!important;
+    }
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid{gap:5px!important;}
+    body.setoran-dark .erp-wrapper .thc-page .thc-totals-grid > .thc-tot-item,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett{
+        height:58px!important;
+        min-height:58px!important;
+        max-height:58px!important;
+        padding:5px 7px 6px 9px!important;
+        border-radius:10px!important;
+    }
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained > span,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nontunai > span::after{
+        font-size:9px!important;
+    }
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item > strong,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained > strong,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-explained.is-actual > strong,
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item.is-nett > strong{
+        font-size:12.5px!important;
+    }
+    body.setoran-dark .erp-wrapper .thc-page .thc-tot-item .thc-tot-desc{font-size:8px!important;}
+
+    .thc-page .thc-sales-panels,
+    .thc-page .thc-produk-section,
+    .thc-page .thc-kpiu-section{
+        font-size:90%!important;
+    }
+}
