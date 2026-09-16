@@ -163,3 +163,38 @@
     }
   };
 })();
+
+/*
+ * Setoran 3 Harian — notification toast tanpa layout shift.
+ * UI ONLY: pesan sukses/error tetap tampil, tetapi tidak lagi menjadi grid row
+ * yang mendorong tabel naik-turun saat hidden dibuka/ditutup.
+ */
+(() => {
+  function installStableMessageUi() {
+    if (document.getElementById('s3StableMessageUi')) return;
+    const style = document.createElement('style');
+    style.id = 's3StableMessageUi';
+    style.textContent = `
+      #s3v2Message.s3sheet-message{
+        position:fixed!important;
+        top:88px!important;
+        left:50%!important;
+        transform:translateX(-50%)!important;
+        z-index:120!important;
+        width:max-content!important;
+        max-width:min(560px,calc(100vw - 32px))!important;
+        margin:0!important;
+        box-shadow:0 10px 30px rgba(0,0,0,.28)!important;
+        pointer-events:none!important;
+      }
+      #s3v2Message[hidden]{display:none!important;}
+    `;
+    document.head.appendChild(style);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', installStableMessageUi, { once:true });
+  } else {
+    installStableMessageUi();
+  }
+})();
