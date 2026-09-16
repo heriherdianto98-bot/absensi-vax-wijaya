@@ -125,6 +125,13 @@
     flex:0 0 auto;
     animation:investorReadyRedPulse .85s ease-in-out infinite!important;
   }
+
+  /* SNAPSHOT: panel blink dibuat sengaja lebih tegas agar terlihat jelas di layar. */
+  body.laporan-bulanan-investor-page #lbInvestorSourceStrip.is-snapshot-ready{
+    animation:investorSnapshotStrongBlink .78s steps(2,end) infinite!important;
+    transform-origin:center center;
+    will-change:background,border-color,box-shadow,filter,transform;
+  }
 }
 @keyframes investorReadyBlink{
   0%,100%{opacity:1;filter:brightness(1)}
@@ -133,6 +140,24 @@
 @keyframes investorReadyRedPulse{
   0%,100%{transform:scale(.82);opacity:.7}
   50%{transform:scale(1.18);opacity:1}
+}
+@keyframes investorSnapshotStrongBlink{
+  0%,100%{
+    background:linear-gradient(90deg,#17384c,#143044)!important;
+    border-color:#426d82!important;
+    border-left-color:#55c89a!important;
+    box-shadow:0 5px 14px rgba(0,0,0,.11),0 0 0 rgba(85,200,154,0)!important;
+    filter:brightness(.96);
+    transform:scale(1);
+  }
+  50%{
+    background:linear-gradient(90deg,#1f654e,#1b4f46)!important;
+    border-color:#83ffd0!important;
+    border-left-color:#9affd8!important;
+    box-shadow:0 5px 14px rgba(0,0,0,.12),0 0 28px rgba(85,255,184,.88),inset 0 0 24px rgba(85,255,184,.20)!important;
+    filter:brightness(1.35) saturate(1.18);
+    transform:scale(1.004);
+  }
 }
 
 /* KPI */
