@@ -25,6 +25,8 @@
 /* UI only: reveal invoice only after MasterTagihan confirms the authenticated SVP role. */
 body.page-master-tagihan:not([data-mt-invoice-role="svp"]) #mtInvoiceCard,
 body.page-master-tagihan:not([data-mt-invoice-role="svp"]) .mt-invoice-top-btn{display:none!important}
+/* SVP button must not inherit the Master Tagihan read-only button hiding rules. */
+body.page-master-tagihan[data-mt-invoice-role="svp"] .mt-invoice-top-btn{display:inline-flex!important;visibility:visible!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -130,6 +132,7 @@ body.page-master-tagihan:not([data-mt-invoice-role="svp"]) .mt-invoice-top-btn{d
 <script src="../js/modules/master-tagihan-svp-invoice-list-ui.js?v=20260911-1"></script>
 <script src="../js/modules/master-tagihan-invoice-action-icons-ui.js?v=20260911-1"></script>
 <script src="../js/modules/master-tagihan-list-collapse-ui.js?v=20260917-2"></script>
+<script src="../js/modules/master-tagihan-svp-only-invoice-ui.js?v=20260917-1"></script>
 <script>
 function ensureMasterTagihanSidebarEntry(){
   const sidebar=document.querySelector('.sidebar');
