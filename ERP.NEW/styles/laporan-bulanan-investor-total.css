@@ -161,3 +161,44 @@ body.laporan-bulanan-page #lbInvestorLines .lb-investor-rights-card.is-managemen
 @media(max-width:640px){
   body.laporan-bulanan-page #lbInvestorLines .lb-investor-rights-grid{grid-template-columns:1fr!important}
 }
+
+/* Investor Revised ONLY: remove repetitive row rules, retain quiet section hierarchy.
+   Screen-only so approved print/PDF layouts remain unchanged. */
+@media screen{
+  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"] .lb-card-head{
+    border-bottom:0!important;
+  }
+  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"] #lbInvestorLines > .lb-line:not(.total),
+  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"] #lbInvestorLines .lb-line:not(.total){
+    border-bottom:0!important;
+    border-top:0!important;
+    box-shadow:none!important;
+  }
+  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"] #lbInvestorLines .lb-line.total{
+    border:0!important;
+    border-top:1px solid rgba(160,190,204,.22)!important;
+    box-shadow:none!important;
+  }
+  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"] #lbInvestorLines .lb-investor-base-total span{
+    border-top:1px solid rgba(103,232,249,.30)!important;
+    border-bottom:0!important;
+    background:transparent!important;
+    padding-top:12px!important;
+  }
+  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"] #lbInvestorLines .lb-investor-base-total strong{
+    border:1px solid rgba(34,211,238,.16)!important;
+    border-left:3px solid #22d3ee!important;
+    box-shadow:none!important;
+  }
+  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"] #lbInvestorLines .lb-investor-rights-title{
+    border-top:1px solid rgba(160,190,204,.22)!important;
+    border-bottom:0!important;
+    padding-top:13px!important;
+  }
+  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"] #lbInvestorLines .lb-investor-rights-card{
+    border-top:1px solid rgba(34,211,238,.16)!important;
+    border-right:1px solid rgba(34,211,238,.16)!important;
+    border-bottom:1px solid rgba(34,211,238,.16)!important;
+    box-shadow:none!important;
+  }
+}
