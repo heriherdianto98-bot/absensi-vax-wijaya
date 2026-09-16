@@ -24,7 +24,7 @@
       .eq('id',row.id).eq('created_by',inv.user.id).in('sender_role',['svp','spv'])
       .eq('status','draft').select('id,status');
     if(error)throw error;
-    if(!updated?.length && !['sent','completed','paid'].includes(await statusOf(row.id)))
+    if(!data?.length && !['sent','completed','paid'].includes(await statusOf(row.id)))
       throw new Error('Database belum mencatat invoice sebagai terkirim');
     await inv.reload();
     return true;
