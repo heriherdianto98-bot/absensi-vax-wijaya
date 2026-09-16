@@ -66,21 +66,27 @@
     return true;
   }
 
-  /* Display-only override scoped to Master Tagihan; authenticated role stays unchanged. */
-  function showOwnerDisplayName(){
+  /* Display only. Trust the authenticated profile, never the hardcoded HTML header text. */
+  function showAuthenticatedDisplayName(){
     if(!document.body.classList.contains('page-master-tagihan'))return;
+    const profile=window.OwnerAuth?.profile;
+    const normalized=String(profile?.role||'').trim().toLowerCase();
+    if(normalized!=='owner'&&normalized!=='spv'&&normalized!=='svp')return;
     const role=document.getElementById('ownerAuthRole');
     const name=document.getElementById('ownerAuthName');
-    if(!role||!name||!/^OWNER\b/i.test(role.textContent.trim()))return;
-    if(name.textContent!=='Heri Herdianto')name.textContent='Heri Herdianto';
+    if(!role||!name)return;
+    const displayedRole=normalized==='owner'?'OWNER':'SPV';
+    const displayedName=normalized==='owner'?'Heri Herdianto':String(profile.nama||'').trim();
+    if(role.textContent!==displayedRole)role.textContent=displayedRole;
+    if(displayedName&&name.textContent!==displayedName)name.textContent=displayedName;
   }
 
-  function observeOwnerDisplayName(){
+  function observeAuthenticatedDisplayName(){
     const header=document.getElementById('header');
     if(!header||header.dataset.mtOwnerNameObserver==='1')return;
     header.dataset.mtOwnerNameObserver='1';
-    new MutationObserver(showOwnerDisplayName).observe(header,{childList:true,subtree:true,characterData:true});
-    showOwnerDisplayName();
+    new MutationObserver(showAuthenticatedDisplayName).observe(header,{childList:true,subtree:true,characterData:true});
+    showAuthenticatedDisplayName();
   }
 
   async function syncGlobalHeaderRole(){
@@ -103,8 +109,8 @@
       if(cabang) cabang.textContent="Semua Cabang";
       if(periode) periode.textContent="Master Data";
 
-      showOwnerDisplayName();
-      observeOwnerDisplayName();
+      showAuthenticatedDisplayName();
+      observeAuthenticatedDisplayName();
       headerSyncDone=true;
       return true;
     }catch(err){
@@ -143,7 +149,8 @@
   const timer=setInterval(()=>{
     const collapseReady=install();
     syncGlobalHeaderRole();
-    observeOwnerDisplayName();
+    observeAuthenticatedDisplayName();
+    showAuthenticatedDisplayName();
     ensureInvoiceHistoryUi();
     if((collapseReady && headerSyncDone)||++tries>180) clearInterval(timer);
   },100);
@@ -152,7 +159,8 @@
     setTimeout(install,500);
     setTimeout(syncGlobalHeaderRole,550);
     setTimeout(syncGlobalHeaderRole,1400);
-    setTimeout(observeOwnerDisplayName,650);
+    setTimeout(observeAuthenticatedDisplayName,650);
+    setTimeout(showAuthenticatedDisplayName,1700);
     setTimeout(ensureInvoiceHistoryUi,650);
   });
 })();
