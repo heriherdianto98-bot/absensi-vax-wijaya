@@ -1,34 +1,47 @@
-/* UI-only trial: Kalijati (cabang ID 1). No presenter/engine/print changes.
- * All original #lbInvestorLines markup stays intact for Print/PDF.
- * Screen-only and precise branch selector mean other branches retain existing UI.
+/* Kalijati-only investor diagram V2. PRESENTATION ONLY.
+ * The existing Investor Share presenter, all source fields, engine and print DOM
+ * remain unchanged. This stylesheet is deliberately screen-only.
  */
 @media screen and (min-width: 761px) {
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked)
   .lb-grid > .lb-card[data-lb-view="investor"] #lbInvestorLines:has(> .lb-investor-rights-grid) {
+    --flow-line:#48c7d9;
+    position:relative;
+    box-sizing:border-box;
     display:grid!important;
-    grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);
-    grid-template-rows:auto auto auto auto auto auto auto;
-    column-gap:14px;
-    row-gap:20px;
+    grid-template-columns:minmax(0,1fr) 18px minmax(250px,320px) 18px minmax(0,1fr);
+    grid-template-rows:56px 62px 70px 51px 51px 51px 64px;
+    column-gap:12px;
+    row-gap:12px;
     align-items:stretch;
-    padding:20px 22px 24px!important;
-    background:radial-gradient(ellipse at 50% 42%,rgba(45,185,210,.055),transparent 50%),#050708!important;
+    width:100%;
+    max-width:1050px;
+    margin-inline:auto;
+    padding:14px 10px 18px!important;
+    background:#050708!important;
+    overflow:visible;
   }
+  /* Fit the actual dashboard viewport: smaller nodes, not browser zoom tricks. */
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked)
+  .lb-grid > .lb-card[data-lb-view="investor"] .lb-card-body {padding-block:8px 12px!important;}
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked)
   #lbInvestorLines > .lb-line {
     position:relative;
+    z-index:1;
+    box-sizing:border-box;
     display:flex!important;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:5px;
+    gap:2px;
     min-width:0;
-    min-height:69px!important;
+    min-height:0!important;
+    width:100%;
     margin:0!important;
-    padding:12px 16px!important;
-    border:1px solid rgba(93,145,165,.30)!important;
-    border-radius:12px!important;
-    background:linear-gradient(150deg,#11212d,#0b141b)!important;
+    padding:7px 11px!important;
+    border:1px solid rgba(77,129,151,.38)!important;
+    border-radius:10px!important;
+    background:linear-gradient(140deg,#122432,#0b171f)!important;
     box-shadow:none!important;
     text-align:center;
   }
@@ -39,13 +52,13 @@
     margin:0!important;
     padding:0!important;
     border:0!important;
-    background:none!important;
-    color:#b8cbd5!important;
-    font-size:12px!important;
-    font-weight:750!important;
-    line-height:1.25!important;
-    text-align:center!important;
+    background:transparent!important;
+    color:#bdccd5!important;
+    font-size:11px!important;
+    font-weight:700!important;
+    line-height:1.13!important;
     text-transform:none!important;
+    text-align:center!important;
   }
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked)
   #lbInvestorLines > .lb-line > strong {
@@ -55,62 +68,104 @@
     margin:0!important;
     padding:0!important;
     border:0!important;
-    background:none!important;
-    box-shadow:none!important;
+    background:transparent!important;
     color:#f7fbff!important;
-    font-size:clamp(15px,1.35vw,21px)!important;
+    box-shadow:none!important;
+    font-size:clamp(13px,1.08vw,17px)!important;
     font-weight:900!important;
-    line-height:1.2!important;
+    line-height:1.13!important;
     overflow-wrap:anywhere;
     text-align:center!important;
   }
-  /* Existing presenter output, reordered visually only. */
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(1) {grid-column:1/-1;grid-row:1;min-height:54px!important;background:#0b131a!important;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(1) > strong {font-size:18px!important;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(2) {grid-column:1/-1;grid-row:2;max-width:390px;width:100%;justify-self:center;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(3) {grid-column:1;grid-row:3;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(4) {grid-column:3;grid-row:3;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5) {grid-column:1/-1;grid-row:4;max-width:480px;width:100%;justify-self:center;min-height:95px!important;border:1px solid #c7a451!important;background:linear-gradient(120deg,#282418,#171713)!important;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5) > span {color:#e7d397!important;font-size:13px!important;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5) > strong {color:#ffe08a!important;font-size:clamp(23px,2.2vw,34px)!important;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(6) {grid-column:1;grid-row:5;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(7) {grid-column:1;grid-row:6;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(8) {grid-column:3;grid-row:5;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(9) {grid-column:3;grid-row:6;}
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(10) {grid-column:1;grid-row:7;}
+  /* Original DOM order: investor, net profit, net product, capital, base,
+     investor %, investor value, management %, management value, rent, totals. */
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(1) {
+    grid-column:5;grid-row:1;
+    background:#0c1720!important;
+    align-items:flex-start;
+    padding-inline:14px!important;
+  }
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(1) > strong {font-size:13px!important;text-align:left!important;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(1) > span {text-align:left!important;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(2) {grid-column:3;grid-row:1;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(3) {
+    grid-column:5;grid-row:2;
+    background:#0c1821!important;
+  }
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(4) {grid-column:3;grid-row:2;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(4)::before {
+    content:"−";position:absolute;left:10px;top:50%;transform:translateY(-50%);
+    color:#86e4ef;font-size:20px;font-weight:900;
+  }
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5) {
+    grid-column:3;grid-row:3;
+    border:1px solid #caa74c!important;
+    background:linear-gradient(140deg,#2a2619,#171713)!important;
+    box-shadow:0 0 12px rgba(230,188,71,.09)!important;
+  }
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5) > span {color:#ead79c!important;font-size:12px!important;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5) > strong {color:#ffe18a!important;font-size:clamp(19px,1.9vw,26px)!important;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(6) {grid-column:1;grid-row:4;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(7) {grid-column:1;grid-row:5;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(8) {grid-column:5;grid-row:4;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(9) {grid-column:5;grid-row:5;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(10) {grid-column:1;grid-row:6;}
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-investor-rights-title {display:none!important;}
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-investor-rights-grid {
-    grid-column:1/-1;
-    grid-row:8;
+    grid-column:1/-1;grid-row:7;
     display:grid!important;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
-    gap:44px!important;
+    grid-template-columns:minmax(0,1fr) 18px minmax(250px,320px) 18px minmax(0,1fr)!important;
+    gap:12px!important;
+    min-width:0;
     margin:0!important;
+    align-items:stretch;
   }
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines .lb-investor-rights-card {
-    min-height:95px!important;
+    position:relative;z-index:1;
+    box-sizing:border-box;
     display:flex!important;
     flex-direction:column;
-    align-items:center;
     justify-content:center;
-    border:1px solid rgba(58,204,228,.55)!important;
-    border-left:3px solid #53cadb!important;
-    background:linear-gradient(160deg,#10232c,#09151d)!important;
-    border-radius:12px!important;
-    text-align:center;
+    align-items:center;
+    gap:2px;
+    min-width:0;
+    min-height:0!important;
+    padding:7px 10px!important;
+    border:1px solid #45bed2!important;
+    border-left:2px solid #45bed2!important;
+    border-radius:10px!important;
+    background:linear-gradient(140deg,#10252e,#0a171e)!important;
     box-shadow:none!important;
+    text-align:center;
   }
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines .lb-investor-rights-card strong {font-size:clamp(19px,2vw,29px)!important;white-space:normal!important;}
-  /* Light connectors: only behind the flow, not between every data row. */
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines .lb-investor-rights-card.is-investor {grid-column:1;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines .lb-investor-rights-card.is-management {grid-column:5;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines .lb-investor-rights-card span {font-size:10px!important;margin:0!important;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines .lb-investor-rights-card strong {font-size:clamp(17px,1.55vw,23px)!important;line-height:1.1!important;white-space:normal!important;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines .lb-investor-rights-card small {font-size:9px!important;margin:0!important;}
+  /* Thin, centered flow connectors; never touch underlying values. */
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(2)::after,
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5)::after,
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(4)::after,
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(6)::after,
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(7)::after,
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(8)::after,
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(9)::after,
   body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(10)::after {
-    content:"";position:absolute;left:50%;top:100%;height:20px;width:1px;background:#4bafbf;pointer-events:none;
+    content:"";position:absolute;left:50%;top:100%;width:1px;height:12px;
+    background:var(--flow-line);pointer-events:none;
   }
-  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5)::after {display:none;}
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5)::after {
+    content:"";position:absolute;top:100%;left:50%;width:1px;height:12px;
+    background:var(--flow-line);pointer-events:none;
+  }
+  /* Split line sits in the gap immediately after the highlighted base. */
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines > .lb-line:nth-child(5)::before {
+    content:"";position:absolute;left:calc(-100% - 42px);right:calc(-100% - 42px);
+    height:1px;bottom:-12px;background:var(--flow-line);pointer-events:none;
+  }
+  body.laporan-bulanan-investor-page:has(#lbBranch option[value="1"]:checked) #lbInvestorLines .lb-investor-rights-card::before {
+    content:"";position:absolute;left:50%;bottom:100%;width:1px;height:12px;
+    background:var(--flow-line);pointer-events:none;
+  }
 }
-/* Narrow screen: retain the approved original list rather than crush a diagram. */
+/* For narrow viewports retain the existing audited list instead of squeezing the flow. */
