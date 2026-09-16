@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Invoice Internal | ERP VAX</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
+*{box-sizing:border-box}body{margin:0;background:#0c131b;color:#ebf4fb;font:14px/1.5 Arial,sans-serif}.wrap{max-width:880px;margin:28px auto;padding:0 15px}.doc{background:#14212c;border:1px solid #294251;border-radius:16px;overflow:hidden}.head{padding:22px 26px;border-bottom:1px solid #304451}.brand{font-size:23px;font-weight:900;color:#f1c75a}.sub{color:#8fa7b8;font-size:12px;margin-top:4px}.body{padding:24px 26px}.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:20px 0}.meta small{display:block;color:#91a8b9}.meta strong{display:block;word-break:break-word}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #2a3a46;text-align:left}th{color:#a5bdcd;font-size:12px}td:last-child,th:last-child{text-align:right}.total{text-align:right;margin-top:18px;font-size:22px;color:#f1c75a;font-weight:900}.note{margin-top:16px;white-space:pre-wrap;color:#c5d6e1}.footer{padding:16px 26px;border-top:1px solid #304451;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.state{padding:32px 26px;color:#c9dbe8}.status{font-weight:900;color:#f1c75a}.status.read{color:#69ceff}.status.completed{color:#7be3ac}.button{border:1px solid #388867;border-radius:9px;background:#1c6544;color:white;padding:11px 16px;font-weight:800;cursor:pointer}.button:disabled{opacity:.55;cursor:wait}.feedback{font-size:12px;color:#abc6d8}.receipt{color:#8fd5f5;font-size:12px;margin-top:4px}@media(max-width:650px){.meta{grid-template-columns:1fr}.body,.head,.footer{padding:16px}table{font-size:12px}}
+</style></head><body><main class="wrap"><article class="doc" id="doc"><div class="state">Memuat invoice…</div></article></main><script src="./config/minutes.js"></script><script src="./js/modules/connector.js"></script><script>
+'use strict';
+const box=document.getElementById('doc');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rp=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n||0));
+const when=v=>v?new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Jakarta'}).format(new Date(v)):'—';
+const isSvp=v=>['svp','spv'].includes(String(v||'').toLowerCase());
+const sender=row=>isSvp(row.sender_role)?'svp':'owner';
+const status=row=>row.status==='completed'?'SELESAI':row.read_at?'DIBACA':row.status==='sent'?'TERKIRIM':String(row.status||'DRAFT').toUpperCase();
+function info(message){box.innerHTML=`<div class="state">${esc(message)}</div>`}
+(async()=>{
+  const id=new URLSearchParams(location.search).get('id');if(!id){info('ID invoice tidak tersedia.');return}
+  const {data:s}=await db.auth.getSession();const user=s?.session?.user;if(!user){info('Login ERP diperlukan untuk melihat invoice.');return}
+  const {data:p,error:pe}=await db.from('profiles').select('role,aktif').eq('id',user.id).maybeSingle();
+  let role=String(p?.role||'').toLowerCase();if(role==='spv')role='svp';
+  if(pe||p?.aktif===false||!['owner','svp'].includes(role)){info('Akses invoice hanya untuk Owner atau SVP aktif.');return}
+  const {data:row,error:re}=await db.from('svp_invoices').select('*').eq('id',id).maybeSingle();
+  if(re||!row){info('Invoice tidak ditemukan atau tidak dapat diakses.');return}
+  const {data:items,error:ie}=await db.from('svp_invoice_items').select('*').eq('invoice_id',id).order('sort_order');
+  if(ie){info('Detail invoice gagal dimuat: '+ie.message);return}
+  const receiver=sender(row)!==role&&String(row.created_by)!==String(user.id);
+  if(receiver&&row.status==='sent'&&!row.read_at){
+    const {data:ok,error:readError}=await db.rpc('svp_invoice_mark_read',{p_invoice_id:id});
+    if(readError||!ok){info('Invoice berhasil dibuka, tetapi tanda dibaca gagal dicatat. Silakan muat ulang. '+(readError?.message||''));return}
+    row.read_at=new Date().toISOString();row.read_by=user.id;
+  }
+  const statusText=status(row),badgeClass=row.status==='completed'?'completed':row.read_at?'read':'';
+  box.innerHTML=`<header class="head"><div class="brand">ERP VAX WIJAYA</div><div class="sub">INVOICE INTERNAL · ${sender(row)==='owner'?'OWNER → SVP':'SVP → OWNER'}</div></header><div class="body"><h2>${esc(row.title||'INVOICE')}</h2><div class="meta"><div><small>Nomor invoice</small><strong>${esc(row.invoice_no)}</strong></div><div><small>Status</small><strong id="invoiceStatus" class="status ${badgeClass}">${row.read_at?'✓✓ ':row.status==='sent'?'✓ ':''}${statusText}</strong><div id="receipt" class="receipt">${row.read_at?'Dibaca '+esc(when(row.read_at)):''}${row.completed_at?' · Selesai '+esc(when(row.completed_at)):''}</div></div><div><small>Tanggal</small><strong>${esc(row.invoice_date||'—')}</strong></div><div><small>Jatuh tempo</small><strong>${esc(row.due_date||'—')}</strong></div></div><table><thead><tr><th>Item</th><th>Qty</th><th>Nominal</th></tr></thead><tbody>${(items||[]).map(x=>`<tr><td>${esc(x.item_name)}</td><td>${esc(x.qty)}</td><td>${rp(x.amount)}</td></tr>`).join('')||'<tr><td colspan="3">Tidak ada item</td></tr>'}</tbody></table><div class="total">${rp(row.total)}</div>${row.notes?`<div class="note">${esc(row.notes)}</div>`:''}</div><footer class="footer">${receiver&&row.status==='sent'?'<button type="button" class="button" id="complete">Tandai Selesai</button>':''}<span class="feedback" id="feedback">${receiver?'Invoice dibaca oleh penerima.':'Status dapat dilihat oleh pengirim dan penerima.'}</span></footer>`;
+  const done=document.getElementById('complete');done?.addEventListener('click',async()=>{
+    if(!confirm('Tandai invoice ini SELESAI dan pindahkan ke Riwayat?'))return;
+    done.disabled=true;const feedback=document.getElementById('feedback');feedback.textContent='Menyimpan…';
+    const {data:ok,error}=await db.rpc('svp_invoice_complete',{p_invoice_id:id});
+    if(error||!ok){done.disabled=false;feedback.textContent='Gagal menyelesaikan invoice: '+(error?.message||'Status tidak memenuhi syarat.');return}
+    document.getElementById('invoiceStatus').textContent='✓✓ SELESAI';document.getElementById('invoiceStatus').className='status completed';document.getElementById('receipt').textContent='Dibaca '+when(row.read_at)+' · Selesai '+when(new Date().toISOString());feedback.textContent='Invoice masuk Riwayat. Kembali ke Master Tagihan untuk melihatnya.';done.remove();
+  });
+})().catch(e=>info('Gagal memuat invoice: '+(e?.message||String(e))));
+</script></body></html>
