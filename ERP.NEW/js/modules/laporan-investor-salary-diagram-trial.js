@@ -1,5 +1,5 @@
 /* Investor Revised / Gaji Karyawan — Kalijati screen-only trial.
- * This presenter reads an already calculated report; it never writes payroll or print DOM.
+ * Reads the calculated report; never writes payroll, locked investor UI or print DOM.
  */
 "use strict";
 (() => {
@@ -26,7 +26,9 @@
     const g=report.gaji, cap=Array.isArray(g.capsterDetail)?g.capsterDetail:[], non=Array.isArray(g.nonCapsterDetail)?g.nonCapsterDetail:[];
     let host=document.getElementById('vax-salary-diagram');
     if(!host){host=document.createElement('section');host.id='vax-salary-diagram';host.setAttribute('aria-label','Diagram Gaji Karyawan Kalijati');original.insertAdjacentElement('afterend',host);}
-    host.innerHTML=`<header class="vax-salary-heading"><div><span class="vax-salary-eyebrow">LAPORAN BULANAN INVESTOR</span><h2>Gaji Karyawan</h2><p>Rincian gaji berdasarkan data laporan periode terpilih</p></div><span class="vax-salary-branch">${esc(report.branch?.name||'Kalijati')}</span></header><div class="vax-salary-top"><span> TOTAL BIAYA GAJI </span><strong>${money(g.total)}</strong></div><div class="vax-salary-stem" aria-hidden="true"></div><div class="vax-salary-groups">${group('Gaji Capster',cap,true)}${group('Gaji Kasir & Karyawan',non,false)}</div>${Number(g.svp||0)!==0||Number(g.backupNamedSupplement||0)!==0?`<section class="vax-salary-group"><header class="vax-salary-group-head"><h3>Alokasi Gaji Lainnya</h3></header><div class="vax-salary-grid">${Number(g.svp||0)!==0?other('Gaji SVP',g.svp):''}${Number(g.backupNamedSupplement||0)!==0?other('Gaji Backup Kasir',g.backupNamedSupplement):''}</div></section>`:''}`;
+    const allocations=Number(g.svp||0)!==0||Number(g.backupNamedSupplement||0)!==0
+      ? `<section class="vax-salary-group vax-salary-other"><header class="vax-salary-group-head"><h3>Alokasi Gaji Lainnya</h3></header><div class="vax-salary-grid">${Number(g.svp||0)!==0?other('Gaji SVP',g.svp):''}${Number(g.backupNamedSupplement||0)!==0?other('Gaji Backup Kasir',g.backupNamedSupplement):''}</div></section>` : '';
+    host.innerHTML=`<header class="vax-salary-heading"><div><span class="vax-salary-eyebrow">LAPORAN BULANAN INVESTOR</span><h2>Gaji Karyawan</h2><p>Rincian gaji berdasarkan data laporan periode terpilih</p></div><span class="vax-salary-branch">${esc(report.branch?.name||'Kalijati')}</span></header><div class="vax-salary-top"><span>TOTAL BIAYA GAJI</span><strong>${money(g.total)}</strong></div><div class="vax-salary-stem" aria-hidden="true"></div><div class="vax-salary-groups">${group('Gaji Capster',cap,true)}<div class="vax-salary-right">${group('Gaji Kasir & Karyawan',non,false)}${allocations}</div></div>`;
     document.body.classList.add('vax-salary-diagram-ready');
   }
   function sync(){const r=window.InvestorRevisedReport;if(valid(r))render(r);else hide();}
