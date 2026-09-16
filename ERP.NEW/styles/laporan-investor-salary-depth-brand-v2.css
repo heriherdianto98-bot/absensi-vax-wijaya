@@ -1,0 +1,88 @@
+/* Kalijati salary trial only. Screen-only visual enhancement; no moving background.
+   Existing salary geometry/connector anchors and locked investor UI are unchanged. */
+@media screen and (min-width:761px){
+ body.laporan-bulanan-investor-page.vax-salary-diagram-ready #vax-salary-diagram .vax-salary-groups{
+   align-items:stretch;
+ }
+ body.laporan-bulanan-investor-page.vax-salary-diagram-ready #vax-salary-diagram .vax-salary-right{
+   height:100%;
+ }
+ #vax-salary-diagram .vax-salary-brand{
+   display:flex;flex-direction:column;align-items:center;justify-content:center;
+   gap:5px;margin-top:auto;padding:26px 8px 14px;min-height:94px;
+   text-align:center;pointer-events:none;user-select:none;
+ }
+ #vax-salary-diagram .vax-salary-brand strong{
+   color:#91b8ca;font-size:clamp(13px,1.18vw,17px);font-weight:850;
+   letter-spacing:.13em;line-height:1.3;text-shadow:0 2px 7px rgba(0,0,0,.5);
+ }
+ #vax-salary-diagram .vax-salary-brand small{
+   color:#d5b978;font-size:clamp(10px,.85vw,12px);font-weight:750;
+   letter-spacing:.19em;line-height:1.25;
+ }
+ /* Static dark surfaces with the same layered highlight, bevel and drop shadow
+    vocabulary as the locked Investor diagram. Every visible card participates. */
+ #vax-salary-diagram .vax-salary-top,
+ #vax-salary-diagram .vax-salary-branch,
+ #vax-salary-diagram .vax-salary-group-head,
+ #vax-salary-diagram .vax-salary-card,
+ #vax-salary-diagram .vax-salary-icon{
+   transition:border-color .24s ease,box-shadow .24s ease,filter .24s ease,background-color .24s ease!important;
+ }
+ #vax-salary-diagram .vax-salary-group-head,
+ #vax-salary-diagram .vax-salary-card,
+ #vax-salary-diagram .vax-salary-branch{
+   background-color:#183549!important;
+   background-image:linear-gradient(180deg,rgba(255,255,255,.105) 0%,rgba(255,255,255,.02) 23%,rgba(0,0,0,.08) 54%,rgba(0,0,0,.19) 100%)!important;
+   border-color:rgba(92,164,196,.58)!important;
+   box-shadow:inset 0 2px 0 rgba(250,254,255,.19),inset 0 -8px 13px rgba(0,0,0,.28),0 8px 15px rgba(0,0,0,.28),0 2px 4px rgba(0,0,0,.16)!important;
+ }
+ #vax-salary-diagram .vax-salary-top{
+   background-color:#332b1c!important;
+   background-image:linear-gradient(180deg,rgba(255,242,196,.15),transparent 30%,rgba(0,0,0,.13) 100%)!important;
+   box-shadow:inset 0 2px 0 rgba(255,245,207,.26),inset 0 -10px 17px rgba(0,0,0,.25),0 10px 19px rgba(0,0,0,.29),0 0 15px rgba(224,169,61,.09)!important;
+ }
+ #vax-salary-diagram .vax-salary-icon{
+   background-color:#174056!important;
+   background-image:linear-gradient(180deg,rgba(255,255,255,.12),transparent 36%,rgba(0,0,0,.1))!important;
+   box-shadow:inset 0 2px 0 rgba(255,255,255,.21),inset 0 -5px 9px rgba(0,0,0,.21),0 4px 9px rgba(0,0,0,.2)!important;
+ }
+ @media (hover:hover) and (pointer:fine){
+   #vax-salary-diagram .vax-salary-card:hover,
+   #vax-salary-diagram .vax-salary-group-head:hover,
+   #vax-salary-diagram .vax-salary-branch:hover{
+     border-color:#80e3ef!important;filter:brightness(1.075);
+     box-shadow:inset 0 2px 0 rgba(255,255,255,.25),inset 0 -8px 13px rgba(0,0,0,.24),0 11px 20px rgba(0,0,0,.32),0 0 19px rgba(78,217,236,.19)!important;
+   }
+   #vax-salary-diagram .vax-salary-top:hover{
+     border-color:#ffe39a!important;filter:brightness(1.065);
+     box-shadow:inset 0 2px 0 rgba(255,245,207,.34),inset 0 -10px 17px rgba(0,0,0,.22),0 12px 22px rgba(0,0,0,.32),0 0 21px rgba(224,169,61,.24)!important;
+   }
+   #vax-salary-diagram .vax-salary-card:hover .vax-salary-icon{
+     border-color:#8ae7f7!important;box-shadow:inset 0 2px 0 rgba(255,255,255,.26),0 4px 12px rgba(0,0,0,.23),0 0 10px rgba(96,218,246,.18)!important;
+   }
+ }
+ /* One-time, restrained entrance only; no continuous gradient or flashing. */
+ #vax-salary-diagram .vax-salary-top,
+ #vax-salary-diagram .vax-salary-group-head,
+ #vax-salary-diagram .vax-salary-card,
+ #vax-salary-diagram .vax-salary-brand{
+   animation:vaxSalarySettle .42s ease-out both;
+ }
+ #vax-salary-diagram .vax-salary-card:nth-child(2){animation-delay:.045s}
+ #vax-salary-diagram .vax-salary-card:nth-child(3){animation-delay:.09s}
+ #vax-salary-diagram .vax-salary-brand{animation-delay:.11s}
+ @keyframes vaxSalarySettle{
+   from{opacity:.88;filter:brightness(.92)}
+   to{opacity:1;filter:brightness(1)}
+ }
+ @media(prefers-reduced-motion:reduce){
+   #vax-salary-diagram .vax-salary-top,
+   #vax-salary-diagram .vax-salary-branch,
+   #vax-salary-diagram .vax-salary-group-head,
+   #vax-salary-diagram .vax-salary-card,
+   #vax-salary-diagram .vax-salary-icon,
+   #vax-salary-diagram .vax-salary-brand{animation:none!important;transition:none!important}
+ }
+}
+@media print{#vax-salary-diagram .vax-salary-brand{display:none!important}}
