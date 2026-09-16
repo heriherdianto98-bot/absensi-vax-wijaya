@@ -1,24 +1,31 @@
-/* ERP VAX — targeted SVP -> Owner invoice behavior fix. No finance/Cash Out changes. */
-"use strict";
+/* ERP VAX — scoped SVP -> Owner invoice delivery UI. No finance/Cash Out changes. */
+'use strict';
 (() => {
   const isSvp=inv=>['svp','spv'].includes(String(inv?.role||'').toLowerCase());
-  const isMine=(inv,row)=>isSvp(row?.sender_role)&&String(row?.created_by||'')===String(inv?.user?.id||'');
-  const draft=row=>String(row?.status||'draft').toLowerCase()==='draft';
-  const API='https://erp.vaxwijaya.com/api/svp-invoice/send-owner';
+  const isMine=(inv,row)=>['svp','spv'].includes(String(row?.sender_role||'').toLowerCase())&&String(row?.created_by||'')===String(inv?.user?.id||'');
+  const isDraft=row=>String(row?.status||'draft').toLowerCase()==='draft';
+  const SEND_API='https://erp.vaxwijaya.com/api/svp-invoice/send-owner';
   let busy=false;
+  let pendingWa=null;
 
-  async function confirmSent(inv,row,channel){
-    if(!isSvp(inv)||!isMine(inv,row)||!draft(row))return false;
-    const {data:updated,error}=await db.from('svp_invoices')
-      .update({status:'sent',updated_by:inv.user.id,updated_at:new Date().toISOString()})
+  async function statusOf(id){
+    const {data,error}=await db.from('svp_invoices').select('status').eq('id',id).maybeSingle();
+    if(error)throw error;
+    if(!data)throw new Error('Invoice tidak ditemukan');
+    return String(data.status||'').toLowerCase();
+  }
+  async function confirmSent(inv,row){
+    if(!isSvp(inv)||!isMine(inv,row))throw new Error('Akses invoice ditolak');
+    const current=await statusOf(row.id);
+    if(['sent','completed','paid'].includes(current)){await inv.reload();return true;}
+    if(current!=='draft')throw new Error('Status invoice tidak sesuai');
+    const {data,error}=await db.from('svp_invoices')
+      .update({status:'sent',sent_at:new Date().toISOString(),updated_by:inv.user.id,updated_at:new Date().toISOString()})
       .eq('id',row.id).eq('created_by',inv.user.id).in('sender_role',['svp','spv'])
       .eq('status','draft').select('id,status');
     if(error)throw error;
-    if(!updated?.length){
-      const {data:current,error:readError}=await db.from('svp_invoices').select('status').eq('id',row.id).maybeSingle();
-      if(readError)throw readError;
-      if(current?.status!=='sent'&&current?.status!=='paid')throw new Error('Status invoice belum berubah. Periksa izin database.');
-    }
+    if(!updated?.length && !['sent','completed','paid'].includes(await statusOf(row.id)))
+      throw new Error('Database belum mencatat invoice sebagai terkirim');
     await inv.reload();
     return true;
   }
@@ -29,76 +36,102 @@
     if(inv.__newAndDeliveryFixInstalled)return true;
     inv.__newAndDeliveryFixInstalled=true;
 
-    /* The legacy UI automatically selects the first draft when open(null) is called.
-       Hide drafts only during an explicit NEW action; never delete or overwrite them. */
-    const previousOpen=inv.open;
+    // Explicit New opens a blank form; previously saved drafts remain available via Edit.
+    const originalOpen=inv.open;
     inv.open=async function(row=null){
-      if(row)return previousOpen.call(this,row);
+      if(row)return originalOpen.call(this,row);
       const rows=this.rows;
-      this.rows=(Array.isArray(rows)?rows:[]).filter(r=>!draft(r));
-      try{return await previousOpen.call(this,null)}
-      finally{this.rows=rows}
+      this.rows=(Array.isArray(rows)?rows:[]).filter(r=>!isDraft(r));
+      try{return await originalOpen.call(this,null)}finally{this.rows=rows;}
     };
 
-    /* Email: only mark SENT after the delivery API confirms success.
-       If status persistence fails, explicitly warn; never claim success. */
+    // Preserve the formerly working email endpoint; a successful API response must
+    // be followed by persisted SENT status. Never claim success on a failed response.
     inv.send=async function(id,button){
-      if(!isSvp(this)||busy)return;
+      if(busy)return;
       const row=(this.rows||[]).find(r=>String(r.id)===String(id));
-      if(!row||!isMine(this,row)||!draft(row))return;
+      if(!row||!isMine(this,row)||!isDraft(row))return;
       busy=true;
       const old=button?.innerHTML;
-      if(button){button.disabled=true;button.textContent='Mengirim...'}
+      if(button){button.disabled=true;button.textContent='Mengirim...';}
+      let apiAccepted=false;
       try{
         const {data:session,error:authError}=await db.auth.getSession();
         if(authError)throw authError;
         const token=session?.session?.access_token;
-        if(!token)throw new Error('Sesi pengguna tidak ditemukan');
-        const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({invoice_id:id})});
-        const out=await res.json().catch(()=>({}));
-        if(!res.ok)throw new Error(out.error||`HTTP ${res.status}`);
-        await confirmSent(this,row,'email');
-        alert('Email invoice berhasil diproses dan status tersimpan sebagai SENT.');
+        if(!token)throw new Error('Sesi login tidak ditemukan');
+        const response=await fetch(SEND_API,{
+          method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},
+          body:JSON.stringify({invoice_id:id})
+        });
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok||result.ok===false||result.error)throw new Error(result.error||`HTTP ${response.status}`);
+        apiAccepted=true;
+        await confirmSent(this,row);
+        alert('Email diproses oleh layanan pengiriman; status invoice tersimpan sebagai TERKIRIM.');
       }catch(error){
-        alert(`Pengiriman email atau penyimpanan status gagal: ${error?.message||error}. Periksa email dan status sebelum mengirim ulang.`);
+        alert(apiAccepted
+          ? `Layanan email merespons berhasil, tetapi status ERP belum tersimpan: ${error?.message||error}. Periksa status sebelum mencoba lagi.`
+          : `Gagal mengirim email: ${error?.message||error}. Status invoice tidak diubah.`);
       }finally{
         busy=false;
-        if(button){button.disabled=false;button.innerHTML=old}
+        if(button){button.disabled=false;button.innerHTML=old;}
       }
     };
 
-    /* WhatsApp is an external app. Opening it or generating a PDF link does not
-       prove delivery. The sender must explicitly confirm AFTER pressing Send there. */
+    // WhatsApp provides no trustworthy delivery callback. Prompt only AFTER the user
+    // comes back from WhatsApp; an opened tab or a generated PDF is not delivery proof.
+    const originalWhatsapp=inv.openWhatsapp;
+    inv.openWhatsapp=async function(row){
+      if(!row||!isMine(this,row)||!isDraft(row))return originalWhatsapp.call(this,row);
+      if(busy)return;
+      pendingWa={id:String(row.id),invoiceNo:row.invoice_no,openedAt:Date.now(),inv:this};
+      try{await originalWhatsapp.call(this,row)}catch(error){pendingWa=null;throw error;}
+    };
+    async function finishWa(id){
+      if(busy)return;
+      const row=(inv.rows||[]).find(r=>String(r.id)===String(id));
+      if(!row||!isMine(inv,row)||!isDraft(row))return;
+      if(!confirm(`Apakah pesan WhatsApp invoice ${row.invoice_no} sudah Anda tekan KIRIM di WhatsApp?\n\nOK = sudah dikirim; Batal = tetap Draft.`))return;
+      busy=true;
+      try{await confirmSent(inv,row)}
+      catch(error){alert(`Status WhatsApp belum tersimpan: ${error?.message||error}`);}
+      finally{busy=false;}
+    }
+    let lastPrompt=0;
+    window.addEventListener('focus',()=>{
+      const p=pendingWa;
+      if(!p||Date.now()-p.openedAt<1400||Date.now()-lastPrompt<1000)return;
+      pendingWa=null;lastPrompt=Date.now();
+      finishWa(p.id).catch(error=>alert(`Konfirmasi WhatsApp gagal: ${error?.message||error}`));
+    });
+
+    // Also expose an explicit confirmation on drafts, in case the browser does not
+    // fire a focus event (or the user returns without switching browser windows).
     const list=document.getElementById('mtInvoiceList');
     if(list){
       const decorate=()=>{
         list.querySelectorAll('.mt-invoice-row').forEach(el=>{
-          const id=el.querySelector('[data-wa-id]')?.dataset.waId;
+          const id=el.querySelector('[data-wa-id]')?.getAttribute('data-wa-id');
           if(!id||el.querySelector('[data-confirm-wa-id]'))return;
           const row=(inv.rows||[]).find(r=>String(r.id)===String(id));
-          if(!row||!isMine(inv,row)||!draft(row))return;
+          if(!row||!isMine(inv,row)||!isDraft(row))return;
           const actions=el.querySelector('.mt-invoice-buttons,.svp-return-actions');
           if(!actions)return;
           const button=document.createElement('button');
           button.type='button';button.className='mt-action mt-confirm-wa-sent';
-          button.dataset.confirmWaId=id;
-          button.textContent='Konfirmasi WA terkirim';
-          button.title='Klik hanya setelah pesan benar-benar dikirim dari WhatsApp';
-          button.style.cssText='min-height:38px;padding:6px 10px;border-color:#97742c;background:#302711;color:#ffe5a1;white-space:normal;line-height:1.2';
+          button.dataset.confirmWaId=id;button.textContent='Konfirmasi WA';
+          button.title='Konfirmasi hanya sesudah menekan Kirim di WhatsApp';
+          button.style.cssText='min-height:38px;padding:6px 10px;border-color:#97742c;background:#302711;color:#ffe5a1;white-space:nowrap';
           actions.appendChild(button);
         });
       };
-      list.addEventListener('click',async event=>{
-        const btn=event.target.closest('[data-confirm-wa-id]');
-        if(!btn||busy)return;
+      list.addEventListener('click',event=>{
+        const button=event.target.closest('[data-confirm-wa-id]');
+        if(!button)return;
         event.preventDefault();event.stopPropagation();
-        const row=(inv.rows||[]).find(r=>String(r.id)===String(btn.dataset.confirmWaId));
-        if(!row||!isMine(inv,row)||!draft(row))return;
-        if(!confirm(`Pesan WhatsApp untuk ${row.invoice_no||'invoice ini'} sudah benar-benar Anda kirim?\nPilih OK hanya setelah menekan Kirim di WhatsApp.`))return;
-        busy=true;btn.disabled=true;
-        try{await confirmSent(inv,row,'whatsapp')}
-        catch(error){alert(`Gagal menyimpan status SENT: ${error?.message||error}`);btn.disabled=false}
-        finally{busy=false}
+        pendingWa=null;
+        finishWa(button.dataset.confirmWaId).catch(error=>alert(`Konfirmasi WhatsApp gagal: ${error?.message||error}`));
       },true);
       new MutationObserver(decorate).observe(list,{childList:true,subtree:true});
       decorate();
