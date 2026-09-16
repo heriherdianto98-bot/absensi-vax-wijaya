@@ -66,6 +66,23 @@
     return true;
   }
 
+  /* Display-only override scoped to Master Tagihan; authenticated role stays unchanged. */
+  function showOwnerDisplayName(){
+    if(!document.body.classList.contains('page-master-tagihan'))return;
+    const role=document.getElementById('ownerAuthRole');
+    const name=document.getElementById('ownerAuthName');
+    if(!role||!name||!/^OWNER\b/i.test(role.textContent.trim()))return;
+    if(name.textContent!=='Heri Herdianto')name.textContent='Heri Herdianto';
+  }
+
+  function observeOwnerDisplayName(){
+    const header=document.getElementById('header');
+    if(!header||header.dataset.mtOwnerNameObserver==='1')return;
+    header.dataset.mtOwnerNameObserver='1';
+    new MutationObserver(showOwnerDisplayName).observe(header,{childList:true,subtree:true,characterData:true});
+    showOwnerDisplayName();
+  }
+
   async function syncGlobalHeaderRole(){
     if(headerSyncDone || headerSyncRunning) return headerSyncDone;
     if(!window.OwnerAuth || typeof window.OwnerAuth.requireFinance!=="function") return false;
@@ -86,6 +103,8 @@
       if(cabang) cabang.textContent="Semua Cabang";
       if(periode) periode.textContent="Master Data";
 
+      showOwnerDisplayName();
+      observeOwnerDisplayName();
       headerSyncDone=true;
       return true;
     }catch(err){
@@ -124,6 +143,7 @@
   const timer=setInterval(()=>{
     const collapseReady=install();
     syncGlobalHeaderRole();
+    observeOwnerDisplayName();
     ensureInvoiceHistoryUi();
     if((collapseReady && headerSyncDone)||++tries>180) clearInterval(timer);
   },100);
@@ -132,6 +152,7 @@
     setTimeout(install,500);
     setTimeout(syncGlobalHeaderRole,550);
     setTimeout(syncGlobalHeaderRole,1400);
+    setTimeout(observeOwnerDisplayName,650);
     setTimeout(ensureInvoiceHistoryUi,650);
   });
 })();
