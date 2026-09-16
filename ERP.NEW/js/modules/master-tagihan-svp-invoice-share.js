@@ -69,6 +69,17 @@
     document.head.appendChild(s);
   }
 
+  /* Load the targeted SVP new-invoice / delivery fix without changing locked core modules. */
+  function loadInvoiceBehaviorFix(){
+    if(document.querySelector('script[data-svp-invoice-behavior-fix]'))return;
+    const src=SELF_SRC
+      ? SELF_SRC.replace(/master-tagihan-svp-invoice-share\.js(?:\?.*)?$/,'master-tagihan-invoice-new-and-delivery-fix.js?v=20260917-1')
+      : '../js/modules/master-tagihan-invoice-new-and-delivery-fix.js?v=20260917-1';
+    const s=document.createElement('script');
+    s.src=src;s.async=true;s.dataset.svpInvoiceBehaviorFix='1';
+    document.head.appendChild(s);
+  }
+
   let tries=0;
   const t=setInterval(()=>{
     if(installFinal())clearInterval(t);
@@ -76,9 +87,11 @@
   },100);
 
   loadRoleBridge();
+  loadInvoiceBehaviorFix();
   window.addEventListener('load',()=>{
     setTimeout(installFinal,700);
     setTimeout(installFinal,1500);
     setTimeout(loadRoleBridge,500);
+    setTimeout(loadInvoiceBehaviorFix,500);
   });
 })();
