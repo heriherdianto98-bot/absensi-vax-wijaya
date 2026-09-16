@@ -1,12 +1,15 @@
 /* ERP VAX — SVP invoice presentation only. Never mutate invoice records or send/payment workflows. */
 "use strict";
 (() => {
+  /* MasterTagihan is declared with top-level const, not necessarily on window. */
+  const masterRole = () => typeof MasterTagihan !== 'undefined'
+    ? MasterTagihan?.role : window.MasterTagihan?.role;
   const isSvp = role => ['svp','spv'].includes(String(role || '').toLowerCase());
   const isOwnSvpInvoice = (row, userId) =>
     isSvp(row?.sender_role) && String(row?.created_by || '') === String(userId || '');
 
   function labels() {
-    if (!isSvp(window.MasterTagihan?.role) || !isSvp(window.SvPInvoice?.role)) return;
+    if (!isSvp(masterRole()) || !isSvp(window.SvPInvoice?.role)) return;
     const head = document.querySelector('#mtInvoiceCard .mt-invoice-head strong');
     if (head) head.textContent = 'INVOICE SVP → OWNER';
     document.querySelectorAll('#mtInvoiceList .mt-internal-active > strong, #mtInvoiceList .mt-inbox-active > strong')
@@ -20,7 +23,7 @@
 
   function install() {
     const invoice = window.SvPInvoice;
-    if (!isSvp(window.MasterTagihan?.role) || !invoice || !isSvp(invoice.role)
+    if (!isSvp(masterRole()) || !invoice || !isSvp(invoice.role)
         || !invoice.user?.id || !invoice.__svpOwnerReturnInstalled || !invoice.__readCompleteInstalled) return false;
     if (invoice.__svpOnlyInvoiceUiInstalled) return true;
     invoice.__svpOnlyInvoiceUiInstalled = true;
