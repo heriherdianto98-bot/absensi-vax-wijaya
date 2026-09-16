@@ -1,0 +1,9 @@
+/* Kalijati salary trial only — screen-only money icon on total card. */
+@media screen and (min-width:761px){
+ body.laporan-bulanan-investor-page.vax-salary-diagram-ready #vax-salary-diagram .vax-salary-top{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:77px;min-height:77px;padding:7px 65px;text-align:center}
+ #vax-salary-diagram .vax-salary-top-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:46px;height:46px;flex:none;border-radius:10px;color:#ffe58d;background:linear-gradient(180deg,rgba(255,239,189,.14),transparent 30%),linear-gradient(145deg,#4b3c1d,#29251a);border:1px solid rgba(236,183,72,.34);box-shadow:inset 0 2px 0 rgba(255,237,184,.19),inset 0 -6px 10px rgba(0,0,0,.24),0 5px 10px rgba(0,0,0,.25)}
+ #vax-salary-diagram .vax-salary-top-icon svg{display:block;width:29px;height:29px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+ #vax-salary-diagram .vax-salary-top-copy{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:100%;min-width:0;text-align:center}
+ #vax-salary-diagram .vax-salary-top-copy>span{font-size:16px;color:#ffe2a0;font-weight:850;line-height:1.15}
+ #vax-salary-diagram .vax-salary-top-copy>strong{font-size:clamp(29px,2.25vw,33px);color:#ffe58d;font-weight:900;line-height:1.17;white-space:nowrap;font-variant-numeric:tabular-nums}
+}
