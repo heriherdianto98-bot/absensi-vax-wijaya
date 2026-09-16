@@ -1,53 +1,50 @@
-/* Gaji Karyawan Kalijati trial — screen presentation only. Investor LOCK and print untouched. */
+/* Kalijati salary trial only. Static dark background; preserve locked Investor and Print/PDF. */
 @media screen and (min-width:761px){
  body.laporan-bulanan-investor-page #vax-salary-diagram{display:none}
  body.laporan-bulanan-investor-page.vax-salary-diagram-ready #lbSalaryLines{display:none!important}
  body.laporan-bulanan-investor-page.vax-salary-diagram-ready .lb-grid>.lb-card[data-lb-view="salary"]>.lb-card-head{display:none!important}
- body.laporan-bulanan-investor-page.vax-salary-diagram-ready .lb-grid>.lb-card[data-lb-view="salary"]{background:#071119!important;border:1px solid rgba(46,110,133,.30)!important;box-shadow:none!important}
- body.laporan-bulanan-investor-page.vax-salary-diagram-ready #vax-salary-diagram{display:block!important;position:relative;isolation:isolate;overflow:hidden;width:100%;padding:9px clamp(15px,1.8vw,26px) 17px;border-radius:14px;background:#071119;color:#f0f8ff;font-family:'Source Sans 3',sans-serif}
+ body.laporan-bulanan-investor-page.vax-salary-diagram-ready .lb-grid>.lb-card[data-lb-view="salary"]{background:#0b1720!important;border:1px solid #244455!important;box-shadow:none!important;overflow:visible!important}
+ body.laporan-bulanan-investor-page.vax-salary-diagram-ready #vax-salary-diagram{display:block!important;position:relative;width:100%;padding:9px clamp(15px,1.8vw,26px) 15px;border-radius:14px;background:#0b1720!important;color:#f0f8ff;font-family:'Source Sans 3',sans-serif;overflow:visible!important}
  #vax-salary-diagram *,#vax-salary-diagram *::before,#vax-salary-diagram *::after{box-sizing:border-box}
- #vax-salary-diagram::before{content:"";position:absolute;inset:-38%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 24% 34%,rgba(19,120,147,.22),transparent 48%),radial-gradient(ellipse at 79% 68%,rgba(31,73,132,.19),transparent 46%);animation:vax-salary-ambient 26s ease-in-out infinite alternate}
- @keyframes vax-salary-ambient{0%{transform:translate3d(-5%,2%,0) rotate(-5deg)}50%{transform:translate3d(3%,-3%,0) rotate(2deg)}100%{transform:translate3d(6%,4%,0) rotate(7deg)}}
- #vax-salary-diagram .vax-salary-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin:0 0 2px;min-height:82px}
+ #vax-salary-diagram::before,#vax-salary-diagram::after{content:none!important;animation:none!important}
+ #vax-salary-diagram .vax-salary-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:0 0 2px;min-height:72px}
  #vax-salary-diagram .vax-salary-heading>div{border-left:3px solid #4bd0e6;padding:1px 0 0 18px}
  #vax-salary-diagram .vax-salary-eyebrow{font-size:12px;font-weight:850;letter-spacing:.1em;color:#5be2ef}
- #vax-salary-diagram .vax-salary-heading h2{font-size:clamp(24px,1.95vw,30px);font-weight:900;color:#fff;margin:4px 0}
+ #vax-salary-diagram .vax-salary-heading h2{font-size:clamp(24px,1.95vw,30px);font-weight:900;color:#fff;margin:3px 0}
  #vax-salary-diagram .vax-salary-heading p{font-size:13px;color:#b9cad6;margin:0}
- #vax-salary-diagram .vax-salary-branch{padding:9px 14px;border:1px solid #386278;border-radius:12px;background:linear-gradient(145deg,#173044,#0b1923);font-weight:800;color:#fff}
- /* Same gold centerpiece width/height as the locked investor base card. */
- #vax-salary-diagram .vax-salary-top{width:min(460px,94%);height:77px;min-height:77px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;border-radius:11px;border:1px solid #d8af4e;background:linear-gradient(180deg,rgba(255,239,189,.12),transparent 30%),linear-gradient(130deg,#3b321d,#1b1c17);box-shadow:inset 0 1px 0 rgba(255,237,184,.18),0 10px 19px rgba(0,0,0,.29),0 0 17px rgba(224,169,61,.12)}
+ #vax-salary-diagram .vax-salary-branch{padding:8px 13px;border:1px solid #386278;border-radius:11px;background:#162936;font-weight:800;color:#fff}
+ #vax-salary-diagram .vax-salary-top{width:min(460px,94%);height:72px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;border-radius:11px;border:1px solid #aa8945;background:#292519;box-shadow:inset 0 1px 0 rgba(255,237,184,.08),0 5px 12px rgba(0,0,0,.18)}
  #vax-salary-diagram .vax-salary-top span{font-size:14px;letter-spacing:.04em;color:#ffe2a0;font-weight:800}
- #vax-salary-diagram .vax-salary-top strong{font-size:clamp(25px,2.25vw,32px);color:#ffe58d;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.14}
- #vax-salary-diagram .vax-salary-stem{width:2px;height:27px;background:#58d8e9;margin:0 auto;box-shadow:0 0 7px rgba(88,216,233,.4)}
- /* Match investor .vax-flow-branches geometry, including the branching cyan connector. */
- #vax-salary-diagram .vax-salary-groups{position:relative;width:100%;max-width:1165px;margin:0 auto;padding:14px 10px 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:clamp(90px,16%,195px);align-items:start;justify-items:stretch}
- #vax-salary-diagram .vax-salary-groups::before{content:"";position:absolute;top:0;left:15.5%;right:15.5%;height:1.5px;background:#58d8e9;box-shadow:0 0 5px rgba(88,216,233,.28);pointer-events:none}
- #vax-salary-diagram .vax-salary-group{position:relative;width:100%;max-width:355px;min-width:0;margin:0 0 12px}
- #vax-salary-diagram .vax-salary-groups>.vax-salary-group::before{content:"";position:absolute;left:50%;top:-14px;width:1.5px;height:14px;background:#58d8e9;box-shadow:0 0 5px rgba(88,216,233,.28);pointer-events:none}
- #vax-salary-diagram .vax-salary-group:first-child{justify-self:start}
- #vax-salary-diagram .vax-salary-group:nth-child(2){justify-self:end}
- #vax-salary-diagram .vax-salary-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.075),transparent 29%),linear-gradient(145deg,#183549,#102535 50%,#0a1620);border:1px solid rgba(75,151,185,.52);box-shadow:inset 0 1px 0 rgba(242,252,255,.13),0 8px 15px rgba(0,0,0,.27);margin-bottom:10px;min-height:50px}
- #vax-salary-diagram .vax-salary-group-head h3{font-size:15px;color:#e4faff;font-weight:850;margin:0}
+ #vax-salary-diagram .vax-salary-top strong{font-size:clamp(25px,2.25vw,32px);color:#ffe58d;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.12}
+ #vax-salary-diagram .vax-salary-stem{width:2px;height:20px;background:#58d8e9;margin:0 auto}
+ #vax-salary-diagram .vax-salary-groups{position:relative;width:100%;max-width:1165px;margin:0 auto;padding:12px 10px 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:clamp(90px,16%,195px);align-items:start}
+ #vax-salary-diagram .vax-salary-groups::before{content:"";position:absolute;top:0;left:15.5%;right:15.5%;height:1.5px;background:#58d8e9;pointer-events:none}
+ #vax-salary-diagram .vax-salary-group{position:relative;width:100%;max-width:355px;min-width:0;margin:0}
+ #vax-salary-diagram .vax-salary-groups>.vax-salary-group{justify-self:start}
+ #vax-salary-diagram .vax-salary-right{width:100%;max-width:355px;justify-self:end;min-width:0;display:flex;flex-direction:column;gap:10px}
+ #vax-salary-diagram .vax-salary-groups>.vax-salary-group::before,#vax-salary-diagram .vax-salary-right::before{content:"";position:absolute;left:50%;top:-12px;width:1.5px;height:12px;background:#58d8e9;pointer-events:none}
+ #vax-salary-diagram .vax-salary-right{position:relative}
+ #vax-salary-diagram .vax-salary-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 11px;border-radius:10px;background:#182e3c;border:1px solid #396a7e;margin-bottom:7px;min-height:37px}
+ #vax-salary-diagram .vax-salary-group-head h3{font-size:14px;color:#e4faff;font-weight:850;margin:0}
  #vax-salary-diagram .vax-salary-group-head span{color:#97cbd6;font-size:11px;font-weight:700;white-space:nowrap}
- #vax-salary-diagram .vax-salary-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
- /* One compact investor-style node per person, regardless of number of pay components. */
- #vax-salary-diagram .vax-salary-card{position:relative;min-width:0;padding:8px 13px 9px;border:1px solid rgba(75,151,185,.52);border-radius:11px;background:linear-gradient(180deg,rgba(255,255,255,.075),transparent 29%),linear-gradient(145deg,#183549,#102535 50%,#0a1620);box-shadow:inset 0 1px 0 rgba(242,252,255,.13),inset 0 -9px 15px rgba(0,0,0,.19),0 8px 15px rgba(0,0,0,.27);transition:border-color .2s,box-shadow .2s}
- #vax-salary-diagram .vax-salary-card:hover{border-color:rgba(102,229,248,.78);box-shadow:inset 0 1px 0 rgba(242,252,255,.17),0 11px 19px rgba(0,0,0,.32),0 0 19px rgba(52,203,229,.23)}
- #vax-salary-diagram .vax-salary-identity{position:relative;display:flex;justify-content:center;align-items:center;min-height:40px;margin-bottom:4px;padding:0 39px;text-align:center}
- #vax-salary-diagram .vax-salary-icon{position:absolute;left:0;top:50%;transform:translateY(-50%);width:38px;height:38px;display:grid;place-items:center;border-radius:9px;color:#61d8f2;background:linear-gradient(145deg,#174056,#0d2433);border:1px solid rgba(88,179,214,.27);box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 4px 8px rgba(0,0,0,.18)}
- #vax-salary-diagram .vax-salary-icon svg{width:23px;height:23px}
- #vax-salary-diagram .vax-salary-identity h4{font-size:16px;line-height:1.13;color:#fff;font-weight:850;margin:0;overflow-wrap:anywhere}
- #vax-salary-diagram .vax-salary-identity small{display:block;font-size:11px;color:#b0c9d5}
- #vax-salary-diagram .vax-salary-details{display:grid;gap:2px;min-height:0}
- #vax-salary-diagram .vax-salary-detail{display:flex;justify-content:space-between;gap:8px;color:#b9cad6;font-size:11.5px;line-height:1.2}
- #vax-salary-diagram .vax-salary-detail strong{color:#f6fbff;font-size:11.5px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
- #vax-salary-diagram .vax-salary-card-total{display:flex;align-items:center;justify-content:center;position:relative;gap:6px;padding-top:5px;margin-top:5px;border-top:1px solid rgba(84,165,189,.22);min-height:34px}
- #vax-salary-diagram .vax-salary-card-total span{position:absolute;left:0;top:50%;transform:translateY(-36%);color:#bfeaf1;font-size:11px;font-weight:800}
- #vax-salary-diagram .vax-salary-card-total strong{color:#9af1fb;font-size:clamp(18px,1.6vw,23px);font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:center}
- #vax-salary-diagram .vax-salary-groups+.vax-salary-group{width:min(355px,100%);max-width:355px;margin:12px auto}
- #vax-salary-diagram .vax-salary-groups+.vax-salary-group .vax-salary-grid{grid-template-columns:minmax(0,1fr)}
+ #vax-salary-diagram .vax-salary-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+ #vax-salary-diagram .vax-salary-card{position:relative;min-width:0;padding:6px 11px 7px;border:1px solid #36627a;border-radius:11px;background:#152a38;box-shadow:inset 0 1px 0 rgba(242,252,255,.06),0 4px 9px rgba(0,0,0,.18);transition:border-color .2s}
+ #vax-salary-diagram .vax-salary-card:hover{border-color:#66c9db}
+ #vax-salary-diagram .vax-salary-identity{position:relative;display:flex;justify-content:center;align-items:center;min-height:34px;margin-bottom:3px;padding:0 36px;text-align:center}
+ #vax-salary-diagram .vax-salary-icon{position:absolute;left:0;top:50%;transform:translateY(-50%);width:33px;height:33px;display:grid;place-items:center;border-radius:8px;color:#61d8f2;background:#173749;border:1px solid #35677c}
+ #vax-salary-diagram .vax-salary-icon svg{width:21px;height:21px}
+ #vax-salary-diagram .vax-salary-identity h4{font-size:15px;line-height:1.1;color:#fff;font-weight:850;margin:0;overflow-wrap:anywhere}
+ #vax-salary-diagram .vax-salary-identity small{display:block;font-size:10.5px;color:#b0c9d5}
+ #vax-salary-diagram .vax-salary-details{display:grid;gap:1px;min-height:0}
+ #vax-salary-diagram .vax-salary-detail{display:flex;justify-content:space-between;gap:6px;color:#b9cad6;font-size:11px;line-height:1.16}
+ #vax-salary-diagram .vax-salary-detail strong{color:#f6fbff;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+ #vax-salary-diagram .vax-salary-card-total{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:4px;margin-top:4px;border-top:1px solid #30495a;min-height:26px}
+ #vax-salary-diagram .vax-salary-card-total span{color:#bfeaf1;font-size:11px;font-weight:800}
+ #vax-salary-diagram .vax-salary-card-total strong{color:#9af1fb;font-size:clamp(17px,1.35vw,20px);font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+ #vax-salary-diagram .vax-salary-other .vax-salary-group-head{margin-bottom:7px}
+ #vax-salary-diagram .vax-salary-allocation .vax-salary-identity{margin-bottom:0}
+ #vax-salary-diagram .vax-salary-allocation .vax-salary-identity small{font-size:10px}
  @media(max-width:1050px){#vax-salary-diagram .vax-salary-groups{column-gap:clamp(18px,6vw,90px)}#vax-salary-diagram .vax-salary-groups::before{left:24%;right:24%}}
- @media(max-width:820px){#vax-salary-diagram .vax-salary-groups{grid-template-columns:1fr;justify-items:center;gap:12px}#vax-salary-diagram .vax-salary-groups::before,#vax-salary-diagram .vax-salary-groups>.vax-salary-group::before{display:none}#vax-salary-diagram .vax-salary-group:first-child,#vax-salary-diagram .vax-salary-group:nth-child(2){justify-self:center}}
- @media(prefers-reduced-motion:reduce){#vax-salary-diagram::before{animation:none!important}#vax-salary-diagram .vax-salary-card{transition:none}}
+ @media(max-width:820px){#vax-salary-diagram .vax-salary-groups{grid-template-columns:1fr;justify-items:center;gap:12px}#vax-salary-diagram .vax-salary-groups::before,#vax-salary-diagram .vax-salary-groups>.vax-salary-group::before,#vax-salary-diagram .vax-salary-right::before{display:none}#vax-salary-diagram .vax-salary-groups>.vax-salary-group,#vax-salary-diagram .vax-salary-right{justify-self:center}}
 }
 @media print{#vax-salary-diagram{display:none!important}#lbSalaryLines{display:block!important}}
