@@ -27,13 +27,23 @@
     s.dataset.vaxKasbonListReadFix='1';
     document.head.appendChild(s);
   };
+  const ensureDashboardInvoiceShortcut=()=>{
+    if(!/\/erp-dashboard\.html$/i.test(location.pathname))return;
+    if(document.querySelector('script[data-vax-dashboard-invoice-shortcut]'))return;
+    const s=document.createElement('script');
+    s.src='../js/modules/dashboard-invoice-shortcut-ui.js?v=20260917-1';
+    s.async=false;
+    s.dataset.vaxDashboardInvoiceShortcut='1';
+    document.head.appendChild(s);
+  };
   const refresh=()=>{
     ensureNotificationModule();
     ensureKasbonListReadFix();
+    ensureDashboardInvoiceShortcut();
     setTimeout(()=>window.ERPGlobalNotifications?.refresh?.(),180);
   };
   window.ErpHeaderSync=window.ErpHeaderSync||{};
   window.ErpHeaderSync.refresh=refresh;
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{ensureNotificationModule();ensureKasbonListReadFix();},{once:true});
-  else{ensureNotificationModule();ensureKasbonListReadFix();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{ensureNotificationModule();ensureKasbonListReadFix();ensureDashboardInvoiceShortcut();},{once:true});
+  else{ensureNotificationModule();ensureKasbonListReadFix();ensureDashboardInvoiceShortcut();}
 })();
