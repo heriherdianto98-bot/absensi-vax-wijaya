@@ -103,3 +103,63 @@
 
   document.addEventListener('erp:components-ready', bindSmoothHorizontalScroll);
 })();
+
+/*
+ * Setoran 3 Harian — anti blink saat toggle "Sudah Diambil".
+ * UI ONLY: proses save tetap memakai SetoranDirectFlow asli. Yang dicegah hanya
+ * full tbody redraw setelah save checkbox, karena redraw seluruh 10 baris membuat
+ * layar tampak berkedip. Perubahan lain tetap memakai renderTable normal.
+ */
+(() => {
+  if (typeof SetoranDirectFlow === 'undefined') return;
+
+  const flow = SetoranDirectFlow;
+  if (flow.__s3TakenNoBlinkPatched) return;
+  flow.__s3TakenNoBlinkPatched = true;
+
+  let suppressFullRender = false;
+  let activeCabangId = null;
+
+  function syncTakenRowUi() {
+    if (activeCabangId == null) return;
+
+    const tr = document.querySelector(`tr[data-cabang-id="${activeCabangId}"]`);
+    if (!tr) return;
+
+    const saved = flow.savedRows.get(flow.key(activeCabangId)) || {};
+    const taken = saved.taken_status === 'SUDAH DIAMBIL';
+    const checkbox = tr.querySelector('[data-field="taken"]');
+    const label = checkbox?.closest('.s3sheet-check');
+
+    if (checkbox) checkbox.checked = taken;
+    if (label) label.classList.toggle('is-taken', taken);
+  }
+
+  const originalRenderTable = flow.renderTable.bind(flow);
+  flow.renderTable = function() {
+    if (!suppressFullRender) return originalRenderTable(...arguments);
+
+    // Pertahankan DOM tabel yang sedang terlihat; cukup sinkronkan state baris
+    // yang baru disimpan. Layer status/owner-verify yang dimuat setelah file ini
+    // tetap dapat mendekorasi DOM yang sama tanpa membuat seluruh tabel berkedip.
+    syncTakenRowUi();
+    return undefined;
+  };
+
+  const originalSaveRow = flow.saveRow.bind(flow);
+  flow.saveRow = async function(tr, options = {}) {
+    const isTakenToggle = options && options.taken !== null && options.taken !== undefined;
+    if (!isTakenToggle) return originalSaveRow(tr, options);
+
+    activeCabangId = Number(tr?.dataset?.cabangId);
+    suppressFullRender = true;
+
+    try {
+      return await originalSaveRow(tr, options);
+    } finally {
+      suppressFullRender = false;
+      syncTakenRowUi();
+      activeCabangId = null;
+    }
+  };
+})();
