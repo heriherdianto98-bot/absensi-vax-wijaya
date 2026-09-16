@@ -19,6 +19,29 @@
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-invoice-head small {
         font-size:14px!important;line-height:1.5!important;margin-top:7px!important;color:#c0ccd7!important;
       }
+      /* Draft accordion only: red panel and a proper heading, including the zero-draft state. */
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-internal-drafts,
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-inbox-drafts {
+        background:#271417!important;border-top:1px solid #a84750!important;border-bottom:1px solid #a84750!important;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-internal-drafts > summary,
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-inbox-drafts > summary {
+        background:#60252e!important;color:#fff4f4!important;border:0!important;
+        font-size:18px!important;font-weight:900!important;line-height:1.35!important;
+        padding:15px 19px!important;letter-spacing:.005em!important;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-internal-drafts > summary:hover,
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-inbox-drafts > summary:hover {
+        background:#74303a!important;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-internal-drafts > summary::after,
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-inbox-drafts > summary::after {
+        color:#ffe3e3!important;font-size:19px!important;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-internal-drafts > .mt-internal-empty,
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-inbox-drafts > .mt-invoice-empty {
+        color:#ffe2e2!important;background:#271417!important;
+      }
       body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceList .mt-svp-delete-draft {
         border:1px solid #b85b5b!important;background:#392026!important;color:#ffdddd!important;
         border-radius:9px!important;font-weight:850!important;min-height:36px;padding:7px 11px!important;
