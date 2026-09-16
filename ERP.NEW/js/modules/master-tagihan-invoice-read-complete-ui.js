@@ -33,6 +33,7 @@
       #mtInvoiceList .mt-internal-active .mt-invoice-row{margin:7px 0}
       #mtInvoiceList .mt-internal-active .mt-invoice-buttons{gap:8px!important}
       #mtInvoiceList .mt-internal-active .mt-invoice-status{max-width:none!important}
+      #mtInvoiceList .mt-internal-active .mt-internal-status-cell{padding-left:24px;box-sizing:border-box}
     `;document.head.appendChild(style);
   };
   function install(){
@@ -48,18 +49,18 @@
       const active=rows.filter(r=>r.status==='sent'&&(mine(r)||isRecipient(this,r)));
       const archived=rows.filter(r=>['completed','paid'].includes(String(r.status||'').toLowerCase())&&(mine(r)||isRecipient(this,r)));
       const rowHtml=(r,archive=false)=>{
-        const received=isRecipient(this,r),st=String(r.status||'draft').toLowerCase();
+        const st=String(r.status||'draft').toLowerCase();
         const dir=sender(r)==='owner'?'OWNER → SVP':'SVP → OWNER';
-        const done=st==='completed',old=st==='paid',read=!!r.read_at;
-        const mark=done?'✓✓':read?'✓✓':st==='sent'?'✓':'';
-        const state=done?'SELESAI':old?'DIBAYAR (ARSIP LAMA)':read?'DIBACA':st==='sent'?'TERKIRIM':'DRAFT';
-        const receipt=done?`Selesai ${dated(r.completed_at)}`:read?`Dibaca ${dated(r.read_at)}`:st==='sent'?'Belum dibaca':'';
-        const statusClass=done?'done':read?'read':'';
+        const done=st==='completed',old=st==='paid';
+        const mark=done?'✓✓':st==='sent'?'✓':'';
+        const state=done?'SELESAI':old?'DIBAYAR (ARSIP LAMA)':st==='sent'?'TERKIRIM':'DRAFT';
+        const receipt=done?`Selesai ${dated(r.completed_at)}`:'';
+        const statusClass=done?'done':'';
         const url=`${VIEW}?id=${encodeURIComponent(r.id)}`;
         const view=`<a class="mt-action mt-internal-view" href="${url}" target="_blank" rel="noopener noreferrer" title="Buka detail invoice">Lihat</a>`;
         const draftActions=mine(r)&&st==='draft'?`<button class="mt-action" data-inv-action="edit" data-id="${r.id}">Edit</button><button class="mt-action" data-inv-action="send" data-id="${r.id}">Kirim Email</button>`:'';
         const wa=mine(r)?`<button class="mt-action mt-action-wa" data-wa-id="${r.id}">WhatsApp</button>`:'';
-        return `<div class="mt-invoice-row ${archive?'mt-internal-history-row':''}"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${dir} · ${this.esc(r.title||'INVOICE')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div><span class="mt-invoice-status ${statusClass}"><span class="mt-internal-check ${statusClass}" aria-hidden="true">${mark}</span>${state}</span>${receipt?`<small class="mt-internal-receipt ${statusClass}">${this.esc(receipt)}</small>`:''}</div><div class="mt-invoice-buttons">${draftActions}${view}${wa}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`;
+        return `<div class="mt-invoice-row ${archive?'mt-internal-history-row':''}"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${dir} · ${this.esc(r.title||'INVOICE')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div class="mt-internal-status-cell"><span class="mt-invoice-status ${statusClass}"><span class="mt-internal-check ${statusClass}" aria-hidden="true">${mark}</span>${state}</span>${receipt?`<small class="mt-internal-receipt ${statusClass}">${this.esc(receipt)}</small>`:''}</div><div class="mt-invoice-buttons">${draftActions}${view}${wa}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`;
       };
       root.innerHTML=`<div class="mt-internal-active"><strong>INVOICE AKTIF · OWNER ↔ SVP</strong>${active.length?active.map(r=>rowHtml(r)).join(''):'<div class="mt-internal-empty">Tidak ada invoice aktif yang menunggu tindak lanjut.</div>'}</div><details class="mt-internal-drafts"><summary>Draft invoice · belum dikirim (${draft.length})</summary>${draft.length?draft.map(r=>rowHtml(r)).join(''):'<div class="mt-internal-empty">Tidak ada draft.</div>'}</details><div class="mt-invoice-history"><button type="button" class="mt-invoice-history-toggle" data-history-toggle><span>Riwayat Invoice</span><b>${archived.length}</b><i>${this.historyOpen?'▲':'▼'}</i></button><div class="mt-invoice-history-list" ${this.historyOpen?'':'hidden'}>${archived.map(r=>rowHtml(r,true)).join('')||'<div class="mt-internal-empty">Belum ada invoice selesai.</div>'}</div></div>`;
     };
