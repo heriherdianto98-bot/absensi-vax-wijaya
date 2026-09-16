@@ -1,0 +1,133 @@
+/* =========================================================
+   ERP VAX — Tabel Harian Semua Cabang
+   Compact desktop table for browser zoom ~80%
+   UI ONLY — no engine, formula, data, Supabase or sync changes.
+   ========================================================= */
+
+@media screen and (pointer:fine) and (min-width:1750px) and (max-width:2250px){
+    .thc-page{
+        --thc-freeze-tanggal-w:104px;
+        --thc-freeze-cabang-w:132px;
+    }
+
+    /* Tabel dibuat rapat; tidak memakai transform/scale agar sticky tetap aman. */
+    .thc-page #thcTable{
+        width:max-content!important;
+        min-width:0!important;
+        max-width:none!important;
+        table-layout:fixed!important;
+        border-collapse:separate!important;
+        border-spacing:0!important;
+    }
+
+    .thc-page #thcTable thead th{
+        box-sizing:border-box!important;
+        height:46px!important;
+        min-height:46px!important;
+        padding:6px 5px!important;
+        font-size:9.6px!important;
+        line-height:1.05!important;
+        text-align:center!important;
+        white-space:normal!important;
+        overflow-wrap:normal!important;
+        word-break:normal!important;
+        vertical-align:middle!important;
+    }
+
+    .thc-page #thcTable tbody td{
+        box-sizing:border-box!important;
+        height:38px!important;
+        min-height:38px!important;
+        padding:6px 5px!important;
+        font-size:10.8px!important;
+        line-height:1.05!important;
+        white-space:nowrap!important;
+        vertical-align:middle!important;
+    }
+
+    /* Sticky Tanggal + Cabang */
+    .thc-page #thcTable thead th:nth-child(1),
+    .thc-page #thcTable tbody td:nth-child(1){
+        width:104px!important;
+        min-width:104px!important;
+        max-width:104px!important;
+        padding-left:8px!important;
+        padding-right:8px!important;
+        text-align:left!important;
+    }
+    .thc-page #thcTable thead th:nth-child(2),
+    .thc-page #thcTable tbody td:nth-child(2){
+        width:132px!important;
+        min-width:132px!important;
+        max-width:132px!important;
+        padding-left:10px!important;
+        padding-right:8px!important;
+        text-align:left!important;
+    }
+    .thc-page #thcTable tbody td:nth-child(2){
+        font-size:12px!important;
+    }
+
+    /* Kolom angka — sengaja dipersempit agar jarak antar kolom rapat. */
+    .thc-page #thcTable thead th:nth-child(3),
+    .thc-page #thcTable tbody td:nth-child(3){width:100px!important;min-width:100px!important;max-width:100px!important;}
+    .thc-page #thcTable thead th:nth-child(4),
+    .thc-page #thcTable tbody td:nth-child(4){width:86px!important;min-width:86px!important;max-width:86px!important;}
+    .thc-page #thcTable thead th:nth-child(5),
+    .thc-page #thcTable tbody td:nth-child(5){width:86px!important;min-width:86px!important;max-width:86px!important;}
+    .thc-page #thcTable thead th:nth-child(6),
+    .thc-page #thcTable tbody td:nth-child(6){width:88px!important;min-width:88px!important;max-width:88px!important;}
+    .thc-page #thcTable thead th:nth-child(7),
+    .thc-page #thcTable tbody td:nth-child(7){width:92px!important;min-width:92px!important;max-width:92px!important;}
+    .thc-page #thcTable thead th:nth-child(8),
+    .thc-page #thcTable tbody td:nth-child(8){width:90px!important;min-width:90px!important;max-width:90px!important;}
+    .thc-page #thcTable thead th:nth-child(9),
+    .thc-page #thcTable tbody td:nth-child(9){width:94px!important;min-width:94px!important;max-width:94px!important;}
+    .thc-page #thcTable thead th:nth-child(10),
+    .thc-page #thcTable tbody td:nth-child(10){width:94px!important;min-width:94px!important;max-width:94px!important;}
+    .thc-page #thcTable thead th:nth-child(11),
+    .thc-page #thcTable tbody td:nth-child(11){width:92px!important;min-width:92px!important;max-width:92px!important;}
+    .thc-page #thcTable thead th:nth-child(12),
+    .thc-page #thcTable tbody td:nth-child(12),
+    .thc-page #thcTable thead th:nth-child(13),
+    .thc-page #thcTable tbody td:nth-child(13),
+    .thc-page #thcTable thead th:nth-child(14),
+    .thc-page #thcTable tbody td:nth-child(14){
+        width:68px!important;
+        min-width:68px!important;
+        max-width:68px!important;
+        text-align:center!important;
+    }
+
+    /* Judul dua baris seperti NON TUNAI / MINUTES. */
+    .thc-page #thcTable thead th:nth-child(3),
+    .thc-page #thcTable thead th:nth-child(4),
+    .thc-page #thcTable thead th:nth-child(5),
+    .thc-page #thcTable thead th:nth-child(6),
+    .thc-page #thcTable thead th:nth-child(7),
+    .thc-page #thcTable thead th:nth-child(8),
+    .thc-page #thcTable thead th:nth-child(9),
+    .thc-page #thcTable thead th:nth-child(10),
+    .thc-page #thcTable thead th:nth-child(11){
+        white-space:normal!important;
+        line-height:1.02!important;
+    }
+
+    /* Nominal tetap satu baris dan tidak membuat kolom melebar. */
+    .thc-page #thcTable tbody td:nth-child(n+3){
+        overflow:hidden!important;
+        text-overflow:clip!important;
+        font-variant-numeric:tabular-nums!important;
+    }
+
+    .thc-page #thcTable tbody td.thc-bri-daily-cell,
+    .thc-page #thcTable tbody td.thc-bri-daily-cell + td{
+        padding-left:5px!important;
+        padding-right:5px!important;
+    }
+
+    .thc-page #thcTable thead th:has(+ th.thc-bri-daily-head)::after{
+        font-size:9.4px!important;
+        line-height:1.02!important;
+    }
+}
