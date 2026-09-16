@@ -1,71 +1,66 @@
-/* Kalijati investor diagram V5 — SCREEN ONLY. Reference-matched layout.
-   Original #lbInvestorLines, presenter, business calculations and print/PDF remain unchanged. */
+/* Kalijati Investor V6: screen-only compact diagram and restrained hover glow.
+   No changes to source, presenter, calculations, other branches or Print/PDF. */
 @media screen {
-  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #lbInvestorLines {display:none!important;}
-  body.laporan-bulanan-investor-page.vax-investor-diagram-ready .lb-grid > .lb-card[data-lb-view="investor"] > .lb-card-head {display:none!important;}
-  body.laporan-bulanan-investor-page .lb-grid > .lb-card[data-lb-view="investor"]:has(#vax-investor-diagram) {background:#071119!important;border:1px solid rgba(46,110,133,.30)!important;box-shadow:none!important;}
-  body.laporan-bulanan-investor-page #vax-investor-diagram {display:none;}
-  body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram {
-    display:block!important;width:100%;box-sizing:border-box;color:#f0f8ff;
-    background:radial-gradient(ellipse at 50% 42%,rgba(19,77,94,.16),transparent 66%),#071119;
-    padding:12px clamp(18px,2vw,30px) 20px;border-radius:14px;font-family:"Source Sans 3",sans-serif;
-  }
-  #vax-investor-diagram *,#vax-investor-diagram *::before,#vax-investor-diagram *::after {box-sizing:border-box;}
-  #vax-investor-diagram .vax-diagram-heading {display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin:0 0 2px;min-height:93px;}
-  #vax-investor-diagram .vax-diagram-heading-copy {border-left:3px solid #4bd0e6;padding:1px 0 0 20px;}
-  #vax-investor-diagram .vax-eyebrow {display:block;color:#5be2ef;font-size:13px;font-weight:850;letter-spacing:.10em;line-height:1.4;}
-  #vax-investor-diagram .vax-diagram-heading h3 {margin:4px 0 5px;color:#fff;font-size:clamp(26px,2.1vw,33px);line-height:1.12;font-weight:900;}
-  #vax-investor-diagram .vax-diagram-heading p {color:#bbcbd7;font-size:14px;line-height:1.4;margin:0;}
-  #vax-investor-diagram .vax-investor-name {display:flex;gap:13px;align-items:center;width:min(34%,380px);min-width:270px;padding:11px 17px;background:linear-gradient(145deg,#112330,#0b161e);border:1px solid rgba(74,122,145,.24);border-radius:12px;}
-  #vax-investor-diagram .vax-investor-name > span:last-child {display:flex;flex-direction:column;min-width:0;}
-  #vax-investor-diagram .vax-investor-name small {font-size:12px;color:#b2c2d0;}
-  #vax-investor-diagram .vax-investor-name strong {font-size:16px;line-height:1.25;color:#fff;overflow-wrap:anywhere;}
-  #vax-investor-diagram .vax-icon-wrap {width:49px;height:49px;flex:none;display:grid;place-items:center;background:linear-gradient(140deg,#123449,#0c2030);border:1px solid rgba(54,145,178,.17);border-radius:9px;color:#61d8f2;}
-  #vax-investor-diagram .vax-icon {width:29px;height:29px;}
-  /* Main composition uses the full report panel, as in the supplied reference. */
-  #vax-investor-diagram .vax-flow-stage {position:relative;width:100%;max-width:1260px;min-height:620px;margin:0 auto;display:grid;grid-template-rows:68px 91px 88px 1fr;row-gap:17px;justify-items:center;align-items:start;}
-  #vax-investor-diagram .vax-flow-connectors {position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible;pointer-events:none;fill:none;stroke:#58d8e9;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(65,201,222,.15));}
-  #vax-investor-diagram .vax-flow-node {display:flex;align-items:center;justify-content:center;gap:18px;position:relative;z-index:1;min-width:0;padding:10px 18px;background:linear-gradient(130deg,#122838,#0b1822);border:1px solid #2b627e;border-radius:11px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);}
-  #vax-investor-diagram .vax-flow-copy {display:flex;flex-direction:column;gap:3px;min-width:0;}
-  #vax-investor-diagram .vax-flow-label {color:#b9cad6;font-size:15px;line-height:1.12;font-weight:650;}
-  #vax-investor-diagram .vax-flow-copy strong {color:#f8fbff;font-size:clamp(19px,1.6vw,24px);line-height:1.16;font-weight:900;white-space:nowrap;}
-  #vax-investor-diagram .vax-profit {grid-row:1;width:min(415px,92%);min-height:68px;}
-  #vax-investor-diagram .vax-capital {grid-row:2;width:min(640px,97%);min-height:91px;display:flex;justify-content:space-between;gap:16px;padding:12px 20px;}
-  #vax-investor-diagram .vax-capital-text {display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
-  #vax-investor-diagram .vax-capital-text b {font-size:17px;color:#eef7fd;line-height:1.1;}
-  #vax-investor-diagram .vax-capital-text small {font-size:14px;color:#b7cbd8;line-height:1.25;}
-  #vax-investor-diagram .vax-minus {width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:50%;background:#a9d2f4;color:#0a2337;font-size:28px;font-weight:900;line-height:1;}
-  #vax-investor-diagram .vax-capital-values {min-width:176px;border-left:1px solid #315163;padding-left:23px;display:flex;flex-direction:column;gap:4px;}
-  #vax-investor-diagram .vax-capital-values small {color:#b3c8d6;font-size:14px;line-height:1.28;}
-  #vax-investor-diagram .vax-capital-values strong {color:#fff;font-size:24px;line-height:1.1;white-space:nowrap;}
-  #vax-investor-diagram .vax-base {grid-row:3;width:min(495px,94%);min-height:88px;border:1px solid #d8af4e;background:linear-gradient(125deg,#332c1a,#171a17);box-shadow:0 0 18px rgba(224,169,61,.14);}
-  #vax-investor-diagram .vax-base .vax-icon-wrap {color:#ffdc77;background:#312d1d;border-color:rgba(236,183,72,.16);}
-  #vax-investor-diagram .vax-base .vax-flow-label {color:#ffdda0;font-size:16px;}
-  #vax-investor-diagram .vax-base .vax-flow-copy strong {color:#ffe08b;font-size:clamp(27px,2.45vw,35px);}
-  /* Outer-aligned branches replicate the reference's wide, symmetrical fork. */
-  #vax-investor-diagram .vax-flow-branches {grid-row:4;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:clamp(100px,16%,210px);align-items:stretch;justify-items:stretch;min-height:320px;padding:17px 12px 0;}
-  #vax-investor-diagram .vax-flow-side {width:100%;max-width:385px;display:flex;flex-direction:column;gap:12px;}
-  #vax-investor-diagram .vax-investor-side {justify-self:start;}
-  #vax-investor-diagram .vax-management-side {justify-self:end;}
-  #vax-investor-diagram .vax-flow-side .vax-flow-node {width:100%;min-height:62px;justify-content:flex-start;gap:15px;}
-  #vax-investor-diagram .vax-flow-side .vax-flow-node .vax-icon-wrap {width:45px;height:45px;}
-  #vax-investor-diagram .vax-flow-side .vax-flow-label {font-size:14px;}
-  #vax-investor-diagram .vax-flow-side .vax-flow-copy strong {font-size:21px;}
-  #vax-investor-diagram .vax-flow-side .vax-share {width:82%;min-height:65px;align-self:center;}
-  #vax-investor-diagram .vax-flow-side .vax-share .vax-flow-copy strong {color:#91ecf6;font-size:25px;}
-  #vax-investor-diagram .vax-management-side .vax-total {margin-top:auto;}
-  #vax-investor-diagram .vax-flow-side .vax-total {min-height:82px;border:1px solid #4ed9ec;background:linear-gradient(135deg,#0b2734,#081a23);}
-  #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-label {color:#bfeaf1;}
-  #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-copy strong {color:#93f0f8;font-size:clamp(22px,1.9vw,27px);}
-  @media(max-width:1200px){
-    #vax-investor-diagram .vax-flow-stage {min-height:606px;}
-    #vax-investor-diagram .vax-flow-branches {column-gap:90px;}
-  }
-  @media(max-width:760px){
-    /* Keep the original audited list on narrow screens; no squeezed diagram. */
-    body.laporan-bulanan-investor-page.vax-investor-diagram-ready #lbInvestorLines {display:block!important;}
-    body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram {display:none!important;}
-    body.laporan-bulanan-investor-page.vax-investor-diagram-ready .lb-grid > .lb-card[data-lb-view="investor"] > .lb-card-head {display:flex!important;}
-  }
+ body.laporan-bulanan-investor-page.vax-investor-diagram-ready #lbInvestorLines{display:none!important}
+ body.laporan-bulanan-investor-page.vax-investor-diagram-ready .lb-grid>.lb-card[data-lb-view="investor"]>.lb-card-head{display:none!important}
+ body.laporan-bulanan-investor-page .lb-grid>.lb-card[data-lb-view="investor"]:has(#vax-investor-diagram){background:#071119!important;border:1px solid rgba(46,110,133,.30)!important;box-shadow:none!important}
+ body.laporan-bulanan-investor-page #vax-investor-diagram{display:none}
+ body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram{display:block!important;width:100%;box-sizing:border-box;color:#f0f8ff;background:radial-gradient(ellipse at 50% 42%,rgba(19,77,94,.16),transparent 66%),#071119;padding:9px clamp(15px,1.8vw,26px) 17px;border-radius:14px;font-family:"Source Sans 3",sans-serif}
+ #vax-investor-diagram *,#vax-investor-diagram *::before,#vax-investor-diagram *::after{box-sizing:border-box}
+ #vax-investor-diagram .vax-diagram-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin:0 0 2px;min-height:82px}
+ #vax-investor-diagram .vax-diagram-heading-copy{border-left:3px solid #4bd0e6;padding:1px 0 0 18px}
+ #vax-investor-diagram .vax-eyebrow{display:block;color:#5be2ef;font-size:12px;font-weight:850;letter-spacing:.10em;line-height:1.4}
+ #vax-investor-diagram .vax-diagram-heading h3{margin:4px 0 4px;color:#fff;font-size:clamp(24px,1.95vw,30px);line-height:1.12;font-weight:900}
+ #vax-investor-diagram .vax-diagram-heading p{color:#bbcbd7;font-size:13px;line-height:1.35;margin:0}
+ #vax-investor-diagram .vax-investor-name{display:flex;gap:11px;align-items:center;width:min(34%,350px);min-width:245px;padding:9px 14px;background:linear-gradient(145deg,#112330,#0b161e);border:1px solid rgba(74,122,145,.24);border-radius:12px}
+ #vax-investor-diagram .vax-investor-name>span:last-child{display:flex;flex-direction:column;min-width:0}
+ #vax-investor-diagram .vax-investor-name small{font-size:11px;color:#b2c2d0}
+ #vax-investor-diagram .vax-investor-name strong{font-size:14px;line-height:1.25;color:#fff;overflow-wrap:anywhere}
+ #vax-investor-diagram .vax-icon-wrap{width:43px;height:43px;flex:none;display:grid;place-items:center;background:linear-gradient(140deg,#123449,#0c2030);border:1px solid rgba(54,145,178,.17);border-radius:9px;color:#61d8f2;transition:background .2s ease,box-shadow .2s ease}
+ #vax-investor-diagram .vax-icon{width:26px;height:26px}
+ #vax-investor-diagram .vax-flow-stage{position:relative;width:100%;max-width:1165px;min-height:554px;margin:0 auto;display:grid;grid-template-rows:60px 80px 77px 1fr;row-gap:14px;justify-items:center;align-items:start}
+ #vax-investor-diagram .vax-flow-connectors{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible;pointer-events:none;fill:none;stroke:#58d8e9;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(65,201,222,.15))}
+ #vax-investor-diagram .vax-flow-node{display:flex;align-items:center;justify-content:center;gap:15px;position:relative;z-index:1;min-width:0;padding:8px 15px;background:linear-gradient(130deg,#122838,#0b1822);border:1px solid #2b627e;border-radius:11px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);transition:background .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+ #vax-investor-diagram .vax-flow-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+ #vax-investor-diagram .vax-flow-label{color:#b9cad6;font-size:13px;line-height:1.12;font-weight:650}
+ #vax-investor-diagram .vax-flow-copy strong{color:#f8fbff;font-size:clamp(18px,1.45vw,22px);line-height:1.16;font-weight:900;white-space:nowrap}
+ #vax-investor-diagram .vax-profit{grid-row:1;width:min(385px,92%);min-height:60px}
+ #vax-investor-diagram .vax-capital{grid-row:2;width:min(595px,97%);min-height:80px;display:flex;justify-content:space-between;gap:13px;padding:10px 17px}
+ #vax-investor-diagram .vax-capital-text{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+ #vax-investor-diagram .vax-capital-text b{font-size:15px;color:#eef7fd;line-height:1.1}
+ #vax-investor-diagram .vax-capital-text small{font-size:12px;color:#b7cbd8;line-height:1.25}
+ #vax-investor-diagram .vax-minus{width:29px;height:29px;flex:none;display:grid;place-items:center;border-radius:50%;background:#a9d2f4;color:#0a2337;font-size:24px;font-weight:900;line-height:1}
+ #vax-investor-diagram .vax-capital-values{min-width:161px;border-left:1px solid #315163;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+ #vax-investor-diagram .vax-capital-values small{color:#b3c8d6;font-size:12px;line-height:1.28}
+ #vax-investor-diagram .vax-capital-values strong{color:#fff;font-size:21px;line-height:1.1;white-space:nowrap}
+ #vax-investor-diagram .vax-base{grid-row:3;width:min(460px,94%);min-height:77px;border:1px solid #d8af4e;background:linear-gradient(125deg,#332c1a,#171a17);box-shadow:0 0 18px rgba(224,169,61,.14)}
+ #vax-investor-diagram .vax-base .vax-icon-wrap{color:#ffdc77;background:#312d1d;border-color:rgba(236,183,72,.16)}
+ #vax-investor-diagram .vax-base .vax-flow-label{color:#ffdda0;font-size:14px}
+ #vax-investor-diagram .vax-base .vax-flow-copy strong{color:#ffe08b;font-size:clamp(25px,2.25vw,32px)}
+ #vax-investor-diagram .vax-flow-branches{grid-row:4;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:clamp(90px,16%,195px);align-items:stretch;justify-items:stretch;min-height:286px;padding:14px 10px 0}
+ #vax-investor-diagram .vax-flow-side{width:100%;max-width:355px;display:flex;flex-direction:column;gap:10px}
+ #vax-investor-diagram .vax-investor-side{justify-self:start}
+ #vax-investor-diagram .vax-management-side{justify-self:end}
+ #vax-investor-diagram .vax-flow-side .vax-flow-node{width:100%;min-height:55px;justify-content:flex-start;gap:13px}
+ #vax-investor-diagram .vax-flow-side .vax-flow-node .vax-icon-wrap{width:40px;height:40px}
+ #vax-investor-diagram .vax-flow-side .vax-flow-label{font-size:12px}
+ #vax-investor-diagram .vax-flow-side .vax-flow-copy strong{font-size:19px}
+ #vax-investor-diagram .vax-flow-side .vax-share{width:82%;min-height:57px;align-self:center}
+ #vax-investor-diagram .vax-flow-side .vax-share .vax-flow-copy strong{color:#91ecf6;font-size:23px}
+ #vax-investor-diagram .vax-management-side .vax-total{margin-top:auto}
+ #vax-investor-diagram .vax-flow-side .vax-total{min-height:73px;border:1px solid #4ed9ec;background:linear-gradient(135deg,#0b2734,#081a23)}
+ #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-label{color:#bfeaf1}
+ #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-copy strong{color:#93f0f8;font-size:clamp(20px,1.75vw,25px)}
+ /* Hover is visual feedback only: no click behaviour, no motion of connected nodes. */
+ @media(hover:hover) and (pointer:fine){
+  #vax-investor-diagram .vax-flow-node:hover,#vax-investor-diagram .vax-investor-name:hover{border-color:rgba(102,229,248,.78)!important;background:linear-gradient(130deg,#18384a,#102431)!important;box-shadow:0 0 0 1px rgba(73,213,237,.14),0 0 19px rgba(52,203,229,.23),inset 0 1px 0 rgba(193,243,255,.10)!important}
+  #vax-investor-diagram .vax-flow-node:hover .vax-icon-wrap,#vax-investor-diagram .vax-investor-name:hover .vax-icon-wrap{background:#143d52;box-shadow:0 0 11px rgba(64,215,245,.19)}
+  #vax-investor-diagram .vax-base:hover{border-color:#f3d27b!important;background:linear-gradient(125deg,#41351b,#231f16)!important;box-shadow:0 0 0 1px rgba(255,211,108,.20),0 0 23px rgba(241,189,70,.24)!important}
+  #vax-investor-diagram .vax-base:hover .vax-icon-wrap{background:#463819;box-shadow:0 0 12px rgba(240,185,67,.20)}
+  #vax-investor-diagram .vax-flow-side .vax-total:hover{border-color:#93f3ff!important;box-shadow:0 0 0 1px rgba(81,220,241,.18),0 0 23px rgba(39,211,232,.29)!important}
+ }
+ @media(prefers-reduced-motion:reduce){#vax-investor-diagram .vax-flow-node,#vax-investor-diagram .vax-icon-wrap{transition:none!important}}
+ @media(max-width:1200px){#vax-investor-diagram .vax-flow-stage{min-height:554px}#vax-investor-diagram .vax-flow-branches{column-gap:80px}}
+ @media(max-width:760px){body.laporan-bulanan-investor-page.vax-investor-diagram-ready #lbInvestorLines{display:block!important}body.laporan-bulanan-investor-page.vax-investor-diagram-ready #vax-investor-diagram{display:none!important}body.laporan-bulanan-investor-page.vax-investor-diagram-ready .lb-grid>.lb-card[data-lb-view="investor"]>.lb-card-head{display:flex!important}}
 }
-@media print {#vax-investor-diagram {display:none!important;} #lbInvestorLines {display:block!important;}}
+@media print{#vax-investor-diagram{display:none!important}#lbInvestorLines{display:block!important}}
