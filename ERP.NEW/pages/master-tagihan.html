@@ -21,6 +21,11 @@
 <link rel="stylesheet" href="../styles/master-tagihan-calendar-ui.css?v=20260909-1">
 <link rel="stylesheet" href="../styles/master-tagihan-svp-invoice.css?v=20260909-3">
 <link rel="stylesheet" href="../styles/master-tagihan-invoice-history-polish.css?v=20260911-1">
+<style>
+/* UI only. Default hidden until OwnerAuth confirms SPV; invoice data and workflow remain intact. */
+body.page-master-tagihan:not(.erp-role-spv) #mtInvoiceCard,
+body.page-master-tagihan:not(.erp-role-spv) .mt-invoice-top-btn{display:none!important}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="page-master-tagihan">
