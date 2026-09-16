@@ -8,6 +8,27 @@
   const isOwnSvpInvoice = (row, userId) =>
     isSvp(row?.sender_role) && String(row?.created_by || '') === String(userId || '');
 
+  function ensureInvoiceHeadingStyle() {
+    if (document.getElementById('mtSvpInvoiceHeadingTypography')) return;
+    const style = document.createElement('style');
+    style.id = 'mtSvpInvoiceHeadingTypography';
+    style.textContent = `
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-invoice-head strong {
+        font-size:21px!important;
+        line-height:1.25!important;
+        font-weight:900!important;
+        letter-spacing:.015em;
+      }
+      body.page-master-tagihan[data-mt-invoice-role="svp"] #mtInvoiceCard .mt-invoice-head small {
+        font-size:14px!important;
+        line-height:1.5!important;
+        margin-top:7px!important;
+        color:#c0ccd7!important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function labels() {
     if (!isSvp(masterRole()) || !isSvp(window.SvPInvoice?.role)) return;
     const head = document.querySelector('#mtInvoiceCard .mt-invoice-head strong');
@@ -27,6 +48,7 @@
         || !invoice.user?.id || !invoice.__svpOwnerReturnInstalled || !invoice.__readCompleteInstalled) return false;
     if (invoice.__svpOnlyInvoiceUiInstalled) return true;
     invoice.__svpOnlyInvoiceUiInstalled = true;
+    ensureInvoiceHeadingStyle();
     const render = invoice.render;
     invoice.render = function (...args) {
       if (!isSvp(this.role)) return render.apply(this, args);
