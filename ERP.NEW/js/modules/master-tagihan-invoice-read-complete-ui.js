@@ -74,13 +74,13 @@
         const st=String(r.status||'draft').toLowerCase();
         const dir=sender(r)==='owner'?'OWNER → SVP':'SVP → OWNER';
         const done=st==='completed';
-        const receipt=done?`Selesai ${dated(r.completed_at)}`:st==='sent'?'Terkirim · menunggu penyelesaian':'';
+        const receipt=done?`Selesai ${dated(r.completed_at)}`:'';
         const url=`${VIEW}?id=${encodeURIComponent(r.id)}`;
         const view=`<a class="mt-action mt-internal-view" href="${url}" target="_blank" rel="noopener noreferrer" title="Buka detail invoice">Lihat</a>`;
         const draftActions=mine(r)&&st==='draft'?`<button class="mt-action" data-inv-action="edit" data-id="${r.id}">Edit</button><button class="mt-action" data-inv-action="send" data-id="${r.id}">Kirim Email</button>`:'';
         const delivery=st==='sent'?'<span class="mt-internal-delivered" role="img" aria-label="Terkirim" title="Terkirim">✓</span>':'';
         const wa=mine(r)?`<button class="mt-action mt-action-wa" data-wa-id="${r.id}">WhatsApp</button>`:'';
-        return `<div class="mt-invoice-row ${archive?'mt-internal-history-row':''}"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${dir} · ${this.esc(r.title||'INVOICE')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div class="mt-internal-status-cell">${receipt?`<small class="mt-internal-receipt ${done?'done':''}">${this.esc(receipt)}</small>`:''}</div><div class="mt-invoice-buttons">${draftActions}${delivery}${view}${wa}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`;
+        return `<div class="mt-invoice-row ${archive?'mt-internal-history-row':''}"><div><div class="mt-invoice-no">${this.esc(r.invoice_no)}</div><small>${dir} · ${this.esc(r.title||'INVOICE')}</small></div><div>${this.esc(r.invoice_date||'')}</div><div class="mt-invoice-total">${this.rp(r.total)}</div><div class="mt-internal-status-cell">${receipt?`<small class="mt-internal-receipt done">${this.esc(receipt)}</small>`:''}</div><div class="mt-invoice-buttons">${draftActions}${delivery}${view}${wa}<button class="mt-action" data-inv-action="print" data-id="${r.id}">Print</button></div></div>`;
       };
       root.innerHTML=`<details class="mt-internal-drafts ${draft.length?'has-unsent':''}"><summary>Draft invoice · belum dikirim (${draft.length})</summary>${draft.length?draft.map(r=>rowHtml(r)).join(''):'<div class="mt-internal-empty">Tidak ada draft.</div>'}</details><div class="mt-invoice-history"><button type="button" class="mt-invoice-history-toggle" data-history-toggle><span>Riwayat Invoice</span><b>${archived.length}</b><i>${this.historyOpen?'▲':'▼'}</i></button><div class="mt-invoice-history-list" ${this.historyOpen?'':'hidden'}>${archived.map(r=>rowHtml(r,true)).join('')||'<div class="mt-internal-empty">Belum ada invoice terkirim.</div>'}</div></div>`;
       if(new URLSearchParams(location.search).get('draft')==='1'){
