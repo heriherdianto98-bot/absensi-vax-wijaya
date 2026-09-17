@@ -1,5 +1,6 @@
 /* Dashboard-only, read-only extension of the existing notification bell.
  * Mirrors the draft notice on Master Tagihan; no shared engine or database writes.
+ * Owner has no invoice action in the current module: hide invoice bell items for Owner.
  */
 'use strict';
 (() => {
@@ -18,8 +19,15 @@
     const bell = window.ERPGlobalNotifications;
     if (!bell || typeof bell.loadInvoices !== 'function' || typeof bell.add !== 'function') return false;
     if (bell.__dashboardInvoiceDraftNoticeInstalled) return true;
+    const previousAdd = bell.add;
+    bell.add = function(item) {
+      if (String(this.role || '').toLowerCase() === 'owner' && String(item?.module || '').toUpperCase() === 'INVOICE') return;
+      return previousAdd.call(this, item);
+    };
     const previous = bell.loadInvoices;
     bell.loadInvoices = async function(supabaseClient) {
+      // Owner no longer has an invoice inbox; do not fetch or notify Owner about invoices.
+      if (String(this.role || '').toLowerCase() === 'owner') return;
       await previous.call(this, supabaseClient);
       if (!['svp', 'spv'].includes(String(this.role || '').toLowerCase()) || !this.user?.id) return;
       try {
@@ -43,7 +51,14 @@
     };
     bell.__dashboardInvoiceDraftNoticeInstalled = true;
     installed = true;
+    // Clear stale Owner invoice entries already rendered before this extension loaded.
+    if (String(bell.role || '').toLowerCase() === 'owner') {
+      bell.items = (bell.items || []).filter(item => String(item.module || '').toUpperCase() !== 'INVOICE');
+      if (typeof bell.render === 'function') bell.render();
+    }
     refresh();
+    // Initial global refresh may still be running when installed; refresh again afterwards.
+    setTimeout(refresh, 1600);
     return true;
   };
   let attempts = 0;
