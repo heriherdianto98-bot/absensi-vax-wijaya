@@ -54,7 +54,8 @@
     card.title = hint || numbers;
   }
   function scope(){
-    const engine = window.DashboardEngine;
+    // DashboardEngine is a global lexical const, not necessarily a window property.
+    const engine = typeof DashboardEngine !== "undefined" ? DashboardEngine : window.DashboardEngine;
     const start = String(engine?.lastRange?.start || "").slice(0,10);
     const end = String(engine?.lastRange?.end || "").slice(0,10);
     if(!/^\d{4}-\d{2}-\d{2}$/.test(start) || !/^\d{4}-\d{2}-\d{2}$/.test(end)) return null;
