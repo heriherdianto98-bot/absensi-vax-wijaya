@@ -6,7 +6,7 @@
   if (!/\/erp-dashboard\.html$/i.test(location.pathname) || window.__vaxDashboardInvoiceShortcut) return;
   window.__vaxDashboardInvoiceShortcut = true;
   const ROLES = new Set(['svp','spv']);
-  const state = {busy:false, overlay:null, frame:null, previousFocus:null, previousOverflow:null, request:0};
+  const state = {busy:false, overlay:null, frame:null, previousFocus:null, previousOverflow:null, request:0, userId:null};
   const role = v => String(v || '').trim().toLowerCase();
   const client = () => (typeof db !== 'undefined' ? db : window.db);
 
@@ -35,7 +35,9 @@
     const {data, error} = await auth.auth.getSession();
     if (error || !data?.session?.user?.id) return false;
     const {data:profile,error:profileError} = await auth.from('profiles').select('role,aktif').eq('id',data.session.user.id).maybeSingle();
-    return !profileError && profile?.aktif !== false && ROLES.has(role(profile?.role));
+    if (profileError || !profile || profile.aktif === false || !ROLES.has(role(profile.role))) return false;
+    state.userId = String(data.session.user.id);
+    return true;
   }
 
   function close() {
@@ -92,35 +94,44 @@
     try {
       if (!await authorized()) { error('Sesi SVP tidak valid. Silakan login sebagai SVP.',request); return; }
       if (request !== state.request) return;
+      const expectedUserId = state.userId;
       const frame = document.createElement('iframe');
       state.frame = frame;
       frame.className = 'vax-inv-frame';
       frame.title = 'Formulir Buat Invoice Owner';
-      frame.style.visibility = 'hidden'; // Never expose the full Master Tagihan page behind the modal.
+      frame.style.visibility = 'hidden';
       frame.addEventListener('load', () => {
         const started = Date.now();
+        let checking = false;
         const poll = setInterval(async () => {
           if (request !== state.request || state.frame !== frame || root.hidden) {clearInterval(poll);return;}
-          if (Date.now() - started > 18000) {clearInterval(poll);error('Formulir invoice tidak siap.',request);return;}
+          if (checking) return;
+          if (Date.now() - started > 25000) {clearInterval(poll);error('Formulir invoice tidak siap. Coba buka kembali.',request);return;}
+          checking = true;
           try {
             const win = frame.contentWindow;
             const doc = win?.document;
             const inv = win?.SvPInvoice;
             const mt = win?.MasterTagihan;
-            if (!doc || !inv?.__workflowV2 || !inv.user || !mt?.role) return;
-            if (!ROLES.has(role(mt.role)) || !ROLES.has(role(inv.role)) || String(inv.user.id) !== String(mt.user?.id)) {
+            /* Both modules initialize asynchronously. __workflowV2 appears before
+             * SvPInvoice.init finishes loading its role, and the SVP delivery
+             * wrapper installs later still. Never reject a valid SVP mid-boot. */
+            if (!doc || !inv?.user?.id || !mt?.user?.id || !role(inv.role) || !role(mt.role)
+                || !inv.__workflowV2 || !inv.__svpOwnerReturnInstalled
+                || !inv.__newAndDeliveryFixInstalled || doc.body.dataset.mtInvoiceRole !== 'svp') return;
+            if (!ROLES.has(role(mt.role)) || !ROLES.has(role(inv.role))
+                || String(inv.user.id) !== expectedUserId || String(mt.user.id) !== expectedUserId) {
               clearInterval(poll);
-              error('Akses invoice tidak cocok dengan sesi SVP. Tidak ada data yang diubah.',request);
+              error('Sesi invoice berbeda dengan sesi SVP. Tutup, muat ulang Dashboard, lalu coba lagi.',request);
               return;
             }
             const modal = doc.getElementById('mtInvoiceModal');
             if (!modal || typeof inv.open !== 'function') return;
             clearInterval(poll);
-            // Preserve the loaded document and all its JS. Hide the page chrome, not the invoice modal.
             const css = doc.createElement('style');
             css.textContent = 'html,body{background:transparent!important;overflow:hidden!important}body>.erp-wrapper,body>#sidebar,body>.erp-bottom-nav,body>#footer,body>#mtModal{visibility:hidden!important;pointer-events:none!important}body>#mtInvoiceModal{visibility:visible!important;pointer-events:auto!important}#mtInvoiceModal .mt-invoice-backdrop{background:transparent!important;backdrop-filter:none!important}#mtInvoiceModal .mt-invoice-dialog{max-height:calc(100vh - 34px)!important}';
             doc.head.appendChild(css);
-            await inv.open(null); // Explicitly start a new invoice, not an existing draft.
+            await inv.open(null);
             if (request !== state.request || root.hidden || state.frame !== frame) return;
             if (modal.hidden) {error('Formulir invoice tidak terbuka.',request);return;}
             frame.style.visibility = 'visible';
@@ -133,7 +144,7 @@
             clearInterval(poll);
             console.warn('[Dashboard INV]',e);
             error('Formulir invoice gagal dimuat.',request);
-          }
+          } finally {checking = false;}
         },100);
       },{once:true});
       root.insertBefore(frame,root.querySelector('.vax-inv-loading'));
