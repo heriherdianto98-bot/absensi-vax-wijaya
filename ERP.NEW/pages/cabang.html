@@ -420,6 +420,7 @@
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/modules/cabang.js"></script>
 <script src="../js/modules/cabang-target-recommendation-ui.js?v=20260918-v1"></script>
+<script src="../js/modules/cabang-target-branch-picker-ui.js?v=20260918-v1"></script>
 <script src="../js/loader.js"></script>
 <script>
 document.addEventListener("erp:owner-only-ready", async () => {
@@ -445,8 +446,6 @@ document.addEventListener("erp:owner-only-ready", async () => {
         if(subEl) subEl.textContent = "Kelola cabang operasional VAX Wijaya";
         if(typeof initErpShellChrome === "function") initErpShellChrome();
         if(typeof syncSidebarRoleMeta === "function") syncSidebarRoleMeta();
-        if(titleEl) titleEl.textContent = "Master Cabang";
-        if(subEl) subEl.textContent = "Kelola cabang operasional VAX Wijaya";
     }
 
     document.body.classList.add("has-bottom-nav");
