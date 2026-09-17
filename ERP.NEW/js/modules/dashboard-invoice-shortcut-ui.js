@@ -1,142 +1,176 @@
-/* ERP VAX — dashboard-only invoice shortcut. Reuse existing Master Tagihan invoice workflow.
- * UI integration only: no changes to invoice, finance, auth, or database engines.
+/* ERP VAX — dashboard-only INV shortcut. Reuses authenticated invoice form in an isolated iframe.
+ * UI integration only; no changes to invoice, finance, auth engines or database.
  */
 'use strict';
 (() => {
   if (!/\/erp-dashboard\.html$/i.test(location.pathname) || window.__vaxDashboardInvoiceShortcut) return;
   window.__vaxDashboardInvoiceShortcut = true;
-  const ROLE_SET = new Set(['spv','svp']);
-  let overlay = null, frame = null, busy = false, priorFocus = null;
+  const ROLES = new Set(['svp','spv']);
+  const state = {busy:false, overlay:null, frame:null, previousFocus:null, previousOverflow:null, request:0};
+  const role = v => String(v || '').trim().toLowerCase();
+  const client = () => (typeof db !== 'undefined' ? db : window.db);
 
   function style() {
     if (document.getElementById('vaxDashboardInvoiceShortcutStyle')) return;
-    const el = document.createElement('style');
-    el.id = 'vaxDashboardInvoiceShortcutStyle';
-    el.textContent = `
-      .erp-header-vax #vaxInvoiceQuickBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 44px!important;width:44px!important;height:42px!important;min-width:44px!important;padding:0!important;margin:0 9px!important;border:1px solid rgba(218,174,71,.5)!important;border-radius:11px!important;background:linear-gradient(160deg,#27323b,#151d25)!important;color:#f8d47d!important;font:900 12px/1 'Source Sans 3',sans-serif!important;letter-spacing:.04em!important;cursor:pointer!important}
-      .erp-header-vax #vaxInvoiceQuickBtn:hover{border-color:#e5bc59!important;box-shadow:0 0 14px rgba(219,167,56,.24)!important}
-      .erp-header-vax #vaxInvoiceQuickBtn:focus-visible{outline:2px solid #f5d36b!important;outline-offset:2px!important}
-      #vaxInvoiceQuickOverlay{position:fixed;inset:0;z-index:2147483000;background:rgba(2,6,10,.83);backdrop-filter:blur(5px);display:grid;place-items:center}
+    const s = document.createElement('style');
+    s.id = 'vaxDashboardInvoiceShortcutStyle';
+    s.textContent = `
+      #vaxInvoiceQuickBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 44px!important;width:44px!important;height:42px!important;margin:0 8px!important;padding:0!important;border:1px solid rgba(218,174,71,.48)!important;border-radius:11px!important;background:linear-gradient(160deg,#25313b,#151d25)!important;color:#f8d47d!important;font:900 12px/1 'Source Sans 3',sans-serif!important;cursor:pointer!important}
+      #vaxInvoiceQuickBtn:hover{border-color:#e5bc59!important;box-shadow:0 0 14px rgba(219,167,56,.22)!important}
+      #vaxInvoiceQuickBtn:focus-visible{outline:2px solid #f5d36b!important;outline-offset:2px!important}
+      #vaxInvoiceQuickOverlay{position:fixed;inset:0;z-index:2147483000;background:rgba(2,6,10,.82);backdrop-filter:blur(5px)}
       #vaxInvoiceQuickOverlay[hidden]{display:none!important}
-      #vaxInvoiceQuickOverlay .vax-inv-frame{width:100%;height:100%;border:0;background:transparent;display:block}
-      #vaxInvoiceQuickOverlay .vax-inv-loading{position:absolute;inset:0;display:grid;place-items:center;color:#f8d47d;font-size:15px;font-weight:800;pointer-events:none}
-      #vaxInvoiceQuickOverlay .vax-inv-close{position:fixed;right:16px;top:13px;z-index:3;width:38px;height:38px;border:1px solid #50606e;border-radius:9px;background:#1b2630;color:#fff;font-size:24px;cursor:pointer}
-      #vaxInvoiceQuickOverlay .vax-inv-close:focus-visible{outline:2px solid #f8d47d}
-      @media(max-width:700px){#vaxInvoiceQuickOverlay .vax-inv-close{right:7px;top:5px;width:32px;height:32px}}
+      #vaxInvoiceQuickOverlay .vax-inv-frame{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;background:transparent}
+      #vaxInvoiceQuickOverlay .vax-inv-loading{position:absolute;inset:0;z-index:2;display:grid;place-items:center;padding:32px;text-align:center;color:#f8d47d;font:800 15px/1.5 'Source Sans 3',sans-serif;pointer-events:none}
+      #vaxInvoiceQuickOverlay .vax-inv-loading[hidden]{display:none!important}
+      #vaxInvoiceQuickOverlay .vax-inv-close{position:fixed;right:12px;top:12px;z-index:3;width:40px;height:40px;border:1px solid #50606e;border-radius:10px;background:#1b2630;color:#fff;font-size:24px;cursor:pointer}
+      @media(max-width:700px){#vaxInvoiceQuickOverlay .vax-inv-close{right:6px;top:6px;width:34px;height:34px}}
     `;
-    document.head.appendChild(el);
+    document.head.appendChild(s);
   }
 
-  // connector.js declares `const db`, not `window.db`. A previous window.db check
-  // prevented the shortcut from ever mounting despite a valid SVP session.
   async function authorized() {
-    if (typeof db === 'undefined' || !db?.auth?.getSession) return false;
-    const {data,error} = await db.auth.getSession();
-    const uid = data?.session?.user?.id;
-    if (error || !uid) return false;
-    const profile = window.OwnerAuth?.profile;
-    if (profile && String(profile.id) === String(uid))
-      return profile.aktif !== false && ROLE_SET.has(String(profile.role || '').toLowerCase());
-    const result = await db.from('profiles').select('role,aktif').eq('id',uid).maybeSingle();
-    return !result.error && result.data?.aktif !== false && ROLE_SET.has(String(result.data?.role || '').toLowerCase());
+    const auth = client();
+    if (!auth?.auth?.getSession || !auth?.from) return false;
+    const {data, error} = await auth.auth.getSession();
+    if (error || !data?.session?.user?.id) return false;
+    const {data:profile,error:profileError} = await auth.from('profiles').select('role,aktif').eq('id',data.session.user.id).maybeSingle();
+    return !profileError && profile?.aktif !== false && ROLES.has(role(profile?.role));
   }
 
   function close() {
-    if (!overlay) return;
-    overlay.hidden = true;
-    frame?.remove(); frame = null; busy = false;
-    document.body.style.removeProperty('overflow');
-    priorFocus?.focus?.();
+    state.request++;
+    if (!state.overlay) return;
+    state.overlay.hidden = true;
+    state.frame?.remove();
+    state.frame = null;
+    state.busy = false;
+    document.body.style.overflow = state.previousOverflow ?? '';
+    state.previousFocus?.focus?.();
   }
-  function showError(message) {
-    if (!overlay || overlay.hidden) return;
-    const loading = overlay.querySelector('.vax-inv-loading');
-    if (loading) { loading.style.pointerEvents = 'auto'; loading.textContent = message; }
-    busy = false;
-  }
+
   function ensureOverlay() {
-    if (overlay) return overlay;
-    overlay = document.createElement('div');
-    overlay.id = 'vaxInvoiceQuickOverlay'; overlay.hidden = true;
-    overlay.setAttribute('role','dialog'); overlay.setAttribute('aria-modal','true');
-    overlay.setAttribute('aria-label','Buat Invoice Owner');
-    overlay.innerHTML = '<div class="vax-inv-loading" role="status">Memuat formulir invoice…</div><button type="button" class="vax-inv-close" aria-label="Tutup invoice">×</button>';
-    overlay.querySelector('.vax-inv-close').addEventListener('click',close);
-    overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close()});
-    document.body.appendChild(overlay);
-    return overlay;
-  }
-  function open() {
-    if (busy) return;
-    busy = true; priorFocus = document.activeElement; ensureOverlay();
-    overlay.hidden = false; document.body.style.overflow = 'hidden';
-    const loading = overlay.querySelector('.vax-inv-loading');
-    loading.textContent = 'Memuat formulir invoice…'; loading.style.pointerEvents = 'none';
-    const currentFrame = document.createElement('iframe');
-    frame = currentFrame; frame.className = 'vax-inv-frame';
-    frame.title = 'Formulir Buat Invoice Owner';
-    frame.src = './master-tagihan.html?quickInvoice=1';
-    frame.addEventListener('load',()=>{
-      let tries = 0;
-      const poll = setInterval(async()=>{
-        if(frame!==currentFrame || overlay.hidden){clearInterval(poll);return}
-        try {
-          const win = currentFrame.contentWindow;
-          const doc = win?.document;
-          const invoice = win?.SvPInvoice;
-          const master = win?.MasterTagihan;
-          if(!doc || !invoice?.__workflowV2 || !invoice.user || !master?.role){
-            if(++tries>=200){clearInterval(poll);showError('Formulir belum siap. Tutup dan coba lagi.')}
-            return;
-          }
-          if(!ROLE_SET.has(String(master.role).toLowerCase()) || !ROLE_SET.has(String(invoice.role).toLowerCase())){
-            clearInterval(poll);showError('Akses Buat Invoice Owner hanya untuk SVP.');return;
-          }
-          const modal = doc.getElementById('mtInvoiceModal');
-          if(!modal || typeof invoice.open!=='function'){
-            if(++tries>=200){clearInterval(poll);showError('Formulir invoice tidak tersedia.')}
-            return;
-          }
-          clearInterval(poll);
-          const css=doc.createElement('style');
-          css.textContent='html,body{background:transparent!important;overflow:hidden!important}body>.erp-wrapper,body>#sidebar,body>.erp-bottom-nav,body>#footer,body>#mtModal{display:none!important}#mtInvoiceModal .mt-invoice-backdrop{background:transparent!important;backdrop-filter:none!important}#mtInvoiceModal .mt-invoice-dialog{max-height:calc(100vh - 34px)!important}';
-          doc.head.appendChild(css);
-          await invoice.open();
-          if(frame!==currentFrame || overlay.hidden)return;
-          const watch=new win.MutationObserver(()=>{if(modal.hidden){watch.disconnect();close()}});
-          watch.observe(modal,{attributes:true,attributeFilter:['hidden']});
-          doc.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
-          loading.textContent='';busy=false;
-        }catch(error){clearInterval(poll);console.warn('[Dashboard INV]',error);showError('Formulir gagal dimuat. Tutup dan coba lagi.')}
-      },100);
-    });
-    overlay.insertBefore(frame,overlay.querySelector('.vax-inv-close'));
-  }
-  async function mount() {
-    if(document.getElementById('vaxInvoiceQuickBtn'))return true;
-    const header=document.querySelector('#header .erp-header-vax');
-    if(!header || typeof db==='undefined')return false;
-    if(!await authorized())return false;
-    if(document.getElementById('vaxInvoiceQuickBtn'))return true;
+    if (state.overlay) return state.overlay;
     style();
-    const button=document.createElement('button');button.type='button';button.id='vaxInvoiceQuickBtn';
-    button.textContent='INV';button.title='Buat Invoice Owner';button.setAttribute('aria-label','Buat Invoice Owner');
+    const root = document.createElement('div');
+    root.id = 'vaxInvoiceQuickOverlay';
+    root.hidden = true;
+    root.setAttribute('role','dialog');
+    root.setAttribute('aria-modal','true');
+    root.setAttribute('aria-label','Buat Invoice Owner');
+    root.innerHTML = '<div class="vax-inv-loading" role="status">Memuat formulir invoice…</div><button type="button" class="vax-inv-close" aria-label="Tutup invoice">×</button>';
+    root.querySelector('.vax-inv-close').addEventListener('click',close);
+    root.addEventListener('click',e => {if(e.target === root) close();});
+    document.addEventListener('keydown',e => {if(e.key === 'Escape' && !root.hidden) close();});
+    document.body.appendChild(root);
+    state.overlay = root;
+    return root;
+  }
+
+  function error(message, request) {
+    if (request !== state.request || !state.overlay || state.overlay.hidden) return;
+    state.frame?.remove();
+    state.frame = null;
+    state.busy = false;
+    const label = state.overlay.querySelector('.vax-inv-loading');
+    label.hidden = false;
+    label.textContent = message + ' Tutup dengan tombol ×.';
+  }
+
+  async function open() {
+    if (state.busy || (state.overlay && !state.overlay.hidden)) return;
+    state.busy = true;
+    const request = ++state.request;
+    state.previousFocus = document.activeElement;
+    state.previousOverflow = document.body.style.overflow;
+    const root = ensureOverlay();
+    root.hidden = false;
+    document.body.style.overflow = 'hidden';
+    const label = root.querySelector('.vax-inv-loading');
+    label.hidden = false;
+    label.textContent = 'Memuat formulir invoice…';
+    try {
+      if (!await authorized()) { error('Sesi SVP tidak valid. Silakan login sebagai SVP.',request); return; }
+      if (request !== state.request) return;
+      const frame = document.createElement('iframe');
+      state.frame = frame;
+      frame.className = 'vax-inv-frame';
+      frame.title = 'Formulir Buat Invoice Owner';
+      frame.style.visibility = 'hidden'; // Never expose the full Master Tagihan page behind the modal.
+      frame.addEventListener('load', () => {
+        const started = Date.now();
+        const poll = setInterval(async () => {
+          if (request !== state.request || state.frame !== frame || root.hidden) {clearInterval(poll);return;}
+          if (Date.now() - started > 18000) {clearInterval(poll);error('Formulir invoice tidak siap.',request);return;}
+          try {
+            const win = frame.contentWindow;
+            const doc = win?.document;
+            const inv = win?.SvPInvoice;
+            const mt = win?.MasterTagihan;
+            if (!doc || !inv?.__workflowV2 || !inv.user || !mt?.role) return;
+            if (!ROLES.has(role(mt.role)) || !ROLES.has(role(inv.role)) || String(inv.user.id) !== String(mt.user?.id)) {
+              clearInterval(poll);
+              error('Akses invoice tidak cocok dengan sesi SVP. Tidak ada data yang diubah.',request);
+              return;
+            }
+            const modal = doc.getElementById('mtInvoiceModal');
+            if (!modal || typeof inv.open !== 'function') return;
+            clearInterval(poll);
+            // Preserve the loaded document and all its JS. Hide the page chrome, not the invoice modal.
+            const css = doc.createElement('style');
+            css.textContent = 'html,body{background:transparent!important;overflow:hidden!important}body>.erp-wrapper,body>#sidebar,body>.erp-bottom-nav,body>#footer,body>#mtModal{visibility:hidden!important;pointer-events:none!important}body>#mtInvoiceModal{visibility:visible!important;pointer-events:auto!important}#mtInvoiceModal .mt-invoice-backdrop{background:transparent!important;backdrop-filter:none!important}#mtInvoiceModal .mt-invoice-dialog{max-height:calc(100vh - 34px)!important}';
+            doc.head.appendChild(css);
+            await inv.open(null); // Explicitly start a new invoice, not an existing draft.
+            if (request !== state.request || root.hidden || state.frame !== frame) return;
+            if (modal.hidden) {error('Formulir invoice tidak terbuka.',request);return;}
+            frame.style.visibility = 'visible';
+            label.hidden = true;
+            state.busy = false;
+            const watch = new win.MutationObserver(() => {if(modal.hidden){watch.disconnect();close();}});
+            watch.observe(modal,{attributes:true,attributeFilter:['hidden']});
+            doc.addEventListener('keydown',e => {if(e.key === 'Escape') close();});
+          } catch(e) {
+            clearInterval(poll);
+            console.warn('[Dashboard INV]',e);
+            error('Formulir invoice gagal dimuat.',request);
+          }
+        },100);
+      },{once:true});
+      root.insertBefore(frame,root.querySelector('.vax-inv-loading'));
+      frame.src = './master-tagihan.html?quickInvoice=1';
+    } catch(e) {
+      console.warn('[Dashboard INV]',e);
+      error('Gagal memeriksa sesi invoice.',request);
+    }
+  }
+
+  async function mount() {
+    if (document.getElementById('vaxInvoiceQuickBtn')) return true;
+    const header = document.querySelector('#header .erp-header-vax,#header .top-header,#header .erp-header');
+    if (!header || !client()?.auth?.getSession) return false;
+    if (!await authorized()) return false;
+    if (document.getElementById('vaxInvoiceQuickBtn')) return true;
+    style();
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.id = 'vaxInvoiceQuickBtn';
+    button.textContent = 'INV';
+    button.title = 'Buat Invoice Owner';
+    button.setAttribute('aria-label','Buat Invoice Owner');
     button.addEventListener('click',open);
-    const help=[...header.querySelectorAll('a,button')].find(el=>/help\s*desk/i.test(el.textContent||''));
-    const headerChild=help && [...header.children].find(child=>child===help || child.contains(help));
-    if(headerChild)headerChild.insertAdjacentElement('afterend',button);
-    else if(header.querySelector('.vax-owner'))header.insertBefore(button,header.querySelector('.vax-owner'));
+    const help = [...header.querySelectorAll('a,button')].find(el => /help\s*desk/i.test(el.textContent || ''));
+    const owner = header.querySelector('.vax-owner');
+    if (help) help.insertAdjacentElement('afterend',button);
+    else if (owner) owner.insertAdjacentElement('beforebegin',button);
     else header.appendChild(button);
     return true;
   }
-  let tries=0, inFlight=false;
-  const timer=setInterval(()=>{
-    if(inFlight)return;
-    inFlight=true;
-    mount().then(ok=>{if(ok||++tries>180)clearInterval(timer)})
-      .catch(error=>{if(++tries>180)clearInterval(timer);console.warn('[Dashboard INV] Mount:',error)})
-      .finally(()=>{inFlight=false});
+  let tries = 0, pending = false;
+  const timer = setInterval(() => {
+    if (pending) return;
+    pending = true;
+    mount().then(ok => {if (ok || ++tries > 100) clearInterval(timer);})
+      .catch(e => {console.warn('[Dashboard INV mount]',e);if (++tries > 100) clearInterval(timer);})
+      .finally(() => {pending = false;});
   },300);
-  document.addEventListener('erp:components-ready',()=>mount().catch(console.warn),{once:true});
 })();
