@@ -60,6 +60,31 @@
       if(this.role!=='owner')return;
       try{const since=this.isoAddDays(this.jakartaToday(),-30),{data,error}=await db.from('arus_kas_v2_transactions').select('id,tanggal,amount,category,description,verification_status,entry_type').eq('entry_type','MANUAL').gte('tanggal',since).neq('verification_status','OWNER_VERIFIED').order('tanggal',{ascending:false}).limit(20);if(error)throw error;(data||[]).forEach(r=>this.add({tone:'warning',icon:'⇄',module:'ARUS KAS',href:'./arus-kas.html',title:'Arus Kas belum diverifikasi',detail:`${r.tanggal||'—'} • ${this.money(r.amount)} • ${r.description||r.category||'Transaksi manual'}`}))}catch(e){console.warn('[Notif] arus kas',e)}
     },
+    // Read-only mirror of the LOCKED CashOutWarning rule: individual items, strictly > Rp205.000.
+    async loadCashOutWarnings(db){
+      if(!['owner','svp'].includes(this.role))return;
+      try{
+        const since=this.isoAddDays(this.jakartaToday(),-7);
+        const [{data:branches,error:branchError},{data:recaps,error:recapError}]=await Promise.all([
+          db.from('cabang').select('id,nama_cabang,aktif'),
+          db.from('daily_recap_source').select('tanggal,cabang_id,keterangan_cash_out').gte('tanggal',since).lte('tanggal',this.jakartaToday()).order('tanggal',{ascending:false})
+        ]);
+        if(branchError)throw branchError;if(recapError)throw recapError;
+        const active=new Map((branches||[]).filter(c=>c.aktif!==false&&!/floating/i.test(String(c.nama_cabang||''))).map(c=>[String(c.id),String(c.nama_cabang||'').replace(/\bVax\s+Wijaya\b/gi,'').trim()]));
+        // The warning monitor is the only owner of parsing and the threshold; never recalculate from daily totals.
+        const parser=window.CashOutWarning||(typeof CashOutWarning!=='undefined'?CashOutWarning:null);
+        if(!parser||typeof parser.parseSegment!=='function')return;
+        (recaps||[]).forEach(r=>{
+          const cabang=active.get(String(r.cabang_id));if(!cabang)return;
+          String(r.keterangan_cash_out||'').split(/\s*;\s*/).filter(Boolean).forEach((chunk,index)=>{
+            const item=parser.parseSegment(chunk);
+            if(!item||Number(item.nominal)<=parser.LIMIT)return;
+            const date=String(r.tanggal||'').slice(0,10);
+            this.add({key:`cashout:${date}:${r.cabang_id}:${index}:${chunk.trim()}`,tone:'urgent',icon:'!',module:'CASH OUT',href:'./erp-dashboard.html#cashout-warning-section',title:`Cash Out > Rp205.000 • ${cabang}`,detail:`${date} • ${this.money(item.nominal)} • ${item.keterangan} • ${item.kasir||'Kasir tidak tersedia'}`});
+          });
+        });
+      }catch(e){console.warn('[Notif] cash out',e)}
+    },
     async loadSetoran(db){
       try{const since=this.isoAddDays(this.jakartaToday(),-14),{data,error}=await db.from('setoran_3_harian').select('id,period_start,period_end,cabang_id,status,owner_verified,request_proof,proof_path,outside_correction_status,outside_correction_note').gte('period_end',since).order('period_end',{ascending:false}).limit(40);if(error)throw error;(data||[]).forEach(r=>{if(r.request_proof&&!r.proof_path)this.add({tone:'urgent',icon:'📷',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Bukti setoran diminta',detail:`Periode ${r.period_start} — ${r.period_end} • cabang ID ${r.cabang_id}`});const cs=String(r.outside_correction_status||'').toUpperCase();if(cs&&/REQUEST|KOREKSI|CORRECTION/.test(cs))this.add({tone:'urgent',icon:'!',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Koreksi setoran perlu ditindaklanjuti',detail:`Periode ${r.period_start} — ${r.period_end}${r.outside_correction_note?` • ${r.outside_correction_note}`:''}`});if(this.role==='owner'&&r.owner_verified===false&&String(r.status||'').toUpperCase()!=='CLEAR')this.add({tone:'warning',icon:'✓',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Setoran belum Owner Verified',detail:`Periode ${r.period_start} — ${r.period_end} • ${r.status||'menunggu review'}`})})}catch(e){console.warn('[Notif] setoran',e)}
     },
@@ -74,7 +99,7 @@
     focusLinkedModule(){
       if(!/master-tagihan\.html$/i.test(location.pathname))return;const q=new URLSearchParams(location.search),focus=q.get('focus');if(!focus)return;const target=focus==='invoice'?'#mtInvoiceCard':'.mt-card';let tries=0;const t=setInterval(()=>{const el=document.querySelector(target);if(el){clearInterval(t);el.scrollIntoView({behavior:'smooth',block:'center'});el.animate([{boxShadow:'0 0 0 0 rgba(68,190,235,0)'},{boxShadow:'0 0 0 3px rgba(68,190,235,.55)'},{boxShadow:'0 0 0 0 rgba(68,190,235,0)'}],{duration:1400,easing:'ease-out'})}else if(++tries>30)clearInterval(t)},180)
     },
-    async refresh(){if(this.loading)return;this.loading=true;this.ensureUi();const rf=document.getElementById('erpGlobalNotifRefresh');if(rf){rf.classList.add('is-loading');rf.disabled=true}if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Memuat notifikasi…</div>';try{const db=await this.waitDb();if(!db)throw new Error('Supabase belum siap');this.items=[];await this.loadIdentity(db);await Promise.all([this.loadInvoices(db),this.loadTagihan(db),this.loadArusKas(db),this.loadSetoran(db),this.loadIzin(db),this.loadPengumuman(db)]);this.render()}catch(e){console.warn('[Notif] refresh',e);if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Notifikasi belum dapat dimuat.</div>'}finally{if(rf){rf.classList.remove('is-loading');rf.disabled=false}this.loading=false}},
+    async refresh(){if(this.loading)return;this.loading=true;this.ensureUi();const rf=document.getElementById('erpGlobalNotifRefresh');if(rf){rf.classList.add('is-loading');rf.disabled=true}if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Memuat notifikasi…</div>';try{const db=await this.waitDb();if(!db)throw new Error('Supabase belum siap');this.items=[];await this.loadIdentity(db);await Promise.all([this.loadInvoices(db),this.loadTagihan(db),this.loadArusKas(db),this.loadCashOutWarnings(db),this.loadSetoran(db),this.loadIzin(db),this.loadPengumuman(db)]);this.render()}catch(e){console.warn('[Notif] refresh',e);if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Notifikasi belum dapat dimuat.</div>'}finally{if(rf){rf.classList.remove('is-loading');rf.disabled=false}this.loading=false}},
     open(){this.ensureUi();this.panel.hidden=false;this.button.setAttribute('aria-expanded','true');this.refresh()},
     close(){if(this.panel)this.panel.hidden=true;if(this.button)this.button.setAttribute('aria-expanded','false')},
     toggle(){if(!this.panel||this.panel.hidden)this.open();else this.close()},
