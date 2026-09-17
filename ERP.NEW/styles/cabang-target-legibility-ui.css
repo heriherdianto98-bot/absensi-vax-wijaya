@@ -1,0 +1,26 @@
+/* Master Cabang / Target Bulanan ONLY — readability override. No engine or data changes. */
+#modalTargetBulanan{--target-gold:#d5a41d;--target-white:#fff;--target-muted:#e0e8f2;}
+#modalTargetBulanan .modal-header h2{font-size:28px;font-weight:900;color:#fff;letter-spacing:.15px;text-shadow:0 2px 4px #070b10;}
+#modalTargetBulanan .form-group label{font-size:16px;font-weight:900;color:#fff;}
+#modalTargetBulanan .target-periode-row select,#modalTargetBulanan .target-periode-row input{font-size:17px;font-weight:900;color:#fff;}
+#modalTargetBulanan .target-row .target-nama strong{font-size:18px;font-weight:900;color:#fff;line-height:1.35;}
+#modalTargetBulanan .target-row .target-nama small{font-size:14px;font-weight:900;color:#d9ac36;letter-spacing:.45px;}
+#modalTargetBulanan .target-row input{font-size:21px;font-weight:900;color:#fff;}
+#modalTargetBulanan .target-row input::placeholder{color:#edf2f8;opacity:1;}
+#modalTargetBulanan .target-total-bar{border-color:rgba(189,137,20,.68);background:linear-gradient(110deg,#192531,#111b27 68%,#282416);}
+#modalTargetBulanan .target-total-bar span{font-size:15px;font-weight:900;color:#fff;}
+#modalTargetBulanan .target-total-bar strong{color:#e3b43e;font-size:31px;font-weight:900;text-shadow:0 1px 3px #0b1018;}
+/* Doubled ID intentionally outranks the popup-only style injected later by the suggestion script. */
+#modalTargetBulanan#modalTargetBulanan .target-reco-panel{background:linear-gradient(160deg,#172330,#0e1824);border:1px solid rgba(188,139,27,.58);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.3);}
+#modalTargetBulanan#modalTargetBulanan .target-reco-title{font-size:19px;font-weight:900;color:#e4b338;text-shadow:0 1px 2px #080d14;}
+#modalTargetBulanan#modalTargetBulanan .target-reco-help{font-size:14px;font-weight:750;line-height:1.55;color:#f0f4fa;}
+#modalTargetBulanan#modalTargetBulanan .target-reco-status{font-size:14px;font-weight:900;line-height:1.55;color:#e4b338;}
+#modalTargetBulanan#modalTargetBulanan .target-reco-source{font-size:14px;font-weight:900;line-height:1.5;color:#e9eff8;}
+#modalTargetBulanan#modalTargetBulanan .target-reco-warning{color:#f5c47a;}
+#modalTargetBulanan#modalTargetBulanan .target-reco-foot{font-size:13px;font-weight:750;line-height:1.5;color:#e0e7f0;}
+#modalTargetBulanan#modalTargetBulanan .target-reco-btn{font-size:13px;font-weight:900;color:#f5d27f;background:linear-gradient(180deg,#433517,#292314);border:1px solid #9e791b;box-shadow:inset 0 1px 0 rgba(255,255,255,.07);}
+#modalTargetBulanan#modalTargetBulanan .target-reco-actions .target-reco-btn{font-size:12px;font-weight:900;padding:7px 10px;}
+#modalTargetBulanan#modalTargetBulanan .target-reco-btn:disabled{opacity:.61;color:#b9a582;border-color:#6d5b35;}
+#modalTargetBulanan .btn-salin-target{font-size:15px;font-weight:900;color:#f3c755;}
+#modalTargetBulanan #btnSimpanSemuaTarget{font-size:15px;font-weight:900;color:#161b23;background:linear-gradient(180deg,#edc44f,#ce971b);border-color:#a77b17;}
+@media(max-width:640px){#modalTargetBulanan .modal-header h2{font-size:23px}#modalTargetBulanan .target-row .target-nama strong{font-size:15px}#modalTargetBulanan .target-row input{font-size:17px}#modalTargetBulanan#modalTargetBulanan .target-reco-help,#modalTargetBulanan#modalTargetBulanan .target-reco-status{font-size:13px}#modalTargetBulanan#modalTargetBulanan .target-reco-actions .target-reco-btn{font-size:11px}}
