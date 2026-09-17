@@ -9,7 +9,7 @@
 #masterRoot #btnTambahCabang{min-height:47px;padding:10px 19px;border-radius:11px;border:1px solid #be911b;background:linear-gradient(180deg,#f5cc46,#d8a722);color:#15191f;font-size:15px;font-weight:900;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 8px 16px rgba(0,0,0,.22)}
 #masterRoot .btn-target-bulanan{min-height:47px;padding:10px 16px;border:1px solid #3a4654;border-radius:10px;background:#1a2029;color:#e2e8f0;font-size:14px;font-weight:800;box-shadow:none}
 #masterRoot #btnTambahCabang:hover,#masterRoot .btn-target-bulanan:hover{transform:translateY(-2px)}
-/* Distinct color, clearly raised rim, pronounced directional light, inset bevel, and responsive hover depth. */
+/* Raised four-color summary tiles. */
 #masterRoot .summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px;padding:6px 4px 12px;perspective:900px;overflow:visible}
 #masterRoot .summary-grid>.summary-card{--kpi-rgb:242,194,48;--kpi-accent:#f2c230;position:relative;box-sizing:border-box;isolation:isolate;display:flex;flex-direction:column;justify-content:center;min-width:0;min-height:102px;padding:15px 16px 15px 77px;overflow:visible;border:1px solid rgba(var(--kpi-rgb),.65);border-left:4px solid rgb(var(--kpi-rgb));border-radius:13px;background:radial-gradient(ellipse at 9% 0%,rgba(var(--kpi-rgb),.30),transparent 52%),linear-gradient(155deg,#30343a 0%,#1b2029 26%,#10151d 86%);box-shadow:inset 0 2px 1px rgba(255,255,255,.19),inset 2px 0 0 rgba(var(--kpi-rgb),.18),inset 0 -4px 7px rgba(0,0,0,.5),0 5px 0 #070a10,0 8px 0 rgba(var(--kpi-rgb),.17),0 19px 31px rgba(0,0,0,.62),0 0 18px rgba(var(--kpi-rgb),.32),0 0 5px rgba(var(--kpi-rgb),.44);animation:none;transform:translateY(0) rotateX(0deg);transform-style:preserve-3d;transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s ease,box-shadow .28s ease,filter .28s ease}
 #masterRoot .summary-grid>.summary-card:nth-child(1){--kpi-rgb:242,194,48;--kpi-accent:#ffe18c}
@@ -26,7 +26,7 @@
 #masterRoot .summary-grid>.summary-card h2{position:relative;z-index:2;margin:8px 0 0;color:#fff;font-size:35px;font-weight:900;line-height:1;text-shadow:0 2px 1px #070a10,0 0 20px rgba(var(--kpi-rgb),.37)}
 #masterRoot .summary-grid>.summary-card:hover{transform:translateY(-7px) rotateX(5deg) scale(1.015);border-color:rgba(var(--kpi-rgb),.98);filter:brightness(1.08);box-shadow:inset 0 2px 1px rgba(255,255,255,.26),inset 2px 0 0 rgba(var(--kpi-rgb),.28),inset 0 -4px 7px rgba(0,0,0,.5),0 8px 0 #070a10,0 11px 0 rgba(var(--kpi-rgb),.25),0 25px 40px rgba(0,0,0,.72),0 0 34px rgba(var(--kpi-rgb),.62),0 0 12px rgba(var(--kpi-rgb),.68)}
 #masterRoot .summary-grid>.summary-card:hover::before{transform:translateY(-55%) translateZ(28px);box-shadow:inset 0 2px 1px rgba(255,255,255,.32),inset 0 -3px 4px rgba(0,0,0,.4),0 6px 0 #090d12,0 12px 20px rgba(0,0,0,.7),0 0 24px rgba(var(--kpi-rgb),.75)}
-/* Match Master Karyawan compact filter and gold table; functionality untouched. */
+/* Master Karyawan-like filter and gold table. */
 #masterRoot .content-card{padding:0;border:0;background:transparent;box-shadow:none;animation:none}
 #masterRoot .toolbar{display:grid;grid-template-columns:minmax(250px,1.6fr) minmax(190px,.8fr);gap:10px;margin:0 0 13px;padding:11px;border:1px solid #2a3340;border-radius:12px;background:#171c23;box-shadow:0 6px 16px rgba(0,0,0,.18)}
 #masterRoot .search-box input,#masterRoot .toolbar select{height:46px;border:1px solid #34404d;border-radius:9px;background:#20262f;color:#f8fafc;font-size:15px;font-weight:700;box-shadow:none}
@@ -44,8 +44,7 @@
 @media(max-width:1100px){#masterRoot .page-header{align-items:flex-start;flex-wrap:wrap}#masterRoot .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){#masterRoot .page-header{padding:15px;min-height:0}#masterRoot .page-header h1{font-size:29px}#masterRoot .page-header p{font-size:14px}#masterRoot .page-header>div:last-child{width:100%;justify-content:flex-start}#masterRoot .summary-grid{gap:9px}#masterRoot .summary-grid>.summary-card{min-height:91px;padding:11px 10px 11px 58px}#masterRoot .summary-grid>.summary-card::before{left:10px;width:37px;height:37px;font-size:22px}#masterRoot .summary-grid>.summary-card span{font-size:11px}#masterRoot .summary-grid>.summary-card h2{font-size:28px}#masterRoot .toolbar{grid-template-columns:1fr}#masterRoot .table-wrapper tbody td{padding:9px 10px}}
 @media(prefers-reduced-motion:reduce){#masterRoot .summary-grid>.summary-card,#masterRoot #btnTambahCabang,#masterRoot .btn-target-bulanan{transition:none}#masterRoot .summary-grid>.summary-card:hover{transform:none}#masterRoot .summary-grid>.summary-card:hover::before{transform:translateY(-50%)}}
-
-/* Owner UI request: pronounced 3D header and table; preserve scrolling, sticky headers and every action. */
+/* 3D header and table; preserve scroll and sticky column headers. */
 #masterRoot .page-header{isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 90% 10%,rgba(242,194,48,.17),transparent 38%),linear-gradient(150deg,#242a33 0%,#171d26 48%,#10151c 100%);border-color:rgba(242,194,48,.54);border-left-color:#f2c230;box-shadow:inset 0 2px 1px rgba(255,255,255,.17),inset 0 -4px 7px rgba(0,0,0,.4),0 6px 0 #090c10,0 10px 0 rgba(242,194,48,.11),0 22px 38px rgba(0,0,0,.56),0 0 27px rgba(242,194,48,.22);transition:box-shadow .25s ease,transform .25s ease}
 #masterRoot .page-header::after{content:'';position:absolute;right:-70px;bottom:-110px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(242,194,48,.24),transparent 69%);pointer-events:none;z-index:0}
 #masterRoot .page-header>div{position:relative;z-index:1}
@@ -53,10 +52,20 @@
 #masterRoot .page-header h1{text-shadow:0 2px 1px #080b10,0 8px 17px rgba(0,0,0,.56)}
 #masterRoot #btnTambahCabang{box-shadow:inset 0 2px 1px rgba(255,255,255,.32),inset 0 -3px 2px rgba(97,68,5,.4),0 4px 0 #765812,0 11px 17px rgba(0,0,0,.4)}
 #masterRoot .btn-target-bulanan{box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -2px 0 rgba(0,0,0,.36),0 4px 0 #090c11,0 11px 18px rgba(0,0,0,.35)}
-/* Keep overflow:auto: the last action column must remain scrollable horizontally. */
 #masterRoot .table-wrapper{position:relative;overflow:auto;border:1px solid rgba(242,194,48,.29);border-radius:15px;background:linear-gradient(180deg,#1b222c,#10151c 80%);box-shadow:inset 0 2px 1px rgba(255,255,255,.12),inset 0 -3px 4px rgba(0,0,0,.4),0 6px 0 #080c12,0 10px 0 rgba(242,194,48,.10),0 23px 40px rgba(0,0,0,.5),0 0 24px rgba(242,194,48,.12)}
 #masterRoot .table-wrapper thead th{background:linear-gradient(180deg,#ffe17a 0%,#f5cb38 43%,#dba817 100%);border-bottom:3px solid #987006;box-shadow:inset 0 2px 0 rgba(255,255,255,.42),inset 0 -3px 2px rgba(91,63,2,.3);text-shadow:0 1px 0 rgba(255,255,255,.18)}
 #masterRoot .table-wrapper tbody td{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),inset 0 -1px 0 rgba(0,0,0,.25)}
 #masterRoot .table-wrapper tbody tr:hover td{background:linear-gradient(180deg,#242b35,#171e27);box-shadow:inset 0 1px 0 rgba(255,255,255,.065),inset 0 -1px 0 rgba(0,0,0,.32)}
 #masterRoot .table-wrapper .btn-edit{box-shadow:inset 0 2px 0 rgba(255,255,255,.17),inset 0 -2px 0 rgba(0,0,0,.3),0 3px 0 #171109,0 8px 14px rgba(0,0,0,.35)}
 @media(prefers-reduced-motion:reduce){#masterRoot .page-header{transition:none}#masterRoot .page-header:hover{transform:none}}
+/* Owner: compact rows and premium status action; buttons remain fully functional. */
+#masterRoot .table-wrapper tbody td{padding:7px 12px;line-height:1.15;height:46px;font-size:14px}
+#masterRoot .table-wrapper tbody td:last-child{white-space:nowrap}
+#masterRoot .table-wrapper .action-group{display:flex;align-items:center;flex-wrap:nowrap;gap:8px;min-width:max-content}
+#masterRoot .table-wrapper .btn-action{display:inline-flex;align-items:center;justify-content:center;min-height:31px;padding:5px 11px;line-height:1.1;white-space:nowrap;border-radius:9px;font-size:13px;font-weight:900;cursor:pointer;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease,border-color .2s ease}
+#masterRoot .table-wrapper .btn-status{color:#ffd4d8;border:1px solid #aa4c59;background:linear-gradient(160deg,#61303c 0%,#3d202a 52%,#251820 100%);text-shadow:0 1px 1px rgba(0,0,0,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 0 rgba(0,0,0,.42),0 3px 0 #170d13,0 8px 14px rgba(0,0,0,.38),0 0 13px rgba(255,91,119,.18)}
+#masterRoot .table-wrapper .btn-status:hover{color:#fff2f3;border-color:#f27e91;filter:brightness(1.12);transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -2px 0 rgba(0,0,0,.4),0 5px 0 #170d13,0 11px 20px rgba(0,0,0,.46),0 0 20px rgba(255,91,119,.35)}
+#masterRoot .table-wrapper .btn-status:active{transform:translateY(1px);box-shadow:inset 0 2px 5px rgba(0,0,0,.38),0 1px 0 #170d13}
+#masterRoot .table-wrapper .btn-status:focus-visible{outline:2px solid #ffb2bf;outline-offset:3px}
+@media(max-width:600px){#masterRoot .table-wrapper tbody td{padding:7px 9px}#masterRoot .table-wrapper .action-group{gap:6px}}
+@media(prefers-reduced-motion:reduce){#masterRoot .table-wrapper .btn-action{transition:none}#masterRoot .table-wrapper .btn-status:hover{transform:none}}
