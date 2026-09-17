@@ -23,11 +23,38 @@
 #modalTargetBulanan#modalTargetBulanan .target-reco-btn:disabled{opacity:.61;color:#b9a582;border-color:#6d5b35;}
 #modalTargetBulanan .btn-salin-target{font-size:15px;font-weight:900;color:#f3c755;}
 #modalTargetBulanan #btnSimpanSemuaTarget{font-size:15px;font-weight:900;color:#161b23;background:linear-gradient(180deg,#edc44f,#ce971b);border-color:#a77b17;}
-/* Popup-only layout: wider on desktop, with the branch list as the sole scroll region. */
-@media(min-width:641px) and (min-height:781px){
-  #modalTargetBulanan .modal-box{width:min(1280px,calc(100vw - 64px));height:min(92vh,900px);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;}
-  #modalTargetBulanan .modal-header,#modalTargetBulanan .target-periode-row,#modalTargetBulanan .target-reco-panel,#modalTargetBulanan .target-total-bar,#modalTargetBulanan .modal-footer{flex:0 0 auto;}
-  #modalTargetBulanan .target-list-wrapper{flex:1 1 auto;min-height:140px;max-height:none;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;}
-  #modalTargetBulanan .modal-footer{position:relative;bottom:auto;}
+/* Desktop: a compact two-column branch grid, no nested scrollbar when ten branches fit. */
+@media(min-width:1100px) and (min-height:760px){
+  #modalTargetBulanan{padding:10px 20px;}
+  #modalTargetBulanan .modal-box{box-sizing:border-box;width:min(1370px,calc(100vw - 40px));height:min(95vh,930px);max-height:95vh;display:flex;flex-direction:column;overflow:hidden;}
+  #modalTargetBulanan .modal-header{flex:0 0 auto;position:relative;padding:12px 22px;}
+  #modalTargetBulanan .target-periode-row{flex:0 0 auto;padding:10px 22px 0;gap:12px;}
+  #modalTargetBulanan .target-periode-row select,#modalTargetBulanan .target-periode-row input,#modalTargetBulanan #targetCabangNav{height:39px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-panel{flex:0 0 auto;margin:9px 22px 0;padding:9px 13px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-title{font-size:16px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-help{margin:2px 0 3px;font-size:11px;line-height:1.3;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-status{font-size:11px;line-height:1.3;}
+  #modalTargetBulanan .target-reco-bulk{margin-top:5px;gap:6px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-bulk .target-reco-btn{padding:4px 8px;font-size:11px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-foot{margin:4px 0 0;font-size:11px;line-height:1.25;}
+  #modalTargetBulanan .target-list-wrapper{box-sizing:border-box;flex:1 1 auto;min-height:0;max-height:none;margin:9px 22px 0;padding:5px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);align-content:stretch;gap:5px;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:auto;}
+  #modalTargetBulanan#modalTargetBulanan .target-row{box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,175px);min-width:0;min-height:0;height:auto;gap:8px;padding:5px 9px;border:1px solid rgba(168,186,208,.16);border-radius:8px;align-items:center;}
+  #modalTargetBulanan .target-row .target-nama{gap:0;}
+  #modalTargetBulanan .target-row .target-nama strong{font-size:14px;line-height:1.18;}
+  #modalTargetBulanan .target-row .target-nama small{font-size:11px;line-height:1.2;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-source{margin-top:2px;font-size:11px;line-height:1.2;}
+  #modalTargetBulanan .target-reco-actions{gap:4px;margin-top:3px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-actions .target-reco-btn{padding:3px 5px;font-size:10px;line-height:1.1;}
+  #modalTargetBulanan .target-row input{height:40px;font-size:17px;padding:0 9px;}
+  #modalTargetBulanan .target-total-bar{flex:0 0 auto;margin:9px 22px 0;padding:10px 15px;}
+  #modalTargetBulanan .target-total-bar strong{font-size:25px;}
+  #modalTargetBulanan .modal-footer{position:relative;bottom:auto;flex:0 0 auto;margin-top:9px;padding:10px 22px 12px;min-height:0;}
+  #modalTargetBulanan .modal-footer button{min-height:39px;padding:7px 12px;}
+}
+/* On shorter or narrower screens, preserve scrolling instead of clipping content/buttons. */
+@media(min-width:641px) and (max-width:1099px), (min-width:641px) and (max-height:759px){
+  #modalTargetBulanan .modal-box{width:min(1100px,calc(100vw - 28px));height:auto;max-height:94vh;display:block;overflow-y:auto;}
+  #modalTargetBulanan .target-list-wrapper{display:block;max-height:38vh;min-height:0;overflow-y:auto;}
+  #modalTargetBulanan .modal-footer{position:sticky;bottom:0;z-index:5;}
 }
 @media(max-width:640px){#modalTargetBulanan .modal-header h2{font-size:23px}#modalTargetBulanan .target-row .target-nama strong{font-size:15px}#modalTargetBulanan .target-row input{font-size:17px}#modalTargetBulanan#modalTargetBulanan .target-reco-help,#modalTargetBulanan#modalTargetBulanan .target-reco-status{font-size:13px}#modalTargetBulanan#modalTargetBulanan .target-reco-actions .target-reco-btn{font-size:11px}}
