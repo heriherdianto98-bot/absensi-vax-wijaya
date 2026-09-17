@@ -235,3 +235,70 @@
     julyCashOut: 'REVISED_CASH_OUT_ONLY'
   });
 })();
+
+/* UI ONLY: scope the locked salary diagram's presentation to Parahyangan JUL 2026. */
+(() => {
+  const normal = value => String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  const rupiah = value => new Intl.NumberFormat('id-ID', {
+    style: 'currency', currency: 'IDR', maximumFractionDigits: 0
+  }).format(Number(value || 0));
+  let observer;
+
+  function paint() {
+    const report = window.InvestorRevisedReport;
+    const branch = document.getElementById('lbBranch');
+    const period = document.getElementById('lbMonth');
+    if (String(branch?.value) !== '8' || period?.value !== '2026-07' ||
+        Number(report?.branch?.id) !== 8 ||
+        report?.diagnostics?.investorRevised?.applied !== true ||
+        report?.diagnostics?.parahyanganJulyCashOut?.applied !== true ||
+        String(report?.range?.start) !== '2026-07-01' ||
+        String(report?.range?.end) !== '2026-07-31') return;
+
+    const diagram = document.getElementById('vax-salary-diagram');
+    if (!diagram) return;
+    const group = [...diagram.querySelectorAll('.vax-salary-group')].find(node =>
+      normal(node.querySelector('.vax-salary-group-head h3')?.textContent) === 'gaji capster'
+    );
+    if (!group) return;
+    const cards = [...group.querySelectorAll('.vax-salary-card')];
+    const uci = cards.find(card => normal(card.querySelector('.vax-salary-identity h4')?.textContent) === 'uci');
+    const service = Number((report.gaji?.capsterDetail || []).find(row => normal(row.nama) === 'uci')?.serviceCashShare || 0);
+    const details = uci?.querySelector('.vax-salary-details');
+    if (details && service > 0 && !details.querySelector('[data-july-uci-service]')) {
+      const item = document.createElement('div');
+      item.className = 'vax-salary-detail';
+      item.dataset.julyUciService = '1';
+      const title = document.createElement('span');
+      title.textContent = 'Share Service';
+      const amount = document.createElement('strong');
+      amount.textContent = rupiah(service);
+      item.append(title, amount);
+      details.appendChild(item);
+    }
+
+    for (const card of cards) {
+      if (normal(card.querySelector('.vax-salary-identity h4')?.textContent) !== 'protek belum terpetakan') continue;
+      const source = (report.gaji?.capsterDetail || []).find(row => normal(row.nama) === 'protek belum terpetakan');
+      if (!source || Number(source.total || 0) === 0) card.remove();
+    }
+    const count = group.querySelectorAll('.vax-salary-card').length;
+    const badge = group.querySelector('.vax-salary-group-head span');
+    if (badge && badge.textContent !== `${count} karyawan`) badge.textContent = `${count} karyawan`;
+  }
+
+  function boot() {
+    const salaryCard = document.querySelector('[data-lb-view="salary"]');
+    if (salaryCard) {
+      observer = new MutationObserver(paint);
+      observer.observe(salaryCard, { childList: true, subtree: true });
+    }
+    document.addEventListener('laporan-investor:revised-report-applied', () => requestAnimationFrame(paint));
+    document.getElementById('lbSectionView')?.addEventListener('change', () => requestAnimationFrame(paint));
+    document.getElementById('lbBranch')?.addEventListener('change', () => requestAnimationFrame(paint));
+    document.getElementById('lbMonth')?.addEventListener('change', () => requestAnimationFrame(paint));
+    requestAnimationFrame(paint);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+})();
