@@ -4,23 +4,23 @@
   --target-gold:#f4c843;
   --target-white:#f8fafc;
   --target-muted:#c5d0df;
-  background:rgba(3,6,11,.79);
+  background:rgba(3,6,11,.84);
 }
 #modalTargetBulanan .modal-box {
   box-sizing:border-box;
   width:min(960px,calc(100vw - 36px));
   max-height:min(90vh,900px);
-  border:1px solid rgba(242,194,48,.54);
+  border:1px solid rgba(242,194,48,.42);
   border-radius:19px;
-  background:radial-gradient(ellipse at 10% 0%,rgba(242,194,48,.13),transparent 38%),linear-gradient(155deg,#2a313c 0%,#202935 48%,#19222e 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 5px 0 #080c12,0 25px 65px rgba(0,0,0,.7),0 0 33px rgba(242,194,48,.16);
+  background:linear-gradient(165deg,#18212d 0%,#111a25 48%,#0b121b 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 5px 0 #080c12,0 25px 65px rgba(0,0,0,.7),0 0 33px rgba(242,194,48,.09);
   color:var(--target-white);
 }
 #modalTargetBulanan .modal-header {
   padding:21px 26px;
-  border-bottom:1px solid rgba(242,194,48,.38);
-  background:linear-gradient(180deg,#29323f 0%,#202936 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 5px 14px rgba(0,0,0,.19);
+  border-bottom:1px solid rgba(242,194,48,.26);
+  background:linear-gradient(180deg,#202a37 0%,#17212c 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 5px 14px rgba(0,0,0,.19);
 }
 #modalTargetBulanan .modal-header h2 {
   margin:0;
@@ -34,11 +34,11 @@
 #modalTargetBulanan .btn-close {
   width:43px;
   height:43px;
-  border-color:#516071;
-  background:linear-gradient(160deg,#3d4857,#252f3c);
+  border-color:#455365;
+  background:linear-gradient(160deg,#303c4b,#202b38);
   color:#fff;
   font-size:17px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 4px 9px rgba(0,0,0,.26);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 4px 9px rgba(0,0,0,.26);
 }
 #modalTargetBulanan .btn-close:hover {border-color:var(--target-gold);background:#f4c843;color:#111820;}
 #modalTargetBulanan .target-periode-row {padding:22px 25px 0;gap:16px;}
@@ -51,13 +51,13 @@
 #modalTargetBulanan .target-periode-row select,
 #modalTargetBulanan .target-periode-row input {
   height:49px;
-  border:1px solid #647386;
+  border:1px solid #536276;
   border-radius:11px;
-  background:#293341;
+  background:#202b39;
   color:#fff;
   font-size:16px;
   font-weight:800;
-  box-shadow:inset 0 2px 5px rgba(0,0,0,.22),0 1px 0 rgba(255,255,255,.05);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.22),0 1px 0 rgba(255,255,255,.04);
 }
 #modalTargetBulanan .target-periode-row select:focus-visible,
 #modalTargetBulanan .target-periode-row input:focus-visible {
@@ -68,25 +68,25 @@
 #modalTargetBulanan .target-list-wrapper {
   margin:19px 25px 0;
   padding:9px;
-  max-height: min(39vh,370px);
-  border:1px solid #526072;
+  max-height:min(39vh,370px);
+  border:1px solid #3a495a;
   border-radius:14px;
-  background:linear-gradient(150deg,#202a36,#19232e);
-  box-shadow:inset 0 2px 8px rgba(0,0,0,.25),0 4px 12px rgba(0,0,0,.14);
-  scrollbar-color:#a98734 #24303e;
+  background:linear-gradient(150deg,#141e29,#0d1620);
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.33),0 4px 12px rgba(0,0,0,.18);
+  scrollbar-color:#a98734 #18232f;
 }
 #modalTargetBulanan .target-list-wrapper::-webkit-scrollbar-thumb {background:#a98734;}
 #modalTargetBulanan .target-row {
   grid-template-columns:minmax(0,1fr) minmax(200px,245px);
   gap:16px;
   padding:14px 15px;
-  border-bottom:1px solid rgba(168,186,208,.22);
+  border-bottom:1px solid rgba(168,186,208,.17);
   border-radius:9px;
   transition:background-color .18s ease,box-shadow .18s ease;
 }
-#modalTargetBulanan .target-row:nth-child(odd) {background:rgba(255,255,255,.035);}
+#modalTargetBulanan .target-row:nth-child(odd) {background:rgba(255,255,255,.02);}
 #modalTargetBulanan .target-row:hover {
-  background:rgba(242,194,48,.085);
+  background:rgba(242,194,48,.075);
   box-shadow:inset 3px 0 0 rgba(242,194,48,.72);
 }
 #modalTargetBulanan .target-row .target-nama {min-width:0;gap:4px;}
@@ -109,29 +109,29 @@
   width:100%;
   height:48px;
   padding:0 14px;
-  border:1px solid #657386;
+  border:1px solid #536276;
   border-radius:10px;
-  background:linear-gradient(180deg,#303c4b,#26313e);
+  background:linear-gradient(180deg,#253242,#1a2735);
   color:#fff;
   font-size:19px;
   font-weight:900;
   font-variant-numeric:tabular-nums;
   text-align:right;
-  box-shadow:inset 0 2px 6px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.06);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04);
 }
 #modalTargetBulanan .target-row input::placeholder {color:#c3cedb;opacity:1;}
 #modalTargetBulanan .target-row input:focus {
   border-color:var(--target-gold);
-  background:#354455;
+  background:#2a3b4e;
   box-shadow:0 0 0 3px rgba(244,200,67,.17),inset 0 2px 5px rgba(0,0,0,.16);
 }
 #modalTargetBulanan .target-total-bar {
   margin:18px 25px 0;
   padding:18px 20px;
-  border:1px solid rgba(244,200,67,.67);
+  border:1px solid rgba(244,200,67,.55);
   border-radius:13px;
-  background:linear-gradient(120deg,#35404c,#26313d 65%,#3b3726);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 0 #0e141a,0 10px 20px rgba(0,0,0,.25);
+  background:linear-gradient(120deg,#202c39,#17212d 65%,#242618);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 4px 0 #0e141a,0 10px 20px rgba(0,0,0,.28);
 }
 #modalTargetBulanan .target-total-bar span {
   color:#f2f5fa;
@@ -149,9 +149,9 @@
 #modalTargetBulanan .modal-footer {
   padding:18px 25px 20px;
   margin-top:19px;
-  border-top:1px solid rgba(242,194,48,.31);
-  background:linear-gradient(180deg,#222c38,#1a232e);
-  box-shadow:0 -8px 20px rgba(0,0,0,.13);
+  border-top:1px solid rgba(242,194,48,.23);
+  background:linear-gradient(180deg,#17212d,#101923);
+  box-shadow:0 -8px 20px rgba(0,0,0,.18);
 }
 #modalTargetBulanan .btn-salin-target,
 #modalTargetBulanan #btnSimpanSemuaTarget {
@@ -162,10 +162,17 @@
   font-weight:900;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 4px 0 rgba(0,0,0,.24),0 8px 14px rgba(0,0,0,.17);
 }
-#modalTargetBulanan .btn-salin-target {border-color:#657386;color:#ffe18a;background:linear-gradient(180deg,#3b4655,#2b3543);}
+#modalTargetBulanan .btn-salin-target {border-color:#536276;color:#ffe18a;background:linear-gradient(180deg,#2e3b4b,#202e3d);}
 #modalTargetBulanan #btnSimpanSemuaTarget {border:1px solid #b18a20;color:#171a20;background:linear-gradient(180deg,#ffe17b,#edbc32);}
 #modalTargetBulanan .btn-salin-target:hover,
 #modalTargetBulanan #btnSimpanSemuaTarget:hover {filter:brightness(1.09);transform:translateY(-2px);}
+/* The recommendation panel is inserted by the popup-only UI script. */
+#modalTargetBulanan #targetRecommendationPanel,
+#modalTargetBulanan .target-recommendation-panel {
+  background:linear-gradient(160deg,#1b2735,#111b27);
+  border-color:rgba(242,194,48,.32);
+  color:#ecf2fb;
+}
 @media(max-width:640px) {
   #modalTargetBulanan {padding:12px;}
   #modalTargetBulanan .modal-box {width:100%;max-height:94vh;}
