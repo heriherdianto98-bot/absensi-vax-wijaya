@@ -35,10 +35,9 @@
     const uciRow = salaryRows.find(row => clean(row.cells?.[0]?.textContent) === 'uci');
     if (!uciRow || uciRow.cells.length < 6) return html;
 
-    // Check the ACTUAL printable columns, not internal payroll/mapped fields.
-    // The existing print bridge already places Free Point in ADJ.; July's
-    // Share Service is the exact difference between printed components and
-    // the ALREADY CORRECT printed total. Never increase the total itself.
+    // Check the actual printable columns. Existing Free Point stays in ADJ.;
+    // July Share Service is the difference to the ALREADY CORRECT total.
+    // Only the printed presentation changes; never increase salary totals.
     const freePoint = Number(uci.freePoint || 0);
     const service = Number(uci.serviceCashShare || 0);
     const printedBase = amount(uciRow.cells[2].textContent);
@@ -53,13 +52,12 @@
       });
       return html;
     }
-    const uciName = uciRow.cells[0];
-    uciName.textContent = 'Uci';
-    const note = doc.createElement('small');
-    note.textContent = `Free Point ${money(freePoint)} + Share Service ${money(service)}`;
-    note.style.cssText = 'display:block;font-size:5.6pt;color:#53606c;line-height:1.3';
-    uciName.appendChild(note);
-    uciRow.cells[3].textContent = money(printedAdjustment + service);
+    // Keep the name column exactly as compact as August. The full Free Point
+    // and Share Service breakdown belongs to ADJ., not beneath the name.
+    uciRow.cells[0].textContent = 'Uci';
+    const adjCell = uciRow.cells[3];
+    adjCell.textContent = money(printedAdjustment + service);
+    adjCell.title = `Free Point ${money(freePoint)} + Share Service ${money(service)}`;
     salaryRows.filter(row => clean(row.cells?.[0]?.textContent) === 'protek belum terpetakan' &&
       amount(row.cells?.[5]?.textContent) === 0).forEach(row => row.remove());
 
