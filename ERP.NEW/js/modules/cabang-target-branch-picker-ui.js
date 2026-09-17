@@ -10,7 +10,7 @@
   style.textContent = `
     #modalTargetBulanan .target-periode-row{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr) minmax(125px,.56fr);align-items:end;gap:14px}
     #modalTargetBulanan .target-periode-row>.form-group{min-width:0}
-    #modalTargetBulanan #targetCabangNav{height:49px;width:100%;min-width:0;border:1px solid #536276;border-radius:11px;padding:0 13px;background:#202b39;color:#fff;font:900 17px inherit;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}
+    #modalTargetBulanan #targetCabangNav{height:49px;width:100%;min-width:0;border:1px solid #536276;border-radius:11px;padding:0 13px;background:#202b39;color:#fff;font-size:17px;font-weight:900;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}
     #modalTargetBulanan #targetCabangNav:focus-visible{outline:2px solid rgba(213,164,29,.55);outline-offset:1px}
     #modalTargetBulanan .target-row.target-nav-current{outline:2px solid rgba(213,164,29,.85);outline-offset:-2px;background:rgba(213,164,29,.09)}
     @media(max-width:640px){#modalTargetBulanan .target-periode-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}#modalTargetBulanan .target-cabang-nav-field{grid-column:1/-1}#modalTargetBulanan #targetCabangNav{height:45px;font-size:15px}}
@@ -45,8 +45,9 @@
   function navigate(){
     const target = rows().find(row => row.querySelector(".input-target-cabang")?.dataset.cabangId === select.value);
     rows().forEach(row => row.classList.toggle("target-nav-current", row === target));
-    if(target) list.scrollTop = Math.max(0, target.offsetTop - list.offsetTop - 9);
-    else list.scrollTop = 0;
+    if(target){
+      list.scrollTop += target.getBoundingClientRect().top - list.getBoundingClientRect().top - 9;
+    } else list.scrollTop = 0;
   }
   select.addEventListener("change", navigate);
   const observer = new MutationObserver(records => {
