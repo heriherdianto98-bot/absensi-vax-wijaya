@@ -50,6 +50,25 @@
   #modalTargetBulanan .target-total-bar strong{font-size:25px;}
   #modalTargetBulanan .modal-footer{position:relative;bottom:auto;flex:0 0 auto;margin-top:9px;padding:10px 22px 12px;min-height:0;}
   #modalTargetBulanan .modal-footer button{min-height:39px;padding:7px 12px;}
+  /* Make the toolbar and ERP source explanation compact without changing any controls or values. */
+  #modalTargetBulanan .modal-header{padding:9px 22px;}
+  #modalTargetBulanan .modal-header h2{font-size:23px;}
+  #modalTargetBulanan .btn-close{width:35px;height:35px;}
+  #modalTargetBulanan .target-periode-row{padding:6px 22px 0;gap:9px;}
+  #modalTargetBulanan .target-periode-row .form-group label{font-size:12px;line-height:1.2;margin-bottom:3px;}
+  #modalTargetBulanan .target-periode-row select,#modalTargetBulanan .target-periode-row input,#modalTargetBulanan #targetCabangNav{height:33px;font-size:14px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-panel{margin:6px 22px 0;padding:6px 11px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-title{font-size:14px;line-height:1.2;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-help{font-size:11px;line-height:1.18;margin:2px 0;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-status{font-size:11px;line-height:1.18;}
+  #modalTargetBulanan .target-reco-bulk{margin-top:3px;gap:5px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-bulk .target-reco-btn{padding:3px 8px;font-size:10px;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-foot{font-size:10px;line-height:1.15;margin:3px 0 0;}
+  #modalTargetBulanan .target-list-wrapper{margin-top:6px;gap:8px;padding:6px;}
+  #modalTargetBulanan#modalTargetBulanan .target-row{padding:8px 9px;gap:8px;}
+  #modalTargetBulanan .target-row .target-nama strong{font-size:14px;line-height:1.2;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-source{font-size:11px;line-height:1.25;}
+  #modalTargetBulanan#modalTargetBulanan .target-reco-actions .target-reco-btn{font-size:10px;padding:4px 5px;}
 }
 /* On shorter or narrower screens, preserve scrolling instead of clipping content/buttons. */
 @media(min-width:641px) and (max-width:1099px), (min-width:641px) and (max-height:759px){
