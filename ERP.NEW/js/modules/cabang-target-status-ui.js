@@ -27,7 +27,7 @@
     #modalTargetBulanan .dual-eyebrow,#modalTargetBulanan .dual-card h4,#modalTargetBulanan .dual-summary-toggle,#modalTargetBulanan #dualTargetStatus{color:#d2a129!important}
     #modalTargetBulanan .dual-summary-row.current{color:#d7ab40!important;border-color:#a57c26!important}
     #modalTargetBulanan #dualTargetStatus.error{color:#ffaaa7!important}
-    #modalTargetBulanan #dualTargetHistory{margin:0 0 12px;padding:10px 13px;border:1px solid #655129;border-radius:9px;background:linear-gradient(120deg,#201d15,#141c25);color:#e5d4aa;font-size:12px;line-height:1.5}
+    #modalTargetBulanan #dualTargetHistory{margin:12px 0 0;padding:10px 13px;border:1px solid #655129;border-radius:9px;background:linear-gradient(120deg,#201d15,#141c25);color:#e5d4aa;font-size:12px;line-height:1.5}
     #modalTargetBulanan #dualTargetHistory[hidden]{display:none!important}
     #modalTargetBulanan #dualTargetHistory strong{display:block;margin-bottom:4px;color:#d9aa37;font-size:12px;font-weight:900}
     #modalTargetBulanan #dualTargetHistory .dual-history-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px}
@@ -41,7 +41,7 @@
   banner.hidden = true;
   banner.setAttribute("aria-live", "polite");
   banner.innerHTML = '<strong>Status target tersimpan</strong><div class="dual-history-items"><span id="dualHistoryOmzet"></span><span id="dualHistoryUltimate"></span></div>';
-  editor.querySelector(".dual-grid")?.before(banner);
+  editor.querySelector(".dual-grid")?.after(banner);
   const omzetText = document.getElementById("dualHistoryOmzet");
   const ultimateText = document.getElementById("dualHistoryUltimate");
   const fmt = value => {
@@ -64,7 +64,12 @@
   let pending = null;
   function schedule(){
     if (pending !== null) clearTimeout(pending);
-    pending = setTimeout(() => {pending=null;void render();}, 120);
+    pending = setTimeout(() => {pending=null;void render().catch(() => {
+      if (!banner.hidden) {
+        omzetText.textContent = "Omzet: status tidak dapat dibaca";
+        ultimateText.textContent = "Ultimate: status tidak dapat dibaca";
+      }
+    });}, 120);
   }
   async function render(){
     const seq = ++request;
