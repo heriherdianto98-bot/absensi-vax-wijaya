@@ -1,109 +1,100 @@
-/* Master Cabang / target popup: branch navigator + isolated non-writing atomic-save test. */
+/* Isolated Master Cabang dual-target editor. Never modifies locked KPI / legacy engines. */
 "use strict";
 (() => {
   const modal = document.getElementById("modalTargetBulanan");
-  const periodRow = modal?.querySelector(".target-periode-row");
-  const list = document.getElementById("targetListWrapper");
-  if (!modal || !periodRow || !list || document.getElementById("targetCabangNav")) return;
-
+  const period = modal?.querySelector(".target-periode-row");
+  const legacyList = document.getElementById("targetListWrapper");
+  const month = document.getElementById("targetBulanSelect");
+  const year = document.getElementById("targetTahunInput");
+  const footer = modal?.querySelector(".modal-footer");
+  const legacySave = document.getElementById("btnSimpanSemuaTarget");
+  if (!modal || !period || !legacyList || !month || !year || !footer || !legacySave || document.getElementById("dualTargetEditor")) return;
+  const client = () => typeof db !== "undefined" ? db : (typeof supabaseClient !== "undefined" ? supabaseClient : null);
+  const owner = () => typeof OwnerAuth !== "undefined" && OwnerAuth.isOwnerRole(OwnerAuth.profile?.role);
+  const money = n => "Rp " + Math.round(n).toLocaleString("id-ID");
+  const parse = s => { const t = String(s || "").replace(/[^0-9]/g, ""); return t ? Number(t) : null; };
+  const escape = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  const rates = [0,5,10,15,20];
+  const selectRates = () => rates.map(x => `<option value="${x}">${x === 0 ? "Samakan (0%)" : `Naik ${x}%`}</option>`).join("");
   const style = document.createElement("style");
+  style.id = "dualTargetEditorStyle";
   style.textContent = `
-    #modalTargetBulanan .target-periode-row{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr) minmax(125px,.56fr);align-items:end;gap:14px}
+    #modalTargetBulanan .modal-box{width:min(1010px,calc(100vw - 28px))!important;max-width:1010px!important;height:auto!important;max-height:95dvh!important;display:flex;flex-direction:column;overflow:hidden}
+    #modalTargetBulanan .target-periode-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(110px,.65fr);gap:12px;align-items:end;padding:12px 22px 0;flex:0 0 auto}
     #modalTargetBulanan .target-periode-row>.form-group{min-width:0}
-    #modalTargetBulanan #targetCabangNav{height:49px;width:100%;min-width:0;border:1px solid #536276;border-radius:11px;padding:0 13px;background:#202b39;color:#fff;font-size:17px;font-weight:900;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}
-    #modalTargetBulanan #targetCabangNav:focus-visible{outline:2px solid rgba(213,164,29,.55);outline-offset:1px}
-    #modalTargetBulanan .target-row.target-nav-current{outline:2px solid rgba(213,164,29,.85);outline-offset:-2px;background:rgba(213,164,29,.09)}
-    #modalTargetBulanan #btnTestDualTargetSave{font-size:12px;font-weight:800;border:1px solid #b58b34;background:#24303e;color:#f4d483;border-radius:8px;cursor:pointer;padding:8px 10px}
-    #modalTargetBulanan #btnTestDualTargetSave:disabled{opacity:.55;cursor:wait}
-    #modalTargetBulanan #dualTargetTestStatus{display:block;margin:3px 22px 0;font-size:12px;font-weight:700;color:#e4b338}
-    #modalTargetBulanan #dualTargetTestStatus.is-error{color:#ff9393}
-    @media(max-width:640px){#modalTargetBulanan .target-periode-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}#modalTargetBulanan .target-cabang-nav-field{grid-column:1/-1}#modalTargetBulanan #targetCabangNav{height:45px;font-size:15px}}
+    #modalTargetBulanan #targetCabangNav{height:40px;width:100%;border:1px solid #57667b;border-radius:9px;padding:0 10px;background:#1b2634;color:#fff;font-size:14px;font-weight:750}
+    #modalTargetBulanan #targetListWrapper,#modalTargetBulanan .target-reco-panel,#modalTargetBulanan .target-total-bar,#modalTargetBulanan #btnSalinTargetSebelumnya,#modalTargetBulanan #btnSimpanSemuaTarget{display:none!important}
+    #modalTargetBulanan #dualTargetEditor{margin:12px 22px 0;min-height:0;overflow-y:auto;flex:1 1 auto;scrollbar-width:thin;color:#f5f7fc}
+    #modalTargetBulanan .dual-head{padding:14px 17px;background:linear-gradient(120deg,#303a47,#1b2532);border:1px solid #566172;border-radius:12px;margin-bottom:12px}
+    #modalTargetBulanan .dual-eyebrow{font-size:11px;letter-spacing:.11em;color:#e7c675;font-weight:800}
+    #modalTargetBulanan .dual-head h3{font-size:20px;line-height:1.35;color:#fff;margin:3px 0}
+    #modalTargetBulanan .dual-sub{font-size:12px;color:#c8d3e1;line-height:1.5}
+    #modalTargetBulanan .dual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+    #modalTargetBulanan .dual-card{min-width:0;border:1px solid #58667a;border-radius:12px;padding:16px;background:linear-gradient(155deg,#293543,#182332);box-shadow:0 5px 18px #0002}
+    #modalTargetBulanan .dual-card.ultimate{border-color:#9f7b44}
+    #modalTargetBulanan .dual-card h4{font-size:17px;color:#ffe2a0;margin:0 0 12px;font-weight:900}
+    #modalTargetBulanan .dual-card .dual-source{font-size:12px;color:#ced8e6;margin:0 0 5px}
+    #modalTargetBulanan .dual-card .dual-base{font-size:21px;font-weight:900;color:#fff;overflow-wrap:anywhere}
+    #modalTargetBulanan .dual-card .dual-check{font-size:11px;line-height:1.45;min-height:32px;color:#cbd7e6;margin:5px 0 10px}
+    #modalTargetBulanan .dual-card .dual-check.warn{color:#ffc88d}
+    #modalTargetBulanan .dual-card label{display:block;font-size:12px;color:#e4ebf5;font-weight:750;margin:8px 0 5px}
+    #modalTargetBulanan .dual-card select,#modalTargetBulanan .dual-card input{box-sizing:border-box;width:100%;height:42px;background:#121d2b;border:1px solid #65738a;border-radius:8px;padding:0 11px;color:#fff;font-size:15px;font-weight:800}
+    #modalTargetBulanan .dual-card select:disabled{opacity:.5}
+    #modalTargetBulanan .dual-card input:focus,#modalTargetBulanan .dual-card select:focus{outline:2px solid #d9ad55;outline-offset:1px}
+    #modalTargetBulanan .dual-card .dual-note{font-size:11px;line-height:1.4;color:#d8e0eb;margin-top:8px}
+    #modalTargetBulanan .dual-summary{margin:12px 0 3px;border:1px solid #59677a;border-radius:10px;background:#202c3b;padding:11px 13px}
+    #modalTargetBulanan .dual-summary-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;background:none;border:0;color:#f5e1ae;font-weight:850;font-size:14px;text-align:left;cursor:pointer}
+    #modalTargetBulanan .dual-summary-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+    #modalTargetBulanan .dual-summary-body[hidden]{display:none}
+    #modalTargetBulanan .dual-summary-row{border:1px solid #4d5b6d;border-radius:7px;background:#182534;color:#e5ecf5;padding:9px;text-align:left;cursor:pointer;font-size:12px}
+    #modalTargetBulanan .dual-summary-row.current{border-color:#e6be6d;color:#ffdf98}
+    #modalTargetBulanan .dual-summary-row span{display:block;color:#acbacd;font-size:11px;margin-top:3px}
+    #modalTargetBulanan #dualTargetStatus{display:block;flex:0 0 auto;padding:4px 22px;color:#f2ce83;font-size:12px;line-height:1.4;min-height:20px}
+    #modalTargetBulanan #dualTargetStatus.error{color:#ffaaa7}
+    #modalTargetBulanan .modal-footer{display:flex!important;align-items:center;gap:10px;justify-content:flex-end;flex-wrap:wrap;padding:10px 22px 14px;flex:0 0 auto;margin-top:8px}
+    #modalTargetBulanan #btnDualSave,#modalTargetBulanan #btnTestDualTargetSave{border:1px solid #b78f45;border-radius:9px;padding:10px 14px;min-height:39px;font-weight:850;cursor:pointer}
+    #modalTargetBulanan #btnDualSave{background:linear-gradient(180deg,#f2cf78,#b88630);color:#1b2330}
+    #modalTargetBulanan #btnTestDualTargetSave{background:#293545;color:#ffe1a3}
+    #modalTargetBulanan #btnDualSave:disabled,#modalTargetBulanan #btnTestDualTargetSave:disabled{opacity:.48;cursor:not-allowed}
+    @media(max-width:670px){#modalTargetBulanan .target-periode-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px 13px 0}#modalTargetBulanan .target-cabang-nav-field{grid-column:1/-1}#modalTargetBulanan #dualTargetEditor{margin:10px 13px 0}#modalTargetBulanan .dual-grid,#modalTargetBulanan .dual-summary-body{grid-template-columns:1fr}#modalTargetBulanan .dual-card{padding:12px}#modalTargetBulanan .modal-footer{padding:9px 13px}#modalTargetBulanan .dual-head h3{font-size:18px}}
   `;
   document.head.appendChild(style);
-
-  const field = document.createElement("div");
-  field.className = "form-group target-cabang-nav-field";
-  const label = document.createElement("label");
-  label.htmlFor = "targetCabangNav";
-  label.textContent = "Cabang";
-  const select = document.createElement("select");
-  select.id = "targetCabangNav";
-  select.setAttribute("aria-label", "Navigasi cabang pada daftar target");
-  select.appendChild(new Option("Semua Cabang", ""));
-  field.append(label, select);
-  periodRow.prepend(field);
-
-  function rows(){ return [...list.querySelectorAll(".target-row")]; }
-  function syncOptions(){
-    const current = select.value;
-    const entries = rows().map(row => {
-      const input = row.querySelector(".input-target-cabang");
-      const name = row.querySelector(".target-nama strong")?.textContent?.trim();
-      const code = row.querySelector(".target-nama small")?.textContent?.trim();
-      return input?.dataset.cabangId && name ? { id: input.dataset.cabangId, title: code && code !== "-" ? `${code} — ${name}` : name } : null;
-    }).filter(Boolean);
-    select.replaceChildren(new Option("Semua Cabang", ""), ...entries.map(entry => new Option(entry.title, entry.id)));
-    select.value = entries.some(entry => entry.id === current) ? current : "";
-    if(!entries.some(entry => entry.id === current)) rows().forEach(row => row.classList.remove("target-nav-current"));
-  }
-  function navigate(){
-    const target = rows().find(row => row.querySelector(".input-target-cabang")?.dataset.cabangId === select.value);
-    rows().forEach(row => row.classList.toggle("target-nav-current", row === target));
-    if(target){
-      list.scrollTop += target.getBoundingClientRect().top - list.getBoundingClientRect().top - 9;
-    } else list.scrollTop = 0;
-  }
-  select.addEventListener("change", navigate);
-  const observer = new MutationObserver(records => {
-    if(records.some(record => record.type === "childList" && [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === 1 && (node.classList?.contains("target-row") || node.querySelector?.(".target-row"))))) syncOptions();
-  });
-  observer.observe(list, {childList:true});
-  syncOptions();
-
-  // Test button uses a dedicated Owner-only RPC that writes/reads BOTH target tables
-  // inside a rolled-back subtransaction. It never saves the popup draft or production targets.
-  const footer = modal.querySelector(".modal-footer");
-  const saveButton = document.getElementById("btnSimpanSemuaTarget");
-  if (footer && saveButton && !document.getElementById("btnTestDualTargetSave")) {
-    const testButton = document.createElement("button");
-    testButton.id = "btnTestDualTargetSave";
-    testButton.type = "button";
-    testButton.textContent = "Uji Simpan Gabungan";
-    testButton.title = "Menguji kedua tabel dengan rollback otomatis. Tidak mengubah target atau draft.";
-    footer.insertBefore(testButton, saveButton);
-    const status = document.createElement("span");
-    status.id = "dualTargetTestStatus";
-    status.setAttribute("role", "status");
-    status.setAttribute("aria-live", "polite");
-    footer.before(status);
-    testButton.addEventListener("click", async () => {
-      if (typeof OwnerAuth === "undefined" || !OwnerAuth.isOwnerRole(OwnerAuth.profile?.role)) {
-        status.classList.add("is-error");
-        status.textContent = "Hanya Owner yang boleh menguji penyimpanan target.";
-        return;
-      }
-      const client = typeof db !== "undefined" ? db : (typeof supabaseClient !== "undefined" ? supabaseClient : null);
-      if (!client?.rpc) {
-        status.classList.add("is-error");
-        status.textContent = "Koneksi database belum siap.";
-        return;
-      }
-      testButton.disabled = true;
-      status.classList.remove("is-error");
-      status.textContent = "Menguji dua target dan rollback tanpa mengubah data…";
-      try {
-        const { data, error } = await client.rpc("test_cabang_monthly_targets_atomic");
-        if (error) throw error;
-        if (data?.ok !== true || data?.atomic_write_test !== true || data?.rollback_verified !== true || data?.data_changed !== false) {
-          throw new Error("Hasil verifikasi simpan gabungan tidak lengkap.");
-        }
-        status.textContent = "PASS: Omzet + Ultimate berhasil diuji; rollback terverifikasi. Data target tidak berubah.";
-      } catch (error) {
-        status.classList.add("is-error");
-        status.textContent = `GAGAL uji simpan gabungan: ${error?.message || "kesalahan tidak diketahui"}`;
-      } finally {
-        testButton.disabled = false;
-      }
-    });
-  }
+  const field = document.createElement("div"); field.className = "form-group target-cabang-nav-field";
+  const label = document.createElement("label"); label.htmlFor = "targetCabangNav"; label.textContent = "Cabang";
+  const nav = document.createElement("select"); nav.id = "targetCabangNav"; nav.setAttribute("aria-label", "Pilih cabang untuk mengatur dua target");
+  field.append(label, nav); period.prepend(field);
+  const editor = document.createElement("section"); editor.id = "dualTargetEditor";
+  editor.innerHTML = `<div class="dual-head"><span class="dual-eyebrow">TARGET PER CABANG</span><h3 id="dualBranchTitle">Memuat cabang…</h3><div class="dual-sub" id="dualPeriodLabel">Dua target terpisah · simpan bersamaan</div></div><div class="dual-grid">${["omzet","ultimate"].map((type) => `<article class="dual-card ${type}"><h4>${type === "omzet" ? "TARGET OMZET" : "TARGET ULTIMATE"}</h4><p class="dual-source">${type === "omzet" ? "Omzet aktual (service + produk)" : "Realisasi 5 paket Ultimate"} bulan sebelumnya</p><div class="dual-base" id="dual-${type}-base">—</div><p class="dual-check" id="dual-${type}-check">Menunggu sumber…</p><label for="dual-${type}-rate">Kenaikan dari realisasi</label><select id="dual-${type}-rate"><option value="">Pilih kenaikan</option>${selectRates()}</select><label for="dual-${type}-input">Target ${type === "omzet" ? "Omzet" : "Ultimate"} (boleh diubah)</label><input id="dual-${type}-input" type="text" inputmode="numeric" autocomplete="off" placeholder="Belum diatur"><div class="dual-note" id="dual-${type}-note">Nilai tersimpan ditampilkan saat cabang dipilih.</div></article>`).join("")}</div><div class="dual-summary"><button type="button" class="dual-summary-toggle" id="dualSummaryToggle" aria-expanded="false"><span id="dualSummaryLabel">Ringkasan cabang</span><span id="dualSummaryArrow">Tampilkan ▾</span></button><div class="dual-summary-body" id="dualSummaryBody" hidden></div></div>`;
+  legacyList.before(editor);
+  const status = document.createElement("div"); status.id = "dualTargetStatus"; status.setAttribute("role","status"); status.setAttribute("aria-live","polite"); footer.before(status);
+  const testButton = document.createElement("button"); testButton.type="button"; testButton.id="btnTestDualTargetSave"; testButton.textContent="Uji Jalur (tanpa simpan)";
+  const save = document.createElement("button"); save.type="button"; save.id="btnDualSave"; save.textContent="Simpan Target Terisi";
+  footer.insertBefore(testButton, legacySave); footer.insertBefore(save, legacySave);
+  const state = { branches:[], drafts:new Map(), omzet:new Map(), ultimate:new Map(), omzetSrc:new Map(), ultimateSrc:new Map(), selected:null, key:"", sequence:0, busy:false };
+  const el = id => document.getElementById(id);
+  function setStatus(message, error=false){ status.textContent=message; status.classList.toggle("error",error); }
+  function chosen(){ return state.drafts.get(state.selected); }
+  function previous(){ const m=Number(month.value), y=Number(year.value); if(!Number.isInteger(m)||m<1||m>12||!Number.isInteger(y)||y<2020||y>2100) return null; const d=new Date(Date.UTC(y,m-2,1));const py=d.getUTCFullYear(),pm=d.getUTCMonth()+1, days=new Date(Date.UTC(py,pm,0)).getUTCDate();return { key:`${y}-${m}`, year:y,month:m,py,pm,days,start:`${py}-${String(pm).padStart(2,"0")}-01`,end:`${py}-${String(pm).padStart(2,"0")}-${String(days).padStart(2,"0")}` }; }
+  async function allRows(table, cols, configure){ const out=[]; for(let offset=0;offset<10000;offset+=1000){ let q=client().from(table).select(cols);q=configure(q).range(offset,offset+999);const {data,error}=await q;if(error) throw error;out.push(...(data||[]));if((data||[]).length<1000)return out; }throw new Error(`Sumber ${table} melewati batas 10.000 baris; usulan tidak dibuat.`); }
+  function classify(s){const t=String(s||"").replace(/\s+/g," ").trim();return /\benakin\s*kepala\b|\benakinkepala\b|\bmax\b|\brelax\b|\breguler\b|\bregular\b|\bplus\b/i.test(t);}
+  function buildOmzet(rows,p){const map=new Map();for(const r of rows){const id=Number(r.cabang_id),date=String(r.tanggal||"").slice(0,10);if(!Number.isInteger(id)||!/^\d{4}-\d\d-\d\d$/.test(date))continue;if(!map.has(id))map.set(id,{amount:0,dates:new Set(),bad:false,dup:false});const x=map.get(id),a=Number(r.service),b=Number(r.produk);if(!Number.isFinite(a)||!Number.isFinite(b)||a<0||b<0)x.bad=true;else x.amount+=a+b;if(x.dates.has(date))x.dup=true;x.dates.add(date);}for(const x of map.values()){x.ready=!x.bad&&!x.dup&&x.amount>0&&x.dates.size===p.days;x.reason=x.bad?"Angka sumber tidak valid":x.dup?"Tanggal duplikat":x.dates.size!==p.days?`Data ${x.dates.size}/${p.days} hari`:x.amount<=0?"Omzet belum tersedia":"Data harian lengkap";}return map;}
+  function buildUltimate(rows,p){const map=new Map();for(const r of rows){const id=Number(r.cabang_id);if(!Number.isInteger(id))continue;if(!map.has(id))map.set(id,{amount:0,rows:0,bad:false});if(!classify(r.service_package))continue;const x=map.get(id),n=Number(r.price_with_discount);if(!Number.isFinite(n)||n<0)x.bad=true;else{x.amount+=n;x.rows++;}}for(const x of map.values()){x.ready=!x.bad&&x.amount>0;x.reason=x.bad?"Nominal sumber tidak valid":x.amount<=0?"Belum ada penjualan paket":"Realisasi paket tersedia";}return map;}
+  function formatInput(input){const n=parse(input.value);input.value=n===null?"":money(n);}
+  function updateSummary(){const total=state.branches.length;const ready=state.branches.filter(b=>{const d=state.drafts.get(b.id);return d&&Number.isSafeInteger(d.omzet)&&d.omzet>0&&Number.isSafeInteger(d.ultimate)&&d.ultimate>0;}).length;el("dualSummaryLabel").textContent=`Ringkasan ${total} cabang · ${ready}/${total} lengkap`;const body=el("dualSummaryBody");body.innerHTML=state.branches.map(b=>{const d=state.drafts.get(b.id),full=d?.omzet>0&&d?.ultimate>0;return `<button type="button" class="dual-summary-row ${b.id===state.selected?"current":""}" data-dual-branch="${b.id}">${escape(b.code)} · ${escape(b.name)}<span>${full?"✓ Dua target siap":"Belum lengkap"} · Omzet ${d?.omzet>0?escape(money(d.omzet)):"—"} · Ultimate ${d?.ultimate>0?escape(money(d.ultimate)):"—"}</span></button>`;}).join("");save.disabled=state.busy||!ready;save.textContent=ready?`Simpan ${ready} Cabang`:"Belum Ada Target Lengkap";}
+  function paintSource(type){const x=(type==="omzet"?state.omzetSrc:state.ultimateSrc).get(state.selected);el(`dual-${type}-base`).textContent=x?money(x.amount):"—";const check=el(`dual-${type}-check`);check.textContent=x?.reason||"Data bulan sebelumnya belum tersedia";check.classList.toggle("warn",!x?.ready);el(`dual-${type}-rate`).disabled=!x?.ready||state.busy;}
+  function paint(){const b=state.branches.find(x=>x.id===state.selected);if(!b){el("dualBranchTitle").textContent="Tidak ada cabang operasional";return;}nav.value=String(b.id);el("dualBranchTitle").textContent=b.name;const p=previous();el("dualPeriodLabel").textContent=`Target ${months[p.month-1]} ${p.year} · dasar ${months[p.pm-1]} ${p.py}`;const d=chosen();for(const type of ["omzet","ultimate"]){paintSource(type);el(`dual-${type}-rate`).value=d[`${type}Rate`]??"";el(`dual-${type}-input`).value=d[type]===null?"":money(d[type]);el(`dual-${type}-note`).textContent=d[`${type}Changed`]?"Draft belum disimpan.":d[type]!==null?"Target tersimpan; nominal bisa diubah.":"Belum ada target tersimpan. Pilih kenaikan atau isi manual.";}updateSummary();}
+  async function load(){const p=previous();if(!p){setStatus("Bulan atau tahun tidak valid.",true);return;}const seq=++state.sequence;state.key=p.key;state.busy=true;state.selected=null;state.drafts.clear();state.branches=[];nav.replaceChildren(new Option("Memuat cabang…",""));editor.setAttribute("aria-busy","true");save.disabled=testButton.disabled=true;setStatus("Memuat cabang, target tersimpan, dan realisasi bulan sebelumnya…");try{const dbClient=client();if(!dbClient?.from)throw new Error("Koneksi Supabase belum tersedia.");if(!owner())throw new Error("Halaman ini hanya untuk Owner.");const [branches,omzet,ultimate,omzetRows,ultimateRows]=await Promise.all([dbClient.from("cabang").select("id,kode_cabang,nama_cabang,nama_minutes,aktif,urutan").eq("aktif",true).order("urutan",{ascending:true}),dbClient.from("target_bulanan").select("cabang_id,target").eq("tahun",p.year).eq("bulan",p.month),dbClient.from("kpi_ultimate_monthly_target").select("cabang_id,target_amount,active").eq("year",p.year).eq("month",p.month),allRows("daily_recap_source","tanggal,cabang_id,service,produk",q=>q.gte("tanggal",p.start).lte("tanggal",p.end).order("tanggal",{ascending:true}).order("cabang_id",{ascending:true})),allRows("kpi_ultimate_sales_source","activity_date,cabang_id,service_package,price_with_discount",q=>q.gte("activity_date",p.start).lte("activity_date",p.end).order("activity_date",{ascending:true}).order("cabang_id",{ascending:true}))]);if(seq!==state.sequence)return;for(const result of [branches,omzet,ultimate])if(result.error)throw result.error;state.branches=(branches.data||[]).filter(b=>b.nama_minutes?.trim()&&!String(b.nama_cabang||"").toLowerCase().includes("floating")).map(b=>({id:Number(b.id),name:b.nama_cabang,code:b.kode_cabang||"—"}));state.omzet=new Map((omzet.data||[]).map(r=>[Number(r.cabang_id),Number(r.target)]));state.ultimate=new Map((ultimate.data||[]).filter(r=>r.active!==false).map(r=>[Number(r.cabang_id),Number(r.target_amount)]));state.omzetSrc=buildOmzet(omzetRows,p);state.ultimateSrc=buildUltimate(ultimateRows,p);for(const b of state.branches){state.drafts.set(b.id,{omzet:state.omzet.has(b.id)?state.omzet.get(b.id):null,ultimate:state.ultimate.has(b.id)?state.ultimate.get(b.id):null,omzetRate:"",ultimateRate:"",omzetChanged:false,ultimateChanged:false});}nav.replaceChildren(...state.branches.map(b=>new Option(`${b.code} — ${b.name}`,String(b.id))));state.selected=state.branches[0]?.id??null;state.busy=false;editor.removeAttribute("aria-busy");testButton.disabled=false;paint();setStatus("Data siap. Pilih persentase atau isi nominal; hanya cabang dengan dua target lengkap yang akan disimpan.");}catch(e){if(seq!==state.sequence)return;state.busy=false;editor.removeAttribute("aria-busy");nav.replaceChildren(new Option("Gagal memuat",""));setStatus(`Gagal memuat: ${e.message}`,true);save.disabled=true;testButton.disabled=false;}}
+  nav.addEventListener("change",()=>{state.selected=Number(nav.value);paint();});
+  for(const type of ["omzet","ultimate"]){el(`dual-${type}-rate`).addEventListener("change",e=>{const d=chosen(),src=(type==="omzet"?state.omzetSrc:state.ultimateSrc).get(state.selected);if(!d||!src?.ready)return;const rate=Number(e.target.value);if(!rates.includes(rate))return;d[type]=Math.round(src.amount*(1+rate/100));d[`${type}Rate`]=String(rate);d[`${type}Changed`]=true;paint();setStatus(`Usulan ${type==="omzet"?"Omzet":"Ultimate"} diterapkan ke draft ${nav.selectedOptions[0]?.textContent}. Belum tersimpan.`);});const input=el(`dual-${type}-input`);input.addEventListener("input",()=>{const d=chosen();if(!d)return;d[type]=parse(input.value);d[`${type}Rate`]="";d[`${type}Changed`]=true;updateSummary();el(`dual-${type}-note`).textContent="Draft manual belum disimpan.";});input.addEventListener("blur",()=>formatInput(input));}
+  el("dualSummaryToggle").addEventListener("click",()=>{const body=el("dualSummaryBody"),open=body.hidden;body.hidden=!open;el("dualSummaryToggle").setAttribute("aria-expanded",String(open));el("dualSummaryArrow").textContent=open?"Sembunyikan ▴":"Tampilkan ▾";});
+  el("dualSummaryBody").addEventListener("click",e=>{const btn=e.target.closest("[data-dual-branch]");if(!btn)return;state.selected=Number(btn.dataset.dualBranch);paint();});
+  async function verify(items,p){const ids=items.map(i=>i.cabang_id),dbClient=client();const [o,u]=await Promise.all([dbClient.from("target_bulanan").select("cabang_id,target").eq("bulan",p.month).eq("tahun",p.year).in("cabang_id",ids),dbClient.from("kpi_ultimate_monthly_target").select("cabang_id,target_amount,active").eq("month",p.month).eq("year",p.year).in("cabang_id",ids)]);if(o.error||u.error)throw new Error(`Simpan berhasil, tetapi baca ulang gagal: ${o.error?.message||u.error?.message}`);const om=new Map((o.data||[]).map(r=>[Number(r.cabang_id),Number(r.target)])),ul=new Map((u.data||[]).map(r=>[Number(r.cabang_id),r.active===false?null:Number(r.target_amount)]));if(items.some(i=>om.get(i.cabang_id)!==i.omzet_target||ul.get(i.cabang_id)!==i.ultimate_target))throw new Error("Simpan selesai tetapi hasil baca ulang berbeda. Periksa target sebelum mencoba lagi.");}
+  save.addEventListener("click",async()=>{if(state.busy)return;const p=previous();if(!owner()||!p||state.key!==p.key){setStatus("Akses Owner atau periode tidak valid; muat ulang target.",true);return;}const items=state.branches.map(b=>({cabang_id:b.id,...state.drafts.get(b.id)})).filter(i=>Number.isSafeInteger(i.omzet)&&i.omzet>0&&Number.isSafeInteger(i.ultimate)&&i.ultimate>0).map(i=>({cabang_id:i.cabang_id,omzet_target:i.omzet,ultimate_target:i.ultimate}));if(!items.length){setStatus("Isi dua target pada minimal satu cabang; draft kosong tidak disimpan.",true);return;}if(items.some(i=>!Number.isSafeInteger(i.omzet_target)||!Number.isSafeInteger(i.ultimate_target))){setStatus("Nominal melampaui batas bilangan aman.",true);return;}state.busy=true;updateSummary();testButton.disabled=true;nav.disabled=true;setStatus(`Menyimpan ${items.length} cabang melalui satu transaksi database…`);try{const {data,error}=await client().rpc("save_cabang_monthly_targets_atomic",{p_year:p.year,p_month:p.month,p_items:items});if(error)throw error;if(data?.ok!==true||Number(data.saved_branches)!==items.length)throw new Error("Konfirmasi jumlah cabang tidak sesuai; periksa data sebelum simpan ulang.");await verify(items,p);setStatus(`BERHASIL: dua target untuk ${items.length} cabang tersimpan dan cocok saat dibaca ulang.`);await load();setStatus(`BERHASIL: dua target untuk ${items.length} cabang tersimpan dan diverifikasi. Cabang lain tidak diubah.`);if(typeof muatTargetBulananUntukTabel==="function"){await muatTargetBulananUntukTabel();if(typeof filterDataCabang==="function")filterDataCabang();}}catch(e){setStatus(`Gagal / perlu verifikasi: ${e.message}. Draft dipertahankan; periksa data sebelum mencoba lagi.`,true);}finally{state.busy=false;nav.disabled=false;testButton.disabled=false;updateSummary();}});
+  testButton.addEventListener("click",async()=>{if(state.busy||!owner()){setStatus("Uji hanya tersedia untuk Owner.",true);return;}testButton.disabled=true;setStatus("Menguji transaksi dengan rollback tanpa menyimpan draft…");try{const {data,error}=await client().rpc("test_cabang_monthly_targets_atomic");if(error)throw error;if(data?.ok!==true||data?.rollback_verified!==true||data?.data_changed!==false)throw new Error("Verifikasi rollback tidak lengkap.");setStatus("PASS: jalur kedua target dan rollback teruji. Draft tidak disimpan.");}catch(e){setStatus(`GAGAL UJI: ${e.message}`,true);}finally{testButton.disabled=false;}});
+  document.getElementById("btnTargetBulanan")?.addEventListener("click",()=>load());
+  month.addEventListener("change",load);year.addEventListener("change",load);
+  document.getElementById("btnTutupModalTarget")?.addEventListener("click",()=>{state.sequence++;});
+  modal.addEventListener("click",e=>{if(e.target===modal)state.sequence++;});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&modal.classList.contains("show"))state.sequence++;});
 })();
