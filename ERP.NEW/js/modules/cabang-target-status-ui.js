@@ -33,6 +33,26 @@
     #modalTargetBulanan #dualTargetHistory .dual-history-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px}
     #modalTargetBulanan #dualTargetHistory .dual-history-items span{display:block;min-width:0;overflow-wrap:anywhere}
     @media(max-width:670px){#modalTargetBulanan #dualTargetHistory .dual-history-items{grid-template-columns:1fr}}
+
+    /* Popup-only scrollbar: match the dark theme in Chromium, Firefox and WebKit. */
+    #modalTargetBulanan .modal-box,#modalTargetBulanan #dualTargetEditor,#modalTargetBulanan .target-list-wrapper{scrollbar-width:thin;scrollbar-color:#665022 #0b121b;}
+    #modalTargetBulanan .modal-box::-webkit-scrollbar,#modalTargetBulanan #dualTargetEditor::-webkit-scrollbar,#modalTargetBulanan .target-list-wrapper::-webkit-scrollbar{width:9px;height:9px;}
+    #modalTargetBulanan .modal-box::-webkit-scrollbar-track,#modalTargetBulanan #dualTargetEditor::-webkit-scrollbar-track,#modalTargetBulanan .target-list-wrapper::-webkit-scrollbar-track{background:#0b121b;border-radius:12px;}
+    #modalTargetBulanan .modal-box::-webkit-scrollbar-thumb,#modalTargetBulanan #dualTargetEditor::-webkit-scrollbar-thumb,#modalTargetBulanan .target-list-wrapper::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#78602e,#483d2a);border:2px solid #0b121b;border-radius:12px;}
+    #modalTargetBulanan .modal-box::-webkit-scrollbar-thumb:hover,#modalTargetBulanan #dualTargetEditor::-webkit-scrollbar-thumb:hover{background:#947237;}
+
+    /* Two distinct raised surfaces, with a restrained slow glow instead of flashing content. */
+    #modalTargetBulanan .dual-card{position:relative;isolation:isolate;transform:translateY(0);transform-style:preserve-3d;transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease;}
+    #modalTargetBulanan .dual-card.omzet{border:1px solid #356879!important;border-left:3px solid #51b6c9!important;background:radial-gradient(ellipse at 6% 0%,rgba(48,152,179,.18),transparent 59%),linear-gradient(155deg,#172c38,#0b1823 78%)!important;box-shadow:inset 0 1px 0 rgba(185,232,246,.14),inset 0 -3px 5px rgba(0,0,0,.35),0 4px 0 #081017,0 10px 20px rgba(0,0,0,.38),0 0 13px rgba(54,170,196,.14);animation:vaxOmzetSoftGlow 4.5s ease-in-out infinite;}
+    #modalTargetBulanan .dual-card.ultimate{border:1px solid #80612e!important;border-left:3px solid #d6a93d!important;background:radial-gradient(ellipse at 7% 0%,rgba(180,130,37,.19),transparent 61%),linear-gradient(155deg,#29251a,#171a1d 77%)!important;box-shadow:inset 0 1px 0 rgba(255,227,164,.13),inset 0 -3px 5px rgba(0,0,0,.35),0 4px 0 #120f0b,0 10px 20px rgba(0,0,0,.38),0 0 13px rgba(204,151,41,.14);animation:vaxUltimateSoftGlow 4.5s ease-in-out infinite;animation-delay:-2.25s;}
+    #modalTargetBulanan .dual-card.omzet h4{color:#82d5df!important;}
+    #modalTargetBulanan .dual-card.ultimate h4{color:#d7ac4d!important;}
+    #modalTargetBulanan .dual-card:hover{transform:translateY(-3px);animation-play-state:paused;}
+    #modalTargetBulanan .dual-card.omzet:hover{border-color:#6bb7c7!important;box-shadow:inset 0 1px 0 rgba(185,232,246,.22),0 7px 0 #081017,0 15px 24px rgba(0,0,0,.45),0 0 24px rgba(54,170,196,.27);}
+    #modalTargetBulanan .dual-card.ultimate:hover{border-color:#bb9241!important;box-shadow:inset 0 1px 0 rgba(255,227,164,.22),0 7px 0 #120f0b,0 15px 24px rgba(0,0,0,.45),0 0 24px rgba(204,151,41,.27);}
+    @keyframes vaxOmzetSoftGlow{0%,100%{box-shadow:inset 0 1px 0 rgba(185,232,246,.14),inset 0 -3px 5px rgba(0,0,0,.35),0 4px 0 #081017,0 10px 20px rgba(0,0,0,.38),0 0 10px rgba(54,170,196,.09);}50%{box-shadow:inset 0 1px 0 rgba(185,232,246,.19),inset 0 -3px 5px rgba(0,0,0,.35),0 4px 0 #081017,0 10px 20px rgba(0,0,0,.38),0 0 21px rgba(54,170,196,.28);}}
+    @keyframes vaxUltimateSoftGlow{0%,100%{box-shadow:inset 0 1px 0 rgba(255,227,164,.13),inset 0 -3px 5px rgba(0,0,0,.35),0 4px 0 #120f0b,0 10px 20px rgba(0,0,0,.38),0 0 10px rgba(204,151,41,.09);}50%{box-shadow:inset 0 1px 0 rgba(255,227,164,.19),inset 0 -3px 5px rgba(0,0,0,.35),0 4px 0 #120f0b,0 10px 20px rgba(0,0,0,.38),0 0 21px rgba(204,151,41,.28);}}
+    @media(prefers-reduced-motion:reduce){#modalTargetBulanan .dual-card.omzet,#modalTargetBulanan .dual-card.ultimate{animation:none!important;transition:none!important;}#modalTargetBulanan .dual-card:hover{transform:none!important;}}
   `;
   document.head.appendChild(style);
 
