@@ -34,14 +34,23 @@
     const salaryRows = [...salary.querySelectorAll('tbody tr')];
     const uciRow = salaryRows.find(row => clean(row.cells?.[0]?.textContent) === 'uci');
     if (!uciRow || uciRow.cells.length < 6) return html;
-    // Free Point stays in ADJ.; add Share Service there as well, without
-    // adding an extra cost or changing any total from the report.
+
+    // Check the ACTUAL printable columns, not internal payroll/mapped fields.
+    // The existing print bridge already places Free Point in ADJ.; July's
+    // Share Service is the exact difference between printed components and
+    // the ALREADY CORRECT printed total. Never increase the total itself.
     const freePoint = Number(uci.freePoint || 0);
     const service = Number(uci.serviceCashShare || 0);
-    const expected = Number(uci.payroll || 0) + Number(uci.mapped || 0) +
-      freePoint + service + Number(uci.protek || 0);
-    if (expected !== Number(uci.total || 0)) {
-      console.warn(PREFIX, 'Uci salary detail does not balance; print unchanged.');
+    const printedBase = amount(uciRow.cells[2].textContent);
+    const printedAdjustment = amount(uciRow.cells[3].textContent);
+    const printedProtek = amount(uciRow.cells[4].textContent);
+    const printedTotal = amount(uciRow.cells[5].textContent);
+    if (printedAdjustment !== freePoint ||
+        printedTotal !== Number(uci.total || 0) ||
+        printedBase + printedAdjustment + printedProtek + service !== printedTotal) {
+      console.warn(PREFIX, 'Uci printable row does not balance; print unchanged.', {
+        printedBase, printedAdjustment, printedProtek, service, printedTotal
+      });
       return html;
     }
     const uciName = uciRow.cells[0];
@@ -50,8 +59,7 @@
     note.textContent = `Free Point ${money(freePoint)} + Share Service ${money(service)}`;
     note.style.cssText = 'display:block;font-size:5.6pt;color:#53606c;line-height:1.3';
     uciName.appendChild(note);
-    uciRow.cells[3].textContent = money(Number(uci.mapped || 0) + freePoint + service);
-    uciRow.cells[5].textContent = money(uci.total);
+    uciRow.cells[3].textContent = money(printedAdjustment + service);
     salaryRows.filter(row => clean(row.cells?.[0]?.textContent) === 'protek belum terpetakan' &&
       amount(row.cells?.[5]?.textContent) === 0).forEach(row => row.remove());
 
