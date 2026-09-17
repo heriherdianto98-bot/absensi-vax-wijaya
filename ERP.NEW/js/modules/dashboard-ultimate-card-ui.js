@@ -17,7 +17,7 @@
     html body.page-erp-dashboard #kpi-section .kpi-grid:has(#kpiUltimateCard)>.kpi-card{grid-column:span 4!important;min-width:0}
     html body.page-erp-dashboard #kpi-section .kpi-grid:has(#kpiUltimateCard)>.kpi-card:nth-child(n+6){grid-column:span 5!important}
     html body.page-erp-dashboard #kpi-section #kpiUltimateCard{min-width:0;border-color:rgba(234,179,79,.32)!important;--ultimate-accent:#e8bd65}
-    html body.page-erp-dashboard #kpi-section #kpiUltimateCard .kpi-label{color:#eac878!important}
+    html body.page-erp-dashboard #kpi-section #kpiUltimateCard .kpi-label{color:#aab2bd!important}
     html body.page-erp-dashboard #kpi-section #kpiUltimateCard .kpi-value{color:#f8d17b!important;font-size:16px!important;line-height:1.1!important}
     html body.page-erp-dashboard #kpi-section #kpiUltimateCard .target-progress{height:4px!important;overflow:hidden;border-radius:5px;background:#33404d!important;margin:3px 0!important}
     html body.page-erp-dashboard #kpi-section #kpiUltimateCard .target-fill{display:block;height:100%;width:0;background:linear-gradient(90deg,#c8953e,#f4d67d)!important;transition:width .35s ease}
