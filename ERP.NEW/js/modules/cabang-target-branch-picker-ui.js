@@ -1,4 +1,4 @@
-/* Master Cabang / target popup: branch navigator only. No data filtering or save changes. */
+/* Master Cabang / target popup: branch navigator + isolated non-writing atomic-save test. */
 "use strict";
 (() => {
   const modal = document.getElementById("modalTargetBulanan");
@@ -13,6 +13,10 @@
     #modalTargetBulanan #targetCabangNav{height:49px;width:100%;min-width:0;border:1px solid #536276;border-radius:11px;padding:0 13px;background:#202b39;color:#fff;font-size:17px;font-weight:900;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}
     #modalTargetBulanan #targetCabangNav:focus-visible{outline:2px solid rgba(213,164,29,.55);outline-offset:1px}
     #modalTargetBulanan .target-row.target-nav-current{outline:2px solid rgba(213,164,29,.85);outline-offset:-2px;background:rgba(213,164,29,.09)}
+    #modalTargetBulanan #btnTestDualTargetSave{font-size:12px;font-weight:800;border:1px solid #b58b34;background:#24303e;color:#f4d483;border-radius:8px;cursor:pointer;padding:8px 10px}
+    #modalTargetBulanan #btnTestDualTargetSave:disabled{opacity:.55;cursor:wait}
+    #modalTargetBulanan #dualTargetTestStatus{display:block;margin:3px 22px 0;font-size:12px;font-weight:700;color:#e4b338}
+    #modalTargetBulanan #dualTargetTestStatus.is-error{color:#ff9393}
     @media(max-width:640px){#modalTargetBulanan .target-periode-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}#modalTargetBulanan .target-cabang-nav-field{grid-column:1/-1}#modalTargetBulanan #targetCabangNav{height:45px;font-size:15px}}
   `;
   document.head.appendChild(style);
@@ -55,4 +59,51 @@
   });
   observer.observe(list, {childList:true});
   syncOptions();
+
+  // Test button uses a dedicated Owner-only RPC that writes/reads BOTH target tables
+  // inside a rolled-back subtransaction. It never saves the popup draft or production targets.
+  const footer = modal.querySelector(".modal-footer");
+  const saveButton = document.getElementById("btnSimpanSemuaTarget");
+  if (footer && saveButton && !document.getElementById("btnTestDualTargetSave")) {
+    const testButton = document.createElement("button");
+    testButton.id = "btnTestDualTargetSave";
+    testButton.type = "button";
+    testButton.textContent = "Uji Simpan Gabungan";
+    testButton.title = "Menguji kedua tabel dengan rollback otomatis. Tidak mengubah target atau draft.";
+    footer.insertBefore(testButton, saveButton);
+    const status = document.createElement("span");
+    status.id = "dualTargetTestStatus";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    footer.before(status);
+    testButton.addEventListener("click", async () => {
+      if (typeof OwnerAuth === "undefined" || !OwnerAuth.isOwnerRole(OwnerAuth.profile?.role)) {
+        status.classList.add("is-error");
+        status.textContent = "Hanya Owner yang boleh menguji penyimpanan target.";
+        return;
+      }
+      const client = typeof db !== "undefined" ? db : (typeof supabaseClient !== "undefined" ? supabaseClient : null);
+      if (!client?.rpc) {
+        status.classList.add("is-error");
+        status.textContent = "Koneksi database belum siap.";
+        return;
+      }
+      testButton.disabled = true;
+      status.classList.remove("is-error");
+      status.textContent = "Menguji dua target dan rollback tanpa mengubah data…";
+      try {
+        const { data, error } = await client.rpc("test_cabang_monthly_targets_atomic");
+        if (error) throw error;
+        if (data?.ok !== true || data?.atomic_write_test !== true || data?.rollback_verified !== true || data?.data_changed !== false) {
+          throw new Error("Hasil verifikasi simpan gabungan tidak lengkap.");
+        }
+        status.textContent = "PASS: Omzet + Ultimate berhasil diuji; rollback terverifikasi. Data target tidak berubah.";
+      } catch (error) {
+        status.classList.add("is-error");
+        status.textContent = `GAGAL uji simpan gabungan: ${error?.message || "kesalahan tidak diketahui"}`;
+      } finally {
+        testButton.disabled = false;
+      }
+    });
+  }
 })();
