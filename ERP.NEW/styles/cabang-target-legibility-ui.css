@@ -23,4 +23,11 @@
 #modalTargetBulanan#modalTargetBulanan .target-reco-btn:disabled{opacity:.61;color:#b9a582;border-color:#6d5b35;}
 #modalTargetBulanan .btn-salin-target{font-size:15px;font-weight:900;color:#f3c755;}
 #modalTargetBulanan #btnSimpanSemuaTarget{font-size:15px;font-weight:900;color:#161b23;background:linear-gradient(180deg,#edc44f,#ce971b);border-color:#a77b17;}
+/* Popup-only layout: wider on desktop, with the branch list as the sole scroll region. */
+@media(min-width:641px) and (min-height:781px){
+  #modalTargetBulanan .modal-box{width:min(1280px,calc(100vw - 64px));height:min(92vh,900px);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;}
+  #modalTargetBulanan .modal-header,#modalTargetBulanan .target-periode-row,#modalTargetBulanan .target-reco-panel,#modalTargetBulanan .target-total-bar,#modalTargetBulanan .modal-footer{flex:0 0 auto;}
+  #modalTargetBulanan .target-list-wrapper{flex:1 1 auto;min-height:140px;max-height:none;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;}
+  #modalTargetBulanan .modal-footer{position:relative;bottom:auto;}
+}
 @media(max-width:640px){#modalTargetBulanan .modal-header h2{font-size:23px}#modalTargetBulanan .target-row .target-nama strong{font-size:15px}#modalTargetBulanan .target-row input{font-size:17px}#modalTargetBulanan#modalTargetBulanan .target-reco-help,#modalTargetBulanan#modalTargetBulanan .target-reco-status{font-size:13px}#modalTargetBulanan#modalTargetBulanan .target-reco-actions .target-reco-btn{font-size:11px}}
