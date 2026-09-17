@@ -83,3 +83,11 @@
 #masterRoot #btnTargetBulanan::after{content:"Atur Target Bulanan";display:inline-block;color:#15191f;font-size:15px;font-weight:900;line-height:1.3;}
 #masterRoot #btnTargetBulanan:hover::before{transform:none;box-shadow:none;}
 @media(prefers-reduced-motion:reduce){#masterRoot #btnTargetBulanan::before{transition:none;}}
+/* Target button only: soft golden blink with the existing raised 3D base kept intact. */
+#masterRoot #btnTargetBulanan{animation:vaxTargetGoldPulse 1.5s ease-in-out infinite;}
+@keyframes vaxTargetGoldPulse{
+  0%,100%{filter:brightness(1);box-shadow:inset 0 2px 1px rgba(255,255,255,.32),inset 0 -3px 2px rgba(97,68,5,.4),0 4px 0 #765812,0 11px 17px rgba(0,0,0,.4),0 0 0 rgba(245,204,70,0);}
+  50%{filter:brightness(1.18);box-shadow:inset 0 2px 1px rgba(255,255,255,.42),inset 0 -3px 2px rgba(97,68,5,.4),0 4px 0 #765812,0 11px 17px rgba(0,0,0,.4),0 0 12px rgba(245,204,70,.7),0 0 24px rgba(245,204,70,.35);}
+}
+#masterRoot #btnTargetBulanan:hover,#masterRoot #btnTargetBulanan:focus-visible{animation-play-state:paused;filter:brightness(1.1);}
+@media(prefers-reduced-motion:reduce){#masterRoot #btnTargetBulanan{animation:none;}}
