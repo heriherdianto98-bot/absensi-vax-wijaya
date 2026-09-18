@@ -96,11 +96,10 @@
     const loadInvestorSnapshots=async(db)=>{
       if(N.role!=='owner')return;
       try{
-        const since=new Date(Date.now()-72*3600000).toISOString();
         const {data,error}=await db.from('investor_revised_snapshots')
           .select('id,branch_id,period_month,revision_no,status,created_at,locked_at')
-          .eq('status','READY').is('locked_at',null).gte('created_at',since)
-          .order('created_at',{ascending:false}).limit(20);
+          .eq('status','READY').is('locked_at',null)
+          .order('created_at',{ascending:false}).limit(100);
         if(error)throw error;
         (data||[]).forEach(r=>N.add({key:`investor-snapshot-ready:${r.id}`,tone:'info',icon:'▥',
           module:'BULANAN INVESTOR',href:'./laporan-bulanan-investor.html',
@@ -117,7 +116,7 @@
     };
     const originalAdd=N.add;
     N.add=function(item){
-      if(this.role==='owner'&&item?.module==='CASH OUT'&&item.key&&Object.prototype.hasOwnProperty.call(readReviewed(),item.key))return;
+      if(this.role==='owner'&&['CASH OUT','BULANAN INVESTOR'].includes(item?.module)&&item.key&&Object.prototype.hasOwnProperty.call(readReviewed(),item.key))return;
       return originalAdd.call(this,item);
     };
     const originalRender=N.render;
@@ -126,7 +125,7 @@
       if(this.role!=='owner'||!reviewStorageKey()||!this.list)return result;
       const rows=[...this.list.querySelectorAll(':scope > a.erp-global-notif-item')];
       this.items.slice(0,rows.length).forEach((item,index)=>{
-        if(item.module!=='CASH OUT'||!item._key)return;
+        if(!['CASH OUT','BULANAN INVESTOR'].includes(item.module)||!item._key)return;
         const button=document.createElement('button');button.type='button';
         button.textContent='✓ Tandai sudah ditinjau';
         button.setAttribute('aria-label',`Tandai sudah ditinjau: ${item.title}`);
@@ -136,7 +135,7 @@
           try{
             const key=reviewStorageKey();if(!key)return;
             const reviewed=readReviewed(),now=Date.now();
-            Object.keys(reviewed).forEach(k=>{if(!Number.isFinite(Number(reviewed[k]))||now-Number(reviewed[k])>15*86400000)delete reviewed[k]});
+            Object.keys(reviewed).forEach(k=>{if(!Number.isFinite(Number(reviewed[k]))||(k.startsWith('cashout:')&&now-Number(reviewed[k])>15*86400000))delete reviewed[k]});
             reviewed[item._key]=now;
             localStorage.setItem(key,JSON.stringify(reviewed));
             this.items=this.items.filter(x=>x._key!==item._key);
