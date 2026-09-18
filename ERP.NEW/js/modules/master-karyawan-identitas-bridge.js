@@ -20,6 +20,10 @@
     manual.src = '../js/modules/master-karyawan-riwayat-manual.js?v=20260918-baseline1';
     manual.defer = true;
     document.head.appendChild(manual);
+    const salaryAuto = document.createElement('script');
+    salaryAuto.src = '../js/modules/master-karyawan-gaji-otomatis.js?v=20260918-capster1';
+    salaryAuto.defer = true;
+    document.head.appendChild(salaryAuto);
   }, {once:true});
   document.head.appendChild(history);
 })();
