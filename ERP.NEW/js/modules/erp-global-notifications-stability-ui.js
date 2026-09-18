@@ -104,10 +104,10 @@
       }
     };
 
-    /* Invoice notification now means an incoming invoice exists, not an ACC/payment request.
-       ACC-to-Kas workflow has been retired by Owner decision. */
+    /* Owner Invoice notifications are disabled by Owner decision.
+       SVP incoming-Invoice notifications remain unchanged. */
     N.loadInvoices=async function(db){
-      if(!['owner','svp'].includes(N.role))return;
+      if(N.role!=='svp')return;
       let data=null,error=null;
       try{
         ({data,error}=await db.from('svp_invoices')
