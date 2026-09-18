@@ -2,7 +2,8 @@
 "use strict";
 (() => {
   const engine = window.PayrollUnifiedEngine;
-  if (!engine?.loadPeriod || !window.db || engine.__preErpManualFineBridge) return;
+  // ERP connector exposes db as a top-level const, not necessarily window.db.
+  if (!engine?.loadPeriod || typeof db === "undefined" || engine.__preErpManualFineBridge) return;
   const baseLoad = engine.loadPeriod.bind(engine);
   const TABLE = "payroll_pre_erp_manual_fines";
   const money = v => "Rp " + Number(v || 0).toLocaleString("id-ID");
