@@ -39,11 +39,12 @@
       try{
         const since=N.isoAddDays(N.jakartaToday(),-30);
         const {data,error}=await db.from('arus_kas_v2_transactions')
-          .select('id,tanggal,amount,category,description')
+          .select('id,tanggal,amount,category,description,metadata')
           .eq('entry_type','MANUAL').eq('verification_status','BELUM_DIVERIFIKASI')
           .gte('tanggal',since).order('tanggal',{ascending:false}).limit(100);
         if(error)throw error;
-        (data||[]).forEach(r=>N.add({key:`arus-kas-pending:${r.id}`,
+        (data||[]).filter(r=>String(r.metadata?.delete_status||'').toUpperCase()!=='OWNER_VERIFIED')
+          .forEach(r=>N.add({key:`arus-kas-pending:${r.id}`,
           tone:'warning',icon:'⇄',module:'ARUS KAS',href:'./arus-kas.html',
           title:'Transaksi manual menunggu verifikasi Owner',
           detail:`${r.tanggal||'—'} • ${N.money(r.amount)} • ${r.description||r.category||'Transaksi manual'}`}));
