@@ -7,7 +7,7 @@
   const $ = id => document.getElementById(id);
   const rupiah = n => new Intl.NumberFormat('id-ID', {style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
   const escapeText = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const months = {Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:8,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
+  const months = {Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:7,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
   const monthNow = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).format(new Date());
   let busy = false;
   let verification = null;
