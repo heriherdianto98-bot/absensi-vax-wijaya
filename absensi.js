@@ -683,125 +683,45 @@ async function loadAbsensiHariIni(){
 ===================================== */
 
 async function simpanAbsenMasuk(){
-    const existing = await loadAbsensiHariIni();
-    if(existing && hasTime(existing.jam_masuk)){
-        absensiHariIni = existing;
-        sinkronTombolAbsen();
-        setInfo("Absen masuk hari ini sudah tercatat.");
-        return;
-    }
-
-    const { tanggal, jam } = nowWib();
-    const menit = lateMinutesOf(jam);
-    const denda = dendaOf(menit);
-    const status = menit > 0 ? "Terlambat" : "Hadir";
-
-    const payloadPenuh = {
-        karyawan_id: ID_KARYAWAN,
-        cabang_id: Number(cabangTerdekat.id),
-        cabang_asal_id: dataKaryawanAktif?.cabang_id != null
-            ? Number(dataKaryawanAktif.cabang_id)
-            : null,
-        tanggal,
-        jam_masuk: jam,
-        status,
-        status_absensi: "H",
-        terlambat_menit: menit,
-        denda,
-        latitude_masuk: posisiTerakhir.latitude,
-        longitude_masuk: posisiTerakhir.longitude
-    };
-
-    const payloadInti = {
-        karyawan_id: ID_KARYAWAN,
-        cabang_id: Number(cabangTerdekat.id),
-        tanggal,
-        jam_masuk: jam,
-        status,
-        terlambat_menit: menit,
-        denda
-    };
-
-    let { data, error } = await db
-        .from("absensi")
-        .insert(payloadPenuh)
-        .select("id,karyawan_id,cabang_id,tanggal,jam_masuk,jam_pulang,status,terlambat_menit,denda")
-        .maybeSingle();
-
-    if(error && /column|does not exist|schema cache/i.test(error.message || "")){
-        ({ data, error } = await db
-            .from("absensi")
-            .insert(payloadInti)
-            .select("id,karyawan_id,cabang_id,tanggal,jam_masuk,jam_pulang,status,terlambat_menit,denda")
-            .maybeSingle());
-    }
-
-    if(error && (error.code === "23505" || /duplicate|unique/i.test(error.message || ""))){
-        await loadAbsensiHariIni();
-        sinkronTombolAbsen();
-        setInfo("Absen masuk hari ini sudah tercatat.");
-        return;
-    }
-
-    if(error){
-        console.error("Gagal absen masuk:", error);
-        setInfo(error.message || "Absen masuk gagal disimpan.");
-        return;
-    }
-
-    absensiHariIni = data || await loadAbsensiHariIni();
-    sinkronTombolAbsen();
-    loadRingkasan();
-    setInfo(
-        `Absen masuk berhasil di ${cabangTerdekat.nama_cabang} pukul ${jam}.`
-    );
+    await simpanAbsenAman("MASUK");
 }
-
 async function simpanAbsenPulang(){
-    const existing = await loadAbsensiHariIni();
-
-    if(!existing || !hasTime(existing.jam_masuk)){
-        absensiHariIni = existing;
+    await simpanAbsenAman("PULANG");
+}
+async function simpanAbsenAman(action){
+    const token = (typeof KaryawanSession !== "undefined" && KaryawanSession.getToken)
+        ? KaryawanSession.getToken() : "";
+    if(!token){ setInfo("Sesi login tidak valid. Silakan login ulang."); return; }
+    if(!gpsBolehAbsen()) return;
+    const lokasi = { ...posisiTerakhir };
+    try{
+        const { data, error } = await db.rpc("karyawan_absen_secure", {
+            p_token: token, p_action: action, p_lat: lokasi.latitude,
+            p_lon: lokasi.longitude, p_accuracy: lokasi.accuracy
+        });
+        if(error || !data || data.ok !== true){
+            const reason = String(error?.message || data?.reason || "Absensi gagal disimpan.");
+            console.error("Absensi aman gagal:", reason);
+            setInfo(reason);
+            if(/SESSION_INVALID/.test(reason) && KaryawanSession.logout){
+                await KaryawanSession.logout();
+            }
+            await loadAbsensiHariIni();
+            sinkronTombolAbsen();
+            return;
+        }
+        absensiHariIni = data;
         sinkronTombolAbsen();
-        setInfo("Absen masuk hari ini belum tercatat.");
-        return;
-    }
-
-    if(hasTime(existing.jam_pulang)){
-        absensiHariIni = existing;
-        sinkronTombolAbsen();
-        setInfo("Absen pulang hari ini sudah tercatat.");
-        return;
-    }
-
-    const { jam } = nowWib();
-
-    const { data, error } = await db
-        .from("absensi")
-        .update({ jam_pulang: jam })
-        .eq("id", existing.id)
-        .eq("karyawan_id", ID_KARYAWAN)
-        .is("jam_pulang", null)
-        .select("id,karyawan_id,cabang_id,tanggal,jam_masuk,jam_pulang,status,terlambat_menit,denda")
-        .maybeSingle();
-
-    if(error){
-        console.error("Gagal absen pulang:", error);
-        setInfo(error.message || "Absen pulang gagal disimpan.");
-        return;
-    }
-
-    if(!data){
+        loadRingkasan();
+        const jam = action === "MASUK" ? data.jam_masuk : data.jam_pulang;
+        setInfo(action === "MASUK"
+            ? `Absen masuk berhasil di ${data.nama_cabang} pukul ${jam}.`
+            : `Absen pulang berhasil pukul ${jam}.`);
+    }catch(err){
+        console.error("Absensi aman error:", err);
+        setInfo("Koneksi absensi gagal. Silakan coba kembali.");
         await loadAbsensiHariIni();
-        sinkronTombolAbsen();
-        setInfo("Absen pulang hari ini sudah tercatat.");
-        return;
     }
-
-    absensiHariIni = data || { ...existing, jam_pulang: jam };
-    sinkronTombolAbsen();
-    loadRingkasan();
-    setInfo(`Absen pulang berhasil pukul ${jam}.`);
 }
 
 function haptic(pattern){
