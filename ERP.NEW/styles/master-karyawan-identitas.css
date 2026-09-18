@@ -74,3 +74,21 @@
 .mki-detail:hover{background:#44391e;box-shadow:0 0 14px #dcb34536}
 @media(max-width:620px){.mki-grid{grid-template-columns:1fr}.mki-field.wide{grid-column:auto}.mki-form{padding:17px}.mki-head{padding:18px}.mki-head h3{font-size:27px}.mki-overlay{padding:8px}.mki-card{max-height:96vh;width:100%}.mki-detail{margin:5px 0 0}}
 @media(prefers-reduced-motion:reduce){.mki-x{transition:none}}
+/* Master table only: match Detail control to the compact Edit action. */
+.master-karyawan-page .mk-table .mki-detail{
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  min-height:30px;
+  padding:5px 9px;
+  margin-left:5px;
+  border-radius:9px;
+  font-size:12px;
+  line-height:1.2;
+  font-weight:800;
+  letter-spacing:0;
+  vertical-align:middle;
+}
+@media(max-width:620px){.master-karyawan-page .mk-table .mki-detail{margin:4px 0 0;padding:5px 8px}}
