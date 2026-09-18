@@ -1,4 +1,4 @@
-/* ERP VAX — read-only notification extensions; no finance, payroll, investor or Cash Out engine writes. */
+/* ERP VAX — notification extensions; no finance, payroll, investor or Cash Out engine writes. */
 "use strict";
 (function(){
   const install=()=>{
@@ -107,6 +107,44 @@
           title:'Snapshot investor tersedia untuk ditinjau',
           detail:`Cabang ID ${r.branch_id||'—'} • Periode ${r.period_month||'—'} • Revisi ${r.revision_no||1}`}));
       }catch(e){console.warn('[Finance notif] Investor snapshot read',e)}
+    };
+    // Owner-only acknowledgement stored per browser and auth user. No source data is changed.
+    const reviewStorageKey=()=>N.role==='owner'&&N.user?.id?`vax-cashout-bell-reviewed-v1:${N.user.id}`:null;
+    const readReviewed=()=>{
+      const key=reviewStorageKey();if(!key)return {};
+      try{const v=JSON.parse(localStorage.getItem(key)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}
+      catch(e){console.warn('[Finance notif] Cannot read review state',e);return {}}
+    };
+    const originalAdd=N.add;
+    N.add=function(item){
+      if(this.role==='owner'&&item?.module==='CASH OUT'&&item.key&&Object.prototype.hasOwnProperty.call(readReviewed(),item.key))return;
+      return originalAdd.call(this,item);
+    };
+    const originalRender=N.render;
+    N.render=function(){
+      const result=originalRender.call(this);
+      if(this.role!=='owner'||!reviewStorageKey()||!this.list)return result;
+      const rows=[...this.list.querySelectorAll(':scope > a.erp-global-notif-item')];
+      this.items.slice(0,rows.length).forEach((item,index)=>{
+        if(item.module!=='CASH OUT'||!item._key)return;
+        const button=document.createElement('button');button.type='button';
+        button.textContent='✓ Tandai sudah ditinjau';
+        button.setAttribute('aria-label',`Tandai sudah ditinjau: ${item.title}`);
+        button.style.cssText='display:block;width:100%;margin:0 0 8px;padding:7px 10px;border:1px solid rgba(212,168,38,.45);border-radius:8px;background:#282317;color:#f4d67d;cursor:pointer;text-align:left;font:inherit;font-size:11px;font-weight:700';
+        rows[index].insertAdjacentElement('afterend',button);
+        button.addEventListener('click',()=>{
+          try{
+            const key=reviewStorageKey();if(!key)return;
+            const reviewed=readReviewed(),now=Date.now();
+            Object.keys(reviewed).forEach(k=>{if(!Number.isFinite(Number(reviewed[k]))||now-Number(reviewed[k])>15*86400000)delete reviewed[k]});
+            reviewed[item._key]=now;
+            localStorage.setItem(key,JSON.stringify(reviewed));
+            this.items=this.items.filter(x=>x._key!==item._key);
+            this.render();
+          }catch(e){console.warn('[Finance notif] Cannot save review state',e);button.textContent='Gagal menyimpan, coba lagi';}
+        });
+      });
+      return result;
     };
     N.refresh=async function(){
       if(this.loading||extraLoading)return;
