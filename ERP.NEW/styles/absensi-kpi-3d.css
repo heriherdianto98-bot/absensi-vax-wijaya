@@ -1,0 +1,61 @@
+/* VAX ABSENSI OWNER — 8 KPI compact + tactile 3D; UI ONLY */
+#absensiRoot .absensi-kpi-grid{gap:10px;perspective:1100px;overflow:visible;padding:4px 2px 10px;}
+#absensiRoot .absensi-kpi-grid > .absensi-kpi,
+#absensiRoot .absensi-kpi-grid > .absensi-kpi-link{
+  --kpi-glow:rgba(212,175,55,.18);position:relative;isolation:isolate;
+  min-height:76px;padding:10px 14px 11px;gap:5px;border-radius:13px;
+  transform:translateZ(0);transform-style:preserve-3d;
+  background:linear-gradient(145deg,rgba(255,255,255,.13),transparent 37%),linear-gradient(165deg,#252c36 0%,#14191f 68%,#10141a 100%);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.19),inset -2px -3px 7px rgba(0,0,0,.45),0 4px 0 #080b10,0 11px 18px rgba(0,0,0,.48),0 0 6px var(--kpi-glow);
+  transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease,filter .2s ease;
+}
+#absensiRoot .absensi-kpi-grid > .kpi-masuk{--kpi-glow:rgba(34,197,94,.19)}
+#absensiRoot .absensi-kpi-grid > .kpi-terlambat{--kpi-glow:rgba(249,115,22,.19)}
+#absensiRoot .absensi-kpi-grid > .kpi-belum{--kpi-glow:rgba(239,68,68,.19)}
+#absensiRoot .absensi-kpi-grid > .kpi-libur{--kpi-glow:rgba(59,130,246,.19)}
+#absensiRoot .absensi-kpi-grid > .kpi-izin{--kpi-glow:rgba(34,211,238,.19)}
+#absensiRoot .absensi-kpi-grid > .kpi-sakit{--kpi-glow:rgba(168,85,247,.19)}
+#absensiRoot .absensi-kpi-grid > .kpi-denda{--kpi-glow:rgba(212,175,55,.2)}
+#absensiRoot .absensi-kpi-grid > .absensi-kpi::before,
+#absensiRoot .absensi-kpi-grid > .absensi-kpi-link::before{
+  content:"";position:absolute;inset:1px;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(118deg,rgba(255,255,255,.14),transparent 42%,rgba(0,0,0,.13));opacity:.7;
+}
+#absensiRoot .absensi-kpi-grid > .absensi-kpi span,
+#absensiRoot .absensi-kpi-grid > .absensi-kpi-link span{
+  position:relative;font-size:clamp(11px,.88vw,13px);line-height:1.15;letter-spacing:.01em;
+}
+#absensiRoot .absensi-kpi-grid > .absensi-kpi strong,
+#absensiRoot .absensi-kpi-grid > .absensi-kpi-link strong{
+  position:relative;font-size:clamp(22px,1.8vw,27px);line-height:1.05;
+}
+@media (hover:hover) and (pointer:fine){
+  #absensiRoot .absensi-kpi-grid > .absensi-kpi:hover,
+  #absensiRoot .absensi-kpi-grid > .absensi-kpi-link:hover{
+    transform:translateY(-6px) rotateX(5deg) scale(1.018);filter:brightness(1.14);
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.3),inset -2px -3px 8px rgba(0,0,0,.4),0 9px 0 #070a0e,0 15px 22px rgba(0,0,0,.48),0 0 12px var(--kpi-glow);
+  }
+}
+#absensiRoot .absensi-kpi-grid > .absensi-kpi:active,
+#absensiRoot .absensi-kpi-grid > .absensi-kpi-link:active{
+  transform:translateY(3px) scale(.975);filter:brightness(1.2);
+  box-shadow:inset 2px 3px 12px rgba(0,0,0,.6),inset 0 0 21px var(--kpi-glow),0 1px 0 #080b10,0 0 10px var(--kpi-glow);
+  transition-duration:.08s;
+}
+#absensiRoot .absensi-kpi-grid > .absensi-kpi:focus-visible,
+#absensiRoot .absensi-kpi-grid > .absensi-kpi-link:focus-visible{
+  outline:2px solid #f2c230;outline-offset:3px;
+}
+@media(max-width:900px){#absensiRoot .absensi-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:480px){
+  #absensiRoot .absensi-kpi-grid{gap:8px;padding:3px 2px 9px;}
+  #absensiRoot .absensi-kpi-grid > .absensi-kpi,
+  #absensiRoot .absensi-kpi-grid > .absensi-kpi-link{min-height:72px;padding:9px 11px;}
+}
+@media(prefers-reduced-motion:reduce){
+  #absensiRoot .absensi-kpi-grid > .absensi-kpi,
+  #absensiRoot .absensi-kpi-grid > .absensi-kpi-link{animation:none;transition:none;}
+}
+/* Ruang napas di bawah toolbar, tanpa mengubah struktur/filter. */
+#absensiRoot #absensiDailyView > .absensi-kpi-grid{margin-top:16px;}
+@media(max-width:480px){#absensiRoot #absensiDailyView > .absensi-kpi-grid{margin-top:13px;}}
