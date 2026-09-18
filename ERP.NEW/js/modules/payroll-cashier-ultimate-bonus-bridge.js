@@ -38,6 +38,12 @@
 
   engine.loadPeriod = async function(args = {}) {
     const result = await originalLoad.call(this, args);
+    // Never change a verified historical snapshot or its explicitly saved correction overlay.
+    if (result?.historicalLocked || window.__VAX_PAYROLL_HISTORICAL_LOCKED__?.locked) {
+      activeMonth = "";
+      autoByEmployee = new Map();
+      return result;
+    }
     const month = monthOf(args.start);
     const start = `${month}-01`;
     const last = Number(month.slice(5, 7));
