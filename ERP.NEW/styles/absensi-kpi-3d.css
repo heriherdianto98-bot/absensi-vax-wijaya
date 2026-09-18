@@ -59,3 +59,25 @@
 /* Ruang napas di bawah toolbar, tanpa mengubah struktur/filter. */
 #absensiRoot #absensiDailyView > .absensi-kpi-grid{margin-top:16px;}
 @media(max-width:480px){#absensiRoot #absensiDailyView > .absensi-kpi-grid{margin-top:13px;}}
+/* Orbit khusus toolbar Absensi Owner: hanya garis tepi, tidak menutupi kontrol. */
+@property --absensi-orbit-angle{
+  syntax:"<angle>";initial-value:0deg;inherits:false;
+}
+@keyframes absensi-toolbar-orbit{
+  to{--absensi-orbit-angle:360deg;}
+}
+#absensiRoot .absensi-toolbar{
+  position:relative;isolation:isolate;
+  border-radius:12px;
+}
+#absensiRoot .absensi-toolbar::after{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;
+  padding:2px;pointer-events:none;z-index:1;
+  background:conic-gradient(from var(--absensi-orbit-angle),transparent 0deg,transparent 245deg,rgba(242,194,48,.12) 275deg,#f2c230 302deg,rgba(255,231,153,.72) 315deg,transparent 339deg,transparent 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:absensi-toolbar-orbit 9s linear infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  #absensiRoot .absensi-toolbar::after{animation:none;}
+}
