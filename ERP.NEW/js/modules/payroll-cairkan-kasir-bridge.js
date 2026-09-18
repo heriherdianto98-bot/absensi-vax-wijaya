@@ -8,7 +8,7 @@ window.__vaxCashierPayoutBridgeV1=true;
 const $=id=>document.getElementById(id);
 const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const months={Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:Agu=8,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
+const months={Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:7,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
 const todayMonth=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).format(new Date());
 const owner=()=>typeof OwnerAuth!=='undefined'&&OwnerAuth.ready===true&&OwnerAuth.profile?.aktif===true&&OwnerAuth.isOwnerRole?.(OwnerAuth.profile?.role)===true;
 let busy=false;
