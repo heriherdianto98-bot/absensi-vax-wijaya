@@ -7,9 +7,15 @@
   });
   window.MasterKaryawan = MasterKaryawan;
   if(typeof OwnerAuth!=='undefined') window.OwnerAuth = OwnerAuth;
-  // Optional additive profile panel; loading this file must not affect the locked CRUD engine.
+  // Additive profile panel. Load optional presentation-only layer after it initializes.
   const history = document.createElement('script');
   history.src = '../js/modules/master-karyawan-masa-kerja.js?v=20260918-task2';
   history.defer = true;
+  history.addEventListener('load', () => {
+    const ui = document.createElement('script');
+    ui.src = '../js/modules/master-karyawan-masa-kerja-ui.js?v=20260918-gold-rp1';
+    ui.defer = true;
+    document.head.appendChild(ui);
+  }, {once:true});
   document.head.appendChild(history);
 })();
