@@ -1,47 +1,23 @@
 /* ERP VAX — identity modal visual refinements. Scoped UI ONLY; no engine/data changes. */
-.mki-overlay{
-  position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;
-  padding:18px;background:rgba(3,5,8,.82);backdrop-filter:blur(8px);
-}
+.mki-overlay{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,5,8,.82);backdrop-filter:blur(8px)}
 .mki-overlay.is-open{display:flex}
-.mki-card{
-  box-sizing:border-box;width:min(820px,96vw);max-height:min(92vh,100%);overflow-y:auto;overflow-x:hidden;
-  border:1px solid #4b3c15;border-radius:18px;
-  background:radial-gradient(95% 80% at 0 0,rgba(201,161,45,.10),transparent 48%),linear-gradient(180deg,#151a21 0%,#0d1117 100%);
-  color:#f3f5f7;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 28px 72px rgba(0,0,0,.62),0 0 26px rgba(201,161,45,.07);
-  font-family:'Source Sans 3',sans-serif;color-scheme:dark;
-  scrollbar-color:#8f7029 #10151b;scrollbar-width:thin;
-}
+.mki-card{box-sizing:border-box;width:min(820px,96vw);max-height:min(92vh,100%);overflow-y:auto;overflow-x:hidden;border:1px solid #4b3c15;border-radius:18px;background:radial-gradient(95% 80% at 0 0,rgba(201,161,45,.10),transparent 48%),linear-gradient(180deg,#151a21 0%,#0d1117 100%);color:#f3f5f7;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 28px 72px rgba(0,0,0,.62),0 0 26px rgba(201,161,45,.07);font-family:'Source Sans 3',sans-serif;color-scheme:dark;scrollbar-color:#8f7029 #10151b;scrollbar-width:thin}
 .mki-card::-webkit-scrollbar{width:9px;height:9px}
 .mki-card::-webkit-scrollbar-track{background:#10151b;border-radius:0 18px 18px 0}
 .mki-card::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#aa8735,#66501f);border:2px solid #10151b;border-radius:12px}
 .mki-card::-webkit-scrollbar-thumb:hover{background:#cba64e}
-.mki-head{
-  padding:22px 24px 18px;border-bottom:1px solid rgba(201,161,45,.30);
-  background:linear-gradient(180deg,rgba(201,161,45,.055),rgba(201,161,45,0));
-  display:flex;gap:18px;align-items:flex-start;justify-content:space-between;
-}
+.mki-head{padding:22px 24px 18px;border-bottom:1px solid rgba(201,161,45,.30);background:linear-gradient(180deg,rgba(201,161,45,.055),rgba(201,161,45,0));display:flex;gap:18px;align-items:flex-start;justify-content:space-between}
 .mki-eyebrow{font-size:14px;letter-spacing:1.8px;font-weight:900;color:#d9b84a}
 .mki-head h3{font-size:30px;line-height:1.05;margin:5px 0;color:#fff;font-weight:900}
 .mki-head p{margin:9px 0 0;color:#b7c0ca;font-size:15px;line-height:1.45;font-weight:600}
-.mki-x{
-  color:#e9d487;background:linear-gradient(180deg,#242017,#17140d);border:1px solid #4b3c15;
-  border-radius:10px;width:40px;height:40px;flex-shrink:0;cursor:pointer;font-size:25px;font-weight:800;
-  box-shadow:inset 0 1px 0 rgba(255,243,188,.10),0 4px 10px rgba(0,0,0,.25);
-  transition:transform .16s ease,border-color .16s ease;
-}
+.mki-x{color:#e9d487;background:linear-gradient(180deg,#242017,#17140d);border:1px solid #4b3c15;border-radius:10px;width:40px;height:40px;flex-shrink:0;cursor:pointer;font-size:25px;font-weight:800;box-shadow:inset 0 1px 0 rgba(255,243,188,.10),0 4px 10px rgba(0,0,0,.25);transition:transform .16s ease,border-color .16s ease}
 .mki-x:hover{transform:translateY(-1px);border-color:#a78120}
 .mki-form{padding:22px 24px 24px}
 .mki-intro{display:flex;align-items:center;gap:10px;padding:12px 15px;background:#bf96321a;color:#ebce8e;border:1px solid #b68c3642;border-radius:12px;margin-bottom:18px;font-size:13px}
 .mki-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .mki-field{min-width:0;display:flex;flex-direction:column;gap:8px;color:#d4dae1;font-weight:900;font-size:14px;letter-spacing:.2px}
 .mki-field.wide{grid-column:1/-1}
-.mki-field input,.mki-field textarea{
-  box-sizing:border-box;width:100%;min-height:48px;border-radius:10px;border:1px solid #343c47;
-  background:linear-gradient(180deg,#141a21,#0e141a);color:#f3f5f7;padding:11px 13px;
-  font:700 16px 'Source Sans 3',sans-serif;outline:none;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),inset 0 2px 8px rgba(0,0,0,.18);
-}
+.mki-field input,.mki-field textarea{box-sizing:border-box;width:100%;min-height:48px;border-radius:10px;border:1px solid #343c47;background:linear-gradient(180deg,#141a21,#0e141a);color:#f3f5f7;padding:11px 13px;font:700 16px 'Source Sans 3',sans-serif;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.025),inset 0 2px 8px rgba(0,0,0,.18)}
 .mki-field textarea{min-height:112px;resize:vertical;line-height:1.45;scrollbar-color:#8f7029 #10151b;scrollbar-width:thin}
 .mki-field textarea::-webkit-scrollbar{width:8px}
 .mki-field textarea::-webkit-scrollbar-track{background:#10151b}
@@ -51,18 +27,11 @@
 .mki-field input::placeholder,.mki-field textarea::placeholder{color:#89939e;font-weight:600}
 .mki-field small{font-size:11px;color:#a7b1bf;font-weight:400;letter-spacing:0}
 /* Native Edge/Chromium date picker inherits dark scheme; browser owns popup rendering. */
-.mki-card .mki-field input[type="date"]{
-  color-scheme:dark;background-color:#10161d;color:#f3f5f7;accent-color:#d9b84a;
-}
-.mki-card .mki-field input[type="date"]::-webkit-calendar-picker-indicator{
-  cursor:pointer;opacity:1;filter:invert(83%) sepia(38%) saturate(612%) hue-rotate(354deg) brightness(92%);
-}
-.mki-card .mki-field input[type="date"]::-webkit-datetime-edit,
-.mki-card .mki-field input[type="date"]::-webkit-datetime-edit-fields-wrapper{color:#f3f5f7}
+.mki-card .mki-field input[type="date"]{color-scheme:dark;background-color:#10161d;color:#f3f5f7;accent-color:#d9b84a}
+.mki-card .mki-field input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:1;filter:invert(83%) sepia(38%) saturate(612%) hue-rotate(354deg) brightness(92%)}
+.mki-card .mki-field input[type="date"]::-webkit-datetime-edit,.mki-card .mki-field input[type="date"]::-webkit-datetime-edit-fields-wrapper{color:#f3f5f7}
 .mki-card .mki-field input[type="date"]::-webkit-datetime-edit-text{color:#9da8b5}
-.mki-card .mki-field input[type="date"]::-webkit-datetime-edit-month-field:focus,
-.mki-card .mki-field input[type="date"]::-webkit-datetime-edit-day-field:focus,
-.mki-card .mki-field input[type="date"]::-webkit-datetime-edit-year-field:focus{background:#806324;color:#fff}
+.mki-card .mki-field input[type="date"]::-webkit-datetime-edit-month-field:focus,.mki-card .mki-field input[type="date"]::-webkit-datetime-edit-day-field:focus,.mki-card .mki-field input[type="date"]::-webkit-datetime-edit-year-field:focus{background:#806324;color:#fff}
 .mki-status{border:1px solid #b58d3d44;color:#efd28b;background:#d09b2912;border-radius:10px;padding:10px 12px;margin:18px 0 0;font-size:13px}
 .mki-notice{margin-top:12px;color:#8df0bd;background:#12402c78;padding:10px 12px;border-radius:10px}
 .mki-notice.is-error{color:#ffb6ad;background:#54231e96}
@@ -75,22 +44,12 @@
 @media(max-width:620px){.mki-grid{grid-template-columns:1fr}.mki-field.wide{grid-column:auto}.mki-form{padding:17px}.mki-head{padding:18px}.mki-head h3{font-size:27px}.mki-overlay{padding:8px}.mki-card{max-height:96vh;width:100%}.mki-detail{margin:5px 0 0}}
 @media(prefers-reduced-motion:reduce){.mki-x{transition:none}}
 /* Master table only: match Detail control to the compact Edit action. */
-.master-karyawan-page .mk-table .mki-detail{
-  box-sizing:border-box;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  min-height:30px;
-  padding:5px 9px;
-  margin-left:5px;
-  border-radius:9px;
-  font-size:12px;
-  line-height:1.2;
-  font-weight:800;
-  letter-spacing:0;
-  vertical-align:middle;
-}
+.master-karyawan-page .mk-table .mki-detail{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:30px;padding:5px 9px;margin-left:5px;border-radius:9px;font-size:12px;line-height:1.2;font-weight:800;letter-spacing:0;vertical-align:middle}
 @media(max-width:620px){.master-karyawan-page .mk-table .mki-detail{margin:4px 0 0;padding:5px 8px}}
 /* Compact KTP address box without affecting other textareas or employee logic. */
 #mkiAddress{height:66px;min-height:66px;max-height:120px;resize:vertical;overflow-y:auto}
+/* Calendar icon: native indicator remains clickable; remove darkening filter and brighten it on dark inputs. */
+.mki-card #mkiBirth::-webkit-calendar-picker-indicator,
+.mki-card #mkiJoin::-webkit-calendar-picker-indicator{opacity:1!important;filter:invert(1) brightness(1.65)!important;width:20px;height:20px;cursor:pointer;display:block;background-color:transparent}
+.mki-card #mkiBirth:hover::-webkit-calendar-picker-indicator,
+.mki-card #mkiJoin:hover::-webkit-calendar-picker-indicator{filter:invert(1) brightness(2)!important}
