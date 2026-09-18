@@ -7,4 +7,9 @@
   });
   window.MasterKaryawan = MasterKaryawan;
   if(typeof OwnerAuth!=='undefined') window.OwnerAuth = OwnerAuth;
+  // Optional additive profile panel; loading this file must not affect the locked CRUD engine.
+  const history = document.createElement('script');
+  history.src = '../js/modules/master-karyawan-masa-kerja.js?v=20260918-task2';
+  history.defer = true;
+  document.head.appendChild(history);
 })();
