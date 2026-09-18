@@ -97,17 +97,19 @@
     }
     mountCards();
   }
-  function openPayout(card,id,name,month) {
-    if (busy || period() !== month || !owner()) return;
+  async function openPayout(card,id,name,month) {
+    if (busy || period() !== month) return;
+    if (!await verifyOwner()) {alert('Sesi Owner belum terverifikasi. Login ulang sebagai Owner.');return;}
     const btn = card.querySelector('.vax-pay-btn');
-    if (!btn || btn.disabled) return;
+    if (!btn || btn.disabled || !card.isConnected || period() !== month) return;
     const value = amount(card);
     if (!value) {alert('Nominal gaji bersih belum valid. Refresh Payroll dahulu.');return;}
     const box = modal();
     $('vaxPayInfo').innerHTML = `<strong>${escapeText(name)}</strong> · ${escapeText(month)}<br>Gaji bersih: <strong>${rupiah(value)}</strong>`;
     $('vaxPayAgree').checked = false;$('vaxPayError').textContent = '';$('vaxPayConfirm').disabled = true;box.hidden = false;
     $('vaxPayConfirm').onclick = async () => {
-      if (busy || !owner() || !$('vaxPayAgree').checked) return;
+      if (busy || !$('vaxPayAgree').checked) return;
+      if (!await verifyOwner()) {$('vaxPayError').textContent = 'Sesi Owner tidak valid. Login ulang sebelum mencairkan.';return;}
       if (period() !== month || !card.isConnected || amount(card) !== value) {$('vaxPayError').textContent = 'Payroll berubah. Tutup, refresh dan periksa nominal lagi.';return;}
       busy = true;$('vaxPayConfirm').disabled = true;$('vaxPayCancel').disabled = true;$('vaxPayError').textContent = 'Memproses transaksi…';
       try {
