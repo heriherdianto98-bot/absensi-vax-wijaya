@@ -92,3 +92,5 @@
   vertical-align:middle;
 }
 @media(max-width:620px){.master-karyawan-page .mk-table .mki-detail{margin:4px 0 0;padding:5px 8px}}
+/* Compact KTP address box without affecting other textareas or employee logic. */
+#mkiAddress{height:66px;min-height:66px;max-height:120px;resize:vertical;overflow-y:auto}
