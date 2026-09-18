@@ -1,4 +1,4 @@
-/* ERP VAX — read-only notification extensions. Never writes to source modules or tables. */
+/* ERP VAX — read-only notification extensions; no finance, payroll, investor or Cash Out engine writes. */
 "use strict";
 (function(){
   const install=()=>{
@@ -7,18 +7,30 @@
     N.__financeReadOnlyBellInstalled=true;
     const originalRefresh=N.refresh;
     let parserPromise=null,extraLoading=false;
+    const parserReady=()=>typeof CashOutWarning!=='undefined'&&typeof CashOutWarning.parseSegment==='function';
     const ensureParser=()=>{
-      if(typeof CashOutWarning!=='undefined'&&typeof CashOutWarning.parseSegment==='function')return Promise.resolve(true);
-      // Dashboard already loads the LOCKED warning parser from activity.js.
-      if(/\/erp-dashboard\.html$/i.test(location.pathname))return Promise.resolve(false);
+      if(parserReady())return Promise.resolve(true);
       if(parserPromise)return parserPromise;
+      if(/\/erp-dashboard\.html$/i.test(location.pathname)){
+        // activity.js owns the existing dashboard parser: wait, never inject it twice.
+        parserPromise=new Promise(resolve=>{
+          const s=document.getElementById('cashoutWarningScript');
+          if(!s){resolve(false);return}
+          let settled=false;
+          const finish=()=>{if(!settled){settled=true;resolve(parserReady())}};
+          s.addEventListener('load',finish,{once:true});
+          s.addEventListener('error',finish,{once:true});
+          setTimeout(finish,2500);
+        });
+        return parserPromise;
+      }
       parserPromise=new Promise(resolve=>{
-        const script=document.createElement('script');
-        script.src='../js/modules/cashout-warning.js?v=20260906-1';
-        script.dataset.erpCashoutNotifParser='1';
-        script.onload=()=>resolve(typeof CashOutWarning!=='undefined'&&typeof CashOutWarning.parseSegment==='function');
-        script.onerror=()=>{console.warn('[Finance notif] Cash Out parser unavailable');resolve(false)};
-        document.head.appendChild(script);
+        const s=document.createElement('script');
+        s.src='../js/modules/cashout-warning.js?v=20260906-1';
+        s.dataset.erpCashoutNotifParser='1';
+        s.onload=()=>resolve(parserReady());
+        s.onerror=()=>{console.warn('[Finance notif] Cash Out parser unavailable');resolve(false)};
+        document.head.appendChild(s);
       });
       return parserPromise;
     };
@@ -58,10 +70,14 @@
           .gte('period_end',since).order('period_end',{ascending:false}).limit(200);
         if(error)throw error;
         (data||[]).filter(r=>['AMBIGUOUS','UNMATCHED'].includes(String(r.mapping_status||'').toUpperCase()))
-          .forEach(r=>N.add({key:`payroll-provider-mapping:${r.id}`,tone:'warning',icon:'▤',
-            module:'PAYROLL',href:'./payroll-capster.html',title:'Mapping provider payroll perlu ditinjau',
-            detail:`${r.provider_name_raw||'Provider'} • Cabang ID ${r.cabang_id||'—'} • ${r.period_end||'—'}`}));
-      }catch(e){console.warn('[Finance notif] Payroll mapping read',e)}
+          .forEach(r=>{
+            const detail=`${r.provider_name_raw||'Provider'} • Cabang ID ${r.cabang_id||'—'} • ${r.period_end||'—'}`;
+            N.add({key:`payroll-provider-mapping:${r.id}`,tone:'warning',icon:'▤',module:'PAYROLL',
+              href:'./payroll-capster.html',title:'Mapping provider payroll perlu ditinjau',detail});
+            N.add({key:`bulanan-provider-mapping:${r.id}`,tone:'warning',icon:'▥',module:'LAPORAN BULANAN',
+              href:'./laporan-bulanan.html',title:'Mapping provider laporan bulanan perlu ditinjau',detail});
+          });
+      }catch(e){console.warn('[Finance notif] Provider mapping read',e)}
     };
     const loadDailySyncFailures=async(db)=>{
       if(N.role!=='owner')return;
@@ -77,6 +93,21 @@
             title:'Sinkronisasi data harian gagal',detail:`${r.tanggal||'—'} • Cabang ID ${r.cabang_id||'—'}`}));
       }catch(e){console.warn('[Finance notif] Daily sync read',e)}
     };
+    const loadInvestorSnapshots=async(db)=>{
+      if(N.role!=='owner')return;
+      try{
+        const since=new Date(Date.now()-72*3600000).toISOString();
+        const {data,error}=await db.from('investor_revised_snapshots')
+          .select('id,branch_id,period_month,revision_no,status,created_at,locked_at')
+          .eq('status','READY').is('locked_at',null).gte('created_at',since)
+          .order('created_at',{ascending:false}).limit(20);
+        if(error)throw error;
+        (data||[]).forEach(r=>N.add({key:`investor-snapshot-ready:${r.id}`,tone:'info',icon:'▥',
+          module:'BULANAN INVESTOR',href:'./laporan-bulanan-investor.html',
+          title:'Snapshot investor tersedia untuk ditinjau',
+          detail:`Cabang ID ${r.branch_id||'—'} • Periode ${r.period_month||'—'} • Revisi ${r.revision_no||1}`}));
+      }catch(e){console.warn('[Finance notif] Investor snapshot read',e)}
+    };
     N.refresh=async function(){
       if(this.loading||extraLoading)return;
       extraLoading=true;
@@ -89,7 +120,8 @@
           try{await this.loadCashOutWarnings?.(db)}catch(e){console.warn('[Finance notif] Cash Out read',e)}
         }
         await Promise.allSettled([
-          loadPendingArusKas(db),loadKasbon(db),loadPayrollMapping(db),loadDailySyncFailures(db)
+          loadPendingArusKas(db),loadKasbon(db),loadPayrollMapping(db),
+          loadDailySyncFailures(db),loadInvestorSnapshots(db)
         ]);
         this.render();
       }finally{extraLoading=false}
