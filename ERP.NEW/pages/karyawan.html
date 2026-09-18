@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="../styles/master-karyawan-table-polish.css?v=20260910-polish2">
 <link rel="stylesheet" href="../styles/master-karyawan-modal-theme.css?v=20260910-modal2">
 <link rel="stylesheet" href="../styles/master-karyawan-freeze.css?v=20260910-freeze1">
+<link rel="stylesheet" href="../styles/master-karyawan-identitas.css?v=20260918-identity1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="setoran-dark payroll-aruskas-theme">
@@ -130,12 +131,40 @@
   </section>
 </div>
 
+<!-- Owner-only independent KTP identity panel; no changes to the locked employee engine. -->
+<div id="mkiOverlay" class="mki-overlay" aria-hidden="true">
+  <div class="mki-overlay-backdrop" data-mki-close style="position:absolute;inset:0"></div>
+  <section class="mki-card" role="dialog" aria-modal="true" aria-labelledby="mkiTitle" style="position:relative">
+    <header class="mki-head">
+      <div><small class="mki-eyebrow">MASTER KARYAWAN · DATA PRIBADI</small><h3 id="mkiTitle">Identitas Karyawan</h3><p id="mkiSubtitle">Data KTP khusus Owner</p></div>
+      <button type="button" class="mki-x" data-mki-close aria-label="Tutup">×</button>
+    </header>
+    <form id="mkiForm" class="mki-form" autocomplete="off">
+      <div class="mki-intro">🔒 Identitas hanya untuk Owner. Kolom yang belum diketahui boleh dikosongkan; data tidak dibuat-buat.</div>
+      <div class="mki-grid">
+        <label class="mki-field wide">Nama lengkap sesuai KTP<input id="mkiFullName" type="text" maxlength="180" placeholder="Nama pada KTP" autocomplete="off"></label>
+        <label class="mki-field">NIK (16 digit)<input id="mkiNik" type="text" inputmode="numeric" maxlength="16" pattern="[0-9]{16}" placeholder="16 digit / kosong jika belum ada" autocomplete="off" spellcheck="false"><small>Tidak ditampilkan di tabel atau laporan umum.</small></label>
+        <label class="mki-field">Tempat lahir<input id="mkiBirthPlace" type="text" maxlength="120" placeholder="Tempat lahir" autocomplete="off"></label>
+        <label class="mki-field">Tanggal lahir<input id="mkiBirth" type="date" autocomplete="off"></label>
+        <label class="mki-field">Tanggal pertama bergabung VAX<input id="mkiJoin" type="date" autocomplete="off"><small>Bukan tanggal pindah cabang atau tanggal akun dibuat.</small></label>
+        <label class="mki-field wide">Alamat lengkap sesuai KTP<textarea id="mkiAddress" rows="3" placeholder="Alamat sesuai dokumen KTP" autocomplete="off"></textarea></label>
+        <label class="mki-field wide">Catatan kelengkapan (opsional)<textarea id="mkiNotes" rows="2" placeholder="Contoh: tanggal bergabung menunggu konfirmasi" autocomplete="off"></textarea></label>
+      </div>
+      <div id="mkiStatus" class="mki-status" aria-live="polite">Belum lengkap.</div>
+      <div id="mkiNotice" class="mki-notice" aria-live="polite" hidden></div>
+      <footer class="mki-footer"><button type="button" data-mki-close>Batal</button><button id="mkiSave" type="submit">Simpan Identitas</button></footer>
+    </form>
+  </section>
+</div>
+
 <nav class="erp-bottom-nav" aria-label="Navigasi bawah"><a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a><a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a><a href="./cash-out.html"><span class="bn-icon">↗</span>Cash Out</a><a href="./tabel-harian-cabang.html"><span class="bn-icon">▦</span>Tabel</a><a href="./login.html"><span class="bn-icon">👤</span>Akun</a></nav>
 
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/loader.js"></script>
 <script src="../js/modules/master-karyawan.js?v=20260910-actions1"></script>
+<script src="../js/modules/master-karyawan-identitas-bridge.js?v=20260918-identity1"></script>
+<script src="../js/modules/master-karyawan-identitas.js?v=20260918-identity1"></script>
 <script>
 Promise.all([
   loadComponent('sidebar','../components/sidebar.html'),
