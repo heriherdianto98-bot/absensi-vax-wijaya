@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pengajuan Izin / Libur Karyawan</title>
+<link rel="stylesheet" href="izin.css?v=20260817-fill">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+    <a href="dashboard-karyawan.html" class="back-btn" aria-label="Kembali"><i class="fas fa-chevron-left"></i></a>
+    <div class="topbar-title"><strong>PENGAJUAN IZIN / LIBUR / SAKIT</strong><small>VAX WIJAYA</small></div>
+    <span class="topbar-spacer"></span>
+</header>
+
+<main class="izin-body">
+<section class="intro-card">
+    <div class="intro-icon"><i class="fas fa-file-signature"></i></div>
+    <div>
+        <h1>Ajukan Izin / Libur / Sakit</h1>
+        <p>Sistem mengarahkan otomatis ke SPV. Jika SPV tidak tersedia, Owner yang memutuskan.</p>
+    </div>
+</section>
+
+<section class="status-flow" aria-label="Alur persetujuan">
+    <div class="flow-step active"><span>1</span><small>Karyawan</small></div>
+    <div class="flow-line"></div>
+    <div class="flow-step"><span>2</span><small>SPV / Owner</small></div>
+</section>
+
+<form id="izinForm" class="form-card" novalidate>
+    <div class="form-fields">
+    <div class="date-grid">
+        <div class="field">
+            <label for="tanggalIzin">Tanggal Mulai</label>
+            <button type="button" class="input-wrap date-trigger" id="tanggalIzinTrigger">
+                <i class="fas fa-calendar-day"></i>
+                <span id="tanggalIzinLabel">Pilih tanggal</span>
+                <i class="fas fa-chevron-down date-chevron"></i>
+            </button>
+            <input id="tanggalIzin" name="tanggalIzin" type="date" class="date-native" required>
+        </div>
+
+        <div class="field" id="fieldTanggalSelesai" hidden>
+            <label for="tanggalSelesaiIzin">Tanggal Selesai</label>
+            <button type="button" class="input-wrap date-trigger" id="tanggalSelesaiIzinTrigger">
+                <i class="fas fa-calendar-check"></i>
+                <span id="tanggalSelesaiIzinLabel">Pilih tanggal</span>
+                <i class="fas fa-chevron-down date-chevron"></i>
+            </button>
+            <input id="tanggalSelesaiIzin" name="tanggalSelesaiIzin" type="date" class="date-native">
+        </div>
+    </div>
+
+    <div class="field">
+        <label for="jenisIzin">Jenis Pengajuan</label>
+        <div class="input-wrap">
+            <i class="fas fa-circle-info"></i>
+            <select id="jenisIzin" name="jenisIzin" class="jenis-native" required>
+                <option value="IZIN">Izin</option>
+                <option value="LIBUR">Libur</option>
+                <option value="SAKIT">Sakit</option>
+            </select>
+            <div class="jenis-custom" id="jenisCustom">
+                <button type="button" class="jenis-trigger" id="jenisTrigger" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="jenis-value" id="jenisValue">Izin</span>
+                    <i class="fas fa-chevron-down jenis-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="jenis-menu" id="jenisMenu" role="listbox" hidden>
+                    <button type="button" class="jenis-option is-selected" data-value="IZIN" role="option" aria-selected="true"><i class="fas fa-user-clock"></i><span>Izin</span></button>
+                    <button type="button" class="jenis-option" data-value="LIBUR" role="option" aria-selected="false"><i class="fas fa-calendar-check"></i><span>Libur</span></button>
+                    <button type="button" class="jenis-option" data-value="SAKIT" role="option" aria-selected="false"><i class="fas fa-briefcase-medical"></i><span>Sakit</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <label for="alasanIzin">Alasan</label>
+        <textarea id="alasanIzin" name="alasanIzin" rows="3" maxlength="300" placeholder="Tulis alasan secara jelas..." required></textarea>
+        <div class="field-meta"><span>Wajib diisi</span><span id="alasanCounter">0/300</span></div>
+    </div>
+
+    <div class="field" id="fieldBukti">
+        <label id="buktiLabel">Bukti / Foto</label>
+        <label class="upload-box" for="buktiIzin">
+            <input id="buktiIzin" name="buktiIzin" type="file" accept="image/*" capture="environment">
+            <div id="uploadEmpty" class="upload-empty">
+                <span class="upload-icon"><i class="fas fa-camera"></i></span>
+                <strong>Ambil / Pilih Foto</strong>
+                <small id="buktiHint">Foto bukti wajib untuk pengajuan Izin</small>
+            </div>
+            <img id="previewBukti" alt="Preview bukti pengajuan" hidden>
+        </label>
+        <button id="btnHapusFoto" class="remove-photo" type="button" hidden><i class="fas fa-trash"></i> Hapus Foto</button>
+    </div>
+
+    <section class="info-box">
+        <i class="fas fa-shield-halved"></i>
+        <p>Setelah reviewer <b>ACC</b>, status langsung final. Capster: max 14 hari, max 2 orang/cabang/tanggal. Kasir: wajib ada coverage.</p>
+    </section>
+
+    <p id="izinBentrokWarn" class="izin-bentrok-warn" hidden></p>
+    </div>
+
+    <div class="form-end">
+        <p id="formMessage" class="form-message" aria-live="polite"></p>
+        <button id="btnKirimIzin" class="submit-btn" type="submit">
+            <i class="fas fa-paper-plane"></i><span>Kirim Pengajuan</span>
+        </button>
+    </div>
+</form>
+</main>
+
+<nav id="bottomNav" aria-label="Navigasi utama">
+    <a href="dashboard-karyawan.html"><i class="fas fa-house"></i><span>Dashboard</span></a>
+    <a href="absensi.html"><i class="fas fa-clock"></i><span>Absensi</span></a>
+    <a href="gaji-saya.html"><i class="fas fa-file-invoice"></i><span>Gaji Saya</span></a>
+    <a href="profil.html"><i class="fas fa-user"></i><span>Profil</span></a>
+</nav>
+</div>
+
+<!-- CUSTOM CALENDAR -->
+<div id="datePickerModal" class="date-modal" hidden>
+    <div class="date-modal-backdrop" data-date-close></div>
+    <section class="date-card" role="dialog" aria-modal="true" aria-labelledby="datePickerTitle">
+        <div class="date-head">
+            <button type="button" class="date-nav-btn" id="datePrevMonth" aria-label="Bulan sebelumnya"><i class="fas fa-chevron-left"></i></button>
+            <div>
+                <small id="datePickerTitle">PILIH TANGGAL</small>
+                <strong id="dateMonthTitle">Agustus 2026</strong>
+            </div>
+            <button type="button" class="date-nav-btn" id="dateNextMonth" aria-label="Bulan berikutnya"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="date-weekdays">
+            <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+        </div>
+        <div id="dateCalendarGrid" class="date-grid-days"></div>
+        <div class="date-actions">
+            <button type="button" class="date-today-btn" id="dateTodayBtn">Hari Ini</button>
+            <button type="button" class="date-close-btn" data-date-close>Tutup</button>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="karyawan-session.js"></script>
+<script src="izin.js?v=20260817-ownerfb"></script>
+</body>
+</html>
