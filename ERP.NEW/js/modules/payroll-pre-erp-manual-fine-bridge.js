@@ -8,7 +8,6 @@
   const TABLE = "payroll_pre_erp_manual_fines";
   const money = v => "Rp " + Number(v || 0).toLocaleString("id-ID");
   const amountOf = v => { const n = Number(v); return Number.isSafeInteger(n) && n >= 0 ? n : NaN; };
-  const pad = n => String(n).padStart(2, "0");
   const firstDay = v => /^\d{4}-\d{2}-\d{2}$/.test(String(v || "")) ? `${String(v).slice(0,7)}-01` : "";
   let currentToken = 0;
 
@@ -61,11 +60,15 @@
       .pre-erp-fine-fields{display:grid;grid-template-columns:minmax(145px,1fr) minmax(240px,2fr) auto;gap:9px;align-items:end}
       .pre-erp-fine-fields label{display:grid;gap:5px;font-size:11px;font-weight:800;color:#e9d1c8}
       .pre-erp-fine-fields input{width:100%;min-width:0;padding:10px;border-radius:8px;border:1px solid #58616f;background:#111b27;color:#fff;font:inherit}
-      .pre-erp-fine-fields button{padding:10px 13px;border-radius:8px;border:1px solid #d4a06b;background:#c58b53;color:#151718;font-weight:900;cursor:pointer}
+      .pre-erp-fine-fields input:disabled{opacity:.75;cursor:not-allowed;border-color:#354450}
+      .pre-erp-fine-actions{display:flex;gap:7px;align-items:end;flex-wrap:wrap}
+      .pre-erp-fine-fields button{padding:10px 13px;border-radius:8px;border:1px solid #d4a06b;background:#c58b53;color:#151718;font-weight:900;cursor:pointer;white-space:nowrap}
+      .pre-erp-fine-fields .pre-erp-fine-edit{background:#253447;color:#f2d1b0}
+      .pre-erp-fine-fields .pre-erp-fine-cancel{background:#252c37;color:#e9d1c8;border-color:#65717f}
       .pre-erp-fine-fields button:disabled{opacity:.65;cursor:wait}
       .pre-erp-fine-msg{min-height:16px;margin:8px 0 0!important;color:#b8dcbf!important}
       .pre-erp-fine-msg.error{color:#ffaca8!important}
-      @media(max-width:800px){.pre-erp-fine-fields{grid-template-columns:1fr}.pre-erp-fine-fields button{width:100%}.pre-erp-fine-panel-head{align-items:flex-start}}
+      @media(max-width:800px){.pre-erp-fine-fields{grid-template-columns:1fr}.pre-erp-fine-fields .pre-erp-fine-actions{width:100%}.pre-erp-fine-fields button{flex:1}.pre-erp-fine-panel-head{align-items:flex-start}}
       @media(prefers-reduced-motion:reduce){.pre-erp-fine-panel-chevron{transition:none}}
     `;
     document.head.appendChild(el);
@@ -105,36 +108,64 @@
     const editorId = `preErpFineEditor-${id}`;
     editor.id = editorId;
     heading.setAttribute("aria-controls", editorId);
-    editor.innerHTML = '<p>Masukkan hanya total denda dari catatan lama yang BELUM tercatat di Absensi ERP. Nilai ini ditambah satu kali ke denda Absensi.</p><div class="pre-erp-fine-fields"><label>Nominal denda lama (Rp)<input class="pre-erp-fine-amount" type="text" inputmode="numeric" autocomplete="off"></label><label>Catatan sumber / periode denda<input class="pre-erp-fine-note" type="text" maxlength="500" placeholder="Contoh: Rekap manual 1–15 Sep 2026"></label><button type="button" class="pre-erp-fine-save">Simpan Denda</button></div><p class="pre-erp-fine-msg" role="status" aria-live="polite"></p>';
-    editor.querySelector(".pre-erp-fine-amount").value = money(row.amount);
-    editor.querySelector(".pre-erp-fine-note").value = row.note;
+    editor.innerHTML = '<p>Masukkan hanya total denda dari catatan lama yang BELUM tercatat di Absensi ERP. Nilai ini ditambah satu kali ke denda Absensi.</p><div class="pre-erp-fine-fields"><label>Nominal denda lama (Rp)<input class="pre-erp-fine-amount" type="text" inputmode="numeric" autocomplete="off"></label><label>Catatan sumber / periode denda<input class="pre-erp-fine-note" type="text" maxlength="500" placeholder="Contoh: Rekap manual 1–15 Sep 2026"></label><div class="pre-erp-fine-actions"><button type="button" class="pre-erp-fine-edit" hidden>Edit Denda</button><button type="button" class="pre-erp-fine-cancel" hidden>Batal</button><button type="button" class="pre-erp-fine-save">Simpan Denda</button></div></div><p class="pre-erp-fine-msg" role="status" aria-live="polite"></p>';
+    const input = editor.querySelector(".pre-erp-fine-amount");
+    const noteInput = editor.querySelector(".pre-erp-fine-note");
+    const editButton = editor.querySelector(".pre-erp-fine-edit");
+    const cancelButton = editor.querySelector(".pre-erp-fine-cancel");
+    const saveButton = editor.querySelector(".pre-erp-fine-save");
+    const msg = editor.querySelector(".pre-erp-fine-msg");
+    const hasSavedFine = Boolean(row.updatedAt);
+    const restoreSaved = () => {input.value = money(row.amount);noteInput.value = row.note;};
+    const setEditing = editing => {
+      input.disabled = !editing;
+      noteInput.disabled = !editing;
+      editButton.hidden = !hasSavedFine || editing;
+      cancelButton.hidden = !hasSavedFine || !editing;
+      saveButton.hidden = !editing;
+    };
+    restoreSaved();
+    setEditing(!hasSavedFine);
+    if(hasSavedFine) msg.textContent = "Denda tersimpan. Klik Edit Denda untuk mengoreksi nominal atau catatan.";
     panel.append(heading, editor);
     summary.after(panel);
     heading.addEventListener("click", () => {
       editor.hidden = !editor.hidden;
       heading.setAttribute("aria-expanded", String(!editor.hidden));
-      if (!editor.hidden) editor.querySelector(".pre-erp-fine-amount").focus();
+      if (!editor.hidden && !input.disabled) input.focus();
     });
-    const input = editor.querySelector(".pre-erp-fine-amount");
+    editButton.addEventListener("click", () => {
+      restoreSaved();setEditing(true);msg.textContent = "Mode edit aktif. Periksa nominal dan catatan sebelum menyimpan.";input.focus();input.select();
+    });
+    cancelButton.addEventListener("click", () => {
+      restoreSaved();setEditing(false);msg.classList.remove("error");msg.textContent = "Perubahan dibatalkan. Data tersimpan tidak berubah.";
+    });
     input.addEventListener("blur", () => {const v = Number(input.value.replace(/\D/g, "") || 0);input.value = money(v);});
-    editor.querySelector(".pre-erp-fine-save").addEventListener("click", async event => {
-      const button = event.currentTarget, msg = editor.querySelector(".pre-erp-fine-msg");
+    saveButton.addEventListener("click", async event => {
+      const button = event.currentTarget;
+      if (input.disabled || noteInput.disabled) return;
       const amount = Number(input.value.replace(/\D/g, "") || 0);
-      const note = editor.querySelector(".pre-erp-fine-note").value.trim();
+      const note = noteInput.value.trim();
       msg.classList.remove("error");
       if (!Number.isSafeInteger(amount) || amount < 0 || amount > 99999999999999 || !note) {
         msg.classList.add("error");msg.textContent = "Isi nominal yang valid dan catatan sumber/periode denda.";return;
       }
       try {
-        button.disabled = true;msg.textContent = "Menyimpan denda manual…";
+        button.disabled = true;editButton.disabled = true;cancelButton.disabled = true;
+        msg.textContent = "Menyimpan denda manual…";
         const {data:auth,error:authError} = await db.auth.getUser();
         if(authError || !auth?.user?.id) throw new Error("Sesi login Owner tidak tersedia.");
         const {error} = await db.from(TABLE).upsert({employee_id:id,period_month:row.month,amount,note,updated_by:auth.user.id,updated_at:new Date().toISOString()}, {onConflict:"employee_id,period_month"});
         if(error) throw error;
+        // Update display immediately; the ordinary Refresh reloads the canonical saved row.
+        row.amount = amount;row.note = note;row.updatedAt = new Date().toISOString();
+        detail.textContent = `Absensi ERP ${money(row.absensi)} + Manual sebelum ERP ${money(row.amount)}`;
+        restoreSaved();input.disabled = true;noteInput.disabled = true;
+        editButton.hidden = false;cancelButton.hidden = true;saveButton.hidden = true;
         msg.textContent = "Denda manual tersimpan. Memuat ulang payroll…";
         document.getElementById("payrollRefresh")?.click();
       } catch (err) {msg.classList.add("error");msg.textContent = err?.message || "Gagal menyimpan denda manual.";}
-      finally {button.disabled = false;}
+      finally {button.disabled = false;editButton.disabled = false;cancelButton.disabled = false;}
     });
   }
 
