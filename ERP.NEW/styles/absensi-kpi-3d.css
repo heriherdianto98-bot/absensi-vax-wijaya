@@ -81,3 +81,26 @@
 @media(prefers-reduced-motion:reduce){
   #absensiRoot .absensi-toolbar::after{animation:none;}
 }
+
+/* Owner readability: title hierarchy and clear space above toolbar. */
+#absensiRoot #absensiDailyView > .absensi-page-head{
+  margin-bottom:14px;
+  padding:5px 3px 0;
+}
+#absensiRoot .absensi-page-title{
+  font-size:clamp(26px,2.05vw,32px);
+  line-height:1.12;
+  letter-spacing:.035em;
+}
+#absensiRoot .absensi-karyawan-badge{margin-bottom:3px;}
+/* Physical lift on mouse hover, not an expanding colored glow. */
+@media (hover:hover) and (pointer:fine){
+  #absensiRoot .absensi-kpi-grid > .absensi-kpi:hover,
+  #absensiRoot .absensi-kpi-grid > .absensi-kpi-link:hover{
+    transform:translate3d(0,-12px,24px) rotateX(7deg) scale(1.025);
+    filter:none;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.21),inset -2px -3px 7px rgba(0,0,0,.43),0 13px 0 #080b10,0 27px 27px rgba(0,0,0,.68),0 0 4px var(--kpi-glow);
+    z-index:3;
+  }
+}
+@media(max-width:600px){#absensiRoot #absensiDailyView > .absensi-page-head{margin-bottom:11px;}}
