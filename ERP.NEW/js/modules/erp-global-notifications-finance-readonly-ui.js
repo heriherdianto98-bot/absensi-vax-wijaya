@@ -129,7 +129,8 @@
         const button=document.createElement('button');button.type='button';
         button.textContent='✓ Tandai sudah ditinjau';
         button.setAttribute('aria-label',`Tandai sudah ditinjau: ${item.title}`);
-        button.style.cssText='display:block;width:100%;margin:0 0 8px;padding:7px 10px;border:1px solid rgba(212,168,38,.45);border-radius:8px;background:#282317;color:#f4d67d;cursor:pointer;text-align:left;font:inherit;font-size:11px;font-weight:700';
+        button.style.cssText='display:block;width:100%;margin:0 0 8px;padding:7px 10px;border:1px solid rgba(40,210,110,.75);border-radius:8px;background:#103722;color:#b9ffd4;cursor:pointer;text-align:left;font:inherit;font-size:11px;font-weight:700;box-shadow:0 0 9px rgba(35,220,110,.25)';
+        if(!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)button.animate([{opacity:1,boxShadow:'0 0 6px rgba(35,220,110,.2)'},{opacity:.68,boxShadow:'0 0 17px rgba(35,220,110,.75)'},{opacity:1,boxShadow:'0 0 6px rgba(35,220,110,.2)'}],{duration:1700,iterations:Infinity,easing:'ease-in-out'});
         rows[index].insertAdjacentElement('afterend',button);
         button.addEventListener('click',()=>{
           try{
