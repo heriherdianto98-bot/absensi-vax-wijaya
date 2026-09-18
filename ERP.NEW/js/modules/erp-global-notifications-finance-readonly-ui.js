@@ -27,9 +27,9 @@
       parserPromise=new Promise(resolve=>{
         const s=document.createElement('script');
         s.src='../js/modules/cashout-warning.js?v=20260906-1';
+        s.dataset.erpCashoutNotifParser='1';
         s.onload=()=>resolve(parserReady());
         s.onerror=()=>{console.warn('[Finance notif] Cash Out parser unavailable');resolve(false)};
-        s.dataset.erpCashoutNotifParser='1';
         document.head.appendChild(s);
       });
       return parserPromise;
@@ -112,8 +112,9 @@
       if(N.role!=='owner')return;
       try{
         const {data,error}=await db.from('setoran_3_harian')
-          .select('id,cabang_id,period_start,period_end,minutes_non_cash,bri_non_cash_actual,non_cash_difference')
+          .select('id,cabang_id,period_start,period_end,minutes_non_cash,bri_non_cash_actual,non_cash_difference,owner_verified')
           .not('bri_non_cash_actual','is',null).not('non_cash_difference','is',null)
+          .not('owner_verified','is',true)
           .neq('non_cash_difference',0).order('period_end',{ascending:false}).limit(200);
         if(error)throw error;
         if(!data?.length)return;
@@ -122,7 +123,7 @@
         const names=new Map((branches||[]).map(b=>[String(b.id),b.nama_cabang]));
         data.forEach(r=>{
           const difference=Number(r.non_cash_difference);
-          if(!Number.isFinite(difference)||difference===0)return;
+          if(r.owner_verified===true||!Number.isFinite(difference)||difference===0)return;
           const branch=names.get(String(r.cabang_id))||`Cabang ID ${r.cabang_id}`;
           N.add({key:`setoran-bri-difference:${r.id}`,tone:'urgent',icon:'!',
             module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',
