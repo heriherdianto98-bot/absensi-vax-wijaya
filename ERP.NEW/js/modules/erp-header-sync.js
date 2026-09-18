@@ -16,6 +16,13 @@
       p.dataset.erpGlobalNotifStabilityJs='1';
       document.head.appendChild(p);
     }
+    if(!document.querySelector('script[data-erp-global-notif-finance-js]')){
+      const f=document.createElement('script');
+      f.src='../js/modules/erp-global-notifications-finance-readonly-ui.js?v=20260919-1';
+      f.async=false;
+      f.dataset.erpGlobalNotifFinanceJs='1';
+      document.head.appendChild(f);
+    }
   };
   const ensureKasbonListReadFix=()=>{
     const path=String(window.location.pathname||'').toLowerCase();
