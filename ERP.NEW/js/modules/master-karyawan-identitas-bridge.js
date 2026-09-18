@@ -6,4 +6,5 @@
     return {id:Number(button.dataset.editId), nama:td?.[1]?.querySelector('.mk-name')?.textContent?.trim() || '', namaMaster:td?.[1]?.querySelector('.mk-name')?.textContent?.trim() || '', cabang:td?.[2]?.textContent?.trim() || '—'};
   });
   window.MasterKaryawan = MasterKaryawan;
+  if(typeof OwnerAuth!=='undefined') window.OwnerAuth = OwnerAuth;
 })();
