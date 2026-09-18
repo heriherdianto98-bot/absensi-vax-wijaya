@@ -48,13 +48,16 @@
     if (document.getElementById("preErpFineStyle")) return;
     const el = document.createElement("style"); el.id = "preErpFineStyle";
     el.textContent = `
-      .payroll-sum.is-denda-card.has-pre-erp-fine{cursor:pointer;outline-offset:3px}
-      .payroll-sum.is-denda-card .pre-erp-fine-breakdown{display:block;margin-top:5px;font-size:11px;line-height:1.35;color:#edc1bd;font-weight:600;white-space:normal}
-      .payroll-sum.is-denda-card .pre-erp-fine-hint{display:block;margin-top:5px;font-size:11px;color:#c5d3dd}
-      .pre-erp-fine-editor{margin:10px 0;padding:13px 15px;border:1px solid #775246;border-radius:12px;background:linear-gradient(140deg,#251c1e,#151e29);color:#f0e6e3}
+      .pre-erp-fine-panel{margin:10px 0;border:1px solid #775246;border-radius:12px;background:linear-gradient(140deg,#251c1e,#151e29);color:#f0e6e3;overflow:hidden}
+      .pre-erp-fine-panel-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 15px;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit}
+      .pre-erp-fine-panel-head:hover,.pre-erp-fine-panel-head:focus-visible{background:rgba(214,164,106,.09)}
+      .pre-erp-fine-panel-head strong{display:block;color:#f1bcad;font-size:13px}
+      .pre-erp-fine-panel-head small{display:block;margin-top:3px;color:#d2bdba;font-size:11px;line-height:1.4}
+      .pre-erp-fine-panel-chevron{flex:none;color:#f1bcad;font-size:17px;transition:transform .2s ease}
+      .pre-erp-fine-panel-head[aria-expanded="true"] .pre-erp-fine-panel-chevron{transform:rotate(180deg)}
+      .pre-erp-fine-editor{padding:0 15px 13px;border-top:1px solid rgba(194,143,106,.25)}
       .pre-erp-fine-editor[hidden]{display:none!important}
-      .pre-erp-fine-editor h4{margin:0 0 5px;color:#f1bcad;font-size:14px}
-      .pre-erp-fine-editor p{margin:0 0 10px;font-size:12px;color:#ced5de}
+      .pre-erp-fine-editor p{margin:10px 0;font-size:12px;color:#ced5de}
       .pre-erp-fine-fields{display:grid;grid-template-columns:minmax(145px,1fr) minmax(240px,2fr) auto;gap:9px;align-items:end}
       .pre-erp-fine-fields label{display:grid;gap:5px;font-size:11px;font-weight:800;color:#e9d1c8}
       .pre-erp-fine-fields input{width:100%;min-width:0;padding:10px;border-radius:8px;border:1px solid #58616f;background:#111b27;color:#fff;font:inherit}
@@ -62,7 +65,8 @@
       .pre-erp-fine-fields button:disabled{opacity:.65;cursor:wait}
       .pre-erp-fine-msg{min-height:16px;margin:8px 0 0!important;color:#b8dcbf!important}
       .pre-erp-fine-msg.error{color:#ffaca8!important}
-      @media(max-width:800px){.pre-erp-fine-fields{grid-template-columns:1fr}.pre-erp-fine-fields button{width:100%}}
+      @media(max-width:800px){.pre-erp-fine-fields{grid-template-columns:1fr}.pre-erp-fine-fields button{width:100%}.pre-erp-fine-panel-head{align-items:flex-start}}
+      @media(prefers-reduced-motion:reduce){.pre-erp-fine-panel-chevron{transition:none}}
     `;
     document.head.appendChild(el);
   }
@@ -72,29 +76,45 @@
     const id = Number(card.dataset.employeeId);
     const row = window.__preErpFineRows?.get(id);
     if (!row || !row.month || !Number.isSafeInteger(id)) return;
-    const dendaCard = card.querySelector(".payroll-sum.is-denda-card");
     const summary = card.querySelector(".payroll-summary");
-    if (!dendaCard || !summary) return;
+    if (!summary) return;
     card.dataset.preErpFineEnhanced = "1";
     card.dataset.preErpFineMonth = row.month;
-    const detail = document.createElement("small"); detail.className = "pre-erp-fine-breakdown";
+    // Keep the original Denda KPI card unchanged in size and appearance.
+    const panel = document.createElement("section");
+    panel.className = "pre-erp-fine-panel";
+    const heading = document.createElement("button");
+    heading.className = "pre-erp-fine-panel-head";
+    heading.type = "button";
+    heading.setAttribute("aria-expanded", "false");
+    heading.setAttribute("aria-label", "Buka atau tutup Denda Manual Sebelum ERP");
+    const headingText = document.createElement("span");
+    const title = document.createElement("strong");
+    title.textContent = "Denda Manual Sebelum ERP";
+    const detail = document.createElement("small");
     detail.textContent = `Absensi ERP ${money(row.absensi)} + Manual sebelum ERP ${money(row.amount)}`;
-    dendaCard.appendChild(detail);
-    const hint = document.createElement("small"); hint.className = "pre-erp-fine-hint";
-    hint.textContent = "Klik untuk isi denda lama";
-    dendaCard.appendChild(hint);
-    dendaCard.classList.add("has-pre-erp-fine");
-    dendaCard.tabIndex = 0; dendaCard.setAttribute("role", "button");
-    dendaCard.setAttribute("aria-label", "Buka input denda manual sebelum ERP");
-    const editor = document.createElement("section");
-    editor.className = "pre-erp-fine-editor";editor.hidden = true;
-    editor.innerHTML = '<h4>Denda Manual Sebelum ERP</h4><p>Masukkan hanya total denda dari catatan lama yang BELUM tercatat di Absensi ERP. Nilai ini ditambah satu kali ke denda Absensi.</p><div class="pre-erp-fine-fields"><label>Nominal denda lama (Rp)<input class="pre-erp-fine-amount" type="text" inputmode="numeric" autocomplete="off"></label><label>Catatan sumber / periode denda<input class="pre-erp-fine-note" type="text" maxlength="500" placeholder="Contoh: Rekap manual 1–15 Sep 2026"></label><button type="button" class="pre-erp-fine-save">Simpan Denda</button></div><p class="pre-erp-fine-msg" role="status" aria-live="polite"></p>';
+    headingText.append(title, detail);
+    const chevron = document.createElement("span");
+    chevron.className = "pre-erp-fine-panel-chevron";
+    chevron.setAttribute("aria-hidden", "true");
+    chevron.textContent = "⌄";
+    heading.append(headingText, chevron);
+    const editor = document.createElement("div");
+    editor.className = "pre-erp-fine-editor";
+    editor.hidden = true;
+    const editorId = `preErpFineEditor-${id}`;
+    editor.id = editorId;
+    heading.setAttribute("aria-controls", editorId);
+    editor.innerHTML = '<p>Masukkan hanya total denda dari catatan lama yang BELUM tercatat di Absensi ERP. Nilai ini ditambah satu kali ke denda Absensi.</p><div class="pre-erp-fine-fields"><label>Nominal denda lama (Rp)<input class="pre-erp-fine-amount" type="text" inputmode="numeric" autocomplete="off"></label><label>Catatan sumber / periode denda<input class="pre-erp-fine-note" type="text" maxlength="500" placeholder="Contoh: Rekap manual 1–15 Sep 2026"></label><button type="button" class="pre-erp-fine-save">Simpan Denda</button></div><p class="pre-erp-fine-msg" role="status" aria-live="polite"></p>';
     editor.querySelector(".pre-erp-fine-amount").value = money(row.amount);
     editor.querySelector(".pre-erp-fine-note").value = row.note;
-    summary.after(editor);
-    const toggle = () => {editor.hidden = !editor.hidden;if (!editor.hidden) editor.querySelector(".pre-erp-fine-amount").focus();};
-    dendaCard.addEventListener("click", toggle);
-    dendaCard.addEventListener("keydown", event => {if(event.key === "Enter" || event.key === " "){event.preventDefault();toggle();}});
+    panel.append(heading, editor);
+    summary.after(panel);
+    heading.addEventListener("click", () => {
+      editor.hidden = !editor.hidden;
+      heading.setAttribute("aria-expanded", String(!editor.hidden));
+      if (!editor.hidden) editor.querySelector(".pre-erp-fine-amount").focus();
+    });
     const input = editor.querySelector(".pre-erp-fine-amount");
     input.addEventListener("blur", () => {const v = Number(input.value.replace(/\D/g, "") || 0);input.value = money(v);});
     editor.querySelector(".pre-erp-fine-save").addEventListener("click", async event => {
