@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 let sedangBerjalan = false;
 let lastCashOutReconcileAt = 0;
-const CASHOUT_RECONCILE_MS = 6 * 60 * 60 * 1000;
+const CASHOUT_RECONCILE_MS = 2 * 60 * 60 * 1000;
 
 function sekarangWIB() {
   return new Date(
@@ -158,7 +158,7 @@ function jalankanCashOutMonthlyReconcile(selesai) {
   const filePath = path.join(__dirname, "cashout-monthly-reconcile.js");
 
   console.log(
-    `[${formatWaktu()}] STAGE: Cash Out Monthly Reconciliation (LIVE=true DRY_RUN=false HEADLESS=true, max 1×/6 jam)`
+    `[${formatWaktu()}] STAGE: Cash Out Monthly Reconciliation (LIVE=true DRY_RUN=false HEADLESS=true, max 1×/2 jam)`
   );
 
   const proses = spawn(
@@ -261,6 +261,6 @@ setInterval(jalankanSync, 1 * 60 * 1000);
 console.log("");
 console.log("Scheduler aktif.");
 console.log("Jadwal: setiap 1 menit.");
-console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily -> Provider Product Share Daily -> KPI Ultimate (DATE=hari ini WIB) -> Cash Out Monthly Reconciliation (max 1×/6 jam).");
+console.log("Urutan: Daily Recap (xvfb) -> Sync Status 1 Menit -> Provider Sales Daily -> Product Sales Daily -> Provider Product Share Daily -> KPI Ultimate (DATE=hari ini WIB) -> Cash Out Monthly Reconciliation (max 1×/2 jam).");
 console.log("Jam aktif: 07.00–00.00 WIB.");
 console.log("Jangan tutup terminal ini.");
