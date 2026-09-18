@@ -1,36 +1,137 @@
-/* ERP VAX — Additive Owner payout bridge for NON-CAPSTER monthly employees.
-   Capster and backup/floating daily pay are excluded; locked Payroll/Arus Kas engines unchanged.
-   Cash movement is exclusively via Owner-only transactional RPC erp_payroll_cashier_payout_v1. */
+/* ERP VAX — isolated non-capster payout UI. LOCKED Payroll/Arus Kas engines untouched.
+   Only the Owner-guarded database RPC can create an Arus Kas expense. */
 (() => {
-'use strict';
-if(window.__vaxCashierPayoutBridgeV1)return;
-window.__vaxCashierPayoutBridgeV1=true;
-const $=id=>document.getElementById(id);
-const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const months={Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:7,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
-const todayMonth=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).format(new Date());
-const owner=()=>typeof OwnerAuth!=='undefined'&&OwnerAuth.ready===true&&OwnerAuth.profile?.aktif===true&&OwnerAuth.isOwnerRole?.(OwnerAuth.profile?.role)===true;
-let busy=false;
-function period(){const m=String($('payrollPeriodLabel')?.textContent||'').trim().match(/^(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)\s+(\d{4})$/i);if(!m)return null;const k=Object.keys(months).find(x=>x.toLowerCase()===m[1].toLowerCase());const val=`${m[2]}-${String(months[k]).padStart(2,'0')}`;return val<=todayMonth()?val:null;}
-function amount(card){const text=card.querySelector('.js-net-value')?.textContent||'';const n=Number(text.replace(/[^\d]/g,''));return Number.isSafeInteger(n)&&n>0?n:null;}
-function key(id,month){return `CASHIER:${id}:${month}`;}
-function modal(){if($('vaxPayoutModal'))return $('vaxPayoutModal');const s=document.createElement('style');s.textContent=`.vax-pay-btn{background:linear-gradient(135deg,#ad862c,#edc960)!important;border:1px solid #edcd75!important;color:#241b0b!important;border-radius:9px;padding:8px 12px;font-weight:800;cursor:pointer}.vax-pay-btn:disabled{opacity:.6;cursor:not-allowed}.vax-pay-overlay[hidden]{display:none!important}.vax-pay-overlay{position:fixed;inset:0;z-index:2147483000;background:#000b;display:grid;place-items:center;padding:16px}.vax-pay-dialog{width:min(460px,100%);background:#151b24;border:1px solid #9e7d37;border-radius:16px;padding:22px;color:#f3f2ee;box-shadow:0 25px 90px #000c}.vax-pay-dialog h3{margin:0 0 12px;color:#f0cd72}.vax-pay-dialog p{line-height:1.55}.vax-pay-dialog label{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5}.vax-pay-dialog input{margin-top:4px}.vax-pay-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:20px}.vax-pay-actions button{border-radius:9px;border:1px solid #7b6a45;padding:10px 15px;background:#252c34;color:#fff;cursor:pointer}.vax-pay-actions button.vax-pay-confirm{background:#d3a83d;color:#17140b;font-weight:800}.vax-pay-actions button:disabled{opacity:.45;cursor:not-allowed}.vax-pay-error{color:#ff9e9e;font-size:13px;white-space:pre-wrap}`;document.head.appendChild(s);
-const box=document.createElement('div');box.id='vaxPayoutModal';box.className='vax-pay-overlay';box.hidden=true;box.innerHTML='<div class="vax-pay-dialog" role="dialog" aria-modal="true" aria-labelledby="vaxPayTitle"><h3 id="vaxPayTitle">Cairkan gaji non-capster</h3><p id="vaxPayInfo"></p><p>Pengeluaran akan dicatat satu kali ke <strong>Arus Kas · Pengeluaran Barber · Kas Besar</strong>. Tombol ini mencatat pembayaran, tidak mengirim uang ke bank.</p><label><input id="vaxPayAgree" type="checkbox">Saya sudah membayar gaji ini, nominal sudah sesuai, dan belum mencatat pembayaran yang sama di Arus Kas.</label><p id="vaxPayError" class="vax-pay-error" aria-live="polite"></p><div class="vax-pay-actions"><button type="button" id="vaxPayCancel">Batal</button><button type="button" id="vaxPayConfirm" class="vax-pay-confirm" disabled>Konfirmasi pencairan</button></div></div>';document.body.appendChild(box);
-$('vaxPayCancel').addEventListener('click',()=>{if(!busy)box.hidden=true;});$('vaxPayAgree').addEventListener('change',e=>{$('vaxPayConfirm').disabled=!e.target.checked||busy;});box.addEventListener('click',e=>{if(e.target===box&&!busy)box.hidden=true;});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy)box.hidden=true;});return box;}
-async function status(id,month,job,btn){const {data,error}=await db.from('arus_kas_v2_transactions').select('id,amount,tanggal').eq('source_type','PAYROLL_CASHIER_PAYOUT_V1').eq('source_key',key(id,month)).maybeSingle();if(error)throw error;if(!btn.isConnected||btn.dataset.month!==month)return;if(data){btn.disabled=true;btn.textContent='Sudah dibayar';btn.title=`${rupiah(data.amount)} · ${data.tanggal} · Arus Kas ${data.id}`;return;}
- if(/backup|floating/i.test(job)){btn.disabled=true;btn.textContent='Gaji harian via Cash Out';btn.title='Tidak boleh dicairkan ulang dari Payroll bulanan.';return;}
- const last=new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5,7)),0)).getUTCDate();const end=`${month}-${String(last).padStart(2,'0')}`;
- const {data:rates,error:rateError}=await db.from('payroll_salary_master').select('employee_id').eq('employee_id',id).eq('pay_basis','MONTHLY').lte('effective_from',end).or(`effective_to.is.null,effective_to.gte.${end}`).limit(1);
- if(rateError)throw rateError;if(!btn.isConnected||btn.dataset.month!==month)return;
- if(!rates?.length){btn.disabled=true;btn.textContent='Master bulanan belum ada';btn.title='Pencairan otomatis belum tersedia tanpa Master Gaji Bulanan.';return;}
- btn.disabled=false;btn.textContent='Cairkan Gaji';}
-function mountCards(){const list=$('payrollList');if(!list||!owner())return;const month=period();for(const card of list.querySelectorAll('.payroll-employee-card')){const id=Number(card.dataset.employeeId),name=card.querySelector('.payroll-person h3')?.textContent?.trim()||'Karyawan',job=card.querySelector('.payroll-person p')?.textContent||'';
- if(!id||!month||/(^|[·\s])capster([\s·]|$)/i.test(job))continue;
- let btn=card.querySelector('.vax-pay-btn');if(btn){if(btn.dataset.month===month)continue;btn.remove();}
- btn=document.createElement('button');btn.type='button';btn.className='vax-pay-btn';btn.textContent='Memeriksa pembayaran…';btn.disabled=true;btn.dataset.month=month;btn.addEventListener('click',()=>open(card,id,name,month));card.querySelector('.payroll-card-head')?.appendChild(btn);
- status(id,month,job,btn).catch(err=>{btn.disabled=true;btn.textContent='Status tidak tersedia';btn.title=err?.message||'Gagal cek Arus Kas';});}}
-function open(card,id,name,month){if(!owner()||busy||period()!==month)return;const btn=card.querySelector('.vax-pay-btn');if(!btn||btn.disabled)return;const value=amount(card);if(!value){alert('Nominal gaji bersih belum valid. Refresh Payroll dahulu.');return;}const box=modal();$('vaxPayInfo').innerHTML=`<strong>${esc(name)}</strong> · ${esc(month)}<br>Gaji bersih: <strong>${rupiah(value)}</strong>`;$('vaxPayAgree').checked=false;$('vaxPayError').textContent='';$('vaxPayConfirm').disabled=true;box.hidden=false;const confirm=$('vaxPayConfirm');confirm.onclick=async()=>{if(busy||!owner()||!$('vaxPayAgree').checked)return;if(period()!==month||!card.isConnected||amount(card)!==value){$('vaxPayError').textContent='Payroll berubah. Tutup, refresh dan periksa nominal lagi.';return;}busy=true;confirm.disabled=true;$('vaxPayCancel').disabled=true;$('vaxPayError').textContent='Memproses transaksi…';try{const {data,error}=await db.rpc('erp_payroll_cashier_payout_v1',{p_employee_id:id,p_period_month:`${month}-01`,p_amount:value});if(error)throw error;if(!data||!['PAID','ALREADY_PAID'].includes(data.status)||Number(data.amount)!==value)throw Error('Status transaksi perlu pemeriksaan Owner.');box.hidden=true;const button=card.querySelector('.vax-pay-btn');if(button){button.disabled=true;button.textContent='Sudah dibayar';button.title=`${rupiah(data.amount)} · ${data.tanggal} · Arus Kas ${data.id}`;}alert(data.status==='PAID'?`Pembayaran ${rupiah(value)} tercatat satu kali di Arus Kas. Saldo Kas Besar berkurang.`:'Transaksi pencairan sudah ada; tidak dibuat pengeluaran kedua.');}catch(err){console.error('Non-capster payout failed',err?.code||err?.message);$('vaxPayError').textContent=err?.message||'Pencairan gagal. Periksa transaksi Arus Kas sebelum mencoba ulang.';}finally{busy=false;$('vaxPayCancel').disabled=false;confirm.disabled=!$('vaxPayAgree').checked;}};}
-function init(){const list=$('payrollList');if(!list)return;modal();new MutationObserver(mountCards).observe(list,{childList:true});mountCards();setTimeout(mountCards,1000);document.addEventListener('erp:finance-ready',mountCards);document.addEventListener('erp:dashboard-ready',mountCards);$('payrollPeriodLabel')&&new MutationObserver(mountCards).observe($('payrollPeriodLabel'),{childList:true});}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  'use strict';
+  if (window.__vaxCashierPayoutBridgeV1) return;
+  window.__vaxCashierPayoutBridgeV1 = true;
+  const $ = id => document.getElementById(id);
+  const rupiah = n => new Intl.NumberFormat('id-ID', {style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+  const escapeText = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const months = {Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:7,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
+  const monthNow = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).format(new Date());
+  let busy = false;
+  let verification = null;
+  const auth = () => typeof OwnerAuth !== 'undefined' ? OwnerAuth : null;
+  const owner = () => {
+    const a = auth();
+    return Boolean(a?.ready && a?.session?.user?.id && a?.profile && a.isOwnerRole?.(a.profile.role) && a.isProfileActive?.(a.profile));
+  };
+  async function verifyOwner() {
+    if (owner()) return true;
+    const a = auth();
+    if (!a?.validateOwnerSession) return false;
+    if (!verification) verification = a.validateOwnerSession().then(result => Boolean(result?.ok)).catch(() => false).finally(() => {verification = null;});
+    return verification;
+  }
+  function period() {
+    const match = String($('payrollPeriodLabel')?.textContent || '').trim().match(/^(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)\s+(\d{4})$/i);
+    if (!match) return null;
+    const label = Object.keys(months).find(k => k.toLowerCase() === match[1].toLowerCase());
+    if (!label) return null;
+    const value = `${match[2]}-${String(months[label]).padStart(2,'0')}`;
+    return value <= monthNow() ? value : null;
+  }
+  function key(id, month) {return `CASHIER:${id}:${month}`;}
+  function amount(card) {
+    const n = Number(String(card.querySelector('.js-net-value')?.textContent || '').replace(/[^\d]/g,''));
+    return Number.isSafeInteger(n) && n > 0 ? n : null;
+  }
+  function modal() {
+    if ($('vaxPayoutModal')) return $('vaxPayoutModal');
+    const style = document.createElement('style');
+    style.textContent = '.vax-pay-btn{background:linear-gradient(135deg,#ad862c,#edc960)!important;border:1px solid #edcd75!important;color:#241b0b!important;border-radius:9px;padding:8px 12px;font-weight:800;cursor:pointer}.vax-pay-btn:disabled{opacity:.7;cursor:not-allowed}.vax-pay-overlay[hidden]{display:none!important}.vax-pay-overlay{position:fixed;inset:0;z-index:2147483000;background:#000b;display:grid;place-items:center;padding:16px}.vax-pay-dialog{width:min(460px,100%);background:#151b24;border:1px solid #9e7d37;border-radius:16px;padding:22px;color:#f3f2ee;box-shadow:0 25px 90px #000c}.vax-pay-dialog h3{margin:0 0 12px;color:#f0cd72}.vax-pay-dialog p{line-height:1.55}.vax-pay-dialog label{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5}.vax-pay-dialog input{margin-top:4px}.vax-pay-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:20px}.vax-pay-actions button{border-radius:9px;border:1px solid #7b6a45;padding:10px 15px;background:#252c34;color:#fff;cursor:pointer}.vax-pay-actions button.vax-pay-confirm{background:#d3a83d;color:#17140b;font-weight:800}.vax-pay-actions button:disabled{opacity:.45;cursor:not-allowed}.vax-pay-error{color:#ff9e9e;font-size:13px;white-space:pre-wrap}';
+    document.head.appendChild(style);
+    const box = document.createElement('div');
+    box.id = 'vaxPayoutModal';box.className = 'vax-pay-overlay';box.hidden = true;
+    box.innerHTML = '<div class="vax-pay-dialog" role="dialog" aria-modal="true" aria-labelledby="vaxPayTitle"><h3 id="vaxPayTitle">Cairkan gaji non-capster</h3><p id="vaxPayInfo"></p><p>Pengeluaran akan dicatat satu kali ke <strong>Arus Kas · Pengeluaran Barber · Kas Besar</strong>. Fitur ini mencatat pembayaran yang sudah dilakukan, bukan transfer bank.</p><label><input id="vaxPayAgree" type="checkbox">Saya sudah membayar gaji ini, nominal sesuai, dan pembayaran yang sama belum dicatat di Arus Kas.</label><p id="vaxPayError" class="vax-pay-error" aria-live="polite"></p><div class="vax-pay-actions"><button type="button" id="vaxPayCancel">Batal</button><button type="button" id="vaxPayConfirm" class="vax-pay-confirm" disabled>Konfirmasi pencairan</button></div></div>';
+    document.body.appendChild(box);
+    $('vaxPayCancel').addEventListener('click', () => {if (!busy) box.hidden = true;});
+    $('vaxPayAgree').addEventListener('change', e => {$('vaxPayConfirm').disabled = !e.target.checked || busy;});
+    box.addEventListener('click', e => {if (e.target === box && !busy) box.hidden = true;});
+    document.addEventListener('keydown', e => {if (e.key === 'Escape' && !busy) box.hidden = true;});
+    return box;
+  }
+  async function checkStatus(card, id, month, job, btn) {
+    if (!await verifyOwner()) {
+      if (btn.isConnected) {btn.disabled = true;btn.textContent = 'Cairkan Gaji · Owner';btn.title = 'Menunggu autentikasi Owner.';}
+      return;
+    }
+    const {data,error} = await db.from('arus_kas_v2_transactions').select('id,amount,tanggal').eq('source_type','PAYROLL_CASHIER_PAYOUT_V1').eq('source_key',key(id,month)).maybeSingle();
+    if (error) throw error;
+    if (!btn.isConnected || btn.dataset.month !== month) return;
+    if (data) {btn.disabled = true;btn.textContent = 'Sudah dibayar';btn.title = `${rupiah(data.amount)} · ${data.tanggal} · Arus Kas ${data.id}`;return;}
+    if (/backup|floating/i.test(job)) {btn.disabled = true;btn.textContent = 'Gaji harian via Cash Out';btn.title = 'Tidak boleh dicairkan ulang dari Payroll bulanan.';return;}
+    const last = new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5,7)),0)).getUTCDate();
+    const end = `${month}-${String(last).padStart(2,'0')}`;
+    const {data:rates,error:rateError} = await db.from('payroll_salary_master').select('employee_id').eq('employee_id',id).eq('pay_basis','MONTHLY').lte('effective_from',end).or(`effective_to.is.null,effective_to.gte.${end}`).limit(1);
+    if (rateError) throw rateError;
+    if (!btn.isConnected || btn.dataset.month !== month) return;
+    if (!rates?.length) {btn.disabled = true;btn.textContent = 'Master bulanan belum ada';return;}
+    btn.disabled = false;btn.textContent = 'Cairkan Gaji';
+  }
+  function mountCards() {
+    const list = $('payrollList');
+    if (!list) return;
+    const month = period();
+    if (!month) return;
+    for (const card of list.querySelectorAll('.payroll-employee-card')) {
+      const id = Number(card.dataset.employeeId);
+      const name = card.querySelector('.payroll-person h3')?.textContent?.trim() || 'Karyawan';
+      const job = card.querySelector('.payroll-person p')?.textContent || '';
+      if (!id || /(^|[·\s])capster([\s·]|$)/i.test(job)) continue;
+      let btn = card.querySelector('.vax-pay-btn');
+      if (btn && btn.dataset.month === month) continue;
+      if (btn) btn.remove();
+      btn = document.createElement('button');btn.type = 'button';btn.className = 'vax-pay-btn';
+      btn.textContent = 'Memeriksa pembayaran…';btn.disabled = true;btn.dataset.month = month;
+      btn.addEventListener('click', () => openPayout(card,id,name,month));
+      card.querySelector('.payroll-card-head')?.appendChild(btn);
+      checkStatus(card,id,month,job,btn).catch(err => {if(btn.isConnected){btn.disabled = true;btn.textContent = 'Status tidak tersedia';btn.title = err?.message || 'Gagal cek Arus Kas';}});
+    }
+  }
+  async function refreshAuthorization() {
+    if (!await verifyOwner()) return;
+    for (const btn of document.querySelectorAll('#payrollList .vax-pay-btn')) {
+      if (btn.textContent !== 'Cairkan Gaji · Owner') continue;
+      btn.remove();
+    }
+    mountCards();
+  }
+  function openPayout(card,id,name,month) {
+    if (busy || period() !== month || !owner()) return;
+    const btn = card.querySelector('.vax-pay-btn');
+    if (!btn || btn.disabled) return;
+    const value = amount(card);
+    if (!value) {alert('Nominal gaji bersih belum valid. Refresh Payroll dahulu.');return;}
+    const box = modal();
+    $('vaxPayInfo').innerHTML = `<strong>${escapeText(name)}</strong> · ${escapeText(month)}<br>Gaji bersih: <strong>${rupiah(value)}</strong>`;
+    $('vaxPayAgree').checked = false;$('vaxPayError').textContent = '';$('vaxPayConfirm').disabled = true;box.hidden = false;
+    $('vaxPayConfirm').onclick = async () => {
+      if (busy || !owner() || !$('vaxPayAgree').checked) return;
+      if (period() !== month || !card.isConnected || amount(card) !== value) {$('vaxPayError').textContent = 'Payroll berubah. Tutup, refresh dan periksa nominal lagi.';return;}
+      busy = true;$('vaxPayConfirm').disabled = true;$('vaxPayCancel').disabled = true;$('vaxPayError').textContent = 'Memproses transaksi…';
+      try {
+        const {data,error} = await db.rpc('erp_payroll_cashier_payout_v1',{p_employee_id:id,p_period_month:`${month}-01`,p_amount:value});
+        if (error) throw error;
+        if (!data || !['PAID','ALREADY_PAID'].includes(data.status) || Number(data.amount) !== value) throw Error('Status transaksi perlu pemeriksaan Owner.');
+        box.hidden = true;
+        if (btn.isConnected) {btn.disabled = true;btn.textContent = 'Sudah dibayar';btn.title = `${rupiah(data.amount)} · ${data.tanggal} · Arus Kas ${data.id}`;}
+        alert(data.status === 'PAID' ? `Pembayaran ${rupiah(value)} tercatat di Arus Kas; saldo Kas Besar berkurang.` : 'Pembayaran sudah tercatat sebelumnya; tidak dibuat transaksi kedua.');
+      } catch(err) {$('vaxPayError').textContent = err?.message || 'Pencairan gagal. Periksa Arus Kas sebelum mencoba ulang.';}
+      finally {busy = false;$('vaxPayCancel').disabled = false;$('vaxPayConfirm').disabled = !$('vaxPayAgree').checked;}
+    };
+  }
+  function init() {
+    const list = $('payrollList');
+    if (!list) return;
+    modal();
+    new MutationObserver(mountCards).observe(list,{childList:true});
+    mountCards();
+    document.addEventListener('erp:finance-ready',refreshAuthorization);
+    document.addEventListener('erp:dashboard-ready',refreshAuthorization);
+    document.addEventListener('erp:owner-only-ready',refreshAuthorization);
+    if ($('payrollPeriodLabel')) new MutationObserver(mountCards).observe($('payrollPeriodLabel'),{childList:true});
+    setTimeout(refreshAuthorization,1200);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
