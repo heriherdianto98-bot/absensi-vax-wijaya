@@ -7,7 +7,7 @@
   const $ = id => document.getElementById(id);
   const rupiah = n => new Intl.NumberFormat('id-ID', {style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
   const escapeText = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const months = {Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:7,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
+  const months = {Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:8,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
   const monthNow = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).format(new Date());
   let busy = false;
   let verification = null;
@@ -39,7 +39,34 @@
   function modal() {
     if ($('vaxPayoutModal')) return $('vaxPayoutModal');
     const style = document.createElement('style');
-    style.textContent = '.vax-pay-btn{background:linear-gradient(135deg,#ad862c,#edc960)!important;border:1px solid #edcd75!important;color:#241b0b!important;border-radius:9px;padding:8px 12px;font-weight:800;cursor:pointer}.vax-pay-btn:disabled{opacity:.7;cursor:not-allowed}.vax-pay-overlay[hidden]{display:none!important}.vax-pay-overlay{position:fixed;inset:0;z-index:2147483000;background:#000b;display:grid;place-items:center;padding:16px}.vax-pay-dialog{width:min(460px,100%);background:#151b24;border:1px solid #9e7d37;border-radius:16px;padding:22px;color:#f3f2ee;box-shadow:0 25px 90px #000c}.vax-pay-dialog h3{margin:0 0 12px;color:#f0cd72}.vax-pay-dialog p{line-height:1.55}.vax-pay-dialog label{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5}.vax-pay-dialog input{margin-top:4px}.vax-pay-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:20px}.vax-pay-actions button{border-radius:9px;border:1px solid #7b6a45;padding:10px 15px;background:#252c34;color:#fff;cursor:pointer}.vax-pay-actions button.vax-pay-confirm{background:#d3a83d;color:#17140b;font-weight:800}.vax-pay-actions button:disabled{opacity:.45;cursor:not-allowed}.vax-pay-error{color:#ff9e9e;font-size:13px;white-space:pre-wrap}';
+    style.textContent = `
+      @keyframes vaxPayRedPulse {
+        0%,100% { box-shadow:0 0 0 1px rgba(255,105,105,.45),0 0 12px rgba(235,38,49,.45); }
+        50% { box-shadow:0 0 0 2px rgba(255,120,120,.85),0 0 27px rgba(255,47,61,.75); }
+      }
+      @keyframes vaxPayModalGlow {
+        0%,100% { box-shadow:0 25px 90px rgba(0,0,0,.75),0 0 14px rgba(224,48,58,.19),0 0 0 1px rgba(225,174,66,.33);border-color:#9e713b; }
+        50% { box-shadow:0 25px 90px rgba(0,0,0,.75),0 0 37px rgba(239,57,67,.48),0 0 0 1px rgba(255,98,98,.5);border-color:#f07867; }
+      }
+      .vax-pay-btn{background:linear-gradient(180deg,#c62832 0%,#89121e 100%)!important;border:1px solid #ff7979!important;color:#fff7f7!important;border-radius:9px;padding:8px 12px;font-weight:800;cursor:pointer;animation:vaxPayRedPulse 1.45s ease-in-out infinite;transition:background .2s ease,filter .2s ease,transform .2s ease}
+      .vax-pay-btn:hover:not(:disabled){background:linear-gradient(180deg,#e33840 0%,#aa1b2b 100%)!important;filter:brightness(1.12);transform:translateY(-1px)}
+      .vax-pay-btn:focus-visible{outline:2px solid #ffe39c;outline-offset:3px}
+      .vax-pay-btn:active:not(:disabled){transform:translateY(0)}
+      .vax-pay-btn:disabled{background:#30333a!important;border-color:#62636b!important;color:#d0d0d2!important;box-shadow:none!important;animation:none!important;filter:none;transform:none;opacity:.8;cursor:not-allowed}
+      .vax-pay-overlay[hidden]{display:none!important}
+      .vax-pay-overlay{position:fixed;inset:0;z-index:2147483000;background:#000b;display:grid;place-items:center;padding:16px}
+      .vax-pay-dialog{width:min(460px,100%);background:#151b24;border:1px solid #9e713b;border-radius:16px;padding:22px;color:#f3f2ee;animation:vaxPayModalGlow 1.65s ease-in-out infinite}
+      .vax-pay-dialog h3{margin:0 0 12px;color:#f0cd72}
+      .vax-pay-dialog p{line-height:1.55}
+      .vax-pay-dialog label{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5}
+      .vax-pay-dialog input{margin-top:4px}
+      .vax-pay-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:20px}
+      .vax-pay-actions button{border-radius:9px;border:1px solid #7b6a45;padding:10px 15px;background:#252c34;color:#fff;cursor:pointer}
+      .vax-pay-actions button.vax-pay-confirm{background:#d3a83d;color:#17140b;font-weight:800}
+      .vax-pay-actions button:disabled{opacity:.45;cursor:not-allowed}
+      .vax-pay-error{color:#ff9e9e;font-size:13px;white-space:pre-wrap}
+      @media (prefers-reduced-motion:reduce){.vax-pay-btn,.vax-pay-dialog{animation:none!important}.vax-pay-btn{box-shadow:0 0 0 1px rgba(255,105,105,.45),0 0 12px rgba(235,38,49,.45)}}
+    `;
     document.head.appendChild(style);
     const box = document.createElement('div');
     box.id = 'vaxPayoutModal';box.className = 'vax-pay-overlay';box.hidden = true;
