@@ -104,3 +104,15 @@
   }
 }
 @media(max-width:600px){#absensiRoot #absensiDailyView > .absensi-page-head{margin-bottom:11px;}}
+
+/* Judul penting: membesar dengan napas halus; tetap terbaca sepanjang animasi. */
+@keyframes absensi-title-breathe{
+  0%,100%{transform:translateY(0) scale(1);text-shadow:0 1px 0 rgba(0,0,0,.45);}
+  50%{transform:translateY(-2px) scale(1.035);text-shadow:0 0 9px rgba(242,194,48,.18),0 2px 5px rgba(0,0,0,.5);}
+}
+#absensiRoot .absensi-page-title{
+  display:inline-block;font-size:clamp(32px,2.65vw,40px);line-height:1.12;
+  transform-origin:left center;animation:absensi-title-breathe 4.2s ease-in-out infinite;
+}
+@media(max-width:600px){#absensiRoot .absensi-page-title{font-size:clamp(29px,7vw,36px);}}
+@media(prefers-reduced-motion:reduce){#absensiRoot .absensi-page-title{animation:none;}}
