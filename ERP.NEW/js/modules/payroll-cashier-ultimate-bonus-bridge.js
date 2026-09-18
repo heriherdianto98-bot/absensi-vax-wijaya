@@ -4,7 +4,7 @@
   const engine = window.PayrollUnifiedEngine;
   const store = window.PayrollManualAdjustmentStore;
   const classifier = window.LaporanBulananPerformanceKpiBridge;
-  if (!engine?.loadPeriod || !store?.save || !classifier?.isUltimatePackage || !window.db) return;
+  if (!engine?.loadPeriod || !store?.save || !classifier?.isUltimatePackage || typeof db === "undefined") return;
   const originalLoad = engine.loadPeriod;
   const originalSave = store.save;
   const BONUS = 150000;
