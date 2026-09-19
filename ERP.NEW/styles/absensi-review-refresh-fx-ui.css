@@ -10,3 +10,12 @@
 #izinSpvEmbed .vax-review-spark:nth-of-type(3n){width:3px;height:8px;border-radius:4px}
 @keyframes vax-review-refresh-spark{0%{transform:translate(0,0) scale(.35);opacity:1}55%{opacity:1}100%{transform:translate(var(--spark-x),var(--spark-y)) scale(.2);opacity:0}}
 @media(prefers-reduced-motion:reduce){#izinSpvEmbed .vax-review-refresh-icon,#izinSpvEmbed .vax-review-refresh-burst::before,#izinSpvEmbed .vax-review-refresh-burst::after,#izinSpvEmbed .vax-review-spark{animation:none!important}}
+/* UI ONLY: fireworks for a confirmed working reset filter button. */
+#absensiRoot #btnResetAbsensiFilter{position:relative;isolation:isolate;overflow:visible}
+#absensiRoot #btnResetAbsensiFilter.vax-reset-firework::before,#absensiRoot #btnResetAbsensiFilter.vax-reset-firework::after{content:"";position:absolute;inset:-2px;border:2px solid #ffd56a;border-radius:inherit;pointer-events:none;animation:vax-reset-firework-ring .8s ease-out both}
+#absensiRoot #btnResetAbsensiFilter.vax-reset-firework::after{border-color:#87e9ff;animation-delay:.12s}
+#absensiRoot #btnResetAbsensiFilter .vax-reset-spark{position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:#ffdc72;box-shadow:0 0 7px #ffd56a;pointer-events:none;animation:vax-reset-firework-spark .85s cubic-bezier(.18,.65,.2,1) var(--spark-delay,0ms) both}
+#absensiRoot #btnResetAbsensiFilter .vax-reset-spark:nth-of-type(3n){background:#a1efff;box-shadow:0 0 7px #74dfff;width:4px;height:8px;border-radius:3px}
+@keyframes vax-reset-firework-ring{from{transform:scale(.78);opacity:.9}to{transform:scale(1.25);opacity:0}}
+@keyframes vax-reset-firework-spark{from{transform:translate(0,0) scale(.3);opacity:1}60%{opacity:1}to{transform:translate(var(--spark-x),var(--spark-y)) scale(.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){#absensiRoot #btnResetAbsensiFilter.vax-reset-firework::before,#absensiRoot #btnResetAbsensiFilter.vax-reset-firework::after,#absensiRoot #btnResetAbsensiFilter .vax-reset-spark{animation:none!important;display:none!important}}

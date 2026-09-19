@@ -38,3 +38,29 @@
   function boot(){mount();const root=document.getElementById('izinSpvEmbed');if(root)new MutationObserver(mount).observe(root,{childList:true,subtree:true});}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
+/* UI ONLY: click fireworks; the existing AbsensiOwner reset handler remains untouched. */
+(function(){
+  'use strict';
+  const timers=new WeakMap();
+  document.addEventListener('click',function(event){
+    const button=event.target.closest('#absensiRoot #btnResetAbsensiFilter');
+    if(!button || window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    window.clearTimeout(timers.get(button));
+    button.querySelectorAll('.vax-reset-spark').forEach(function(s){s.remove();});
+    button.classList.remove('vax-reset-firework');
+    void button.offsetWidth;
+    button.classList.add('vax-reset-firework');
+    for(let i=0;i<16;i++){
+      const spark=document.createElement('span');
+      const angle=(i*22.5-90)*Math.PI/180;
+      const distance=42+(i%4)*9;
+      spark.className='vax-reset-spark';
+      spark.setAttribute('aria-hidden','true');
+      spark.style.setProperty('--spark-x',Math.round(Math.cos(angle)*distance)+'px');
+      spark.style.setProperty('--spark-y',Math.round(Math.sin(angle)*distance)+'px');
+      spark.style.setProperty('--spark-delay',(i%4)*25+'ms');
+      button.appendChild(spark);
+    }
+    timers.set(button,window.setTimeout(function(){button.classList.remove('vax-reset-firework');button.querySelectorAll('.vax-reset-spark').forEach(function(s){s.remove();});},1150));
+  },true);
+})();
