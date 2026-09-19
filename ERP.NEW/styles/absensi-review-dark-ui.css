@@ -178,12 +178,12 @@
 @media(prefers-reduced-motion:reduce){#absensiRoot .absensi-kpi-grid span,#absensiRoot .absensi-kpi-grid strong,#izinSpvEmbed .izin-spv-summary-card>span,#izinSpvEmbed .izin-spv-summary-card>strong{animation:none!important;transform:none!important}}
 
 /* V6: typewriter with stable card layout. UI-only. */
-@keyframes vax-review-v6-type{0%,3%{clip-path:inset(0 100% 0 0)}24%,96%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}
-#absensiRoot .absensi-kpi-grid>.absensi-kpi span,#absensiRoot .absensi-kpi-grid>.absensi-kpi-link span{display:block;align-self:flex-start;width:max-content;max-width:100%;white-space:nowrap;overflow:hidden!important;animation:vax-review-v6-type 10s steps(19,end) infinite both!important;transform:none!important}
+@keyframes vax-review-v6-type{0%,4%{clip-path:inset(0 100% 0 0)}48%,88%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}
+#absensiRoot .absensi-kpi-grid>.absensi-kpi span,#absensiRoot .absensi-kpi-grid>.absensi-kpi-link span{display:block;align-self:flex-start;width:max-content;max-width:100%;white-space:nowrap;overflow:hidden!important;animation:vax-review-v6-type 5.2s steps(19,end) infinite both!important;transform:none!important}
 #absensiRoot .absensi-kpi-grid>:nth-child(2n) span{animation-delay:-1.1s!important}
 #absensiRoot .absensi-kpi-grid>:nth-child(3n) span{animation-delay:-2.2s!important}
 #izinSpvEmbed .izin-spv-summary-card{display:block!important;min-width:0}
-#izinSpvEmbed .izin-spv-summary-card>span{display:block!important;width:max-content;max-width:100%;white-space:nowrap;overflow:hidden!important;animation:vax-review-v6-type 10s steps(19,end) infinite both!important;transform:none!important}
+#izinSpvEmbed .izin-spv-summary-card>span{display:block!important;width:max-content;max-width:100%;white-space:nowrap;overflow:hidden!important;animation:vax-review-v6-type 5.2s steps(19,end) infinite both!important;transform:none!important}
 #izinSpvEmbed .izin-spv-summary-card:nth-child(2)>span{animation-delay:-1.1s!important}
 #izinSpvEmbed .izin-spv-summary-card:nth-child(3)>span{animation-delay:-2.2s!important}
 #izinSpvEmbed .izin-spv-summary-card>strong{display:block!important;width:max-content;max-width:100%;margin-top:5px;line-height:1;transform-origin:left center}
