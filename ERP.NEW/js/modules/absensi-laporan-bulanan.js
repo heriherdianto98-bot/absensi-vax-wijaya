@@ -518,6 +518,12 @@ const AbsensiLaporanBulanan = {
         await this.ensureMarkup();
         this.fillYearOptions();
         this.setDefaultPeriod();
+        if(this._embed){
+            ["ablFilterCari", "cariNama"].forEach((id) => {
+                const input = document.getElementById(id);
+                if(input) input.value = "";
+            });
+        }
         this.bindUi();
         this.syncModeButtons("bulan");
 
@@ -648,6 +654,13 @@ const AbsensiLaporanBulanan = {
 
     async setMode(mode){
         const next = mode === "hari" ? "hari" : "bulan";
+        const current = this._dayMode ? "hari" : "bulan";
+        if(next !== current){
+            ["ablFilterCari", "cariNama"].forEach((id) => {
+                const input = document.getElementById(id);
+                if(input) input.value = "";
+            });
+        }
         this.syncModeButtons(next);
         if(next === "hari"){
             if(this._embed) await this.showDailyAudit();
@@ -1502,6 +1515,10 @@ const AbsensiLaporanBulanan = {
         this._cardLocked = false;
         const cari = document.getElementById("ablFilterCari");
         if(cari) cari.value = "";
+        if(this._embed){
+            const dailySearch = document.getElementById("cariNama");
+            if(dailySearch) dailySearch.value = "";
+        }
         this.renderSummary(this._meta);
         this.renderDetail();
         if(this._matrixOpen) this.renderTable();
