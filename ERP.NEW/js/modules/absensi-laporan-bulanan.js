@@ -200,9 +200,9 @@ const AbsensiLaporanBulanan = {
         const sel = document.getElementById("ablFilterKaryawan");
         if(!sel) return;
         const current = sel.value;
-        sel.disabled = !this.selectedCabangId();
+        sel.disabled = false;
         const trigger = sel.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger");
-        if(trigger) trigger.disabled = sel.disabled;
+        if(trigger) trigger.disabled = false;
         sel.replaceChildren(new Option("Semua Karyawan", ""));
         if(this.selectedCabangId()) (this._rows || []).forEach((r) => sel.add(new Option(r.nama, String(r.id))));
         sel.value = [...sel.options].some((o) => o.value === current) ? current : "";
@@ -1551,11 +1551,13 @@ const AbsensiLaporanBulanan = {
         }
         this.renderSummary(this._meta);
         this.renderDetail();
-        if(this._matrixOpen) this.renderTable();
-        if(!this._embed) document.getElementById("ablDetailBox")?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+        const matrix = document.getElementById("ablMatrixCard");
+        const matrixBtn = document.getElementById("ablBtnMatrix");
+        this._matrixOpen = true;
+        if(matrix) matrix.hidden = false;
+        if(matrixBtn) matrixBtn.textContent = "Sembunyikan Matriks";
+        this.renderTable();
+        matrix?.scrollIntoView({ behavior: "smooth", block: "start" });
     },
 
     resetFilter(){
@@ -1637,7 +1639,7 @@ const AbsensiLaporanBulanan = {
     matrixRows(){
         const { text, status } = this.activeQuery();
         const employeeId = this.selectedEmployeeId();
-        if(!this._dayMode) return this.viewRows(status === "D" ? "" : status)
+        if(!this._dayMode) return this.viewRows(status)
             .filter((r) => !employeeId || String(r.id) === employeeId);
         const iso = this.effectivePeriodBounds().start;
         return (this._rows || []).filter((r) => {

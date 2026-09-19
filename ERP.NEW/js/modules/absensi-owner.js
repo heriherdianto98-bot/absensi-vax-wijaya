@@ -464,9 +464,9 @@ const AbsensiOwner = {
         const sel = document.getElementById("absensiFilterKaryawan");
         if(!sel) return;
         const branch = this.selectedCabangName();
-        sel.disabled = !branch;
+        sel.disabled = false;
         const trigger = sel.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger");
-        if(trigger) trigger.disabled = !branch;
+        if(trigger) trigger.disabled = false;
         const current = sel.value;
         sel.replaceChildren(new Option("Semua Karyawan", ""));
         (this._karyawanIndex || []).filter((k) => branch && k.cabang === branch)
