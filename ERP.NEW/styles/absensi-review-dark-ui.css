@@ -189,3 +189,22 @@
 #izinSpvEmbed .izin-spv-summary-card>strong{display:block!important;width:max-content;max-width:100%;margin-top:5px;line-height:1;transform-origin:left center}
 #absensiRoot .absensi-kpi-grid strong{display:block;align-self:flex-start;width:max-content;max-width:100%}
 @media(prefers-reduced-motion:reduce){#absensiRoot .absensi-kpi-grid span,#izinSpvEmbed .izin-spv-summary-card>span{animation:none!important;clip-path:none!important;overflow:visible!important;transform:none!important}}
+
+/* V7: owner review header typing, UI only; no text/data mutation. */
+@keyframes vax-owner-typed{0%,3%{clip-path:inset(0 100% 0 0)}62%,94%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}
+#izinSpvEmbed.is-owner .izin-spv-head .izin-spv-kicker,#izinSpvEmbed.is-owner .izin-spv-head h2,#izinSpvEmbed.is-owner .izin-spv-head p,#izinSpvEmbed.is-owner .izin-spv-summary-card.is-waiting>span{display:block;width:max-content;max-width:100%;white-space:nowrap;overflow:hidden!important;transform:none!important;clip-path:inset(0 100% 0 0);animation:vax-owner-typed var(--vax-typing-time,5.4s) steps(var(--vax-typing-letters,22),end) infinite both!important}
+#izinSpvEmbed.is-owner .izin-spv-head .izin-spv-kicker{--vax-typing-letters:25;--vax-typing-time:5.7s;animation-delay:-.7s!important}
+#izinSpvEmbed.is-owner .izin-spv-head h2{--vax-typing-letters:19;--vax-typing-time:5.1s;animation-delay:-1.3s!important}
+#izinSpvEmbed.is-owner .izin-spv-head p{--vax-typing-letters:60;--vax-typing-time:7.2s;animation-delay:-2s!important}
+#izinSpvEmbed.is-owner .izin-spv-summary-card.is-waiting>span{--vax-typing-letters:15;--vax-typing-time:4.8s;animation-delay:-.5s!important}
+@media(max-width:650px){#izinSpvEmbed.is-owner .izin-spv-head p{white-space:normal;overflow:visible!important;clip-path:none;animation:none!important}}
+@media(prefers-reduced-motion:reduce){#izinSpvEmbed.is-owner .izin-spv-head .izin-spv-kicker,#izinSpvEmbed.is-owner .izin-spv-head h2,#izinSpvEmbed.is-owner .izin-spv-head p,#izinSpvEmbed.is-owner .izin-spv-summary-card.is-waiting>span{animation:none!important;clip-path:none!important;overflow:visible!important}}
+
+/* V7 history: flat dark surface, gold blink; no moving gradient. UI only. */
+@keyframes vax-history-gold-blink{0%,100%{border-color:rgba(198,153,48,.34);box-shadow:inset 1px 1px 0 rgba(255,255,255,.07),0 4px 0 #06090d,0 12px 23px rgba(0,0,0,.43)}50%{border-color:rgba(255,212,98,.92);box-shadow:inset 1px 1px 0 rgba(255,255,255,.08),0 4px 0 #06090d,0 12px 23px rgba(0,0,0,.43),0 0 13px rgba(240,182,52,.3)}}
+#izinSpvEmbed .owner-spv-audit{background:#0e131a!important;animation:vax-history-gold-blink 2.8s ease-in-out infinite;transform:none}
+#izinSpvEmbed .owner-spv-audit::before{content:none!important;background:none!important;animation:none!important}
+#izinSpvEmbed .owner-spv-audit-head,#izinSpvEmbed .owner-spv-audit-head:hover{background:#161d26!important;animation:none!important;border-bottom-color:rgba(220,171,51,.33)}
+#izinSpvEmbed .owner-spv-history-toolbar,#izinSpvEmbed .owner-spv-audit-list,#izinSpvEmbed .owner-spv-audit-empty,#izinSpvEmbed .owner-spv-history-footer{background:#101720!important}
+@media(hover:hover) and (pointer:fine){#izinSpvEmbed .owner-spv-audit:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){#izinSpvEmbed .owner-spv-audit{animation:none!important;border-color:rgba(236,190,77,.65)}}
