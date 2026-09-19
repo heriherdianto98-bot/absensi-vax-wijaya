@@ -92,6 +92,7 @@ const AbsensiOwner = {
             this.refreshKpiFromCache();
             this.syncKpiActive();
             this.applyStatusTableFilter();
+            this.loadAktivitasTerbaru();
             if(typeof AbsensiLaporanBulanan !== "undefined") AbsensiLaporanBulanan.setDailyEmployeeId?.("");
             const cari = document.getElementById("cariNama");
             if(cari) cari.value = "";
@@ -107,6 +108,7 @@ const AbsensiOwner = {
             this.hideSuggest();
             this.refreshKpiFromCache();
             this.applyStatusTableFilter();
+            this.loadAktivitasTerbaru();
             if(typeof AbsensiLaporanBulanan !== "undefined"){
                 AbsensiLaporanBulanan.setDailySearch?.("");
                 AbsensiLaporanBulanan.setDailyEmployeeId?.(this.selectedEmployeeId());
@@ -117,6 +119,7 @@ const AbsensiOwner = {
             this.fillEmployeeOptions();
             this.refreshKpiFromCache();
             this.applyStatusTableFilter();
+            this.loadAktivitasTerbaru();
             this.syncHeaderContext();
             if(typeof AbsensiLaporanBulanan !== "undefined" && AbsensiLaporanBulanan.setDailyCabangName){
                 await AbsensiLaporanBulanan.setDailyCabangName(this.selectedCabangName());
@@ -356,16 +359,45 @@ const AbsensiOwner = {
         this.openEmployeeDetail(pick.id, pick.nama);
     },
 
-    openEmployeeDetail(id, nama){
-        if(!id){
-            this.showSearchMsg("Karyawan tidak ditemukan");
-            return;
+    async openEmployeeDetail(id, nama){
+        const employee = this._karyawanIndex.find((k) => String(k.id) === String(id));
+        if(!employee){ this.showSearchMsg("Karyawan tidak ditemukan"); return; }
+        const branch = document.getElementById("absensiFilterCabang");
+        if(branch && [...branch.options].some((o) => o.value === employee.cabang)){
+            branch.value = employee.cabang;
+            const branchLabel = branch.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger span");
+            if(branchLabel) branchLabel.textContent = branch.selectedOptions[0]?.textContent || employee.cabang;
         }
-        try{
-            sessionStorage.setItem(this.FOCUS_KEY_ID, String(id));
-            sessionStorage.setItem(this.FOCUS_KEY_NAMA, String(nama || ""));
-        }catch(_e){ /* ignore */ }
-        window.location.href = `./absensi-laporan.html?karyawan=${encodeURIComponent(String(id))}`;
+        this.fillEmployeeOptions();
+        const selected = document.getElementById("absensiFilterKaryawan");
+        if(!selected || ![...selected.options].some((o) => o.value === String(id))){
+            this.showSearchMsg("Karyawan tidak tersedia pada filter cabang"); return;
+        }
+        selected.value = String(id);
+        const label = selected.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger span");
+        if(label) label.textContent = selected.selectedOptions[0]?.textContent || employee.nama;
+        ["cariNama", "ablFilterCari"].forEach((key) => {
+            const input = document.getElementById(key);
+            if(input) input.value = "";
+        });
+        const status = document.getElementById("absensiFilterStatus");
+        if(status) status.value = "";
+        this._kpiFilter = "";
+        this.hideSuggest(); this.clearSearchMsg();
+        this.refreshKpiFromCache(); this.applyStatusTableFilter(); this.syncKpiActive(); this.syncHeaderContext();
+        this.loadAktivitasTerbaru();
+        const report = typeof AbsensiLaporanBulanan !== "undefined" ? AbsensiLaporanBulanan : null;
+        if(!report) { document.getElementById("statusBox")?.scrollIntoView({behavior:"smooth",block:"start"}); return; }
+        if(!report._dayMode) await report.showDailyAudit();
+        await report.setDailyCabangName(employee.cabang);
+        report.setDailySearch(""); report.setDailyStatusFilter(""); report.setDailyEmployeeId(String(id));
+        report._matrixOpen = true;
+        const matrix = document.getElementById("ablMatrixCard");
+        if(matrix) matrix.hidden = false;
+        const btn = document.getElementById("ablBtnMatrix");
+        if(btn) btn.textContent = "Sembunyikan Matriks";
+        report.renderTable();
+        matrix?.scrollIntoView({behavior:"smooth",block:"start"});
     },
 
     /* ===== Custom calendar (ERP theme) ===== */
@@ -444,6 +476,7 @@ const AbsensiOwner = {
         this.syncDateLabel();
         this.closeCalendar();
         await this.loadDashboard();
+        this.loadAktivitasTerbaru();
         if(typeof AbsensiLaporanBulanan !== "undefined" && AbsensiLaporanBulanan.setDailyDate){
             await AbsensiLaporanBulanan.setDailyDate(iso);
         }
@@ -680,68 +713,46 @@ const AbsensiOwner = {
         this.syncHeaderContext();
     },
 
-    async loadAktivitasTerbaru(){
+    loadAktivitasTerbaru(){
         const box = document.getElementById("aktivitasTerbaru");
         if(!box) return;
-
-        const { data, error } = await db
-            .from("log_aktivitas")
-            .select("*")
-            .order("created_at", { ascending: false })
-            .limit(30);
-
-        if(error){
-            console.error(error);
-            box.innerHTML = `<p class="absensi-muted absensi-error">Gagal memuat aktivitas.</p>`;
+        const cabang = this.selectedCabangName();
+        const employeeId = this.selectedEmployeeId();
+        const employees = new Map(this._karyawanIndex.map((k) => [String(k.id), k]));
+        const records = (this._absensiDay || []).map((rec) => ({ rec, employee: employees.get(String(rec.karyawan_id)) }))
+            .filter(({ rec, employee }) => employee && (!cabang || employee.cabang === cabang)
+                && (!employeeId || String(rec.karyawan_id) === employeeId))
+            .sort((a, b) => String(b.rec.jam_masuk || "").localeCompare(String(a.rec.jam_masuk || "")))
+            .slice(0, 5);
+        box.replaceChildren();
+        if(!records.length){
+            const empty = document.createElement("p");
+            empty.className = "absensi-muted";
+            empty.textContent = "Belum ada aktivitas absensi pada tanggal dan filter ini.";
+            box.appendChild(empty);
             return;
         }
-
-        if(!data || data.length === 0){
-            box.innerHTML = `<p class="absensi-muted">Belum ada aktivitas absensi.</p>`;
-            return;
+        for(const { rec, employee } of records){
+            const row = document.createElement("div");
+            row.className = "absensi-activity-row";
+            const info = document.createElement("div");
+            const title = document.createElement("div");
+            title.className = "absensi-activity-title";
+            title.textContent = employee.nama;
+            const branch = document.createElement("span");
+            branch.textContent = ` (${employee.cabang})`;
+            title.appendChild(branch);
+            const action = document.createElement("div");
+            action.className = "absensi-activity-aksi";
+            action.textContent = `Absensi: ${String(rec.status || "Tercatat")}`;
+            const time = document.createElement("div");
+            time.className = "absensi-activity-time";
+            const match = String(rec.jam_masuk || "").match(/(?:^|T)(\d{2}:\d{2})/);
+            time.textContent = `${this.selectedDate()} · ${match ? match[1] + " WIB" : "Jam belum tersedia"}`;
+            info.append(title, action);
+            row.append(info, time);
+            box.appendChild(row);
         }
-
-        const absensiRelated = data.filter((item) => {
-            const blob = [
-                item.tabel_target,
-                item.aksi,
-                item.keterangan,
-                item.data_target
-            ].join(" ").toLowerCase();
-            return /absen|hadir|terlambat|izin|sakit|libur/.test(blob);
-        }).slice(0, 5);
-
-        if(!absensiRelated.length){
-            box.innerHTML = `<p class="absensi-muted">Belum ada aktivitas absensi.</p>`;
-            return;
-        }
-
-        box.innerHTML = absensiRelated.map((item) => {
-            const waktu = new Date(item.created_at);
-            return `
-                <div class="absensi-activity-row">
-                    <div>
-                        <div class="absensi-activity-title">
-                            ${item.nama_user || "-"}
-                            <span>(${item.role_user || "-"})</span>
-                        </div>
-                        <div class="absensi-activity-aksi">
-                            ${item.aksi || "-"} ${item.tabel_target || ""}
-                        </div>
-                        <div class="absensi-activity-ket">
-                            ${item.keterangan || item.data_target || "-"}
-                        </div>
-                    </div>
-                    <div class="absensi-activity-time">
-                        ${waktu.toLocaleDateString("id-ID")}<br>
-                        ${waktu.toLocaleTimeString("id-ID", {
-                            hour: "2-digit",
-                            minute: "2-digit"
-                        })}
-                    </div>
-                </div>
-            `;
-        }).join("");
     }
 };
 
