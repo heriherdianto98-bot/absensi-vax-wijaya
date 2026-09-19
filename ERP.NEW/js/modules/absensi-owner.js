@@ -469,6 +469,8 @@ const AbsensiOwner = {
         (this._karyawanIndex || []).filter((k) => !branch || k.cabang === branch)
             .forEach((k) => sel.add(new Option(k.nama, String(k.id))));
         sel.value = [...sel.options].some((o) => o.value === current) ? current : "";
+        const label = sel.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger span");
+        if(label) label.textContent = sel.selectedOptions[0]?.textContent || "Semua Karyawan";
     },
 
     applyStatusTableFilter(){

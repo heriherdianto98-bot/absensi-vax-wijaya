@@ -203,6 +203,8 @@ const AbsensiLaporanBulanan = {
         sel.replaceChildren(new Option("Semua Karyawan", ""));
         (this._rows || []).forEach((r) => sel.add(new Option(r.nama, String(r.id))));
         sel.value = [...sel.options].some((o) => o.value === current) ? current : "";
+        const label = sel.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger span");
+        if(label) label.textContent = sel.selectedOptions[0]?.textContent || "Semua Karyawan";
     },
 
     setDailyEmployeeId(value){
@@ -942,6 +944,8 @@ const AbsensiLaporanBulanan = {
             wrap.remove();
         }
         ErpCustomSelect.enhance(sel);
+        const employee = document.getElementById("ablFilterKaryawan");
+        if(employee) ErpCustomSelect.enhance(employee);
         ErpCustomSelect.bindNavKeys();
     },
 

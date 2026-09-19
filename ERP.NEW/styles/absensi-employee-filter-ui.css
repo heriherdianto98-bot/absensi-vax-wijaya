@@ -1,0 +1,20 @@
+/* Absensi employee filter: visual-only, scoped to both Owner modes. */
+#absensiRoot .absensi-toolbar .toolbar-field:has(#absensiFilterKaryawan),
+#absensiRoot #ablPage>.abl-toolbar .toolbar-field:has(#ablFilterKaryawan){flex:1 1 220px;min-width:0}
+#absensiRoot #ablPage>.abl-toolbar .toolbar-field:has(#ablFilterCabang),
+#absensiRoot #ablPage>.abl-toolbar .toolbar-field:has(#ablPeriodBtn){flex:1 1 220px;min-width:0}
+#absensiRoot .absensi-toolbar .toolbar-field:has(#absensiFilterKaryawan) .erp-cselect,
+#absensiRoot #ablPage>.abl-toolbar .toolbar-field:has(#ablFilterKaryawan) .erp-cselect{width:100%;min-width:0}
+#absensiRoot .absensi-toolbar .toolbar-field:has(#absensiFilterKaryawan) .erp-cselect-trigger,
+#absensiRoot #ablPage>.abl-toolbar .toolbar-field:has(#ablFilterKaryawan) .erp-cselect-trigger{height:46px;min-height:46px;width:100%;min-width:0;padding:0 14px;border-radius:10px;background:#1c222b;color:#f8fafc;border:1px solid rgba(212,175,55,.45);font-size:14px;font-weight:700;box-sizing:border-box}
+#absensiRoot .toolbar-field:has(#absensiFilterKaryawan) .erp-cselect-trigger span,
+#absensiRoot .toolbar-field:has(#ablFilterKaryawan) .erp-cselect-trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#absensiRoot .toolbar-field:has(#absensiFilterKaryawan) .erp-cselect-menu,
+#absensiRoot .toolbar-field:has(#ablFilterKaryawan) .erp-cselect-menu{background:#12161d;color:#f8fafc;border:1px solid rgba(212,175,55,.5);max-height:min(340px,55vh);box-shadow:0 20px 38px rgba(0,0,0,.65)}
+#absensiRoot .toolbar-field:has(#absensiFilterKaryawan) .erp-cselect-search-input,
+#absensiRoot .toolbar-field:has(#ablFilterKaryawan) .erp-cselect-search-input{background:#1c222b;color:#f8fafc;border:1px solid rgba(212,175,55,.4)}
+#absensiRoot .toolbar-field:has(#absensiFilterKaryawan) .erp-cselect-option,
+#absensiRoot .toolbar-field:has(#ablFilterKaryawan) .erp-cselect-option{background:#12161d;color:#f8fafc}
+#absensiRoot .toolbar-field:has(#absensiFilterKaryawan) .erp-cselect-option:is(:hover,.is-active,.is-selected),
+#absensiRoot .toolbar-field:has(#ablFilterKaryawan) .erp-cselect-option:is(:hover,.is-active,.is-selected){background:#3a321e;color:#ffe29b}
+@media(max-width:900px){#absensiRoot .absensi-toolbar .toolbar-field:has(#absensiFilterKaryawan),#absensiRoot #ablPage>.abl-toolbar .toolbar-field:has(#ablFilterKaryawan){flex:1 1 180px}}
