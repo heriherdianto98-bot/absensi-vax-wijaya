@@ -89,7 +89,23 @@
       try{const since=this.isoAddDays(this.jakartaToday(),-14),{data,error}=await db.from('setoran_3_harian').select('id,period_start,period_end,cabang_id,status,owner_verified,request_proof,proof_path,outside_correction_status,outside_correction_note').gte('period_end',since).order('period_end',{ascending:false}).limit(40);if(error)throw error;(data||[]).forEach(r=>{if(r.request_proof&&!r.proof_path)this.add({tone:'urgent',icon:'📷',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Bukti setoran diminta',detail:`Periode ${r.period_start} — ${r.period_end} • cabang ID ${r.cabang_id}`});const cs=String(r.outside_correction_status||'').toUpperCase();if(cs&&/REQUEST|KOREKSI|CORRECTION/.test(cs))this.add({tone:'urgent',icon:'!',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Koreksi setoran perlu ditindaklanjuti',detail:`Periode ${r.period_start} — ${r.period_end}${r.outside_correction_note?` • ${r.outside_correction_note}`:''}`});if(this.role==='owner'&&r.owner_verified===false&&String(r.status||'').toUpperCase()!=='CLEAR')this.add({tone:'warning',icon:'✓',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Setoran belum Owner Verified',detail:`Periode ${r.period_start} — ${r.period_end} • ${r.status||'menunggu review'}`})})}catch(e){console.warn('[Notif] setoran',e)}
     },
     async loadIzin(db){
-      try{const today=this.jakartaToday(),pending=['PENDING','MENUNGGU','DIAJUKAN','MENUNGGU_SPV','MENUNGGU_OWNER','PENDING_SPV','PENDING_OWNER'],{data,error}=await db.from('pengajuan_izin').select('id,tanggal,tanggal_selesai,jenis,alasan,status,karyawan_id').gte('tanggal',this.isoAddDays(today,-7)).order('created_at',{ascending:false}).limit(30);if(error)throw error;(data||[]).filter(r=>pending.includes(String(r.status||'').toUpperCase())).forEach(r=>this.add({tone:'warning',icon:'🗓',module:'IZIN / LIBUR',href:'./erp-dashboard.html',title:`Pengajuan ${r.jenis||'izin'} menunggu review`,detail:`Karyawan ID ${r.karyawan_id} • ${r.tanggal}${r.tanggal_selesai&&r.tanggal_selesai!==r.tanggal?` s.d. ${r.tanggal_selesai}`:''}`}))}catch(e){console.warn('[Notif] izin',e)}
+      if(!['owner','svp'].includes(this.role))return;
+      try{
+        const status=this.role==='owner'?'MENUNGGU_OWNER':'MENUNGGU_SPV';
+        const {data,error}=await db.from('pengajuan_izin')
+          .select('id,tanggal,tanggal_selesai,jenis,status,karyawan_id,karyawan:karyawan_id(nama_karyawan,jabatan)')
+          .eq('status',status).order('created_at',{ascending:false}).limit(100);
+        if(error)throw error;
+        (data||[]).forEach(r=>{
+          const name=r.karyawan?.nama_karyawan||`Karyawan ID ${r.karyawan_id}`;
+          const svp=/\b(spv|svp|supervisor)\b/i.test(String(r.karyawan?.jabatan||''));
+          const owner=this.role==='owner';
+          this.add({key:`izin:${r.id}:${this.role}`,tone:owner&&!svp?'urgent':'warning',
+            icon:'!',module:'ABSENSI / IZIN',href:'./absensi.html',
+            title:owner?(svp?'Pengajuan SVP menunggu keputusan Owner':'SVP belum memutus; keputusan dialihkan ke Owner'):'Pengajuan menunggu keputusan SVP (batas 13.00 WIB)',
+            detail:`${name} - ${r.jenis||'izin'} - ${r.tanggal}${r.tanggal_selesai&&r.tanggal_selesai!==r.tanggal?` s.d. ${r.tanggal_selesai}`:''}`});
+        });
+      }catch(e){console.warn('[Notif] izin',e)}
     },
     async loadPengumuman(db){
       try{const since=new Date(Date.now()-7*86400000).toISOString(),{data,error}=await db.from('erp_pengumuman').select('id,judul,prioritas,dibuat_pada,aktif').eq('aktif',true).gte('dibuat_pada',since).order('dibuat_pada',{ascending:false}).limit(10);if(error)throw error;(data||[]).filter(r=>/PENTING|URGENT|TINGGI|HIGH/.test(String(r.prioritas||'').toUpperCase())).forEach(r=>this.add({tone:'info',icon:'📢',module:'PENGUMUMAN',href:'./erp-dashboard.html',title:r.judul||'Pengumuman penting',detail:`Prioritas ${r.prioritas||'penting'}`}))}catch(e){console.warn('[Notif] pengumuman',e)}
