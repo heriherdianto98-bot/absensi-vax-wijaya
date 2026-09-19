@@ -116,3 +116,39 @@
 }
 @media(max-width:600px){#absensiRoot .absensi-page-title{font-size:clamp(29px,7vw,36px);}}
 @media(prefers-reduced-motion:reduce){#absensiRoot .absensi-page-title{animation:none;}}
+
+/* Judul KPI: ketikan bertahap, lalu tetap terbaca sebelum siklus berikutnya. */
+@keyframes vax-kpi-type{
+  0%,3%{clip-path:inset(0 100% 0 0)}
+  25%,96%{clip-path:inset(0 0 0 0)}
+  100%{clip-path:inset(0 100% 0 0)}
+}
+#absensiRoot .absensi-kpi-grid > .absensi-kpi span,
+#absensiRoot .absensi-kpi-grid > .absensi-kpi-link span{
+  width:max-content;max-width:100%;white-space:nowrap;overflow:hidden;
+  animation:vax-kpi-type 9s steps(16,end) infinite both;
+}
+#absensiRoot .absensi-kpi-grid > :nth-child(2) span{animation-delay:.14s}
+#absensiRoot .absensi-kpi-grid > :nth-child(3) span{animation-delay:.28s}
+#absensiRoot .absensi-kpi-grid > :nth-child(4) span{animation-delay:.42s}
+#absensiRoot .absensi-kpi-grid > :nth-child(5) span{animation-delay:.56s}
+#absensiRoot .absensi-kpi-grid > :nth-child(6) span{animation-delay:.70s}
+#absensiRoot .absensi-kpi-grid > :nth-child(7) span{animation-delay:.84s}
+#absensiRoot .absensi-kpi-grid > :nth-child(8) span{animation-delay:.98s}
+/* Modul sudah menambah is-counting hanya ketika nilai berubah; UI menampilkan pop, bukan mengubah angka. */
+@keyframes vax-kpi-value-change{
+  0%{opacity:.55;transform:translateY(7px) scale(.84);filter:brightness(1.45)}
+  58%{opacity:1;transform:translateY(-3px) scale(1.13);filter:brightness(1.18)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:brightness(1)}
+}
+#absensiRoot .absensi-kpi-grid strong.is-counting{animation:vax-kpi-value-change .48s cubic-bezier(.2,.8,.2,1) both}
+@media(prefers-reduced-motion:reduce){#absensiRoot .absensi-kpi-grid > .absensi-kpi span,#absensiRoot .absensi-kpi-grid > .absensi-kpi-link span,#absensiRoot .absensi-kpi-grid strong.is-counting{animation:none;clip-path:none}}
+
+/* Judul delapan KPI: warna aksen lebih tegas tanpa glow melebar. */
+#absensiRoot .absensi-kpi-grid > .kpi-masuk span{color:#69F5A1;text-shadow:0 0 5px rgba(74,222,128,.16)}
+#absensiRoot .absensi-kpi-grid > .kpi-terlambat span{color:#FFAD65;text-shadow:0 0 5px rgba(251,146,60,.16)}
+#absensiRoot .absensi-kpi-grid > .kpi-belum span{color:#FF9292;text-shadow:0 0 5px rgba(248,113,113,.16)}
+#absensiRoot .absensi-kpi-grid > .kpi-libur span{color:#91C6FF;text-shadow:0 0 5px rgba(96,165,250,.16)}
+#absensiRoot .absensi-kpi-grid > .kpi-izin span{color:#77F2FF;text-shadow:0 0 5px rgba(34,211,238,.16)}
+#absensiRoot .absensi-kpi-grid > .kpi-sakit span{color:#DEA8FF;text-shadow:0 0 5px rgba(192,132,252,.16)}
+#absensiRoot .absensi-kpi-grid > .kpi-denda span{color:#FFDA65;text-shadow:0 0 5px rgba(242,194,48,.16)}
