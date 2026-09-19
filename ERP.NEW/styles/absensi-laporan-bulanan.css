@@ -1189,3 +1189,48 @@ select.abl-period-native[hidden]{
 #absensiDailyAuditBridge .abl-matrix-sec{
     margin:0;
 }
+
+/* Hasil rincian: tema dark premium VAX (UI only; scoped). */
+#ablDetailBox{
+    background:linear-gradient(160deg,#20262f 0%,#151a21 100%);
+    border-color:rgba(212,175,55,.34);
+    box-shadow:0 16px 36px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.04);
+}
+#ablDetailBox .abl-detail-head{
+    background:linear-gradient(115deg,#232a35,#191e27);
+    border-bottom:1px solid rgba(212,175,55,.22);
+}
+#ablDetailBox .abl-matrix-count{
+    margin:0;padding:10px 16px;
+    color:#d9e0e9;background:#1b222b;
+    border-bottom:1px solid rgba(212,175,55,.16);
+}
+#ablDetailBox .abl-detail-wrap{
+    background:#151b23;
+    scrollbar-color:#716037 #151b23;
+}
+#ablDetailBox .abl-detail-wrap::-webkit-scrollbar-track{background:#151b23;}
+#ablDetailBox .abl-detail-wrap::-webkit-scrollbar-thumb{
+    background:#716037;border:2px solid #151b23;
+}
+#ablDetailBox .abl-detail-table{background:#151b23;}
+#ablDetailBox .abl-detail-table th{
+    background:#292517;color:#f2d47a;
+    border-bottom:1px solid rgba(212,175,55,.36);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+#ablDetailBox .abl-detail-table td{
+    background:#1a212b;color:#e8edf4;
+    border-bottom:1px solid rgba(207,220,238,.09);
+}
+#ablDetailBox .abl-detail-table tbody tr:nth-child(even) td{background:#1d2530;}
+#ablDetailBox .abl-detail-table tbody tr:hover td{background:#30303a;}
+#ablDetailBox .abl-detail-table .is-name{color:#fff;font-weight:800;}
+#ablDetailBox .abl-detail-table .is-denda{color:#f1c652;}
+#ablDetailBox .abl-empty{background:#151b23;}
+#ablDetailBox .abl-empty strong{color:#f8fafc;}
+#ablDetailBox .abl-empty span,
+#ablDetailBox .abl-state{color:#aebccd;}
+#ablDetailBox .abl-detail-table .abl-st.is-a{
+    background:#0c1118;border:1px solid rgba(212,175,55,.22);
+}
