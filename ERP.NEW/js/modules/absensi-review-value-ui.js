@@ -19,6 +19,10 @@
     const root=document.getElementById('absensiRoot');
     if(!root)return;
     check();
+    root.addEventListener('animationend',function(event){
+      if(event.animationName==='vax-kpi-value-change')event.target.classList.remove('is-counting');
+      if(event.animationName==='vax-review-number-pop')event.target.classList.remove('vax-review-value-changing');
+    },true);
     const observer=new MutationObserver(check);
     observer.observe(root,{subtree:true,childList:true,characterData:true});
   }
