@@ -63,6 +63,10 @@
                         </select>
                     </div>
                     <div class="toolbar-field">
+                        <span class="toolbar-field-label">Karyawan</span>
+                        <select id="absensiFilterKaryawan" class="absensi-cselect" aria-label="Filter karyawan harian"><option value="">Semua Karyawan</option></select>
+                    </div>
+                    <div class="toolbar-field">
                         <span class="toolbar-field-label">Tanggal</span>
                         <button type="button" id="absensiDateBtn" class="absensi-date-btn" aria-haspopup="dialog">
                             <span id="absensiDateLabel">—</span>
@@ -219,14 +223,14 @@
 <script src="../js/modules/erp-toast.js"></script>
 <script src="../js/modules/erp-custom-select.js?v=20260816p2"></script>
 <script src="../js/modules/erp-header-sync.js"></script>
-<script src="../js/modules/absensi-owner.js?v=20260816p12"></script>
+<script src="../js/modules/absensi-owner.js?v=20260920-employee1"></script>
 <script src="../js/modules/izin-spv-embed.js?v=20260817-ownercal"></script>
 <script src="../js/modules/absensi-review-collapse-ui.js?v=20260919-1"></script>
 <script src="../js/modules/absensi-review-value-ui.js?v=20260919-1"></script>
 <script src="../js/modules/absensi-review-refresh-fx-ui.js?v=20260919-2"></script>
 <script src="../js/modules/absensi-monthly-title-ui.js?v=20260919-1"></script>
 <script src="../js/modules/jadwal-tutup-operasional.js?v=20260816p2"></script>
-<script src="../js/modules/absensi-laporan-bulanan.js?v=20260920-matrix-filter2"></script>
+<script src="../js/modules/absensi-laporan-bulanan.js?v=20260920-employee1"></script>
 <script src="../js/loader.js"></script>
 <script>
 document.addEventListener("erp:finance-ready", async () => {

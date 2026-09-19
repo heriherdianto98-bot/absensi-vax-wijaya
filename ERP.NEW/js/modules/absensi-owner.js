@@ -87,8 +87,12 @@ const AbsensiOwner = {
             const statusEl = document.getElementById("absensiFilterStatus");
             if(statusEl) statusEl.value = "";
             this._kpiFilter = "";
+            const emp = document.getElementById("absensiFilterKaryawan");
+            if(emp) emp.value = "";
+            this.refreshKpiFromCache();
             this.syncKpiActive();
             this.applyStatusTableFilter();
+            if(typeof AbsensiLaporanBulanan !== "undefined") AbsensiLaporanBulanan.setDailyEmployeeId?.("");
             const cari = document.getElementById("cariNama");
             if(cari) cari.value = "";
             if(typeof AbsensiLaporanBulanan !== "undefined"){
@@ -97,7 +101,20 @@ const AbsensiOwner = {
             }
         });
 
+        document.getElementById("absensiFilterKaryawan")?.addEventListener("change", () => {
+            const search = document.getElementById("cariNama");
+            if(search) search.value = "";
+            this.hideSuggest();
+            this.refreshKpiFromCache();
+            this.applyStatusTableFilter();
+            if(typeof AbsensiLaporanBulanan !== "undefined"){
+                AbsensiLaporanBulanan.setDailySearch?.("");
+                AbsensiLaporanBulanan.setDailyEmployeeId?.(this.selectedEmployeeId());
+            }
+        });
+
         document.getElementById("absensiFilterCabang")?.addEventListener("change", async () => {
+            this.fillEmployeeOptions();
             this.refreshKpiFromCache();
             this.applyStatusTableFilter();
             this.syncHeaderContext();
@@ -439,12 +456,28 @@ const AbsensiOwner = {
         return String(document.getElementById("absensiFilterCabang")?.value || "").trim();
     },
 
+    selectedEmployeeId(){
+        return String(document.getElementById("absensiFilterKaryawan")?.value || "");
+    },
+
+    fillEmployeeOptions(){
+        const sel = document.getElementById("absensiFilterKaryawan");
+        if(!sel) return;
+        const branch = this.selectedCabangName();
+        const current = sel.value;
+        sel.replaceChildren(new Option("Semua Karyawan", ""));
+        (this._karyawanIndex || []).filter((k) => !branch || k.cabang === branch)
+            .forEach((k) => sel.add(new Option(k.nama, String(k.id))));
+        sel.value = [...sel.options].some((o) => o.value === current) ? current : "";
+    },
+
     applyStatusTableFilter(){
         const cabang = this.selectedCabangName().toLowerCase();
         const statusKey = String(document.getElementById("absensiFilterStatus")?.value || "")
             .trim()
             .toUpperCase();
         const kpi = String(this._kpiFilter || "").toUpperCase();
+        const employeeId = this.selectedEmployeeId();
 
         document.querySelectorAll("#statusKaryawan tr").forEach((row) => {
             const cab = (row.cells[1]?.innerText || "").toLowerCase();
@@ -457,7 +490,8 @@ const AbsensiOwner = {
             }else if(statusKey){
                 okStatus = status.includes(statusKey);
             }
-            row.style.display = (okCabang && okStatus) ? "" : "none";
+            const okEmployee = !employeeId || row.getAttribute("data-absensi-row-id") === employeeId;
+            row.style.display = (okCabang && okStatus && okEmployee) ? "" : "none";
         });
     },
 
@@ -477,9 +511,10 @@ const AbsensiOwner = {
 
     refreshKpiFromCache(){
         const cabang = this.selectedCabangName();
-        const rows = cabang
-            ? this._statusRows.filter((r) => r.cabang === cabang)
-            : this._statusRows.slice();
+        const employeeId = this.selectedEmployeeId();
+        const rows = (this._statusRows || []).filter((r) =>
+            (!cabang || r.cabang === cabang) && (!employeeId || String(r.id) === employeeId)
+        );
 
         const ids = new Set(rows.map((r) => String(r.id)));
 
@@ -503,12 +538,12 @@ const AbsensiOwner = {
         setText("totalSakitHariIni", rows.filter((r) => r.status === "SAKIT").length);
 
         const dendaDay = (this._absensiDay || [])
-            .filter((a) => !cabang || ids.has(String(a.karyawan_id)))
+            .filter((a) => ids.has(String(a.karyawan_id)))
             .reduce((t, a) => t + Number(a.denda || 0), 0);
         setText("totalDendaHariIni", "Rp" + dendaDay.toLocaleString("id-ID"));
 
         const dendaBulan = (this._dendaBulananRows || [])
-            .filter((a) => !cabang || ids.has(String(a.karyawan_id)))
+            .filter((a) => ids.has(String(a.karyawan_id)))
             .reduce((t, a) => t + Number(a.denda || 0), 0);
         setText("totalDendaBulanan", "Rp" + dendaBulan.toLocaleString("id-ID"));
     },
@@ -549,6 +584,7 @@ const AbsensiOwner = {
             nama: k.nama_karyawan || "",
             cabang: k.cabang?.nama_cabang || "-"
         }));
+        this.fillEmployeeOptions();
 
         let absenRes = await db
             .from("absensi")

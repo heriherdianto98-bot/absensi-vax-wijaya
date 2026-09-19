@@ -191,6 +191,28 @@ const AbsensiLaporanBulanan = {
         return String(document.getElementById("ablFilterCabang")?.value || "").trim();
     },
 
+    selectedEmployeeId(){
+        const id = this._dayMode ? "absensiFilterKaryawan" : "ablFilterKaryawan";
+        return String(document.getElementById(id)?.value || "");
+    },
+
+    fillEmployeeOptions(){
+        const sel = document.getElementById("ablFilterKaryawan");
+        if(!sel) return;
+        const current = sel.value;
+        sel.replaceChildren(new Option("Semua Karyawan", ""));
+        (this._rows || []).forEach((r) => sel.add(new Option(r.nama, String(r.id))));
+        sel.value = [...sel.options].some((o) => o.value === current) ? current : "";
+    },
+
+    setDailyEmployeeId(value){
+        if(!this._dayMode) return;
+        const sel = document.getElementById("ablFilterKaryawan");
+        if(sel) sel.value = String(value || "");
+        this.renderSummary(this._meta);
+        if(this._matrixOpen) this.renderTable();
+    },
+
     searchQuery(){
         return String(document.getElementById("ablFilterCari")?.value || "").trim().toLowerCase();
     },
@@ -622,6 +644,13 @@ const AbsensiLaporanBulanan = {
                 if(dailySearch) dailySearch.value = "";
             }
             reload();
+        });
+        document.getElementById("ablFilterKaryawan")?.addEventListener("change", () => {
+            const search = document.getElementById("ablFilterCari");
+            if(search) search.value = "";
+            this.renderSummary(this._meta);
+            this.renderDetail();
+            if(this._matrixOpen) this.renderTable();
         });
         document.getElementById("ablFilterBulan")?.addEventListener("change", reload);
         document.getElementById("ablFilterTahun")?.addEventListener("change", reload);
@@ -1451,8 +1480,10 @@ const AbsensiLaporanBulanan = {
 
     scopedRows(){
         const { text } = this.activeQuery();
-        if(!text) return this._rows;
-        return (this._rows || []).filter((r) => this.matchesText(r, text));
+        const employeeId = this.selectedEmployeeId();
+        return (this._rows || []).filter((r) =>
+            (!employeeId || String(r.id) === employeeId) && this.matchesText(r, text)
+        );
     },
 
     renderSummary(meta){
@@ -1525,6 +1556,8 @@ const AbsensiLaporanBulanan = {
         this._cardLocked = false;
         const cari = document.getElementById("ablFilterCari");
         if(cari) cari.value = "";
+        const employee = document.getElementById("ablFilterKaryawan");
+        if(employee) employee.value = "";
         if(this._embed){
             const dailySearch = document.getElementById("cariNama");
             if(dailySearch) dailySearch.value = "";
@@ -1596,9 +1629,12 @@ const AbsensiLaporanBulanan = {
 
     matrixRows(){
         const { text, status } = this.activeQuery();
-        if(!this._dayMode) return this.viewRows(status === "D" ? "" : status);
+        const employeeId = this.selectedEmployeeId();
+        if(!this._dayMode) return this.viewRows(status === "D" ? "" : status)
+            .filter((r) => !employeeId || String(r.id) === employeeId);
         const iso = this.effectivePeriodBounds().start;
         return (this._rows || []).filter((r) => {
+            if(employeeId && String(r.id) !== employeeId) return false;
             if(!this.matchesText(r, text)) return false;
             if(!status || status === "D") return true;
             const day = (r.days || []).find((d) => d.iso === iso);
@@ -1976,6 +2012,7 @@ const AbsensiLaporanBulanan = {
             if(token !== this._loadToken) return;
 
             this._meta = this.buildRows();
+            this.fillEmployeeOptions();
             this.setBanner("");
             this.renderSummary(this._meta);
             this.renderDetail();
