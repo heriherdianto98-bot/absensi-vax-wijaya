@@ -1,0 +1,65 @@
+/* UI ONLY: review izin/libur Owner, tidak mengubah data atau keputusan. */
+#izinSpvEmbed.izin-spv-embed{background:linear-gradient(155deg,#1c222b,#10151b 72%);color:#e8edf4;border-color:rgba(235,190,61,.32);box-shadow:0 18px 48px rgba(0,0,0,.36)}
+#izinSpvEmbed .izin-spv-head{background:linear-gradient(130deg,#252b35,#151b24);border-bottom-color:rgba(235,190,61,.23)}
+#izinSpvEmbed .izin-spv-summary-card{background:linear-gradient(150deg,#272e39,#171d25);border-color:#39424e;box-shadow:0 8px 19px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.045)}
+#izinSpvEmbed .izin-spv-summary-card span{color:#d3dae4}
+#izinSpvEmbed .izin-spv-summary-card.is-waiting{border-color:#b98a25}
+#izinSpvEmbed .izin-spv-summary-card.is-forwarded{border-color:#287d60}
+#izinSpvEmbed .izin-spv-summary-card.is-rejected{border-color:#a44351}
+#izinSpvEmbed .izin-spv-summary-card.is-waiting strong{color:#ffd25b}
+#izinSpvEmbed .izin-spv-summary-card.is-forwarded strong{color:#65e7ab}
+#izinSpvEmbed .izin-spv-summary-card.is-rejected strong{color:#ff818c}
+#izinSpvEmbed .izin-spv-summary-card.is-queue-active{box-shadow:inset 0 0 0 2px rgba(245,193,63,.66),0 8px 21px rgba(0,0,0,.3)}
+#izinSpvEmbed .izin-spv-search,#izinSpvEmbed .izin-spv-quick-filter{background:#121821;border-color:#3a4552}
+#izinSpvEmbed .izin-spv-search input{color:#f1f5fa}
+#izinSpvEmbed .izin-spv-search input::placeholder{color:#a6b3c3}
+#izinSpvEmbed .izin-spv-filter-btn{background:#202833;color:#dce4ef;border-color:#354152}
+#izinSpvEmbed .izin-spv-filter-btn b{background:#303b4a;color:#fff}
+#izinSpvEmbed .izin-spv-filter-btn.is-active{background:#3b301b;color:#ffe18c;border-color:#d7ac3b}
+#izinSpvEmbed .izin-spv-filter-btn.is-active b{background:#5c481c;color:#ffe18c}
+#izinSpvEmbed .izin-spv-filter-btn.is-izin{color:#7debf0;border-color:#287b86}
+#izinSpvEmbed .izin-spv-filter-btn.is-izin b{background:#173a43;color:#91f3fa}
+#izinSpvEmbed .izin-spv-filter-btn.is-izin.is-active{background:#17414a;color:#a3f7fc}
+#izinSpvEmbed .izin-spv-filter-btn.is-libur{color:#ff979c;border-color:#873e48}
+#izinSpvEmbed .izin-spv-filter-btn.is-libur b{background:#49252e;color:#ffb0b5}
+#izinSpvEmbed .izin-spv-filter-btn.is-libur.is-active{background:#682933;color:#fff;border-color:#f06d7a}
+#izinSpvEmbed .izin-spv-state,#izinSpvEmbed .izin-spv-request{background:#1a222d;color:#cdd7e4;border-color:#384655;box-shadow:none}
+#izinSpvEmbed .izin-spv-person h3,#izinSpvEmbed .izin-spv-meta b,#izinSpvEmbed .izin-spv-reason,#izinSpvEmbed .izin-spv-decision b,#izinSpvEmbed .izin-spv-decision p{color:#f4f6fb}
+#izinSpvEmbed .izin-spv-person p,#izinSpvEmbed .izin-spv-meta small,#izinSpvEmbed .izin-spv-decision small{color:#aebdce}
+#izinSpvEmbed .izin-spv-meta div,#izinSpvEmbed .izin-spv-reason,#izinSpvEmbed .izin-spv-decision{background:#111820;border-color:#36414e}
+#izinSpvEmbed .izin-spv-proof{background:#153039;color:#8bf2f7;border-color:#316e78}
+#izinSpvEmbed .owner-spv-audit{background:#151c25;border-color:#3c5148;box-shadow:0 12px 29px rgba(0,0,0,.23)}
+#izinSpvEmbed .owner-spv-audit-head{background:linear-gradient(110deg,#202b35,#131b24);border-bottom:1px solid rgba(239,190,62,.2);cursor:pointer}
+#izinSpvEmbed .owner-spv-audit-head:hover{background:linear-gradient(110deg,#29333d,#17212b)}
+#izinSpvEmbed .owner-spv-audit-head:focus-within{outline:2px solid rgba(239,190,62,.65);outline-offset:-3px}
+#izinSpvEmbed .owner-spv-audit-head h3{color:#f7f9fc}
+#izinSpvEmbed .owner-spv-audit-head p{color:#c0cad5}
+#izinSpvEmbed .owner-spv-toggle{margin-left:auto;padding:9px 13px;border:1px solid rgba(238,189,60,.48);border-radius:10px;background:#292d2e;color:#fbd36d;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
+#izinSpvEmbed .owner-spv-toggle:hover{background:#363326}
+#izinSpvEmbed #ownerSpvReadonlyAudit:not(.is-open)>:not(.owner-spv-audit-head){display:none!important}
+#izinSpvEmbed .owner-spv-history-toolbar{background:#1a2330;border-bottom-color:#34414f;color:#d7e0ea}
+#izinSpvEmbed .owner-spv-history-search,#izinSpvEmbed .owner-spv-history-period{background:#111923;border-color:#3a4757;color:#e2eaf4}
+#izinSpvEmbed .owner-spv-history-search input{color:#f4f7fb;background:transparent}
+#izinSpvEmbed .owner-spv-history-search input::placeholder{color:#abb8c7}
+#izinSpvEmbed .owner-spv-history-period-label{color:#c3cede}
+#izinSpvEmbed .owner-spv-history-period-modes button,#izinSpvEmbed .owner-spv-history-types button,#izinSpvEmbed .owner-spv-history-reset,#izinSpvEmbed .owner-spv-history-datebtn,#izinSpvEmbed .owner-spv-history-more{background:#222c38;color:#e2eaf5;border-color:#3b485a}
+#izinSpvEmbed .owner-spv-history-period-modes button.is-active,#izinSpvEmbed .owner-spv-history-types button.is-active{background:#47371d;color:#ffda70;border-color:#d3a735}
+#izinSpvEmbed .owner-spv-history-types button[data-owner-spv-type="LIBUR"].is-active{background:#5c2630;color:#ffa2aa;border-color:#b84d59}
+#izinSpvEmbed .owner-spv-history-types button[data-owner-spv-type="IZIN"].is-active{background:#173d46;color:#8af0f7;border-color:#3694a0}
+#izinSpvEmbed .owner-spv-history-types button[data-owner-spv-type="SAKIT"].is-active{background:#36254c;color:#d7b5ff;border-color:#8054b1}
+#izinSpvEmbed .owner-spv-history-footer,#izinSpvEmbed .owner-spv-audit-empty{background:#141c26;color:#bfccda}
+#izinSpvEmbed .owner-spv-audit-card{background:#202a36;border-color:#3b4858;box-shadow:0 9px 23px rgba(0,0,0,.22)}
+#izinSpvEmbed .owner-spv-audit-card:has(.owner-spv-kind.is-libur){background:linear-gradient(90deg,rgba(239,68,68,.13),transparent 27%),#202a36}
+#izinSpvEmbed .owner-spv-audit-card:has(.owner-spv-kind.is-izin){background:linear-gradient(90deg,rgba(6,182,212,.12),transparent 27%),#202a36}
+#izinSpvEmbed .owner-spv-audit-card:has(.owner-spv-kind.is-sakit){background:linear-gradient(90deg,rgba(124,58,237,.12),transparent 27%),#202a36}
+#izinSpvEmbed .owner-spv-audit-card:has(.owner-spv-kind) .owner-spv-audit-title{background:rgba(255,255,255,.035)}
+#izinSpvEmbed .owner-spv-audit-title strong,#izinSpvEmbed .owner-spv-audit-grid b,#izinSpvEmbed .owner-spv-audit-note p{color:#f5f8fc}
+#izinSpvEmbed .owner-spv-audit-title div>span,#izinSpvEmbed .owner-spv-audit-grid span,#izinSpvEmbed .owner-spv-audit-note>span,#izinSpvEmbed .owner-spv-proof-label,#izinSpvEmbed .owner-spv-audit-foot{color:#adbdcf}
+#izinSpvEmbed .owner-spv-audit-grid>div,#izinSpvEmbed .owner-spv-audit-note,#izinSpvEmbed .owner-spv-no-proof{background:#141d27;border-color:#3b4858;color:#c8d4e1}
+#izinSpvEmbed .owner-spv-audit-note.is-spv{background:#142820;border-color:#32624b}
+#izinSpvEmbed .owner-spv-kind.is-libur{background:#54232e;color:#ffa6ad!important}
+#izinSpvEmbed .owner-spv-kind.is-izin{background:#163942;color:#83eff5!important}
+#izinSpvEmbed .owner-spv-kind.is-sakit{background:#39254f;color:#ddbaff!important}
+#izinSpvEmbed .owner-spv-decision.is-approved{background:#1b432e;color:#80efad!important}
+#izinSpvEmbed .owner-spv-decision.is-rejected{background:#4e2431;color:#ff9fac!important}
+@media(max-width:650px){#izinSpvEmbed .owner-spv-toggle{padding:8px;font-size:12px}#izinSpvEmbed .owner-spv-audit-head{gap:8px}}
