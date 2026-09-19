@@ -216,3 +216,10 @@
 #izinSpvEmbed .owner-spv-audit-head h3{animation-delay:-.5s!important}
 #izinSpvEmbed .owner-spv-audit-head p{animation-delay:-1s!important}
 @media(prefers-reduced-motion:reduce){#izinSpvEmbed .owner-spv-audit-head .izin-spv-kicker,#izinSpvEmbed .owner-spv-audit-head h3,#izinSpvEmbed .owner-spv-audit-head p{animation:none!important;opacity:1!important;transform:none!important}}
+
+/* V9: requested static headings only; preserve animated KPI labels and card effects. */
+#izinSpvEmbed.is-owner .izin-spv-head h2,
+#izinSpvEmbed .owner-spv-audit-head .izin-spv-kicker,
+#izinSpvEmbed .owner-spv-audit-head h3,
+#izinSpvEmbed .owner-spv-audit-head p{animation:none!important;animation-delay:0s!important;clip-path:none!important;transform:none!important;opacity:1!important;filter:none!important;overflow:visible!important;white-space:normal!important;will-change:auto!important}
+#izinSpvEmbed .owner-spv-audit-head .izin-spv-kicker{color:#f5c94d!important}
