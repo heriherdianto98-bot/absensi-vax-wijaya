@@ -7,6 +7,7 @@
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]||c));
   const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
   let branches=[],employees=[],currentReport=null,booted=false,headerSyncTimer=null;
+  let reportRequestNo=0; // Abaikan respons periode/cabang lama yang datang belakangan.
 
   /*
      Consumer-page read cache.
@@ -154,6 +155,7 @@
       if(Number(row?.payroll||0)) parts.push(`Share Cukur ${money(row.payroll)}`);
       if(Number(row?.mapped||0)) parts.push(`Backup Capster ${money(row.mapped)}`);
       if(Number(row?.protek||0)) parts.push(`Protek ${money(row.protek)}`);
+      if(String(el("lbBranch")?.value)==="all" && Number(row?.freePoint||0)) parts.push(`Free Point ${money(row.freePoint)}`);
       const name=`${row?.nama||"Capster"}${row?.isBackup?" (Backup Capster)":""}`;
       const formula=parts.length?` · ${parts.join(" + ")}`:"";
       return `<div class="lb-line"><span>${esc(name)}${esc(formula)}</span><strong>${money(row?.total)}</strong></div>`;
@@ -190,7 +192,7 @@
     const nonCapsterRows=nonCapsterSalaryHtml(g);
     setHtml("lbSalaryLines",`${capsterRows}${nonCapsterRows}<div class="lb-line"><span>Gaji SVP</span><strong>${money(g.svp)}</strong></div><div class="lb-line"><span>Gaji Backup Kasir</span><strong>${money(g.backupNamedSupplement)}</strong></div><div class="lb-line total"><span>Total Biaya Gaji</span><strong>${money(g.total)}</strong></div>`);
 
-    setHtml("lbExpenseLines",`<div class="lb-line"><span>Biaya Operasional</span><strong>${money(x.operasional)}</strong></div><div class="lb-line"><span>Sewa Tempat</span><strong>${money(x.sewa)}</strong></div><div class="lb-line total"><span>Total Pengeluaran Non-Gaji</span><strong>${money(x.total)}</strong></div>`);
+    setHtml("lbExpenseLines",`<div class="lb-line"><span>Biaya Operasional</span><strong>${money(x.operasional)}</strong></div>${report?.isAllBranches && num(x.tunjanganMess)>0 ? `<div class="lb-line"><span>Tj. Mess</span><strong>${money(x.tunjanganMess)}</strong></div>` : ""}<div class="lb-line"><span>Sewa Tempat</span><strong>${money(x.sewa)}</strong></div><div class="lb-line total"><span>Total Pengeluaran Non-Gaji</span><strong>${money(x.total)}</strong></div>`);
     if(report?.isAllBranches){
       setHtml("lbInvestorLines",`<div class="lb-line"><span>Cabang dengan Investor</span><strong>${Number(inv.branchCount||0)} cabang</strong></div><div class="lb-line"><span>Total Bagi Hasil Investor</span><strong>${money(inv.bagiHasil)}</strong></div><div class="lb-line"><span>Total Sewa Dibayar</span><strong>${money(inv.sewaDibayar)}</strong></div><div class="lb-line total"><span>Total Hak Investor Bulan Ini</span><strong>${money(inv.totalHakBulanIni)}</strong></div>`);
     }else{
@@ -239,11 +241,12 @@
     const map=new Map();
     reports.forEach(report=>(report?.gaji?.capsterDetail||[]).forEach(row=>{
       const key=row?.employeeId?`id:${row.employeeId}`:`name:${String(row?.nama||"").toLowerCase()}`;
-      if(!map.has(key)) map.set(key,{...row,payroll:0,mapped:0,protek:0,total:0});
+      if(!map.has(key)) map.set(key,{...row,payroll:0,mapped:0,protek:0,freePoint:0,total:0});
       const target=map.get(key);
       target.payroll+=num(row?.payroll);
       target.mapped+=num(row?.mapped);
       target.protek+=num(row?.protek);
+      target.freePoint+=num(row?.freePoint);
       target.total+=num(row?.total);
       target.isBackup=Boolean(target.isBackup||row?.isBackup);
     }));
@@ -295,6 +298,7 @@
         backupNamedSupplement:sum("gaji.backupNamedSupplement"),
         providerMapped:sum("gaji.providerMapped"),
         protek:sum("gaji.protek"),
+        freePoint:sum("gaji.freePoint"),
         total:sum("gaji.total"),
         capsterDetail:mergeCapsterDetails(list),
         nonCapsterDetail:mergeNonCapsterDetails(list),
@@ -302,6 +306,7 @@
       },
       pengeluaran:{
         operasional:sum("pengeluaran.operasional"),
+        tunjanganMess:sum("pengeluaran.tunjanganMess"),
         sewa:sum("pengeluaran.sewa"),
         total:sum("pengeluaran.total")
       },
@@ -313,6 +318,8 @@
       investor:{
         branchCount:investorBranches.length,
         bagiHasil:sum("investor.bagiHasil"),
+        nilaiInvestor:sum("investor.nilaiInvestor"),
+        nilaiManajemen:sum("investor.nilaiManajemen"),
         sewaDibayar:sum("investor.sewaDibayar"),
         totalHakBulanIni:sum("investor.totalHakBulanIni")
       },
@@ -324,7 +331,7 @@
         avgTicket:transaction>0?Math.round(omzet/transaction):0,
         finding:`Ringkasan konsolidasi ${list.length} cabang. Growth ditampilkan per cabang agar tidak menghasilkan persentase gabungan yang menyesatkan.`
       },
-      readiness:{finalReady:list.every(statusReady),issues},
+      readiness:{finalReady:list.length===branches.length&&list.every(statusReady),issues},
       branchReports:list,
       diagnostics:{aggregate:true,branchCount:list.length}
     };
@@ -344,13 +351,47 @@
     return pending;
   }
 
+  // Khusus Semua Cabang: tunggu hasil akhir bridge per cabang sebelum menjumlahkan.
+  // Engine, formula, dan jalur tampilan satu cabang tetap tidak diubah.
+  async function settleBranchForAggregate(report){
+    const bridge=typeof LaporanBulananOperasionalPayrollDedupBridge!=="undefined"
+      ? LaporanBulananOperasionalPayrollDedupBridge : null;
+    if(!bridge) return report;
+    const [mess,freePoint]=await Promise.all([
+      bridge.cashOutTunjanganMessFromSource(report),
+      bridge.cashOutFreePointFromSource(report)
+    ]);
+    if(num(mess?.total)>0) bridge.applyMessReclassification(report,mess);
+    if(num(freePoint?.total)>0) bridge.applyFreePointReclassification(report,freePoint);
+    return report;
+  }
+
+  // Patch DOM dari bridge per cabang tidak boleh menimpa tampilan konsolidasi.
+  function guardAllBranchesPresenterPatches(){
+    const bridge=typeof LaporanBulananOperasionalPayrollDedupBridge!=="undefined"
+      ? LaporanBulananOperasionalPayrollDedupBridge : null;
+    if(!bridge || bridge.__monthlyAllPresenterGuard) return;
+    for(const method of ["patchExpensePresentation","patchFreePointSalaryPresentation"]){
+      if(typeof bridge[method]!=="function") continue;
+      const original=bridge[method];
+      bridge[method]=function(report){
+        if(String(el("lbBranch")?.value)==="all") return;
+        return original.call(this,report);
+      };
+    }
+    bridge.__monthlyAllPresenterGuard=true;
+  }
+
   async function loadAllBranchesReport(year,mon){
     const reports=await Promise.all(branches.map(branch=>loadBranchReport(year,mon,branch.id)));
+    await Promise.all(reports.map(settleBranchForAggregate));
+    if(reports.length!==branches.length) throw new Error("Jumlah laporan cabang tidak lengkap.");
     return aggregateReports(reports);
   }
 
   async function loadReport(showLoading=true){
     const branchValue=String(el("lbBranch")?.value||""),month=el("lbMonth")?.value;
+    const requestNo=++reportRequestNo;
     const isAll=branchValue==="all";
     const branchId=isAll?null:Number(branchValue||0);
     if((!isAll&&!branchId)||!month){ setText("lbLoadState","Pilih cabang dan periode."); return; }
@@ -360,15 +401,18 @@
       const [year,mon]=month.split("-").map(Number);
       const task=isAll?loadAllBranchesReport(year,mon):loadBranchReport(year,mon,branchId);
       const report=await withTimeout(task,isAll?60000:30000,isAll?"Laporan Semua Cabang":"Engine Laporan Bulanan");
+      if(requestNo!==reportRequestNo) return; // Respons lama tidak boleh menimpa filter terbaru.
       currentReport=report; renderStatus(report); renderKpis(report); renderFinance(report); renderReadiness(report); renderPerformance(report); syncHeaderContext(report);
+      if(isAll) document.dispatchEvent(new CustomEvent("laporan-bulanan:all-ready",{detail:report}));
       setText("lbLoadState",isAll?`Semua Cabang · ${monthLabel(month)} · ${branches.length} cabang · consumer read only`:`${report.branch.name} · ${monthLabel(month)} · consumer read only`);
       await renderMapping(report);
-    }catch(err){ console.error(err); syncHeaderContext(); setText("lbLoadState",`Gagal memuat: ${err?.message||"unknown error"}`); setText("lbReportStatusText","GAGAL MEMUAT"); }
+    }catch(err){ if(requestNo!==reportRequestNo) return; console.error(err); syncHeaderContext(); setText("lbLoadState",`Gagal memuat: ${err?.message||"unknown error"}`); setText("lbReportStatusText","GAGAL MEMUAT"); }
   }
 
   async function init(){
     if(booted||!el("lbBranch")) return; booted=true;
     installMonthlyReadCache();
+    guardAllBranchesPresenterPatches();
     bindHeaderSync();
     try{
       setText("lbLoadState","Memuat master cabang...");

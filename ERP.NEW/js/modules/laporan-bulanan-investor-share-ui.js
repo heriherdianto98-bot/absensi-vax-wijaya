@@ -8,6 +8,7 @@
   const allReports=new Map();
   let allRenderTimer=null;
   let activePeriodKey="";
+  let consolidatedReport=null; // Satu sumber yang sama dengan tujuh card Semua Cabang.
 
   function isAllBranches(){
     return String(document.getElementById("lbBranch")?.value||"")==="all";
@@ -75,7 +76,15 @@
     const host=document.getElementById("lbInvestorLines");
     if(!host) return;
 
-    const rows=[...allReports.values()]
+    const month=String(document.getElementById("lbMonth")?.value||"");
+    const expectedIds=[...document.getElementById("lbBranch").options]
+      .map(option=>option.value).filter(value=>value!=="all").map(Number);
+    const source=consolidatedReport;
+    const sourceRows=Array.isArray(source?.branchReports)?source.branchReports:[];
+    if(!source?.isAllBranches || String(source?.range?.start||"").slice(0,7)!==month
+      || sourceRows.length!==expectedIds.length
+      || sourceRows.some(row=>!expectedIds.includes(Number(row?.branch?.id)))) return;
+    const rows=sourceRows
       .filter(report=>report?.branch && report?.branch?.name!=="Semua Cabang")
       .sort((a,b)=>branchName(a).localeCompare(branchName(b),"id"));
     if(!rows.length) return;
@@ -133,7 +142,7 @@
   function render(report){
     collect(report);
     if(isAllBranches()){
-      scheduleAllRender();
+      // Jangan render cache event per cabang yang belum final.
       return;
     }
     renderSingle(report);
@@ -141,13 +150,18 @@
 
   function boot(){
     document.addEventListener("laporan-bulanan:investor-share",e=>render(e.detail));
+    document.addEventListener("laporan-bulanan:all-ready",e=>{
+      consolidatedReport=e.detail;
+      scheduleAllRender();
+    });
     document.getElementById("lbBranch")?.addEventListener("change",()=>{
-      if(isAllBranches()) scheduleAllRender();
+      if(isAllBranches()){ consolidatedReport=null; }
       else setTimeout(()=>renderSingle(window.LaporanBulananInvestorShareBridge?.lastReport),80);
     });
     document.getElementById("lbMonth")?.addEventListener("change",()=>{
       allReports.clear();
       activePeriodKey="";
+      consolidatedReport=null;
     });
     setTimeout(()=>render(window.LaporanBulananInvestorShareBridge?.lastReport),300);
   }
