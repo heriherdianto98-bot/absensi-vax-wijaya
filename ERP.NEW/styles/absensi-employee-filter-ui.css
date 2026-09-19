@@ -18,3 +18,11 @@
 #absensiRoot .toolbar-field:has(#absensiFilterKaryawan) .erp-cselect-option:is(:hover,.is-active,.is-selected),
 #absensiRoot .toolbar-field:has(#ablFilterKaryawan) .erp-cselect-option:is(:hover,.is-active,.is-selected){background:#3a321e;color:#ffe29b}
 @media(max-width:900px){#absensiRoot .absensi-toolbar .toolbar-field:has(#absensiFilterKaryawan),#absensiRoot #ablPage>.abl-toolbar .toolbar-field:has(#ablFilterKaryawan){flex:1 1 180px}}
+
+/* Employee filter availability and compact KPI numerals; presentation only. */
+#absensiRoot .toolbar-field:has(#absensiFilterKaryawan:disabled) .erp-cselect-trigger,
+#absensiRoot .toolbar-field:has(#ablFilterKaryawan:disabled) .erp-cselect-trigger{opacity:.52;cursor:not-allowed;pointer-events:none}
+#absensiRoot .absensi-kpi-grid>.absensi-kpi strong,
+#absensiRoot .absensi-kpi-grid>.absensi-kpi-link strong{font-size:clamp(19px,1.45vw,23px)}
+#absensiRoot #ablPage .abl-card>strong{font-size:clamp(16px,1.3vw,19px)}
+@media(max-width:480px){#absensiRoot #ablPage .abl-card>strong{font-size:clamp(16px,4vw,19px)}}

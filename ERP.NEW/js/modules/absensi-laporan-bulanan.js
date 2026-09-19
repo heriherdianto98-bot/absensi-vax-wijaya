@@ -200,8 +200,11 @@ const AbsensiLaporanBulanan = {
         const sel = document.getElementById("ablFilterKaryawan");
         if(!sel) return;
         const current = sel.value;
+        sel.disabled = !this.selectedCabangId();
+        const trigger = sel.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger");
+        if(trigger) trigger.disabled = sel.disabled;
         sel.replaceChildren(new Option("Semua Karyawan", ""));
-        (this._rows || []).forEach((r) => sel.add(new Option(r.nama, String(r.id))));
+        if(this.selectedCabangId()) (this._rows || []).forEach((r) => sel.add(new Option(r.nama, String(r.id))));
         sel.value = [...sel.options].some((o) => o.value === current) ? current : "";
         const label = sel.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger span");
         if(label) label.textContent = sel.selectedOptions[0]?.textContent || "Semua Karyawan";

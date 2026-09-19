@@ -464,9 +464,12 @@ const AbsensiOwner = {
         const sel = document.getElementById("absensiFilterKaryawan");
         if(!sel) return;
         const branch = this.selectedCabangName();
+        sel.disabled = !branch;
+        const trigger = sel.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger");
+        if(trigger) trigger.disabled = !branch;
         const current = sel.value;
         sel.replaceChildren(new Option("Semua Karyawan", ""));
-        (this._karyawanIndex || []).filter((k) => !branch || k.cabang === branch)
+        (this._karyawanIndex || []).filter((k) => branch && k.cabang === branch)
             .forEach((k) => sel.add(new Option(k.nama, String(k.id))));
         sel.value = [...sel.options].some((o) => o.value === current) ? current : "";
         const label = sel.closest(".erp-cselect")?.querySelector(".erp-cselect-trigger span");
