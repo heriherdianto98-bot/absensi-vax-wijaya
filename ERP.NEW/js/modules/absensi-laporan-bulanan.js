@@ -1265,13 +1265,6 @@ const AbsensiLaporanBulanan = {
         const employees = source.filter((k) => {
             const keep = this.isActiveKaryawan(k) || jadwalIds.has(this.normId(k.id));
             if(!keep) return false;
-            if(cabangId){
-                const cab = this._cabangList.find((c) => String(c.id) === String(cabangId));
-                const nama = cab?.nama_cabang || "";
-                const sameId = String(k.cabang_id) === String(cabangId);
-                const sameName = nama && this.cabangNameOf(k) === nama;
-                if(!sameId && !sameName) return false;
-            }
             return true;
         }).sort((a, b) => {
             const ca = this.cabangNameOf(a).localeCompare(this.cabangNameOf(b), "id");
@@ -1424,6 +1417,14 @@ const AbsensiLaporanBulanan = {
                 bonus: full ? "FULL" : "BELUM FULL"
             };
         });
+
+        this._matrixAllRows = this._rows;
+        const activeCabang = this._cabangList.find((c) => String(c.id) === String(cabangId));
+        const employeeBranch = new Map(employees.map((k) => [String(k.id), String(k.cabang_id)]));
+        this._rows = cabangId ? this._matrixAllRows.filter((r) =>
+            employeeBranch.get(String(r.id)) === String(cabangId) ||
+            String(r.cabang || "").trim().toLowerCase() === String(activeCabang?.nama_cabang || "").trim().toLowerCase()
+        ) : this._matrixAllRows;
 
         const fauzi = this._rows.find((r) =>
             this.normId(r.id) === "13" || /fauzi/i.test(String(r.nama || ""))
@@ -1596,9 +1597,12 @@ const AbsensiLaporanBulanan = {
 
     matrixRows(){
         const { text, status } = this.activeQuery();
-        if(!this._dayMode) return this.viewRows(status === "D" ? "" : status);
+        const matrixSource = this._matrixAllRows || this._rows || [];
+        if(!this._dayMode) return matrixSource.filter((r) =>
+            this.matchesText(r, text) && this.rowHasStatus(r, status === "D" ? "" : status)
+        );
         const iso = this.effectivePeriodBounds().start;
-        return (this._rows || []).filter((r) => {
+        return matrixSource.filter((r) => {
             if(!this.matchesText(r, text)) return false;
             if(!status || status === "D") return true;
             const day = (r.days || []).find((d) => d.iso === iso);
@@ -1883,7 +1887,7 @@ const AbsensiLaporanBulanan = {
         if(loading) loading.hidden = true;
 
         const rows = this.matrixRows();
-        const total = (this._rows || []).length;
+        const total = (this._matrixAllRows || this._rows || []).length;
         if(countEl){
             countEl.textContent = rows.length
                 ? `Menampilkan ${rows.length} dari ${total} karyawan`

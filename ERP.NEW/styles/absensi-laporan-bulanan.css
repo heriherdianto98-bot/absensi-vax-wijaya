@@ -1239,3 +1239,40 @@ select.abl-period-native[hidden]{
 @media screen {
     #absensiRoot #ablDetailBox { display:none !important; }
 }
+
+/* Matriks Owner: dark premium VAX. Scoped; tidak mengubah KPI/engine. */
+#ablMatrixCard{background:linear-gradient(155deg,#202630,#141920);color:#E7EBF0;border-top:1px solid rgba(212,175,55,.3)}
+#ablMatrixCard .abl-table-card-head{background:linear-gradient(145deg,#252A32,#1A1E25);border-color:rgba(212,175,55,.25)}
+#ablMatrixCard .abl-table-card-head h3{color:#F7E5AE}
+#ablMatrixCard .abl-table-card-head p{color:#B5BFCD}
+#ablMatrixCard .abl-matrix-legend{color:#D9E0E9;background:#1A2028;padding-bottom:10px}
+#ablMatrixCard .abl-matrix-count{color:#DFC677;background:#1A2028;margin:0;padding:8px 16px 11px;border-bottom:1px solid rgba(212,175,55,.18)}
+#ablMatrixCard .abl-table-wrap{background:#141A22;scrollbar-width:thin;scrollbar-color:#66532B #141A22}
+#ablMatrixCard .abl-table-wrap::-webkit-scrollbar{width:10px;height:10px;display:block}
+#ablMatrixCard .abl-table-wrap::-webkit-scrollbar-track{background:#141A22}
+#ablMatrixCard .abl-table-wrap::-webkit-scrollbar-thumb{background:#66532B;border:2px solid #141A22;border-radius:10px}
+#ablMatrixCard .abl-table thead th{background:#26211A;color:#F1CE69;border-bottom:1px solid rgba(212,175,55,.38)}
+#ablMatrixCard .abl-table thead th.abl-sticky{background:#26211A}
+#ablMatrixCard .abl-table tbody td{background:#171D25;color:#E2E8F0;border-bottom:1px solid rgba(255,255,255,.065)}
+#ablMatrixCard .abl-table tbody tr:nth-child(even) td{background:#1C232C}
+#ablMatrixCard .abl-table tbody td.abl-sticky{background:#202630}
+#ablMatrixCard .abl-table tbody tr:nth-child(even) td.abl-sticky{background:#252D37}
+#ablMatrixCard .abl-table tbody tr:hover td,#ablMatrixCard .abl-table tbody tr:hover td.abl-sticky{background:#303027}
+#ablMatrixCard .abl-td-nama{color:#F8E9BD;font-weight:800}
+#ablMatrixCard .abl-td-cabang,#ablMatrixCard .abl-td-jabatan{color:#CBD5E1}
+#ablMatrixCard .abl-td-no{color:#A8B4C4}
+#ablMatrixCard .abl-td-sum,#ablMatrixCard .abl-td-pct{color:#F3F4F6}
+#ablMatrixCard .abl-td-denda{color:#F3C74D}
+#ablMatrixCard .abl-empty strong{color:#F3E1A9}
+#ablMatrixCard .abl-empty span,#ablMatrixCard .abl-state{color:#BAC5D1}
+#ablMatrixCard .abl-mark.is-a,#ablMatrixCard .abl-lg.is-a{color:#F8FAFC;background:#0B0F15;border-color:#475569}
+#ablMatrixCard .abl-mark.is-n,#ablMatrixCard .abl-lg.is-n{color:#AEBBD0;background:#293343;border-color:#415269}
+#ablMatrixCard .abl-bonus.is-belum{color:#CBD5E1;background:#293343;border-color:#415269}
+#ablMatrixCard .abl-matrix-filters{background:#202630;border-color:rgba(212,175,55,.22)}
+.erp-wrapper #ablMatrixCard .toolbar-field-label{color:#E8CD7D!important}
+.erp-wrapper #ablMatrixCard .erp-cselect-trigger,#ablMatrixCard .abl-select,#ablMatrixCard .abl-search-input{background:#171D25!important;color:#F3F4F6!important;border-color:rgba(212,175,55,.35)!important}
+.erp-wrapper #ablMatrixCard .erp-cselect-menu,.erp-wrapper #ablMatrixCard .erp-cselect-list{background:#1C232D;color:#F1F5F9;border-color:rgba(212,175,55,.35)}
+.erp-wrapper #ablMatrixCard .erp-cselect-option{background:#1C232D;color:#F1F5F9;border-color:rgba(255,255,255,.07)}
+.erp-wrapper #ablMatrixCard .erp-cselect-option:hover,.erp-wrapper #ablMatrixCard .erp-cselect-option.is-active{background:#3A321E;color:#FFE29B}
+#ablMatrixCard .abl-btn-ghost{background:#252A32;color:#EBD18A;border-color:rgba(212,175,55,.35)}
+#ablMatrixCard .abl-btn-ghost:hover{background:#353124;color:#FCE3A0}
