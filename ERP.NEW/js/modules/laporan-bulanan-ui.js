@@ -143,7 +143,36 @@
     setText("lbOpex",money(x.operasional));
     setText("lbRent",money(x.sewa));
     setText("lbProfit",money(l.labaBersih));
-    const card=el("lbProfitCard"); card?.classList.toggle("is-profit",Number(l.labaBersih||0)>=0); card?.classList.toggle("is-loss",Number(l.labaBersih||0)<0);
+    const all=report?.isAllBranches===true;
+    const allKpis=el("lbAllKpis");
+    if(allKpis) allKpis.hidden=!all;
+    setText("lbProfitNote",all?`Setelah gaji, operasional & seluruh sewa ${money(x.sewa)}`:"Setelah gaji, operasional & sewa");
+    if(all && Array.isArray(report.branchReports)){
+      const rows=report.branchReports;
+      const sum=fn=>rows.reduce((total,row)=>total+num(fn(row)),0);
+      const rentPaid=sum(row=>{
+        const inv=row?.investor||{};
+        return inv.sewaDibayarAktual!==undefined ? inv.sewaDibayarAktual
+          :inv.statusPembayaranSewa==="DITANGGUHKAN_KARENA_RUGI" ? 0 :inv.sewaDibayar;
+      });
+      const rentDeferred=sum(row=>{
+        const inv=row?.investor||{};
+        return inv.statusPembayaranSewa==="DITANGGUHKAN_KARENA_RUGI"
+          ?(inv.sewaDitangguhkan??inv.sewaKewajiban??inv.sewaDibayar):inv.sewaDitangguhkan;
+      });
+      const investorRights=sum(row=>row?.investor?.totalHakBulanIni);
+      const managementRights=sum(row=>row?.investor?.nilaiManajemen);
+      const profitRights=investorRights-rentPaid+managementRights;
+      const gap=num(l.labaBersih)-profitRights;
+      setText("lbAllRentPaid",money(rentPaid));
+      setText("lbAllRentDeferred",money(rentDeferred));
+      setText("lbAllProfitRights",money(profitRights));
+      setText("lbAllGap",`${gap>0?"+":""}${money(gap)}`);
+      el("lbAllGapCard")?.classList.toggle("is-negative",gap<0);
+      el("lbAllGapCard")?.classList.toggle("is-positive",gap>0);
+      setText("lbAllKpisNote",`Rekonsiliasi ${rows.length} cabang · hak investor ${money(investorRights-rentPaid)} + hak manajemen ${money(managementRights)} · sewa investor ${money(rentPaid)} tidak dipotong dua kali. Nominal laporan, bukan saldo kas atau bukti transfer.`);
+    }
+    const card=el("lbProfitCard"); card?.classList.toggle("is-all-branches",all); card?.classList.toggle("is-profit",Number(l.labaBersih||0)>=0); card?.classList.toggle("is-loss",Number(l.labaBersih||0)<0);
     setText("lbCustomer",`${Number(p.customer||0).toLocaleString("id-ID")} customer`); setText("lbTransactions",`${Number(p.transaction||0).toLocaleString("id-ID")} transaksi`);
   }
 

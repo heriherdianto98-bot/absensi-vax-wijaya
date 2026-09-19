@@ -33,6 +33,24 @@
 <link rel="stylesheet" href="../styles/laporan-bulanan-kpi-seven.css?v=20260913-v1">
 <link rel="stylesheet" href="../styles/laporan-bulanan-toolbar-left.css?v=20260913-v2">
 <link rel="stylesheet" href="../styles/laporan-bulanan-black-surfaces.css?v=20260913-v1">
+<style>
+/* Khusus Semua Cabang: penjelasan laba, sewa, hak pembagian. UI only. */
+body.laporan-bulanan-page .lb-all-kpis[hidden]{display:none!important}
+body.laporan-bulanan-page .lb-all-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 4px}
+body.laporan-bulanan-page .lb-all-kpi{min-width:0;display:flex;flex-direction:column;gap:7px;padding:16px 17px;border:1px solid rgba(214,181,100,.22);border-left:3px solid #d7b45e;border-radius:12px;background:linear-gradient(135deg,rgba(215,180,94,.11),#090b0d 55%)}
+body.laporan-bulanan-page .lb-all-kpi span{font-size:12px;font-weight:700;color:#d8dce0}
+body.laporan-bulanan-page .lb-all-kpi strong{font-size:clamp(17px,1.55vw,25px);line-height:1.25;overflow-wrap:anywhere;color:#f2d184;font-variant-numeric:tabular-nums}
+body.laporan-bulanan-page .lb-all-kpi small{font-size:11px;line-height:1.45;color:#b8c0c8}
+body.laporan-bulanan-page .lb-all-kpi.is-negative{border-left-color:#f27474}
+body.laporan-bulanan-page .lb-all-kpi.is-negative strong{color:#ff9696}
+body.laporan-bulanan-page .lb-all-kpi.is-positive{border-left-color:#57c898}
+body.laporan-bulanan-page .lb-all-kpi.is-positive strong{color:#83e6b5}
+body.laporan-bulanan-page .lb-all-kpis-note{grid-column:1/-1;margin:0;padding:2px 4px 6px;font-size:12px;line-height:1.5;color:#cbd0d6}
+body.laporan-bulanan-page #lbProfitCard.is-all-branches{height:auto!important;min-height:82px!important}
+body.laporan-bulanan-page #lbProfitCard.is-all-branches small{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.15!important}
+@media(max-width:1100px){body.laporan-bulanan-page .lb-all-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:570px){body.laporan-bulanan-page .lb-all-kpis{grid-template-columns:minmax(0,1fr)}}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="laporan-bulanan-page">
@@ -66,7 +84,14 @@
         <article class="lb-kpi"><span>Total Biaya Gaji</span><strong id="lbPayroll">Rp0</strong><small>Payroll + protek + SVP + mapping</small></article>
         <article class="lb-kpi"><span>Operasional</span><strong id="lbOpex">Rp0</strong><small id="lbTransactions">0 transaksi</small></article>
         <article class="lb-kpi"><span>Sewa</span><strong id="lbRent">Rp0</strong><small>Master Sewa periode aktif</small></article>
-        <article class="lb-kpi" id="lbProfitCard"><span>Laba Bersih</span><strong id="lbProfit">Rp0</strong><small>Setelah gaji, operasional & sewa</small></article>
+        <article class="lb-kpi" id="lbProfitCard"><span>Laba Bersih</span><strong id="lbProfit">Rp0</strong><small id="lbProfitNote">Setelah gaji, operasional & sewa</small></article>
+      </section>
+      <section class="lb-all-kpis" id="lbAllKpis" aria-label="Penjelasan laba dan pembagian Semua Cabang" hidden>
+        <article class="lb-all-kpi"><span>Sewa Investor Dibayar</span><strong id="lbAllRentPaid">—</strong><small>Termasuk hak investor; sudah menjadi biaya sewa pada laba bersih.</small></article>
+        <article class="lb-all-kpi"><span>Sewa Investor Ditangguhkan</span><strong id="lbAllRentDeferred">—</strong><small>Kewajiban belum dibayar; tidak termasuk total hak saat ini.</small></article>
+        <article class="lb-all-kpi"><span>Total Hak Bagi Hasil (Tanpa Sewa)</span><strong id="lbAllProfitRights">—</strong><small>Hak investor tanpa sewa + hak manajemen seluruh cabang.</small></article>
+        <article class="lb-all-kpi" id="lbAllGapCard"><span>Selisih Dasar Perhitungan</span><strong id="lbAllGap">—</strong><small>Laba bersih gabungan − hak bagi hasil; bukan saldo atau kekurangan kas.</small></article>
+        <p class="lb-all-kpis-note" id="lbAllKpisNote">Angka mengikuti laporan final cabang pada periode terpilih. Sewa tidak dihitung dua kali.</p>
       </section>
 
       <section class="lb-view-switcher" aria-label="Pilih tampilan laporan bulanan">
