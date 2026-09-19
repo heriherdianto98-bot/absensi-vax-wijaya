@@ -1,0 +1,113 @@
+.jadwal-tutup-embed{
+    margin:10px 0 0;
+    padding:10px 12px 12px;
+    border:1px solid rgba(212,160,23,.24);
+    border-radius:14px;
+    background:#14181d;
+}
+.jadwal-tutup-embed[hidden]{display:none!important}
+.jadwal-tutup-embed h2{margin:0 0 4px;color:#f3f6fa;font-size:17px;line-height:1.25;font-weight:800}
+.jadwal-tutup-embed .tutup-ops-kicker{color:#e0b84a;font-size:11px;font-weight:800;letter-spacing:1.2px}
+.jadwal-tutup-embed p.lead{margin:0 0 8px;color:#aeb6c0;font-size:12px;line-height:1.4}
+.tutup-ops-form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tutup-ops-form label{display:flex;flex-direction:column;gap:4px;color:#c0c6cf;font-size:11px;font-weight:700}
+.tutup-ops-form input,
+.tutup-ops-form select,
+.tutup-ops-form textarea{
+    min-height:36px;padding:7px 10px;border-radius:10px;
+    border:1px solid rgba(212,160,23,.26);background:#101418;color:#eef2f6;
+    color-scheme:dark;
+}
+.tutup-ops-form textarea{min-height:58px;resize:vertical}
+.tutup-ops-form .full{grid-column:1/-1}
+#tutupOpsSave{
+    min-height:40px;border:0;border-radius:11px;
+    background:linear-gradient(90deg,#e8c96a,#c9a227);color:#111;font-weight:800;cursor:pointer
+}
+.tutup-ops-list{display:grid;gap:6px;margin-top:8px;max-height:180px;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.tutup-ops-item{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:10px;background:#1b2026;border:1px solid #323942;color:#fff}
+.tutup-ops-item small{display:block;margin-top:3px;color:#9aa2ad}
+.tutup-ops-state,.tutup-ops-msg{margin:8px 0 0;color:#b8c0ca;font-size:12px;font-weight:700}
+.tutup-ops-msg.is-error{color:#ff7a83}
+.tutup-ops-msg.is-success{color:#55e1a6}
+
+#tutupOpsCabangWrap{position:relative;gap:6px}
+#tutupOpsCabang.tutup-ops-cabang-native,
+#tutupOpsCabang.tutup-ops-cabang-native[hidden]{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    opacity:0!important;
+    pointer-events:none!important;
+    overflow:hidden!important;
+}
+.jadwal-tutup-embed .tutup-ops-cabang-picker{
+    display:block;
+    width:100%;
+    min-height:200px;
+    max-height:240px;
+    padding:4px;
+    border:1px solid rgba(212,160,23,.32);
+    border-radius:10px;
+    background:#0c1014;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(212,160,23,.22) transparent;
+}
+.jadwal-tutup-embed .tutup-ops-cabang-picker::-webkit-scrollbar{width:5px}
+.jadwal-tutup-embed .tutup-ops-cabang-picker::-webkit-scrollbar-track{background:transparent}
+.jadwal-tutup-embed .tutup-ops-cabang-picker::-webkit-scrollbar-thumb{background:rgba(212,160,23,.22);border-radius:99px}
+.jadwal-tutup-embed .tutup-ops-cabang-item,
+.jadwal-tutup-embed button.tutup-ops-cabang-item{
+    display:flex;
+    align-items:center;
+    box-sizing:border-box;
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    height:46px;
+    min-height:46px;
+    max-height:48px;
+    margin:2px 0;
+    padding:0 12px;
+    border:0;
+    border-radius:8px;
+    background:#12171c;
+    color:#e8edf3;
+    font-size:14px;
+    font-weight:650;
+    line-height:1.35;
+    text-align:left;
+    cursor:pointer;
+    box-shadow:none;
+}
+.jadwal-tutup-embed .tutup-ops-cabang-item:hover,
+.jadwal-tutup-embed button.tutup-ops-cabang-item:hover{
+    background:rgba(212,160,23,.10);
+    color:#f3e6b8;
+}
+.jadwal-tutup-embed .tutup-ops-cabang-item.is-selected,
+.jadwal-tutup-embed button.tutup-ops-cabang-item.is-selected{
+    background:rgba(212,160,23,.16);
+    color:#e8c96a;
+    box-shadow:inset 2px 0 0 #c9a227;
+}
+
+.abl-toolbar .absensi-btn-calendar,
+.abl-toolbar .js-btn-kalender-ops{
+    min-height:46px;
+    height:46px;
+}
+
+@media(max-width:760px){
+    .tutup-ops-form{grid-template-columns:1fr}
+    .jadwal-tutup-embed .tutup-ops-cabang-picker{min-height:184px;max-height:220px}
+}
+
+@media print{
+    .jadwal-tutup-embed{display:none!important}
+}

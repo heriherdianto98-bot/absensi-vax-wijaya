@@ -1,0 +1,211 @@
+<!--
+=========================================================
+VAX ERP — LAPORAN ABSENSI OWNER
+Card-first · satu pencarian global · matriks audit
+=========================================================
+-->
+<section class="abl-page" id="ablPage">
+
+    <header class="abl-page-head" aria-label="Judul Absensi Owner">
+        <div class="abl-page-head-text">
+            <p class="abl-eyebrow">ABSENSI · OWNER</p>
+            <h2 class="abl-page-title">RINGKASAN ABSENSI</h2>
+            <p class="abl-page-sub">Pilih cabang dan periode, lalu ketik pencarian atau klik card status</p>
+        </div>
+        <div class="abl-head-right">
+            <div class="abl-karyawan-badge" title="Karyawan aktif pada filter">
+                <strong id="ablSumKaryawan">0</strong>
+                <span>KARYAWAN AKTIF</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="toolbar-wrapper abl-toolbar" aria-label="Filter Absensi">
+        <div class="toolbar-left abl-toolbar-left">
+            <div class="toolbar-field">
+                <span class="toolbar-field-label">Mode</span>
+                <div class="absensi-mode-switch" role="group" aria-label="Mode ringkasan">
+                    <button type="button" class="absensi-mode-btn" data-absensi-mode="hari">Hari Ini</button>
+                    <button type="button" class="absensi-mode-btn is-active" data-absensi-mode="bulan">Bulan Ini</button>
+                </div>
+            </div>
+            <div class="toolbar-field">
+                <span class="toolbar-field-label">Cabang</span>
+                <select id="ablFilterCabang" class="abl-select" data-erp-cselect>
+                    <option value="">Semua Cabang</option>
+                </select>
+            </div>
+            <div class="toolbar-field">
+                <span class="toolbar-field-label">Periode</span>
+                <button type="button" id="ablPeriodBtn" class="absensi-date-btn abl-period-btn" aria-haspopup="dialog" aria-controls="ablPeriodModal">
+                    <span id="ablPeriodLabel">—</span>
+                </button>
+                <select id="ablFilterBulan" class="abl-select abl-period-native" hidden aria-hidden="true">
+                    <option value="1">Januari</option>
+                    <option value="2">Februari</option>
+                    <option value="3">Maret</option>
+                    <option value="4">April</option>
+                    <option value="5">Mei</option>
+                    <option value="6">Juni</option>
+                    <option value="7">Juli</option>
+                    <option value="8">Agustus</option>
+                    <option value="9">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                </select>
+                <select id="ablFilterTahun" class="abl-select abl-period-native" hidden aria-hidden="true"></select>
+            </div>
+            <div class="toolbar-field toolbar-field-search">
+                <span class="toolbar-field-label">Pencarian</span>
+                <input
+                    type="search"
+                    id="ablFilterCari"
+                    class="abl-search-input"
+                    placeholder="Nama, cabang, atau status…"
+                    autocomplete="off"
+                >
+            </div>
+        </div>
+        <div class="toolbar-right abl-toolbar-right">
+            <button type="button" id="ablBtnPrint" class="abl-btn-primary">Print</button>
+            <button type="button" id="ablBtnReset" class="abl-btn-ghost">Reset / Tampilkan Semua</button>
+            <button type="button" id="ablBtnRefresh" class="abl-btn-ghost">Refresh</button>
+        </div>
+    </section>
+
+    <div id="ablBanner" class="abl-banner" hidden role="status">
+        <span class="abl-banner-text" id="ablBannerText"></span>
+    </div>
+
+    <div class="abl-summary" id="ablSummary" aria-label="Ringkasan Absensi">
+        <button type="button" class="abl-card is-hadir" data-abl-filter="H">
+            <span>HADIR</span>
+            <strong id="ablSumHadirPeople">0 Karyawan</strong>
+            <em id="ablSumHadirDays">0 Hari</em>
+        </button>
+        <button type="button" class="abl-card is-terlambat" data-abl-filter="T">
+            <span>TERLAMBAT</span>
+            <strong id="ablSumTerlambatPeople">0 Karyawan</strong>
+            <em id="ablSumTerlambatDays">0 Hari</em>
+        </button>
+        <button type="button" class="abl-card is-alfa" data-abl-filter="A">
+            <span>BELUM ABSEN / ALFA</span>
+            <strong id="ablSumAlfaPeople">0 Karyawan</strong>
+            <em id="ablSumAlfaDays">0 Hari</em>
+        </button>
+        <button type="button" class="abl-card is-libur" data-abl-filter="L">
+            <span>LIBUR</span>
+            <strong id="ablSumLiburPeople">0 Karyawan</strong>
+            <em id="ablSumLiburDays">0 Hari</em>
+        </button>
+        <button type="button" class="abl-card is-izin" data-abl-filter="I">
+            <span>IZIN</span>
+            <strong id="ablSumIzinPeople">0 Karyawan</strong>
+            <em id="ablSumIzinDays">0 Hari</em>
+        </button>
+        <button type="button" class="abl-card is-sakit" data-abl-filter="S">
+            <span>SAKIT</span>
+            <strong id="ablSumSakitPeople">0 Karyawan</strong>
+            <em id="ablSumSakitDays">0 Hari</em>
+        </button>
+        <button type="button" class="abl-card is-denda" data-abl-filter="D">
+            <span>DENDA BULAN INI</span>
+            <strong id="ablSumDenda">Rp0</strong>
+            <em id="ablSumDendaPeople">0 Karyawan</em>
+        </button>
+    </div>
+
+    <div class="abl-meta" id="ablMeta">
+        <span id="ablMetaPeriode">Periode: —</span>
+        <span id="ablMetaCabang">Cabang: Semua Cabang</span>
+        <span id="ablMetaElapsed">Hari dihitung: —</span>
+    </div>
+
+    <div id="izinSpvMount"></div>
+
+    <section class="abl-detail-card" id="ablDetailBox" aria-label="Rincian status">
+        <div class="abl-detail-head">
+            <div>
+                <p class="abl-eyebrow" id="ablDetailEyebrow">RINCIAN</p>
+                <h3 id="ablDetailTitle">Hasil rincian</h3>
+                <p id="ablDetailSub">Mengikuti cabang, periode, pencarian, dan card status di atas.</p>
+            </div>
+            <div class="abl-detail-head-actions">
+                <button type="button" id="ablBtnPrintDetail" class="abl-btn-primary abl-btn-sm">Print</button>
+            </div>
+        </div>
+        <p class="abl-matrix-count" id="ablDetailCount"></p>
+        <div class="abl-detail-wrap">
+            <div id="ablDetailEmpty" class="abl-state abl-empty">
+                <strong>Tidak ada rincian</strong>
+                <span>Ubah cabang, periode, pencarian, atau card status.</span>
+            </div>
+            <table class="abl-detail-table" id="ablDetailTable" hidden>
+                <thead id="ablDetailThead"></thead>
+                <tbody id="ablDetailTbody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="abl-matrix-sec" id="ablMatrixSec">
+        <div class="abl-matrix-bar">
+            <div>
+                <h3>Audit matriks 1–31</h3>
+                <p>Kalender audit Owner/SPV. Mengikuti filter atas, tanpa pencarian terpisah.</p>
+            </div>
+            <button type="button" id="ablBtnMatrix" class="abl-btn-primary">Lihat Matriks Absensi Lengkap</button>
+        </div>
+        <div class="abl-table-card" id="ablMatrixCard" hidden>
+            <div class="abl-table-card-head">
+                <h3>Matriks Kehadiran</h3>
+                <p id="ablTableHint">Cabang, periode, pencarian, dan card status di atas mengatur matriks ini.</p>
+            </div>
+            <div class="abl-matrix-legend" aria-hidden="true">
+                <em class="abl-lg is-h">H</em><span>Hadir</span>
+                <em class="abl-lg is-t">T</em><span>Terlambat</span>
+                <em class="abl-lg is-l">L</em><span>Libur</span>
+                <em class="abl-lg is-i">I</em><span>Izin</span>
+                <em class="abl-lg is-s">S</em><span>Sakit</span>
+                <em class="abl-lg is-a">A</em><span>Alfa</span>
+                <em class="abl-lg is-n">-</em><span>Belum / masa depan</span>
+            </div>
+            <p class="abl-matrix-count" id="ablMatrixCount"></p>
+            <div class="abl-table-wrap" id="ablTableWrap">
+                <div id="ablLoading" class="abl-state" hidden>Memuat matriks absensi…</div>
+                <div id="ablEmpty" class="abl-state abl-empty" hidden>
+                    <strong>Tidak ada karyawan aktif pada filter ini</strong>
+                    <span>Ubah cabang, periode, atau kata kunci pencarian.</span>
+                </div>
+                <table class="abl-table" id="ablTable" hidden>
+                    <thead id="ablThead"></thead>
+                    <tbody id="ablTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div id="jadwalTutupMount"></div>
+
+</section>
+
+<div id="ablPeriodModal" class="custom-cal-modal" hidden aria-hidden="true">
+    <div class="custom-cal-backdrop" data-abl-period-close></div>
+    <div class="custom-cal-panel" role="dialog" aria-modal="true" aria-labelledby="ablPeriodTitle">
+        <div class="custom-cal-header">
+            <h3 id="ablPeriodTitle">Pilih Periode</h3>
+            <button type="button" class="custom-cal-x" data-abl-period-close aria-label="Tutup">×</button>
+        </div>
+        <div class="custom-cal-nav">
+            <button type="button" id="ablPeriodYearPrev" aria-label="Tahun sebelumnya">‹</button>
+            <strong id="ablPeriodYearLabel">—</strong>
+            <button type="button" id="ablPeriodYearNext" aria-label="Tahun berikutnya">›</button>
+        </div>
+        <div id="ablPeriodMonthGrid" class="custom-cal-month-grid" role="listbox" aria-label="Pilih bulan"></div>
+        <p id="ablPeriodPreview" class="custom-cal-preview">Pilih bulan dan tahun</p>
+        <div class="custom-cal-actions">
+            <button type="button" id="ablPeriodApply" class="toolbar-btn-apply">Terapkan</button>
+            <button type="button" class="toolbar-btn-cancel" data-abl-period-close>Batal</button>
+        </div>
+    </div>
+</div>

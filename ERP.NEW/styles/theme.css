@@ -1,0 +1,547 @@
+/*
+=========================================================
+ERP VAX WIJAYA — Design Foundation
+DARK PREMIUM — Content dark · Sidebar dark · Gold accent
+=========================================================
+*/
+
+:root{
+    /* Sidebar */
+    --sidebar-bg:#0b0c0e;
+    --sidebar-border:rgba(212,175,55,.22);
+
+    /* Content dark premium */
+    --vax-black:#0B0E12;
+    --vax-bg:#0B0E12;
+    --vax-bg-elevated:#11151B;
+    --vax-surface:#11151B;
+    --vax-surface-2:#171C23;
+    --vax-border:#2A3340;
+    --vax-border-soft:#3A4556;
+    --vax-gold:#F2C230;
+    --vax-gold-deep:#D4AF37;
+    --vax-gold-muted:#D4AF37;
+    --vax-gold-soft:rgba(242,194,48,.16);
+    --vax-gold-line:rgba(242,194,48,.45);
+    --vax-white:#F8FAFC;
+    --vax-text:#F8FAFC;
+    --vax-text-muted:#CBD5E1;
+    --vax-text-dim:#94A3B8;
+    --vax-helper:#94A3B8;
+
+    /* Status LOCK — dark surfaces + bright text */
+    --status-draft:#94A3B8;
+    --status-draft-bg:rgba(71,85,105,.35);
+    --status-draft-border:#64748B;
+    --status-action:#F97316;
+    --status-action-bg:rgba(249,115,22,.16);
+    --status-action-border:#F59E0B;
+    --status-pending:#38BDF8;
+    --status-pending-bg:rgba(56,189,248,.14);
+    --status-pending-border:#38BDF8;
+    --status-clear:#22C55E;
+    --status-clear-bg:rgba(34,197,94,.14);
+    --status-clear-border:#22C55E;
+    --status-error:#EF4444;
+    --status-error-bg:rgba(239,68,68,.16);
+    --status-error-border:#EF4444;
+    --status-info:#38BDF8;
+    --status-info-bg:rgba(56,189,248,.14);
+    --status-warning:#F59E0B;
+
+    /* Layout — 100% zoom desktop density (pass 2, tighter).
+       Compact on 1366, still readable on 1920. No zoom/scale. */
+    --sidebar-width:clamp(188px, 13.1vw, 208px);
+    --sidebar-collapse:clamp(56px, 4.2vw, 64px);
+    --header-height:clamp(46px, 5.2vh, 52px);
+    --erp-top-header-h:clamp(52px, 6vh, 58px);
+    --radius-sm:8px;
+    --radius-md:10px;
+    --radius-lg:12px;
+    --space-card:clamp(10px, 0.78vw, 13px);
+    --content-pad-x:clamp(12px, 0.95vw, 16px);
+    --content-pad-y:clamp(10px, 0.8vw, 14px);
+    --ctrl-h:clamp(32px, 2.1vw, 36px);
+    --chrome-gap:clamp(6px, 0.48vw, 10px);
+    --bottom-nav-h:64px;
+    --shadow-card:0 8px 24px rgba(0,0,0,.35);
+    --shadow-card-strong:0 10px 28px rgba(0,0,0,.45);
+
+    /* Type */
+    --font-sans:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+    --fs-page:clamp(17px, 1.15vw, 20px);
+    --fs-page-m:18px;
+    --fs-section:clamp(13px, 0.9vw, 15px);
+    --fs-value:clamp(16px, 1.1vw, 19px);
+    --fs-body:clamp(12.5px, 0.78vw, 13.5px);
+    --fs-caption:12px;
+    --fs-table-head:11px;
+    --fw-bold:700;
+    --fw-extrabold:800;
+
+    /* Legacy aliases */
+    --gold:var(--vax-gold);
+    --bg:var(--vax-bg);
+    --card:var(--vax-surface);
+    --border:var(--vax-border);
+    --white:var(--vax-white);
+    --text:var(--vax-text-muted);
+}
+
+html{
+    font-size:16px;
+    -webkit-text-size-adjust:100%;
+}
+
+body{
+    font-family:var(--font-sans);
+    font-size:var(--fs-body);
+    line-height:1.45;
+    color:var(--vax-text);
+    background:var(--vax-bg);
+}
+
+/* —— Typography —— */
+.erp-page-title,
+.page-title{
+    font-size:var(--fs-page);
+    font-weight:var(--fw-extrabold);
+    color:var(--vax-text);
+    letter-spacing:.01em;
+    line-height:1.2;
+    margin:0;
+}
+
+.erp-page-sub,
+.page-sub{
+    margin:6px 0 0;
+    font-size:clamp(13px, 0.95vw, 14px);
+    font-weight:600;
+    color:var(--vax-helper);
+    line-height:1.45;
+}
+
+/* Premium section label / badge */
+.erp-section-badge,
+.setoran3-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin:0 0 10px;
+    padding:7px 12px;
+    border-radius:999px;
+    border:1px solid rgba(201,162,39,.45);
+    background:linear-gradient(180deg, #FFF8E7 0%, #FFF1C9 100%);
+    color:#7A5F12;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    line-height:1.2;
+    box-shadow:0 1px 2px rgba(201,162,39,.12);
+}
+
+.erp-section-title,
+.section-title{
+    font-size:var(--fs-section, 16px);
+    font-weight:800;
+    color:var(--vax-text);
+    margin:0 0 10px;
+    letter-spacing:.01em;
+    line-height:1.25;
+}
+
+.erp-card-value,
+.card-value{
+    font-size:var(--fs-value);
+    font-weight:var(--fw-bold);
+    color:var(--vax-text);
+    font-variant-numeric:tabular-nums;
+}
+
+.erp-caption,
+.caption{
+    font-size:13px;
+    font-weight:600;
+    color:var(--vax-helper);
+    line-height:1.45;
+    margin:0 0 12px;
+}
+
+.erp-section-head{
+    margin-bottom:14px;
+    padding-bottom:12px;
+    border-bottom:1px solid #E4E5E7;
+}
+
+/* —— Cards —— */
+.erp-card,
+.card{
+    background:var(--vax-bg-elevated);
+    border:1px solid var(--vax-border);
+    border-radius:var(--radius-lg);
+    padding:var(--space-card);
+    box-shadow:var(--shadow-card);
+    transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+.erp-card:hover,
+.card:hover{
+    border-color:var(--vax-gold-line);
+}
+
+.erp-card-accent{
+    border-left:3px solid var(--vax-gold);
+}
+
+/* —— Buttons —— */
+.erp-btn,
+.btn-erp{
+    min-height:var(--ctrl-h, 40px);
+    padding:8px 14px;
+    border-radius:var(--radius-md);
+    border:1px solid transparent;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.03em;
+    cursor:pointer;
+    font-family:inherit;
+}
+
+.erp-btn-primary{
+    background:var(--vax-gold);
+    color:#151515;
+}
+
+.erp-btn-primary:hover{
+    background:var(--vax-gold-deep);
+    color:#111;
+}
+
+.erp-btn-ghost{
+    background:#fff;
+    border-color:var(--vax-border);
+    color:var(--vax-text);
+}
+
+.erp-btn-ghost:hover{
+    border-color:var(--vax-gold);
+    color:var(--vax-gold-deep);
+}
+
+.erp-btn-action{
+    background:var(--status-pending-bg);
+    border-color:var(--status-pending-border);
+    color:var(--status-pending);
+}
+
+.erp-btn-danger{
+    background:var(--status-error-bg);
+    border-color:var(--status-error-border);
+    color:var(--status-error);
+}
+
+/* —— Status badges (LOCK) —— */
+.erp-badge,
+.qris-reco-badge{
+    display:inline-flex;
+    align-items:center;
+    max-width:100%;
+    padding:5px 10px;
+    border-radius:999px;
+    font-size:var(--fs-caption);
+    font-weight:700;
+    letter-spacing:.02em;
+    white-space:nowrap;
+    line-height:1.2;
+    border:1px solid transparent;
+}
+
+.erp-badge-draft,
+.qris-reco-badge.belum-ada-data{
+    background:var(--status-draft-bg);
+    color:var(--status-draft);
+    border-color:var(--status-draft-border);
+}
+
+.erp-badge-action,
+.qris-reco-badge.belum-dicek{
+    background:var(--status-action-bg);
+    color:var(--status-action);
+    border-color:var(--status-action-border);
+}
+
+.erp-badge-pending,
+.qris-reco-badge.wait-owner{
+    background:var(--status-pending-bg);
+    color:var(--status-pending);
+    border-color:var(--status-pending-border);
+}
+
+.erp-badge-clear,
+.qris-reco-badge.sesuai,
+.qris-reco-badge.terjelaskan{
+    background:var(--status-clear-bg);
+    color:var(--status-clear);
+    border-color:var(--status-clear-border);
+}
+
+.erp-badge-error,
+.qris-reco-badge.bermasalah{
+    background:var(--status-error-bg);
+    color:var(--status-error);
+    border-color:var(--status-error-border);
+}
+
+.erp-badge-info{
+    background:var(--status-info-bg);
+    color:var(--status-info);
+    border-color:var(--status-pending-border);
+}
+
+/* RETURN_SPV → orange LOCK in setoran contexts */
+.setoran-page .setoran3-summary-section .qris-reco-badge.bermasalah,
+.setoran-page .setoran3-table .qris-reco-badge.bermasalah,
+.setoran-page .setoran3-progress-list .qris-reco-badge.bermasalah,
+.setoran-page #setoran3SummaryStatus.bermasalah{
+    background:var(--status-action-bg);
+    color:var(--status-action);
+    border-color:var(--status-action-border);
+}
+
+/* —— Tables —— */
+.erp-table,
+.qris-reco-table{
+    background:#fff;
+}
+
+.erp-table thead th,
+.qris-reco-table thead th{
+    font-size:var(--fs-table-head);
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:#333;
+    background:#F1F2F4;
+    border-bottom:1px solid var(--vax-border-soft);
+    padding:12px 10px;
+    white-space:nowrap;
+}
+
+.erp-table tbody td,
+.qris-reco-table tbody td{
+    font-size:var(--fs-body);
+    color:var(--vax-text);
+    padding:12px 10px;
+    border-bottom:1px solid #E4E5E7;
+    vertical-align:middle;
+    background:#fff;
+}
+
+.erp-table tbody tr:hover,
+.qris-reco-table tbody tr:hover{
+    background:#F8F8F8;
+}
+
+.erp-table tbody tr:hover td,
+.qris-reco-table tbody tr:hover td{
+    background:#F8F8F8;
+}
+
+.erp-num,
+.tabular-num{
+    font-variant-numeric:tabular-nums;
+    font-feature-settings:"tnum";
+    white-space:nowrap;
+    color:var(--vax-text);
+    font-weight:700;
+}
+
+/* —— Inputs (content area) —— */
+.erp-wrapper input,
+.erp-wrapper select,
+.erp-wrapper textarea{
+    background:#fff;
+    color:#151515;
+    border:1px solid var(--vax-border);
+    border-radius:var(--radius-md);
+}
+
+.erp-wrapper input:focus,
+.erp-wrapper select:focus,
+.erp-wrapper textarea:focus{
+    outline:none;
+    border-color:var(--vax-gold);
+    box-shadow:0 0 0 3px var(--vax-gold-soft);
+}
+
+/* —— Overlay / drawer —— */
+.erp-sidebar-backdrop{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:998;
+    pointer-events:auto;
+}
+
+body.erp-drawer-open .erp-sidebar-backdrop{
+    display:block;
+}
+
+/* —— Mobile bottom nav (light) —— */
+.erp-bottom-nav{
+    display:none;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:997;
+    height:var(--bottom-nav-h);
+    padding:6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+    background:#FFFFFF;
+    border-top:1px solid var(--vax-border);
+    grid-template-columns:repeat(5,1fr);
+    gap:4px;
+    box-shadow:0 -2px 10px rgba(16,24,40,.06);
+}
+
+.erp-bottom-nav a{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:2px;
+    text-decoration:none;
+    color:var(--vax-text-muted);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.02em;
+    border-radius:8px;
+    min-height:48px;
+}
+
+.erp-bottom-nav a .bn-icon{ font-size:18px; line-height:1; }
+
+.erp-bottom-nav a.is-active,
+.erp-bottom-nav a:hover{
+    color:var(--vax-gold-deep);
+    background:var(--vax-gold-soft);
+}
+
+.erp-menu-fab{
+    display:none;
+    width:42px;
+    height:42px;
+    border:1px solid var(--vax-border);
+    border-radius:var(--radius-md);
+    background:#fff;
+    color:var(--vax-gold-deep);
+    font-size:20px;
+    cursor:pointer;
+    flex-shrink:0;
+}
+
+/* —— Modals (light panel, dark overlay) —— */
+.erp-wrapper .qris-reco-modal-backdrop,
+.qris-reco-modal-backdrop{
+    background:rgba(0,0,0,.48) !important;
+}
+
+.erp-wrapper .qris-reco-modal-panel,
+.qris-reco-modal-panel{
+    background:#FFFFFF !important;
+    color:#151515 !important;
+    border:1px solid var(--vax-border) !important;
+    box-shadow:0 16px 48px rgba(16,24,40,.18) !important;
+}
+
+.erp-wrapper .qris-reco-modal-header h4,
+.qris-reco-modal-header h4{
+    color:#151515 !important;
+}
+
+.erp-wrapper .qris-reco-modal-header small,
+.qris-reco-modal-header small{
+    color:#5F6368 !important;
+}
+
+.erp-wrapper .qris-reco-modal-close,
+.qris-reco-modal-close{
+    color:#151515 !important;
+    background:#F1F2F4 !important;
+    border:1px solid var(--vax-border) !important;
+}
+
+/* —— Content-area overrides for legacy dark modules (CSS only) —— */
+.erp-wrapper .toolbar-wrapper{
+    background:#fff !important;
+    border:1px solid var(--vax-border) !important;
+    box-shadow:var(--shadow-card);
+}
+
+.erp-wrapper .toolbar-left select{
+    background:#fff !important;
+    color:#151515 !important;
+    border:1px solid var(--vax-border) !important;
+}
+
+.erp-wrapper .qris-reco-btn-primary{
+    background:var(--vax-gold) !important;
+    color:#151515 !important;
+    border:1px solid var(--vax-gold-deep) !important;
+}
+
+.erp-wrapper .qris-reco-btn-ghost,
+.erp-wrapper .qris-reco-btn-action{
+    background:#fff !important;
+    color:#151515 !important;
+    border:1px solid var(--vax-border) !important;
+}
+
+.erp-wrapper .qris-reco-btn-action{
+    background:var(--status-pending-bg) !important;
+    color:var(--status-pending) !important;
+    border-color:var(--status-pending-border) !important;
+}
+
+.erp-wrapper .qris-reco-table-wrap,
+.erp-wrapper .setoran3-table-wrap{
+    background:#fff;
+    border:1px solid var(--vax-border);
+    border-radius:var(--radius-lg);
+}
+
+.erp-wrapper .qris-reco-note-box,
+.erp-wrapper .qris-reco-import-banner,
+.erp-wrapper .qris-reco-manual-hint{
+    color:#5F6368;
+}
+
+.erp-wrapper .qris-reco-form-error{
+    color:var(--status-error) !important;
+}
+
+@media (max-width:900px){
+    :root{
+        --fs-page:var(--fs-page-m);
+        --fs-value:21px;
+        --ctrl-h:44px;
+        --content-pad-x:12px;
+        --content-pad-y:14px;
+        --erp-top-header-h:112px;
+    }
+
+    .erp-btn,
+    .btn-erp{
+        min-height:44px;
+        padding:10px 16px;
+    }
+
+    .erp-bottom-nav{ display:grid; }
+    .erp-menu-fab{ display:inline-flex; align-items:center; justify-content:center; }
+
+    body.has-bottom-nav .erp-content{
+        padding-bottom:calc(var(--bottom-nav-h) + 20px);
+    }
+}

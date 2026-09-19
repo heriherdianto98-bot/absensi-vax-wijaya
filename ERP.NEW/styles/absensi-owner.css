@@ -1,0 +1,2061 @@
+/* Absensi Owner — ERP shell UI (black / gold / white)
+   Fokus: menyatu dengan header/sidebar/toolbar ERP.
+*/
+
+.absensi-page{
+    width: 100%;
+    max-width: 100%;
+    padding: 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.absensi-page-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 2px 2px 0;
+}
+
+.absensi-page-title{
+    margin: 0;
+    color: var(--vax-white, #F8FAFC);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.absensi-page-sub{
+    margin: 4px 0 0;
+    color: var(--vax-text-dim, #94A3B8);
+    font-size: 13px;
+}
+
+.absensi-karyawan-badge{
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(212,175,55,.45);
+    background: linear-gradient(180deg, rgba(242,194,48,.14), rgba(17,21,27,.9));
+    box-shadow: 0 8px 20px rgba(0,0,0,.28), 0 0 0 1px rgba(212,175,55,.1);
+    white-space: nowrap;
+}
+
+.absensi-karyawan-badge strong{
+    color: #F2C230;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.absensi-karyawan-badge span{
+    color: #E2E8F0;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.absensi-toolbar{
+    margin: 0;
+}
+
+.absensi-toolbar .toolbar-field-search{
+    flex: 1.2 1 180px;
+}
+
+.absensi-toolbar-input,
+.absensi-date-btn{
+    height: 46px;
+    width: 100%;
+    min-width: 0;
+    background: #1C222B;
+    color: #F8FAFC;
+    border: 1px solid rgba(212,175,55,.45);
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 14px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+.absensi-date-btn{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    text-align: left;
+}
+
+.absensi-date-btn::after{
+    content: "📅";
+    font-size: 13px;
+    opacity: .85;
+}
+
+.absensi-toolbar-input:focus,
+.absensi-date-btn:focus{
+    outline: none;
+    border-color: #F2C230;
+    box-shadow: 0 0 0 3px rgba(242,194,48,.28);
+}
+
+.absensi-search-wrap{
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}
+
+.absensi-suggest{
+    position: absolute;
+    z-index: 40;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    max-height: 260px;
+    overflow: auto;
+    background: #151A22;
+    border: 1px solid rgba(212,175,55,.45);
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0,0,0,.45);
+}
+
+.absensi-suggest-item{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 1px solid rgba(42,51,64,.9);
+    background: transparent;
+    color: #F8FAFC;
+    cursor: pointer;
+    text-align: left;
+}
+
+.absensi-suggest-item:hover,
+.absensi-suggest-item:focus{
+    background: rgba(242,194,48,.12);
+}
+
+.absensi-suggest-item strong{
+    font-size: 13px;
+}
+
+.absensi-suggest-item span{
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+.absensi-search-msg{
+    margin: 6px 0 0;
+    color: #FCA5A5;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.absensi-btn-primary{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 16px;
+    border-radius: 10px;
+    background: var(--vax-gold-deep, #D4AF37);
+    color: #111;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 13px;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.absensi-btn-primary:hover{
+    filter: brightness(1.06);
+}
+
+.absensi-btn-ghost{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--vax-border, #2A3340);
+    background: var(--vax-surface, #11151B);
+    color: var(--vax-gold, #F2C230);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* KPI — desktop wajib 4 x 2 (8 card) */
+.absensi-kpi-grid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@keyframes absensi-kpi-in{
+    from{ opacity: 0; transform: translateY(6px); }
+    to{ opacity: 1; transform: translateY(0); }
+}
+
+.absensi-kpi,
+.absensi-kpi-link{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    min-height: 108px;
+    padding: 16px 16px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(42, 51, 64, .95);
+    border-left-width: 3px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 42%),
+        var(--vax-surface-2, #171C23);
+    color: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        inset 0 1px 0 rgba(255,255,255,.04);
+    box-sizing: border-box;
+    overflow: hidden;
+    animation: absensi-kpi-in .35s ease both;
+    transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.absensi-kpi:nth-child(1){ animation-delay: .02s; }
+.absensi-kpi:nth-child(2){ animation-delay: .04s; }
+.absensi-kpi:nth-child(3){ animation-delay: .06s; }
+.absensi-kpi:nth-child(4){ animation-delay: .08s; }
+.absensi-kpi:nth-child(5){ animation-delay: .10s; }
+.absensi-kpi:nth-child(6){ animation-delay: .12s; }
+.absensi-kpi-link:nth-child(7){ animation-delay: .14s; }
+.absensi-kpi-link:nth-child(8){ animation-delay: .16s; }
+
+.absensi-kpi strong.is-counting,
+.absensi-kpi-link strong.is-counting,
+.absensi-karyawan-badge strong.is-counting{
+    animation: absensi-value-pop .35s ease;
+}
+
+@keyframes absensi-value-pop{
+    0%{ opacity: .35; transform: translateY(4px); }
+    100%{ opacity: 1; transform: translateY(0); }
+}
+
+.absensi-kpi.is-active,
+.absensi-kpi-link.is-active{
+    border-color: rgba(242,194,48,.55);
+    box-shadow:
+        0 12px 26px rgba(0,0,0,.36),
+        0 0 0 1px rgba(242,194,48,.28),
+        0 0 18px rgba(242,194,48,.12);
+}
+
+.kpi-masuk.is-active{ box-shadow: 0 12px 26px rgba(0,0,0,.36), 0 0 0 1px rgba(74,222,128,.35), 0 0 16px rgba(74,222,128,.16); }
+.kpi-terlambat.is-active{ box-shadow: 0 12px 26px rgba(0,0,0,.36), 0 0 0 1px rgba(251,146,60,.35), 0 0 16px rgba(251,146,60,.16); }
+.kpi-belum.is-active{ box-shadow: 0 12px 26px rgba(0,0,0,.36), 0 0 0 1px rgba(248,113,113,.35), 0 0 16px rgba(248,113,113,.16); }
+.kpi-libur.is-active{ box-shadow: 0 12px 26px rgba(0,0,0,.36), 0 0 0 1px rgba(96,165,250,.35), 0 0 16px rgba(96,165,250,.16); }
+.kpi-izin.is-active{ box-shadow: 0 12px 26px rgba(0,0,0,.36), 0 0 0 1px rgba(34,211,238,.35), 0 0 16px rgba(34,211,238,.16); }
+.kpi-sakit.is-active{ box-shadow: 0 12px 26px rgba(0,0,0,.36), 0 0 0 1px rgba(192,132,252,.35), 0 0 16px rgba(192,132,252,.16); }
+.kpi-denda.is-active{ box-shadow: 0 12px 26px rgba(0,0,0,.36), 0 0 0 1px rgba(242,194,48,.4), 0 0 16px rgba(242,194,48,.16); }
+
+.absensi-kpi:hover,
+.absensi-kpi-link:hover{
+    transform: translateY(-3px);
+    filter: brightness(1.03);
+}
+
+/* Judul card — lebih besar & tegas; nilai tetap dominan */
+.absensi-kpi span,
+.absensi-kpi-link span{
+    display: block;
+    width: 100%;
+    color: #E8EDF5;
+    font-size: clamp(13px, 1.05vw, 15px);
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+.absensi-kpi strong,
+.absensi-kpi-link strong{
+    display: block;
+    width: 100%;
+    color: var(--vax-gold, #F2C230);
+    font-size: clamp(24px, 2.1vw, 30px);
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Glow per aksen — soft outer + subtle inner, premium dark */
+.kpi-masuk{
+    border-color: rgba(34,197,94,.35);
+    border-left-color: #22C55E;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        0 0 0 1px rgba(34,197,94,.16),
+        0 0 22px rgba(34,197,94,.18),
+        inset 0 0 18px rgba(34,197,94,.06);
+}
+.kpi-masuk:hover{
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.42),
+        0 0 0 1px rgba(34,197,94,.28),
+        0 0 28px rgba(34,197,94,.28),
+        inset 0 0 22px rgba(34,197,94,.08);
+}
+.kpi-masuk span{ color: #B7F0CB; }
+.kpi-masuk strong{ color: #4ADE80; text-shadow: 0 0 18px rgba(74,222,128,.25); }
+
+.kpi-terlambat{
+    border-color: rgba(249,115,22,.35);
+    border-left-color: #F97316;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        0 0 0 1px rgba(249,115,22,.16),
+        0 0 22px rgba(249,115,22,.18),
+        inset 0 0 18px rgba(249,115,22,.06);
+}
+.kpi-terlambat:hover{
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.42),
+        0 0 0 1px rgba(249,115,22,.28),
+        0 0 28px rgba(249,115,22,.28),
+        inset 0 0 22px rgba(249,115,22,.08);
+}
+.kpi-terlambat span{ color: #FDC9A0; }
+.kpi-terlambat strong{ color: #FB923C; text-shadow: 0 0 18px rgba(251,146,60,.25); }
+
+.kpi-belum{
+    border-color: rgba(239,68,68,.35);
+    border-left-color: #EF4444;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        0 0 0 1px rgba(239,68,68,.16),
+        0 0 22px rgba(239,68,68,.18),
+        inset 0 0 18px rgba(239,68,68,.06);
+}
+.kpi-belum:hover{
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.42),
+        0 0 0 1px rgba(239,68,68,.28),
+        0 0 28px rgba(239,68,68,.28),
+        inset 0 0 22px rgba(239,68,68,.08);
+}
+.kpi-belum span{ color: #FECACA; }
+.kpi-belum strong{ color: #F87171; text-shadow: 0 0 18px rgba(248,113,113,.25); }
+
+.kpi-libur{
+    border-color: rgba(59,130,246,.35);
+    border-left-color: #3B82F6;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        0 0 0 1px rgba(59,130,246,.16),
+        0 0 22px rgba(59,130,246,.18),
+        inset 0 0 18px rgba(59,130,246,.06);
+}
+.kpi-libur:hover{
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.42),
+        0 0 0 1px rgba(59,130,246,.28),
+        0 0 28px rgba(59,130,246,.28),
+        inset 0 0 22px rgba(59,130,246,.08);
+}
+.kpi-libur span{ color: #BFDBFE; }
+.kpi-libur strong{ color: #60A5FA; text-shadow: 0 0 18px rgba(96,165,250,.25); }
+
+.kpi-izin{
+    border-color: rgba(34,211,238,.35);
+    border-left-color: #22D3EE;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        0 0 0 1px rgba(34,211,238,.16),
+        0 0 22px rgba(34,211,238,.18),
+        inset 0 0 18px rgba(34,211,238,.06);
+}
+.kpi-izin:hover{
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.42),
+        0 0 0 1px rgba(34,211,238,.28),
+        0 0 28px rgba(34,211,238,.28),
+        inset 0 0 22px rgba(34,211,238,.08);
+}
+.kpi-izin span{ color: #A5F3FC; }
+.kpi-izin strong{ color: #67E8F9; text-shadow: 0 0 18px rgba(103,232,249,.25); }
+
+.kpi-sakit{
+    border-color: rgba(168,85,247,.35);
+    border-left-color: #A855F7;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        0 0 0 1px rgba(168,85,247,.16),
+        0 0 22px rgba(168,85,247,.18),
+        inset 0 0 18px rgba(168,85,247,.06);
+}
+.kpi-sakit:hover{
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.42),
+        0 0 0 1px rgba(168,85,247,.28),
+        0 0 28px rgba(168,85,247,.28),
+        inset 0 0 22px rgba(168,85,247,.08);
+}
+.kpi-sakit span{ color: #E9D5FF; }
+.kpi-sakit strong{ color: #C084FC; text-shadow: 0 0 18px rgba(192,132,252,.25); }
+
+.kpi-denda{
+    border-color: rgba(212,175,55,.4);
+    border-left-color: #D4AF37;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        0 0 0 1px rgba(212,175,55,.18),
+        0 0 22px rgba(212,175,55,.2),
+        inset 0 0 18px rgba(212,175,55,.07);
+}
+.kpi-denda:hover{
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.42),
+        0 0 0 1px rgba(242,194,48,.32),
+        0 0 28px rgba(242,194,48,.28),
+        inset 0 0 22px rgba(212,175,55,.1);
+}
+.kpi-denda span{ color: #F5E6B8; }
+.kpi-denda strong{ color: #F2C230; text-shadow: 0 0 18px rgba(242,194,48,.28); }
+
+.absensi-main-grid{
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
+    gap: 14px;
+    align-items: start;
+    width: 100%;
+    min-width: 0;
+}
+
+.absensi-panel{
+    min-width: 0;
+    background: linear-gradient(180deg, #1E2430 0%, #171C23 100%);
+    border: 1px solid rgba(212,175,55,.22);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,.35));
+    overflow: hidden;
+}
+
+.absensi-panel-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--vax-border, #2A3340);
+}
+
+.absensi-panel-head h2{
+    margin: 0;
+    color: var(--vax-white, #F8FAFC);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.absensi-activity{
+    max-height: 460px;
+    overflow: auto;
+}
+
+.absensi-activity-row{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(42, 51, 64, .85);
+}
+
+.absensi-activity-title{
+    color: var(--vax-white, #F8FAFC);
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.absensi-activity-title span{
+    color: var(--vax-text-dim, #94A3B8);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.absensi-activity-aksi{
+    margin-top: 4px;
+    color: var(--vax-gold-deep, #D4AF37);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.absensi-activity-ket{
+    margin-top: 4px;
+    color: var(--vax-text-muted, #CBD5E1);
+    font-size: 12px;
+}
+
+.absensi-activity-time{
+    color: var(--vax-text-dim, #94A3B8);
+    font-size: 11px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.absensi-muted{
+    margin: 0;
+    padding: 18px 14px;
+    color: var(--vax-text-dim, #94A3B8);
+    font-size: 13px;
+}
+
+.absensi-error{
+    color: #F87171;
+}
+
+.absensi-table-wrap{
+    max-height: 520px;
+    overflow: auto;
+}
+
+.absensi-table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.absensi-table th,
+.absensi-table td{
+    padding: 11px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(42, 51, 64, .85);
+    font-size: 13px;
+}
+
+.absensi-table th{
+    position: sticky;
+    top: 0;
+    background: #141920;
+    color: var(--vax-gold, #F2C230);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    z-index: 1;
+}
+
+.absensi-table td{
+    color: var(--vax-white, #F8FAFC);
+}
+
+.absensi-status{
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.st-masuk{
+    color: #86EFAC;
+    background: rgba(34, 197, 94, .14);
+    border: 1px solid rgba(34, 197, 94, .35);
+}
+.st-terlambat{
+    color: #FDBA74;
+    background: rgba(249, 115, 22, .14);
+    border: 1px solid rgba(249, 115, 22, .35);
+}
+.st-libur{
+    color: #93C5FD;
+    background: rgba(59, 130, 246, .14);
+    border: 1px solid rgba(59, 130, 246, .35);
+}
+.st-izin{
+    color: #FDE68A;
+    background: rgba(234, 179, 8, .14);
+    border: 1px solid rgba(234, 179, 8, .35);
+}
+.st-sakit{
+    color: #D8B4FE;
+    background: rgba(168, 85, 247, .14);
+    border: 1px solid rgba(168, 85, 247, .35);
+}
+.st-belum{
+    color: #FFE4E6;
+    background: rgba(127, 29, 29, .58);
+    border: 1px solid #F87171;
+    box-shadow:
+        0 0 0 1px rgba(220, 38, 38, .35),
+        0 0 14px rgba(239, 68, 68, .4),
+        inset 0 0 12px rgba(153, 27, 27, .45);
+    text-shadow: 0 0 10px rgba(254, 202, 202, .35);
+}
+
+/* Laporan detail — shell ERP (polish visual) */
+.absensi-laporan-layout{
+    display: grid;
+    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    width: 100%;
+    min-width: 0;
+}
+
+.absensi-filter-card,
+.absensi-result-card{
+    min-width: 0;
+    background: var(--vax-surface-2, #171C23);
+    border: 1px solid var(--vax-border, #2A3340);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,.35));
+}
+
+.absensi-filter-card-head,
+.absensi-result-card-head{
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(42, 51, 64, .9);
+}
+
+.absensi-result-card-head{
+    padding-bottom: 14px;
+    border-bottom-color: rgba(212, 175, 55, .22);
+}
+
+.absensi-filter-card-head h3{
+    margin: 0;
+    color: #F8FAFC;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.absensi-result-card-head h3{
+    margin: 0;
+    color: #F8FAFC;
+    font-size: clamp(20px, 1.7vw, 24px);
+    font-weight: 800;
+    letter-spacing: 0.015em;
+    line-height: 1.2;
+    text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+.absensi-filter-card-head p{
+    margin: 4px 0 0;
+    color: #94A3B8;
+    font-size: 12px;
+}
+
+.absensi-result-card-head p{
+    margin: 6px 0 0;
+    color: #B8C2D1;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.absensi-filter-card label{
+    display: block;
+    margin: 14px 0 7px;
+    color: #F2C230;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.absensi-filter-card > label:first-of-type{
+    margin-top: 0;
+}
+
+.absensi-filter-card .erp-cselect-trigger{
+    min-height: 44px;
+}
+
+.absensi-filter-actions{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.absensi-filter-actions button{
+    width: 100%;
+    height: 44px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: filter .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+
+.absensi-filter-actions button:hover{
+    transform: translateY(-1px);
+}
+
+#btnCari{
+    background: linear-gradient(180deg, #F2C230, #D4AF37);
+    color: #111;
+    box-shadow: 0 6px 16px rgba(212,175,55,.22);
+}
+#btnCari:hover{
+    filter: brightness(1.05);
+}
+
+#exportExcel{
+    background: #123524;
+    color: #86EFAC;
+    border-color: rgba(34,197,94,.4);
+}
+#exportExcel:hover{
+    box-shadow: 0 0 0 1px rgba(34,197,94,.25), 0 8px 18px rgba(0,0,0,.28);
+}
+
+#exportPDF{
+    background: linear-gradient(180deg, #3F1515, #2A0F0F);
+    color: #FECACA;
+    border-color: rgba(239,68,68,.45);
+    box-shadow: 0 6px 16px rgba(127,29,29,.22);
+}
+#exportPDF:hover{
+    box-shadow: 0 0 0 1px rgba(239,68,68,.3), 0 8px 18px rgba(0,0,0,.28);
+    filter: brightness(1.06);
+}
+
+.absensi-table-wrap{
+    border: 1px solid rgba(42, 51, 64, .95);
+    border-radius: 12px;
+    overflow: auto;
+    max-height: 520px;
+    background: #10141A;
+}
+
+.absensi-laporan-table th{
+    background: #161B23;
+    color: #F2C230;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(212,175,55,.28);
+}
+
+.absensi-laporan-table td{
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.absensi-laporan-table tbody tr:hover td{
+    background: rgba(242,194,48,.04);
+}
+
+.absensi-laporan-table .is-num,
+.absensi-laporan-table td.is-num{
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: #F2C230;
+    white-space: nowrap;
+}
+
+.absensi-dash,
+.absensi-laporan-table .is-muted-cell .absensi-dash{
+    color: #64748B;
+    font-weight: 600;
+}
+
+.absensi-ringkasan-host,
+.absensi-ranking-host,
+.absensi-rekap-host{
+    margin-top: 14px;
+}
+
+.absensi-ranking-block{
+    border: 1px solid rgba(212,175,55,.28);
+    border-radius: 12px;
+    background:
+        linear-gradient(165deg, rgba(242,194,48,.06), transparent 38%),
+        linear-gradient(180deg, #171C23 0%, #12171F 100%);
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.34),
+        0 0 0 1px rgba(212,175,55,.12),
+        0 0 22px rgba(212,175,55,.12),
+        inset 0 1px 0 rgba(255,255,255,.04);
+    overflow: hidden;
+    transition: box-shadow .2s ease, border-color .2s ease, filter .2s ease;
+}
+
+.absensi-ranking-block:hover{
+    border-color: rgba(242,194,48,.4);
+    filter: brightness(1.02);
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.4),
+        0 0 0 1px rgba(242,194,48,.2),
+        0 0 28px rgba(242,194,48,.2),
+        inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.absensi-ranking-head{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(212,175,55,.18);
+    background: linear-gradient(90deg, rgba(242,194,48,.08), transparent 70%);
+}
+
+.absensi-ranking-head h3{
+    margin: 0;
+    color: #F8FAFC;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.absensi-ranking-head-accent{
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #F2C230;
+    box-shadow: 0 0 10px rgba(242,194,48,.65);
+    flex: 0 0 auto;
+}
+
+.absensi-summary-block{
+    border: 1px solid rgba(212,175,55,.28);
+    border-radius: 12px;
+    background: #12171F;
+    box-shadow: 0 10px 24px rgba(0,0,0,.32);
+    overflow: hidden;
+}
+
+.absensi-summary-head{
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(42, 51, 64, .95);
+}
+
+.absensi-summary-head h3{
+    margin: 0;
+    color: #F8FAFC;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.absensi-summary-grid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    padding: 14px;
+}
+
+.absensi-summary-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    min-height: 108px;
+    padding: 16px 16px 18px;
+    border-radius: 12px;
+    border: 1px solid #2A3340;
+    border-left-width: 3px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 42%),
+        #171C23;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.38),
+        inset 0 1px 0 rgba(255,255,255,.04);
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.absensi-summary-item:hover{
+    transform: translateY(-2px);
+    filter: brightness(1.03);
+}
+
+.absensi-summary-item span{
+    display: block;
+    color: #E8EDF5;
+    font-size: clamp(13px, 1.05vw, 15px);
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+    text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+.absensi-summary-item strong{
+    display: block;
+    color: #F8FAFC;
+    font-size: clamp(24px, 2.1vw, 30px);
+    font-weight: 800;
+    line-height: 1.1;
+    word-break: break-word;
+    font-variant-numeric: tabular-nums;
+}
+
+.absensi-summary-item.is-total{
+    border-color: rgba(212,175,55,.4);
+    border-left-color: #D4AF37;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,.34),
+        0 0 0 1px rgba(212,175,55,.16),
+        0 0 20px rgba(212,175,55,.18),
+        inset 0 0 16px rgba(212,175,55,.06);
+}
+.absensi-summary-item.is-total span{ color: #F5E6B8; }
+.absensi-summary-item.is-total strong{ color: #F2C230; text-shadow: 0 0 16px rgba(242,194,48,.25); }
+.absensi-summary-item.is-total:hover{
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.4),
+        0 0 0 1px rgba(242,194,48,.28),
+        0 0 26px rgba(242,194,48,.26),
+        inset 0 0 20px rgba(212,175,55,.08);
+}
+
+.absensi-summary-item.is-masuk{
+    border-color: rgba(34,197,94,.35);
+    border-left-color: #22C55E;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,.34),
+        0 0 0 1px rgba(34,197,94,.14),
+        0 0 20px rgba(34,197,94,.16),
+        inset 0 0 16px rgba(34,197,94,.05);
+}
+.absensi-summary-item.is-masuk span{ color: #B7F0CB; }
+.absensi-summary-item.is-masuk strong{ color: #4ADE80; text-shadow: 0 0 16px rgba(74,222,128,.22); }
+.absensi-summary-item.is-masuk:hover{
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.4),
+        0 0 0 1px rgba(34,197,94,.28),
+        0 0 26px rgba(34,197,94,.26),
+        inset 0 0 20px rgba(34,197,94,.08);
+}
+
+.absensi-summary-item.is-terlambat{
+    border-color: rgba(249,115,22,.35);
+    border-left-color: #F97316;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,.34),
+        0 0 0 1px rgba(249,115,22,.14),
+        0 0 20px rgba(249,115,22,.16),
+        inset 0 0 16px rgba(249,115,22,.05);
+}
+.absensi-summary-item.is-terlambat span{ color: #FDC9A0; }
+.absensi-summary-item.is-terlambat strong{ color: #FB923C; text-shadow: 0 0 16px rgba(251,146,60,.22); }
+.absensi-summary-item.is-terlambat:hover{
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.4),
+        0 0 0 1px rgba(249,115,22,.28),
+        0 0 26px rgba(249,115,22,.26),
+        inset 0 0 20px rgba(249,115,22,.08);
+}
+
+.absensi-summary-item.is-izin{
+    border-color: rgba(34,211,238,.35);
+    border-left-color: #22D3EE;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,.34),
+        0 0 0 1px rgba(34,211,238,.14),
+        0 0 20px rgba(34,211,238,.16),
+        inset 0 0 16px rgba(34,211,238,.05);
+}
+.absensi-summary-item.is-izin span{ color: #A5F3FC; }
+.absensi-summary-item.is-izin strong{ color: #67E8F9; text-shadow: 0 0 16px rgba(103,232,249,.22); }
+.absensi-summary-item.is-izin:hover{
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.4),
+        0 0 0 1px rgba(34,211,238,.28),
+        0 0 26px rgba(34,211,238,.26),
+        inset 0 0 20px rgba(34,211,238,.08);
+}
+
+.absensi-summary-item.is-sakit{
+    border-color: rgba(168,85,247,.35);
+    border-left-color: #A855F7;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,.34),
+        0 0 0 1px rgba(168,85,247,.14),
+        0 0 20px rgba(168,85,247,.16),
+        inset 0 0 16px rgba(168,85,247,.05);
+}
+.absensi-summary-item.is-sakit span{ color: #E9D5FF; }
+.absensi-summary-item.is-sakit strong{ color: #C084FC; text-shadow: 0 0 16px rgba(192,132,252,.22); }
+.absensi-summary-item.is-sakit:hover{
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.4),
+        0 0 0 1px rgba(168,85,247,.28),
+        0 0 26px rgba(168,85,247,.26),
+        inset 0 0 20px rgba(168,85,247,.08);
+}
+
+.absensi-summary-item.is-libur{
+    border-color: rgba(59,130,246,.35);
+    border-left-color: #3B82F6;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,.34),
+        0 0 0 1px rgba(59,130,246,.14),
+        0 0 20px rgba(59,130,246,.16),
+        inset 0 0 16px rgba(59,130,246,.05);
+}
+.absensi-summary-item.is-libur span{ color: #BFDBFE; }
+.absensi-summary-item.is-libur strong{ color: #60A5FA; text-shadow: 0 0 16px rgba(96,165,250,.22); }
+.absensi-summary-item.is-libur:hover{
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.4),
+        0 0 0 1px rgba(59,130,246,.28),
+        0 0 26px rgba(59,130,246,.26),
+        inset 0 0 20px rgba(59,130,246,.08);
+}
+
+.absensi-summary-item.is-denda{
+    border-color: rgba(212,175,55,.4);
+    border-left-color: #D4AF37;
+    grid-column: span 2;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,.34),
+        0 0 0 1px rgba(212,175,55,.16),
+        0 0 20px rgba(212,175,55,.2),
+        inset 0 0 16px rgba(212,175,55,.06);
+}
+.absensi-summary-item.is-denda span{ color: #F5E6B8; }
+.absensi-summary-item.is-denda strong{ color: #F2C230; text-shadow: 0 0 16px rgba(242,194,48,.26); }
+.absensi-summary-item.is-denda:hover{
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.4),
+        0 0 0 1px rgba(242,194,48,.3),
+        0 0 26px rgba(242,194,48,.28),
+        inset 0 0 20px rgba(212,175,55,.09);
+}
+
+.absensi-ranking-list{
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+}
+
+.absensi-ranking-item{
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(42, 51, 64, .9);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 50%),
+        #171C23;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+.absensi-ranking-item:last-child{
+    margin-bottom: 0;
+}
+
+.absensi-ranking-item:hover{
+    transform: translateY(-1px);
+    border-color: rgba(212,175,55,.35);
+    filter: brightness(1.04);
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.28),
+        0 0 14px rgba(212,175,55,.12);
+}
+
+.absensi-ranking-item.is-top-1{
+    border-color: rgba(242,194,48,.42);
+    box-shadow:
+        0 0 0 1px rgba(242,194,48,.12),
+        0 0 16px rgba(242,194,48,.14),
+        inset 0 0 14px rgba(242,194,48,.05);
+}
+
+.absensi-ranking-item.is-top-2 .absensi-rank-no,
+.absensi-ranking-item.is-top-3 .absensi-rank-no{
+    background: rgba(148,163,184,.12);
+    border-color: rgba(148,163,184,.35);
+    color: #E2E8F0;
+}
+
+.absensi-rank-no{
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: rgba(242,194,48,.16);
+    border: 1px solid rgba(212,175,55,.5);
+    color: #F2C230;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 0 10px rgba(242,194,48,.2);
+}
+
+.absensi-ranking-item.is-top-1 .absensi-rank-no{
+    background: rgba(242,194,48,.28);
+    border-color: #F2C230;
+    box-shadow: 0 0 14px rgba(242,194,48,.4);
+}
+
+.absensi-rank-name{
+    color: #F8FAFC;
+    font-size: 14px;
+    font-weight: 700;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.absensi-rank-denda{
+    color: #F2C230;
+    font-size: 14px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-shadow: 0 0 12px rgba(242,194,48,.28);
+}
+
+.absensi-ranking-empty{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 10px 12px 14px;
+    padding: 16px 16px;
+    border-radius: 10px;
+    border: 1px dashed rgba(212,175,55,.28);
+    background:
+        linear-gradient(180deg, rgba(242,194,48,.05), transparent 60%),
+        rgba(23, 28, 35, .9);
+    color: #CBD5E1;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.absensi-ranking-empty-icon{
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #F2C230;
+    font-size: 14px;
+    font-weight: 800;
+    background: rgba(242,194,48,.12);
+    border: 1px solid rgba(212,175,55,.4);
+    box-shadow: 0 0 12px rgba(242,194,48,.18);
+}
+
+.absensi-ranking-empty span{
+    color: #E2E8F0;
+    font-weight: 600;
+}
+
+@media (max-width: 1100px){
+    .absensi-summary-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .absensi-summary-item.is-denda{
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 980px){
+    .absensi-laporan-layout{
+        grid-template-columns: 1fr;
+    }
+    .absensi-filter-actions{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px){
+    .absensi-filter-actions{
+        grid-template-columns: 1fr;
+    }
+    .absensi-summary-grid{
+        grid-template-columns: 1fr;
+    }
+    .absensi-summary-item.is-denda{
+        grid-column: auto;
+    }
+}
+
+/* legacy select fallback (hidden by custom select) */
+.absensi-filter-card select{
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(212,175,55,.45);
+    background: #1C222B;
+    color: #F8FAFC;
+    font-size: 14px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+.absensi-laporan-actions{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 4px;
+}
+
+/* —— Custom select (dark/gold) —— */
+.erp-cselect{
+    position: relative;
+    width: 100%;
+}
+
+.erp-cselect-native{
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+}
+
+.erp-cselect-trigger{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(212,175,55,.45);
+    background: #1C222B;
+    color: #F8FAFC;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.erp-cselect-trigger i{
+    color: #F2C230;
+    font-style: normal;
+}
+
+.erp-cselect.is-open .erp-cselect-trigger,
+.erp-cselect-trigger:focus{
+    outline: none;
+    border-color: #F2C230;
+    box-shadow: 0 0 0 3px rgba(242,194,48,.28);
+}
+
+.erp-cselect-menu{
+    position: absolute;
+    z-index: 50;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    max-height: 260px;
+    overflow: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(212,175,55,.5);
+    background: #12161D;
+    box-shadow: 0 16px 32px rgba(0,0,0,.5);
+}
+
+.absensi-toolbar .erp-cselect-menu,
+.absensi-toolbar .erp-cselect-list,
+.abl-toolbar .erp-cselect-menu,
+.abl-toolbar .erp-cselect-list{
+    overflow-y:auto;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+}
+.absensi-toolbar .erp-cselect-menu::-webkit-scrollbar,
+.absensi-toolbar .erp-cselect-list::-webkit-scrollbar,
+.abl-toolbar .erp-cselect-menu::-webkit-scrollbar,
+.abl-toolbar .erp-cselect-list::-webkit-scrollbar{
+    width:0;
+    height:0;
+    display:none;
+}
+
+.erp-cselect-option{
+    display: block;
+    width: 100%;
+    padding: 11px 14px;
+    border: 0;
+    border-bottom: 1px solid rgba(42,51,64,.85);
+    background: transparent;
+    color: #F8FAFC;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+
+.erp-cselect-option:hover,
+.erp-cselect-option.is-active{
+    background: rgba(242,194,48,.12);
+    color: #FFE08A;
+}
+
+.erp-cselect-option.is-selected{
+    background: linear-gradient(90deg, rgba(242,194,48,.22), rgba(212,175,55,.08));
+    color: #F2C230;
+    box-shadow: inset 3px 0 0 #D4AF37;
+}
+
+/* —— Empty state —— */
+.absensi-empty-state{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 220px;
+    padding: 28px 16px;
+    text-align: center;
+    border: 1px dashed rgba(212,175,55,.35);
+    border-radius: 12px;
+    background: rgba(17,21,27,.65);
+}
+
+.absensi-empty-state[hidden]{
+    display: none !important;
+}
+
+.absensi-empty-icon{
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    border: 1px solid rgba(212,175,55,.4);
+    background: rgba(242,194,48,.08);
+    color: #F2C230;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.absensi-empty-state strong{
+    color: #F8FAFC;
+    font-size: 15px;
+}
+
+.absensi-empty-state p{
+    margin: 0;
+    color: #94A3B8;
+    font-size: 13px;
+}
+
+#tabelLaporan .nama-karyawan-link{
+    background: none;
+    border: none;
+    color: #F2C230;
+    padding: 0;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* —— ERP Toast / Modal —— */
+.erp-toast-root{
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.erp-toast-root[hidden]{
+    display: none !important;
+}
+
+.erp-toast-backdrop{
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.62);
+}
+
+.erp-toast-panel{
+    position: relative;
+    z-index: 1;
+    width: min(420px, 100%);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px 14px;
+    padding: 18px 16px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(212,175,55,.5);
+    border-left: 4px solid #D4AF37;
+    background: linear-gradient(180deg, #171C23 0%, #11151B 100%);
+    box-shadow: 0 20px 48px rgba(0,0,0,.55);
+    color: #F8FAFC;
+}
+
+.erp-toast-icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    background: rgba(242,194,48,.14);
+    color: #F2C230;
+    border: 1px solid rgba(242,194,48,.35);
+}
+
+.erp-toast-panel.is-warn .erp-toast-icon{
+    color: #FDBA74;
+    border-color: rgba(249,115,22,.4);
+    background: rgba(249,115,22,.14);
+}
+.erp-toast-panel.is-error .erp-toast-icon{
+    color: #FCA5A5;
+    border-color: rgba(239,68,68,.4);
+    background: rgba(239,68,68,.14);
+}
+.erp-toast-panel.is-success .erp-toast-icon{
+    color: #86EFAC;
+    border-color: rgba(34,197,94,.4);
+    background: rgba(34,197,94,.14);
+}
+
+.erp-toast-body h3{
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.erp-toast-body p{
+    margin: 0;
+    color: #CBD5E1;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.erp-toast-ok{
+    grid-column: 1 / -1;
+    height: 42px;
+    border: none;
+    border-radius: 10px;
+    background: #D4AF37;
+    color: #111;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.erp-toast-ok:hover{
+    filter: brightness(1.06);
+}
+
+body.erp-toast-open{
+    overflow: hidden;
+}
+
+@media (max-width: 1200px){
+    .absensi-kpi-grid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 980px){
+    .absensi-kpi-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .absensi-main-grid,
+    .absensi-laporan-layout{
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px){
+    .absensi-kpi-grid{
+        grid-template-columns: 1fr;
+    }
+    .absensi-btn-primary{
+        width: 100%;
+    }
+}
+
+
+/* FINAL 2026-08-16 — Hari Ini memakai audit yang sama dengan Bulan Ini */
+.absensi-daily-audit-bridge{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    width:100%;
+    min-width:0;
+}
+.absensi-daily-audit-bridge:empty{ display:none; }
+.absensi-toolbar .toolbar-right{
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+}
+#btnPrintAbsensiHari{
+    min-width:92px;
+    height:40px;
+}
+
+
+/* FINAL 2026-08-16 — LN/LK hidden by default, opened only on demand */
+.absensi-btn-calendar{
+    min-width:154px;
+    height:40px;
+    white-space:nowrap;
+}
+.absensi-btn-calendar.is-active{
+    border-color:rgba(212,175,55,.72);
+    background:rgba(212,175,55,.12);
+    color:#f4d35e;
+    box-shadow:0 0 0 1px rgba(212,175,55,.10) inset;
+}
+#jadwalTutupEmbed[hidden]{
+    display:none !important;
+}
+
+/* VAX-20260817-ABSENSI-SEARCH-CONTRAST */
+.absensi-toolbar .absensi-search-wrap::before{
+    content:"?";
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:2;
+    width:25px;
+    height:25px;
+    display:grid;
+    place-items:center;
+    border-radius:999px;
+    background:#F2C230;
+    color:#111111;
+    font-size:17px;
+    font-weight:900;
+    line-height:1;
+    box-shadow:
+        0 0 0 1px rgba(255,224,102,.55),
+        0 0 13px rgba(242,194,48,.28);
+    pointer-events:none;
+}
+
+.absensi-toolbar #cariNama.absensi-toolbar-input{
+    padding-left:48px !important;
+    border-color:rgba(242,194,48,.88) !important;
+    box-shadow:inset 0 0 0 1px rgba(242,194,48,.08);
+}
+
+.absensi-toolbar #cariNama.absensi-toolbar-input:focus{
+    border-color:#F2C230 !important;
+    box-shadow:
+        0 0 0 3px rgba(242,194,48,.22),
+        0 0 16px rgba(242,194,48,.12) !important;
+}
+
+/* =========================================================
+   VAX-20260817-SEARCH-TARGET-FUTURE-DETAIL
+   Search dibuat seperti tombol Print
+   ========================================================= */
+
+#cariNama,
+#ablFilterCari,
+#ablDetailCari,
+#ablMatrixCari{
+    border:2px solid #D6A915 !important;
+    background:
+        linear-gradient(180deg,#2b2410,#17140b) !important;
+    color:#FFF7D6 !important;
+    box-shadow:
+        0 0 0 1px rgba(242,194,48,.16),
+        0 5px 14px rgba(242,194,48,.10) !important;
+}
+
+#cariNama::placeholder,
+#ablFilterCari::placeholder,
+#ablDetailCari::placeholder,
+#ablMatrixCari::placeholder{
+    color:#E9D792 !important;
+    opacity:.95;
+}
+
+#cariNama:focus,
+#ablFilterCari:focus,
+#ablDetailCari:focus,
+#ablMatrixCari:focus{
+    border-color:#F2C230 !important;
+    box-shadow:
+        0 0 0 3px rgba(242,194,48,.22),
+        0 0 18px rgba(242,194,48,.16) !important;
+}
+
+/* ikon search gold seperti Print */
+.absensi-search-wrap::before,
+.toolbar-field-search::before{
+    background:#F2C230 !important;
+    color:#111827 !important;
+    border-color:#D6A915 !important;
+}
+
+/* target setelah Enter */
+.vax-search-target td{
+    background:#FFF3BF !important;
+    box-shadow:
+        inset 0 2px 0 #F2C230,
+        inset 0 -2px 0 #F2C230;
+}
+
+.vax-search-target td:first-child{
+    box-shadow:
+        inset 4px 0 0 #F2C230,
+        inset 0 2px 0 #F2C230,
+        inset 0 -2px 0 #F2C230;
+}
+
+
+/* =========================================================
+   VAX-20260817-EMPLOYEE-DETAIL-FROM-MATRIX
+   ========================================================= */
+
+.vax-employee-quick-summary{
+    margin:0;
+    padding:14px 16px;
+    background:
+        linear-gradient(180deg,#171f2b,#111822);
+    border-bottom:1px solid rgba(242,194,48,.35);
+}
+
+.vax-employee-quick-summary[hidden]{
+    display:none !important;
+}
+
+.vax-employee-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+    margin-bottom:12px;
+}
+
+.vax-employee-head > div:first-child span,
+.vax-employee-main-answer span{
+    display:block;
+    color:#F2C230;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.10em;
+}
+
+.vax-employee-head > div:first-child strong{
+    display:block;
+    margin-top:3px;
+    color:#fff;
+    font-size:21px;
+}
+
+.vax-employee-head small{
+    display:block;
+    margin-top:2px;
+    color:#CBD5E1;
+    font-weight:700;
+}
+
+.vax-employee-main-answer{
+    min-width:160px;
+    padding:10px 15px;
+    border:1px solid rgba(239,68,68,.45);
+    border-radius:13px;
+    background:rgba(239,68,68,.09);
+    text-align:right;
+}
+
+.vax-employee-main-answer strong{
+    display:block;
+    margin-top:3px;
+    color:#F87171;
+    font-size:23px;
+}
+
+.vax-employee-stat-grid{
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    gap:8px;
+}
+
+.vax-employee-stat-grid > div{
+    position:relative;
+    padding:10px 11px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:11px;
+    background:#0D131C;
+}
+
+.vax-employee-stat-grid span{
+    display:block;
+    color:#CBD5E1;
+    font-size:10px;
+    font-weight:800;
+}
+
+.vax-employee-stat-grid strong{
+    display:inline-block;
+    margin-top:4px;
+    color:#fff;
+    font-size:19px;
+}
+
+.vax-employee-stat-grid em{
+    margin-left:4px;
+    color:#94A3B8;
+    font-size:10px;
+    font-style:normal;
+}
+
+.vax-employee-stat-grid .is-h{
+    border-color:rgba(74,222,128,.38);
+}
+
+.vax-employee-stat-grid .is-h strong{
+    color:#4ADE80;
+}
+
+.vax-employee-stat-grid .is-t{
+    border-color:rgba(251,146,60,.38);
+}
+
+.vax-employee-stat-grid .is-t strong{
+    color:#FB923C;
+}
+
+.vax-employee-stat-grid .is-l{
+    border-color:rgba(239,68,68,.42);
+}
+
+.vax-employee-stat-grid .is-l strong{
+    color:#F87171;
+}
+
+.vax-employee-stat-grid .is-i{
+    border-color:rgba(34,211,238,.42);
+}
+
+.vax-employee-stat-grid .is-i strong{
+    color:#22D3EE;
+}
+
+.vax-employee-stat-grid .is-s{
+    border-color:rgba(168,85,247,.42);
+}
+
+.vax-employee-stat-grid .is-s strong{
+    color:#C084FC;
+}
+
+.vax-employee-stat-grid .is-a{
+    border-color:rgba(255,255,255,.28);
+}
+
+.vax-employee-stat-grid .is-a strong{
+    color:#fff;
+}
+
+/* status kosong tetap terlihat lembut */
+.abl-detail-table .abl-st.is-n{
+    background:#E8EEF5;
+    color:#64748B;
+}
+
+@media(max-width:900px){
+    .vax-employee-stat-grid{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+}
+
+@media(max-width:600px){
+    .vax-employee-head{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .vax-employee-main-answer{
+        text-align:left;
+    }
+
+    .vax-employee-stat-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+/* =========================================================
+   VAX-20260817-EMPLOYEE-SUMMARY-POLISH
+   ========================================================= */
+
+@keyframes vaxSummaryIn{
+    from{
+        opacity:0;
+        transform:translateY(8px) scale(.985);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+@keyframes vaxSummaryPulse{
+    0%,100%{
+        filter:brightness(1);
+    }
+    50%{
+        filter:brightness(1.06);
+    }
+}
+
+.vax-employee-quick-summary{
+    padding:20px !important;
+    border-radius:0 0 16px 16px;
+    background:
+        radial-gradient(circle at top right,rgba(242,194,48,.09),transparent 32%),
+        linear-gradient(180deg,#182230,#101722) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 12px 30px rgba(0,0,0,.22);
+    animation:vaxSummaryIn .32s ease both;
+}
+
+.vax-employee-head{
+    margin-bottom:16px !important;
+}
+
+.vax-employee-head > div:first-child strong{
+    font-size:28px !important;
+    line-height:1.05;
+    letter-spacing:-.02em;
+}
+
+.vax-employee-head small{
+    margin-top:5px !important;
+    font-size:13px !important;
+}
+
+.vax-employee-main-answer{
+    min-width:210px !important;
+    padding:14px 18px !important;
+    border:1px solid rgba(239,68,68,.68) !important;
+    background:
+        linear-gradient(180deg,rgba(239,68,68,.18),rgba(239,68,68,.08)) !important;
+    box-shadow:
+        0 0 0 1px rgba(239,68,68,.08),
+        0 0 20px rgba(239,68,68,.14),
+        inset 0 0 18px rgba(239,68,68,.05);
+    animation:vaxSummaryPulse 3.2s ease-in-out infinite;
+}
+
+.vax-employee-main-answer span{
+    font-size:11px !important;
+}
+
+.vax-employee-main-answer strong{
+    margin-top:5px !important;
+    font-size:34px !important;
+    color:#FF7474 !important;
+    text-shadow:0 0 14px rgba(248,113,113,.28);
+}
+
+.vax-employee-stat-grid{
+    gap:12px !important;
+}
+
+.vax-employee-stat-grid > div{
+    min-height:94px;
+    padding:14px 15px !important;
+    border-radius:14px !important;
+    background:
+        linear-gradient(180deg,#111A25,#0B121B) !important;
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.035);
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+.vax-employee-stat-grid > div:hover{
+    transform:translateY(-2px);
+}
+
+.vax-employee-stat-grid span{
+    font-size:12px !important;
+    font-weight:900 !important;
+    letter-spacing:.02em;
+}
+
+.vax-employee-stat-grid strong{
+    margin-top:8px !important;
+    font-size:30px !important;
+    line-height:1;
+}
+
+.vax-employee-stat-grid em{
+    font-size:11px !important;
+    font-weight:800;
+}
+
+/* HADIR */
+.vax-employee-stat-grid .is-h{
+    border-color:rgba(74,222,128,.58) !important;
+    box-shadow:
+        0 0 16px rgba(74,222,128,.10),
+        inset 0 0 18px rgba(74,222,128,.025) !important;
+}
+
+.vax-employee-stat-grid .is-h strong{
+    color:#4ADE80 !important;
+    text-shadow:0 0 12px rgba(74,222,128,.24);
+}
+
+/* TERLAMBAT */
+.vax-employee-stat-grid .is-t{
+    border-color:rgba(251,146,60,.60) !important;
+    box-shadow:
+        0 0 16px rgba(251,146,60,.10),
+        inset 0 0 18px rgba(251,146,60,.025) !important;
+}
+
+.vax-employee-stat-grid .is-t strong{
+    color:#FB923C !important;
+    text-shadow:0 0 12px rgba(251,146,60,.24);
+}
+
+/* LIBUR */
+.vax-employee-stat-grid .is-l{
+    border-color:rgba(239,68,68,.72) !important;
+    background:
+        linear-gradient(180deg,rgba(239,68,68,.12),#0B121B) !important;
+    box-shadow:
+        0 0 22px rgba(239,68,68,.16),
+        inset 0 0 20px rgba(239,68,68,.035) !important;
+}
+
+.vax-employee-stat-grid .is-l strong{
+    color:#F87171 !important;
+    text-shadow:0 0 14px rgba(248,113,113,.30);
+}
+
+/* IZIN */
+.vax-employee-stat-grid .is-i{
+    border-color:rgba(34,211,238,.65) !important;
+    box-shadow:
+        0 0 18px rgba(34,211,238,.12),
+        inset 0 0 18px rgba(34,211,238,.03) !important;
+}
+
+.vax-employee-stat-grid .is-i strong{
+    color:#22D3EE !important;
+    text-shadow:0 0 12px rgba(34,211,238,.28);
+}
+
+/* SAKIT */
+.vax-employee-stat-grid .is-s{
+    border-color:rgba(168,85,247,.68) !important;
+    box-shadow:
+        0 0 18px rgba(168,85,247,.13),
+        inset 0 0 18px rgba(168,85,247,.03) !important;
+}
+
+.vax-employee-stat-grid .is-s strong{
+    color:#C084FC !important;
+    text-shadow:0 0 12px rgba(192,132,252,.28);
+}
+
+/* ALFA */
+.vax-employee-stat-grid .is-a{
+    border-color:rgba(255,255,255,.34) !important;
+    box-shadow:
+        0 0 16px rgba(255,255,255,.06),
+        inset 0 0 18px rgba(255,255,255,.02) !important;
+}
+
+.vax-employee-stat-grid .is-a strong{
+    color:#FFFFFF !important;
+    text-shadow:0 0 10px rgba(255,255,255,.18);
+}
+
+/* Rincian: status belum/masa depan jelas, bukan karakter rusak */
+.abl-detail-table .abl-st.is-n{
+    min-width:112px;
+    padding:5px 9px;
+    background:#E8EEF5 !important;
+    color:#64748B !important;
+    border:1px solid #D5DEE8;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.01em;
+}
+
+@media(max-width:900px){
+    .vax-employee-stat-grid{
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    }
+}
+
+@media(max-width:600px){
+    .vax-employee-main-answer{
+        min-width:0 !important;
+    }
+
+    .vax-employee-stat-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    }
+}
+
+
+/* VAX-20260817-FINAL-LABEL-SCROLL */
+
+.abl-detail-table .abl-st{
+    white-space:nowrap;
+}
+
+.abl-detail-table .abl-st.is-n{
+    min-width:118px;
+}
+
+.abl-detail-table tr:has(.abl-st.is-n){
+    transition:background .18s ease;
+}
+
+
