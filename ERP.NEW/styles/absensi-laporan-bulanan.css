@@ -1234,3 +1234,8 @@ select.abl-period-native[hidden]{
 #ablDetailBox .abl-detail-table .abl-st.is-a{
     background:#0c1118;border:1px solid rgba(212,175,55,.22);
 }
+
+/* Owner Absensi: KPI cards are the search results; hide redundant detail panel only on embedded page. */
+@media screen {
+    #absensiRoot #ablDetailBox { display:none !important; }
+}

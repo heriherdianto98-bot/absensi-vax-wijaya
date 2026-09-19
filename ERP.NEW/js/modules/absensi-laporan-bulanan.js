@@ -594,6 +594,8 @@ const AbsensiLaporanBulanan = {
     },
 
     applyEmployeeFocus(){
+        // Embedded Owner dashboard must not revive an old employee focus from sessionStorage.
+        if(this._embed) return;
         const params = new URLSearchParams(window.location.search);
         let id = params.get("karyawan") || "";
         try{
@@ -612,7 +614,15 @@ const AbsensiLaporanBulanan = {
         this._bound = true;
 
         const reload = () => this.loadAndRender();
-        document.getElementById("ablFilterCabang")?.addEventListener("change", reload);
+        document.getElementById("ablFilterCabang")?.addEventListener("change", () => {
+            if(this._embed){
+                const search = document.getElementById("ablFilterCari");
+                if(search) search.value = "";
+                const dailySearch = document.getElementById("cariNama");
+                if(dailySearch) dailySearch.value = "";
+            }
+            reload();
+        });
         document.getElementById("ablFilterBulan")?.addEventListener("change", reload);
         document.getElementById("ablFilterTahun")?.addEventListener("change", reload);
         this.bindPeriodUi();
@@ -1504,7 +1514,7 @@ const AbsensiLaporanBulanan = {
         this.renderSummary(this._meta);
         this.renderDetail();
         if(this._matrixOpen) this.renderTable();
-        document.getElementById("ablDetailBox")?.scrollIntoView({
+        if(!this._embed) document.getElementById("ablDetailBox")?.scrollIntoView({
             behavior: "smooth",
             block: "start"
         });
