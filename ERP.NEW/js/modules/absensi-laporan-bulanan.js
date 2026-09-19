@@ -1530,7 +1530,7 @@ const AbsensiLaporanBulanan = {
         const cabangSel = document.getElementById("ablFilterCabang");
         const cabangLabel = cabangSel?.selectedOptions?.[0]?.textContent?.trim() || "Semua Cabang";
         const period = this.periodBounds();
-        const elapsedLabel = `ALFA otomatis mulai ${this.GO_LIVE_DATE} Ãƒâ€šÃ‚Â· tanggal kosong sebelumnya tidak dihitung`;
+        const elapsedLabel = `ALFA otomatis mulai ${this.GO_LIVE_DATE} \u00b7 tanggal kosong sebelumnya tidak dihitung`;
         const setMeta = (id, val) => {
             const el = document.getElementById(id);
             if(el) el.textContent = val;

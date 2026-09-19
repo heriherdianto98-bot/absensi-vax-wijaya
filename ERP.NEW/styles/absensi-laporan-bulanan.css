@@ -268,10 +268,12 @@ select.abl-period-native[hidden]{
     flex-wrap:wrap;
     gap:10px 16px;
     align-items:center;
-    color:#9ca3af;
-    font-size:12px;
-    font-weight:600;
+    color:#cbd5e1;
+    font-size:14px;
+    line-height:1.5;
+    font-weight:700;
 }
+.abl-meta > span{display:inline-block;max-width:100%;overflow-wrap:anywhere;}
 
 .abl-legend{
     display:inline-flex;
