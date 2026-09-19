@@ -121,3 +121,39 @@
 #izinSpvEmbed .owner-spv-audit-head{background:linear-gradient(105deg,transparent 15%,rgba(248,203,77,.13) 46%,rgba(255,224,130,.19) 51%,transparent 78%) 160% 0/260% 100%,linear-gradient(110deg,#24272b,#10151c);animation:vax-review-gold-flow 7s linear infinite}
 #izinSpvEmbed .owner-spv-audit-head:hover{background:linear-gradient(105deg,transparent 15%,rgba(248,203,77,.18) 46%,rgba(255,224,130,.22) 51%,transparent 78%) 160% 0/260% 100%,linear-gradient(110deg,#2a2b2b,#151b22)}
 @media(prefers-reduced-motion:reduce){#izinSpvEmbed .owner-spv-audit-head{animation:none}}
+
+/* Owner Review V4 — midnight blue/cyan-violet; all copy remains fully readable. UI ONLY. */
+@keyframes vax-review-v4-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes vax-review-v4-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+@keyframes vax-review-v4-drift{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+@keyframes vax-review-v4-glow{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 9px rgba(97,215,232,.38)}}
+@keyframes vax-review-v4-wash{from{background-position:160% 0}to{background-position:-100% 0}}
+#izinSpvEmbed.izin-spv-embed{border-color:rgba(90,154,177,.33)}
+#izinSpvEmbed .izin-spv-head{border-bottom-color:rgba(91,183,210,.22)}
+#izinSpvEmbed .izin-spv-kicker{color:#8ddbea;animation:vax-review-v4-drift 6s ease-in-out infinite}
+#izinSpvEmbed .izin-spv-head h2{transform-origin:left center;animation:vax-review-v4-breathe 5s ease-in-out infinite}
+#izinSpvEmbed .izin-spv-head p{animation:vax-review-v4-float 6.5s ease-in-out infinite}
+#izinSpvEmbed .izin-spv-summary-card>span{clip-path:none!important;overflow:visible;white-space:normal;width:auto;max-width:100%;animation:vax-review-v4-glow 5.4s ease-in-out infinite;color:#e9eef6}
+#izinSpvEmbed .izin-spv-summary-card:nth-child(2)>span{animation:vax-review-v4-float 4.8s ease-in-out infinite}
+#izinSpvEmbed .izin-spv-summary-card:nth-child(3)>span{animation:vax-review-v4-drift 6.2s ease-in-out infinite}
+#izinSpvEmbed .owner-spv-audit{border-color:rgba(104,172,206,.46);background:linear-gradient(155deg,#141b25,#090d15);box-shadow:inset 1px 1px 0 rgba(255,255,255,.1),0 5px 0 #06090d,0 17px 29px rgba(0,0,0,.48)}
+#izinSpvEmbed .owner-spv-audit::before{background:linear-gradient(110deg,transparent 15%,rgba(53,166,191,.045) 34%,rgba(89,204,228,.18) 49%,rgba(126,105,211,.07) 60%,transparent 83%);background-size:260% 100%;animation:vax-review-v4-wash 9s linear infinite}
+#izinSpvEmbed .owner-spv-audit-head,#izinSpvEmbed .owner-spv-audit-head:hover{background:linear-gradient(105deg,transparent 15%,rgba(63,175,212,.09) 44%,rgba(131,116,214,.17) 53%,transparent 78%) 160% 0/260% 100%,linear-gradient(110deg,#202a36,#10151f);animation:vax-review-v4-wash 9s linear infinite;border-bottom-color:rgba(103,184,212,.3)}
+#izinSpvEmbed .owner-spv-audit-head .izin-spv-kicker{color:#a7adf6;animation:vax-review-v4-glow 5s ease-in-out infinite}
+#izinSpvEmbed .owner-spv-audit-head h3{transform-origin:left center;animation:vax-review-v4-breathe 5.8s ease-in-out infinite}
+#izinSpvEmbed .owner-spv-audit-head p{animation:vax-review-v4-float 6.8s ease-in-out infinite}
+#izinSpvEmbed .owner-spv-audit .owner-spv-history-period-label{animation:vax-review-v4-glow 6.2s ease-in-out infinite}
+#izinSpvEmbed .owner-spv-audit-card .owner-spv-audit-title strong{display:inline-block;animation:vax-review-v4-breathe 6s ease-in-out infinite;transform-origin:left center}
+#izinSpvEmbed .owner-spv-audit-card .owner-spv-audit-title div>span{animation:vax-review-v4-float 5.8s ease-in-out infinite}
+#izinSpvEmbed .owner-spv-audit-card .owner-spv-audit-note p{animation:vax-review-v4-glow 7s ease-in-out infinite}
+#izinSpvEmbed .owner-spv-audit-empty,#izinSpvEmbed .izin-spv-state{animation:vax-review-v4-glow 7.2s ease-in-out infinite}
+#izinSpvEmbed .izin-spv-search{border-color:rgba(79,174,206,.45)}
+#izinSpvEmbed .izin-spv-search::before{background:conic-gradient(from var(--vax-review-orbit-angle),transparent 0 62%,rgba(85,182,218,.3) 70%,#8fe8f5 76%,rgba(125,109,213,.32) 82%,transparent 90%) border-box}
+#izinSpvEmbed .izin-spv-summary-card.is-waiting{border-color:rgba(235,185,74,.6)}
+#izinSpvEmbed .izin-spv-summary-card.is-forwarded{border-color:rgba(82,211,160,.48)}
+#izinSpvEmbed .izin-spv-summary-card.is-rejected{border-color:rgba(255,123,139,.47)}
+#absensiRoot .absensi-kpi-grid>.absensi-kpi span,#absensiRoot .absensi-kpi-grid>.absensi-kpi-link span{clip-path:none!important;overflow:visible;white-space:normal;animation:vax-review-v4-float 5.4s ease-in-out infinite}
+#absensiRoot .absensi-kpi-grid>:nth-child(2n) span{animation:vax-review-v4-glow 5.8s ease-in-out infinite}
+#absensiRoot .absensi-kpi-grid>:nth-child(3n) span{animation:vax-review-v4-drift 6.3s ease-in-out infinite}
+#absensiRoot .absensi-kpi-grid>:nth-child(4n) span{animation:vax-review-v4-breathe 6.7s ease-in-out infinite;transform-origin:left center}
+@media(prefers-reduced-motion:reduce){#izinSpvEmbed .izin-spv-kicker,#izinSpvEmbed .izin-spv-head h2,#izinSpvEmbed .izin-spv-head p,#izinSpvEmbed .izin-spv-summary-card>span,#izinSpvEmbed .owner-spv-audit::before,#izinSpvEmbed .owner-spv-audit-head,#izinSpvEmbed .owner-spv-audit-head .izin-spv-kicker,#izinSpvEmbed .owner-spv-audit-head h3,#izinSpvEmbed .owner-spv-audit-head p,#izinSpvEmbed .owner-spv-audit-card .owner-spv-audit-title strong,#izinSpvEmbed .owner-spv-audit-card .owner-spv-audit-title div>span,#izinSpvEmbed .owner-spv-audit-card .owner-spv-audit-note p,#izinSpvEmbed .owner-spv-audit-empty,#izinSpvEmbed .izin-spv-state,#absensiRoot .absensi-kpi-grid span{animation:none!important;transform:none!important}}
