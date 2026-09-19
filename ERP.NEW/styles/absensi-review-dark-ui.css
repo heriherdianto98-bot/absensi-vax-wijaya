@@ -93,3 +93,31 @@
 #izinSpvEmbed .izin-spv-filter-btn:active{transform:translateY(2px);box-shadow:inset 1px 2px 7px rgba(0,0,0,.55),0 1px 0 #080b10}
 @media(max-width:760px){#izinSpvEmbed .izin-spv-filter-btn{gap:2px;padding-inline:4px;font-size:13px}#izinSpvEmbed .izin-spv-filter-btn::before{flex-basis:19px;width:19px;height:19px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){#izinSpvEmbed .izin-spv-search::before{animation:none}#izinSpvEmbed .izin-spv-summary-card,#izinSpvEmbed .izin-spv-filter-btn{transition:none}}
+
+/* Owner review V3: judul kinetik, angka berubah, orbit tepi, riwayat 3D. UI ONLY. */
+@keyframes vax-review-label-type{0%,3%{clip-path:inset(0 100% 0 0)}25%,96%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}
+#izinSpvEmbed .izin-spv-summary-card>span{display:block;width:max-content;max-width:100%;white-space:nowrap;overflow:hidden;animation:vax-review-label-type 9s steps(17,end) infinite both;color:#e9eef6;font-weight:800}
+#izinSpvEmbed .izin-spv-summary-card:nth-child(2)>span{animation-delay:.2s}
+#izinSpvEmbed .izin-spv-summary-card:nth-child(3)>span{animation-delay:.4s}
+@keyframes vax-review-number-pop{0%{opacity:.55;transform:translateY(7px) scale(.84);filter:brightness(1.5)}58%{opacity:1;transform:translateY(-3px) scale(1.13);filter:brightness(1.2)}100%{opacity:1;transform:translateY(0) scale(1);filter:brightness(1)}}
+#izinSpvEmbed .izin-spv-summary-card strong.vax-review-value-changing{display:block;animation:vax-review-number-pop .48s cubic-bezier(.2,.8,.2,1) both}
+@property --vax-review-orbit-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes vax-review-border-spin{to{--vax-review-orbit-angle:360deg}}
+#izinSpvEmbed .izin-spv-search{position:relative;isolation:isolate;overflow:hidden;border:1px solid rgba(226,177,45,.45);background:#0e1218}
+#izinSpvEmbed .izin-spv-search::before{inset:0;border:2px solid transparent;border-radius:inherit;background:conic-gradient(from var(--vax-review-orbit-angle),transparent 0 62%,rgba(245,194,60,.35) 70%,#ffdd78 76%,rgba(245,194,60,.25) 82%,transparent 90%) border-box;-webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:vax-review-border-spin 4.8s linear infinite;transform:none;z-index:3;pointer-events:none}
+#izinSpvEmbed .izin-spv-search::after{inset:2px;background:linear-gradient(145deg,#181d24,#0c1015);z-index:0}
+#izinSpvEmbed .izin-spv-search>span,#izinSpvEmbed .izin-spv-search>input{z-index:2}
+#izinSpvEmbed .owner-spv-audit{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(155deg,#15191f 0%,#090d12 100%);border:1px solid rgba(218,174,51,.48);box-shadow:inset 1px 1px 0 rgba(255,255,255,.11),inset -2px -3px 9px rgba(0,0,0,.48),0 5px 0 #06090d,0 17px 29px rgba(0,0,0,.48);transition:transform .24s ease,box-shadow .24s ease}
+#izinSpvEmbed .owner-spv-audit::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(115deg,transparent 14%,rgba(242,194,48,.045) 34%,rgba(255,223,119,.22) 49%,rgba(242,194,48,.06) 58%,transparent 82%);background-size:260% 100%;animation:vax-review-gold-flow 7s linear infinite}
+@keyframes vax-review-gold-flow{from{background-position:160% 0}to{background-position:-100% 0}}
+#izinSpvEmbed .owner-spv-audit>*{position:relative;z-index:1}
+#izinSpvEmbed .owner-spv-audit-head{background:linear-gradient(110deg,rgba(35,36,36,.92),rgba(12,16,22,.8));border-bottom:1px solid rgba(232,187,60,.35)}
+#izinSpvEmbed .owner-spv-audit-head:hover{background:linear-gradient(110deg,rgba(40,39,32,.95),rgba(17,21,27,.85))}
+#izinSpvEmbed .owner-spv-history-toolbar{background:rgba(13,18,24,.86)}
+#izinSpvEmbed .owner-spv-audit-list,#izinSpvEmbed .owner-spv-audit-empty,#izinSpvEmbed .owner-spv-history-footer{background:rgba(10,15,21,.78)}
+#izinSpvEmbed .owner-spv-audit-card{background:linear-gradient(150deg,#20252c,#11161e);box-shadow:inset 1px 1px rgba(255,255,255,.06),0 4px 0 #080b10,0 12px 21px rgba(0,0,0,.45);transition:transform .2s ease,box-shadow .2s ease}
+@media(hover:hover) and (pointer:fine){#izinSpvEmbed .owner-spv-audit:hover{transform:translateY(-3px);box-shadow:inset 1px 1px rgba(255,255,255,.15),0 8px 0 #06090d,0 20px 33px rgba(0,0,0,.5)}#izinSpvEmbed .owner-spv-audit-card:hover{transform:translateY(-4px);box-shadow:inset 1px 1px rgba(255,255,255,.11),0 8px 0 #080b10,0 17px 26px rgba(0,0,0,.5)}}
+@media(prefers-reduced-motion:reduce){#izinSpvEmbed .izin-spv-summary-card>span,#izinSpvEmbed .izin-spv-summary-card strong.vax-review-value-changing,#izinSpvEmbed .izin-spv-search::before,#izinSpvEmbed .owner-spv-audit::before{animation:none;clip-path:none}#izinSpvEmbed .owner-spv-audit,#izinSpvEmbed .owner-spv-audit-card{transition:none}}
+#izinSpvEmbed .owner-spv-audit-head{background:linear-gradient(105deg,transparent 15%,rgba(248,203,77,.13) 46%,rgba(255,224,130,.19) 51%,transparent 78%) 160% 0/260% 100%,linear-gradient(110deg,#24272b,#10151c);animation:vax-review-gold-flow 7s linear infinite}
+#izinSpvEmbed .owner-spv-audit-head:hover{background:linear-gradient(105deg,transparent 15%,rgba(248,203,77,.18) 46%,rgba(255,224,130,.22) 51%,transparent 78%) 160% 0/260% 100%,linear-gradient(110deg,#2a2b2b,#151b22)}
+@media(prefers-reduced-motion:reduce){#izinSpvEmbed .owner-spv-audit-head{animation:none}}
