@@ -91,7 +91,8 @@
 
     let totalInvestor=0;
     let totalManagement=0;
-    let totalRent=0;
+    let totalRentPaid=0;
+    let totalRentDeferred=0;
     let investorBranchCount=0;
 
     const detail=rows.map(report=>{
@@ -99,10 +100,18 @@
       const hasInvestor=Boolean(inv?.nama);
       const hakInvestor=num(inv.totalHakBulanIni);
       const hakManajemen=num(inv.nilaiManajemen);
-      const rent=num(inv.sewaDibayar);
+      // Nilai sewaDibayar dapat tetap berisi kewajiban pada cabang rugi.
+      // Hanya field status final per cabang yang menentukan realisasi pembayaran.
+      const deferred=inv.statusPembayaranSewa==="DITANGGUHKAN_KARENA_RUGI"
+        ? num(inv.sewaDitangguhkan ?? inv.sewaKewajiban ?? inv.sewaDibayar)
+        : num(inv.sewaDitangguhkan);
+      const rentPaid=inv.sewaDibayarAktual!==undefined
+        ? num(inv.sewaDibayarAktual)
+        : inv.statusPembayaranSewa==="DITANGGUHKAN_KARENA_RUGI" ? 0 : num(inv.sewaDibayar);
       totalInvestor+=hakInvestor;
       totalManagement+=hakManajemen;
-      totalRent+=rent;
+      totalRentPaid+=rentPaid;
+      totalRentDeferred+=deferred;
       if(hasInvestor) investorBranchCount+=1;
 
       return `
@@ -111,20 +120,23 @@
         <div class="lb-line"><span>Hak Investor</span><strong>${money(hakInvestor)}</strong></div>
         <div class="lb-line"><span>Porsi Manajemen</span><strong>${Number(inv.porsiManajemen||0)}%</strong></div>
         <div class="lb-line"><span>Hak Manajemen</span><strong>${money(hakManajemen)}</strong></div>
-        ${rent?`<div class="lb-line"><span>Sewa Dibayar</span><strong>${money(rent)}</strong></div>`:""}`;
+        ${rentPaid?`<div class="lb-line"><span>Sewa Dibayar</span><strong>${money(rentPaid)}</strong></div>`:""}
+        ${deferred?`<div class="lb-line"><span>Sewa Ditangguhkan (Belum Dibayar)</span><strong>${money(deferred)}</strong></div>`:""}`;
     }).join("");
 
     host.innerHTML=`
       <div class="lb-line"><span>Total Cabang</span><strong>${rows.length} cabang</strong></div>
       <div class="lb-line"><span>Cabang dengan Investor</span><strong>${investorBranchCount} cabang</strong></div>
       ${detail}
-      <div class="lb-line"><span>Total Sewa Investor</span><strong>${money(totalRent)}</strong></div>
+      <div class="lb-line"><span>Total Sewa Dibayar</span><strong>${money(totalRentPaid)}</strong></div>
+      <div class="lb-line"><span>Total Sewa Ditangguhkan (Belum Dibayar)</span><strong>${money(totalRentDeferred)}</strong></div>
+      <div class="lb-line total"><span>Total Kewajiban Sewa Investor</span><strong>${money(totalRentPaid+totalRentDeferred)}</strong></div>
       <div class="lb-investor-rights-title">Total Hak Semua Cabang</div>
       <div class="lb-investor-rights-grid">
         <div class="lb-investor-rights-card is-investor">
           <span>Total Hak Investor</span>
           <strong>${money(totalInvestor)}</strong>
-          <small>Nilai investor + sewa seluruh cabang</small>
+          <small>Nilai investor + sewa dibayar; tidak termasuk sewa ditangguhkan</small>
         </div>
         <div class="lb-investor-rights-card is-management">
           <span>Total Hak Manajemen</span>
