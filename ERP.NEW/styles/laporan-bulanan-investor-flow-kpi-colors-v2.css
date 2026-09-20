@@ -1,0 +1,17 @@
+/* Investor flow: each node uses the same dark, dimensional surface as monthly KPI cards. Screen-only; no data or connector changes. */
+@media screen {
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-profit{--flow-rgb:245,215,124;--flow-color:#f5d77c}
+body.laporan-bulanan-page #vax-investor-diagram .vax-capital{--flow-rgb:255,165,139;--flow-color:#ffa58b}
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-base{--flow-rgb:245,215,124;--flow-color:#f5d77c}
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-investor-share{--flow-rgb:116,215,200;--flow-color:#74d7c8}
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-investor-value{--flow-rgb:111,219,242;--flow-color:#6fdbf2}
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-rent{--flow-rgb:147,187,255;--flow-color:#93bbff}
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-investor-total{--flow-rgb:121,231,180;--flow-color:#79e7b4}
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-management-share{--flow-rgb:192,168,250;--flow-color:#c0a8fa}
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-management-value{--flow-rgb:169,175,255;--flow-color:#a9afff}
+body.laporan-bulanan-page #vax-investor-diagram #vax-flow-management-total{--flow-rgb:241,154,208;--flow-color:#f19ad0}
+body.laporan-bulanan-page #vax-investor-diagram .vax-investor-name{--flow-rgb:245,215,124;--flow-color:#f5d77c}
+body.laporan-bulanan-page #vax-investor-diagram :is(.vax-flow-node,.vax-investor-name){border:1px solid rgba(var(--flow-rgb),.48)!important;background:radial-gradient(115% 145% at 0% -16%,rgba(var(--flow-rgb),.27),transparent 64%),linear-gradient(157deg,#202832 0%,#121820 47%,#090d13 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.23),inset 0 -3px 5px rgba(0,0,0,.34),0 4px 0 #080a0e,0 10px 17px rgba(0,0,0,.43),0 0 18px rgba(var(--flow-rgb),.18)!important;transform:none!important;transition:border-color .2s ease,box-shadow .2s ease!important}
+body.laporan-bulanan-page #vax-investor-diagram :is(.vax-flow-node,.vax-investor-name):hover{border-color:var(--flow-color)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.27),inset 0 -3px 5px rgba(0,0,0,.34),0 6px 0 #080a0e,0 15px 24px rgba(0,0,0,.48),0 0 24px rgba(var(--flow-rgb),.28)!important;transform:none!important}
+body.laporan-bulanan-page #vax-investor-diagram :is(.vax-flow-node,.vax-investor-name) .vax-icon-wrap{color:var(--flow-color)!important;border-color:rgba(var(--flow-rgb),.4)!important;background:linear-gradient(145deg,rgba(var(--flow-rgb),.25),#111922)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 3px 7px rgba(0,0,0,.45)!important}
+body.laporan-bulanan-page #vax-investor-diagram :is(.vax-flow-node,.vax-investor-name) .vax-flow-copy>strong{color:var(--flow-color)!important;text-shadow:0 1px 1px #000!important}
