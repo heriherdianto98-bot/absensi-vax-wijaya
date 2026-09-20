@@ -66,3 +66,34 @@
  body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-rent{margin-top:8px!important}
  body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-rent>.lb-line{padding:7px 10px!important}
 }
+
+/* Final compact investor consolidation: screen-only overrides; original values/print untouched. */
+@media screen {
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-all-grid{gap:9px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-panel{padding:7px!important;border-radius:12px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-heading{padding:7px 10px!important;margin-bottom:7px!important;min-height:0!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-heading span{font-size:18px!important;line-height:1.2!important;font-weight:900!important;color:#f5f7fa!important;margin:0!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-heading strong{font-size:15px!important;line-height:1.2!important;margin:0!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-sides{gap:7px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-side{padding:7px 9px!important;border-radius:9px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-side>.lb-line{padding:1px 0 3px!important;gap:1px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-side span{font-size:11px!important;line-height:1.16!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-side strong{font-size:14px!important;line-height:1.18!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-rent{margin-top:6px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-rent>.lb-line{padding:6px 9px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-all-footer{gap:9px!important;margin-top:12px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-all-footer>.lb-line.total{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:12px 14px!important;background:linear-gradient(145deg,#28271f,#171b21 65%,#0c1117)!important;border:1px solid rgba(232,192,100,.34)!important;overflow:visible!important;animation:none!important;transform:none!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-all-footer>.lb-line.total strong{position:static!important;display:block!important;flex:0 1 auto!important;width:auto!important;max-width:100%!important;overflow:visible!important;white-space:normal!important;text-overflow:clip!important;background:transparent!important;background-image:none!important;box-shadow:none!important;text-shadow:none!important;filter:none!important;animation:none!important;transform:none!important;padding:0!important;margin:0!important;font-size:clamp(17px,1.6vw,22px)!important;color:#f6d783!important;text-align:right!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-all-footer>.lb-line.total strong::before,body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-all-footer>.lb-line.total strong::after{content:none!important;display:none!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-title{font-size:18px!important;font-weight:900!important;color:#f8e4ae!important;border:0!important;padding:4px 0!important;margin:2px 0!important}
+}
+@media screen {
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin-top:4px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-card{min-width:0!important;min-height:84px!important;padding:12px 14px!important;border-radius:12px!important;background:linear-gradient(155deg,#202831,#121920 58%,#090e14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -3px 5px rgba(0,0,0,.28),0 4px 0 #080a0e,0 10px 18px rgba(0,0,0,.33)!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-card.is-investor{border:1px solid rgba(100,224,242,.45)!important;border-left:4px solid #70ddeb!important;background:radial-gradient(100% 100% at 0 0,rgba(76,190,213,.12),transparent 70%),linear-gradient(155deg,#202831,#121920 58%,#090e14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 4px 0 #080a0e,0 10px 18px rgba(0,0,0,.33),0 0 15px rgba(92,224,242,.1)!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-card.is-management{border:1px solid rgba(145,225,182,.42)!important;border-left:4px solid #79dca9!important;background:radial-gradient(100% 100% at 0 0,rgba(85,194,139,.12),transparent 70%),linear-gradient(155deg,#202831,#121920 58%,#090e14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 4px 0 #080a0e,0 10px 18px rgba(0,0,0,.33),0 0 15px rgba(105,222,164,.1)!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-card span{font-size:12px!important;line-height:1.25!important;margin-bottom:5px!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-card strong{font-size:clamp(20px,1.8vw,26px)!important;line-height:1.16!important;white-space:normal!important;overflow-wrap:anywhere!important}
+ body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-card small{font-size:11px!important;line-height:1.35!important;color:#b8c5cf!important;font-weight:500!important}
+ @media(max-width:580px){body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-rights-grid{grid-template-columns:minmax(0,1fr)!important}body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-branch-heading span{font-size:16px!important}body.laporan-bulanan-page #lbInvestorLines.lb-investor-all-cards-ready .lb-investor-all-footer>.lb-line.total{align-items:flex-start!important;flex-wrap:wrap!important}}
+}
