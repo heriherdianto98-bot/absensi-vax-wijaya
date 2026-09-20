@@ -10,15 +10,20 @@
     left.className = "lb-monthly-column lb-monthly-column-left";
     right.className = "lb-monthly-column lb-monthly-column-right";
     const card = view => originalCards.find(node => node.dataset.lbView === view);
-    const income = card("income"), expense = card("expense");
-    if (income) left.appendChild(income);
-    if (expense) right.appendChild(expense);
+    for (const view of ["income", "salary"]) {
+      const target = card(view);
+      if (target) left.appendChild(target);
+    }
+    for (const view of ["expense", "result"]) {
+      const target = card(view);
+      if (target) right.appendChild(target);
+    }
     right.appendChild(mapping);
     mapping.setAttribute("aria-hidden", "false");
     grid.append(left, right);
-    // Reposition existing visual nodes only; keep revised data, IDs and listeners intact.
+    // Existing report nodes only; preserve values, events and print restoration.
     let anchor = grid;
-    for (const view of ["salary", "result", "investor", "performance"]) {
+    for (const view of ["investor", "performance"]) {
       const target = card(view);
       if (target) { anchor.insertAdjacentElement("afterend", target); anchor = target; }
     }

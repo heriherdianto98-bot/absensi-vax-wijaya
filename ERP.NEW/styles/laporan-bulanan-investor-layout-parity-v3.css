@@ -42,3 +42,12 @@ body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"] .lb-
 body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"] .lb-lines>.lb-line.total{background:rgba(104,222,194,.09)!important;border:1px solid rgba(104,222,194,.28)!important;border-radius:9px!important;padding:12px!important}
 body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"] .lb-lines>.lb-line.total :is(span,strong){color:#68dec2!important}
 }
+
+/* Investor Revised: monthly report two-column order, screen only. */
+@media screen {
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column-left>[data-lb-view="salary"]{--lb-four-accent:#c6a2ff;--lb-four-rgb:198,162,255}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column-right>[data-lb-view="result"]{--lb-four-accent:#68dec2;--lb-four-rgb:104,222,194}
+body.laporan-bulanan-investor-page.vax-salary-diagram-ready .lb-grid .lb-monthly-column>[data-lb-view="salary"]>.lb-card-head{display:none!important}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column-right>[data-lb-view="result"] .lb-lines>.lb-line.total{background:rgba(104,222,194,.09)!important;border:1px solid rgba(104,222,194,.28)!important;border-radius:9px!important;padding:12px!important}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column-right>[data-lb-view="result"] .lb-lines>.lb-line.total :is(span,strong){color:#68dec2!important}
+}
