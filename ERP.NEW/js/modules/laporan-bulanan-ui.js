@@ -167,10 +167,15 @@
       setText("lbAllRentPaid",money(rentPaid));
       setText("lbAllRentDeferred",money(rentDeferred));
       setText("lbAllProfitRights",money(profitRights));
-      setText("lbAllGap",`${gap>0?"+":""}${money(gap)}`);
-      el("lbAllGapCard")?.classList.toggle("is-negative",gap<0);
-      el("lbAllGapCard")?.classList.toggle("is-positive",gap>0);
-      setText("lbAllKpisNote",`Rekonsiliasi ${rows.length} cabang · hak investor ${money(investorRights-rentPaid)} + hak manajemen ${money(managementRights)} · sewa investor ${money(rentPaid)} tidak dipotong dua kali. Nominal laporan, bukan saldo kas atau bukti transfer.`);
+      const lossEffect=sum(row=>Math.min(0,num(row?.laba?.labaBersih)));
+      const capitalEffect=sum(row=>num(row?.investor?.modalProduk));
+      const otherEffect=gap-lossEffect-capitalEffect;
+      const signed=value=>`${value>0?"+":value<0?"−":""}${money(Math.abs(value))}`;
+      setText("lbAllGap",money(Math.abs(gap)));
+      setText("lbAllGapExplain",gap<0?"Hak bagi hasil di atas laba bersih gabungan; bukan kekurangan kas.":gap>0?"Laba bersih gabungan di atas hak bagi hasil; bukan saldo kas.":"Laba bersih dan hak bagi hasil sama secara matematis.");
+      el("lbAllGapCard")?.classList.remove("is-negative","is-positive");
+      el("lbAllGapCard")?.classList.add("is-reconciliation");
+      setText("lbAllKpisNote",`Rekonsiliasi ${rows.length} cabang: laba gabungan ${money(l.labaBersih)} − hak bagi hasil ${money(profitRights)} = ${signed(gap)}. Rincian pengaruh: laba/rugi cabang negatif ${signed(lossEffect)}, modal produk tercatat ${signed(capitalEffect)}, komponen alokasi dan pembulatan lainnya ${signed(otherEffect)}. Hak investor tanpa sewa ${money(investorRights-rentPaid)} + hak manajemen ${money(managementRights)}. Sewa investor ${money(rentPaid)} tidak dihitung dua kali. Perbedaan basis, bukan selisih kas atau transaksi baru.`);
     }
     const card=el("lbProfitCard"); card?.classList.toggle("is-all-branches",all); card?.classList.toggle("is-profit",Number(l.labaBersih||0)>=0); card?.classList.toggle("is-loss",Number(l.labaBersih||0)<0);
     setText("lbCustomer",`${Number(p.customer||0).toLocaleString("id-ID")} customer`); setText("lbTransactions",`${Number(p.transaction||0).toLocaleString("id-ID")} transaksi`);

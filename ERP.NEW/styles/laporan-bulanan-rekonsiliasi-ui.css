@@ -1,0 +1,16 @@
+/* Rekonsiliasi basis laba vs pembagian: informasi, bukan indikator selisih kas. UI ONLY. */
+@media screen {
+  body.laporan-bulanan-page #lbAllKpis:not([hidden]) #lbAllGapCard.is-reconciliation {
+    --kpi-light:#86bbff!important;
+    --kpi-glow:rgba(108,163,244,.17)!important;
+    border-color:rgba(120,171,236,.35)!important;
+    border-left-color:#86bbff!important;
+    background:linear-gradient(150deg,#1d2631 0%,#111a25 58%,#0b1017 100%)!important;
+  }
+  body.laporan-bulanan-page #lbAllKpis:not([hidden]) #lbAllGapCard.is-reconciliation strong {
+    color:#a9ceff!important;
+  }
+  body.laporan-bulanan-page #lbAllKpis:not([hidden]) #lbAllGapCard.is-reconciliation small {
+    color:#bdcbdc!important;
+  }
+}
