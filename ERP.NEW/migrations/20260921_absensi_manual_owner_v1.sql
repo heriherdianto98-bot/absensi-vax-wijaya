@@ -71,7 +71,7 @@ begin
   end if;
 
   -- Serialize writes for this employee/day to avoid duplicate corrections.
-  perform pg_advisory_xact_lock(p_karyawan_id, (p_tanggal - date '2000-01-01')::integer);
+  perform pg_advisory_xact_lock(hashtextextended(p_karyawan_id::text || ':' || p_tanggal::text, 0));
   select * into v_before from public.absensi where karyawan_id = p_karyawan_id and tanggal = p_tanggal for update;
   if found then
     v_record_id := v_before.id;
