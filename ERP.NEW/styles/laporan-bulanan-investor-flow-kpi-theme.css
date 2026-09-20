@@ -1,0 +1,54 @@
+/* Laporan Bulanan only: reuse exact KPI card surface; visual-only, screen-only. */
+@media screen {
+ body.laporan-bulanan-page.vax-investor-diagram-ready .lb-wrap>.lb-card[data-lb-view="investor"],
+ body.laporan-bulanan-page.vax-investor-diagram-ready #vax-investor-diagram{
+  background:#0d1117!important;border-color:rgba(217,185,111,.28)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 12px 25px rgba(0,0,0,.3)!important;
+ }
+ body.laporan-bulanan-page.vax-investor-diagram-ready #vax-investor-diagram::before{
+  background:radial-gradient(ellipse at 48% 15%,rgba(217,185,111,.055),transparent 58%)!important;
+  animation:none!important;transform:none!important;
+ }
+ body.laporan-bulanan-page #vax-investor-diagram .vax-diagram-heading-copy{border-left-color:#d9b96f!important}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-eyebrow{color:#e7c87c!important}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-flow-connectors{stroke:#bd9b59!important;filter:drop-shadow(0 0 2px rgba(217,185,111,.16))!important}
+ body.laporan-bulanan-page #vax-investor-diagram{--vax-flow-gold:#d9b96f}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-profit{--kpi-light:#f5d77c;--kpi-glow:rgba(245,215,124,.12)}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-capital{--kpi-light:#ffa58b;--kpi-glow:rgba(255,165,139,.12)}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-base{--kpi-light:#f5d77c;--kpi-glow:rgba(245,215,124,.15)}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-investor-side{--kpi-light:#74d7c8;--kpi-glow:rgba(116,215,200,.13)}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-management-side{--kpi-light:#c0a8fa;--kpi-glow:rgba(192,168,250,.13)}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-investor-name{--kpi-light:#d9b96f;--kpi-glow:rgba(217,185,111,.10)}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-flow-node,
+ body.laporan-bulanan-page #vax-investor-diagram .vax-investor-name{
+  border:1px solid color-mix(in srgb,var(--kpi-light,#d9b96f) 34%,#27303a)!important;
+  background:radial-gradient(110% 125% at 2% -18%,color-mix(in srgb,var(--kpi-light,#d9b96f) 15%,#10151c),transparent 67%),linear-gradient(157deg,#202832 0%,#121820 47%,#090d13 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -3px 5px rgba(0,0,0,.34),0 4px 0 #080a0e,0 10px 17px rgba(0,0,0,.4),0 0 13px var(--kpi-glow,rgba(217,185,111,.1))!important;
+  border-radius:13px!important;transform:none!important;
+  transition:box-shadow .2s ease,border-color .2s ease!important;
+ }
+ body.laporan-bulanan-page #vax-investor-diagram .vax-flow-node:hover,
+ body.laporan-bulanan-page #vax-investor-diagram .vax-investor-name:hover{
+  border-color:var(--kpi-light,#d9b96f)!important;
+  background:radial-gradient(110% 125% at 2% -18%,color-mix(in srgb,var(--kpi-light,#d9b96f) 15%,#10151c),transparent 67%),linear-gradient(157deg,#202832 0%,#121820 47%,#090d13 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.23),inset 0 -3px 5px rgba(0,0,0,.34),0 6px 0 #080a0e,0 15px 24px rgba(0,0,0,.48),0 0 19px var(--kpi-glow,rgba(217,185,111,.14))!important;
+ }
+ body.laporan-bulanan-page #vax-investor-diagram .vax-icon-wrap{
+  color:var(--kpi-light,#d9b96f)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.18),color-mix(in srgb,var(--kpi-light,#d9b96f) 8%,#0b1118))!important;
+  border-color:color-mix(in srgb,var(--kpi-light,#d9b96f) 20%,#27303a)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.21),0 3px 6px rgba(0,0,0,.45)!important;
+ }
+ body.laporan-bulanan-page #vax-investor-diagram .vax-flow-side .vax-share .vax-flow-copy>strong,
+ body.laporan-bulanan-page #vax-investor-diagram .vax-flow-side .vax-total .vax-flow-copy>strong{color:var(--kpi-light,#d9b96f)!important}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-base .vax-flow-copy>strong,
+ body.laporan-bulanan-page #vax-investor-diagram .vax-base .vax-flow-label{color:#f5d77c!important}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-profit .vax-flow-copy>strong{color:#f5d77c!important}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-capital-values strong{color:#ffa58b!important}
+ body.laporan-bulanan-page #vax-investor-diagram .vax-minus{background:#d9b96f!important;color:#10151c!important}
+ body.laporan-bulanan-page #vax-investor-diagram #vax-diagram-arrow path{stroke:#bd9b59!important}
+ @media(max-width:760px){
+  body.laporan-bulanan-page .lb-wrap>.lb-card[data-lb-view="investor"]{background:#0d1117!important;border-color:rgba(217,185,111,.28)!important}
+ }
+ @media(prefers-reduced-motion:reduce){body.laporan-bulanan-page #vax-investor-diagram .vax-flow-node{transition:none!important}}
+}
