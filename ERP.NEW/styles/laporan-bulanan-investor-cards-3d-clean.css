@@ -1,0 +1,43 @@
+/* Investor Revised screen-only visual layer; preserve values, card structure and print. */
+@media screen {
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-mapping {
+  --vax-card-glow: 215,180,94;
+  background:linear-gradient(155deg,rgba(255,255,255,.065) 0%,rgba(255,255,255,.015) 29%,transparent 55%),linear-gradient(145deg,#1b232b 0%,#111920 53%,#0c1117 100%)!important;
+  border:1px solid rgba(var(--vax-card-glow),.36)!important;
+  border-radius:13px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -8px 18px rgba(0,0,0,.2),0 9px 22px rgba(0,0,0,.3),0 0 9px rgba(var(--vax-card-glow),.065)!important;
+  transition:border-color .22s ease,box-shadow .22s ease,background-color .22s ease!important;
+}
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi:nth-child(2){--vax-card-glow:53,220,244}
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi:nth-child(3){--vax-card-glow:255,132,92}
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi:nth-child(4){--vax-card-glow:183,146,255}
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi:nth-child(5){--vax-card-glow:104,222,194}
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi:nth-child(6){--vax-card-glow:137,174,255}
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi:nth-child(7){--vax-card-glow:237,204,128}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > [data-lb-view="expense"]{--vax-card-glow:255,132,92}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > [data-lb-view="result"]{--vax-card-glow:104,222,194}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-mapping{--vax-card-glow:53,220,244}
+@media(hover:hover) and (pointer:fine){
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi:hover,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card:hover,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-mapping:hover {
+  border-color:rgba(var(--vax-card-glow),.84)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.17),inset 0 -8px 18px rgba(0,0,0,.20),0 12px 26px rgba(0,0,0,.36),0 0 24px rgba(var(--vax-card-glow),.25),0 0 5px rgba(var(--vax-card-glow),.25)!important;
+}}
+/* Remove black/dashed dividers between ordinary data rows; retain colored total tiles. */
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column .lb-lines > .lb-line:not(.total),
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column .lb-lines > .lb-line:first-child:not(.total){
+  border:0!important;border-top:0!important;border-bottom:0!important;
+  box-shadow:none!important;background:transparent!important;background-image:none!important;
+}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column .lb-lines > .lb-line:not(.total)::before,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column .lb-lines > .lb-line:not(.total)::after{
+  content:none!important;display:none!important;
+}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column .lb-card-head,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column .lb-mapping .lb-card-head{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.075)!important;
+}
+}
