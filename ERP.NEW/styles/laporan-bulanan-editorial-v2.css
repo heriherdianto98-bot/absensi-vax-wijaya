@@ -1,0 +1,43 @@
+/* VAX monthly editorial layout. Screen presentation only; print/PDF rules untouched. */
+@media screen {
+body.laporan-bulanan-page{--lb-editor-gold:#d9b96f;--lb-editor-text:#eef0f2;--lb-editor-muted:#aeb6bf;--lb-editor-panel:#12171c}
+body.laporan-bulanan-page .lb-wrap{max-width:1580px!important;margin-inline:auto!important;padding-inline:clamp(16px,2vw,30px)!important}
+body.laporan-bulanan-page .lb-head{margin-bottom:18px!important}
+body.laporan-bulanan-page .lb-title{font-size:clamp(25px,2.1vw,34px)!important;letter-spacing:-.025em!important}
+body.laporan-bulanan-page .lb-sub{max-width:760px!important;color:var(--lb-editor-muted)!important;line-height:1.55!important}
+body.laporan-bulanan-page .lb-kpis{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin:18px 0 24px!important}
+body.laporan-bulanan-page .lb-kpis>.lb-kpi{--lb-card-accent:#d9b96f!important;min-width:0!important;min-height:112px!important;padding:18px 20px!important;animation:none!important;transform:none!important;border:1px solid #323239!important;border-radius:12px!important;background:#14191e!important;box-shadow:none!important}
+body.laporan-bulanan-page .lb-kpis>.lb-kpi::before,body.laporan-bulanan-page .lb-grid .lb-card::before{display:none!important;content:none!important}
+body.laporan-bulanan-page .lb-kpis>.lb-kpi strong{color:var(--lb-editor-text)!important;font-size:clamp(20px,1.65vw,28px)!important;margin-top:12px!important;line-height:1.2!important;letter-spacing:-.025em!important;overflow-wrap:anywhere}
+body.laporan-bulanan-page .lb-kpis>.lb-kpi span{color:var(--lb-editor-muted)!important;font-size:11px!important;letter-spacing:.075em!important}
+body.laporan-bulanan-page .lb-kpis>.lb-kpi small{color:#9fa9b4!important;font-size:12px!important;line-height:1.45!important}
+body.laporan-bulanan-page .lb-kpis>#lbProfitCard{grid-column:span 2!important;background:#1d1c17!important;border-color:#75613c!important}
+body.laporan-bulanan-page .lb-kpis>#lbProfitCard strong{color:#f1d18b!important}
+body.laporan-bulanan-page .lb-kpis>.lb-kpi:hover{border-color:#857247!important;box-shadow:0 4px 18px #0003!important;transform:none!important}
+body.laporan-bulanan-page .lb-grid.lb-single-view{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)!important;gap:22px!important;margin:0 0 26px!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column{gap:20px!important;align-items:stretch!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-card,body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-mapping{background:var(--lb-editor-panel)!important;border:1px solid #303840!important;border-radius:12px!important;box-shadow:none!important;animation:none!important;transform:none!important;overflow:hidden!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-card:hover,body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-mapping:hover{border-color:#6f6044!important;box-shadow:none!important;transform:none!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-card .lb-card-head,body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-mapping .lb-card-head{padding:18px 20px 12px!important;min-height:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;align-items:baseline!important;gap:10px!important}
+body.laporan-bulanan-page .lb-grid .lb-card-head h3{color:#e6c47b!important;font-size:17px!important;font-weight:750!important;letter-spacing:-.01em!important}
+body.laporan-bulanan-page .lb-grid .lb-card-head small{color:#99a5af!important;font-size:11px!important;font-weight:500!important;text-align:right!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-card .lb-card-body,body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-mapping .lb-card-body{padding:4px 20px 20px!important;overflow:visible!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line,body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line:first-child{display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:18px!important;min-height:0!important;padding:11px 0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important;animation:none!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line::before,body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line::after{content:none!important;display:none!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line span{font-size:13px!important;line-height:1.5!important;color:#c9d0d7!important;font-weight:500!important;min-width:0!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line strong{font-size:14px!important;line-height:1.5!important;font-weight:700!important;color:#f0f2f4!important;white-space:nowrap!important;text-align:right!important;font-variant-numeric:tabular-nums!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line.total{padding:14px 12px!important;margin-top:12px!important;background:#24251f!important;border:0!important;border-radius:8px!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line.total span,body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line.total strong{color:#f1d28a!important;font-weight:800!important}
+body.laporan-bulanan-page .lb-grid #lbInvestorLines .lb-line:not(.total){border:0!important;background:transparent!important;box-shadow:none!important}
+body.laporan-bulanan-page .lb-grid #lbInvestorLines .lb-investor-base-total{border:1px solid #655637!important;border-radius:9px!important;background:#232219!important;box-shadow:none!important}
+body.laporan-bulanan-page .lb-grid #lbInvestorLines .lb-investor-base-total::before,body.laporan-bulanan-page .lb-grid #lbInvestorLines .lb-investor-base-total::after{content:none!important;display:none!important}
+body.laporan-bulanan-page .lb-grid #lbInvestorLines .lb-investor-rights-card{box-shadow:none!important;border-color:#374047!important;background:#181d22!important}
+body.laporan-bulanan-page .lb-grid #lbPerformanceChart{margin-top:18px!important}
+body.laporan-bulanan-page .lb-grid #lbPerformanceChart svg{max-width:100%!important}
+body.laporan-bulanan-page .lb-grid .lb-performance-note{color:#aab3bd!important;line-height:1.6!important}
+body.laporan-bulanan-page .lb-grid .lb-mapping{align-self:start!important}
+body.laporan-bulanan-page .lb-review{margin-top:18px!important}
+@media(max-width:1100px){body.laporan-bulanan-page .lb-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}body.laporan-bulanan-page .lb-grid.lb-single-view{grid-template-columns:minmax(0,1fr)!important;gap:18px!important}}
+@media(max-width:650px){body.laporan-bulanan-page .lb-kpis{grid-template-columns:minmax(0,1fr)!important}body.laporan-bulanan-page .lb-kpis>#lbProfitCard{grid-column:auto!important}body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-card .lb-card-head{flex-wrap:wrap!important}body.laporan-bulanan-page .lb-grid .lb-monthly-column .lb-lines .lb-line strong{white-space:normal!important;overflow-wrap:anywhere!important}body.laporan-bulanan-page .lb-wrap{padding-inline:12px!important}}
+@media(prefers-reduced-motion:reduce){body.laporan-bulanan-page .lb-kpis>.lb-kpi,body.laporan-bulanan-page .lb-grid .lb-monthly-column>.lb-card{transition:none!important;animation:none!important}}
+}
