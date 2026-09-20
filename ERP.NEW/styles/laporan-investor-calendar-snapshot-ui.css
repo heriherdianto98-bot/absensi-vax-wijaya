@@ -1,0 +1,25 @@
+/* Investor report presentation only: gold calendar, compact red snapshot status. */
+@media screen {
+ body.laporan-bulanan-investor-page .lb-month-popover {background:linear-gradient(160deg,#1c2027,#101317 64%,#090b0e)!important;border-color:rgba(218,177,78,.55)!important;box-shadow:0 18px 40px rgba(0,0,0,.65),0 0 16px rgba(218,177,78,.12)!important;color:#fff4d6!important;}
+ body.laporan-bulanan-investor-page .lb-month-popover-title small {color:#e5c77e!important;}
+ body.laporan-bulanan-investor-page .lb-month-popover-title strong {color:#fff4d6!important;}
+ body.laporan-bulanan-investor-page .lb-month-year-nav button {background:#14171c!important;border-color:rgba(218,177,78,.30)!important;color:#f5d98a!important;}
+ body.laporan-bulanan-investor-page .lb-month-cell {background:#101317!important;border-color:rgba(218,177,78,.16)!important;color:#e7e0cf!important;}
+ body.laporan-bulanan-investor-page .lb-month-cell:hover {background:rgba(218,177,78,.12)!important;border-color:#e9c666!important;color:#fff4d6!important;}
+ body.laporan-bulanan-investor-page .lb-month-cell.is-selected {background:rgba(218,177,78,.23)!important;border-color:#e9c666!important;color:#ffdf82!important;box-shadow:0 0 14px rgba(218,177,78,.16)!important;}
+ body.laporan-bulanan-investor-page .lb-month-popover-foot {color:#bdb3a0!important;border-color:rgba(218,177,78,.18)!important;}
+ body.laporan-bulanan-investor-page #lbInvestorSourceStrip .lb-source-title {font-size:12px!important;line-height:1.35!important;}
+ body.laporan-bulanan-investor-page #lbInvestorSourceStrip .lb-source-meta {font-size:12px!important;line-height:1.35!important;}
+ body.laporan-bulanan-investor-page #lbInvestorSourceStrip.is-snapshot-ready {animation:vaxInvestorSnapshotRedBlink 1.15s ease-in-out infinite!important;}
+ body.laporan-bulanan-investor-page #lbInvestorSourceStrip.is-snapshot-ready .lb-source-badge {animation:investorReadyBlink 1.15s ease-in-out infinite!important;font-size:11px!important;}
+ body.laporan-bulanan-investor-page #lbInvestorSourceStrip.is-snapshot-ready .lb-source-badge::before {animation:investorReadyRedPulse .85s ease-in-out infinite!important;}
+}
+@keyframes vaxInvestorSnapshotRedBlink {
+ 0%,100% {background:linear-gradient(100deg,#632025,#3c171e 62%,#25151b);border-color:rgba(255,101,101,.55);box-shadow:0 4px 12px rgba(0,0,0,.22);filter:brightness(1);opacity:1;}
+ 50% {background:linear-gradient(100deg,#8d2931,#57202a 62%,#351820);border-color:#ff7777;box-shadow:0 4px 12px rgba(0,0,0,.22),0 0 22px rgba(255,62,78,.38);filter:brightness(1.18);opacity:.64;}
+}
+@media (prefers-reduced-motion:reduce) {
+ body.laporan-bulanan-investor-page #lbInvestorSourceStrip.is-snapshot-ready,
+ body.laporan-bulanan-investor-page #lbInvestorSourceStrip.is-snapshot-ready .lb-source-badge,
+ body.laporan-bulanan-investor-page #lbInvestorSourceStrip.is-snapshot-ready .lb-source-badge::before {animation:none!important;}
+}
