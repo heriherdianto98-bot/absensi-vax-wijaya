@@ -15,6 +15,12 @@
       const picker=document.createElement('script');
       picker.src='../js/modules/absensi-manual-picker-ui.js?v=20260921-1';
       picker.onerror=()=>console.error('Gagal memuat tampilan kalender/jam Owner');
+      picker.onload=()=>{
+        const analog=document.createElement('script');
+        analog.src='../js/modules/absensi-manual-analog-ui.js?v=20260921-1';
+        analog.onerror=()=>console.error('Gagal memuat jam analog Owner');
+        document.head.appendChild(analog);
+      };
       document.head.appendChild(picker);
     };
     document.head.appendChild(script);
