@@ -1,0 +1,39 @@
+/* Four monthly detail cards only. Screen presentation; print and calculations untouched. */
+@media screen {
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card[data-lb-view="income"]{--lb-four-accent:#edc76c;--lb-four-rgb:237,199,108}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card[data-lb-view="salary"]{--lb-four-accent:#c6a2ff;--lb-four-rgb:198,162,255}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card[data-lb-view="expense"]{--lb-four-accent:#ffac8a;--lb-four-rgb:255,172,138}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card[data-lb-view="result"]{--lb-four-accent:#68dec2;--lb-four-rgb:104,222,194}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]){
+ --lb-detail-glow:rgba(var(--lb-four-rgb),.16);
+ background:radial-gradient(ellipse at 0% 0%,rgba(var(--lb-four-rgb),.14),transparent 56%),linear-gradient(155deg,#1c2530 0%,#101820 53%,#080c12 100%)!important;
+ border:1px solid rgba(var(--lb-four-rgb),.43)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -3px 5px rgba(0,0,0,.38),0 4px 0 #06090e,0 12px 25px rgba(0,0,0,.46),0 0 16px rgba(var(--lb-four-rgb),.15)!important;
+}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]):hover{
+ border-color:rgba(var(--lb-four-rgb),.82)!important;
+ transform:perspective(850px) rotateX(0deg) translateY(-4px)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 6px 0 #06090e,0 18px 29px rgba(0,0,0,.52),0 0 23px rgba(var(--lb-four-rgb),.24)!important;
+}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) > .lb-card-head h3{color:var(--lb-four-accent)!important;font-size:clamp(20px,1.5vw,23px)!important;line-height:1.35!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"])::before{
+ color:var(--lb-four-accent)!important;border-color:rgba(var(--lb-four-rgb),.4)!important;
+ background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(var(--lb-four-rgb),.14))!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 4px 8px rgba(0,0,0,.5),0 0 9px rgba(var(--lb-four-rgb),.18)!important;
+}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) .lb-lines .lb-line{gap:16px!important;padding:13px 0!important;min-height:0!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) .lb-lines .lb-line span{
+ font-size:15px!important;line-height:1.5!important;font-weight:600!important;color:#e0e6ec!important;white-space:normal!important;overflow-wrap:anywhere!important;
+}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) .lb-lines .lb-line strong{
+ font-size:17px!important;line-height:1.4!important;font-weight:800!important;color:#f6f7f9!important;text-align:right!important;overflow-wrap:anywhere!important;
+}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) .lb-lines .lb-line.total{background:rgba(var(--lb-four-rgb),.10)!important;border-radius:9px!important}
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) .lb-lines .lb-line.total span,
+body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) .lb-lines .lb-line.total strong{color:var(--lb-four-accent)!important;font-size:18px!important}
+@media(max-width:650px){
+ body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) .lb-lines .lb-line{flex-wrap:wrap!important;gap:5px!important}
+ body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]) .lb-lines .lb-line strong{white-space:normal!important}
+}
+@media(prefers-reduced-motion:reduce){body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]){transition:none!important}}
+}
