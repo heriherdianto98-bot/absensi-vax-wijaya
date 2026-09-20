@@ -1,0 +1,13 @@
+/* UI only: permukaan Pendapatan mengikuti Tabel Harian Semua Cabang. */
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] {
+  background:linear-gradient(180deg,#171c23 0%,#11151b 100%)!important;
+  background-color:#11151b!important;
+}
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] > .lb-card-head {
+  background:linear-gradient(180deg,#171c23 0%,#11151b 100%)!important;
+  background-color:#11151b!important;
+}
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] > .lb-card-body {
+  background:#11151b!important;
+  background-image:none!important;
+}
