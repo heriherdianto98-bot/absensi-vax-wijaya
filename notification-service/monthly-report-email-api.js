@@ -66,10 +66,11 @@ const server=http.createServer(async(req,res)=>{
     await ownerOnly(req);
     const {month,branch,html}=validateReport(await readBody(req));
     const pdf=await renderPdf(html);
-    const title=`Laporan Bulanan ${branch} — ${month}`;
+    const monthLabel=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][Number(month.slice(5,7))-1]+' '+month.slice(0,4);
+    const title=`Laporan Bulanan ${branch} ${monthLabel}`;
     const filename=`ERP-VAX-Laporan-Bulanan-${month}-${branch.replace(/[^a-z0-9-]+/gi,'-').slice(0,50)}.pdf`;
     const info=await mailer.sendMail({from:`"${process.env.MAIL_FROM_NAME||'ERP VAX WIJAYA'}" <${process.env.MAIL_FROM}>`,
-      to:TO,subject:`[ERP VAX] ${title}`,text:`Terlampir ${title}. Dokumen internal VAX WIJAYA.`,
+      to:TO,subject:title,text:`Terlampir ${title}. Dokumen internal VAX WIJAYA.`,
       attachments:[{filename,content:pdf,contentType:'application/pdf'}]});
     console.log('[Monthly PDF Email]',{to:TO,month,branch,bytes:pdf.length,messageId:info.messageId});
     return reply(res,200,{sent:true,to:TO,month,branch,messageId:info.messageId});
