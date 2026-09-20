@@ -11,3 +11,19 @@ body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] > .lb-card-
   background:#11151b!important;
   background-image:none!important;
 }
+
+/* Khusus baris Pendapatan: tanpa strip hitam dan tanpa garis pemisah. */
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] #lbIncomeLines .lb-line,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] #lbIncomeLines .lb-line:first-child,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] #lbIncomeLines .lb-line.total {
+  background:transparent!important;
+  background-image:none!important;
+  border-top:0!important;
+  border-bottom:0!important;
+  box-shadow:none!important;
+}
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] #lbIncomeLines .lb-line::before,
+body.laporan-bulanan-page .lb-grid > .lb-card[data-lb-view="income"] #lbIncomeLines .lb-line::after {
+  display:none!important;
+  content:none!important;
+}
