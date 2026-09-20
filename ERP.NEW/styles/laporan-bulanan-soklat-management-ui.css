@@ -1,0 +1,25 @@
+/* Screen-only Soklat presentation. All original report/print elements are preserved. */
+@media screen {
+ body.laporan-bulanan-page.lb-soklat-management-ready #lbInvestorLines{display:none!important}
+ body.laporan-bulanan-page.lb-soklat-management-ready .lb-card[data-lb-view="investor"]>.lb-card-head{display:none!important}
+ body.laporan-bulanan-page #lbSoklatManagementView{display:none}
+ body.laporan-bulanan-page.lb-soklat-management-ready #lbSoklatManagementView{display:block!important;padding:12px 14px 16px;color:#edf2f7;background:linear-gradient(150deg,#1b2229,#10161e 58%,#0b1118);border:1px solid rgba(224,187,100,.27);border-radius:13px;box-shadow:inset 0 1px rgba(255,255,255,.10),0 8px 20px rgba(0,0,0,.22)}
+ #lbSoklatManagementView *{box-sizing:border-box}
+ #lbSoklatManagementView .lb-soklat-heading{display:flex;flex-direction:column;gap:3px;padding:11px 14px;margin-bottom:12px;border-radius:10px;border:1px solid rgba(229,192,103,.26);background:linear-gradient(145deg,#252a31,#121820);box-shadow:inset 0 1px rgba(255,255,255,.11),0 5px 12px rgba(0,0,0,.24)}
+ #lbSoklatManagementView .lb-soklat-branch{font-size:19px;font-weight:900;color:#fff;line-height:1.3}
+ #lbSoklatManagementView .lb-soklat-heading strong{font-size:17px;color:#f5d783;line-height:1.3}
+ #lbSoklatManagementView .lb-soklat-heading small{font-size:13px;color:#b9c6d2;line-height:1.35}
+ #lbSoklatManagementView .lb-soklat-sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ #lbSoklatManagementView .lb-soklat-side{--glow:rgba(66,202,221,.16);display:grid;gap:3px;align-content:center;min-width:0;padding:13px 16px;border:1px solid rgba(95,214,233,.45);border-radius:12px;background:linear-gradient(150deg,#212b34,#111a23 55%,#0a1017);box-shadow:inset 0 1px rgba(255,255,255,.18),inset 0 -3px 5px rgba(0,0,0,.25),0 4px 0 #080a0d,0 10px 18px rgba(0,0,0,.35),0 0 13px var(--glow);transition:transform .2s,box-shadow .2s}
+ #lbSoklatManagementView .lb-soklat-side.is-management{--glow:rgba(190,145,245,.17);border-color:rgba(194,150,245,.5);background:linear-gradient(150deg,#252631,#181722 55%,#0d0e16)}
+ #lbSoklatManagementView .lb-soklat-side span{font-size:13px;font-weight:750;color:#d2dce6}
+ #lbSoklatManagementView .lb-soklat-side strong{font-size:clamp(18px,1.7vw,25px);line-height:1.25;color:#85e9f5;white-space:normal;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+ #lbSoklatManagementView .lb-soklat-side.is-management strong{color:#d6b9ff}
+ #lbSoklatManagementView .lb-soklat-total{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;border:1px solid rgba(232,192,100,.38);border-radius:10px;background:linear-gradient(145deg,#29271e,#13171e);box-shadow:inset 0 1px rgba(255,255,255,.12),0 6px 13px rgba(0,0,0,.28)}
+ #lbSoklatManagementView .lb-soklat-total span{font-size:15px;font-weight:850;color:#f4e0b2}
+ #lbSoklatManagementView .lb-soklat-total strong{font-size:clamp(22px,2vw,30px);line-height:1.2;font-weight:900;color:#ffdf8b;font-variant-numeric:tabular-nums;white-space:normal}
+ #lbSoklatManagementView .lb-soklat-side:hover{transform:translateY(-3px);box-shadow:inset 0 1px rgba(255,255,255,.22),0 6px 0 #080a0d,0 15px 24px rgba(0,0,0,.40),0 0 23px var(--glow)}
+ @media(max-width:640px){#lbSoklatManagementView .lb-soklat-sides{grid-template-columns:minmax(0,1fr)}#lbSoklatManagementView .lb-soklat-total{align-items:flex-start;flex-direction:column;gap:5px}}
+ @media(prefers-reduced-motion:reduce){#lbSoklatManagementView .lb-soklat-side{transition:none}}
+}
+@media print{#lbSoklatManagementView{display:none!important}}
