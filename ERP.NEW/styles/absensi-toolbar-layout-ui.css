@@ -1,29 +1,48 @@
-/* UI ONLY — Absensi toolbar layout. No data, filters or engine changes. */
+/* UI ONLY — compact attendance toolbar; no filter, data or engine changes. */
 @media (min-width: 1101px) {
   #absensiDailyView .absensi-toolbar,
   #absensiMonthlyHost .abl-toolbar {
     display: grid !important;
     grid-template-columns: minmax(0,1fr) !important;
-    gap: 12px !important;
+    gap: 10px !important;
     align-items: stretch !important;
-    padding: 14px 16px !important;
+    padding: 12px 16px !important;
   }
-  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiDailyView .absensi-toolbar > .toolbar-left {
+    display: grid !important;
+    /* SIX fields: mode, branch, employee, date, status, search. */
+    grid-template-columns: minmax(0,1.05fr) minmax(0,1.4fr) minmax(0,1.35fr) minmax(0,1.15fr) minmax(0,1.1fr) minmax(0,1.45fr) !important;
+    column-gap: 10px !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: end !important;
+  }
   #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left {
     display: grid !important;
-    grid-template-columns: minmax(164px,.75fr) minmax(195px,1.25fr) minmax(195px,1.25fr) minmax(182px,1fr) minmax(215px,1.3fr) !important;
-    gap: 12px !important;
+    /* FIVE fields in the monthly view. */
+    grid-template-columns: minmax(0,1.05fr) minmax(0,1.4fr) minmax(0,1.35fr) minmax(0,1.15fr) minmax(0,1.45fr) !important;
+    column-gap: 10px !important;
+    row-gap: 0 !important;
     width: 100% !important;
     min-width: 0 !important;
     align-items: end !important;
   }
   #absensiDailyView .absensi-toolbar .toolbar-field,
   #absensiMonthlyHost .abl-toolbar .toolbar-field {
-    width: auto !important;
+    width: 100% !important;
     min-width: 0 !important;
-    max-width: none !important;
+    max-width: 100% !important;
     margin: 0 !important;
     flex: none !important;
+    grid-column: auto !important;
+  }
+  #absensiDailyView .absensi-toolbar .toolbar-field-search,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field-search {
+    grid-column: auto !important;
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
   }
   #absensiDailyView .absensi-toolbar > .toolbar-right,
   #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right {
@@ -44,16 +63,6 @@
   }
   #absensiDailyView .absensi-toolbar #vamDailyOpen,
   #absensiMonthlyHost .abl-toolbar #vamOpen { order: 10; }
-}
-@media (min-width: 1101px) and (max-width: 1500px) {
-  #absensiDailyView .absensi-toolbar > .toolbar-left,
-  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left {
-    grid-template-columns: minmax(150px,.8fr) repeat(2,minmax(175px,1.15fr)) minmax(170px,.95fr) !important;
-  }
-  #absensiDailyView .absensi-toolbar .toolbar-field-search,
-  #absensiMonthlyHost .abl-toolbar .toolbar-field-search {
-    grid-column: 1 / -1 !important;
-  }
 }
 @media (max-width: 1100px) {
   #absensiDailyView .absensi-toolbar,
@@ -85,6 +94,15 @@
 #absensiMonthlyHost .abl-toolbar .erp-cselect,
 #absensiDailyView .absensi-toolbar .absensi-date-btn,
 #absensiMonthlyHost .abl-toolbar .absensi-date-btn { width: 100%; min-width: 0; max-width: 100%; }
+#absensiDailyView .absensi-toolbar .absensi-search-wrap,
+#absensiDailyView .absensi-toolbar .absensi-toolbar-input,
+#absensiMonthlyHost .abl-toolbar .abl-search-input { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+@media (min-width: 1101px) and (max-width: 1350px) {
+  #absensiDailyView .absensi-toolbar .absensi-mode-btn,
+  #absensiMonthlyHost .abl-toolbar .absensi-mode-btn { padding-inline: 5px !important; font-size: 12px !important; }
+  #absensiDailyView .absensi-toolbar .toolbar-field-label,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field-label { font-size: 10px !important; }
+}
 
 /* Owner manual attendance picker — dark premium / gold. Visuals only. */
 #vamPickerLayer { background: rgba(0,0,0,.78) !important; }
