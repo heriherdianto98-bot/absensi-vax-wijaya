@@ -1,0 +1,87 @@
+/* UI ONLY — Absensi toolbar layout. No data, filters or engine changes. */
+@media (min-width: 1101px) {
+  #absensiDailyView .absensi-toolbar,
+  #absensiMonthlyHost .abl-toolbar {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+    padding: 14px 16px !important;
+  }
+  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left {
+    display: grid !important;
+    grid-template-columns: minmax(164px,.75fr) minmax(195px,1.25fr) minmax(195px,1.25fr) minmax(182px,1fr) minmax(215px,1.3fr) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: end !important;
+  }
+  #absensiDailyView .absensi-toolbar .toolbar-field,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    flex: none !important;
+  }
+  #absensiDailyView .absensi-toolbar > .toolbar-right,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  #absensiDailyView .absensi-toolbar > .toolbar-right > *,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right > * {
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+  }
+  #absensiDailyView .absensi-toolbar #vamDailyOpen,
+  #absensiMonthlyHost .abl-toolbar #vamOpen { order: 10; }
+}
+@media (min-width: 1101px) and (max-width: 1500px) {
+  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left {
+    grid-template-columns: minmax(150px,.8fr) repeat(2,minmax(175px,1.15fr)) minmax(170px,.95fr) !important;
+  }
+  #absensiDailyView .absensi-toolbar .toolbar-field-search,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field-search {
+    grid-column: 1 / -1 !important;
+  }
+}
+@media (max-width: 1100px) {
+  #absensiDailyView .absensi-toolbar,
+  #absensiMonthlyHost .abl-toolbar { display: flex !important; flex-direction: column !important; gap: 12px !important; }
+  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 12px !important; width: 100% !important; }
+  #absensiDailyView .absensi-toolbar .toolbar-field,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field { min-width: 0 !important; width: auto !important; max-width: none !important; margin: 0 !important; }
+  #absensiDailyView .absensi-toolbar .toolbar-field-search,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field-search { grid-column: 1 / -1 !important; }
+  #absensiDailyView .absensi-toolbar > .toolbar-right,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right { width: 100% !important; display: flex !important; justify-content: flex-start !important; flex-wrap: wrap !important; align-items: center !important; gap: 8px !important; margin: 0 !important; }
+  #absensiDailyView .absensi-toolbar #vamDailyOpen,
+  #absensiMonthlyHost .abl-toolbar #vamOpen { order: 10; }
+}
+@media (max-width: 620px) {
+  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left { grid-template-columns: minmax(0,1fr) !important; }
+  #absensiDailyView .absensi-toolbar > .toolbar-right > *,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right > * { flex: 1 1 145px !important; min-width: 0 !important; }
+}
+#absensiDailyView .absensi-toolbar .toolbar-field-label,
+#absensiMonthlyHost .abl-toolbar .toolbar-field-label { display: block; margin-bottom: 7px; }
+#absensiDailyView .absensi-toolbar .absensi-mode-switch,
+#absensiMonthlyHost .abl-toolbar .absensi-mode-switch { width: 100%; min-width: 0; }
+#absensiDailyView .absensi-toolbar .absensi-mode-switch > *,
+#absensiMonthlyHost .abl-toolbar .absensi-mode-switch > * { flex: 1 1 0; min-width: 0; }
+#absensiDailyView .absensi-toolbar .erp-cselect,
+#absensiMonthlyHost .abl-toolbar .erp-cselect,
+#absensiDailyView .absensi-toolbar .absensi-date-btn,
+#absensiMonthlyHost .abl-toolbar .absensi-date-btn { width: 100%; min-width: 0; max-width: 100%; }
