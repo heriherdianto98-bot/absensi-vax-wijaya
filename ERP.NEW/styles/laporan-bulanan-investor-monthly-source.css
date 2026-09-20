@@ -1,0 +1,40 @@
+/* UI only. Reuse the ACTUAL Monthly report card CSS, loaded after Investor legacy overrides.
+   Do not copy Monthly report data, handlers, print or investor diagram. */
+@import url("./laporan-bulanan-four-card-color-3d.css?v=20260921-source");
+@import url("./laporan-bulanan-detail-panel-align.css?v=20260921-source");
+@media screen {
+/* Investor Revised legacy CSS targets these IDs with dotted row borders and black fill.
+   Restore the exact Monthly visual structure only for the three screen summary cards. */
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbIncomeLines,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbExpenseLines,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbResultLines {
+  background:transparent!important;background-image:none!important;
+}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbIncomeLines > .lb-line:not(.total),
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbExpenseLines > .lb-line:not(.total),
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbResultLines > .lb-line:not(.total) {
+  border:0!important;border-top:0!important;border-bottom:0!important;
+  background:transparent!important;background-image:none!important;box-shadow:none!important;
+}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbIncomeLines > .lb-line:not(.total)::before,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbIncomeLines > .lb-line:not(.total)::after,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbExpenseLines > .lb-line:not(.total)::before,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbExpenseLines > .lb-line:not(.total)::after,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbResultLines > .lb-line:not(.total)::before,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbResultLines > .lb-line:not(.total)::after {content:none!important;display:none!important;}
+/* Copy the Monthly detail-panel total tile verbatim; ID is needed to outrank Revised legacy dotted separators. */
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbIncomeLines > .lb-line.total,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbExpenseLines > .lb-line.total,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbResultLines > .lb-line.total {
+  box-sizing:border-box!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,max-content)!important;
+  align-items:center!important;column-gap:16px!important;width:100%!important;min-width:0!important;
+  margin:12px 0 0!important;padding:14px 15px!important;min-height:54px!important;
+  background:rgba(var(--lb-four-rgb),.09)!important;border:1px solid rgba(var(--lb-four-rgb),.24)!important;
+  border-radius:10px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+@media(max-width:650px){
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbIncomeLines > .lb-line.total,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbExpenseLines > .lb-line.total,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card #lbResultLines > .lb-line.total {grid-template-columns:minmax(0,1fr)!important;row-gap:4px!important}
+}
+}
