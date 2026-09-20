@@ -35,7 +35,16 @@
     return !selected || !reportPeriod || selected === reportPeriod;
   };
   const matchesSelected = report => !!selectedBranch() && String(report?.branch?.id ?? "") === selectedBranch() && monthMatches(report) && !!report?.investor?.nama;
-  const getReport = () => [window.LaporanBulananInvestorShareBridge?.lastReport].find(matchesSelected);
+  // Presentation-only cache: the page read cache can return a report without re-emitting an investor event.
+  const displayedReports = new Map();
+  const reportKey = report => `${String(report?.branch?.id ?? "")}|${String(report?.range?.start || report?.range?.end || "").slice(0,7)}`;
+  function remember(report) {
+    if (report?.branch?.id != null && (report?.range?.start || report?.range?.end)) displayedReports.set(reportKey(report), report);
+  }
+  const getReport = () => [
+    displayedReports.get(`${selectedBranch()}|${String(document.getElementById("lbMonth")?.value || "")}`),
+    window.LaporanBulananInvestorShareBridge?.lastReport
+  ].find(matchesSelected);
   function draw() {
     const stage = document.querySelector("#vax-investor-diagram .vax-flow-stage");
     const svg = stage?.querySelector(".vax-flow-connectors");
@@ -107,9 +116,9 @@
     placeWide();
     window.addEventListener("beforeprint",restoreForPrint);
     window.addEventListener("afterprint",()=>{placeWide();scheduleDraw();});
-    document.addEventListener("laporan-bulanan:investor-share",event=>{ const r=event.detail; if (matchesSelected(r)) render(r); });
-    document.addEventListener("laporan-investor:revised-report-applied",event=>{ const r=event.detail?.report; if (matchesSelected(r)) render(r); });
-    branchSelect()?.addEventListener("change",()=>{ hide();requestAnimationFrame(sync); });
+    document.addEventListener("laporan-bulanan:investor-share",event=>{ const r=event.detail; remember(r); if (matchesSelected(r)) render(r); });
+    document.addEventListener("laporan-investor:revised-report-applied",event=>{ const r=event.detail?.report; remember(r); if (matchesSelected(r)) render(r); });
+    branchSelect()?.addEventListener("change",()=>{ hide();sync(); });
     document.getElementById("lbMonth")?.addEventListener("change",()=>{ hide();requestAnimationFrame(sync); });
     window.addEventListener("resize",scheduleDraw);
     window.addEventListener("beforeprint",()=>document.body.classList.remove("vax-investor-diagram-ready"));
