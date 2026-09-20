@@ -4,6 +4,10 @@
   toolbarStyle.rel='stylesheet';
   toolbarStyle.href='../styles/absensi-toolbar-layout-ui.css?v=20260921-1';
   document.head.appendChild(toolbarStyle);
+  const matrixGoldStyle=document.createElement('link');
+  matrixGoldStyle.rel='stylesheet';
+  matrixGoldStyle.href='../styles/absensi-matrix-gold-ui.css?v=20260921-1';
+  document.head.appendChild(matrixGoldStyle);
   let started=false;
   function loadManual(){
     if(started)return;
