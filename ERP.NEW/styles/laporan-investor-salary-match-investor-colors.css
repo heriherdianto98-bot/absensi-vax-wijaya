@@ -1,0 +1,17 @@
+/* Investor Revised salary diagram palette only. No dimensions, layout, data, or print changes. */
+@media screen and (min-width:761px) {
+  body.laporan-bulanan-investor-page.vax-salary-diagram-ready .lb-wrap > .lb-card[data-lb-view="salary"],
+  body.laporan-bulanan-investor-page.vax-salary-diagram-ready #vax-salary-diagram {background:#10151b!important;border-color:rgba(210,177,103,.24)!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-top {background:linear-gradient(180deg,rgba(255,239,189,.12),transparent 30%),linear-gradient(130deg,#3b321d,#1b1c17)!important;border-color:#d8af4e!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-group:first-child .vax-salary-group-head,
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-group:first-child .vax-salary-card {background:linear-gradient(180deg,rgba(255,255,255,.075),transparent 29%),linear-gradient(145deg,#183549,#102535 50%,#0a1620)!important;border-color:rgba(75,151,185,.52)!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-other .vax-salary-group-head,
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-other .vax-salary-card {background:linear-gradient(180deg,rgba(255,239,189,.09),transparent 30%),linear-gradient(145deg,#302b22,#1b1b1c)!important;border-color:rgba(216,175,78,.55)!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-right .vax-salary-group-head,
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-right .vax-salary-card {background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 29%),linear-gradient(145deg,#292537,#171724 55%,#10131c)!important;border-color:rgba(164,142,204,.5)!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-other .vax-salary-icon {background:#40331f!important;border-color:rgba(216,175,78,.4)!important;color:#ffdc77!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-right .vax-salary-icon {background:#322b48!important;border-color:rgba(164,142,204,.45)!important;color:#c6b5ff!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-other .vax-salary-card-total strong {color:#ffe08b!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-right .vax-salary-card-total strong {color:#c6b5ff!important}
+  body.laporan-bulanan-investor-page #vax-salary-diagram .vax-salary-group:first-child .vax-salary-card-total strong {color:#a0f2fb!important}
+}
