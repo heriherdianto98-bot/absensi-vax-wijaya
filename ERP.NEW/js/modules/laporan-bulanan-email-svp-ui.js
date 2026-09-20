@@ -2,7 +2,7 @@
 /* Tombol email laporan bulanan: memakai markup A4 yang sama dengan tombol PDF. */
 (() => {
   const TO="speedrangga59@gmail.com";
-  const API="/api/monthly-report/email-svp";
+  const API=(location.hostname==="localhost"||location.hostname==="127.0.0.1")?"https://erp.vaxwijaya.com/api/monthly-report/email-svp":"/api/monthly-report/email-svp";
   let busy=false;
   const el=id=>document.getElementById(id);
   const monthText=value=>{
