@@ -6,7 +6,7 @@ body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card[data-lb-view="e
 body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card[data-lb-view="result"]{--lb-four-accent:#68dec2;--lb-four-rgb:104,222,194}
 body.laporan-bulanan-page .lb-grid .lb-monthly-column > .lb-card:is([data-lb-view="income"],[data-lb-view="salary"],[data-lb-view="expense"],[data-lb-view="result"]){
  --lb-detail-glow:rgba(var(--lb-four-rgb),.16);
- background:radial-gradient(ellipse at 0% 0%,rgba(var(--lb-four-rgb),.14),transparent 56%),linear-gradient(155deg,#1c2530 0%,#101820 53%,#080c12 100%)!important;
+ background:radial-gradient(110% 125% at 2% -18%,color-mix(in srgb,var(--lb-four-accent) 15%,#10151c),transparent 67%),linear-gradient(157deg,#202832 0%,#121820 47%,#090d13 100%)!important;
  border:1px solid rgba(var(--lb-four-rgb),.43)!important;
  box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -3px 5px rgba(0,0,0,.38),0 4px 0 #06090e,0 12px 25px rgba(0,0,0,.46),0 0 16px rgba(var(--lb-four-rgb),.15)!important;
 }
