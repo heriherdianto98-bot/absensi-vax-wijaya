@@ -57,3 +57,31 @@ body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi:nth-child(4){anim
  body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:hover,
  body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi:hover{transform:none!important}
 }
+
+/* Semua Cabang: tinggi empat card rekonsiliasi mengikuti tujuh KPI utama. */
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi{
+  box-sizing:border-box!important;
+  height:82px!important;
+  min-height:82px!important;
+  padding:8px 12px!important;
+  gap:3px!important;
+  justify-content:center!important;
+}
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi span{
+  font-size:10.2px!important;
+  line-height:1.1!important;
+}
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi strong{
+  font-size:19px!important;
+  line-height:1.05!important;
+  overflow-wrap:normal!important;
+  white-space:nowrap;
+}
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi small{
+  font-size:9.4px!important;
+  line-height:1.15!important;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+}
