@@ -1,0 +1,13 @@
+﻿/* Laporan Bulanan: tampilkan semua pilihan sebagai navigasi dua kolom. UI only. */
+body.laporan-bulanan-page .lb-view-switcher{display:block!important;padding:12px 16px 16px!important}
+body.laporan-bulanan-page .lb-view-field{display:none!important}
+body.laporan-bulanan-page .lb-view-hint{display:none!important}
+body.laporan-bulanan-page #lbSectionTrigger,body.laporan-bulanan-page #lbSectionPopover{display:none!important}
+body.laporan-bulanan-page .lb-static-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(4,minmax(42px,auto));grid-auto-flow:column;gap:9px 12px;width:100%}
+body.laporan-bulanan-page .lb-static-nav-title{display:block;color:#67e8f9;font-size:12px;font-weight:900;letter-spacing:.9px;margin:0 0 10px;text-transform:uppercase}
+body.laporan-bulanan-page .lb-static-nav button{min-width:0;width:100%;min-height:42px;text-align:left;padding:10px 14px;border:1px solid rgba(45,212,191,.2);border-radius:10px;background:#090d11;color:#d9f5f5;font:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+body.laporan-bulanan-page .lb-static-nav button:hover{background:#14272d;border-color:rgba(45,212,191,.65)}
+body.laporan-bulanan-page .lb-static-nav button.is-active{border-color:#d7b45e;background:linear-gradient(100deg,#14333b,#101a1e);color:#fff;box-shadow:inset 3px 0 0 #e6bb5a,0 0 12px rgba(215,180,94,.09)}
+body.laporan-bulanan-page .lb-static-nav button:focus-visible{outline:2px solid #67e8f9;outline-offset:2px}
+@media(max-width:700px){body.laporan-bulanan-page .lb-static-nav{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-flow:row;gap:7px}}
+@media print{body.laporan-bulanan-page .lb-view-switcher{display:none!important}}
