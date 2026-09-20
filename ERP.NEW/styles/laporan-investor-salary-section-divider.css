@@ -1,0 +1,23 @@
+/* Investor Revised screen-only separator between investor rights and salary diagram. */
+@media screen {
+  body.laporan-bulanan-investor-page .lb-wrap > .lb-card[data-lb-view="salary"] {
+    position: relative !important;
+    margin-top: 37px !important;
+    isolation: isolate;
+  }
+  body.laporan-bulanan-investor-page .lb-wrap > .lb-card[data-lb-view="salary"]::after {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    top: -21px !important;
+    left: 18px !important;
+    right: 18px !important;
+    height: 2px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: linear-gradient(90deg,transparent,rgba(215,180,94,.64) 24%,rgba(83,210,230,.84) 50%,rgba(215,180,94,.64) 76%,transparent) !important;
+    box-shadow: 0 0 11px rgba(83,210,230,.19) !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+  }
+}
