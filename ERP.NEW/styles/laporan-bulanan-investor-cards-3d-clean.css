@@ -41,3 +41,33 @@ body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column .lb-mapping .lb-c
   box-shadow:inset 0 1px 0 rgba(255,255,255,.075)!important;
 }
 }
+/* V2: override legacy ID-specific dotted rules; compact only the four summary panels. */
+@media screen {
+body.laporan-bulanan-investor-page #lbIncomeLines > .lb-line:not(.total),
+body.laporan-bulanan-investor-page #lbExpenseLines > .lb-line:not(.total),
+body.laporan-bulanan-investor-page #lbResultLines > .lb-line:not(.total),
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card .lb-lines > .lb-line:not(.total){
+  border:0!important;border-top:0!important;border-bottom:0!important;border-image:none!important;
+  outline:0!important;box-shadow:none!important;background:transparent!important;background-image:none!important;
+  padding:7px 0!important;min-height:0!important;
+}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card .lb-lines > .lb-line:not(.total)::before,
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card .lb-lines > .lb-line:not(.total)::after{content:none!important;display:none!important}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card .lb-card-head{
+  min-height:42px!important;padding:8px 44px 8px 12px!important;margin:9px 9px 0!important;
+  width:calc(100% - 18px)!important;
+}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card .lb-card-head h3{font-size:clamp(16px,1.2vw,19px)!important}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card .lb-card-body.lb-lines{padding:5px 14px 12px!important}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-card .lb-lines > .lb-line.total{
+  padding:9px 10px!important;margin-top:5px!important;
+}
+body.laporan-bulanan-investor-page .lb-grid,
+body.laporan-bulanan-investor-page .lb-grid.lb-single-view{gap:12px!important;margin:10px 0 12px!important}
+body.laporan-bulanan-investor-page .lb-grid > .lb-monthly-column{gap:12px!important}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-mapping .lb-card-head{
+  min-height:42px!important;padding:9px 12px!important;margin:9px 9px 0!important;width:calc(100% - 18px)!important;
+}
+body.laporan-bulanan-investor-page .lb-grid .lb-monthly-column > .lb-mapping .lb-card-body{padding:5px 12px 12px!important}
+body.laporan-bulanan-investor-page .lb-kpis > .lb-kpi{min-height:88px!important;padding:10px 12px!important}
+}
