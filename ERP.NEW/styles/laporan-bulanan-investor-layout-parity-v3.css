@@ -27,3 +27,18 @@ body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="investor"] #v
 @media(max-width:960px){body.laporan-bulanan-investor-page .lb-grid,body.laporan-bulanan-investor-page .lb-grid.lb-single-view{grid-template-columns:minmax(0,1fr)!important}}
 @media(max-width:580px){body.laporan-bulanan-investor-page .lb-kpis{grid-template-columns:minmax(0,1fr)!important}}
 }
+
+/* Wide salary and result sit before the existing full-width investor diagram. */
+@media screen {
+body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="salary"],
+body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"]{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;width:100%!important;min-width:0!important;max-width:none!important;max-height:none!important;height:auto!important;overflow:visible!important;margin:16px 0!important;grid-column:auto!important;transform:none!important;animation:none!important}
+body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="salary"]{background:#0b1720!important;border:1px solid #244455!important;box-shadow:none!important}
+body.laporan-bulanan-investor-page.vax-salary-diagram-ready .lb-wrap>.lb-card[data-lb-view="salary"]>.lb-card-head{display:none!important}
+body.laporan-bulanan-investor-page.vax-salary-diagram-ready .lb-wrap>.lb-card[data-lb-view="salary"] #lbSalaryLines{display:none!important}
+body.laporan-bulanan-investor-page.vax-salary-diagram-ready .lb-wrap>.lb-card[data-lb-view="salary"] #vax-salary-diagram{display:block!important;width:100%!important;max-width:none!important}
+body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"]{background:#101419!important;border:1px solid rgba(104,222,194,.34)!important;border-radius:12px!important}
+body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"]>.lb-card-body{background:transparent!important;max-height:none!important;overflow:visible!important}
+body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"] .lb-lines>.lb-line{background:transparent!important;border:0!important;border-bottom:1px solid rgba(190,207,222,.12)!important}
+body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"] .lb-lines>.lb-line.total{background:rgba(104,222,194,.09)!important;border:1px solid rgba(104,222,194,.28)!important;border-radius:9px!important;padding:12px!important}
+body.laporan-bulanan-investor-page .lb-wrap>.lb-card[data-lb-view="result"] .lb-lines>.lb-line.total :is(span,strong){color:#68dec2!important}
+}
