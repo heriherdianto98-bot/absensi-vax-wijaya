@@ -1,0 +1,38 @@
+/* Investor Revised: visual parity with Monthly report. SCREEN ONLY. No data, rendering, or print changes. */
+@media screen {
+body.laporan-bulanan-investor-page .erp-wrapper{background:linear-gradient(180deg,#101419,#0b1119)!important}
+body.laporan-bulanan-investor-page .lb-toolbar{background:#12171e!important;border-bottom:1px solid rgba(215,180,94,.45)!important;box-shadow:0 7px 20px rgba(0,0,0,.25)!important}
+body.laporan-bulanan-investor-page .lb-head{background:radial-gradient(ellipse at 50% 0%,rgba(215,180,94,.12),transparent 68%),linear-gradient(125deg,#18212a,#10151b)!important;border:1px solid rgba(215,180,94,.32)!important;border-left:4px solid #57d8e6!important;border-radius:14px!important;box-shadow:0 9px 23px rgba(0,0,0,.24)!important}
+body.laporan-bulanan-investor-page .lb-view-switcher{display:block!important;background:linear-gradient(130deg,#101820,#0b1118)!important;border:1px solid rgba(75,177,192,.33)!important;border-radius:14px!important}
+body.laporan-bulanan-investor-page .lb-view-field>span,body.laporan-bulanan-investor-page .lb-view-hint{color:#b2e7ec!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card{min-width:0;border:1px solid rgba(215,180,94,.32)!important;border-left:3px solid var(--inv-parity-accent,#d7b45e)!important;border-radius:14px!important;background:radial-gradient(110% 110% at 0% 0%,rgba(var(--inv-parity-rgb,215,180,94),.11),transparent 62%),linear-gradient(150deg,#1b242d,#0c1118)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 5px 0 #06090d,0 14px 24px rgba(0,0,0,.35)!important;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card:hover{border-color:rgba(var(--inv-parity-rgb,215,180,94),.75)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 7px 0 #06090d,0 18px 28px rgba(0,0,0,.42),0 0 18px rgba(var(--inv-parity-rgb,215,180,94),.18)!important;transform:translateY(-2px)!important}
+body.laporan-bulanan-investor-page .lb-grid>[data-lb-view="income"]{--inv-parity-accent:#edc76c;--inv-parity-rgb:237,199,108}
+body.laporan-bulanan-investor-page .lb-grid>[data-lb-view="salary"]{--inv-parity-accent:#c6a2ff;--inv-parity-rgb:198,162,255}
+body.laporan-bulanan-investor-page .lb-grid>[data-lb-view="expense"]{--inv-parity-accent:#ffac8a;--inv-parity-rgb:255,172,138}
+body.laporan-bulanan-investor-page .lb-grid>[data-lb-view="result"]{--inv-parity-accent:#68dec2;--inv-parity-rgb:104,222,194}
+body.laporan-bulanan-investor-page .lb-grid>[data-lb-view="investor"]{--inv-parity-accent:#63dcec;--inv-parity-rgb:99,220,236}
+body.laporan-bulanan-investor-page .lb-grid>[data-lb-view="performance"]{--inv-parity-accent:#8db5ff;--inv-parity-rgb:141,181,255}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card>.lb-card-head{background:linear-gradient(120deg,rgba(var(--inv-parity-rgb,215,180,94),.09),#111820)!important;border-bottom:1px solid rgba(var(--inv-parity-rgb,215,180,94),.22)!important;border-radius:13px 13px 0 0!important;padding:12px 16px!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card>.lb-card-head h3{color:var(--inv-parity-accent,#e9c776)!important;font-size:clamp(18px,1.5vw,22px)!important;font-weight:850!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card>.lb-card-body,body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines,body.laporan-bulanan-investor-page .lb-grid>.lb-card #lbPerformance{background:transparent!important;background-color:transparent!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines>.lb-line{padding:12px 0!important;min-height:0!important;border:0!important;border-bottom:1px solid rgba(190,207,222,.12)!important;background:transparent!important;gap:16px!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines>.lb-line span{color:#dce5ed!important;font-size:15px!important;font-weight:650!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines>.lb-line strong{color:#f8fafc!important;font-size:16px!important;font-weight:800!important;text-align:right!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines>.lb-line.total{background:rgba(var(--inv-parity-rgb,215,180,94),.09)!important;border:1px solid rgba(var(--inv-parity-rgb,215,180,94),.3)!important;border-radius:9px!important;padding:12px!important;margin-top:9px!important}
+body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines>.lb-line.total span,body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines>.lb-line.total strong{color:var(--inv-parity-accent,#edcc80)!important}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi{--kpi-light:#d9b96f;--kpi-glow:rgba(217,185,111,.16)}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi:nth-child(2){--kpi-light:#64dbea;--kpi-glow:rgba(100,219,234,.16)}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi:nth-child(3){--kpi-light:#ffac8a;--kpi-glow:rgba(255,172,138,.16)}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi:nth-child(4){--kpi-light:#c6a2ff;--kpi-glow:rgba(198,162,255,.16)}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi:nth-child(5){--kpi-light:#68dec2;--kpi-glow:rgba(104,222,194,.16)}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi:nth-child(6){--kpi-light:#8db5ff;--kpi-glow:rgba(141,181,255,.16)}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi:nth-child(7){--kpi-light:#f58abc;--kpi-glow:rgba(245,138,188,.16)}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi>strong{color:var(--kpi-light)!important}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi>span{color:#e1e9f0!important}
+body.laporan-bulanan-investor-page .lb-kpis>.lb-kpi>small{color:#aebdca!important}
+body.laporan-bulanan-investor-page .lb-source-strip{border-radius:12px!important;background:linear-gradient(105deg,#173346,#102330)!important}
+body.laporan-bulanan-investor-page .lb-review,body.laporan-bulanan-investor-page .lb-mapping{border-radius:13px!important;border-color:rgba(215,180,94,.27)!important}
+@media(max-width:750px){body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines>.lb-line{flex-wrap:wrap!important;gap:5px!important}body.laporan-bulanan-investor-page .lb-grid>.lb-card .lb-lines>.lb-line strong{overflow-wrap:anywhere!important}}
+@media(prefers-reduced-motion:reduce){body.laporan-bulanan-investor-page .lb-grid>.lb-card{transition:none!important}}
+}
