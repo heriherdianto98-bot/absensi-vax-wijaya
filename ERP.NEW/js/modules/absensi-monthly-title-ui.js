@@ -11,6 +11,12 @@
     const script=document.createElement('script');
     script.src='../js/modules/absensi-manual-owner.js?v=20260921-1';
     script.onerror=()=>console.error('Gagal memuat modul input manual Owner');
+    script.onload=()=>{
+      const picker=document.createElement('script');
+      picker.src='../js/modules/absensi-manual-picker-ui.js?v=20260921-1';
+      picker.onerror=()=>console.error('Gagal memuat tampilan kalender/jam Owner');
+      document.head.appendChild(picker);
+    };
     document.head.appendChild(script);
   }
   document.addEventListener('erp:finance-ready',loadManual,{once:true});
@@ -28,5 +34,25 @@
     dailyButton();
     const root=document.getElementById('absensiRoot');
     if(root)new MutationObserver(dailyButton).observe(root,{childList:true,subtree:true});
+    // Existing attendance loader fills native inputs programmatically: mirror their values in custom UI.
+    const watchMessage=()=>{
+      const msg=document.getElementById('vamMessage');
+      if(!msg)return false;
+      new MutationObserver(()=>{
+        ['vamTanggal','vamMasuk','vamPulang'].forEach(id=>{
+          const input=document.getElementById(id);
+          const label=input?.parentElement?.querySelector('.vam-picker-text');
+          if(!label)return;
+          const value=input.value||'';
+          const match=input.type==='date'?/^(\d{4})-(\d{2})-(\d{2})$/.exec(value):null;
+          label.textContent=match?`${match[3]}/${match[2]}/${match[1]}`:(value.slice(0,5)||(input.type==='date'?'Pilih tanggal':'Pilih jam'));
+        });
+      }).observe(msg,{childList:true,characterData:true,subtree:true});
+      return true;
+    };
+    if(!watchMessage()){
+      const watcher=new MutationObserver(()=>{if(watchMessage())watcher.disconnect();});
+      watcher.observe(document.body,{childList:true,subtree:true});
+    }
   },{once:true});
 })();
