@@ -40,7 +40,8 @@
   function renderSingle(report){
     const host=document.getElementById("lbInvestorLines");
     const inv=report?.investor;
-    if(!host||!inv?.nama) return;
+    if(!host||(!inv?.nama&&!inv?.managementOnly)) return;
+    if(inv.managementOnly){host.innerHTML=`<div class="lb-line"><span>Status Investor</span><strong>Tidak ada investor aktif</strong></div><div class="lb-line"><span>Porsi Manajemen</span><strong>100%</strong></div><div class="lb-line total"><span>Hak Manajemen (Laba Bersih)</span><strong>${money(inv.nilaiManajemen)}</strong></div>`;return;}
 
     const hakInvestor=num(inv.totalHakBulanIni);
     const hakManajemen=num(inv.nilaiManajemen);
@@ -304,6 +305,7 @@
 
   function investorBlock(report){
     const inv=report?.investor;
+    if(inv?.managementOnly) return `<div class="two-col"><div>${line("Investor","Tidak ada investor aktif")}${line("Porsi Investor","0%")}${line("Hak Investor",money(0))}</div><div>${line("Porsi Manajemen","100%")}${line("Hak Manajemen (Laba Bersih)",money(inv.nilaiManajemen),"total")}</div></div>`;
     if(!inv?.nama) return '<div class="note">Cabang ini tidak memiliki investor aktif.</div>';
     return `<div class="two-col">
       <div>${line("Investor",inv.nama)}${line("Porsi Investor",`${num(inv.porsiInvestor||inv.persentase)}%`)}${line("Nilai Investor",money(inv.nilaiInvestor||inv.bagiHasil))}${line("Sewa Dibayar",money(inv.sewaDibayar))}${line("Total Hak Investor",money(inv.totalHakBulanIni),"total")}</div>
