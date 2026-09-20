@@ -13,10 +13,10 @@
       strip.className = "lb-performance-kpi-strip";
       strip.setAttribute("aria-label", "KPI Performa Cabang");
     }
-    // Put the performance KPI strip before the finance detail grid on screen.
-    grid.insertAdjacentElement("beforebegin", strip);
-    strip.appendChild(kpis);
+    // Keep investor first, then KPI tiles immediately above the full-width performance summary.
     investor.insertAdjacentElement("afterend", card);
+    card.insertAdjacentElement("beforebegin", strip);
+    strip.appendChild(kpis);
     document.body.classList.add("lb-performance-layout-ready");
   }
   function restoreForPrint() {
