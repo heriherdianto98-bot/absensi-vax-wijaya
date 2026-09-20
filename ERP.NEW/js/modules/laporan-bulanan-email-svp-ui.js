@@ -80,6 +80,20 @@
     button.title="Kirim PDF laporan bulanan ke SVP";
     button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM3 6l9 7 9-7"/></svg><span>Email SVP</span>';
     button.addEventListener("click",openModal);actions.appendChild(button);
+    const wa=document.createElement("button");
+    wa.type="button";wa.id="lbWhatsappSvpMonthly";wa.className="lb-print-action";
+    wa.title="Buka chat SVP Rangga; lampirkan PDF laporan secara manual";
+    wa.style.cssText="color:#74e5a0;border-color:rgba(37,211,102,.5);background:rgba(37,211,102,.1)";
+    wa.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20l.9-4.6A8.5 8.5 0 1 1 20 11.5zM8 8c.5 4 3.5 7 7.5 8"/></svg><span>WhatsApp SVP</span>';
+    wa.addEventListener("click",()=>{
+      const branch=el("lbBranch")?.selectedOptions?.[0]?.textContent?.trim()||"Semua Cabang";
+      const period=monthText(el("lbMonth")?.value);
+      if(period==="—"){window.alert("Pilih periode laporan terlebih dahulu.");return;}
+      if(!window.confirm("Simpan laporan melalui tombol PDF terlebih dahulu, lalu lampirkan PDF secara manual di WhatsApp Rangga. Buka WhatsApp sekarang?"))return;
+      const message=`Halo Kak Rangga, berikut Laporan Bulanan ${branch} ${period}. PDF akan saya lampirkan di chat ini.`;
+      window.open(`https://wa.me/6287837102090?text=${encodeURIComponent(message)}`,"_blank","noopener,noreferrer");
+    });
+    actions.appendChild(wa);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
