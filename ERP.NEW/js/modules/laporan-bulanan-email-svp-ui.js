@@ -90,7 +90,7 @@
       const period=monthText(el("lbMonth")?.value);
       if(period==="—"){window.alert("Pilih periode laporan terlebih dahulu.");return;}
       if(!window.confirm("Simpan laporan melalui tombol PDF terlebih dahulu, lalu lampirkan PDF secara manual di WhatsApp Rangga. Buka WhatsApp sekarang?"))return;
-      const message=`Halo Kak Rangga, berikut Laporan Bulanan ${branch} ${period}. PDF akan saya lampirkan di chat ini.`;
+      const message=`Laporan Bulanan ${branch} ${period}.`;
       window.open(`https://wa.me/6287837102090?text=${encodeURIComponent(message)}`,"_blank","noopener,noreferrer");
     });
     actions.appendChild(wa);
