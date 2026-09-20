@@ -1,22 +1,9 @@
-/* UI ONLY: label bulanan; tidak mengubah filter, data, atau mesin laporan. */
 (function(){
   'use strict';
-  function boot(){
-    const host=document.getElementById('absensiMonthlyHost');
-    if(!host)return;
-    function syncTitle(){
-      const title=host.querySelector('#ablPage .abl-page-title');
-      if(title && title.textContent.trim()!=='RINGKASAN BULAN INI') title.textContent='RINGKASAN BULAN INI';
-    }
-    syncTitle();
-    new MutationObserver(syncTitle).observe(host,{childList:true,subtree:true});
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-})();
-
-/* Owner manual attendance: additive lazy-load, separate from locked absensi engines. */
-(function(){
-  'use strict';
+  const toolbarStyle=document.createElement('link');
+  toolbarStyle.rel='stylesheet';
+  toolbarStyle.href='../styles/absensi-toolbar-layout-ui.css?v=20260921-1';
+  document.head.appendChild(toolbarStyle);
   let started=false;
   function loadManual(){
     if(started)return;
