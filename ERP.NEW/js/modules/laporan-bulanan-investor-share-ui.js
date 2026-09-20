@@ -407,20 +407,23 @@
     return `<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Laporan Bulanan</div><div class="foot-center">${esc(periodLabel())} · ${esc(branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
   }
 
-  async function openPrint(mode="print"){
-    if(busy) return;
-    busy=true;
-    const buttons=[document.getElementById("lbPrintMonthly"),document.getElementById("lbPdfMonthly")];
-    buttons.forEach(b=>{if(b)b.disabled=true;});
-    try{
-      const reports=await ensureReports();
-      const branchLabel=reports.length>1?"Semua Cabang":branchName(reports[0]);
-      const printedAt=nowWib();
-      const notFinal=reports.some(r=>!isReady(r));
-      const w=window.open("","_blank");
-      if(!w){alert("Popup print diblokir browser.");return;}
-      const title=`Laporan Bulanan ${branchLabel} ${periodLabel()}${mode==="pdf"?" PDF":""}`;
-      const body=`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>${esc(title)}</title><style>${printCss()}</style></head><body>
+  // Renderer bersama: HTML email memakai format A4 identik dengan tombol PDF.
+  async function emailDocument(){
+    const branch=String(document.getElementById("lbBranch")?.value||"");
+    const month=periodValue();
+    const reports=await ensureReports();
+    if(branch!==String(document.getElementById("lbBranch")?.value||"")||month!==periodValue())
+      throw new Error("Filter berubah. Pilih kembali laporan untuk dikirim.");
+    if(reports.some(r=>!isReady(r))) throw new Error("Laporan belum FINAL READY. Email belum dapat dikirim.");
+    return buildPrintDocument(reports,"pdf");
+  }
+
+  function buildPrintDocument(reports,mode="pdf"){
+    const branchLabel=reports.length>1?"Semua Cabang":branchName(reports[0]);
+    const printedAt=nowWib();
+    const notFinal=reports.some(r=>!isReady(r));
+    const title=`Laporan Bulanan ${branchLabel} ${periodLabel()}${mode==="pdf"?" PDF":""}`;
+    const body=`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>${esc(title)}</title><style>${printCss()}</style></head><body>
         <table class="page-frame"><thead><tr><td><div class="head-space">${masterHeader()}</div></td></tr></thead><tfoot><tr><td><div class="foot-space">${masterFooter(branchLabel,printedAt)}</div></td></tr></tfoot><tbody><tr><td><main class="content">
           <section class="report-title"><h1>Laporan Bulanan ${esc(branchLabel)}</h1><p>Periode ${esc(periodLabel())} · Cash Out ditampilkan sesuai klasifikasi dan rekonsiliasi Laporan Bulanan.</p></section>
           ${notFinal?'<div class="warn">BELUM FINAL / PERLU REVIEW — masih ada data yang belum lengkap. Angka dapat berubah setelah kelengkapan data diselesaikan.</div>':""}
@@ -428,6 +431,19 @@
           ${reports.map(branchHtml).join("")}
         </main></td></tr></tbody></table>
         <script>window.addEventListener('load',async()=>{await Promise.all([...document.images].map(i=>i.complete?Promise.resolve():new Promise(resolve=>{i.addEventListener('load',resolve,{once:true});i.addEventListener('error',resolve,{once:true});})));setTimeout(()=>window.print(),120);});<\/script></body></html>`;
+    return {html:body,branch:branchLabel,month:periodValue(),title};
+  }
+
+  async function openPrint(mode="print"){
+    if(busy) return;
+    busy=true;
+    const buttons=[document.getElementById("lbPrintMonthly"),document.getElementById("lbPdfMonthly")];
+    buttons.forEach(b=>{if(b)b.disabled=true;});
+    try{
+      const reports=await ensureReports();
+      const w=window.open("","_blank");
+      if(!w){alert("Popup print diblokir browser.");return;}
+      const {html:body}=buildPrintDocument(reports,mode);
       w.document.open();w.document.write(body);w.document.close();
     }catch(err){
       console.error("[Laporan Bulanan Print]",err);
@@ -464,5 +480,5 @@
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot,{once:true});
   else boot();
-  window.LaporanBulananPrintUI={open:openPrint,reconciledCashOut};
+  window.LaporanBulananPrintUI={open:openPrint,reconciledCashOut,emailDocument};
 })();

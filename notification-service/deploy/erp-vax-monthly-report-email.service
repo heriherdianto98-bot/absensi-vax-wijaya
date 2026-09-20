@@ -1,0 +1,21 @@
+[Unit]
+Description=ERP VAX Monthly Report PDF Email API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Environment=HOME=/tmp
+Environment=XDG_CACHE_HOME=/tmp
+WorkingDirectory=/opt/erp-vax-notification
+EnvironmentFile=/opt/erp-vax-notification/.env
+ExecStart=/usr/bin/node /opt/erp-vax-notification/monthly-report-email-api.js
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
