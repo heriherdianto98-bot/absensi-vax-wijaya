@@ -1,51 +1,122 @@
-/* UI ONLY — compact one-row Absensi filters; no engine or data changes. */
+/* UI ONLY — Absensi toolbar layout. No data, filters or engine changes. */
+@media (min-width: 1101px) {
+  #absensiDailyView .absensi-toolbar,
+  #absensiMonthlyHost .abl-toolbar {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+    padding: 14px 16px !important;
+  }
+  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left {
+    display: grid !important;
+    grid-template-columns: minmax(164px,.75fr) minmax(195px,1.25fr) minmax(195px,1.25fr) minmax(182px,1fr) minmax(215px,1.3fr) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: end !important;
+  }
+  #absensiDailyView .absensi-toolbar .toolbar-field,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    flex: none !important;
+  }
+  #absensiDailyView .absensi-toolbar > .toolbar-right,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  #absensiDailyView .absensi-toolbar > .toolbar-right > *,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right > * {
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+  }
+  #absensiDailyView .absensi-toolbar #vamDailyOpen,
+  #absensiMonthlyHost .abl-toolbar #vamOpen { order: 10; }
+}
+@media (min-width: 1101px) and (max-width: 1500px) {
+  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left {
+    grid-template-columns: minmax(150px,.8fr) repeat(2,minmax(175px,1.15fr)) minmax(170px,.95fr) !important;
+  }
+  #absensiDailyView .absensi-toolbar .toolbar-field-search,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field-search {
+    grid-column: 1 / -1 !important;
+  }
+}
+@media (max-width: 1100px) {
+  #absensiDailyView .absensi-toolbar,
+  #absensiMonthlyHost .abl-toolbar { display: flex !important; flex-direction: column !important; gap: 12px !important; }
+  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 12px !important; width: 100% !important; }
+  #absensiDailyView .absensi-toolbar .toolbar-field,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field { min-width: 0 !important; width: auto !important; max-width: none !important; margin: 0 !important; }
+  #absensiDailyView .absensi-toolbar .toolbar-field-search,
+  #absensiMonthlyHost .abl-toolbar .toolbar-field-search { grid-column: 1 / -1 !important; }
+  #absensiDailyView .absensi-toolbar > .toolbar-right,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right { width: 100% !important; display: flex !important; justify-content: flex-start !important; flex-wrap: wrap !important; align-items: center !important; gap: 8px !important; margin: 0 !important; }
+  #absensiDailyView .absensi-toolbar #vamDailyOpen,
+  #absensiMonthlyHost .abl-toolbar #vamOpen { order: 10; }
+}
+@media (max-width: 620px) {
+  #absensiDailyView .absensi-toolbar > .toolbar-left,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-left { grid-template-columns: minmax(0,1fr) !important; }
+  #absensiDailyView .absensi-toolbar > .toolbar-right > *,
+  #absensiMonthlyHost .abl-toolbar > .abl-toolbar-right > * { flex: 1 1 145px !important; min-width: 0 !important; }
+}
 #absensiDailyView .absensi-toolbar .toolbar-field-label,
-#absensiMonthlyHost .abl-toolbar .toolbar-field-label{display:block;margin-bottom:7px}
-#absensiDailyView .absensi-toolbar .toolbar-field,
-#absensiMonthlyHost .abl-toolbar .toolbar-field{min-width:0!important;max-width:none!important;width:auto!important;flex:none!important;margin:0!important}
+#absensiMonthlyHost .abl-toolbar .toolbar-field-label { display: block; margin-bottom: 7px; }
+#absensiDailyView .absensi-toolbar .absensi-mode-switch,
+#absensiMonthlyHost .abl-toolbar .absensi-mode-switch { width: 100%; min-width: 0; }
+#absensiDailyView .absensi-toolbar .absensi-mode-switch > *,
+#absensiMonthlyHost .abl-toolbar .absensi-mode-switch > * { flex: 1 1 0; min-width: 0; }
 #absensiDailyView .absensi-toolbar .erp-cselect,
 #absensiMonthlyHost .abl-toolbar .erp-cselect,
-#absensiDailyView .absensi-toolbar select,
-#absensiMonthlyHost .abl-toolbar select,
 #absensiDailyView .absensi-toolbar .absensi-date-btn,
-#absensiMonthlyHost .abl-toolbar .absensi-date-btn,
-#absensiDailyView .absensi-toolbar .absensi-search-wrap,
-#absensiMonthlyHost .abl-toolbar .abl-search-input{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box}
-#absensiDailyView .absensi-toolbar .absensi-mode-switch,
-#absensiMonthlyHost .abl-toolbar .absensi-mode-switch{display:flex;width:100%;min-width:0}
-#absensiDailyView .absensi-toolbar .absensi-mode-switch>*,
-#absensiMonthlyHost .abl-toolbar .absensi-mode-switch>*{flex:1 1 0;min-width:0;padding-left:7px;padding-right:7px}
-@media (min-width:1101px){
- #absensiDailyView .absensi-toolbar,
- #absensiMonthlyHost .abl-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;align-items:stretch!important;padding:14px 16px!important}
- /* Daily: Mode | Cabang | Karyawan | Tanggal | Status | Cari Karyawan */
- #absensiDailyView .absensi-toolbar>.toolbar-left{display:grid!important;grid-template-columns:minmax(135px,1.05fr) minmax(165px,1.38fr) minmax(170px,1.38fr) minmax(136px,1.05fr) minmax(128px,.95fr) minmax(175px,1.48fr)!important;gap:10px!important;width:100%!important;min-width:0!important;align-items:end!important}
- /* Monthly has five filters. */
- #absensiMonthlyHost .abl-toolbar>.abl-toolbar-left{display:grid!important;grid-template-columns:minmax(140px,.85fr) minmax(175px,1.25fr) minmax(175px,1.25fr) minmax(150px,1fr) minmax(200px,1.4fr)!important;gap:10px!important;width:100%!important;min-width:0!important;align-items:end!important}
- #absensiDailyView .absensi-toolbar .toolbar-field-search,
- #absensiMonthlyHost .abl-toolbar .toolbar-field-search{grid-column:auto!important}
- #absensiDailyView .absensi-toolbar>.toolbar-right,
- #absensiMonthlyHost .abl-toolbar>.abl-toolbar-right{display:flex!important;width:100%!important;min-width:0!important;justify-content:flex-end!important;align-items:center!important;flex-wrap:wrap!important;gap:8px!important;margin:0!important;padding:0!important}
- #absensiDailyView .absensi-toolbar>.toolbar-right>*,
- #absensiMonthlyHost .abl-toolbar>.abl-toolbar-right>*{margin:0!important;flex:0 0 auto!important}
- #absensiDailyView .absensi-toolbar #vamDailyOpen,
- #absensiMonthlyHost .abl-toolbar #vamOpen{order:10}
+#absensiMonthlyHost .abl-toolbar .absensi-date-btn { width: 100%; min-width: 0; max-width: 100%; }
+
+/* Owner manual attendance picker — dark premium / gold. Visuals only. */
+#vamPickerLayer { background: rgba(0,0,0,.78) !important; }
+#vamPickerLayer #vamPickerCard {
+  background: linear-gradient(160deg,#222831 0%,#171b22 100%) !important;
+  border: 1px solid rgba(218,175,55,.75) !important;
+  box-shadow: 0 24px 80px rgba(0,0,0,.76), 0 0 24px rgba(212,175,55,.08) !important;
+  color: #f6f1e6 !important;
+  color-scheme: dark;
+  scrollbar-color: #866b2d #1b2028;
+  scrollbar-width: thin;
 }
-@media (max-width:1100px){
- #absensiDailyView .absensi-toolbar,
- #absensiMonthlyHost .abl-toolbar{display:flex!important;flex-direction:column!important;gap:12px!important}
- #absensiDailyView .absensi-toolbar>.toolbar-left,
- #absensiMonthlyHost .abl-toolbar>.abl-toolbar-left{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;width:100%!important;min-width:0!important}
- #absensiDailyView .absensi-toolbar .toolbar-field-search,
- #absensiMonthlyHost .abl-toolbar .toolbar-field-search{grid-column:1/-1!important}
- #absensiDailyView .absensi-toolbar>.toolbar-right,
- #absensiMonthlyHost .abl-toolbar>.abl-toolbar-right{width:100%!important;display:flex!important;justify-content:flex-start!important;flex-wrap:wrap!important;align-items:center!important;gap:8px!important;margin:0!important}
- #absensiDailyView .absensi-toolbar #vamDailyOpen,
- #absensiMonthlyHost .abl-toolbar #vamOpen{order:10}
-}
-@media (max-width:620px){
- #absensiDailyView .absensi-toolbar>.toolbar-left,
- #absensiMonthlyHost .abl-toolbar>.abl-toolbar-left{grid-template-columns:minmax(0,1fr)!important}
- #absensiDailyView .absensi-toolbar>.toolbar-right>*,
- #absensiMonthlyHost .abl-toolbar>.abl-toolbar-right>*{flex:1 1 145px!important;min-width:0!important}
-}
+#vamPickerLayer #vamPickerCard .vmp-head strong { color: #f1ca59 !important; }
+#vamPickerLayer #vamPickerCard .vmp-week { color: #d3b86e !important; }
+#vamPickerLayer #vamPickerCard .vmp-days { padding: 4px 0 !important; }
+#vamPickerLayer #vamPickerCard .vmp-cell { color: #f0f1f3 !important; transition: background .15s ease,border-color .15s ease; }
+#vamPickerLayer #vamPickerCard .vmp-cell:disabled { color: #737b86 !important; }
+#vamPickerLayer #vamPickerCard .vmp-cell.is-selected { background: linear-gradient(135deg,#f2cf65,#d4a72f) !important; color: #171717 !important; box-shadow: 0 3px 12px rgba(212,175,55,.19); }
+#vamPickerLayer #vamPickerCard .vmp-cell.is-today:not(.is-selected) { border-color: #b89339 !important; color: #f4ca55 !important; }
+#vamPickerLayer #vamPickerCard .vmp-nav button,
+#vamPickerLayer #vamPickerCard .vmp-foot button { border-color: #635331 !important; background: #292e36 !important; color: #f1e8d2 !important; }
+#vamPickerLayer #vamPickerCard .vmp-foot .vmp-primary { background: #d9b442 !important; border-color: #d9b442 !important; color: #171717 !important; }
+#vamPickerLayer #vamPickerCard .vmp-number-grid { background: #1b2129 !important; border-color: #4d4737 !important; color-scheme: dark; scrollbar-color: #947632 #232a33; scrollbar-width: thin; }
+#vamPickerLayer #vamPickerCard .vmp-number-grid button { color: #e9ebef !important; }
+#vamPickerLayer #vamPickerCard .vmp-number-grid button.is-selected { background: #d9b442 !important; color: #181818 !important; }
+#vamPickerLayer #vamPickerCard .vmp-number-grid::-webkit-scrollbar,
+#vamPickerLayer #vamPickerCard::-webkit-scrollbar { width: 7px; height: 7px; }
+#vamPickerLayer #vamPickerCard .vmp-number-grid::-webkit-scrollbar-track,
+#vamPickerLayer #vamPickerCard::-webkit-scrollbar-track { background: #232a33; border-radius: 10px; }
+#vamPickerLayer #vamPickerCard .vmp-number-grid::-webkit-scrollbar-thumb,
+#vamPickerLayer #vamPickerCard::-webkit-scrollbar-thumb { background: #947632; border: 1px solid #232a33; border-radius: 10px; }
+#vamPickerLayer #vamPickerCard .vmp-number-grid::-webkit-scrollbar-thumb:hover,
+#vamPickerLayer #vamPickerCard::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+#vamPickerLayer #vamPickerCard .vmp-number-grid::-webkit-scrollbar-button,
+#vamPickerLayer #vamPickerCard::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
