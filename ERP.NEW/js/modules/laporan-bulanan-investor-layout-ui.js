@@ -12,11 +12,12 @@
     const card = view => originalCards.find(node => node.dataset.lbView === view);
     const income = card("income");
     if (income) left.appendChild(income);
+    // Keep the existing mapping card in the left column, beside the result card.
+    left.appendChild(mapping);
     for (const view of ["expense", "result"]) {
       const target = card(view);
       if (target) right.appendChild(target);
     }
-    right.appendChild(mapping);
     mapping.setAttribute("aria-hidden", "false");
     grid.append(left, right);
     // Move existing visual nodes only; keep Revised values, handlers and print restoration.
