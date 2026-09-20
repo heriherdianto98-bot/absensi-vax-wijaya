@@ -85,3 +85,67 @@ body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi small{
   -webkit-line-clamp:2;
   overflow:hidden;
 }
+
+/* Semua Cabang: adaptasi visual card Master Karyawan; tinggi kedua baris konsisten. */
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis{align-items:stretch!important}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi,
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi{
+  box-sizing:border-box!important;height:112px!important;min-height:112px!important;max-height:112px!important;
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  justify-content:center!important;gap:5px!important;padding:12px 13px!important;
+  border-radius:17px!important;border:1px solid color-mix(in srgb,var(--kpi-light) 30%,transparent)!important;
+  background:radial-gradient(95% 100% at 0% 0%,color-mix(in srgb,var(--kpi-light) 11%,transparent),transparent 58%),linear-gradient(180deg,rgba(255,255,255,.055),transparent 32%),linear-gradient(180deg,#181f29,#10161e)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 9px 21px rgba(0,0,0,.24),0 0 15px var(--kpi-glow)!important;
+}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:hover,
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi:hover{
+  transform:translateY(-5px) scale(1.012)!important;border-color:var(--kpi-light)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 16px 30px rgba(0,0,0,.34),0 0 26px var(--kpi-glow)!important;
+}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi::before,
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi::before{
+  content:"◆";position:absolute;inset:9px 10px auto auto;width:28px;height:28px;
+  display:grid;place-items:center;box-sizing:border-box;border-radius:9px;
+  border:1px solid color-mix(in srgb,var(--kpi-light) 34%,transparent);
+  background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.15),transparent 40%),color-mix(in srgb,var(--kpi-light) 11%,#10161e);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 5px 12px rgba(0,0,0,.26);
+  color:var(--kpi-light);font-size:16px;font-weight:900;opacity:1;pointer-events:none;z-index:0;
+}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi::after,
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi::after{
+  content:"";position:absolute;inset:auto 0 0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--kpi-light),transparent);
+  box-shadow:0 0 10px var(--kpi-glow);opacity:.66;pointer-events:none;
+}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi span,
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi span{
+  display:block!important;padding-right:30px!important;font-size:10.2px!important;
+  line-height:1.15!important;white-space:normal!important;overflow:visible!important;
+  text-overflow:clip!important;color:#c3cbd6!important;
+}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi strong,
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi strong{
+  display:block!important;margin:0!important;font-size:19px!important;line-height:1.08!important;
+  white-space:nowrap!important;overflow:visible!important;overflow-wrap:normal!important;
+  color:var(--kpi-light)!important;letter-spacing:-.035em!important;
+}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi small,
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi small{
+  display:block!important;min-height:0!important;font-size:9.4px!important;line-height:1.25!important;
+  white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+  -webkit-line-clamp:unset!important;color:#aeb9c7!important;
+}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) #lbProfitCard.is-all-branches{
+  height:112px!important;min-height:112px!important;max-height:112px!important;
+}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:nth-child(1)::before{content:"▣"}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:nth-child(2)::before{content:"↗"}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:nth-child(3)::before{content:"◈"}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:nth-child(4)::before{content:"▤"}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:nth-child(5)::before{content:"⚙"}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:nth-child(6)::before{content:"⌂"}
+body.laporan-bulanan-page:has(#lbAllKpis:not([hidden])) .lb-kpis .lb-kpi:nth-child(7)::before{content:"✓"}
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi:nth-child(1)::before{content:"⌂"}
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi:nth-child(2)::before{content:"◷"}
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi:nth-child(3)::before{content:"⇄"}
+body.laporan-bulanan-page #lbAllKpis:not([hidden]) .lb-all-kpi:nth-child(4)::before{content:"≠"}
