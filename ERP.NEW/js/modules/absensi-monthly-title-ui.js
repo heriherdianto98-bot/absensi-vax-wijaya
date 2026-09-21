@@ -13,6 +13,15 @@
   dailyStatusTime.src='../js/modules/absensi-daily-status-time-ui.js?v=20260921-1';
   dailyStatusTime.onerror=()=>console.error('Gagal memuat tampilan jam masuk absensi harian');
   document.head.appendChild(dailyStatusTime);
+  // Fine review is an isolated, additive module; attendance and payroll LOCK engines stay intact.
+  const fineReviewStyle=document.createElement('link');
+  fineReviewStyle.rel='stylesheet';
+  fineReviewStyle.href='../styles/absensi-denda-review-ui.css?v=20260921-1';
+  document.head.appendChild(fineReviewStyle);
+  const fineReviewScript=document.createElement('script');
+  fineReviewScript.src='../js/modules/absensi-denda-review-ui.js?v=20260921-1';
+  fineReviewScript.onerror=()=>console.error('Gagal memuat panel keputusan denda');
+  document.head.appendChild(fineReviewScript);
   let started=false;
   function loadManual(){
     if(started)return;
