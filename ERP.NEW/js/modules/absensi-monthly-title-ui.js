@@ -34,6 +34,10 @@
   fineCustom.src='../js/modules/absensi-denda-custom-decision-ui.js?v=20260921-1';
   fineCustom.onerror=()=>console.error('Gagal memuat penyesuaian nominal denda dan bukti foto');
   document.head.appendChild(fineCustom);
+  const proofGallery=document.createElement('script');
+  proofGallery.src='../js/modules/absensi-denda-proof-gallery-ui.js?v=20260921-1';
+  proofGallery.onerror=()=>console.error('Gagal memuat galeri bukti denda');
+  document.head.appendChild(proofGallery);
   let started=false;
   function loadManual(){
     if(started)return;
