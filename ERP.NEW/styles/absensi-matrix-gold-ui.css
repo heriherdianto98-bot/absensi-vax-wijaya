@@ -82,22 +82,24 @@
   box-shadow: 2px 0 0 rgba(222, 179, 67, .38);
 }
 
-/* UI ONLY — blink the activity card only when its existing list contains an activity row. */
-#absensiRoot #absensiDailyView .absensi-main-grid > .absensi-panel:has(#aktivitasTerbaru > .absensi-activity-row) {
-  animation: vax-absensi-activity-pulse 2.4s ease-in-out infinite;
+/* UI ONLY — pulse each employee activity card, never the surrounding panel. */
+#absensiRoot #absensiDailyView #aktivitasTerbaru > .absensi-activity-row {
+  animation: vax-absensi-activity-row-pulse 2.4s ease-in-out infinite;
 }
-@keyframes vax-absensi-activity-pulse {
+@keyframes vax-absensi-activity-row-pulse {
   0%, 100% {
-    border-color: rgba(212, 175, 55, .36);
-    box-shadow: inset 1px 1px 0 rgba(255,255,255,.15), inset -2px -3px 7px rgba(0,0,0,.4), 0 4px 0 #080b10, 0 11px 22px rgba(0,0,0,.43), 0 0 8px rgba(212,175,55,.08);
+    border-color: rgba(212, 175, 55, .22);
+    border-left-color: #d4af37;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 10px rgba(0,0,0,.23), 0 0 0 rgba(255,205,66,0);
   }
   50% {
     border-color: rgba(255, 216, 105, .95);
-    box-shadow: inset 1px 1px 0 rgba(255,255,255,.2), inset -2px -3px 7px rgba(0,0,0,.4), 0 4px 0 #080b10, 0 11px 22px rgba(0,0,0,.43), 0 0 22px rgba(255,205,66,.66);
+    border-left-color: #ffe18b;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 4px 10px rgba(0,0,0,.23), 0 0 20px rgba(255,205,66,.72);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  #absensiRoot #absensiDailyView .absensi-main-grid > .absensi-panel:has(#aktivitasTerbaru > .absensi-activity-row) {
+  #absensiRoot #absensiDailyView #aktivitasTerbaru > .absensi-activity-row {
     animation: none;
     border-color: rgba(255, 216, 105, .75);
   }
