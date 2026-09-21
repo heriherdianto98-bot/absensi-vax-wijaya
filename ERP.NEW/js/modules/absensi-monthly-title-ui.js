@@ -8,6 +8,11 @@
   matrixGoldStyle.rel='stylesheet';
   matrixGoldStyle.href='../styles/absensi-matrix-gold-ui.css?v=20260921-1';
   document.head.appendChild(matrixGoldStyle);
+  // Daily attendance table UI only: show all filtered employees and existing ERP clock-in time.
+  const dailyStatusTime=document.createElement('script');
+  dailyStatusTime.src='../js/modules/absensi-daily-status-time-ui.js?v=20260921-1';
+  dailyStatusTime.onerror=()=>console.error('Gagal memuat tampilan jam masuk absensi harian');
+  document.head.appendChild(dailyStatusTime);
   let started=false;
   function loadManual(){
     if(started)return;
