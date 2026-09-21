@@ -28,11 +28,11 @@
   document.head.appendChild(fineReceipts);
   const fineCustomStyle=document.createElement('link');
   fineCustomStyle.rel='stylesheet';
-  fineCustomStyle.href='../styles/absensi-denda-custom-decision-ui.css?v=20260921-1';
+  fineCustomStyle.href='../styles/absensi-denda-custom-decision-ui.css?v=20260921-2';
   document.head.appendChild(fineCustomStyle);
   const fineCustom=document.createElement('script');
-  fineCustom.src='../js/modules/absensi-denda-custom-decision-ui.js?v=20260921-1';
-  fineCustom.onerror=()=>console.error('Gagal memuat penyesuaian nominal denda dan bukti foto');
+  fineCustom.src='../js/modules/absensi-denda-custom-decision-ui.js?v=20260921-2';
+  fineCustom.onerror=()=>console.error('Gagal memuat keputusan denda dan bukti karyawan');
   document.head.appendChild(fineCustom);
   const proofGallery=document.createElement('script');
   proofGallery.src='../js/modules/absensi-denda-proof-gallery-ui.js?v=20260921-1';
