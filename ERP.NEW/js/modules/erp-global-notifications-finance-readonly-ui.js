@@ -133,25 +133,26 @@
         });
       }catch(e){console.warn('[Finance notif] Setoran BRI difference read',e)}
     };
-    // Owner-only acknowledgement stored per browser and auth user. No source data is changed.
-    const reviewStorageKey=()=>N.role==='owner'&&N.user?.id?`vax-cashout-bell-reviewed-v1:${N.user.id}`:null;
+    // Notification acknowledgement is browser-local and scoped to authenticated Owner/SVP; source data stays unchanged.
+    const reviewStorageKey=()=>['owner','svp'].includes(N.role)&&N.user?.id?`vax-cashout-bell-reviewed-v1:${N.user.id}`:null;
     const readReviewed=()=>{
       const key=reviewStorageKey();if(!key)return {};
       try{const v=JSON.parse(localStorage.getItem(key)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}
       catch(e){console.warn('[Finance notif] Cannot read review state',e);return {}}
     };
+    const canReview=item=>item?.module==='CASH OUT'&&['owner','svp'].includes(N.role)||item?.module==='BULANAN INVESTOR'&&N.role==='owner';
     const originalAdd=N.add;
     N.add=function(item){
-      if(this.role==='owner'&&['CASH OUT','BULANAN INVESTOR'].includes(item?.module)&&item.key&&Object.prototype.hasOwnProperty.call(readReviewed(),item.key))return;
+      if(canReview(item)&&item.key&&Object.prototype.hasOwnProperty.call(readReviewed(),item.key))return;
       return originalAdd.call(this,item);
     };
     const originalRender=N.render;
     N.render=function(){
       const result=originalRender.call(this);
-      if(this.role!=='owner'||!reviewStorageKey()||!this.list)return result;
+      if(!['owner','svp'].includes(this.role)||!reviewStorageKey()||!this.list)return result;
       const rows=[...this.list.querySelectorAll(':scope > a.erp-global-notif-item')];
       this.items.slice(0,rows.length).forEach((item,index)=>{
-        if(!['CASH OUT','BULANAN INVESTOR'].includes(item.module)||!item._key)return;
+        if(!canReview(item)||!item._key)return;
         const button=document.createElement('button');button.type='button';
         button.textContent='✓ Tandai sudah ditinjau';
         button.setAttribute('aria-label',`Tandai sudah ditinjau: ${item.title}`);
