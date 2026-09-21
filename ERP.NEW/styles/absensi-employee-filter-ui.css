@@ -26,3 +26,65 @@
 #absensiRoot .absensi-kpi-grid>.absensi-kpi-link strong{font-size:clamp(19px,1.45vw,23px)}
 #absensiRoot #ablPage .abl-card>strong{font-size:clamp(16px,1.3vw,19px)}
 @media(max-width:480px){#absensiRoot #ablPage .abl-card>strong{font-size:clamp(16px,4vw,19px)}}
+
+/* Daily status + activity panels: UI ONLY, scoped to Owner daily view. */
+#absensiRoot #absensiDailyView .absensi-main-grid>.absensi-panel{
+  background:linear-gradient(155deg,#1c232d 0%,#111820 72%,#0d1219 100%);
+  border:1px solid rgba(212,175,55,.32);
+  border-radius:16px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 12px 30px rgba(0,0,0,.36);
+}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-panel-head{
+  background:linear-gradient(180deg,#252c35 0%,#171c24 100%);
+  border-bottom:1px solid rgba(212,175,55,.26);
+  padding:14px 16px;
+}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-panel-head h2{
+  color:#f9f3df;
+  font-size:15px;
+  letter-spacing:.025em;
+  text-shadow:0 1px 1px rgba(0,0,0,.48);
+}
+#absensiRoot #statusBox .absensi-table-wrap{background:#111820;scrollbar-color:#987525 #111820;scrollbar-width:thin}
+#absensiRoot #statusBox .absensi-table{background:#111820}
+#absensiRoot #statusBox .absensi-table th{
+  background:linear-gradient(180deg,#272a29 0%,#1a201f 100%);
+  color:#f3ca58;
+  font-size:12px;
+  font-weight:800;
+  border-bottom:1px solid rgba(212,175,55,.37);
+}
+#absensiRoot #statusBox .absensi-table tbody tr:nth-child(odd) td{background:#1c2631}
+#absensiRoot #statusBox .absensi-table tbody tr:nth-child(even) td{background:#151e28}
+#absensiRoot #statusBox .absensi-table tbody td{
+  border-bottom:1px solid rgba(212,175,55,.12);
+  color:#f0f4fa;
+  font-size:13px;
+}
+#absensiRoot #statusBox .absensi-table tbody td:first-child{font-weight:700;color:#fff}
+#absensiRoot #statusBox .absensi-table tbody td:nth-child(2){color:#c9d5e3}
+#absensiRoot #statusBox .absensi-table tbody tr:hover td{background:#293544}
+#absensiRoot #statusBox .absensi-status{
+  border-radius:9px;
+  min-height:27px;
+  box-sizing:border-box;
+  padding:5px 10px;
+  font-size:11px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 2px 7px rgba(0,0,0,.25);
+}
+#absensiRoot #statusBox .absensi-status.st-belum{
+  color:#ffd9dc;
+  background:linear-gradient(180deg,#61262c,#3b1b22);
+  border-color:#c45b65;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 10px rgba(239,68,68,.18);
+}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity{background:#141c26}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-row{
+  background:linear-gradient(110deg,#1c2732,#141c26);
+  border-bottom:1px solid rgba(212,175,55,.15);
+  padding:14px 16px;
+}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-title{color:#f6f7fa}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-title span,
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-time{color:#bac7d6}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-aksi{color:#f4cb59}
