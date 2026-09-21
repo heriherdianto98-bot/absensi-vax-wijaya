@@ -112,6 +112,15 @@
     document.head.appendChild(ml);
   }
 
+  /* Cash receipts from fine reviews: read-only Buku Kas presentation, not a balance mutation. */
+  if(!document.querySelector('script[data-ak2-denda-receipt-ui]')){
+    const fine=document.createElement('script');
+    fine.src='../js/modules/arus-kas-v2-denda-receipt-ui.js?v=20260921-1';
+    fine.async=false;
+    fine.dataset.ak2DendaReceiptUi='1';
+    document.head.appendChild(fine);
+  }
+
   function fmt(iso){
     if(!iso) return "—";
     const [y,m,d]=String(iso).slice(0,10).split("-").map(Number);
