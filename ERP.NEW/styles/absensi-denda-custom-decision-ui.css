@@ -55,3 +55,11 @@
 #vaxDendaReview #vaxFineDecisionHistory,#vaxDendaReview #vaxDendaReceiptList{max-height:185px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 #vaxDendaReview .vax-fine-history-row{padding:9px 11px;gap:8px}
 @media(max-width:600px){#vaxDendaReview{padding:12px}#vaxDendaReview #vaxDendaRows,#vaxDendaReview #vaxLateNoticeList{max-height:190px}}
+/* UI ONLY: KPI-like dark surface and short descriptions; do not truncate employee reasons or decision evidence. */
+#vaxDendaReview{background:linear-gradient(145deg,#141b23,#0d131a 75%);border-color:rgba(198,157,72,.43);box-shadow:0 5px 18px rgba(0,0,0,.3)}
+#vaxDendaReview #vaxLateNoticeList article,#vaxDendaReview .vax-denda-row,#vaxDendaReview .vax-fine-history-row{background:#151e28;border-color:#334151}
+#vaxDendaReview .vax-denda-heading p,#vaxDendaReview #vaxLateNoticeInbox>div:first-child p,#vaxDendaReview .vax-fine-decision-history>p,#vaxDendaReview .vax-denda-receipt-history>p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;max-height:2.7em;margin-bottom:2px!important}
+#vaxDendaReview #vaxFineDecisionHistory:before{content:none;display:none}
+#vaxDendaReview #vaxLateNoticeInbox,#vaxDendaReview .vax-fine-decision-history{border-color:#37414d}
+#vaxDendaReview #vaxLateNoticeInbox h3,#vaxDendaReview .vax-fine-decision-history h3{margin-bottom:1px!important}
+#vaxDendaReview #vaxLateNoticeList article p,#vaxDendaReview .vax-fine-history-row p{display:block;max-height:none;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset}
