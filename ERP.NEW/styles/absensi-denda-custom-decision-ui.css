@@ -13,6 +13,7 @@
 #vaxDendaReview .vax-fine-izin-context,#vaxDendaReview .vax-fine-previous-decision{grid-column:1/-1;padding:12px 14px;border:1px solid #635130;border-radius:10px;background:#171f28}
 #vaxDendaReview .vax-fine-izin-context p,#vaxDendaReview .vax-fine-previous-decision p{font-size:15px;white-space:pre-wrap;margin:6px 0}
 #vaxDendaReview .vax-fine-decision-history{border-top:1px solid #57606b;margin-top:23px;padding-top:18px}
+#vaxDendaReview #vaxFineDecisionHistory:before{content:'RIWAYAT KEPUTUSAN SPV · PEMERIKSAAN OWNER';display:block;font-weight:800;font-size:19px;color:#f5d075;margin-bottom:10px}
 #vaxDendaReview .vax-fine-history-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;align-items:center;border:1px solid #425062;border-radius:10px;background:#202a35;padding:15px;margin-top:10px}
 #vaxDendaReview .vax-fine-history-row small{font-size:14px}
 #vaxDendaReview .vax-fine-history-row p{font-size:15px;white-space:pre-wrap}
@@ -31,3 +32,26 @@
 #vaxDendaCustomModal .vax-fine-custom-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:18px}
 #vaxFineCustomState{min-height:24px;color:#f8cd6e}
 @media(max-width:900px){#vaxDendaReview .vax-denda-row{grid-template-columns:1fr}#vaxDendaReview .vax-denda-row-actions{flex-wrap:wrap;justify-content:flex-start}#vaxDendaReview h2{font-size:21px}}
+/* UI ONLY: compact the complete review card; multiple employees scroll inside their lists. */
+#vaxDendaReview{padding:13px 16px;line-height:1.4}
+#vaxDendaReview .vax-denda-heading{gap:8px}
+#vaxDendaReview h2{font-size:20px;margin:2px 0 3px}
+#vaxDendaReview h3{font-size:18px}
+#vaxDendaReview .vax-denda-heading p{font-size:13px;line-height:1.35;margin:0 0 3px}
+#vaxDendaReview #vaxDendaNotice{margin:5px 0 6px;font-size:13px}
+#vaxDendaReview #vaxDendaRows,#vaxDendaReview #vaxLateNoticeList{max-height:210px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:4px;align-content:start}
+#vaxDendaReview #vaxDendaRows .vax-denda-row{padding:10px 12px;gap:10px}
+#vaxDendaReview #vaxLateNoticeInbox{margin-top:12px!important;padding-top:11px!important}
+#vaxDendaReview #vaxLateNoticeInbox>div:first-child{gap:8px!important}
+#vaxDendaReview #vaxLateNoticeInbox h3{font-size:18px!important;margin:0 0 2px!important}
+#vaxDendaReview #vaxLateNoticeInbox p{font-size:13px!important;line-height:1.35;margin:1px 0 4px!important}
+#vaxDendaReview #vaxLateNoticeList{gap:6px!important}
+#vaxDendaReview #vaxLateNoticeList article{padding:8px 11px!important;gap:8px!important;min-width:0}
+#vaxDendaReview #vaxLateNoticeList article small{font-size:12px!important}
+#vaxDendaReview #vaxLateNoticeList article p{font-size:13px!important;margin:3px 0 0!important;overflow-wrap:anywhere}
+#vaxDendaReview #vaxLateNoticeList article button{padding:7px 9px;font-size:12px;min-height:33px}
+#vaxDendaReview .vax-fine-decision-history{margin-top:12px;padding-top:11px}
+#vaxDendaReview #vaxFineDecisionHistory:before{font-size:17px;margin-bottom:5px}
+#vaxDendaReview #vaxFineDecisionHistory,#vaxDendaReview #vaxDendaReceiptList{max-height:185px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#vaxDendaReview .vax-fine-history-row{padding:9px 11px;gap:8px}
+@media(max-width:600px){#vaxDendaReview{padding:12px}#vaxDendaReview #vaxDendaRows,#vaxDendaReview #vaxLateNoticeList{max-height:190px}}
