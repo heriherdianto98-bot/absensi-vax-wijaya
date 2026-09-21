@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Izin Telat Masuk | VAX WIJAYA</title>
+<link rel="stylesheet" href="izin.css?v=20260817-fill">
+<style>
+.izin-telat-card{max-width:720px;margin:16px auto;padding:22px;border:1px solid #b58b3b;border-radius:16px;background:#19222d;color:#fff}
+.izin-telat-card h1{color:#f3cd77;font-size:24px;margin:0 0 10px}
+.izin-telat-card p{line-height:1.55;color:#d1dae4}
+.izin-telat-card label{display:block;margin:18px 0 8px;font-weight:750}
+.izin-telat-card textarea,.izin-telat-card input[type=file]{width:100%;box-sizing:border-box;padding:13px;background:#111923;border:1px solid #69798b;border-radius:10px;color:#fff;font-size:16px}
+.izin-telat-card textarea{min-height:105px;resize:vertical}
+.izin-telat-card button{margin-top:20px;width:100%;padding:13px;background:#dfb445;border:0;border-radius:10px;font-weight:850;font-size:16px;color:#17140c}
+.izin-telat-card button:disabled{opacity:.55}
+#izinTelatState{white-space:pre-wrap;font-weight:700}
+#izinTelatPreview{display:block;max-width:100%;max-height:220px;object-fit:contain;margin-top:10px;border-radius:10px}
+#izinTelatPreview[hidden]{display:none}
+</style>
+</head>
+<body><div class="app">
+<header class="topbar"><a href="dashboard-karyawan.html" class="back-btn" aria-label="Kembali"><i class="fas fa-chevron-left"></i> Kembali</a><div class="topbar-title"><strong>IZIN TELAT MASUK</strong><small>VAX WIJAYA</small></div></header>
+<main class="izin-body"><form id="izinTelatForm" class="izin-telat-card" novalidate>
+<h1>Izin Telat Masuk</h1><p>Pengajuan untuk <strong id="izinTelatTanggal">hari ini</strong>. Foto dan alasan dikirim langsung dari akun karyawan kepada SPV dan Owner. Pengajuan ini <strong>bukan izin tidak masuk</strong> dan tidak mengubah status kehadiran. SPV tetap memutus denda.</p>
+<p id="izinTelatNama">Memeriksa sesi karyawan…</p>
+<label for="izinTelatReason">Alasan terlambat (wajib)</label><textarea id="izinTelatReason" maxlength="1000" placeholder="Jelaskan alasan keterlambatan…" required></textarea>
+<label for="izinTelatPhoto">Foto bukti dari karyawan (wajib)</label><input id="izinTelatPhoto" type="file" accept="image/jpeg,image/png,image/webp" required><img id="izinTelatPreview" alt="Pratinjau foto bukti" hidden>
+<p id="izinTelatState" role="status" aria-live="polite"></p><button id="izinTelatSend" type="submit" disabled>Kirim ke SPV &amp; Owner</button>
+</form></main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="karyawan-session.js"></script><script src="izin-telat.js?v=20260921-1"></script>
+</body></html>
