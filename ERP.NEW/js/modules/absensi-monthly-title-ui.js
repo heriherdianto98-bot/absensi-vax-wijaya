@@ -38,6 +38,10 @@
   proofGallery.src='../js/modules/absensi-denda-proof-gallery-ui.js?v=20260921-1';
   proofGallery.onerror=()=>console.error('Gagal memuat galeri bukti denda');
   document.head.appendChild(proofGallery);
+  const lateInbox=document.createElement('script');
+  lateInbox.src='../js/modules/absensi-izin-telat-inbox-ui.js?v=20260921-1';
+  lateInbox.onerror=()=>console.error('Gagal memuat pengajuan izin telat karyawan');
+  document.head.appendChild(lateInbox);
   let started=false;
   function loadManual(){
     if(started)return;
