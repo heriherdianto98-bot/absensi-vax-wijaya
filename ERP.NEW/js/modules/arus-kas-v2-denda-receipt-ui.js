@@ -12,7 +12,7 @@
       const row = byId.get(String(tr.dataset.id));
       if (!row || row.source_type !== 'ABSENSI_DENDA_V1' || row.category !== 'DENDA_DITERIMA' || row.to_wallet !== 'KAS_DENDA') return;
       if (tr.dataset.vaxDendaReceivedShown === '1') return;
-      const shift = tr.cells.length === 9 ? 1 : 0;
+      const shift = tr.querySelector('td.ak2-cabang-col') ? 1 : 0;
       const income = tr.cells[1 + shift], desc = tr.cells[2 + shift];
       if (!income || !desc) return;
       income.textContent = flow.rupiah(row.amount);
