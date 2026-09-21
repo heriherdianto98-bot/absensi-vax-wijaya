@@ -41,8 +41,8 @@
       const {data,error}=await db.rpc('absensi_izin_telat_submit_v2',{p_session_token:token,p_alasan:reason,p_bukti_path:path});
       if(error)throw error;
       if(data?.status!=='TERKIRIM')throw Error('Status pengajuan perlu diperiksa ulang.');
-      state('Izin telat berhasil dikirim. Alasan dan foto dapat dilihat SPV dan Owner. Denda tetap menunggu keputusan SPV.');
-      $('izinTelatSend').textContent='Pengajuan telah dikirim';
+      // Only leave the form after the server confirms the submission.
+      window.location.replace(new URL('absensi.html',window.location.href).href);
     }catch(err){state(err?.message||'Pengajuan gagal. Periksa status sebelum mengirim ulang.',true);$('izinTelatSend').disabled=false;}
     finally{busy=false;}
   });
