@@ -6,6 +6,10 @@
 #vaxDendaReview .vax-denda-row strong{font-size:18px}
 #vaxDendaReview .vax-denda-row{gap:17px;padding:18px}
 #vaxDendaReview .vax-denda-row button,#vaxDendaReview .vax-denda-heading button{font-size:15px;min-height:42px}
+/* UI only: keep all three fine-decision actions together at desktop width. */
+#vaxDendaReview .vax-denda-row{grid-template-columns:minmax(160px,1.35fr) minmax(145px,.9fr) minmax(345px,1.55fr)}
+#vaxDendaReview .vax-denda-row-actions{flex-wrap:nowrap;gap:6px;align-items:center;min-width:0}
+#vaxDendaReview .vax-denda-row-actions button{flex:0 0 auto;padding:8px 9px;font-size:13px;line-height:1.2;white-space:nowrap;min-height:38px}
 #vaxDendaReview .vax-fine-izin-context,#vaxDendaReview .vax-fine-previous-decision{grid-column:1/-1;padding:12px 14px;border:1px solid #635130;border-radius:10px;background:#171f28}
 #vaxDendaReview .vax-fine-izin-context p,#vaxDendaReview .vax-fine-previous-decision p{font-size:15px;white-space:pre-wrap;margin:6px 0}
 #vaxDendaReview .vax-fine-decision-history{border-top:1px solid #57606b;margin-top:23px;padding-top:18px}
@@ -24,4 +28,4 @@
 #vaxDendaCustomModal button:disabled{opacity:.6;cursor:wait}
 #vaxDendaCustomModal .vax-fine-custom-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:18px}
 #vaxFineCustomState{min-height:24px;color:#f8cd6e}
-@media(max-width:800px){#vaxDendaReview .vax-denda-row{grid-template-columns:1fr}#vaxDendaReview h2{font-size:21px}}
+@media(max-width:900px){#vaxDendaReview .vax-denda-row{grid-template-columns:1fr}#vaxDendaReview .vax-denda-row-actions{flex-wrap:wrap;justify-content:flex-start}#vaxDendaReview h2{font-size:21px}}
