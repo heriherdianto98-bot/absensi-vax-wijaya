@@ -88,3 +88,42 @@
 #absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-title span,
 #absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-time{color:#bac7d6}
 #absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-aksi{color:#f4cb59}
+
+/* Match the 3D charcoal KPI cards above: restrained gold edge, relief and readable rows. */
+#absensiRoot #absensiDailyView .absensi-main-grid>.absensi-panel{
+  position:relative;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),transparent 35%),linear-gradient(165deg,#252c36 0%,#14191f 68%,#10141a 100%);
+  border:1px solid rgba(212,175,55,.38);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.15),inset -2px -3px 7px rgba(0,0,0,.4),0 4px 0 #080b10,0 11px 22px rgba(0,0,0,.43),0 0 8px rgba(212,175,55,.08);
+}
+#absensiRoot #absensiDailyView .absensi-main-grid>.absensi-panel::before{
+  content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;
+  background:linear-gradient(#ffe18b,#b48623);box-shadow:0 0 10px rgba(212,175,55,.2);pointer-events:none;
+}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-panel-head{
+  background:linear-gradient(145deg,rgba(255,255,255,.065),transparent 50%),linear-gradient(180deg,#272e37,#191f27);
+  border-bottom:1px solid rgba(212,175,55,.31);
+}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-panel-head h2{color:#f8fafc;font-size:15px}
+#absensiRoot #statusBox .absensi-table-wrap,
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity{background:#121820}
+#absensiRoot #statusBox .absensi-table th{
+  background:linear-gradient(180deg,#373021,#201c17);
+  color:#ffda75;border-bottom:1px solid rgba(244,199,77,.4);
+}
+#absensiRoot #statusBox .absensi-table tbody tr:nth-child(odd) td{background:#202832}
+#absensiRoot #statusBox .absensi-table tbody tr:nth-child(even) td{background:#171e27}
+#absensiRoot #statusBox .absensi-table tbody tr:hover td{background:#2b3541}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-row{
+  background:linear-gradient(145deg,rgba(255,255,255,.055),transparent 48%),linear-gradient(110deg,#222b35,#171e27);
+  border-left:3px solid rgba(212,175,55,.6);
+  margin:10px;border:1px solid rgba(212,175,55,.22);border-left-width:3px;border-left-color:#d4af37;
+  border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 10px rgba(0,0,0,.23);
+}
+#absensiRoot #absensiDailyView .absensi-main-grid .absensi-activity-row:hover{background:linear-gradient(110deg,#2a3541,#1c2530)}
+/* The rotating typewriter clip in absensi-kpi-3d.css hid KPI titles mid-cycle. Keep labels fully visible. */
+#absensiRoot #absensiDailyView .absensi-kpi-grid>.absensi-kpi span,
+#absensiRoot #absensiDailyView .absensi-kpi-grid>.absensi-kpi-link span{
+  animation:none!important;clip-path:none!important;width:100%;max-width:100%;white-space:normal;overflow:visible;
+  line-height:1.3;min-height:1.3em;
+}
