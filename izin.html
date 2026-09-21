@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Pengajuan Izin / Libur Karyawan</title>
-<link rel="stylesheet" href="izin.css?v=20260817-fill">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Pengajuan Izin / Libur Karyawan</title>
+    <link rel="stylesheet" href="izin.css?v=20260817-fill">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <style>
+      /* UI only: link to the existing, separate late-arrival flow; never submit as a full-day IZIN. */
+      #jenisMenu .jenis-telat-link{display:flex;align-items:center;gap:10px;min-height:40px;margin-top:4px;padding:0 11px;border-radius:10px;background:#090909;color:#eee;font-size:14px;text-decoration:none}
+      #jenisMenu .jenis-telat-link i{width:18px;text-align:center;color:#ffe066}
+      #jenisMenu .jenis-telat-link:hover,#jenisMenu .jenis-telat-link:focus-visible{background:#15120a;color:#ffe066;outline:2px solid rgba(255,224,102,.45);outline-offset:-2px}
+    </style>
 </head>
 <body>
 <div class="app">
@@ -72,6 +78,7 @@
                     <button type="button" class="jenis-option is-selected" data-value="IZIN" role="option" aria-selected="true"><i class="fas fa-user-clock"></i><span>Izin</span></button>
                     <button type="button" class="jenis-option" data-value="LIBUR" role="option" aria-selected="false"><i class="fas fa-calendar-check"></i><span>Libur</span></button>
                     <button type="button" class="jenis-option" data-value="SAKIT" role="option" aria-selected="false"><i class="fas fa-briefcase-medical"></i><span>Sakit</span></button>
+                    <a class="jenis-telat-link" href="izin-telat.html" role="option" aria-label="Izin Telat Masuk, buka formulir khusus"><i class="fas fa-clock" aria-hidden="true"></i><span>Izin Telat Masuk</span></a>
                 </div>
             </div>
         </div>
