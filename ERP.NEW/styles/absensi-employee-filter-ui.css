@@ -191,3 +191,11 @@
   background:transparent !important;color:#241802 !important;
   box-shadow:none !important;text-shadow:none !important;
 }
+
+/* Daily activity timestamp — presentation only, no changes to date or time values. */
+#absensiRoot #absensiDailyView #aktivitasTerbaru .absensi-activity-time{
+  font-size:14px !important;
+  line-height:1.45;
+  font-weight:600;
+  color:#d8e1ed;
+}
