@@ -13,7 +13,7 @@
   dailyStatusTime.src='../js/modules/absensi-daily-status-time-ui.js?v=20260921-1';
   dailyStatusTime.onerror=()=>console.error('Gagal memuat tampilan jam masuk absensi harian');
   document.head.appendChild(dailyStatusTime);
-  // Fine review is an isolated, additive module; attendance and payroll LOCK engines stay intact.
+  // Fine review and receipt history remain inside Absensi, independently of locked finance engines.
   const fineReviewStyle=document.createElement('link');
   fineReviewStyle.rel='stylesheet';
   fineReviewStyle.href='../styles/absensi-denda-review-ui.css?v=20260921-1';
@@ -22,6 +22,10 @@
   fineReviewScript.src='../js/modules/absensi-denda-review-ui.js?v=20260921-1';
   fineReviewScript.onerror=()=>console.error('Gagal memuat panel keputusan denda');
   document.head.appendChild(fineReviewScript);
+  const fineReceipts=document.createElement('script');
+  fineReceipts.src='../js/modules/absensi-denda-penerimaan-ui.js?v=20260921-2';
+  fineReceipts.onerror=()=>console.error('Gagal memuat riwayat penerimaan denda di Absensi');
+  document.head.appendChild(fineReceipts);
   let started=false;
   function loadManual(){
     if(started)return;
