@@ -7,6 +7,7 @@
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   const text=node=>String(node?.textContent||'').replace(/\s+/g,' ').trim();
   const nowWib=()=>new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'long',timeStyle:'short'}).format(new Date());
+  const rupiah=n=>'Rp '+new Intl.NumberFormat('id-ID').format(Math.round(Number(n)||0));
 
   function snapshot(){
     const month=text(document.getElementById('payrollPeriodLabel'))||'—';
@@ -20,7 +21,9 @@
       name:text(card.querySelector('.payroll-person h3')),
       info:text(card.querySelector('.payroll-person p')),
       rows:[...card.querySelectorAll('.payroll-table tbody tr')].map(tr=>[...tr.cells].map(td=>text(td))),
-      sums:[...card.querySelectorAll('.payroll-sum')].map(x=>({label:text(x.querySelector('span')),value:text(x.querySelector('strong'))}))
+      sums:[...card.querySelectorAll('.payroll-sum')].map(x=>({label:text(x.querySelector('span')),value:text(x.querySelector('strong'))})),
+      payoutNet:card.dataset.vaxPayoutNet?Number(card.dataset.vaxPayoutNet):null,
+      displayNet:text(card.querySelector('.payroll-sum.is-net strong'))
     }));
     return {month,employeeLabel,branchLabel,branchId,cards};
   }
@@ -44,7 +47,7 @@
     .employee{border:1px solid #9fa4aa;margin-bottom:2.5mm;break-inside:avoid-page;page-break-inside:avoid}.emp-head{display:flex;justify-content:space-between;gap:5mm;padding:2.5mm 4mm;border-bottom:1px solid #9fa4aa;background:#e9ebee}.emp-head h3{margin:0;font-size:11.5pt}.emp-head p{margin:.8mm 0 0;font-size:7.3pt;color:#555}.id-badge{display:inline-block;margin-left:2mm;padding:.45mm 1.5mm;border:1px solid #b8bdc3;border-radius:2mm;background:#f7f8f9;color:#545b63;font-size:6.2pt;font-weight:700;vertical-align:middle}.net{text-align:right}.net span{display:block;font-size:7.2pt;color:#626971;text-transform:uppercase;font-weight:700}.net strong{font-size:12.5pt}
     .tbl{width:100%;border-collapse:collapse}.tbl thead{display:table-header-group}.tbl th,.tbl td{border-bottom:1px solid #d2d5d8;padding:1.15mm 1.35mm;font-size:7.1pt}.tbl th{background:#e5e7ea;text-transform:uppercase;font-size:6.5pt;font-weight:800;text-align:left;white-space:nowrap;border-bottom:1.2px solid #969ca3}.tbl .num{text-align:right;white-space:nowrap}.tbl tr{break-inside:avoid;page-break-inside:avoid}
     .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5mm;padding:2mm}.sum{border:1px solid #c4c8cc;border-top:1.2px solid #9da3a9;padding:1.55mm;background:#eef0f2;border-radius:1.2mm}.sum span{display:block;color:#5f666d;font-size:6.2pt;font-weight:800;text-transform:uppercase;letter-spacing:.03em}.sum strong{display:block;margin-top:.7mm;font-size:8.6pt;color:#1d2329}
-    .sum:nth-child(n){border-top-color:#9da3a9;background:#eef0f2}.sum:nth-child(n) span,.sum:nth-child(n) strong{color:#1d2329}.sum:nth-child(n) span{color:#5f666d}
+    .sum:nth-child(n){border-top-color:#9da3a9;background:#eef0f2}.sum:nth-child(n) span,.sum:nth-child(n) strong{color:#1d2329}.sum:nth-child(n) span{color:#5f666d}.payout-note{font-size:6.8pt;padding:0 2mm 1mm;color:#3b4550}
     .empty{text-align:center;padding:8mm;color:#777}
     .sign{margin-top:2.5mm;display:grid;grid-template-columns:1fr 1fr;gap:20mm;align-items:end;break-inside:avoid;page-break-inside:avoid}.sign .box{text-align:center;min-height:25mm}
     .supervisor-sign .who,.owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}.supervisor-sign .auth-role,.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
@@ -65,10 +68,11 @@
   function cardHtml(c,branchId){
     const rows=c.rows.length?c.rows.map(r=>`<tr><td>${esc(r[0]||'')}</td><td>${esc(r[1]||'')}</td><td class="num">${esc(r[2]||'')}</td><td class="num">${esc(r[3]||'')}</td><td class="num">${esc(r[4]||'')}</td><td class="num">${esc(r[5]||'')}</td><td class="num">${esc(r[6]||'')}</td></tr>`).join(''):'<tr><td colspan="7" class="empty">Tidak ada aktivitas.</td></tr>';
     const sums=c.sums.map(s=>`<div class="sum"><span>${esc(s.label)}</span><strong>${esc(s.value)}</strong></div>`).join('');
-    const net=c.sums.find(s=>/gaji bersih/i.test(s.label))?.value||'—';
+    const net=c.sums.find(s=>/pendapatan bersih|gaji bersih/i.test(s.label))?.value||c.displayNet||'—';
     const employeeId=c.employeeId?`<span class="id-badge">ID Karyawan #${esc(c.employeeId)}</span>`:'';
     const branchIdBadge=branchId?`<span class="id-badge">ID Cabang #${esc(branchId)}</span>`:'';
-    return `<section class="employee"><div class="emp-head"><div><h3>${esc(c.name)}${employeeId}</h3><p>${esc(c.info)}${branchIdBadge}</p></div><div class="net"><span>Gaji Bersih</span><strong>${esc(net)}</strong></div></div><table class="tbl"><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th class="num">Service</th><th class="num">Gaji Pokok</th><th class="num">Denda</th><th class="num">Kasbon</th><th class="num">Share Produk</th></tr></thead><tbody>${rows}</tbody></table><div class="summary">${sums}</div></section>`;
+    const note=c.payoutNet!=null&&rupiah(c.payoutNet)!==net?`<p class="payout-note">Pendapatan bersih setelah denda final; gaji yang dicairkan ${esc(rupiah(c.payoutNet))}. Denda harian yang telah dibayar tidak dipotong ulang.</p>`:'';
+    return `<section class="employee"><div class="emp-head"><div><h3>${esc(c.name)}${employeeId}</h3><p>${esc(c.info)}${branchIdBadge}</p></div><div class="net"><span>Pendapatan Bersih</span><strong>${esc(net)}</strong></div></div><table class="tbl"><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th class="num">Service</th><th class="num">Gaji Pokok</th><th class="num">Denda</th><th class="num">Kasbon</th><th class="num">Share Produk</th></tr></thead><tbody>${rows}</tbody></table><div class="summary">${sums}</div>${note}</section>`;
   }
 
   function open(mode='print'){
@@ -82,7 +86,7 @@
     const footer=`<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
     const html=`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Payroll Karyawan ${esc(snap.month)}</title><style>${css()}</style></head><body>
       <table class="page-frame"><thead><tr><td><div class="head-space">${header}</div></td></tr></thead><tfoot><tr><td><div class="foot-space">${footer}</div></td></tr></tfoot><tbody><tr><td><main class="content">
-        <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Gaji Pokok − Denda − Kasbon + Bonus Insentif + Bonus KPI + Share Produk</p></section>
+        <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Pendapatan Kotor − Denda − Kasbon + Bonus Insentif + Bonus KPI + Share Produk</p></section>
         <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
         ${snap.cards.map(c=>cardHtml(c,snap.branchId)).join('')}
         <section class="sign"><div class="box supervisor-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Supervisor</div><div class="stage"><div class="ttd"><img src="${supervisorSignatureUrl}" alt="Tanda tangan Supervisor" onerror="this.style.display='none'"></div></div><div class="name">Rangga Putra Pratama</div><div class="supervisor-line"></div><div class="job">SUPERVISOR</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${ownerSignatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
