@@ -26,6 +26,14 @@
   fineReceipts.src='../js/modules/absensi-denda-penerimaan-ui.js?v=20260921-2';
   fineReceipts.onerror=()=>console.error('Gagal memuat riwayat penerimaan denda di Absensi');
   document.head.appendChild(fineReceipts);
+  const fineCustomStyle=document.createElement('link');
+  fineCustomStyle.rel='stylesheet';
+  fineCustomStyle.href='../styles/absensi-denda-custom-decision-ui.css?v=20260921-1';
+  document.head.appendChild(fineCustomStyle);
+  const fineCustom=document.createElement('script');
+  fineCustom.src='../js/modules/absensi-denda-custom-decision-ui.js?v=20260921-1';
+  fineCustom.onerror=()=>console.error('Gagal memuat penyesuaian nominal denda dan bukti foto');
+  document.head.appendChild(fineCustom);
   let started=false;
   function loadManual(){
     if(started)return;
