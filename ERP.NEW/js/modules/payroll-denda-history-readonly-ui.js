@@ -1,72 +1,52 @@
-/* Payroll presentation bridge only. Source: final Absensi fine decisions, never absensi.denda (cleared for capsters). No ledger/payroll writes. */
+/* UI ONLY — final Absensi fines as read-only payroll history. Never change payroll engine or ledger. */
 (() => {
   'use strict';
   if (window.__vaxPayrollFineHistoryBridge) return;
   window.__vaxPayrollFineHistoryBridge = true;
   const $ = id => document.getElementById(id);
-  const rupiah = n => 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(Number(n) || 0));
-  const number = v => Number(String(v || '').replace(/[^\d-]/g, '')) || 0;
+  const money = n => 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(Number(n) || 0));
   const months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',Mei:'05',Jun:'06',Jul:'07',Agu:'08',Sep:'09',Okt:'10',Nov:'11',Des:'12'};
-  const dateKey = text => {const m=String(text).trim().match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);return m && months[m[2]] ? `${m[3]}-${months[m[2]]}-${m[1].padStart(2,'0')}` : '';};
-  const period = () => {const label=$('payrollPeriodLabel')?.textContent?.trim()||'';const m=label.match(/^(\w+)\s+(\d{4})$/);if(!m||!months[m[1]])return null;const start=`${m[2]}-${months[m[1]]}-01`;const end=`${m[2]}-${months[m[1]]}-${new Date(Number(m[2]),Number(months[m[1]]),0).getDate()}`;return {start,end};};
-  const summaryValue=(card,label)=>{const x=[...card.querySelectorAll('.payroll-sum')].find(e=>e.querySelector('span')?.textContent?.trim().toLowerCase()===label.toLowerCase());return number(x?.querySelector('strong')?.textContent);};
-  let queue=Promise.resolve(),lastError='',pending=0,ready=false;
-  function addSum(card,label,value,kind){
-    const host=card.querySelector('.payroll-summary');if(!host)return;
-    let node=[...host.querySelectorAll('[data-vax-fine-summary]')].find(x=>x.dataset.vaxFineSummary===kind);
-    if(!node){node=document.createElement('div');node.className='payroll-sum vax-fine-history-sum';node.dataset.vaxFineSummary=kind;node.innerHTML='<span></span><strong></strong>';host.appendChild(node);}
-    node.querySelector('span').textContent=label;node.querySelector('strong').textContent=rupiah(value);
+  const dateKey = text => {const m=String(text||'').trim().match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);return m&&months[m[2]]?`${m[3]}-${months[m[2]]}-${m[1].padStart(2,'0')}`:'';};
+  const period = () => {const m=($('payrollPeriodLabel')?.textContent||'').trim().match(/^(\w+)\s+(\d{4})$/);if(!m||!months[m[1]])return null;const start=`${m[2]}-${months[m[1]]}-01`;return {start,end:`${m[2]}-${months[m[1]]}-${String(new Date(Number(m[2]),Number(months[m[1]]),0).getDate()).padStart(2,'0')}`};};
+  const number = n => Math.max(0,Number(n)||0);
+  let sequence=0,ready=false,lastError='',fineById=new Map(),pending=false;
+  function style(){if($('vaxPayrollFineHistoryCss'))return;const node=document.createElement('style');node.id='vaxPayrollFineHistoryCss';node.textContent=`
+    .payroll-sum.is-denda-card.vax-fine-clickable{cursor:pointer;outline-offset:3px}
+    .payroll-sum.is-denda-card.vax-fine-clickable:hover,.payroll-sum.is-denda-card.vax-fine-clickable:focus-visible{border-color:#e3b958!important;box-shadow:0 0 0 2px rgba(227,185,88,.22)}
+    #vaxPayrollFineDialog[hidden]{display:none!important}
+    #vaxPayrollFineDialog{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.75)}
+    #vaxPayrollFineDialog .vax-fine-dialog-box{width:min(680px,100%);max-height:min(80vh,720px);overflow:auto;background:#18212b;border:1px solid #b69550;border-radius:14px;padding:18px;color:#f5f0e5;box-shadow:0 18px 48px #000a}
+    #vaxPayrollFineDialog .vax-fine-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    #vaxPayrollFineDialog h3{margin:0;color:#f3d17a;font-size:20px}
+    #vaxPayrollFineDialog button{background:#332d22;color:#ffdf92;border:1px solid #806c43;border-radius:8px;padding:8px 12px;cursor:pointer}
+    #vaxPayrollFineDialog table{border-collapse:collapse;width:100%;font-size:13px}
+    #vaxPayrollFineDialog th,#vaxPayrollFineDialog td{text-align:left;padding:9px 7px;border-bottom:1px solid #39434e}
+    #vaxPayrollFineDialog th{color:#e8ca85}#vaxPayrollFineDialog td.num{text-align:right;white-space:nowrap}
+    #vaxPayrollFineDialog .vax-fine-dialog-foot{border-top:1px solid #5a4c32;padding-top:12px;margin-top:12px;line-height:1.6}
+    @media print{#vaxPayrollFineDialog{display:none!important}}
+  `;document.head.appendChild(node);}
+  function dialog(){let node=$('vaxPayrollFineDialog');if(node)return node;node=document.createElement('div');node.id='vaxPayrollFineDialog';node.hidden=true;node.setAttribute('role','dialog');node.setAttribute('aria-modal','true');node.setAttribute('aria-label','Riwayat denda karyawan');node.innerHTML='<div class="vax-fine-dialog-box"><div class="vax-fine-dialog-head"><h3>Riwayat Denda</h3><button type="button" data-close-fine>Tutup</button></div><div data-fine-body></div></div>';document.body.appendChild(node);node.addEventListener('click',event=>{if(event.target===node||event.target.closest('[data-close-fine]'))closeDialog();});return node;}
+  let previousFocus=null;
+  function closeDialog(){const node=$('vaxPayrollFineDialog');if(!node)return;node.hidden=true;previousFocus?.focus?.();previousFocus=null;}
+  function openDialog(card){const rows=fineById.get(Number(card.dataset.employeeId))||[];const node=dialog(),body=node.querySelector('[data-fine-body]');const name=card.querySelector('.payroll-person h3')?.textContent?.trim()||'Karyawan';node.querySelector('h3').textContent=`Riwayat Denda · ${name}`;
+    body.replaceChildren();const wrap=document.createElement('div');if(!rows.length){wrap.textContent='Tidak ada denda final pada periode ini.';}else{const table=document.createElement('table');const head=document.createElement('thead');head.innerHTML='<tr><th>Tanggal</th><th>Denda awal</th><th>Denda final</th><th>Dibayar</th><th>Sisa</th></tr>';table.appendChild(head);const tbody=document.createElement('tbody');for(const f of rows){const tr=document.createElement('tr');const cells=[f.tanggal,money(f.nominal_awal),money(f.nominal_final),money(f.dibayar),money(Math.max(0,number(f.nominal_final)-number(f.dibayar)))];cells.forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;if(i)td.className='num';tr.appendChild(td);});tbody.appendChild(tr);}table.appendChild(tbody);wrap.appendChild(table);const total=rows.reduce((s,f)=>s+number(f.nominal_final),0),paid=rows.reduce((s,f)=>s+Math.min(number(f.nominal_final),number(f.dibayar)),0);const foot=document.createElement('div');foot.className='vax-fine-dialog-foot';foot.textContent=`Total denda final ${money(total)} · Sudah dibayar ${money(paid)} · Sisa ${money(total-paid)}. Denda yang sudah dibayar harian tidak dipotong ulang dari gaji.`;wrap.appendChild(foot);}body.appendChild(wrap);previousFocus=document.activeElement;node.hidden=false;node.querySelector('[data-close-fine]')?.focus();}
+  function setLabel(card,selector,label){const node=card.querySelector(selector);if(node)node.textContent=label;}
+  function paint(card,rows){const summary=card.querySelector('.payroll-summary');if(!summary)return;
+    summary.querySelectorAll('[data-vax-fine-summary]').forEach(n=>n.remove());card.querySelectorAll('.vax-fine-history-state').forEach(n=>n.remove());
+    setLabel(card,'.payroll-sum:not(.is-denda-card):not(.is-net) span',''); // no-op; use dedicated card below
+    const gross=summary.querySelector('.payroll-sum:first-child span');if(gross)gross.textContent='Pendapatan Kotor';
+    const net=summary.querySelector('.payroll-sum.is-net span');if(net)net.textContent='Pendapatan Bersih';
+    const headerNet=card.querySelector('.payroll-net span');if(headerNet)headerNet.textContent='Pendapatan Bersih';
+    const total=rows.reduce((s,f)=>s+number(f.nominal_final),0),fineCard=summary.querySelector('.payroll-sum.is-denda-card');
+    if(fineCard){fineCard.querySelector('strong').textContent=money(total);fineCard.classList.add('vax-fine-clickable');fineCard.setAttribute('role','button');fineCard.setAttribute('tabindex','0');fineCard.setAttribute('aria-label',`Lihat riwayat denda final, total ${money(total)}`);fineCard.title='Klik untuk melihat riwayat denda harian dan pembayaran';}
+    const byDate=new Map(rows.map(f=>[String(f.tanggal),f]));const body=card.querySelector('.payroll-table tbody');if(!body)return;
+    for(const tr of body.rows){const fine=byDate.get(dateKey(tr.cells[0]?.textContent));if(!fine||!tr.cells[4])continue;const cell=tr.cells[4];cell.textContent=money(fine.nominal_final);cell.title='Denda final SPV; rincian pembayaran tersedia pada card Denda.';}
   }
-  function ensureStyle(){if($('vaxPayrollFineHistoryCss'))return;const style=document.createElement('style');style.id='vaxPayrollFineHistoryCss';style.textContent='.vax-fine-history-sum{border-top:2px solid #b79349!important;background:#17212a!important}.vax-fine-history-sum span{color:#e7ca83!important}.vax-fine-history-detail{font-size:11px;display:block;white-space:normal;color:#dec48a;margin-top:2px}.vax-fine-history-state{font-size:12px;color:#d5bb83;padding:7px 10px;border:1px solid #594c34;border-radius:8px;margin:8px 0}';document.head.appendChild(style);}
-  async function apply(){
-    const host=$('payrollList'),cards=[...(host?.querySelectorAll('.payroll-employee-card')||[])],range=period();
-    if(!cards.length||!range||typeof db==='undefined'){ready=false;return;}
-    ready=false;lastError='';ensureStyle();
-    try{
-      const ids=[...new Set(cards.map(c=>Number(c.dataset.employeeId)).filter(Number.isSafeInteger))];
-      if(!ids.length)return;
-      const {data,error}=await db.from('absensi_denda_review_v1').select('absensi_id,karyawan_id,tanggal,nominal_awal,nominal_final,dibayar,status').in('karyawan_id',ids).gte('tanggal',range.start).lte('tanggal',range.end).order('tanggal',{ascending:true}).limit(2000);
-      if(error)throw error;
-      const byEmployee=new Map();
-      for(const fine of data||[]){const id=Number(fine.karyawan_id);if(!byEmployee.has(id))byEmployee.set(id,[]);byEmployee.get(id).push(fine);}
-      for(const card of cards){
-        if(!card.isConnected)continue;
-        const fines=byEmployee.get(Number(card.dataset.employeeId))||[];
-        const finalized=fines.filter(f=>['DITETAPKAN','DIBEBASKAN'].includes(String(f.status||'')));
-        const daily=new Map(finalized.map(f=>[String(f.tanggal),f]));
-        const job=(card.querySelector('.payroll-person p')?.textContent||'').toLowerCase();
-        const capster=job.includes('capster');
-        const body=card.querySelector('.payroll-table tbody');if(!body)continue;
-        for(const tr of body.querySelectorAll('tr')){
-          const key=dateKey(tr.cells[0]?.textContent);const fine=daily.get(key);if(!fine||!tr.cells[4])continue;
-          const cell=tr.cells[4];const value=Math.max(0,Number(fine.nominal_final)||0);const paid=Math.min(value,Math.max(0,Number(fine.dibayar)||0));
-          cell.textContent=rupiah(value);
-          cell.title=`Denda final SPV · awal ${rupiah(fine.nominal_awal)} · dibayar ${rupiah(paid)} · sisa ${rupiah(value-paid)}. ${capster?'Denda capster tidak dipotong ulang dari gaji.':'Potongan kasir tetap mengikuti payroll.'}`;
-          const hint=document.createElement('small');hint.className='vax-fine-history-detail';hint.textContent=value===0?'Dibebaskan SPV':paid>=value?'Lunas · '+(capster?'dibayar harian':'terbayar'):`${rupiah(paid)} dibayar · sisa ${rupiah(value-paid)}`;cell.appendChild(hint);
-        }
-        const total=finalized.reduce((s,f)=>s+Math.max(0,Number(f.nominal_final)||0),0);
-        const paid=finalized.reduce((s,f)=>s+Math.min(Math.max(0,Number(f.nominal_final)||0),Math.max(0,Number(f.dibayar)||0)),0);
-        const deducted=summaryValue(card,'Denda');
-        const kasbon=summaryValue(card,'Kasbon');
-        const paidSalary=number(card.querySelector('.js-net-value')?.textContent);
-        const gross=paidSalary+deducted+kasbon;
-        addSum(card,'Gaji kotor (sebelum potongan)',gross,'gross');
-        addSum(card,'Riwayat denda final',total,'total');
-        addSum(card,capster?'Denda dibayar harian':'Denda sudah dilunasi',paid,'paid');
-        addSum(card,'Denda dipotong dari gaji',deducted,'deducted');
-        addSum(card,'Gaji setelah seluruh denda (informasi)',gross-total,'after');
-        addSum(card,'Gaji dicairkan (tanpa potong ulang)',paidSalary,'cash');
-        const note=card.querySelector('.vax-fine-history-state')||document.createElement('p');note.className='vax-fine-history-state';note.textContent=capster?'Denda capster tercatat sebagai riwayat harian. Yang telah dibayar tidak dipotong lagi dari payroll.':'Riwayat denda final terpisah dari nominal potongan payroll; tidak menambah potongan gaji.';
-        if(!note.isConnected)card.querySelector('.payroll-summary')?.insertAdjacentElement('afterend',note);
-      }
-      ready=true;
-    }catch(e){lastError=e?.message||String(e);console.error('Riwayat denda payroll tidak tersedia:',e);for(const card of cards){let msg=card.querySelector('.vax-fine-history-state');if(!msg){msg=document.createElement('p');msg.className='vax-fine-history-state';card.querySelector('.payroll-summary')?.insertAdjacentElement('afterend',msg);}if(msg)msg.textContent='Riwayat denda belum dapat dimuat: '+lastError;}}
-  }
-  function schedule(){pending++;queue=queue.catch(()=>{}).then(apply).finally(()=>{pending--;});return queue;}
-  function boot(){const list=$('payrollList');if(!list)return;new MutationObserver(()=>{schedule();}).observe(list,{childList:true});
-    const waitPrint=()=>{if(!window.PayrollCapsterPrint?.open)return false;const original=window.PayrollCapsterPrint.open.bind(window.PayrollCapsterPrint);window.PayrollCapsterPrint.open=mode=>{if(pending||!ready){alert('Mohon tunggu sampai riwayat denda selesai dimuat sebelum mencetak slip.');return;}if(lastError){alert('Riwayat denda belum termuat. Slip tidak dicetak agar rincian denda tidak keliru: '+lastError);return;}return original(mode);};return true;};
-    if(!waitPrint()){const timer=setInterval(()=>{if(waitPrint())clearInterval(timer);},100);setTimeout(()=>clearInterval(timer),10000);}
-    schedule();
-  }
+  function renderError(message){for(const card of $('payrollList')?.querySelectorAll('.payroll-employee-card')||[]){const cardFine=card.querySelector('.payroll-sum.is-denda-card');if(cardFine){cardFine.classList.remove('vax-fine-clickable');cardFine.removeAttribute('role');cardFine.removeAttribute('tabindex');}let note=card.querySelector('.vax-fine-history-state');if(!note){note=document.createElement('p');note.className='vax-fine-history-state';card.querySelector('.payroll-summary')?.insertAdjacentElement('afterend',note);}note.textContent='Riwayat denda tidak dapat dimuat: '+message;}}
+  async function refresh(){const seq=++sequence,cards=[...($('payrollList')?.querySelectorAll('.payroll-employee-card')||[])],range=period();ready=false;pending=true;lastError='';fineById=new Map();if(!cards.length||!range){pending=false;return;}
+    try{if(typeof db==='undefined')throw new Error('Koneksi database belum siap');const ids=[...new Set(cards.map(c=>Number(c.dataset.employeeId)).filter(Number.isSafeInteger))];if(!ids.length)throw new Error('ID karyawan belum tersedia');const {data,error}=await db.from('absensi_denda_review_v1').select('absensi_id,karyawan_id,tanggal,nominal_awal,nominal_final,dibayar,status').in('karyawan_id',ids).gte('tanggal',range.start).lte('tanggal',range.end).order('tanggal',{ascending:true}).limit(2000);if(error)throw error;if(seq!==sequence)return;if((data||[]).length===2000)throw new Error('Riwayat mencapai batas pembacaan; slip ditahan demi akurasi');const byId=new Map();for(const f of data||[]){if(!['DITETAPKAN','DIBEBASKAN'].includes(f.status))continue;const id=Number(f.karyawan_id);if(!byId.has(id))byId.set(id,[]);byId.get(id).push(f);}fineById=byId;for(const card of cards)if(card.isConnected)paint(card,byId.get(Number(card.dataset.employeeId))||[]);ready=true;
+    }catch(err){if(seq!==sequence)return;lastError=err?.message||String(err);console.error('Payroll: gagal memuat riwayat denda',err);renderError(lastError);}finally{if(seq===sequence)pending=false;}}
+  function boot(){const list=$('payrollList');if(!list)return;style();const observer=new MutationObserver(mutations=>{if(mutations.some(m=>[...m.addedNodes].some(n=>n.nodeType===1&&(n.matches?.('.payroll-employee-card')||n.querySelector?.('.payroll-employee-card')))))refresh();});observer.observe(list,{childList:true});list.addEventListener('click',event=>{const cardFine=event.target.closest('.payroll-sum.is-denda-card.vax-fine-clickable');if(cardFine&&ready)openDialog(cardFine.closest('.payroll-employee-card'));});list.addEventListener('keydown',event=>{if(event.key!=='Enter'&&event.key!==' ')return;const fine=event.target.closest('.payroll-sum.is-denda-card.vax-fine-clickable');if(fine&&ready){event.preventDefault();openDialog(fine.closest('.payroll-employee-card'));}});document.addEventListener('keydown',event=>{if(event.key==='Escape')closeDialog();});
+    const wrapPrint=()=>{if(!window.PayrollCapsterPrint?.open)return false;const original=window.PayrollCapsterPrint.open.bind(window.PayrollCapsterPrint);window.PayrollCapsterPrint.open=mode=>{if(pending||!ready||lastError){alert('Riwayat denda belum siap. Tunggu hingga selesai dimuat sebelum mencetak slip. '+lastError);return;}return original(mode);};return true;};if(!wrapPrint()){const timer=setInterval(()=>{if(wrapPrint())clearInterval(timer);},100);setTimeout(()=>clearInterval(timer),10000);}refresh();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
