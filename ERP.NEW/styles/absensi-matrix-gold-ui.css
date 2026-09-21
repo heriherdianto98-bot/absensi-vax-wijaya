@@ -46,3 +46,38 @@
   color: #eac04f;
   text-shadow: 0 1px 2px rgba(0,0,0,.6);
 }
+
+/* UI ONLY — distinguish monthly matrix rows and keep employee columns readable. */
+#ablMatrixCard .abl-table-wrap {
+  background: #0e151e;
+  scrollbar-color: #91702a #0e151e;
+}
+#ablMatrixCard .abl-table tbody tr:nth-child(odd) td {
+  background: #202b39;
+  border-bottom-color: rgba(213, 225, 239, .12);
+}
+#ablMatrixCard .abl-table tbody tr:nth-child(even) td {
+  background: #172230;
+  border-bottom-color: rgba(213, 225, 239, .12);
+}
+#ablMatrixCard .abl-table tbody td + td {
+  border-left: 1px solid rgba(213, 225, 239, .055);
+}
+#ablMatrixCard .abl-table tbody tr:nth-child(odd) td.abl-sticky {
+  background: #253345;
+}
+#ablMatrixCard .abl-table tbody tr:nth-child(even) td.abl-sticky {
+  background: #1c2939;
+}
+#ablMatrixCard .abl-table tbody tr:hover td,
+#ablMatrixCard .abl-table tbody tr:hover td.abl-sticky {
+  background: #314357;
+}
+#ablMatrixCard .abl-table tbody td.abl-td-nama,
+#ablMatrixCard .abl-table tbody td.abl-td-cabang,
+#ablMatrixCard .abl-table tbody td.abl-td-jabatan {
+  color: #f2f6fb;
+}
+#ablMatrixCard .abl-table tbody td.abl-td-jabatan {
+  box-shadow: 2px 0 0 rgba(222, 179, 67, .38);
+}
