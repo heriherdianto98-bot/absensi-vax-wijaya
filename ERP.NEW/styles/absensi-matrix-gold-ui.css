@@ -104,3 +104,24 @@
     border-color: rgba(255, 216, 105, .75);
   }
 }
+
+/* UI ONLY — pulse the Status Karyawan Hari Ini card with its existing red KPI accent. */
+#absensiRoot #absensiDailyView #statusBox {
+  animation: vax-absensi-status-card-pulse 2.4s ease-in-out infinite;
+}
+@keyframes vax-absensi-status-card-pulse {
+  0%, 100% {
+    border-color: rgba(239,68,68,.34);
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,.16), inset -2px -3px 7px rgba(0,0,0,.45), 0 4px 0 #080b10, 0 11px 22px rgba(0,0,0,.46), 0 0 7px rgba(239,68,68,.15);
+  }
+  50% {
+    border-color: rgba(255,119,127,.92);
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,.16), inset -2px -3px 7px rgba(0,0,0,.45), 0 4px 0 #080b10, 0 11px 22px rgba(0,0,0,.46), 0 0 24px rgba(239,68,68,.55);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #absensiRoot #absensiDailyView #statusBox {
+    animation: none;
+    border-color: rgba(255,119,127,.65);
+  }
+}
