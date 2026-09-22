@@ -64,7 +64,7 @@
         analog.onerror=()=>console.error('Gagal memuat jam analog Owner');
         document.head.appendChild(analog);
       };
-      document.head.appendChild(script);
+      document.head.appendChild(picker);
     };
     document.head.appendChild(script);
   }
