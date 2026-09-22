@@ -40,3 +40,29 @@
 .today-section .today-title{margin:0 0 8px!important}
 #kpiCapster.today-grid{gap:8px!important}
 .vax-performance{margin:9px 0 3px!important}
+
+/* Authoritative Service layout: the previously loaded tidy rules forced overflow-y:auto
+   and a 185px cap. Override on the stylesheet already linked in dashboard-karyawan.html.
+   All rows remain visible; card grows with content; columns fit available width. */
+html body #kpiCapster.today-grid .kpi-service{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important}
+html body #kpiCapster.today-grid .kpi-service .service-detail-list{
+ display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,100px),1fr))!important;
+ gap:7px 9px!important;align-items:start!important;align-content:start!important;
+ flex:none!important;height:auto!important;max-height:none!important;min-height:0!important;
+ width:100%!important;margin:7px 0 0!important;padding:0!important;
+ overflow:visible!important;overflow-x:visible!important;overflow-y:visible!important;
+ scrollbar-width:none!important;scrollbar-color:transparent transparent!important;
+}
+html body #kpiCapster.today-grid .kpi-service .service-detail-list::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+html body #kpiCapster.today-grid .kpi-service .service-detail-item,
+html body #kpiCapster.today-grid .kpi-service.has-service-overflow .service-detail-item:nth-child(n+3){
+ display:flex!important;align-items:baseline!important;gap:3px!important;
+ width:100%!important;min-width:0!important;max-width:none!important;flex:none!important;
+ margin:0!important;padding:0!important;overflow:visible!important;
+ font-size:10px!important;line-height:1.4!important;white-space:normal!important;
+}
+html body #kpiCapster.today-grid .kpi-service .service-name{min-width:0!important;flex:0 1 auto!important;overflow:visible!important;white-space:normal!important;overflow-wrap:anywhere!important;text-overflow:clip!important}
+html body #kpiCapster.today-grid .kpi-service .service-dots{min-width:3px!important;flex:1 1 auto!important}
+html body #kpiCapster.today-grid .kpi-service .service-qty{flex:0 0 auto!important;font-size:10px!important;white-space:nowrap!important}
+html body #kpiCapster.today-grid .kpi-service .employee-service-open{display:none!important}
+@media(max-width:350px){html body #kpiCapster.today-grid .kpi-service .service-detail-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,96px),1fr))!important;gap:7px!important}}
