@@ -2,7 +2,42 @@
 (function(){
   'use strict';
   const known=new WeakMap();
+
+  // Read the same calculated fine records displayed by the monthly attendance matrix.
+  // Do not recalculate or change the attendance, SPV decision, or payroll engines.
+  function syncFineCards(){
+    const owner=window.AbsensiOwner;
+    const report=window.AbsensiLaporanBulanan;
+    const rows=report?._rows;
+    if(!owner||!report||!Array.isArray(rows)||!rows.length)return;
+    const selected=String(owner.selectedDate?.()||'');
+    const parts=selected.split('-');
+    if(parts.length!==3||Number(parts[0])!==Number(report.selectedYear?.())||Number(parts[1])!==Number(report.selectedMonth?.()))return;
+
+    // The monthly module may be loading a different branch. Never show a partial total.
+    const ownerBranch=String(owner.selectedCabangName?.()||'').trim().toLowerCase();
+    const reportBranchId=String(report.selectedCabangId?.()||'');
+    const reportBranch=reportBranchId?String((report._cabangList||[]).find(c=>String(c.id)===reportBranchId)?.nama_cabang||'').trim().toLowerCase():'';
+    if(ownerBranch!==reportBranch)return;
+
+    const employeeId=String(owner.selectedEmployeeId?.()||'');
+    const scoped=rows.filter(row=>(!ownerBranch||String(row.cabang||'').trim().toLowerCase()===ownerBranch)&&(!employeeId||String(row.id)===employeeId));
+    let today=0,month=0;
+    scoped.forEach(row=>(row.dendaRecords||[]).forEach(rec=>{
+      const amount=Number(rec.dendaSementara||0);
+      if(!Number.isFinite(amount)||amount<=0)return;
+      month+=amount;
+      if(rec.iso===selected)today+=amount;
+    }));
+    const fmt=n=>'Rp'+n.toLocaleString('id-ID');
+    [['totalDendaHariIni',today],['totalDendaBulanan',month]].forEach(([id,value])=>{
+      const el=document.getElementById(id);
+      if(el&&el.textContent!==fmt(value))el.textContent=fmt(value);
+    });
+  }
+
   function check(){
+    syncFineCards();
     const panel=document.getElementById('izinSpvEmbed');
     if(!panel)return;
     panel.querySelectorAll('.izin-spv-summary-card strong').forEach(function(value){
