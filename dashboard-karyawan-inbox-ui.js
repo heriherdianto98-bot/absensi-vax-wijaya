@@ -17,7 +17,7 @@
  const token=()=>typeof KaryawanSession!=='undefined'&&typeof KaryawanSession.getToken==='function'?KaryawanSession.getToken():'';
  let busy=false;
  async function update(){
-   if(busy||document.hidden||document.documentElement.dataset.homeKpi!=='capster')return;
+   if(busy||document.hidden||document.documentElement.dataset.homeKpi==='pending')return;
    const t=token();if(!t||typeof db==='undefined')return;
    busy=true;
    try{const {data,error}=await db.rpc('vax_inbox_self_v1',{p_action:'THREADS',p_token:t,p_peer:null,p_thread_id:null,p_message:null});
@@ -27,9 +27,9 @@
       button.setAttribute('aria-label',unread?`Inbox: ${unread} pesan belum dibaca`:'Buka Inbox');
    }catch(error){console.warn('Inbox unread:',error);}finally{busy=false;}
  }
- const roleObserver=new MutationObserver(()=>{button.hidden=document.documentElement.dataset.homeKpi!=='capster';if(!button.hidden)void update();});
+ const roleObserver=new MutationObserver(()=>{button.hidden=document.documentElement.dataset.homeKpi==='pending';if(!button.hidden)void update();});
  roleObserver.observe(document.documentElement,{attributes:true,attributeFilter:['data-home-kpi']});
- button.hidden=document.documentElement.dataset.homeKpi!=='capster';if(!button.hidden)void update();
+ button.hidden=document.documentElement.dataset.homeKpi==='pending';if(!button.hidden)void update();
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void update();});
  setInterval(()=>{void update();},30000);
 })();
