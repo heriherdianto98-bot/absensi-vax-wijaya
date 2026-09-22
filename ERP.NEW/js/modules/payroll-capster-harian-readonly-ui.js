@@ -26,7 +26,7 @@
     return { start:`${y}-${String(mo).padStart(2,'0')}-01`, end:`${y}-${String(mo).padStart(2,'0')}-${String(new Date(y,mo,0).getDate()).padStart(2,'0')}` };
   };
   const isCapster = card => /\bcapster\b/i.test(card.querySelector('.payroll-person p')?.textContent || '');
-  const noteText = 'Hak harian dari rincian Payroll: gaji pokok + share produk − kasbon − sisa denda final yang belum dibayar. Bonus Insentif/KPI dan denda manual tingkat bulan belum dialokasikan ke tanggal; angka ini bukan total gaji final atau bukti pencairan.';
+  const noteText = 'Nilai harian berdasarkan rincian Payroll: gaji pokok + share produk − kasbon − sisa denda final yang belum dibayar. Denda yang sudah dibayar terpisah tidak dipotong ulang. Bonus Insentif/KPI dan denda manual tingkat bulan belum dialokasikan ke tanggal; angka ini bukan total gaji final atau bukti pencairan.';
   const style = document.createElement('style');
   style.textContent = '.payroll-table .vax-daily-payable{color:#eed28c!important;font-weight:800!important;white-space:nowrap}.vax-daily-payable-note{margin:8px 2px 3px;color:#c7b998;font-size:11px;line-height:1.5}.vax-daily-payable-note strong{color:#efd38c}';
   document.head.appendChild(style);
@@ -78,7 +78,12 @@
       ensure(card);
       card.querySelectorAll('td[data-vax-daily-payable]').forEach(td => { td.textContent = '…'; td.title = 'Memeriksa keputusan denda final…'; });
     });
-    if (!cards.length || !range || typeof db === 'undefined') {
+    if (!cards.length) return;
+    if (window.__VAX_PAYROLL_HISTORICAL_LOCKED__?.locked) {
+      cards.forEach(card => card.querySelectorAll('td[data-vax-daily-payable]').forEach(td => { td.textContent = '—'; td.title = 'Snapshot Payroll historis LOCK: tidak mencampur data denda live dengan data original.'; }));
+      return;
+    }
+    if (!range || typeof db === 'undefined') {
       cards.forEach(card => card.querySelectorAll('td[data-vax-daily-payable]').forEach(td => { td.textContent = '—'; td.title = 'Periode atau koneksi Payroll tidak tersedia.'; }));
       return;
     }
