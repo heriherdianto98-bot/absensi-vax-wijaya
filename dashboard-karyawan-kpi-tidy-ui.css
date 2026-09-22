@@ -1,0 +1,16 @@
+/* Employee dashboard presentation only. No canonical engine or shared styles changed. */
+#kpiCapster.today-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:100px;gap:8px!important}
+#kpiCapster .today-item,#kpiCapster .kpi-service{box-sizing:border-box;height:100px!important;min-height:100px!important;max-height:100px!important;min-width:0;aspect-ratio:auto!important;padding:10px!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important}
+#kpiCapster .kpi-head{flex:0 0 auto;min-width:0;align-items:center!important}
+#kpiCapster .kpi-label{overflow:hidden;white-space:normal;line-height:1.2!important;font-size:11px!important}
+#kpiCapster .kpi-main-value,#kpiCapster .kpi-customer .kpi-main-value,#kpiCapster .kpi-share .kpi-main-value,#kpiCapster .kpi-pay .kpi-main-value,#kpiCapster .kpi-fine .kpi-main-value{display:flex!important;flex:1 1 auto!important;align-items:center!important;justify-content:center!important;align-self:stretch!important;width:100%!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;text-align:center!important;line-height:1.12!important;font-size:clamp(17px,4.5vw,23px)!important;overflow-wrap:anywhere;letter-spacing:-.025em!important}
+#kpiCapster .kpi-customer .kpi-main-value{font-size:clamp(22px,5.5vw,28px)!important}
+#kpiCapster .kpi-service .service-detail-list{flex:1 1 auto!important;min-height:0!important;max-height:none!important;width:100%!important;margin-top:5px!important;padding:0 2px 0 0!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:3px!important;overflow-x:hidden!important;overflow-y:auto!important;text-align:left!important;scrollbar-width:thin;scrollbar-color:#806b44 transparent}
+#kpiCapster .kpi-service .service-detail-item{display:flex!important;flex:0 0 auto;align-items:baseline;gap:5px;width:100%!important;min-width:0;max-width:100%;overflow:visible!important;-webkit-line-clamp:unset!important;white-space:normal;font-size:10px!important;font-weight:500!important;line-height:1.2!important;text-align:left!important}
+#kpiCapster .service-name{min-width:0;flex:0 1 auto;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#eae6dc}
+#kpiCapster .service-dots{flex:1 1 auto;min-width:5px;border-bottom:1px dotted #706650;transform:translateY(-3px)}
+#kpiCapster .service-qty{flex:0 0 auto;white-space:nowrap;color:#e4c779;font-weight:700;font-variant-numeric:tabular-nums}
+#kpiCapster .service-detail-empty{font-size:11px!important;color:#beb9ac!important}
+#kpiCapster .kpi-fine{background:linear-gradient(145deg,#242321,#151617)!important;border-color:#5c4c31!important}
+#kpiCapster .kpi-fine .kpi-ico{color:#e4c779!important}
+@media(max-width:350px){#kpiCapster .today-item,#kpiCapster .kpi-service{padding:8px!important}#kpiCapster .service-detail-item{font-size:9px!important}}
