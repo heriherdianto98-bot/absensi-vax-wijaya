@@ -1,13 +1,9 @@
-/* Employee-only presentation adapter. All values are read from existing ERP self-read RPCs; no financial calculations. */
+/* Employee-only presentation adapter. Service formatting only; final fines are read by a separate self-read consumer. */
 (() => {
   'use strict';
   const service = document.getElementById('todayService');
-  const fine = document.getElementById('todayFine');
-  const picker = document.getElementById('employeeDatePicker');
-  if (!service || !fine || !picker) return;
-
+  if (!service) return;
   const titleCase = value => String(value || '').toLocaleLowerCase('id-ID').replace(/(^|[\s/(-])([^\s/(-])/g, (_all, prefix, letter) => prefix + letter.toLocaleUpperCase('id-ID'));
-  /* Only reformat rows already rendered by the existing canonical KPI renderer. */
   const tidyServices = () => {
     for (const item of service.querySelectorAll('.service-detail-item:not([data-vax-tidy])')) {
       const raw = item.textContent.trim();
@@ -29,47 +25,9 @@
   };
   new MutationObserver(tidyServices).observe(service, { childList: true });
   tidyServices();
-
-  let fineRequest = 0;
-  const showFine = value => { fine.textContent = value; };
-  const formatFine = value => 'Rp' + Number(value).toLocaleString('id-ID', { maximumFractionDigits: 0 });
-  async function loadFine(date) {
-    const currentRequest = ++fineRequest;
-    showFine('…');
-    const token = typeof KaryawanSession !== 'undefined' && KaryawanSession.getToken ? KaryawanSession.getToken() : '';
-    if (!token || typeof db === 'undefined' || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      showFine('—');
-      return;
-    }
-    try {
-      /* Same existing self-read source used by Riwayat and Absensi; do not query another employee. */
-      const { data, error } = await db.rpc('karyawan_absensi_bulan_self', { p_token: token, p_month: `${date.slice(0, 7)}-01` });
-      if (currentRequest !== fineRequest) return;
-      const payload = Array.isArray(data) ? data[0] : data;
-      if (error || !payload || payload.ok === false) throw error || new Error(payload?.reason || 'ABSENSI_UNAVAILABLE');
-      const history = payload.history || payload.riwayat || payload.rows;
-      if (!Array.isArray(history)) { showFine('—'); return; }
-      const matching = history.filter(row => String(row?.tanggal || row?.activity_date || '').slice(0, 10) === date);
-      /* A missing or ambiguous entry must not be presented as zero or recalculated here. */
-      if (matching.length !== 1) { showFine('—'); return; }
-      const recorded = matching[0].denda;
-      if (recorded === null || recorded === undefined || recorded === '' || !Number.isFinite(Number(recorded))) {
-        showFine('—'); return;
-      }
-      showFine(formatFine(recorded));
-    } catch (error) {
-      if (currentRequest !== fineRequest) return;
-      showFine('—');
-      console.error('Denda harian read-only gagal:', error);
-    }
-  }
-  picker.addEventListener('change', () => { void loadFine(picker.value); });
-  /* The toolbar creates the input synchronously before this script; use its selected date. */
-  void loadFine(picker.value);
 })();
 
-/* Employee-only adapter: evaluate exactly the existing Owner freshness engine over
-   a token-checked, timestamp-only snapshot. No sync trigger or scheduler changes. */
+/* Reuse Owner's existing freshness evaluator on the token-checked read-only snapshot. */
 (() => {
   'use strict';
   const provider = document.getElementById('employeeProviderStatus');
@@ -108,10 +66,10 @@
   }
   void refresh();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh(); });
-  setInterval(() => { void refresh(); }, 60000); // UI polling only; does not invoke server synchronization.
+  setInterval(() => { void refresh(); }, 60000);
 })();
 
-/* Load isolated employee-only monthly KPI presentation; existing engines untouched. */
+/* Load isolated employee-only monthly target presentation. */
 (() => {
   'use strict';
   if (document.querySelector('script[data-vax-employee-monthly-kpi]')) return;
@@ -121,12 +79,22 @@
   document.head.appendChild(script);
 })();
 
-/* Service preview and popup are visual consumers of the existing rendered service rows. */
+/* Present existing service rows in adaptive columns, without touching the renderer. */
 (() => {
   'use strict';
   if (document.querySelector('script[data-vax-employee-service-modal]')) return;
   const script = document.createElement('script');
   script.src = 'dashboard-karyawan-service-detail-ui.js?v=20260922-1';
   script.dataset.vaxEmployeeServiceModal = '1';
+  document.head.appendChild(script);
+})();
+
+/* Read the finalized Absensi fine for the selected capster/date only. */
+(() => {
+  'use strict';
+  if (document.querySelector('script[data-vax-employee-final-fine]')) return;
+  const script = document.createElement('script');
+  script.src = 'dashboard-karyawan-denda-final-ui.js?v=20260922-1';
+  script.dataset.vaxEmployeeFinalFine = '1';
   document.head.appendChild(script);
 })();
