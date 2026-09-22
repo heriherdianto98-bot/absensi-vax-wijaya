@@ -12,6 +12,11 @@
   leaveTheme.src='../js/modules/absensi-spv-personal-leave-theme-ui.js?v=20260922-1';
   leaveTheme.defer=true;
   document.head.appendChild(leaveTheme);
+  // Override only the two mismatched platform emoji with theme-matched CSS icons.
+  const leaveIcons=document.createElement('script');
+  leaveIcons.src='../js/modules/absensi-spv-leave-calendar-icon-ui.js?v=20260922-1';
+  leaveIcons.defer=true;
+  document.head.appendChild(leaveIcons);
   // Owner uses the dedicated read-only SPV history. Keep the legacy queue DOM
   // intact for its existing engine and for SPV; hide only its Owner presentation.
   const style=document.createElement('style');
