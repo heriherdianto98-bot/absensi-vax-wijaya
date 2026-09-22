@@ -26,6 +26,10 @@
     #vaxDendaReview .vax-fine-choice{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0 13px}
     #vaxDendaReview .vax-fine-choice label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#dfbd69}
     #vaxDendaReview .vax-fine-choice-marker{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:9px;border:1px solid #947940;background:linear-gradient(150deg,#49402e,#252a30);color:#f0cf7a;font-size:17px;font-weight:900;box-shadow:inset 1px 1px 0 rgba(255,255,255,.15),0 3px 0 #090c10}
+    /* Only the existing Tampilkan icon changes: context colors, raised depth and a glossy highlight. */
+    #vaxDendaReview .vax-fine-choice-marker{position:relative;isolation:isolate;overflow:hidden;width:34px;height:34px;border-radius:11px;border:1px solid var(--vax-fine-color);background:linear-gradient(145deg,color-mix(in srgb,var(--vax-fine-color) 63%,#fff) 0%,var(--vax-fine-color) 43%,color-mix(in srgb,var(--vax-fine-color) 46%,#121923) 100%);color:#121923;text-shadow:0 1px 0 rgba(255,255,255,.48);font-size:20px;font-weight:900;box-shadow:inset 1px 2px 1px rgba(255,255,255,.58),inset -2px -3px 4px rgba(0,0,0,.29),0 3px 0 #090d12,0 7px 13px rgba(0,0,0,.4),0 0 13px var(--vax-fine-glow);transition:background .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+    #vaxDendaReview .vax-fine-choice-marker::before{content:'';position:absolute;inset:2px 3px auto;height:38%;border-radius:8px 8px 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,.56),rgba(255,255,255,0));pointer-events:none;z-index:-1}
+    #vaxDendaReview .vax-fine-choice:focus-within .vax-fine-choice-marker{transform:translateY(-1px);box-shadow:inset 1px 2px 1px rgba(255,255,255,.65),inset -2px -3px 4px rgba(0,0,0,.29),0 4px 0 #090d12,0 9px 16px rgba(0,0,0,.43),0 0 19px var(--vax-fine-glow)}
     /* Keep the dropdown itself neutral, including its options. */
     #vaxDendaReview .vax-fine-choice select{min-width:254px;max-width:100%;padding:10px 34px 10px 12px;background:#202832!important;color:#f1f2f4!important;border:1px solid #927b4d!important;border-radius:10px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:inset 1px 1px 0 rgba(255,255,255,.09),inset -2px -3px 6px rgba(0,0,0,.3),0 3px 0 #090c11,0 7px 13px rgba(0,0,0,.27);color-scheme:dark}
     #vaxDendaReview .vax-fine-choice select:focus-visible{outline:2px solid #dab957;outline-offset:3px}
@@ -40,7 +44,7 @@
     #vaxDendaReview .vax-fine-view #vaxLateNoticeInbox>div:first-child p,#vaxDendaReview .vax-fine-view #vaxFineDecisionHistory>p,#vaxDendaReview .vax-fine-view #vaxDendaReceiptHistory .vax-denda-receipt-head p{display:none!important}
     #vaxDendaReview .vax-fine-view #vaxLateNoticeInbox h3,#vaxDendaReview .vax-fine-view #vaxFineDecisionHistory h3,#vaxDendaReview .vax-fine-view #vaxDendaReceiptHistory h3{font-size:16px!important}
     #vaxDendaReview .vax-fine-view button{box-shadow:inset 1px 1px 0 rgba(255,255,255,.1),0 3px 0 #0c1016,0 6px 12px rgba(0,0,0,.24)}
-    @media(max-width:650px){#vaxDendaReview .vax-fine-accordion-top{width:100%}#vaxDendaReview .vax-fine-choice select{width:100%;min-width:0}#vaxDendaReview .vax-fine-choice-marker{width:28px;height:28px}#vaxDendaReview .vax-fine-view{padding:11px}}
+    @media(max-width:650px){#vaxDendaReview .vax-fine-accordion-top{width:100%}#vaxDendaReview .vax-fine-choice select{width:100%;min-width:0}#vaxDendaReview .vax-fine-choice-marker{width:32px;height:32px}#vaxDendaReview .vax-fine-view{padding:11px}}
     @media(prefers-reduced-motion:reduce){#vaxDendaReview::before{animation:none;background:linear-gradient(120deg,transparent,#b99748,transparent)}}
   `;
   document.head.appendChild(css);
