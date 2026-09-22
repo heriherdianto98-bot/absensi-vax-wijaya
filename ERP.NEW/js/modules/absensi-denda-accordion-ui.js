@@ -1,98 +1,72 @@
-/* UI ONLY: collapsible Absensi fine review; preserves existing buttons, data loaders, and accounting. */
+/* UI ONLY: one selectable fine-review view; preserve original nodes, handlers, and finance logic. */
 (() => {
   'use strict';
   if (window.__vaxAbsensiFineAccordion) return;
   window.__vaxAbsensiFineAccordion = true;
   const $ = id => document.getElementById(id);
-  const style = document.createElement('style');
-  style.textContent = `
+  const css = document.createElement('style');
+  css.textContent = `
+    #vaxDendaReview{background:linear-gradient(145deg,#141b23,#0d131a 75%)}
     #vaxDendaReview .vax-fine-accordion-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    #vaxDendaReview .vax-fine-accordion-toggle{display:flex;align-items:center;gap:9px;min-width:0;border:1px solid #655334;background:#252a2a;color:#f7d486;border-radius:9px;padding:8px 12px;cursor:pointer;font:inherit;font-size:13px;font-weight:800;line-height:1.25;text-align:left}
+    #vaxDendaReview .vax-fine-accordion-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid #665333;background:#272b2a;color:#f5d17d;border-radius:9px;padding:8px 12px;cursor:pointer;font:inherit;font-size:13px;font-weight:800}
     #vaxDendaReview .vax-fine-accordion-toggle:hover,#vaxDendaReview .vax-fine-accordion-toggle:focus-visible{border-color:#e0b956;outline-offset:2px}
-    #vaxDendaReview .vax-fine-accordion-toggle .vax-fine-arrow{display:inline-block;transition:transform .2s ease}
-    #vaxDendaReview .vax-fine-accordion-toggle[aria-expanded="true"] .vax-fine-arrow{transform:rotate(180deg)}
-    #vaxDendaReview .vax-fine-accordion-metrics{font-size:12px;color:#d2dce5;line-height:1.4;margin:4px 0 0}
-    #vaxDendaReview .vax-fine-accordion-content[hidden],#vaxDendaReview .vax-fine-section-content[hidden]{display:none!important}
-    #vaxDendaReview .vax-fine-section{border-top:1px solid #37414d;margin-top:9px;padding-top:8px}
-    #vaxDendaReview .vax-fine-section-head{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}
-    #vaxDendaReview .vax-fine-section-head .vax-fine-accordion-toggle{flex:1;background:#17212a;color:#f0d183;border-color:#405060;font-size:14px}
-    #vaxDendaReview .vax-fine-section-content{padding-top:7px}
-    #vaxDendaReview .vax-fine-section .vax-fine-decision-history,#vaxDendaReview .vax-fine-section #vaxLateNoticeInbox,#vaxDendaReview .vax-fine-section #vaxDendaReceiptHistory{border-top:0!important;margin-top:0!important;padding-top:0!important}
-    #vaxDendaReview .vax-fine-section h3{margin:0!important;font-size:15px!important}
-    #vaxDendaReview .vax-fine-section-head > h3{display:none!important}
-    @media(max-width:650px){#vaxDendaReview .vax-fine-accordion-top{width:100%}#vaxDendaReview .vax-fine-accordion-toggle{padding:7px 9px}#vaxDendaReview .vax-fine-accordion-metrics{font-size:11px}}
-    @media(prefers-reduced-motion:reduce){#vaxDendaReview .vax-fine-arrow{transition:none!important}}
+    #vaxDendaReview .vax-fine-accordion-metrics{font-size:13px;color:#cdd6df;line-height:1.35;margin:3px 0 0}
+    #vaxDendaReview .vax-fine-accordion-content[hidden],#vaxDendaReview .vax-fine-view[hidden]{display:none!important}
+    #vaxDendaReview .vax-fine-choice{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0}
+    #vaxDendaReview .vax-fine-choice label{font-size:12px;font-weight:800;color:#eac36f}
+    #vaxDendaReview .vax-fine-choice select{min-width:250px;max-width:100%;padding:10px 34px 10px 12px;background:#17212a;color:#f5f5f5;border:1px solid #796136;border-radius:9px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+    #vaxDendaReview .vax-fine-choice select:focus-visible{outline:2px solid #d9ac40;outline-offset:2px}
+    #vaxDendaReview .vax-fine-view{border-top:1px solid #354251;padding-top:9px}
+    #vaxDendaReview .vax-fine-view #vaxLateNoticeInbox,#vaxDendaReview .vax-fine-view #vaxFineDecisionHistory,#vaxDendaReview .vax-fine-view #vaxDendaReceiptHistory{border-top:0!important;margin-top:0!important;padding-top:0!important}
+    #vaxDendaReview .vax-denda-heading>div>small,#vaxDendaReview .vax-denda-heading>div>p{display:none!important}
+    #vaxDendaReview .vax-fine-view #vaxLateNoticeInbox>div:first-child p,#vaxDendaReview .vax-fine-view #vaxFineDecisionHistory>p,#vaxDendaReview .vax-fine-view #vaxDendaReceiptHistory .vax-denda-receipt-head p{display:none!important}
+    #vaxDendaReview .vax-fine-view #vaxLateNoticeInbox h3,#vaxDendaReview .vax-fine-view #vaxFineDecisionHistory h3,#vaxDendaReview .vax-fine-view #vaxDendaReceiptHistory h3{font-size:16px!important}
+    @media(max-width:650px){#vaxDendaReview .vax-fine-accordion-top{width:100%}#vaxDendaReview .vax-fine-choice select{width:100%;min-width:0}}
   `;
-  document.head.appendChild(style);
-  const amounts = text => [...String(text || '').matchAll(/Piutang tersisa\s*Rp\s*([\d.,]+)/gi)].reduce((sum, match) => sum + (Number(match[1].replace(/\D/g, '')) || 0), 0);
-  const money = value => 'Rp ' + Number(value || 0).toLocaleString('id-ID');
-  const makeToggle = (label, content, expanded) => {
-    const button = document.createElement('button');
-    button.type = 'button'; button.className = 'vax-fine-accordion-toggle';
-    button.setAttribute('aria-expanded', String(expanded));
-    button.setAttribute('aria-controls', content.id);
-    const name = document.createElement('span'); name.textContent = label;
-    const arrow = document.createElement('span'); arrow.className = 'vax-fine-arrow';
-    arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '⌄';
-    button.append(name, arrow);
-    content.hidden = !expanded;
-    button.addEventListener('click', () => {
-      const open = button.getAttribute('aria-expanded') !== 'true';
-      button.setAttribute('aria-expanded', String(open)); content.hidden = !open;
-    });
-    return button;
-  };
-  function start(panel) {
-    if (panel.dataset.vaxFineAccordion === '1') return;
-    const heading = panel.querySelector('.vax-denda-heading');
-    const notice = $('vaxDendaNotice'), rows = $('vaxDendaRows');
-    if (!heading || !notice || !rows) return;
-    panel.dataset.vaxFineAccordion = '1';
-    const body = document.createElement('div');
-    body.id = 'vaxFineAccordionBody';body.className = 'vax-fine-accordion-content';
-    heading.insertAdjacentElement('afterend', body);
-    const top = document.createElement('div');top.className = 'vax-fine-accordion-top';
-    const metrics = document.createElement('p');metrics.className='vax-fine-accordion-metrics';
-    const title = heading.querySelector('h2');
-    if (title) {
-      const updateTitle = () => {metrics.textContent = `${(notice.textContent.match(/\d+\s+menunggu keputusan/) || ['0 menunggu keputusan'])[0]} · Piutang tersisa ${money(amounts(rows.textContent))}`;};
-      const watch = new MutationObserver(updateTitle);
-      watch.observe(notice,{childList:true,characterData:true,subtree:true});
-      watch.observe(rows,{childList:true,characterData:true,subtree:true});
-      updateTitle();
-      title.insertAdjacentElement('afterend',metrics);
-    }
-    const toggle = makeToggle('Buka rincian denda',body,false);
-    toggle.addEventListener('click',()=>{toggle.firstElementChild.textContent=body.hidden?'Buka rincian denda':'Tutup rincian denda';});
-    top.append(toggle);
-    const refresh = $('vaxDendaRefresh');
-    if (refresh) refresh.before(top); else heading.append(top);
-    const decision = document.createElement('section');decision.className='vax-fine-section';decision.id='vaxFineSectionDecision';
-    const decisionHead = document.createElement('div');decisionHead.className='vax-fine-section-head';
-    const decisionContent = document.createElement('div');decisionContent.className='vax-fine-section-content';decisionContent.id='vaxFineSectionDecisionContent';
-    decisionHead.append(makeToggle('Keputusan Denda',decisionContent,true));
-    decisionContent.append(notice,rows);decision.append(decisionHead,decisionContent);body.append(decision);
-    const sections = [
-      ['vaxLateNoticeInbox','Pengajuan Izin Telat Masuk','vaxFineSectionLate'],
-      ['vaxFineDecisionHistory','Riwayat Keputusan SPV · Pemeriksaan Owner','vaxFineSectionHistory'],
-      ['vaxDendaReceiptHistory','Riwayat Penerimaan Denda','vaxFineSectionReceipt']
-    ];
-    const addSection = ([id,label,sectionId]) => {
-      const existing = $(id);if (!existing || $(sectionId)) return;
-      const wrap = document.createElement('section');wrap.className='vax-fine-section';wrap.id=sectionId;
-      const head = document.createElement('div');head.className='vax-fine-section-head';
-      const content = document.createElement('div');content.className='vax-fine-section-content';content.id=sectionId+'Content';
-      head.append(makeToggle(label,content,false));content.append(existing);wrap.append(head,content);body.append(wrap);
-    };
-    sections.forEach(addSection);
-    // Other presentation modules mount their sections asynchronously. Move only these known UI nodes.
-    const observer = new MutationObserver(() => {sections.forEach(addSection);});
-    observer.observe(panel,{childList:true});
+  document.head.appendChild(css);
+  const format = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+  const remaining = text => [...String(text || '').matchAll(/Piutang tersisa\s*Rp\s*([\d.,]+)/gi)].reduce((s,m)=>s+(Number(m[1].replace(/\D/g,''))||0),0);
+  function start(panel){
+    if(panel.dataset.vaxFineAccordion === '2')return;
+    const heading=panel.querySelector('.vax-denda-heading'),notice=$('vaxDendaNotice'),rows=$('vaxDendaRows');
+    if(!heading||!notice||!rows)return;
+    panel.dataset.vaxFineAccordion='2';
+    const title=heading.querySelector('h2');if(title)title.textContent='Denda Keterlambatan';
+    const metrics=document.createElement('p');metrics.className='vax-fine-accordion-metrics';
+    title?.insertAdjacentElement('afterend',metrics);
+    const updateMetrics=()=>{const count=(notice.textContent.match(/\d+\s+menunggu keputusan/)||['0 menunggu keputusan'])[0].replace('menunggu keputusan','perlu keputusan');metrics.textContent=`${count} · ${format(remaining(rows.textContent))} belum dibayar`;};
+    new MutationObserver(updateMetrics).observe(notice,{childList:true,characterData:true,subtree:true});
+    new MutationObserver(updateMetrics).observe(rows,{childList:true,characterData:true,subtree:true});
+    updateMetrics();
+    const body=document.createElement('div');body.id='vaxFineAccordionBody';body.className='vax-fine-accordion-content';body.hidden=true;
+    heading.insertAdjacentElement('afterend',body);
+    const toggle=document.createElement('button');toggle.type='button';toggle.className='vax-fine-accordion-toggle';toggle.setAttribute('aria-controls',body.id);toggle.setAttribute('aria-expanded','false');toggle.textContent='Lihat rincian ▾';
+    toggle.addEventListener('click',()=>{const opened=body.hidden;body.hidden=!opened;toggle.setAttribute('aria-expanded',String(opened));toggle.textContent=opened?'Tutup rincian ▴':'Lihat rincian ▾';});
+    const top=document.createElement('div');top.className='vax-fine-accordion-top';top.append(toggle);
+    const refresh=$('vaxDendaRefresh');refresh?refresh.before(top):heading.append(top);
+    const chooser=document.createElement('div');chooser.className='vax-fine-choice';
+    const label=document.createElement('label');label.htmlFor='vaxFineViewSelect';label.textContent='Tampilkan';
+    const select=document.createElement('select');select.id='vaxFineViewSelect';
+    const definitions=[['decision','Perlu Diputuskan','vaxDendaRows'],['late','Izin Telat Masuk','vaxLateNoticeInbox'],['history','Riwayat Keputusan Denda','vaxFineDecisionHistory'],['receipt','Denda Sudah Diterima','vaxDendaReceiptHistory']];
+    for(const [value,name] of definitions){const option=document.createElement('option');option.value=value;option.textContent=name;select.append(option);}
+    chooser.append(label,select);body.append(chooser);
+    const views=new Map();
+    const decision=document.createElement('section');decision.className='vax-fine-view';decision.id='vaxFineViewDecision';decision.append(notice,rows);body.append(decision);views.set('decision',decision);
+    const mountSections=()=>{for(const [key,,id] of definitions.slice(1)){
+      if(views.has(key))continue;
+      const node=$(id);if(!node)continue;
+      const section=document.createElement('section');section.className='vax-fine-view';section.id='vaxFineView'+key;
+      section.append(node);body.append(section);views.set(key,section);
+    }showSelected();};
+    const showSelected=()=>{for(const [key,node] of views)node.hidden=key!==select.value;};
+    select.addEventListener('change',showSelected);
+    mountSections();
+    // Other existing UI modules insert their own sections asynchronously; only move their presentation nodes.
+    new MutationObserver(mountSections).observe(panel,{childList:true});
   }
-  const boot = () => {
-    const panel = $('vaxDendaReview');if(panel){start(panel);return;}
-    const observer = new MutationObserver(() => {const found=$('vaxDendaReview');if(found){observer.disconnect();start(found);}});
+  function boot(){const existing=$('vaxDendaReview');if(existing){start(existing);return;}
+    const observer=new MutationObserver(()=>{const panel=$('vaxDendaReview');if(panel){observer.disconnect();start(panel);}});
     observer.observe(document.body,{childList:true,subtree:true});
-  };
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
