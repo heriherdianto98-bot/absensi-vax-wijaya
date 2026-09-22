@@ -18,6 +18,48 @@
       background:transparent!important;
       box-shadow:none!important;
     }
+    /* SPV proof gallery: cover an encoding-damaged glyph with a CSS-drawn X.
+       Only presentation changes; the existing close button and handler remain. */
+    .izin-spv-gallery .izin-spv-gallery-close {
+      display:grid!important;
+      place-items:center!important;
+      width:44px!important;
+      height:44px!important;
+      padding:0!important;
+      right:12px!important;
+      top:17px!important;
+      border:1px solid #e5ba46!important;
+      border-radius:12px!important;
+      background:linear-gradient(145deg,#393327,#111820)!important;
+      box-shadow:inset 1px 1px 0 rgba(255,255,255,.22),0 3px 0 #07090c,0 7px 18px rgba(0,0,0,.55)!important;
+      color:transparent!important;
+      font-size:0!important;
+      line-height:0!important;
+      cursor:pointer;
+      overflow:hidden;
+    }
+    .izin-spv-gallery .izin-spv-gallery-close::before,
+    .izin-spv-gallery .izin-spv-gallery-close::after {
+      content:'';
+      position:absolute;
+      width:21px;
+      height:3px;
+      left:50%;
+      top:50%;
+      border-radius:3px;
+      background:#ffe29a;
+      box-shadow:0 0 6px rgba(249,197,71,.35);
+      pointer-events:none;
+    }
+    .izin-spv-gallery .izin-spv-gallery-close::before { transform:translate(-50%,-50%) rotate(45deg); }
+    .izin-spv-gallery .izin-spv-gallery-close::after { transform:translate(-50%,-50%) rotate(-45deg); }
+    .izin-spv-gallery .izin-spv-gallery-close:hover,
+    .izin-spv-gallery .izin-spv-gallery-close:focus-visible {
+      border-color:#ffdf81!important;
+      background:linear-gradient(145deg,#56442b,#1d2631)!important;
+      outline:2px solid rgba(255,221,118,.65);
+      outline-offset:2px;
+    }
   `;
   document.head.appendChild(style);
   function mount(){
