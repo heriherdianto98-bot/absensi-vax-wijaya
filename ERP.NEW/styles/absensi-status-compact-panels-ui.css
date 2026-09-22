@@ -1,25 +1,39 @@
-/* UI ONLY: compact black/gold status panels. Original tbody, IDs, filters and click handlers remain. */
+/* UI ONLY: daily status cards match the compact Activity Absensi row. */
+/* Keep the original tbody, three source cells, employee IDs and filters untouched. */
 #statusBox,#statusBox .absensi-table-wrap{min-width:0!important;max-width:100%;box-sizing:border-box}
-#statusBox .absensi-table-wrap{max-height:520px;overflow-y:auto!important;overflow-x:hidden!important;padding:10px;scrollbar-color:#816526 #171b20}
+#statusBox .absensi-table-wrap{max-height:520px;overflow-y:auto!important;overflow-x:hidden!important;padding:9px 10px;scrollbar-color:#816526 #171b20}
 #statusBox table.absensi-table{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;table-layout:auto!important;border:0;background:transparent;box-sizing:border-box}
 #statusBox table.absensi-table thead{display:none!important}
 #statusBox #statusKaryawan{display:grid!important;grid-template-columns:minmax(0,1fr);gap:9px;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box}
-#statusBox #statusKaryawan>tr{
-  display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,auto);
-  align-content:center;row-gap:2px;min-width:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box;
-  min-height:88px;padding:9px 14px;border:1px solid #79632d;border-left:3px solid #e0b849;border-radius:12px;
-  background:linear-gradient(135deg,#29271f,#1b222a 38%,#161a1e);color:#f7f7f7;
-  box-shadow:inset 0 1px 0 rgba(255,227,148,.12),0 3px 9px rgba(0,0,0,.23);
-  transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease;
+#statusBox #statusKaryawan>tr.absensi-status-row{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;
+  gap:1px!important;width:100%!important;min-width:0!important;max-width:100%!important;
+  min-height:0!important;height:74px!important;max-height:74px!important;box-sizing:border-box!important;
+  padding:7px 12px!important;margin:0!important;border:1px solid #806a32!important;
+  border-left:3px solid #e4bc52!important;border-radius:11px!important;
+  background:linear-gradient(135deg,#27251d,#1b222a 35%,#171b20)!important;
+  box-shadow:inset 0 1px 0 rgba(255,227,148,.11),0 3px 8px rgba(0,0,0,.22)!important;
+  color:#f7f7f7;overflow:hidden!important;transition:border-color .16s ease,box-shadow .16s ease;
 }
-#statusBox #statusKaryawan>tr:hover{border-color:#efc75d;box-shadow:0 0 12px rgba(228,179,61,.16),0 4px 12px rgba(0,0,0,.32);transform:translateY(-1px)}
-#statusBox #statusKaryawan>tr:focus-within{outline:2px solid #e7bc4e;outline-offset:2px}
-#statusBox #statusKaryawan>tr>td{display:block!important;grid-column:1!important;width:auto!important;min-width:0!important;max-width:100%!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important;line-height:1.15!important;text-align:left!important;white-space:normal!important;overflow-wrap:anywhere;box-sizing:border-box}
-#statusBox #statusKaryawan>tr>td:first-child{grid-row:1;color:#fff;font-size:16px!important;font-weight:800}
-#statusBox #statusKaryawan>tr>td:nth-child(2){grid-row:2;color:#e0e3e8;font-size:14px!important;font-weight:600}
-#statusBox #statusKaryawan>tr>td.absensi-status-time{grid-row:3;color:#d1b46a;font-size:12px!important;font-weight:650;min-height:13px}
-#statusBox #statusKaryawan>tr>td:nth-child(3){grid-row:4;justify-self:start;align-self:center}
-#statusBox #statusKaryawan .absensi-status{display:inline-flex!important;align-items:center;justify-content:flex-start;max-width:100%!important;box-sizing:border-box;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;text-shadow:none!important;color:#f0c857!important;font-size:12px!important;font-weight:800;line-height:1.15!important;white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere}
-#statusBox #statusKaryawan .absensi-status::before{content:'STATUS: ';color:#bb9c53;font-size:11px;font-weight:700;white-space:pre}
-@media(max-width:520px){#statusBox .absensi-table-wrap{padding:7px;max-height:430px}#statusBox #statusKaryawan>tr{min-height:85px;padding:8px 10px}#statusBox #statusKaryawan>tr>td:first-child{font-size:15px!important}#statusBox #statusKaryawan>tr>td:nth-child(2){font-size:13px!important}}
-@media(prefers-reduced-motion:reduce){#statusBox #statusKaryawan>tr{transition:none}#statusBox #statusKaryawan>tr:hover{transform:none}}
+#statusBox #statusKaryawan>tr.absensi-status-row:hover{border-color:#efc75d!important;box-shadow:0 0 10px rgba(228,179,61,.14),0 4px 10px rgba(0,0,0,.28)!important}
+#statusBox #statusKaryawan>tr.absensi-status-row>td{
+  display:block!important;position:static!important;float:none!important;flex:0 0 auto!important;
+  order:5;grid-area:auto!important;width:100%!important;min-width:0!important;max-width:100%!important;
+  min-height:0!important;height:auto!important;max-height:none!important;padding:0!important;margin:0!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+  line-height:1.12!important;text-align:left!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;box-sizing:border-box!important;
+}
+#statusBox #statusKaryawan>tr.absensi-status-row>td:first-child{order:1!important;color:#fff!important;font-size:15px!important;font-weight:800!important}
+#statusBox #statusKaryawan>tr.absensi-status-row>td:nth-child(2){order:2!important;color:#d6dbe3!important;font-size:12px!important;font-weight:600!important}
+#statusBox #statusKaryawan>tr.absensi-status-row>td.absensi-status-time{order:3!important;color:#d6bb70!important;font-size:11px!important;font-weight:600!important}
+#statusBox #statusKaryawan>tr.absensi-status-row>td:nth-child(3){order:4!important;align-self:stretch!important}
+#statusBox #statusKaryawan .absensi-status{
+  display:inline!important;width:auto!important;max-width:100%!important;padding:0!important;margin:0!important;
+  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;
+  color:#f0c857!important;font-size:11px!important;font-weight:800!important;line-height:1.12!important;
+  white-space:nowrap!important;text-shadow:none!important;
+}
+#statusBox #statusKaryawan .absensi-status::before{content:'Status: ';color:#bba263;font-size:10px;font-weight:700}
+@media(max-width:520px){#statusBox .absensi-table-wrap{padding:7px}#statusBox #statusKaryawan>tr.absensi-status-row{height:72px!important;max-height:72px!important;padding:6px 9px!important}}
+@media(prefers-reduced-motion:reduce){#statusBox #statusKaryawan>tr.absensi-status-row{transition:none!important}}
