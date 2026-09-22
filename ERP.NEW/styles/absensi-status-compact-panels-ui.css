@@ -36,6 +36,23 @@
   color:#f0c857!important;font-size:11px!important;font-weight:800!important;line-height:1.3!important;
   white-space:nowrap!important;text-shadow:none!important;
 }
+/* UI ONLY: override the old red alert glow on the status panel, keeping a soft gold pulse. */
+@keyframes vax-status-gold-pulse{
+  0%,100%{box-shadow:0 8px 24px rgba(0,0,0,.35),0 0 7px rgba(212,175,55,.12);}
+  50%{box-shadow:0 8px 24px rgba(0,0,0,.35),0 0 18px rgba(242,194,48,.38);}
+}
+#absensiDailyView #statusBox{
+  border-color:rgba(212,175,55,.5)!important;
+  border-left-color:#d4af37!important;
+  animation:vax-status-gold-pulse 2.4s ease-in-out infinite!important;
+}
+#absensiDailyView #statusBox::before,
+#absensiDailyView #statusBox::after{
+  border-color:#d4af37!important;
+  background-color:#d4af37!important;
+  background-image:linear-gradient(180deg,#f2c230,#a67b20)!important;
+  box-shadow:0 0 12px rgba(242,194,48,.24)!important;
+}
 @media(max-width:520px){
   #absensiDailyView .absensi-main-grid{margin-top:20px!important;}
   #statusBox .absensi-table-wrap{padding:7px;}
@@ -44,4 +61,4 @@
   #statusBox #statusKaryawan>tr.absensi-status-row>td:nth-child(2),#statusBox #statusKaryawan .absensi-status{font-size:10px!important;}
   #statusBox #statusKaryawan>tr.absensi-status-row>td.absensi-status-time{font-size:10px!important;}
 }
-@media(prefers-reduced-motion:reduce){#statusBox #statusKaryawan>tr.absensi-status-row{transition:none!important;}}
+@media(prefers-reduced-motion:reduce){#statusBox #statusKaryawan>tr.absensi-status-row{transition:none!important;}#absensiDailyView #statusBox{animation:none!important;}}
