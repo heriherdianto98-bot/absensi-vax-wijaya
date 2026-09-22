@@ -1,6 +1,25 @@
 /* UI ONLY: riwayat keputusan SVP tertutup awal, terbuka bila diklik. */
 (function(){
   'use strict';
+  // Owner uses the dedicated read-only SPV history. Keep the legacy queue DOM
+  // intact for its existing engine and for SPV; hide only its Owner presentation.
+  const style=document.createElement('style');
+  style.id='vax-owner-hide-legacy-izin-review';
+  style.textContent=`
+    #izinSpvEmbed.is-owner > .izin-spv-head,
+    #izinSpvEmbed.is-owner > .izin-spv-summary,
+    #izinSpvEmbed.is-owner > .izin-spv-toolbar,
+    #izinSpvEmbed.is-owner > #izinSpvLoading,
+    #izinSpvEmbed.is-owner > #izinSpvEmpty,
+    #izinSpvEmbed.is-owner > #izinSpvList { display:none!important; }
+    #izinSpvEmbed.is-owner {
+      padding:0!important;
+      border:0!important;
+      background:transparent!important;
+      box-shadow:none!important;
+    }
+  `;
+  document.head.appendChild(style);
   function mount(){
     const panel=document.getElementById('ownerSpvReadonlyAudit');
     const head=panel?.querySelector('.owner-spv-audit-head');
