@@ -76,3 +76,8 @@ html[data-home-kpi="capster"] .app .today-section{margin:0!important}
 html[data-home-kpi="capster"] .app .today-section .today-title{margin:0 0 7px!important}
 html[data-home-kpi="capster"] .app .vax-performance{margin:0!important}
 html[data-home-kpi="capster"] .app .comm-row{margin:0!important}
+
+/* Customer and Share Bruto headings only; values, card dimensions and data stay unchanged. */
+html[data-home-kpi="capster"] #kpiCapster.today-grid .kpi-customer .kpi-label,
+html[data-home-kpi="capster"] #kpiCapster.today-grid .kpi-share .kpi-label{font-size:15px!important;line-height:1.2!important;font-weight:750!important}
+@media(max-width:350px){html[data-home-kpi="capster"] #kpiCapster.today-grid .kpi-customer .kpi-label,html[data-home-kpi="capster"] #kpiCapster.today-grid .kpi-share .kpi-label{font-size:13px!important}}
