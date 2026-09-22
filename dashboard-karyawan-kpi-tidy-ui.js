@@ -120,3 +120,13 @@
   script.dataset.vaxEmployeeMonthlyKpi = '1';
   document.head.appendChild(script);
 })();
+
+/* Service preview and popup are visual consumers of the existing rendered service rows. */
+(() => {
+  'use strict';
+  if (document.querySelector('script[data-vax-employee-service-modal]')) return;
+  const script = document.createElement('script');
+  script.src = 'dashboard-karyawan-service-detail-ui.js?v=20260922-1';
+  script.dataset.vaxEmployeeServiceModal = '1';
+  document.head.appendChild(script);
+})();
