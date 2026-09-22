@@ -1,0 +1,33 @@
+/* Employee header & date toolbar: presentation only. Existing KPI/attendance rules untouched. */
+:root{--vax-header-gold:#e4c779}
+.app .topbar{position:relative;align-items:flex-start;margin-bottom:10px!important;padding:0 1px!important}
+.app .topbar-brand{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.app .topbar-brand strong{font-size:15px!important;letter-spacing:.2em!important;line-height:1.2}
+.app .topbar-brand .brand-subtitle{font-size:8px;color:#b8b4ab;letter-spacing:.12em;font-weight:500;white-space:nowrap}
+.app .topbar-meta{display:flex;align-items:center;gap:12px}
+.app .topbar-meta small{font-size:8px!important}.app .topbar-meta b{color:#e4c779!important}
+.app .topbar-meta .header-notification{border:0;background:none;color:#e4c779;font-size:17px;padding:8px 1px;line-height:1}
+.app .profile-card:not(.tutup-ops-banner){padding:12px!important;min-height:104px!important;gap:11px!important;align-items:center!important}
+.app .profile-card img{width:66px!important;height:66px!important;flex:0 0 66px}
+.app .profile-copy h1{font-size:24px!important;margin:2px 0 5px!important}
+.app .profile-line{font-size:11px!important;line-height:1.35}
+.app .profile-meta-date{margin-left:auto;align-self:center;flex:0 0 40px;text-align:right;border-left:1px solid #38342b;padding-left:8px;position:relative;z-index:1}
+.app .profile-meta-date small{display:block;font-size:8px;color:#aba69b;text-transform:uppercase}
+.app .profile-meta-date strong{display:block;color:#e4c779;font-size:24px;line-height:1.1}
+.app .profile-meta-date span{font-size:8px;color:#aaa59a;white-space:nowrap}
+.app .profile-branch{display:flex;align-items:flex-start;gap:8px;margin-top:8px;padding-top:9px;border-top:1px solid #36332d;position:relative;z-index:1;min-width:0}
+.app .profile-branch>i{color:#e4c779;font-size:12px;margin-top:2px}
+.app .profile-branch>div{min-width:0}.app .profile-branch-name{display:block;color:#eee8dc;font-size:11px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.app .profile-branch-address{display:block;color:#aaa69c;font-size:10px;line-height:1.4;margin-top:3px;overflow-wrap:anywhere}
+.app .profile-card:not(.tutup-ops-banner){flex-wrap:wrap}.app .profile-branch{flex:0 0 100%}
+.app .profile-copy .profile-line:last-of-type{display:none}
+.app .employee-date-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;padding:9px 10px;border:1px solid #39352d;border-radius:12px;background:linear-gradient(135deg,#202122,#151617);position:relative;z-index:2}
+.app .date-toolbar-info{display:flex;flex-direction:column;gap:2px;min-width:0}.app .date-toolbar-caption{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#a9a59c}.app .date-toolbar-current{font-size:12px;color:#f0e9db;font-weight:650;line-height:1.4}
+.app .date-toolbar-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;border:1px solid #75603a;background:#2d291f;color:#ecd08e;border-radius:9px;padding:9px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.app .date-toolbar-button:focus-visible,.app .date-toolbar-close:focus-visible{outline:2px solid #e4c779;outline-offset:2px}
+.app .date-toolbar-popover[hidden]{display:none!important}.app .date-toolbar-popover{position:relative;z-index:3;border:1px solid #524833;background:#1c1d1e;border-radius:12px;padding:12px;margin-top:6px;box-shadow:0 12px 28px #0006}
+.app .date-toolbar-popover label{display:block;font-size:11px;color:#e5d6af;margin-bottom:6px}.app .date-toolbar-popover input{color-scheme:dark;width:100%;background:#111213;border:1px solid #645536;color:#f3eddf;border-radius:8px;padding:9px;font:inherit;font-size:13px}
+.app .date-toolbar-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px}.app .date-toolbar-close{border:1px solid #524833;background:#292720;color:#edd49b;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer}
+.app .date-toolbar-help{font-size:10px;color:#b5afa1;line-height:1.45;margin-top:8px}
+.app .dash-body{margin-top:14px!important}
+@media(max-width:365px){.app .profile-card:not(.tutup-ops-banner){padding:10px!important}.app .profile-card img{width:58px!important;height:58px!important;flex-basis:58px}.app .profile-copy h1{font-size:21px!important}.app .date-toolbar-current{font-size:11px}}
