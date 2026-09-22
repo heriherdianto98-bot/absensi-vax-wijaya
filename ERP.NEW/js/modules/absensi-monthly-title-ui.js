@@ -42,9 +42,9 @@
   lateInbox.src='../js/modules/absensi-izin-telat-inbox-ui.js?v=20260921-1';
   lateInbox.onerror=()=>console.error('Gagal memuat pengajuan izin telat karyawan');
   document.head.appendChild(lateInbox);
-  // Presentation only: main dropdown and separate collapsible sections; existing handlers stay on their nodes.
+  // Presentation only: one dropdown selects one fine view while existing action handlers remain intact.
   const fineAccordion=document.createElement('script');
-  fineAccordion.src='../js/modules/absensi-denda-accordion-ui.js?v=20260922-1';
+  fineAccordion.src='../js/modules/absensi-denda-accordion-ui.js?v=20260922-2';
   fineAccordion.onerror=()=>console.error('Gagal memuat dropdown panel denda');
   document.head.appendChild(fineAccordion);
   let started=false;
@@ -64,7 +64,7 @@
         analog.onerror=()=>console.error('Gagal memuat jam analog Owner');
         document.head.appendChild(analog);
       };
-      document.head.appendChild(picker);
+      document.head.appendChild(script);
     };
     document.head.appendChild(script);
   }
