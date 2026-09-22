@@ -104,7 +104,7 @@
   'use strict';
   if (document.querySelector('script[data-vax-employee-daily-hak]')) return;
   const script = document.createElement('script');
-  script.src = 'dashboard-karyawan-hak-harian-ui.js?v=20260922-1';
+  script.src = 'dashboard-karyawan-hak-harian-ui.js?v=20260922-hak2';
   script.dataset.vaxEmployeeDailyHak = '1';
   document.head.appendChild(script);
 })();
