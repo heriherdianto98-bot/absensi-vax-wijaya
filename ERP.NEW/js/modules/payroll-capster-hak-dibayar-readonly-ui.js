@@ -124,3 +124,13 @@
   });
   void refresh();
 })();
+
+/* Load the separate read-only daily table presentation; no Payroll engine hooks. */
+(() => {
+  'use strict';
+  if (document.querySelector('script[data-vax-payroll-capster-harian]')) return;
+  const script = document.createElement('script');
+  script.src = '../js/modules/payroll-capster-harian-readonly-ui.js?v=20260922-harian1';
+  script.dataset.vaxPayrollCapsterHarian = '1';
+  document.head.appendChild(script);
+})();
