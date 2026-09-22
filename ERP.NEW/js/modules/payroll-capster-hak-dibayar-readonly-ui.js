@@ -1,18 +1,17 @@
-/* Payroll Capster presentation only. Read the Owner payroll payout value and
-   final Absensi fine settlement; never modify payroll, absensi, or payment data. */
+/* Payroll Capster read-only card. Mirror the existing Owner Payroll net after
+   final Absensi fines have been presented; never recompute or add back fines. */
 (() => {
   'use strict';
   if (window.__vaxCapsterHakDibayarUi) return;
   window.__vaxCapsterHakDibayarUi = true;
   const list = document.getElementById('payrollList');
   if (!list) return;
-  const months = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', Mei: '05', Jun: '06', Jul: '07', Agu: '08', Sep: '09', Okt: '10', Nov: '11', Des: '12' };
-  const money = n => 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(n));
+  const months = { Jan:'01', Feb:'02', Mar:'03', Apr:'04', Mei:'05', Jun:'06', Jul:'07', Agu:'08', Sep:'09', Okt:'10', Nov:'11', Des:'12' };
   const period = () => {
     const match = (document.getElementById('payrollPeriodLabel')?.textContent || '').trim().match(/^(\w+)\s+(\d{4})$/);
     if (!match || !months[match[1]]) return null;
     const year = Number(match[2]), month = Number(months[match[1]]);
-    return { start: `${year}-${String(month).padStart(2, '0')}-01`, end: `${year}-${String(month).padStart(2, '0')}-${String(new Date(year, month, 0).getDate()).padStart(2, '0')}` };
+    return { start: `${year}-${String(month).padStart(2,'0')}-01`, end: `${year}-${String(month).padStart(2,'0')}-${String(new Date(year,month,0).getDate()).padStart(2,'0')}` };
   };
   const isCapster = card => /\bcapster\b/i.test(card.querySelector('.payroll-person p')?.textContent || '');
   const ensure = card => {
@@ -27,7 +26,6 @@
       const label = document.createElement('span'); label.textContent = 'Hak Dibayar';
       const value = document.createElement('strong'); value.textContent = '—';
       const note = document.createElement('small'); note.className = 'vax-hak-note';
-      note.textContent = 'Menunggu nilai Payroll dan denda final…';
       item.append(label, value, note);
       summary.appendChild(item);
     }
@@ -37,20 +35,25 @@
     const item = ensure(card);
     if (!item) return;
     const value = item.querySelector('strong'), note = item.querySelector('.vax-hak-note');
-    const payout = card.dataset.vaxPayoutNet;
-    if (state !== 'settled' || payout == null || payout === '' || !Number.isFinite(Number(payout))) {
+    /* The existing final-fine UI already presents the net in this Owner Payroll
+       card. It subtracts final fines for the informational net. Never use
+       data-vax-payout-net here: that base includes paid fines and previously
+       caused an incorrect Rp25.000 add-back. */
+    const source = card.querySelector('.payroll-sum.is-net strong');
+    const net = source?.textContent?.trim() || '';
+    const ready = state === 'settled' && card.hasAttribute('data-vax-fine-extra')
+      && /^Rp\s*-?[\d.,]+$/.test(net);
+    if (!ready) {
       value.textContent = '—';
       note.textContent = state === 'unpaid' ? 'Ada denda final belum lunas; nominal perlu verifikasi.'
         : state === 'error' ? 'Data denda final tidak tersedia; nominal tidak ditampilkan.'
-        : 'Menunggu nilai Payroll dan denda final…';
+        : 'Menunggu Pendapatan Bersih dan denda final Payroll…';
       return;
     }
-    /* vaxPayoutNet is supplied by the existing Owner payroll presentation bridge,
-       including saved bonuses/kasbon. Do not derive a second financial formula. */
-    value.textContent = money(Number(payout));
+    value.textContent = net;
     note.textContent = card.dataset.vaxHakPreview === '1'
       ? 'Pratinjau bonus belum disimpan · bukan nilai final.'
-      : 'Nilai Payroll periode terpilih · bukan bukti pencairan.';
+      : 'Mengikuti Pendapatan Bersih Payroll · bukan bukti pencairan.';
   };
   let generation = 0;
   async function refresh() {
@@ -69,7 +72,8 @@
       const unsettled = new Set();
       for (const row of data) {
         const final = Number(row.nominal_final), paid = Number(row.dibayar);
-        if (!['DITETAPKAN', 'DIBEBASKAN'].includes(row.status) || !Number.isFinite(final) || !Number.isFinite(paid) || final < 0 || paid < 0 || paid < final) {
+        if (!['DITETAPKAN','DIBEBASKAN'].includes(row.status) || !Number.isFinite(final)
+          || !Number.isFinite(paid) || final < 0 || paid < 0 || paid < final) {
           unsettled.add(Number(row.karyawan_id));
         }
       }
@@ -94,12 +98,22 @@
       if (!queued) { queued = true; queueMicrotask(() => { queued = false; void refresh(); }); }
       return;
     }
+    const changedCards = new Set();
     for (const record of records) {
-      if (record.type !== 'attributes' || record.attributeName !== 'data-vax-payout-net') continue;
-      const card = record.target;
-      if (card?.matches?.('.payroll-employee-card') && isCapster(card)) render(card, card.dataset.vaxHakState);
+      if (record.type === 'attributes' && record.attributeName === 'data-vax-fine-extra') {
+        const card = record.target;
+        if (card?.matches?.('.payroll-employee-card') && isCapster(card)) changedCards.add(card);
+      } else if (record.type === 'childList' || record.type === 'characterData') {
+        const node = record.target.nodeType === 1 ? record.target : record.target.parentElement;
+        const source = node?.closest?.('.payroll-sum.is-net strong');
+        if (source) {
+          const card = source.closest('.payroll-employee-card');
+          if (card && isCapster(card)) changedCards.add(card);
+        }
+      }
     }
-  }).observe(list, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-vax-payout-net'] });
+    for (const card of changedCards) render(card, card.dataset.vaxHakState);
+  }).observe(list, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['data-vax-fine-extra'] });
   list.addEventListener('input', event => {
     if (!event.target.matches('.js-insentif,.js-kpi')) return;
     const card = event.target.closest('.payroll-employee-card');
