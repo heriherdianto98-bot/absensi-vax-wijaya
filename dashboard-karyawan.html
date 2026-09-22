@@ -22,6 +22,11 @@
       .employee-sync-copy small{color:#b8b2a4;font-size:9px;letter-spacing:.075em;font-weight:700;line-height:1.2}
       .employee-sync-copy strong{color:#e8d4a4;font-size:10px;line-height:1.3;font-weight:650;overflow-wrap:anywhere}
       @media(max-width:340px){.employee-sync-indicator{padding:6px;gap:5px}.employee-sync-copy strong{font-size:9px}}
+      /* UI only: center fixed nav on the scrollable viewport (exclude scrollbar width),
+         match the 430px app's 15px content inset and give each tab the same column. */
+      .app #bottomNav{left:calc(50% - (100vw - 100%)/2)!important;width:min(calc(100% - 30px),400px)!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;align-items:center!important;justify-content:stretch!important;gap:0!important;box-sizing:border-box!important}
+      .app #bottomNav>a{box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;min-width:0!important;width:100%!important;margin:0!important;padding:3px 1px!important;text-align:center!important}
+      .app #bottomNav>a>i,.app #bottomNav>a>span{flex:0 0 auto!important;text-align:center!important}
     </style>
 </head>
 <body>
