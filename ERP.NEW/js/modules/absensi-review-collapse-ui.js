@@ -1,6 +1,12 @@
 /* UI ONLY: riwayat keputusan SVP tertutup awal, terbuka bila diklik. */
 (function(){
   'use strict';
+  // Isolated personal-leave UI, loaded from this existing Absensi UI entry point.
+  // Leave the existing Absensi HTML, approval engine and locked modules intact.
+  const leaveScript=document.createElement('script');
+  leaveScript.src='../js/modules/absensi-spv-personal-leave-ui.js?v=20260922-1';
+  leaveScript.defer=true;
+  document.head.appendChild(leaveScript);
   // Owner uses the dedicated read-only SPV history. Keep the legacy queue DOM
   // intact for its existing engine and for SPV; hide only its Owner presentation.
   const style=document.createElement('style');
