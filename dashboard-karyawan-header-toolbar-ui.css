@@ -31,3 +31,64 @@
 .app .employee-date-toolbar.is-custom-date{border-color:#786340}
 .app .dash-body{margin-top:14px!important}
 @media(max-width:365px){.app .profile-card:not(.tutup-ops-banner){padding:10px!important}.app .profile-card img{width:58px!important;height:58px!important;flex-basis:58px}.app .profile-copy h1{font-size:21px!important}.app .date-toolbar-current{font-size:11px}}
+
+/* 2026-09-22 — visual-only refinement: compact profile + frozen brand header. */
+.app .topbar{
+  position:sticky!important;top:0;z-index:40;flex-shrink:0;
+  padding:10px 4px 9px!important;margin:0 0 7px!important;
+  background:#121312!important;border-bottom:1px solid #37332b;
+  isolation:isolate;
+}
+.app .profile-card:not(.tutup-ops-banner){
+  min-height:0!important;padding:9px 10px!important;gap:8px!important;
+  border-radius:12px!important;align-content:center;
+}
+.app .profile-card:not(.tutup-ops-banner) img{
+  width:49px!important;height:49px!important;flex:0 0 49px!important;
+}
+.app .profile-card:not(.tutup-ops-banner) .profile-copy h1{
+  font-size:19px!important;line-height:1.12!important;margin:1px 0 2px!important;
+}
+.app .profile-card:not(.tutup-ops-banner) .home-greet{font-size:9px!important;line-height:1.2!important}
+.app .profile-card:not(.tutup-ops-banner) .profile-line{font-size:10px!important;margin-top:2px!important;line-height:1.2!important}
+.app .profile-meta-date{flex:0 0 35px;padding-left:6px}
+.app .profile-meta-date strong{font-size:20px!important}
+.app .profile-meta-date small,.app .profile-meta-date span{font-size:7px!important}
+.app .profile-branch{gap:6px!important;margin-top:2px!important;padding-top:6px!important}
+.app .profile-branch>i{font-size:10px!important}
+.app .profile-branch-name{font-size:10px!important;line-height:1.2!important}
+.app .profile-branch-address{font-size:9px!important;line-height:1.3!important;margin-top:2px!important}
+/* Profile text wraps safely on narrow phones without pushing the date off-screen. */
+.app .profile-copy{flex:1 1 0;min-width:0}
+.app .employee-date-toolbar{margin-top:8px!important;padding:8px 10px!important}
+.app .dash-body{margin-top:10px!important}
+/* All KPI tiles use one height; figures are aligned and never oversized. */
+.app .today-grid .today-item,.app #kpiCapster .kpi-service{
+  height:100px!important;min-height:100px!important;max-height:100px!important;
+  padding:11px 10px!important;justify-content:space-between!important;
+}
+.app .today-grid .kpi-head{flex:0 0 auto;min-height:26px!important}
+.app .today-grid .kpi-label{font-size:11px!important;line-height:1.2!important}
+.app .today-grid .today-item strong,.app #kpiCapster .kpi-main-value,
+.app #kpiCapster .kpi-customer .kpi-main-value,
+.app #kpiCapster .kpi-share .kpi-main-value,
+.app #kpiCapster .kpi-pay .kpi-main-value{
+  flex:0 0 auto!important;font-size:20px!important;line-height:1.2!important;
+  letter-spacing:-.025em!important;overflow-wrap:anywhere!important;
+  text-align:left!important;margin:0!important;padding:0!important;
+}
+.app #kpiCapster .kpi-share .kpi-main-value{font-size:19px!important;font-variant-numeric:tabular-nums}
+.app #kpiCapster .kpi-service .service-detail-list{
+  max-height:49px!important;min-height:0!important;justify-content:flex-start!important;
+  overflow-y:auto!important;overflow-x:hidden!important;padding:3px 0 0!important;
+}
+.app #kpiCapster .kpi-service .service-detail-item{
+  flex:0 0 auto!important;font-size:10px!important;line-height:1.35!important;
+  -webkit-line-clamp:unset!important;display:block!important;
+}
+@media(max-width:365px){
+  .app .profile-card:not(.tutup-ops-banner) img{width:44px!important;height:44px!important;flex-basis:44px!important}
+  .app .profile-card:not(.tutup-ops-banner) .profile-copy h1{font-size:17px!important}
+  .app .today-grid .today-item,.app #kpiCapster .kpi-service{height:96px!important;min-height:96px!important;max-height:96px!important}
+  .app .today-grid .today-item strong,.app #kpiCapster .kpi-main-value,.app #kpiCapster .kpi-customer .kpi-main-value,.app #kpiCapster .kpi-share .kpi-main-value,.app #kpiCapster .kpi-pay .kpi-main-value{font-size:18px!important}
+}
