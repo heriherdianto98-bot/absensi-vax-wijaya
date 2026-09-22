@@ -1,6 +1,6 @@
 /* Owner Payroll Capster: read-only daily entitlement presentation.
-   Uses existing Payroll daily rows and final Absensi settlement. Monthly bonuses and
-   pre-ERP monthly manual fines have no approved daily allocation, so are excluded. */
+   Final Absensi fines are deducted directly from daily income as confirmed by Owner.
+   Monthly bonuses and pre-ERP monthly manual fines are not allocated to a day. */
 (() => {
   'use strict';
   if (window.__vaxPayrollCapsterHarianReadonly) return;
@@ -26,14 +26,12 @@
     return { start:`${y}-${String(mo).padStart(2,'0')}-01`, end:`${y}-${String(mo).padStart(2,'0')}-${String(new Date(y,mo,0).getDate()).padStart(2,'0')}` };
   };
   const isCapster = card => /\bcapster\b/i.test(card.querySelector('.payroll-person p')?.textContent || '');
-  const noteText = 'Nilai harian berdasarkan rincian Payroll: gaji pokok + share produk − kasbon − sisa denda final yang belum dibayar. Denda yang sudah dibayar terpisah tidak dipotong ulang. Bonus Insentif/KPI dan denda manual tingkat bulan belum dialokasikan ke tanggal; angka ini bukan total gaji final atau bukti pencairan.';
+  const noteText = 'Hak harian: gaji pokok + share produk − kasbon − denda final Absensi. Status dibayar pada denda berarti potongan langsung dari penghasilan hari itu, bukan pembayaran terpisah. Bonus Insentif/KPI dan denda manual bulanan belum dialokasikan ke tanggal; bukan bukti pencairan.';
   const style = document.createElement('style');
   style.textContent = '.payroll-table .vax-daily-payable{color:#eed28c!important;font-weight:800!important;white-space:nowrap}.vax-daily-payable-note{margin:8px 2px 3px;color:#c7b998;font-size:11px;line-height:1.5}.vax-daily-payable-note strong{color:#efd38c}';
   document.head.appendChild(style);
   let sequence = 0;
   function ensure(card) {
-    // The daily table is the only Hak Dibayar presentation. Retain the existing
-    // Pendapatan Bersih monthly card and remove the duplicate monthly Hak card.
     card.querySelectorAll('.payroll-summary [data-vax-hak-dibayar]').forEach(node => node.remove());
     const table = card.querySelector('.payroll-table'), wrap = card.querySelector('.payroll-table-wrap');
     if (!table || !wrap || !table.tHead?.rows[0]) return null;
@@ -46,6 +44,7 @@
       table.tHead.rows[0].appendChild(head);
     }
     head.textContent = 'Hak Dibayar*';
+    head.title = noteText;
     for (const tr of table.tBodies[0]?.rows || []) {
       if (tr.cells.length < 7) continue;
       if (!tr.querySelector('[data-vax-daily-payable]')) {
@@ -61,13 +60,11 @@
     if (!note) {
       note = document.createElement('p');
       note.className = 'vax-daily-payable-note';
-      const title = document.createElement('strong'); title.textContent = '*Hak Dibayar Harian: ';
-      note.append(title, document.createTextNode(noteText));
       wrap.insertAdjacentElement('afterend', note);
-    } else {
-      const title = note.querySelector('strong');
-      if (title) title.textContent = '*Hak Dibayar Harian: ';
     }
+    note.replaceChildren();
+    const title = document.createElement('strong'); title.textContent = '*Hak Dibayar Harian: ';
+    note.append(title, document.createTextNode(noteText));
     return table;
   }
   function paintRow(tr, result, message) {
@@ -99,15 +96,15 @@
       return;
     }
     try {
-      const { data, error } = await db.from('absensi_denda_review_v1')
+      const {data,error} = await db.from('absensi_denda_review_v1')
         .select('karyawan_id,tanggal,nominal_final,dibayar,status')
-        .in('karyawan_id', ids).gte('tanggal',range.start).lte('tanggal',range.end).limit(2000);
+        .in('karyawan_id',ids).gte('tanggal',range.start).lte('tanggal',range.end).limit(2000);
       if (seq !== sequence) return;
       if (error || !Array.isArray(data) || data.length >= 2000) throw error || new Error('DATA_DENDA_TIDAK_LENGKAP');
       const byKey = new Map();
       for (const row of data) {
         const key = `${row.karyawan_id}|${row.tanggal}`;
-        if (!byKey.has(key)) byKey.set(key, []);
+        if (!byKey.has(key)) byKey.set(key,[]);
         byKey.get(key).push(row);
       }
       for (const card of cards) {
@@ -117,11 +114,11 @@
         const id = Number(card.dataset.employeeId);
         const days = [...table.tBodies[0].rows].filter(tr => tr.querySelector('td[data-vax-daily-payable]'));
         const counts = new Map();
-        days.forEach(tr => { const date = parseDate(tr.cells[0]?.textContent); if (date) counts.set(date, (counts.get(date)||0)+1); });
+        days.forEach(tr => { const date = parseDate(tr.cells[0]?.textContent); if (date) counts.set(date,(counts.get(date)||0)+1); });
         for (const tr of days) {
           const date = parseDate(tr.cells[0]?.textContent);
           if (!date || counts.get(date) !== 1 || tr.cells.length < 8) {
-            paintRow(tr, null, 'Tanggal tidak valid atau lebih dari satu cabang pada hari yang sama; potongan belum dapat dialokasikan.');
+            paintRow(tr,null,'Tanggal tidak valid atau lebih dari satu cabang pada hari yang sama; potongan belum dapat dialokasikan.');
             continue;
           }
           const base = parseMoney(tr.cells[3].textContent);
@@ -130,29 +127,29 @@
           const product = parseMoney(tr.cells[6].textContent);
           const reviews = byKey.get(`${id}|${date}`) || [];
           if ([base,rawFine,advance,product].some(x => x == null) || reviews.length > 1) {
-            paintRow(tr, null, 'Rincian Payroll atau keputusan denda tidak lengkap.');
+            paintRow(tr,null,'Rincian Payroll atau keputusan denda tidak lengkap.');
             continue;
           }
-          let unpaid = 0;
+          let fine = 0;
           if (reviews.length === 1) {
             const review = reviews[0], final = Number(review.nominal_final), paid = Number(review.dibayar);
             if (!['DITETAPKAN','DIBEBASKAN'].includes(review.status) || !Number.isSafeInteger(final) || !Number.isSafeInteger(paid) || final < 0 || paid < 0 || paid > final) {
-              paintRow(tr, null, 'Keputusan atau pembayaran denda belum valid.');
+              paintRow(tr,null,'Keputusan atau pembayaran denda belum valid.');
               continue;
             }
-            unpaid = final - paid;
+            fine = final;
           } else if (rawFine !== 0) {
-            paintRow(tr, null, 'Denda pada rincian Payroll belum memiliki keputusan final yang dapat diverifikasi.');
+            paintRow(tr,null,'Denda pada rincian Payroll belum memiliki keputusan final yang dapat diverifikasi.');
             continue;
           }
-          const total = base + product - advance - unpaid;
-          if (!Number.isSafeInteger(total)) { paintRow(tr, null, 'Nominal di luar batas yang dapat diverifikasi.'); continue; }
-          paintRow(tr, total, noteText);
+          const total = base + product - advance - fine;
+          if (!Number.isSafeInteger(total)) { paintRow(tr,null,'Nominal di luar batas yang dapat diverifikasi.'); continue; }
+          paintRow(tr,total,noteText);
         }
       }
     } catch (error) {
       if (seq !== sequence) return;
-      console.warn('Payroll Capster hak harian read-only:', error);
+      console.warn('Payroll Capster hak harian read-only:',error);
       cards.forEach(card => card.querySelectorAll('td[data-vax-daily-payable]').forEach(td => { td.textContent = '—'; td.title = 'Gagal memverifikasi denda final; nominal ditahan.'; }));
     }
   }
@@ -164,6 +161,6 @@
     queueMicrotask(() => { queued = false; void refresh(); });
   });
   observer.observe(list,{childList:true});
-  document.getElementById('payrollRefresh')?.addEventListener('click', () => { sequence++; });
+  document.getElementById('payrollRefresh')?.addEventListener('click',() => { sequence++; });
   void refresh();
 })();
