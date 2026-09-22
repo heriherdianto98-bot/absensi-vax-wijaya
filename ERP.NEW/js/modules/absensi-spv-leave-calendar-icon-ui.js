@@ -20,8 +20,15 @@
     const link=document.createElement('link');
     link.id='vax-absensi-kpi-review-typewriter-css';
     link.rel='stylesheet';
-    link.href='../styles/absensi-kpi-review-typewriter-ui.css?v=20260922-2';
+    link.href='../styles/absensi-kpi-review-typewriter-ui.css?v=20260922-3';
     document.head.appendChild(link);
+  }
+  if(!document.getElementById('vax-absensi-heading-typewriter-ui')){
+    const script=document.createElement('script');
+    script.id='vax-absensi-heading-typewriter-ui';
+    script.src='../js/modules/absensi-heading-typewriter-ui.js?v=20260922-1';
+    script.defer=true;
+    document.head.appendChild(script);
   }
   const style=document.createElement('style');
   style.id='vax-spv-leave-calendar-icon-ui';
