@@ -66,3 +66,13 @@ html body #kpiCapster.today-grid .kpi-service .service-dots{min-width:3px!import
 html body #kpiCapster.today-grid .kpi-service .service-qty{flex:0 0 auto!important;font-size:10px!important;white-space:nowrap!important}
 html body #kpiCapster.today-grid .kpi-service .employee-service-open{display:none!important}
 @media(max-width:350px){html body #kpiCapster.today-grid .kpi-service .service-detail-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,96px),1fr))!important;gap:7px!important}}
+
+/* Capster dashboard: one consistent vertical gap between target, daily KPIs,
+   performance chart and announcement cards. Do not move fixed bottom navigation. */
+html[data-home-kpi="capster"] .app .dash-body{gap:8px!important;margin-top:8px!important}
+html[data-home-kpi="capster"] .app .employee-monthly-kpi{margin:0!important}
+html[data-home-kpi="capster"] .app .employee-monthly-kpi-note{margin:3px 1px 0!important}
+html[data-home-kpi="capster"] .app .today-section{margin:0!important}
+html[data-home-kpi="capster"] .app .today-section .today-title{margin:0 0 7px!important}
+html[data-home-kpi="capster"] .app .vax-performance{margin:0!important}
+html[data-home-kpi="capster"] .app .comm-row{margin:0!important}
