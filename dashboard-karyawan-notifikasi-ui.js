@@ -10,8 +10,9 @@
   css.textContent = `
     .app .topbar .topbar-meta{display:none!important}
     .vax-employee-notif{position:relative;margin-left:auto;flex:0 0 auto;z-index:51}
-    .vax-employee-notif-toggle{position:relative;width:39px;height:39px;display:flex;align-items:center;justify-content:center;border:1px solid #8b7141;border-radius:12px;background:#24231d;color:#efce82;cursor:pointer;box-shadow:inset 0 1px #ffffff1a}
-    .vax-employee-notif-toggle i{font-size:17px}
+    .vax-employee-notif-toggle{position:relative;width:39px;height:39px;display:flex;align-items:center;justify-content:center;border:0!important;border-radius:0!important;background:transparent!important;color:#efce82;cursor:pointer;box-shadow:none!important;padding:0!important;appearance:none!important}
+    .vax-employee-notif-toggle:hover{color:#ffe3a0}
+    .vax-employee-notif-toggle i{font-size:22px}
     .vax-employee-notif-count{position:absolute;right:-5px;top:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#df3c3c;color:#fff;font-size:10px;font-weight:800;line-height:18px;text-align:center;border:2px solid #131413;box-sizing:content-box}
     .vax-employee-notif-count[hidden],.vax-employee-notif-panel[hidden]{display:none!important}
     .vax-employee-notif-panel{position:absolute;right:0;top:calc(100% + 9px);width:min(340px,calc(100vw - 38px));max-height:min(440px,65dvh);overflow-y:auto;background:#191a19;color:#f4f0e7;border:1px solid #80663c;border-radius:13px;box-shadow:0 14px 35px #000b;padding:10px;z-index:52}
