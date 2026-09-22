@@ -1,7 +1,8 @@
-/* UI ONLY. Animate rendered headings; never change their text, counters, or handlers. */
-@keyframes vax-absensi-heading-type {
-  0%,3% { clip-path:inset(0 100% 0 0); }
-  31%,93% { clip-path:inset(0 0 0 0); }
+/* UI ONLY: visible repeating typing for daily KPI labels and SPV review heading. */
+/* No counters, attendance records or event handlers are changed. */
+@keyframes vax-absensi-heading-type-visible {
+  0%,5% { clip-path:inset(0 100% 0 0); }
+  72%,88% { clip-path:inset(0 0 0 0); }
   100% { clip-path:inset(0 100% 0 0); }
 }
 #absensiRoot #absensiDailyView .absensi-kpi-grid > .absensi-kpi > span,
@@ -11,15 +12,13 @@
   max-width:100%!important;
   white-space:nowrap!important;
   overflow:hidden!important;
-  animation:vax-absensi-heading-type 8s steps(20,end) infinite both!important;
+  animation-name:vax-absensi-heading-type-visible!important;
+  animation-duration:5s!important;
+  animation-timing-function:steps(20,end)!important;
+  animation-iteration-count:infinite!important;
+  animation-fill-mode:both!important;
+  animation-delay:0s!important;
 }
-#absensiRoot #absensiDailyView .absensi-kpi-grid > :nth-child(2) > span {animation-delay:.12s!important;}
-#absensiRoot #absensiDailyView .absensi-kpi-grid > :nth-child(3) > span {animation-delay:.24s!important;}
-#absensiRoot #absensiDailyView .absensi-kpi-grid > :nth-child(4) > span {animation-delay:.36s!important;}
-#absensiRoot #absensiDailyView .absensi-kpi-grid > :nth-child(5) > span {animation-delay:.48s!important;}
-#absensiRoot #absensiDailyView .absensi-kpi-grid > :nth-child(6) > span {animation-delay:.60s!important;}
-#absensiRoot #absensiDailyView .absensi-kpi-grid > :nth-child(7) > span {animation-delay:.72s!important;}
-#absensiRoot #absensiDailyView .absensi-kpi-grid > :nth-child(8) > span {animation-delay:.84s!important;}
 #absensiRoot #absensiDailyView #izinSpvEmbed .izin-spv-head h2 {
   display:inline-block!important;
   width:max-content!important;
@@ -27,7 +26,12 @@
   white-space:nowrap!important;
   overflow:hidden!important;
   vertical-align:bottom;
-  animation:vax-absensi-heading-type 8s steps(19,end) infinite both!important;
+  animation-name:vax-absensi-heading-type-visible!important;
+  animation-duration:5s!important;
+  animation-timing-function:steps(19,end)!important;
+  animation-iteration-count:infinite!important;
+  animation-fill-mode:both!important;
+  animation-delay:0s!important;
 }
 @media(prefers-reduced-motion:reduce) {
   #absensiRoot #absensiDailyView .absensi-kpi-grid > .absensi-kpi > span,
