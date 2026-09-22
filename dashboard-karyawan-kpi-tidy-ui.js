@@ -67,3 +67,46 @@
   /* The toolbar creates the input synchronously before this script; use its selected date. */
   void loadFine(picker.value);
 })();
+
+/* Employee-only adapter: evaluate exactly the existing Owner freshness engine over
+   a token-checked, timestamp-only snapshot. No sync trigger or scheduler changes. */
+(() => {
+  'use strict';
+  const provider = document.getElementById('employeeProviderStatus');
+  const last = document.getElementById('employeeProviderLastSync');
+  if (!provider || !last) return;
+  const unavailable = () => { provider.textContent = 'Status belum tersedia'; last.textContent = '—'; };
+  const fmtWib = iso => {
+    if (!iso || !Number.isFinite(Date.parse(iso))) return '—';
+    return new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(iso)) + ' WIB';
+  };
+  const ensureOwnerEvaluator = () => new Promise((resolve, reject) => {
+    if (window.ErpFreshness?.evaluate) { resolve(window.ErpFreshness); return; }
+    const script = document.createElement('script');
+    script.src = 'ERP.NEW/js/modules/erp-freshness.js?v=20260922-1';
+    script.onload = () => window.ErpFreshness?.evaluate ? resolve(window.ErpFreshness) : reject(new Error('FRESHNESS_EVALUATOR_UNAVAILABLE'));
+    script.onerror = () => reject(new Error('FRESHNESS_SCRIPT_UNAVAILABLE'));
+    document.head.appendChild(script);
+  });
+  let busy = false;
+  async function refresh() {
+    if (busy || document.hidden) return;
+    busy = true;
+    try {
+      const token = typeof KaryawanSession !== 'undefined' ? KaryawanSession.getToken() : '';
+      if (!token || typeof db === 'undefined') { unavailable(); return; }
+      const { data, error } = await db.rpc('karyawan_sync_metadata_self', { p_token: token });
+      if (error || !data || data.ok !== true) throw error || new Error('SYNC_METADATA_UNAVAILABLE');
+      const engine = await ensureOwnerEvaluator();
+      const result = engine.evaluate(data);
+      provider.textContent = result.provider?.label || 'Status belum tersedia';
+      last.textContent = fmtWib(result.lastSyncIso);
+    } catch (error) {
+      unavailable();
+      console.warn('Employee read-only sync status:', error);
+    } finally { busy = false; }
+  }
+  void refresh();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh(); });
+  setInterval(() => { void refresh(); }, 60000); // UI polling only; does not invoke server synchronization.
+})();
