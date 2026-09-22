@@ -34,7 +34,7 @@
 /* Compact vertical rhythm for employee dashboard only; preserve card content and bottom navigation. */
 .employee-date-toolbar{margin-bottom:2px!important}
 .date-toolbar-status{margin-top:2px!important;margin-bottom:3px!important}
-.employee-monthly-kpi{margin:8px 0 9px!important}
+.employee-monthly-kpi{margin:0 0 9px!important}
 .employee-monthly-kpi-note{margin:4px 1px 0!important}
 .today-section{margin-top:6px!important;margin-bottom:7px!important}
 .today-section .today-title{margin:0 0 8px!important}
