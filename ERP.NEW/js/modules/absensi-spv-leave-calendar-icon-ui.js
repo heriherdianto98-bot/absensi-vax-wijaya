@@ -1,6 +1,15 @@
 /* UI ONLY: remove platform-colored calendar emoji from SPV personal leave. */
 (()=>{
   'use strict';
+  // The already-loaded UI entry point also supplies the isolated daily status presentation.
+  // Keep all table rows, filters, status calculations and employee click handlers intact.
+  if(!document.getElementById('vax-absensi-status-compact-css')){
+    const link=document.createElement('link');
+    link.id='vax-absensi-status-compact-css';
+    link.rel='stylesheet';
+    link.href='../styles/absensi-status-compact-panels-ui.css?v=20260922-1';
+    document.head.appendChild(link);
+  }
   const style=document.createElement('style');
   style.id='vax-spv-leave-calendar-icon-ui';
   style.textContent=`
