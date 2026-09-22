@@ -14,3 +14,19 @@
 #kpiCapster .kpi-fine{background:linear-gradient(145deg,#242321,#151617)!important;border-color:#5c4c31!important}
 #kpiCapster .kpi-fine .kpi-ico{color:#e4c779!important}
 @media(max-width:350px){#kpiCapster .today-item,#kpiCapster .kpi-service{padding:8px!important}#kpiCapster .service-detail-item{font-size:9px!important}}
+
+/* Approved mobile layout refinement: spacing/typography only; existing KPI nodes and data unchanged. */
+#kpiCapster.today-grid .kpi-customer,#kpiCapster.today-grid .kpi-share{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;padding:13px 14px!important}
+#kpiCapster.today-grid .kpi-customer .kpi-head,#kpiCapster.today-grid .kpi-share .kpi-head{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;min-height:27px!important}
+#kpiCapster.today-grid .kpi-customer .kpi-label,#kpiCapster.today-grid .kpi-share .kpi-label{font-size:12px!important;line-height:1.3!important;font-weight:650!important}
+#kpiCapster.today-grid .kpi-customer .kpi-main-value,#kpiCapster.today-grid .kpi-share .kpi-main-value{display:flex!important;align-items:center!important;justify-content:center!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;min-height:0!important;margin:0!important;padding:3px 0 0!important;align-self:stretch!important;text-align:center!important;font-size:clamp(24px,6vw,30px)!important;line-height:1.15!important;font-variant-numeric:tabular-nums}
+#kpiCapster.today-grid .kpi-share .kpi-main-value{font-size:clamp(20px,5.5vw,27px)!important;color:#f0d18a!important}
+#kpiCapster.today-grid .kpi-service{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;min-height:0!important;padding:12px 14px 13px!important}
+#kpiCapster.today-grid .kpi-service .kpi-head{flex:0 0 auto!important;min-height:23px!important;justify-content:flex-start!important;margin:0 0 7px!important}
+#kpiCapster.today-grid .kpi-service .kpi-label{font-size:14px!important;line-height:1.3!important;font-weight:750!important}
+#kpiCapster.today-grid .kpi-service .service-detail-list{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:6px!important;flex:0 1 auto!important;width:100%!important;min-height:0!important;max-height:185px!important;margin:0!important;padding:0 2px 0 0!important;overflow-x:hidden!important;overflow-y:auto!important;text-align:left!important}
+#kpiCapster.today-grid .kpi-service .service-detail-item{display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:7px!important;width:100%!important;min-width:0!important;margin:0!important;padding:0!important;line-height:1.4!important;font-size:12px!important;white-space:normal!important;text-align:left!important}
+#kpiCapster.today-grid .kpi-service .service-name{display:block!important;flex:0 1 auto!important;min-width:0!important;overflow-wrap:anywhere!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;color:#eae6dc!important}
+#kpiCapster.today-grid .kpi-service .service-dots{flex:1 1 auto!important;min-width:8px!important;border-bottom:1px dotted #706650!important;transform:translateY(-3px)}
+#kpiCapster.today-grid .kpi-service .service-qty{display:block!important;flex:0 0 auto!important;white-space:nowrap!important;text-align:right!important;font-size:12px!important;color:#e4c779!important;font-weight:700!important}
+@media(max-width:350px){#kpiCapster.today-grid .kpi-service .service-detail-item,#kpiCapster.today-grid .kpi-service .service-qty{font-size:11px!important}#kpiCapster.today-grid .kpi-customer .kpi-label,#kpiCapster.today-grid .kpi-share .kpi-label{font-size:11px!important}}
