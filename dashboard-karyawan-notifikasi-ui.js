@@ -1,0 +1,95 @@
+/* Capster dashboard notification UI. Data and read receipts come exclusively from
+   employee-scoped RPCs; no owner data or payroll engine is modified here. */
+(() => {
+  'use strict';
+  if (window.__vaxEmployeeNotifBellV1) return;
+  window.__vaxEmployeeNotifBellV1 = true;
+  const header = document.querySelector('.app .topbar');
+  if (!header) return;
+  const css = document.createElement('style');
+  css.textContent = `
+    .app .topbar .topbar-meta{display:none!important}
+    .vax-employee-notif{position:relative;margin-left:auto;flex:0 0 auto;z-index:51}
+    .vax-employee-notif-toggle{position:relative;width:39px;height:39px;display:flex;align-items:center;justify-content:center;border:1px solid #8b7141;border-radius:12px;background:#24231d;color:#efce82;cursor:pointer;box-shadow:inset 0 1px #ffffff1a}
+    .vax-employee-notif-toggle i{font-size:17px}
+    .vax-employee-notif-count{position:absolute;right:-5px;top:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#df3c3c;color:#fff;font-size:10px;font-weight:800;line-height:18px;text-align:center;border:2px solid #131413;box-sizing:content-box}
+    .vax-employee-notif-count[hidden],.vax-employee-notif-panel[hidden]{display:none!important}
+    .vax-employee-notif-panel{position:absolute;right:0;top:calc(100% + 9px);width:min(340px,calc(100vw - 38px));max-height:min(440px,65dvh);overflow-y:auto;background:#191a19;color:#f4f0e7;border:1px solid #80663c;border-radius:13px;box-shadow:0 14px 35px #000b;padding:10px;z-index:52}
+    .vax-employee-notif-panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:13px;font-weight:800;color:#f2d590}
+    .vax-employee-notif-refresh{border:1px solid #57472f;border-radius:7px;background:#28261f;color:#f2d590;padding:5px 8px;cursor:pointer;font-size:11px}
+    .vax-employee-notif-item{display:flex;flex-direction:column;gap:4px;width:100%;padding:10px 8px;margin:0 0 6px;border-radius:9px;border:1px solid #38352c;background:#232421;color:#f2efe7;text-align:left;cursor:pointer}
+    .vax-employee-notif-item strong{font-size:12px;line-height:1.3}.vax-employee-notif-item small{font-size:10px;color:#c7bb9f;line-height:1.4}
+    .vax-employee-notif-empty{font-size:11px;color:#beb8a9;line-height:1.5;margin:7px 2px}
+    .vax-employee-notif-item:focus-visible,.vax-employee-notif-toggle:focus-visible{outline:2px solid #e9c776;outline-offset:2px}
+    @media(max-width:350px){.vax-employee-notif-panel{width:calc(100vw - 26px)}}
+  `;
+  document.head.appendChild(css);
+  const wrap = document.createElement('div');
+  wrap.className = 'vax-employee-notif';
+  wrap.innerHTML = '<button type="button" class="vax-employee-notif-toggle" aria-label="Buka pemberitahuan" aria-expanded="false" aria-controls="vaxEmployeeNotifPanel"><i class="fa-regular fa-bell" aria-hidden="true"></i><span class="vax-employee-notif-count" hidden></span></button><section class="vax-employee-notif-panel" id="vaxEmployeeNotifPanel" aria-label="Pemberitahuan karyawan" hidden><div class="vax-employee-notif-panel-head"><span>Pemberitahuan</span><button type="button" class="vax-employee-notif-refresh">Refresh</button></div><div class="vax-employee-notif-list"><p class="vax-employee-notif-empty">Memuat pemberitahuan…</p></div></section>';
+  header.appendChild(wrap);
+  const toggle=wrap.querySelector('.vax-employee-notif-toggle');
+  const count=wrap.querySelector('.vax-employee-notif-count');
+  const panel=wrap.querySelector('.vax-employee-notif-panel');
+  const list=wrap.querySelector('.vax-employee-notif-list');
+  let items=[],loading=false;
+  const token=()=>typeof KaryawanSession!=='undefined'&&typeof KaryawanSession.getToken==='function'?KaryawanSession.getToken():'';
+  function showMessage(message){list.replaceChildren();const p=document.createElement('p');p.className='vax-employee-notif-empty';p.textContent=message;list.appendChild(p);}
+  function render(){
+    count.hidden=items.length===0;
+    count.textContent=items.length>99?'99+':String(items.length);
+    toggle.setAttribute('aria-label',items.length?`Pemberitahuan baru: ${items.length}`:'Buka pemberitahuan');
+    if(!items.length){showMessage('Belum ada pemberitahuan baru.');return;}
+    list.replaceChildren();
+    for(const row of items){
+      const button=document.createElement('button');button.type='button';button.className='vax-employee-notif-item';
+      const heading=document.createElement('strong');heading.textContent=String(row.judul||'Pemberitahuan');
+      const description=document.createElement('small');description.textContent=String(row.ringkasan||'');
+      button.append(heading,description);button.addEventListener('click',()=>openItem(row,button));list.appendChild(button);
+    }
+  }
+  async function rpc(name,params){
+    if(typeof db==='undefined'||!token())throw new Error('Sesi karyawan belum tersedia.');
+    const {data,error}=await db.rpc(name,{p_token:token(),...params});
+    if(error)throw error;
+    const payload=Array.isArray(data)?data[0]:data;
+    if(!payload||payload.ok!==true)throw new Error(payload?.reason||'Data pemberitahuan belum tersedia.');
+    return payload;
+  }
+  async function refresh(){
+    if(loading||document.hidden||document.documentElement.dataset.homeKpi!=='capster')return;
+    loading=true;
+    try{
+      const data=await rpc('karyawan_dashboard_notifikasi_self_v1',{});
+      items=Array.isArray(data.items)?data.items.filter(x=>x&&['PENGUMUMAN','IZIN','DENDA'].includes(x.jenis)&&Number.isSafeInteger(Number(x.id))):[];
+      render();
+    }catch(error){console.warn('Notifikasi Capster:',error);if(!items.length)showMessage('Pemberitahuan belum bisa dimuat. Coba refresh.');}
+    finally{loading=false;}
+  }
+  function destination(row){
+    const id=Number(row.id);
+    if(row.jenis==='PENGUMUMAN')return 'pengumuman.html#'+id;
+    if(row.jenis==='IZIN')return 'riwayat.html';
+    return 'absensi.html';
+  }
+  async function openItem(row,button){
+    if(button.disabled)return;
+    button.disabled=true;
+    try{
+      await rpc('karyawan_dashboard_notifikasi_baca_self_v1',{p_jenis:row.jenis,p_id:Number(row.id)});
+      items=items.filter(x=>!(x.jenis===row.jenis&&Number(x.id)===Number(row.id)));
+      render();
+      window.location.assign(destination(row));
+    }catch(error){button.disabled=false;console.warn('Mark read Capster:',error);showMessage('Gagal menandai dibaca. Coba lagi melalui Refresh.');}
+  }
+  toggle.addEventListener('click',()=>{const open=panel.hidden;panel.hidden=!open;toggle.setAttribute('aria-expanded',String(open));if(open)void refresh();});
+  wrap.querySelector('.vax-employee-notif-refresh').addEventListener('click',()=>void refresh());
+  document.addEventListener('click',event=>{if(!wrap.contains(event.target)){panel.hidden=true;toggle.setAttribute('aria-expanded','false');}});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'){panel.hidden=true;toggle.setAttribute('aria-expanded','false');}});
+  const roleObserver=new MutationObserver(()=>{wrap.hidden=document.documentElement.dataset.homeKpi!=='capster';if(!wrap.hidden)void refresh();});
+  roleObserver.observe(document.documentElement,{attributes:true,attributeFilter:['data-home-kpi']});
+  wrap.hidden=document.documentElement.dataset.homeKpi!=='capster';
+  if(!wrap.hidden)void refresh();
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh();});
+  setInterval(()=>{if(!document.hidden)void refresh();},60000);
+})();
