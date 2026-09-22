@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="dashboard-karyawan-card-depth-ui.css?v=20260922-4">
     <link rel="stylesheet" href="dashboard-karyawan-header-toolbar-ui.css?v=20260922-5">
     <link rel="stylesheet" href="dashboard-karyawan-calendar-theme.css?v=20260922-6">
+    <link rel="stylesheet" href="dashboard-karyawan-kpi-tidy-ui.css?v=20260922-7">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
@@ -63,6 +64,10 @@
                     <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-wallet"></i></span><span class="kpi-label">Hak Dibayar</span></div>
                     <span class="kpi-ghost"><i class="fa-solid fa-wallet"></i></span>
                     <strong id="todayPayable" class="kpi-main-value">—</strong>
+                </article>
+                <article class="today-item kpi-fine">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-clock"></i></span><span class="kpi-label">Denda Hari Ini</span></div>
+                    <strong id="todayFine" class="kpi-main-value">—</strong>
                 </article>
             </div>
             <span id="closingStatus" class="sr-only"></span>
@@ -134,5 +139,6 @@
 <script src="izin-telat-dashboard-entry.js?v=20260921-1"></script>
 <script src="dashboard-karyawan-header-toolbar-ui.js?v=20260922-5"></script>
 <script src="dashboard-karyawan-calendar-theme.js?v=20260922-6"></script>
+<script src="dashboard-karyawan-kpi-tidy-ui.js?v=20260922-7"></script>
 </body>
 </html>
