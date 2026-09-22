@@ -32,6 +32,9 @@
   document.head.appendChild(style);
   let sequence = 0;
   function ensure(card) {
+    // The daily table is the only Hak Dibayar presentation. Retain the existing
+    // Pendapatan Bersih monthly card and remove the duplicate monthly Hak card.
+    card.querySelectorAll('.payroll-summary [data-vax-hak-dibayar]').forEach(node => node.remove());
     const table = card.querySelector('.payroll-table'), wrap = card.querySelector('.payroll-table-wrap');
     if (!table || !wrap || !table.tHead?.rows[0]) return null;
     let head = table.tHead.rows[0].querySelector('[data-vax-daily-payable]');
@@ -39,10 +42,10 @@
       head = document.createElement('th');
       head.className = 'num vax-daily-payable';
       head.dataset.vaxDailyPayable = '1';
-      head.textContent = 'Hak Harian*';
       head.title = noteText;
       table.tHead.rows[0].appendChild(head);
     }
+    head.textContent = 'Hak Dibayar*';
     for (const tr of table.tBodies[0]?.rows || []) {
       if (tr.cells.length < 7) continue;
       if (!tr.querySelector('[data-vax-daily-payable]')) {
@@ -58,9 +61,12 @@
     if (!note) {
       note = document.createElement('p');
       note.className = 'vax-daily-payable-note';
-      const title = document.createElement('strong'); title.textContent = '*Hak Harian: ';
+      const title = document.createElement('strong'); title.textContent = '*Hak Dibayar Harian: ';
       note.append(title, document.createTextNode(noteText));
       wrap.insertAdjacentElement('afterend', note);
+    } else {
+      const title = note.querySelector('strong');
+      if (title) title.textContent = '*Hak Dibayar Harian: ';
     }
     return table;
   }
