@@ -110,3 +110,13 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh(); });
   setInterval(() => { void refresh(); }, 60000); // UI polling only; does not invoke server synchronization.
 })();
+
+/* Load isolated employee-only monthly KPI presentation; existing engines untouched. */
+(() => {
+  'use strict';
+  if (document.querySelector('script[data-vax-employee-monthly-kpi]')) return;
+  const script = document.createElement('script');
+  script.src = 'dashboard-karyawan-kpi-bulanan-ui.js?v=20260922-1';
+  script.dataset.vaxEmployeeMonthlyKpi = '1';
+  document.head.appendChild(script);
+})();
