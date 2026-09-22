@@ -30,3 +30,13 @@
 #kpiCapster.today-grid .kpi-service .service-dots{flex:1 1 auto!important;min-width:8px!important;border-bottom:1px dotted #706650!important;transform:translateY(-3px)}
 #kpiCapster.today-grid .kpi-service .service-qty{display:block!important;flex:0 0 auto!important;white-space:nowrap!important;text-align:right!important;font-size:12px!important;color:#e4c779!important;font-weight:700!important}
 @media(max-width:350px){#kpiCapster.today-grid .kpi-service .service-detail-item,#kpiCapster.today-grid .kpi-service .service-qty{font-size:11px!important}#kpiCapster.today-grid .kpi-customer .kpi-label,#kpiCapster.today-grid .kpi-share .kpi-label{font-size:11px!important}}
+
+/* Compact vertical rhythm for employee dashboard only; preserve card content and bottom navigation. */
+.employee-date-toolbar{margin-bottom:2px!important}
+.date-toolbar-status{margin-top:2px!important;margin-bottom:3px!important}
+.employee-monthly-kpi{margin:8px 0 9px!important}
+.employee-monthly-kpi-note{margin:4px 1px 0!important}
+.today-section{margin-top:6px!important;margin-bottom:7px!important}
+.today-section .today-title{margin:0 0 8px!important}
+#kpiCapster.today-grid{gap:8px!important}
+.vax-performance{margin:9px 0 3px!important}
