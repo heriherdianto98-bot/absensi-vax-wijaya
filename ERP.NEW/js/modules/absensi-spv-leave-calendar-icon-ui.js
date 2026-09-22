@@ -20,7 +20,7 @@
     const link=document.createElement('link');
     link.id='vax-absensi-kpi-review-typewriter-css';
     link.rel='stylesheet';
-    link.href='../styles/absensi-kpi-review-typewriter-ui.css?v=20260922-1';
+    link.href='../styles/absensi-kpi-review-typewriter-ui.css?v=20260922-2';
     document.head.appendChild(link);
   }
   const style=document.createElement('style');
@@ -57,7 +57,7 @@
     #spvPersonalLeave .spv-range-icon::after,
     #spvPersonalLeave .spv-leave-days-icon::after {
       content:''!important;
-      position:absolute;
+      position:absolute!important;
       top:12px!important;
       left:7px!important;
       width:15px!important;
