@@ -1,4 +1,4 @@
-/* Employee-only presentation adapter. Service formatting only; final fines are read by a separate self-read consumer. */
+/* Employee-only presentation adapter. Service formatting only; final fines and daily payable are self-read consumers. */
 (() => {
   'use strict';
   const service = document.getElementById('todayService');
@@ -96,5 +96,15 @@
   const script = document.createElement('script');
   script.src = 'dashboard-karyawan-denda-final-ui.js?v=20260922-1';
   script.dataset.vaxEmployeeFinalFine = '1';
+  document.head.appendChild(script);
+})();
+
+/* Read the same date's daily Payroll entitlement with employee-session scope. */
+(() => {
+  'use strict';
+  if (document.querySelector('script[data-vax-employee-daily-hak]')) return;
+  const script = document.createElement('script');
+  script.src = 'dashboard-karyawan-hak-harian-ui.js?v=20260922-1';
+  script.dataset.vaxEmployeeDailyHak = '1';
   document.head.appendChild(script);
 })();
