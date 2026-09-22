@@ -16,6 +16,13 @@
     script.defer=true;
     document.head.appendChild(script);
   }
+  if(!document.getElementById('vax-absensi-kpi-review-typewriter-css')){
+    const link=document.createElement('link');
+    link.id='vax-absensi-kpi-review-typewriter-css';
+    link.rel='stylesheet';
+    link.href='../styles/absensi-kpi-review-typewriter-ui.css?v=20260922-1';
+    document.head.appendChild(link);
+  }
   const style=document.createElement('style');
   style.id='vax-spv-leave-calendar-icon-ui';
   style.textContent=`
