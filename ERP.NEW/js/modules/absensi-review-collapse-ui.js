@@ -7,6 +7,11 @@
   leaveScript.src='../js/modules/absensi-spv-personal-leave-ui.js?v=20260922-1';
   leaveScript.defer=true;
   document.head.appendChild(leaveScript);
+  // Only enhances presentation; it waits for the personal-leave form to mount.
+  const leaveTheme=document.createElement('script');
+  leaveTheme.src='../js/modules/absensi-spv-personal-leave-theme-ui.js?v=20260922-1';
+  leaveTheme.defer=true;
+  document.head.appendChild(leaveTheme);
   // Owner uses the dedicated read-only SPV history. Keep the legacy queue DOM
   // intact for its existing engine and for SPV; hide only its Owner presentation.
   const style=document.createElement('style');
