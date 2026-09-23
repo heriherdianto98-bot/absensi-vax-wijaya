@@ -33,7 +33,7 @@ function render(data){
  const box=mount();if(!box)return;
  const pct=Math.max(0,Number(data.achievement_pct||0));
  const visual=Math.min(100,pct);
- const stage=pct>=100?'blue':pct>=50?'gold':'red';
+ const stage=pct>=100?'finish':pct>=80?'blue':pct>=50?'teal':'red';
  box.hidden=false;box.className='employee-personal-target stage-'+stage;
  box.querySelector('#personalTargetPct').textContent=Math.round(pct)+'%';
  box.querySelector('#personalTargetRealization').textContent=money(data.realization_amount);

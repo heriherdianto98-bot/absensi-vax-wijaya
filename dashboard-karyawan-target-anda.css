@@ -1,32 +1,35 @@
 /* Employee Personal Income Target — isolated UI. */
-.employee-personal-target{position:relative;margin:0 0 12px;padding:11px 12px 12px;border:1px solid #564d43;border-radius:12px;background:linear-gradient(145deg,#222422,#151716 78%);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 12px rgba(0,0,0,.28);overflow:hidden;color:#f5f2ea}
+.employee-personal-target{position:relative;margin:0 0 9px;padding:8px 10px 9px;border:1px solid #564d43;border-radius:12px;background:linear-gradient(145deg,#222422,#151716 78%);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 12px rgba(0,0,0,.28);overflow:hidden;color:#f5f2ea}
 .employee-personal-target[hidden]{display:none!important}
 .employee-personal-target::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--target-color,#d95252);opacity:.95}
 .employee-personal-target-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .employee-personal-target-title{display:flex;align-items:center;gap:8px;min-width:0}
-.employee-personal-target-icon{display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex:0 0 28px;border-radius:50%;background:color-mix(in srgb,var(--target-color,#d95252) 20%,#242424);color:var(--target-color,#d95252);font-size:12px;box-shadow:0 0 12px color-mix(in srgb,var(--target-color,#d95252) 25%,transparent)}
+.employee-personal-target-icon{display:flex;align-items:center;justify-content:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:color-mix(in srgb,var(--target-color,#d95252) 20%,#242424);color:var(--target-color,#d95252);font-size:12px;box-shadow:0 0 12px color-mix(in srgb,var(--target-color,#d95252) 25%,transparent)}
 .employee-personal-target-title h3{margin:0;font-size:12px;line-height:1.15;font-weight:850;letter-spacing:.045em;color:#f6f2e8}
-.employee-personal-target-title small{display:block;margin-top:3px;font-size:9px;line-height:1.25;color:#aaa397;font-weight:500}
+.employee-personal-target-title small{display:block;margin-top:1px;font-size:9px;line-height:1.25;color:#aaa397;font-weight:500}
 .employee-personal-target-pct{flex:0 0 auto;text-align:right}
-.employee-personal-target-pct strong{display:block;font-size:24px;line-height:1;font-weight:850;color:var(--target-color,#d95252);font-variant-numeric:tabular-nums}
-.employee-personal-target-pct span{display:block;margin-top:3px;font-size:8px;color:#aaa397}
-.employee-personal-target-money{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.employee-personal-target-money div{min-width:0;padding:7px 8px;border:1px solid #32342f;border-radius:9px;background:#141615}
+.employee-personal-target-pct strong{display:block;font-size:22px;line-height:1;font-weight:850;color:var(--target-color,#d95252);font-variant-numeric:tabular-nums}
+.employee-personal-target-pct span{display:block;margin-top:1px;font-size:8px;color:#aaa397}
+.employee-personal-target-money{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.employee-personal-target-money div{min-width:0;padding:5px 7px;border:1px solid #32342f;border-radius:9px;background:#141615}
 .employee-personal-target-money span{display:block;font-size:8px;line-height:1.2;color:#aaa397;text-transform:uppercase;letter-spacing:.06em}
-.employee-personal-target-money strong{display:block;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:1.1;color:#f4efe5;font-variant-numeric:tabular-nums}
-.employee-personal-target-track-wrap{position:relative;margin-top:10px;padding-top:7px}
+.employee-personal-target-money strong{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:1.1;color:#f4efe5;font-variant-numeric:tabular-nums}
+.employee-personal-target-track-wrap{position:relative;margin-top:7px;padding-top:4px}
 .employee-personal-target-track{position:relative;height:7px;border-radius:99px;background:#3d3f39;overflow:visible}
 .employee-personal-target-fill{display:block;height:100%;width:0;border-radius:99px;background:var(--target-color,#d95252);box-shadow:0 0 10px color-mix(in srgb,var(--target-color,#d95252) 35%,transparent);transition:width .45s ease,background .3s ease}
 .employee-personal-target-star{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);color:var(--target-color,#d95252);font-size:13px;line-height:1;text-shadow:0 0 8px color-mix(in srgb,var(--target-color,#d95252) 70%,transparent);transition:left .45s ease;animation:vaxTargetStar 1.65s ease-in-out infinite}
-.employee-personal-target-milestones{display:flex;justify-content:space-between;margin-top:5px;font-size:7px;color:#77766f}
-.employee-personal-target-status{margin-top:9px;padding:7px 8px;border-radius:9px;background:#111312;border:1px solid #30322e;font-size:9px;line-height:1.45;color:#c9c4b8}
+.employee-personal-target-milestones{display:flex;justify-content:space-between;margin-top:3px;font-size:7px;color:#77766f}
+.employee-personal-target-status{margin-top:6px;padding:5px 7px;border-radius:9px;background:#111312;border:1px solid #30322e;font-size:9px;line-height:1.45;color:#c9c4b8}
 .employee-personal-target-status strong{color:var(--target-color,#d95252)}
-.employee-personal-target-note{margin:6px 1px 0;font-size:8px;line-height:1.35;color:#8f8a80}
+.employee-personal-target-note{margin:4px 1px 0;font-size:8px;line-height:1.35;color:#8f8a80}
 .employee-personal-target.stage-red{--target-color:#e05252}
-.employee-personal-target.stage-gold{--target-color:#e7bd63}
+.employee-personal-target.stage-teal{--target-color:#31c7c2;border-color:#2d7773}
+.employee-personal-target.stage-teal .employee-personal-target-status{border-color:#285f5c;background:linear-gradient(145deg,#102423,#101817)}
 .employee-personal-target.stage-blue{--target-color:#55aef5;border-color:#477ca6}
 .employee-personal-target.stage-blue .employee-personal-target-status{border-color:#315e83;background:linear-gradient(145deg,#132333,#101719)}
-.employee-personal-target.stage-blue::after{content:"FINISH";position:absolute;right:10px;bottom:7px;font-size:24px;font-weight:900;letter-spacing:.08em;color:rgba(85,174,245,.055);pointer-events:none}
+.employee-personal-target.stage-finish{--target-color:#5fd68a;border-color:#3b8c5a}
+.employee-personal-target.stage-finish .employee-personal-target-status{border-color:#2f744b;background:linear-gradient(145deg,#10291b,#101812)}
+.employee-personal-target.stage-finish::after{content:"FINISH";position:absolute;right:10px;bottom:7px;font-size:24px;font-weight:900;letter-spacing:.08em;color:rgba(95,214,138,.06);pointer-events:none}
 .employee-personal-target.is-loading{opacity:.78}
 .employee-personal-target.is-unavailable .employee-personal-target-pct strong{font-size:17px;color:#aaa397}
 @keyframes vaxTargetStar{0%,100%{transform:translate(-50%,-50%) scale(.92);opacity:.8}50%{transform:translate(-50%,-50%) scale(1.18);opacity:1}}
