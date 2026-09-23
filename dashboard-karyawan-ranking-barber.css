@@ -1,0 +1,27 @@
+/* Employee Barber Ranking — isolated presentation only. */
+.employee-barber-ranking{margin:0;padding:12px;border:1px solid rgba(212,175,55,.28);border-radius:13px;background:linear-gradient(145deg,#242522,#141616 82%);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 12px rgba(0,0,0,.32);color:#f5f1e8}
+.employee-barber-ranking[hidden]{display:none!important}
+.employee-barber-ranking-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.employee-barber-ranking-title{display:flex;align-items:center;gap:8px;min-width:0}
+.employee-barber-ranking-icon{display:flex;align-items:center;justify-content:center;width:29px;height:29px;flex:0 0 29px;border-radius:50%;background:#57492b;color:#ffe096;font-size:12px}
+.employee-barber-ranking-title h3{margin:0;font-size:14px;line-height:1.15;font-weight:800;color:#fff}
+.employee-barber-ranking-title small{display:block;margin-top:3px;font-size:9px;line-height:1.25;font-weight:500;color:#aaa69d}
+.employee-barber-ranking-self{flex:0 0 auto;text-align:right}
+.employee-barber-ranking-self strong{display:block;font-size:17px;line-height:1;color:#f1ce78}
+.employee-barber-ranking-self span{display:block;margin-top:4px;font-size:9px;color:#aaa69d}
+.employee-barber-ranking-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;padding:3px;border:1px solid #353730;border-radius:10px;background:#0f1110}
+.employee-barber-ranking-tab{min-height:34px;border:0;border-radius:8px;background:transparent;color:#aaa8a1;font:700 11px/1 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}
+.employee-barber-ranking-tab.is-active{background:linear-gradient(180deg,#ead087,#bf9b4f);color:#171713;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+.employee-barber-ranking-status{min-height:16px;margin:0 0 7px;font-size:10px;line-height:1.3;color:#aaa69d}
+.employee-barber-ranking-list{display:flex;flex-direction:column;gap:5px;max-height:300px;overflow:auto;scrollbar-width:thin;scrollbar-color:#8a713a #171918}
+.employee-barber-ranking-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:7px;min-height:42px;padding:7px 8px;border:1px solid #343631;border-radius:9px;background:#171918}
+.employee-barber-ranking-row.is-self{border-color:rgba(231,199,121,.7);background:linear-gradient(100deg,rgba(231,199,121,.14),#171918 70%);box-shadow:inset 3px 0 0 #e7c779}
+.employee-barber-ranking-rank{display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#e8c875}
+.employee-barber-ranking-main{min-width:0}
+.employee-barber-ranking-name{display:flex;align-items:center;gap:5px;min-width:0;font-size:12px;font-weight:750;color:#f5f3ed}
+.employee-barber-ranking-name>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.employee-barber-ranking-you{flex:0 0 auto;padding:2px 5px;border-radius:999px;background:#e7c779;color:#171713;font-size:8px;font-weight:900;letter-spacing:.04em}
+.employee-barber-ranking-branch{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:#aaa69d}
+.employee-barber-ranking-service{text-align:right;font-size:12px;font-weight:800;color:#f0cf7b;white-space:nowrap}
+.employee-barber-ranking-empty{padding:18px 8px;text-align:center;font-size:11px;color:#aaa69d}
+@media(max-width:359px){.employee-barber-ranking{padding:10px}.employee-barber-ranking-row{grid-template-columns:30px minmax(0,1fr) auto;padding:6px}.employee-barber-ranking-name,.employee-barber-ranking-service{font-size:11px}}
