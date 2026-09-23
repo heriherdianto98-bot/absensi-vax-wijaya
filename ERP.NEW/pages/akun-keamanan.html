@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akun & Keamanan | VAX ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/toolbar.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/akun-keamanan.css?v=20260923-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="setoran-dark payroll-aruskas-theme account-security-page">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <main class="erp-content">
+    <section class="aks-shell">
+      <header class="aks-head">
+        <div>
+          <small>AKUN ERP</small>
+          <h2>Akun & Keamanan</h2>
+          <p>Kelola email login dan password akun Owner/SPV yang sedang digunakan.</p>
+        </div>
+        <span id="aksRoleBadge" class="aks-role">—</span>
+      </header>
+
+      <section class="aks-summary" aria-label="Identitas akun">
+        <div>
+          <span>Nama</span>
+          <strong id="aksName">Memuat…</strong>
+        </div>
+        <div>
+          <span>Email Login Aktif</span>
+          <strong id="aksEmail">Memuat…</strong>
+        </div>
+        <div>
+          <span>Status Email Baru</span>
+          <strong id="aksPendingEmail">Tidak ada</strong>
+        </div>
+      </section>
+
+      <div id="aksGlobalNotice" class="aks-notice" hidden aria-live="polite"></div>
+
+      <section class="aks-grid">
+        <article class="aks-card">
+          <div class="aks-card-head">
+            <span class="aks-icon">✉</span>
+            <div><h3>Ganti Email Login</h3><p>Email baru harus berbeda dari email yang sedang aktif.</p></div>
+          </div>
+          <form id="aksEmailForm" autocomplete="on">
+            <label>Email baru
+              <input id="aksNewEmail" type="email" autocomplete="email" maxlength="254" placeholder="nama@email.com" required>
+            </label>
+            <label>Password saat ini
+              <input id="aksEmailCurrentPassword" type="password" autocomplete="current-password" maxlength="128" required>
+            </label>
+            <button id="aksEmailSubmit" type="submit">Kirim Permintaan Ganti Email</button>
+          </form>
+          <p class="aks-help">Jika verifikasi email aktif di Supabase, email baru baru menjadi email login setelah konfirmasi selesai. Sampai saat itu, gunakan email lama.</p>
+        </article>
+
+        <article class="aks-card">
+          <div class="aks-card-head">
+            <span class="aks-icon">⌘</span>
+            <div><h3>Ganti Password</h3><p>Password baru langsung dipakai untuk login berikutnya.</p></div>
+          </div>
+          <form id="aksPasswordForm" autocomplete="on">
+            <label>Password saat ini
+              <input id="aksCurrentPassword" type="password" autocomplete="current-password" maxlength="128" required>
+            </label>
+            <label>Password baru
+              <input id="aksNewPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+            </label>
+            <label>Ulangi password baru
+              <input id="aksConfirmPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+            </label>
+            <button id="aksPasswordSubmit" type="submit">Ganti Password</button>
+          </form>
+          <p class="aks-help">Minimal 12 karakter. Password tidak pernah ditampilkan kembali di ERP.</p>
+        </article>
+      </section>
+    </section>
+  </main>
+</div>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/akun-keamanan.js?v=20260923-1"></script>
+</body>
+</html>
