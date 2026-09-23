@@ -1,0 +1,15 @@
+/* ERP VAX — Owner/SPV account security. Scoped page only. */
+.account-security-page .aks-shell{max-width:1120px;margin:0 auto;padding:18px 20px 42px;color:#f3f5f7;font-family:'Source Sans 3',sans-serif}
+.aks-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 22px;border:1px solid #4b3c15;border-left:4px solid #d3aa35;border-radius:16px;background:radial-gradient(80% 140% at 100% 0,rgba(211,170,53,.08),transparent 58%),linear-gradient(180deg,#151a21,#0d1117);box-shadow:0 12px 30px rgba(0,0,0,.32)}
+.aks-head small{color:#d9b84a;font-weight:900;letter-spacing:1.7px}.aks-head h2{margin:4px 0 5px;font-size:32px}.aks-head p{margin:0;color:#aeb8c3;font-weight:600}
+.aks-role{padding:8px 13px;border:1px solid #8a6b20;border-radius:999px;background:#2a2416;color:#f1d57a;font-weight:900;letter-spacing:.8px}
+.aks-summary{display:grid;grid-template-columns:1fr 1.2fr 1.2fr;gap:12px;margin:16px 0}
+.aks-summary>div{min-width:0;padding:14px 16px;border:1px solid #2f3843;border-radius:13px;background:linear-gradient(180deg,#171d24,#10151b)}
+.aks-summary span{display:block;color:#8f9ba8;font-size:11px;font-weight:900;letter-spacing:.9px;text-transform:uppercase}.aks-summary strong{display:block;margin-top:5px;color:#fff;font-size:16px;overflow-wrap:anywhere}
+.aks-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.aks-card{padding:20px;border:1px solid #3d4652;border-radius:16px;background:linear-gradient(180deg,#151b22,#0e1318);box-shadow:0 10px 26px rgba(0,0,0,.26)}
+.aks-card-head{display:flex;gap:12px;align-items:flex-start}.aks-card-head h3{margin:0;color:#fff;font-size:21px}.aks-card-head p{margin:3px 0 0;color:#aeb7c2;font-size:13px}.aks-icon{display:grid;place-items:center;flex:0 0 42px;height:42px;border:1px solid #80651f;border-radius:12px;background:#2a2416;color:#f2cf67;font-size:21px;font-weight:900}
+.aks-card form{margin-top:18px}.aks-card label{display:block;margin-top:12px;color:#d5dce3;font-size:13px;font-weight:900}.aks-card input{box-sizing:border-box;width:100%;height:48px;margin-top:6px;padding:0 13px;border:1px solid #3a4551;border-radius:10px;background:#0d1217;color:#fff;font:700 15px 'Source Sans 3',sans-serif;outline:none}.aks-card input:focus{border-color:#c89f36;box-shadow:0 0 0 3px rgba(211,170,53,.10)}
+.aks-card button{width:100%;min-height:47px;margin-top:18px;border:1px solid #806517;border-radius:10px;background:linear-gradient(180deg,#d9b23d,#a97e1d);color:#17130a;font:900 15px 'Source Sans 3',sans-serif;cursor:pointer}.aks-card button:disabled{opacity:.55;cursor:wait}
+.aks-help{margin:12px 0 0;color:#9ea8b3;font-size:12px;line-height:1.45}.aks-notice{margin:0 0 14px;padding:11px 14px;border:1px solid #2f6c49;border-radius:11px;background:#12261b;color:#9de0b6;font-weight:700}.aks-notice.is-error{border-color:#7b4141;background:#2b1717;color:#ffb1b1}
+@media(max-width:850px){.aks-summary,.aks-grid{grid-template-columns:1fr}.aks-head{align-items:flex-start}.aks-role{flex:0 0 auto}}
+@media(max-width:600px){.account-security-page .aks-shell{padding:12px 10px 28px}.aks-head{padding:17px}.aks-head h2{font-size:27px}.aks-card{padding:16px}}
