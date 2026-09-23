@@ -7,6 +7,8 @@
     el.textContent=message||''; el.hidden=!message; el.classList.toggle('is-error',error);
   };
   const cleanEmail = value => String(value||'').trim().toLowerCase();
+  const photoPlaceholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' rx='80' fill='%23111111'/%3E%3Ccircle cx='80' cy='58' r='26' fill='%23d4a017'/%3E%3Cpath d='M36 142c5-31 28-47 44-47s39 16 44 47' fill='%23d4a017'/%3E%3C/svg%3E";
+  let selectedPhoto = null;
 
   async function currentUser(){
     const {data,error}=await db.auth.getUser();
@@ -30,7 +32,50 @@
     $('aksRoleBadge').textContent=(OwnerAuth.isOwnerRole(OwnerAuth.profile?.role)?'OWNER':'SPV');
     $('aksEmail').textContent=user.email||'—';
     $('aksPendingEmail').textContent=user.new_email||'Tidak ada';
+    const preview=$('aksPhotoPreview');
+    if(preview){
+      const avatar=String(user.user_metadata?.avatar_url||'').trim();
+      preview.src=avatar||photoPlaceholder;
+      preview.onerror=()=>{preview.onerror=null;preview.src=photoPlaceholder;};
+    }
+    if($('aksPhotoName'))$('aksPhotoName').textContent=OwnerAuth.profile?.nama||'—';
+    if($('aksPhotoRole'))$('aksPhotoRole').textContent=(OwnerAuth.isOwnerRole(OwnerAuth.profile?.role)?'OWNER':'SPV');
     return user;
+  }
+
+  function bindPhotoControls(){
+    const input=$('aksPhotoInput'),choose=$('aksPhotoChoose'),save=$('aksPhotoSave'),preview=$('aksPhotoPreview');
+    if(!input||!choose||!save||!preview)return;
+    choose.addEventListener('click',()=>input.click());
+    input.addEventListener('change',()=>{
+      const file=input.files?.[0]||null;
+      selectedPhoto=null;save.disabled=true;
+      if(!file)return;
+      if(!['image/jpeg','image/png','image/webp'].includes(file.type)){input.value='';notice('Gunakan foto JPG, PNG, atau WEBP.',true);return;}
+      if(file.size>5*1024*1024){input.value='';notice('Ukuran foto maksimal 5 MB.',true);return;}
+      selectedPhoto=file;
+      const objectUrl=URL.createObjectURL(file);
+      preview.src=objectUrl;
+      preview.onload=()=>URL.revokeObjectURL(objectUrl);
+      save.disabled=false;notice('Foto siap disimpan.');
+    });
+    save.addEventListener('click',async()=>{
+      if(!selectedPhoto)return;
+      choose.disabled=true;save.disabled=true;notice('Mengunggah foto…');
+      try{
+        const user=await currentUser();
+        const ext=selectedPhoto.type==='image/png'?'png':selectedPhoto.type==='image/webp'?'webp':'jpg';
+        const path=`owner-spv/${user.id}/${Date.now()}-${crypto.randomUUID?.()||Math.random().toString(36).slice(2)}.${ext}`;
+        const upload=await db.storage.from('foto-karyawan').upload(path,selectedPhoto,{cacheControl:'3600',contentType:selectedPhoto.type,upsert:false});
+        if(upload.error)throw upload.error;
+        const publicUrl=db.storage.from('foto-karyawan').getPublicUrl(path)?.data?.publicUrl;
+        if(!publicUrl)throw new Error('URL foto tidak terbentuk.');
+        const {error}=await db.auth.updateUser({data:{...(user.user_metadata||{}),avatar_url:publicUrl}});
+        if(error)throw error;
+        preview.src=publicUrl;selectedPhoto=null;input.value='';notice('Foto profil berhasil diperbarui.');
+      }catch(err){notice(err?.message||'Gagal mengganti foto.',true);}
+      finally{choose.disabled=false;save.disabled=!selectedPhoto;}
+    });
   }
 
   async function init(){
@@ -49,6 +94,7 @@
     const hc=$('erpHeaderCabang'); if(hc)hc.textContent='Akun & Keamanan';
     const hp=$('erpHeaderPeriode'); if(hp)hp.textContent=(OwnerAuth.isOwnerRole(OwnerAuth.profile?.role)?'Owner':'SPV');
     await renderIdentity();
+    bindPhotoControls();
 
     $('aksEmailForm')?.addEventListener('submit',async e=>{
       e.preventDefault(); notice('');
