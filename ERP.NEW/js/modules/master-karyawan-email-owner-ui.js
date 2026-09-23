@@ -32,6 +32,8 @@
   function decorateRows(){
     ensureHeader();
     body.querySelectorAll('tr').forEach(tr => {
+      const empty = tr.querySelector('.mk-empty');
+      if (empty) { empty.colSpan = 8; return; }
       const edit = tr.querySelector('button[data-edit-id]');
       if (!edit) return;
       const id = Number(edit.dataset.editId || 0);
