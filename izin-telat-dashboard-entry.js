@@ -1,29 +1,20 @@
-/* Employee dashboard UI only: attendance lives in the Absensi tab, and late-arrival
-   requests remain available through the existing Izin / Libur / Sakit form.
-   Keep the approved dashboard engine untouched. */
+/* Employee Dashboard UI entry: keep existing attendance, notification and inbox engines untouched. */
 (() => {
   'use strict';
-  function loadInbox(){
-    if(document.querySelector('script[data-vax-employee-inbox]'))return;
-    const inbox=document.createElement('script');
-    inbox.src='dashboard-karyawan-inbox-ui.js?v=20260923-1';
-    inbox.dataset.vaxEmployeeInbox='1';
-    document.head.appendChild(inbox);
-  }
-  function mount() {
-    document.getElementById('vaxLateNoticeEntry')?.remove();
-    document.getElementById('btnAbsen')?.remove();
-    if (document.querySelector('script[data-vax-employee-notif]')) {loadInbox();return;}
+  function loadOnce(src,marker){
+    if(document.querySelector(`script[data-vax-ui="${marker}"]`)) return;
     const script=document.createElement('script');
-    script.src='dashboard-karyawan-notifikasi-ui.js?v=20260923-1';
-    script.dataset.vaxEmployeeNotif='1';
-    script.onload=loadInbox;
-    script.onerror=loadInbox;
+    script.src=src;
+    script.dataset.vaxUi=marker;
     document.head.appendChild(script);
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mount, { once: true });
-  } else {
-    mount();
+  function mount(){
+    document.getElementById('vaxLateNoticeEntry')?.remove();
+    document.getElementById('btnAbsen')?.remove();
+    loadOnce('dashboard-karyawan-notifikasi-ui.js?v=20260923-1','notification');
+    loadOnce('dashboard-karyawan-inbox-ui.js?v=20260923-1','inbox');
+    loadOnce('dashboard-karyawan-sp-banner-ui.js?v=20260923-1','sp-banner');
   }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});
+  else mount();
 })();
