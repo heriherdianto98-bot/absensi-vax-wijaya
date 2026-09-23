@@ -29,6 +29,12 @@
       banner.dataset.vaxEmployeeSpBanner='1';
       document.head.appendChild(banner);
     }
+    if(!document.querySelector('script[data-vax-credential-nudge]')){
+      const nudge=document.createElement('script');
+      nudge.src='employee-credential-nudge-ui.js?v=20260923-1';
+      nudge.dataset.vaxCredentialNudge='1';
+      document.head.appendChild(nudge);
+    }
     if(document.querySelector('script[data-vax-employee-notif]')){loadInbox();return;}
     const script=document.createElement('script');
     script.src='dashboard-karyawan-notifikasi-ui.js?v=20260923-1';
