@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Backup Data ERP | VAX ERP</title>
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/pengaturan-erp.css?v=20260923-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="setoran-dark payroll-aruskas-theme settings-erp-page">
+<div id="sidebar"></div>
+<div class="erp-wrapper"><div id="header"></div>
+<main class="erp-content">
+<section class="pes-shell">
+<header class="pes-head"><div><small>SISTEM ERP</small><h2>Backup Data ERP</h2><p>Snapshot read-only. Proses ini tidak mengubah, menghapus, atau me-restore data.</p></div><span class="pes-owner">OWNER ONLY</span></header>
+<section class="backup-panel">
+<div class="backup-status"><span>Status</span><strong id="backupStatus">Siap membuat backup</strong><small id="backupDetail">Belum ada proses.</small></div>
+<button id="backupRun" class="backup-btn" type="button">Buat &amp; Download Backup JSON</button>
+</section>
+<section class="backup-log"><h3>Hasil Backup</h3><div id="backupLog">Belum ada backup dijalankan.</div></section>
+<div class="pes-note"><strong>Keamanan:</strong> hanya data yang diizinkan RLS untuk akun Owner yang diekspor. Restore otomatis sengaja tidak disediakan agar tidak menimpa source of truth ERP.</div>
+</section>
+</main></div>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/backup-erp.js?v=20260923-1"></script>
+</body></html>
