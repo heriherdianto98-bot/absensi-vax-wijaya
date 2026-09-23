@@ -11,6 +11,18 @@
   function mount(){
     document.getElementById('vaxLateNoticeEntry')?.remove();
     document.getElementById('btnAbsen')?.remove();
+    /* Content-height page: no full-viewport minimum after the final card.
+       Reserve only the fixed bottom navigation height + breathing room, so
+       the last card is not covered and the scroll cannot reach empty filler. */
+    if(!document.getElementById('vaxEmployeeScrollEndUi')){
+      const style=document.createElement('style');
+      style.id='vaxEmployeeScrollEndUi';
+      style.textContent=`
+        html body .app{min-height:0!important;padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px))!important}
+        html body .app .dash-body{flex:0 0 auto!important}
+      `;
+      document.head.appendChild(style);
+    }
     if(!document.querySelector('script[data-vax-employee-sp-banner]')){
       const banner=document.createElement('script');
       banner.src='dashboard-karyawan-sp-banner-ui.js?v=20260923-1';
