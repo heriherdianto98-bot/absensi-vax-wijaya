@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="../styles/responsive.css">
 <link rel="stylesheet" href="../styles/owner-auth.css">
 <link rel="stylesheet" href="../styles/setoran-dark-premium.css">
-<link rel="stylesheet" href="../styles/akun-keamanan.css?v=20260923-1">
+<link rel="stylesheet" href="../styles/akun-keamanan.css?v=20260923-2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="setoran-dark payroll-aruskas-theme account-security-page">
@@ -51,6 +51,23 @@
       <div id="aksGlobalNotice" class="aks-notice" hidden aria-live="polite"></div>
 
       <section class="aks-grid">
+        <article class="aks-card aks-photo-card">
+          <div class="aks-card-head">
+            <span class="aks-icon">●</span>
+            <div><h3>Foto Profil</h3><p>Foto akun Owner/SPV yang sedang login.</p></div>
+          </div>
+          <div class="aks-photo-wrap">
+            <img id="aksPhotoPreview" class="aks-photo" alt="Foto profil Owner/SPV">
+            <div><strong id="aksPhotoName">—</strong><p id="aksPhotoRole">—</p></div>
+          </div>
+          <input id="aksPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <div class="aks-photo-actions">
+            <button id="aksPhotoChoose" type="button" class="aks-secondary">Pilih Foto</button>
+            <button id="aksPhotoSave" type="button" disabled>Simpan Foto</button>
+          </div>
+          <p class="aks-help">JPG, PNG, atau WEBP. Maksimal 5 MB.</p>
+        </article>
+
         <article class="aks-card">
           <div class="aks-card-head">
             <span class="aks-icon">✉</span>
@@ -94,6 +111,6 @@
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/loader.js"></script>
-<script src="../js/modules/akun-keamanan.js?v=20260923-1"></script>
+<script src="../js/modules/akun-keamanan.js?v=20260923-2"></script>
 </body>
 </html>
