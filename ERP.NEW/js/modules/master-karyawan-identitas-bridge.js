@@ -26,4 +26,9 @@
     document.head.appendChild(salaryAuto);
   }, {once:true});
   document.head.appendChild(history);
+  // Owner-only credential actions are an additive panel inside the existing Edit popup.
+  const credentials = document.createElement('script');
+  credentials.src = '../js/modules/master-karyawan-kredensial-owner-ui.js?v=20260923-1';
+  credentials.defer = true;
+  document.head.appendChild(credentials);
 })();
