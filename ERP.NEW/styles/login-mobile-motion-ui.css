@@ -1,0 +1,18 @@
+/* Login presentation only: no form, authentication, or role changes. */
+html,body.login-page,.login-bg{background:#000!important;background-image:none!important}
+.login-bg,.login-ribbon{display:none!important}
+.login-stage{isolation:isolate}
+.login-card{position:relative;isolation:isolate;overflow:hidden;background:#080808!important}
+/* Animated gold trace stays on the frame, never over fields or text. */
+@property --vax-login-orbit-angle{syntax:'<angle>';inherits:false;initial-value:0deg}
+.login-card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--vax-login-orbit-angle),transparent 0deg,transparent 275deg,rgba(255,226,137,.22) 300deg,#ffe49b 328deg,#d5a932 344deg,transparent 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none;z-index:2;animation:vaxLoginOrbit 5s linear infinite}
+@keyframes vaxLoginOrbit{to{--vax-login-orbit-angle:360deg}}
+.login-card.is-error::before{animation-play-state:paused;opacity:.45}
+.login-card.is-success::before{animation-play-state:paused;opacity:.45}
+/* Keep original subtitle text accessible; reveal it without rewriting the DOM. */
+.login-brand p{display:block!important;align-self:center;width:100%;max-width:100%;white-space:nowrap;overflow:hidden;animation:vaxLoginTyping 6s steps(28,end) infinite}
+@keyframes vaxLoginTyping{0%{clip-path:inset(0 100% 0 0)}65%,100%{clip-path:inset(0 0 0 0)}}
+.login-greet:not(.is-success):not(.is-error){animation:vaxLoginWelcome 2.1s ease-in-out infinite!important}
+@keyframes vaxLoginWelcome{0%,100%{border-color:rgba(201,162,39,.25);box-shadow:0 0 0 rgba(241,197,81,0)}50%{border-color:rgba(255,219,117,.92);box-shadow:0 0 12px rgba(255,209,84,.24),inset 0 0 9px rgba(255,209,84,.06)}}
+@media(max-width:560px){.login-stage{width:100%;max-width:350px}.login-brand p{font-size:clamp(8px,2.45vw,10px)!important;letter-spacing:clamp(.09em,.4vw,.2em)!important}}
+@media(prefers-reduced-motion:reduce){.login-card::before,.login-brand p,.login-greet:not(.is-success):not(.is-error){animation:none!important}.login-brand p{clip-path:none!important}}
