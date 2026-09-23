@@ -15,8 +15,12 @@
     const name=document.createElement('strong');name.textContent=data.nama || employee.nama_karyawan || 'Karyawan';id.append(name,document.createElement('br'));
     const code=document.createElement('span');code.textContent='Kode Login: '+(data.kode_login || 'Belum tersedia');id.append(code);
     $('email').value=data.email || '';
-    if(data.onboarding_recommended){$('status').textContent='Disarankan segera mengganti password awal menjadi password pribadi dan mengisi email kontak.';$('status').classList.remove('hidden');}
-    else {$('status').textContent='Password pribadi sudah digunakan. Email kontak tidak digunakan untuk login sebelum verifikasi.';$('status').classList.remove('hidden');}
+    const statusMessage = data.email_verified
+      ? 'Email sudah terverifikasi. Gunakan email atau kode login untuk masuk dengan password yang sama.'
+      : data.email
+        ? 'Email kontak tersimpan tetapi belum diverifikasi. Klik Kirim Verifikasi Email di bawah agar email dapat digunakan untuk login dan pemulihan password.'
+        : 'Lengkapi email pribadi dan ganti password awal. Email harus diverifikasi sebelum digunakan untuk login.';
+    $('status').textContent=statusMessage;$('status').classList.remove('hidden');
     $('credentialForm').addEventListener('submit',async e=>{
       e.preventDefault();
       const current=$('currentPassword').value,newPassword=$('newPassword').value,confirmed=$('confirmPassword').value,email=$('email').value.trim();
@@ -29,8 +33,9 @@
         const reply=res.data||{};
         if(reply.ok!==true){const reasons={SESSION_INVALID:'Sesi berakhir. Login ulang.',PASSWORD_LAMA_SALAH:'Password saat ini tidak cocok.',PASSWORD_BARU_TIDAK_VALID:'Password baru harus berbeda dan minimal 12 karakter.',EMAIL_TIDAK_VALID:'Format email tidak valid.',EMAIL_SUDAH_DIPAKAI:'Email sudah digunakan akun lain.'};throw new Error(reasons[reply.reason] || 'Perubahan tidak berhasil.');}
         $('currentPassword').value='';$('newPassword').value='';$('confirmPassword').value='';
-        $('status').textContent='Password pribadi aktif. Kode login tetap digunakan; email kontak belum diverifikasi.';
-        say('Password berhasil diganti. Password awal/PIN lama dinonaktifkan. Email tersimpan sebagai kontak (belum diverifikasi).');
+        $('status').textContent=reply.email_verified?'Email tetap terverifikasi. Email atau kode login bisa digunakan untuk masuk.':'Password pribadi aktif. Email kontak perlu diverifikasi agar dapat dipakai login.';
+        say(reply.email_verified?'Password berhasil diganti; email terverifikasi tetap aktif.':'Password berhasil diganti. Password awal/PIN lama dinonaktifkan. Selanjutnya verifikasi email Anda.');
+        document.dispatchEvent(new Event('vax:employee-credential-updated'));
       }catch(err){say(err.message || 'Perubahan gagal.',true);}finally{button.disabled=false;}
     });
   }catch(error){$('identity').textContent='Profil belum dapat dimuat.';$('status').textContent=error.message || 'Gagal memuat profil.';$('status').classList.remove('hidden');$('credentialForm').classList.add('hidden');}
