@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kalender Seasonal | VAX ERP</title>
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/seasonal-calendar.css?v=20260924-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="setoran-dark payroll-aruskas-theme seasonal-calendar-page">
+<div id="sidebar"></div>
+<div class="erp-wrapper"><div id="header"></div>
+<main class="erp-content">
+<section class="sc-shell">
+<header class="sc-head">
+  <div><small>TARGET CAPSTER</small><h2>Kalender Seasonal</h2><p>Atur periode musiman yang tidak boleh dianggap sebagai baseline normal target pendapatan Capster.</p></div>
+  <a class="sc-back" href="./pengaturan.html">← Pengaturan ERP</a>
+</header>
+<div class="sc-grid">
+  <section class="sc-panel">
+    <div class="sc-panel-title"><div><small>OWNER ONLY</small><h3 id="seasonalFormTitle">Tambah Periode Seasonal</h3></div><span class="sc-badge">ENGINE GUARD</span></div>
+    <form id="seasonalForm" autocomplete="off">
+      <input type="hidden" id="seasonalId">
+      <label>Nama Event<input id="seasonalName" maxlength="80" required placeholder="Contoh: Promo Lebaran / Renovasi Cabang"></label>
+      <div class="sc-form-row">
+        <label>Tanggal Mulai<input id="seasonalStart" type="date" required></label>
+        <label>Tanggal Selesai<input id="seasonalEnd" type="date" required></label>
+      </div>
+      <label>Catatan<textarea id="seasonalNotes" maxlength="240" rows="3" placeholder="Alasan periode ini dianggap tidak normal untuk baseline target."></textarea></label>
+      <label class="sc-check"><input id="seasonalEnabled" type="checkbox" checked><span>Aktifkan Seasonal Guard</span></label>
+      <div class="sc-actions"><button type="submit" class="sc-save" id="seasonalSave">Simpan</button><button type="button" class="sc-reset" id="seasonalReset">Batal / Bersihkan</button></div>
+      <p class="sc-status" id="seasonalStatus" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+  <section class="sc-panel sc-list-panel">
+    <div class="sc-panel-title"><div><small>DATABASE</small><h3>Periode Tersimpan</h3></div><button type="button" class="sc-refresh" id="seasonalRefresh">Refresh</button></div>
+    <div class="sc-list" id="seasonalList"><div class="sc-empty">Memuat kalender seasonal…</div></div>
+  </section>
+</div>
+<div class="sc-note"><strong>Logic:</strong> jika bulan target overlap periode seasonal aktif, realisasi tetap dicatat tetapi lonjakan tidak dipakai menaikkan target bulan berikutnya. Statistical Guard tetap berjalan sebagai lapisan kedua.</div>
+</section>
+</main></div>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/seasonal-calendar.js?v=20260924-1"></script>
+</body></html>

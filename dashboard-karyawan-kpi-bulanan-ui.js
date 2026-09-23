@@ -40,16 +40,16 @@
     .employee-performance-date{font-size:11px;color:#bcb6a9;font-weight:500;white-space:nowrap;margin-left:auto}
     .today-section .today-title{display:flex;align-items:center;gap:8px}
     .dash-body{padding-bottom:max(110px,calc(88px + env(safe-area-inset-bottom,0px)))!important}
-    .employee-monthly-kpi{margin:12px 0 14px;min-width:0;color:#f2ede3}
+    .employee-monthly-kpi{margin:8px 0 10px;min-width:0;color:#f2ede3}
     .employee-monthly-kpi[hidden]{display:none!important}
-    .employee-monthly-kpi-card{padding:13px 14px 14px;border:1px solid #80673f;border-radius:14px;background:#282720;box-shadow:inset 0 1px 0 #ffffff10}
-    .employee-monthly-kpi-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:750;letter-spacing:.04em;color:#e8d09a}
-    .employee-monthly-kpi-heading i{color:#e8ce91;font-size:15px}
-    .employee-monthly-kpi-value{display:block;margin:12px 0 9px;color:#f5d993;font-size:34px;line-height:1.1;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
-    .employee-monthly-kpi-track{height:6px;border-radius:20px;background:#535149;overflow:hidden}
+    .employee-monthly-kpi-card{padding:10px 12px 11px;border:1px solid #80673f;border-radius:12px;background:#282720;box-shadow:inset 0 1px 0 #ffffff10}
+    .employee-monthly-kpi-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:750;letter-spacing:.04em;color:#e8d09a}
+    .employee-monthly-kpi-heading i{color:#e8ce91;font-size:13px}
+    .employee-monthly-kpi-value{display:block;margin:8px 0 7px;color:#f5d993;font-size:28px;line-height:1.05;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+    .employee-monthly-kpi-track{height:5px;border-radius:20px;background:#535149;overflow:hidden}
     .employee-monthly-kpi-fill{display:block;height:100%;width:0;background:#e5bd65;border-radius:20px;transition:width .2s ease}
-    .employee-monthly-kpi-detail{margin-top:10px;font-size:13px;line-height:1.4;color:#e9dfcb;text-align:center;font-weight:600;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-    .employee-monthly-kpi-note{margin:7px 1px 0;font-size:10px;color:#a9a394;line-height:1.4}
+    .employee-monthly-kpi-detail{margin-top:7px;font-size:12px;line-height:1.3;color:#e9dfcb;text-align:center;font-weight:600;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+    .employee-monthly-kpi-note{margin:5px 1px 0;font-size:9px;color:#a9a394;line-height:1.3}
     @media(max-width:345px){#kpiCapster .today-item,#kpiCapster .kpi-service{padding:10px!important}.employee-monthly-kpi-detail{font-size:11px}}
     @media(prefers-reduced-motion:reduce){.employee-monthly-kpi-fill{transition:none}}
   `;
@@ -76,8 +76,8 @@
   const section = document.createElement('section');
   section.className = 'employee-monthly-kpi';
   section.hidden = true;
-  section.setAttribute('aria-label','Target bulan cabang dari ERP Owner');
-  section.innerHTML = `<article class="employee-monthly-kpi-card"><div class="employee-monthly-kpi-heading"><span>TARGET BULAN · <span id="employeeTargetBranch">CABANG</span></span><i class="fa-solid fa-bullseye" aria-hidden="true"></i></div><strong class="employee-monthly-kpi-value" id="employeeOwnerTargetPct">—</strong><div class="employee-monthly-kpi-track" role="progressbar" aria-label="Pencapaian target bulan" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="employee-monthly-kpi-fill"></span></div><div class="employee-monthly-kpi-detail" id="employeeOwnerTargetDetail">— / —</div></article><p class="employee-monthly-kpi-note" id="employeeOwnerTargetNote" role="status" aria-live="polite">Memuat target bulan cabang dari ERP…</p>`;
+  section.setAttribute('aria-label','Target omzet cabang dari ERP Owner');
+  section.innerHTML = `<article class="employee-monthly-kpi-card"><div class="employee-monthly-kpi-heading"><span>TARGET OMZET · <span id="employeeTargetBranch">CABANG</span></span><i class="fa-solid fa-bullseye" aria-hidden="true"></i></div><strong class="employee-monthly-kpi-value" id="employeeOwnerTargetPct">—</strong><div class="employee-monthly-kpi-track" role="progressbar" aria-label="Pencapaian target omzet" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="employee-monthly-kpi-fill"></span></div><div class="employee-monthly-kpi-detail" id="employeeOwnerTargetDetail">— / —</div></article><p class="employee-monthly-kpi-note" id="employeeOwnerTargetNote" role="status" aria-live="polite">Memuat target omzet cabang dari ERP…</p>`;
   daily.insertAdjacentElement('beforebegin',section);
   const pct=section.querySelector('#employeeOwnerTargetPct');
   const detail=section.querySelector('#employeeOwnerTargetDetail');
@@ -109,8 +109,8 @@
       track.setAttribute('aria-valuenow',String(Math.min(100,Math.max(0,percent))));
       track.setAttribute('aria-valuetext',`${percent}% dari target cabang`);
       fill.style.width=`${Math.min(100,Math.max(0,percent))}%`;
-      note.textContent='Target cabang bulan berjalan · sumber Dashboard Owner · hanya baca.';
-    }catch(error){if(current===run){reset('Target bulan belum dapat dibaca dari ERP.');console.warn('TARGET BULAN cabang read-only:',error);}}
+      note.textContent='Target omzet cabang bulan berjalan · sumber Dashboard Owner · hanya baca.';
+    }catch(error){if(current===run){reset('Target omzet belum dapat dibaca dari ERP.');console.warn('TARGET BULAN cabang read-only:',error);}}
     finally{busy=false;}
   }
   new MutationObserver(()=>{if(isCapster()){section.hidden=false;void refresh();}else{++run;section.hidden=true;}}).observe(document.documentElement,{attributes:true,attributeFilter:['data-home-kpi']});
