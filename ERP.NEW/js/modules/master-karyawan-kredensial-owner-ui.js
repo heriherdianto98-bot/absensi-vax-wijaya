@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const modal = $('mkModal');
   const form = $('mkForm');
-  if (!modal || !form || !window.db) return;
+  if (!modal || !form || typeof db === 'undefined') return;
   const style = document.createElement('style');
   style.textContent = `
     #mkCredentialSection{grid-column:1/-1;padding:14px;border:1px solid rgba(220,177,73,.46);border-radius:13px;background:linear-gradient(145deg,#222522,#121516);color:#eee6d6}
@@ -12,7 +12,7 @@
     #mkCredentialSection .mkc-line{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:13px;overflow-wrap:anywhere}
     #mkCredentialSection .mkc-line strong{text-align:right;max-width:65%;color:#fff}
     #mkCredentialSection .mkc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    #mkCredentialSection button{border:1px solid #aa843c;border-radius:9px;background:#292923;color:#ffe4a5;font:700 13px inherit;padding:9px 12px;cursor:pointer}
+    #mkCredentialSection button{border:1px solid #aa843c;border-radius:9px;background:#292923;color:#ffe4a5;font-size:13px;font-weight:700;padding:9px 12px;cursor:pointer}
     #mkCredentialSection button:disabled{opacity:.5;cursor:not-allowed}
     #mkCredentialSection .mkc-secret{margin-top:12px;border:1px solid #c59e4e;border-radius:9px;background:#0a0b0b;padding:11px;overflow-wrap:anywhere;color:#ffe3a0;font:700 13px/1.6 ui-monospace,monospace}
     #mkCredentialSection .mkc-note{font-size:12px;color:#c4bbab;margin:9px 0 0}
