@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pengaturan ERP | VAX ERP</title>
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/pengaturan-erp.css?v=20260923-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="setoran-dark payroll-aruskas-theme settings-erp-page">
+<div id="sidebar"></div>
+<div class="erp-wrapper"><div id="header"></div>
+<main class="erp-content">
+<section class="pes-shell">
+<header class="pes-head"><div><small>SISTEM ERP</small><h2>Pengaturan ERP</h2><p>Pengaturan akun dan administrasi sistem canonical VAX ERP.</p></div><span class="pes-owner">OWNER</span></header>
+<div class="pes-grid">
+<a class="pes-card" href="./akun-keamanan.html"><span class="pes-icon">◉</span><div><h3>Akun &amp; Keamanan</h3><p>Kelola email login, password, dan foto profil Owner/SPV.</p></div><b>›</b></a>
+<a class="pes-card" href="./backup.html"><span class="pes-icon">⤓</span><div><h3>Backup Data ERP</h3><p>Unduh snapshot data ERP yang dapat dibaca akun Owner tanpa mengubah data sumber.</p></div><b>›</b></a>
+</div>
+<div class="pes-note"><strong>Canonical:</strong> halaman ini hanya memakai OwnerAuth + Supabase Auth ERP. Tidak memakai pengaturan legacy absensi.</div>
+</section>
+</main></div>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/pengaturan-erp.js?v=20260923-1"></script>
+</body></html>
