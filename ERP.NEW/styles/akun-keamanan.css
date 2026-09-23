@@ -13,3 +13,6 @@
 .aks-help{margin:12px 0 0;color:#9ea8b3;font-size:12px;line-height:1.45}.aks-notice{margin:0 0 14px;padding:11px 14px;border:1px solid #2f6c49;border-radius:11px;background:#12261b;color:#9de0b6;font-weight:700}.aks-notice.is-error{border-color:#7b4141;background:#2b1717;color:#ffb1b1}
 @media(max-width:850px){.aks-summary,.aks-grid{grid-template-columns:1fr}.aks-head{align-items:flex-start}.aks-role{flex:0 0 auto}}
 @media(max-width:600px){.account-security-page .aks-shell{padding:12px 10px 28px}.aks-head{padding:17px}.aks-head h2{font-size:27px}.aks-card{padding:16px}}
+
+.aks-photo-card{grid-column:1/-1}.aks-photo-wrap{display:flex;align-items:center;gap:15px;margin-top:18px;padding:14px;border:1px solid #313b45;border-radius:13px;background:#0d1217}.aks-photo{width:82px;height:82px;border-radius:50%;object-fit:cover;border:2px solid #c99f32;box-shadow:0 0 18px rgba(211,170,53,.20);background:#111}.aks-photo-wrap strong{display:block;color:#fff;font-size:18px}.aks-photo-wrap p{margin:3px 0 0;color:#aeb7c2}.aks-photo-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.aks-photo-actions button{margin-top:14px}.aks-photo-actions .aks-secondary{background:#151b22;color:#e8c85e;border-color:#5f5127}
+@media(max-width:600px){.aks-photo-actions{grid-template-columns:1fr}.aks-photo-actions button{margin-top:8px}}
