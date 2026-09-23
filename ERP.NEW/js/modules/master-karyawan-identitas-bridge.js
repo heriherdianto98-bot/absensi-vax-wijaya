@@ -31,4 +31,9 @@
   credentials.src = '../js/modules/master-karyawan-kredensial-owner-ui.js?v=20260923-1';
   credentials.defer = true;
   document.head.appendChild(credentials);
+  // Owner-only email login visibility in the master table.
+  const emailUi = document.createElement('script');
+  emailUi.src = '../js/modules/master-karyawan-email-owner-ui.js?v=20260923-1';
+  emailUi.defer = true;
+  document.head.appendChild(emailUi);
 })();
