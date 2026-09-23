@@ -1,0 +1,100 @@
+<section class="executive-summary">
+
+    <div class="executive-left exec-hero">
+
+        <span class="summary-label">
+            EXECUTIVE DASHBOARD
+        </span>
+
+        <div class="exec-hero-metric">
+
+            <h1 id="todayRevenue" data-kpi-metric="omzet" title="Klik untuk rincian per cabang">
+                Rp0
+            </h1>
+
+            <div class="summary-info">
+
+                <span class="exec-trend-badge">
+                    ▲ 0%
+                </span>
+
+                <span class="exec-trend-sub">
+                    vs periode sebelumnya
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <aside class="executive-ai-panel exec-ai-strip" id="execAiInsight" aria-label="AI Insight">
+        <div class="exec-ai-head">
+            <h2 class="exec-ai-title">AI Insight</h2>
+            <span class="exec-ai-status" id="execAiStatus">—</span>
+        </div>
+
+        <p class="exec-ai-summary" id="execAiSummary">
+            Memuat insight…
+        </p>
+
+        <div class="exec-ai-block exec-ai-actions-block">
+            <h3 class="exec-ai-section-label">TINDAKAN</h3>
+            <p class="exec-ai-primary-action" id="execAiPrimaryAction">—</p>
+        </div>
+
+        <button type="button" class="exec-ai-detail-btn" id="btnExecAiDetail">
+            Lihat Analisis Lengkap
+        </button>
+    </aside>
+
+    <div class="executive-stats">
+
+        <div class="executive-item" data-kpi-metric="nett" title="Klik untuk rincian per cabang">
+            <span>Nett</span>
+            <strong id="execNett">Rp0</strong>
+        </div>
+
+        <div class="executive-item" data-kpi-metric="customer" title="Klik untuk rincian per cabang">
+            <span>Customer</span>
+            <strong id="execCustomer">0</strong>
+        </div>
+
+        <div class="executive-item" data-kpi-metric="service" title="Klik untuk rincian per cabang">
+            <span>Service</span>
+            <strong id="execService">0</strong>
+        </div>
+
+        <div class="executive-item" data-kpi-metric="cash" title="Klik untuk rincian per cabang">
+            <span>Cash</span>
+            <strong id="execCash">Rp0</strong>
+        </div>
+
+        <div class="executive-item" data-kpi-metric="qris" title="Klik untuk rincian per cabang">
+            <span>QRIS</span>
+            <strong id="execQris">Rp0</strong>
+        </div>
+
+        <div class="executive-item" data-kpi-metric="cashOut" title="Klik untuk rincian per cabang">
+            <span>Cash Out</span>
+            <strong id="execCashout">Rp0</strong>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- AI Insight detail — deterministic dari data DashboardEngine -->
+<div id="execAiInsightModal" class="exec-ai-modal" hidden aria-hidden="true">
+    <div class="exec-ai-modal-backdrop" data-ai-close></div>
+    <div class="exec-ai-modal-panel" role="dialog" aria-modal="true" aria-labelledby="execAiModalTitle">
+        <div class="exec-ai-modal-header">
+            <h3 id="execAiModalTitle">Analisis Lengkap AI Insight</h3>
+            <button type="button" class="exec-ai-modal-x" data-ai-close aria-label="Tutup">×</button>
+        </div>
+        <div class="exec-ai-modal-body" id="execAiModalBody"></div>
+        <div class="exec-ai-modal-footer">
+            <button type="button" class="exec-ai-modal-close" data-ai-close>Tutup</button>
+        </div>
+    </div>
+</div>

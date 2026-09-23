@@ -1,0 +1,109 @@
+<div class="toolbar-wrapper od-filterbar">
+
+    <div class="toolbar-left">
+
+        <label class="toolbar-field">
+            <span class="toolbar-field-label">Cabang</span>
+            <select id="branchFilter">
+                <option value="Semua Cabang">Semua Cabang</option>
+                <option value="AR Hakim">AR Hakim</option>
+                <option value="Kalijati">Kalijati</option>
+                <option value="Parahyangan">Parahyangan</option>
+                <option value="Cinangsi">Cinangsi</option>
+                <option value="Pamanukan">Pamanukan</option>
+                <option value="Palabuan">Palabuan</option>
+                <option value="Soklat">Soklat</option>
+                <option value="Rawabadak">Rawabadak</option>
+                <option value="Pagaden">Pagaden</option>
+                <option value="Mekarwangi">Mekarwangi</option>
+            </select>
+        </label>
+
+        <label class="toolbar-field">
+            <span class="toolbar-field-label">Periode</span>
+            <select id="periodFilter">
+                <option value="hariini">Hari Ini</option>
+                <option value="kemarin">Kemarin</option>
+                <option value="7hari">7 Hari</option>
+                <option value="30hari">30 Hari</option>
+                <option value="bulanini">Bulan Ini</option>
+                <option value="tahunini">Tahun Ini</option>
+                <option value="customtanggal">Custom Tanggal</option>
+            </select>
+        </label>
+
+    </div>
+
+    <div class="od-filter-actions">
+        <div class="toolbar-meta" id="toolbarSyncMeta" aria-live="polite">
+            <div class="erp-freshness" id="erpFreshness" hidden></div>
+            <span class="erp-freshness-investor" id="erpFreshnessInvestor" hidden>LIVE / BELUM FINAL</span>
+            <span class="toolbar-last-sync od-last-sync">
+                LAST SYNC
+                <strong id="toolbarLastSync">—</strong>
+            </span>
+        </div>
+
+        <div class="toolbar-right">
+            <button type="button" id="btnRefresh" class="od-btn-primary">Refresh</button>
+            <button type="button" id="btnSync" class="od-btn-secondary">Sync Minutes</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Custom Tanggal — calendar modal (Rentang Tanggal + Pilih Bulan) -->
+<div id="customPeriodModal" class="custom-cal-modal" hidden aria-hidden="true">
+    <div class="custom-cal-backdrop" data-cal-close></div>
+    <div class="custom-cal-panel" role="dialog" aria-modal="true" aria-labelledby="calModalTitle">
+        <div class="custom-cal-header">
+            <h3 id="calModalTitle">Custom Tanggal</h3>
+            <button type="button" class="custom-cal-x" data-cal-close aria-label="Tutup">×</button>
+        </div>
+
+        <div class="custom-cal-mode-tabs" role="tablist" aria-label="Mode periode custom">
+            <button type="button" class="custom-cal-mode-tab is-active" data-cal-mode="month" role="tab" aria-selected="true">
+                Pilih Bulan
+            </button>
+            <button type="button" class="custom-cal-mode-tab" data-cal-mode="range" role="tab" aria-selected="false">
+                Rentang Tanggal
+            </button>
+        </div>
+
+        <div id="customCalMonthPane" class="custom-cal-pane is-active">
+            <div class="custom-cal-nav">
+                <button type="button" id="btnMonthYearPrev" aria-label="Tahun sebelumnya">‹</button>
+                <strong id="calMonthYearLabel">—</strong>
+                <button type="button" id="btnMonthYearNext" aria-label="Tahun berikutnya">›</button>
+            </div>
+            <div id="calMonthGrid" class="custom-cal-month-grid" role="listbox" aria-label="Pilih bulan"></div>
+        </div>
+
+        <div id="customCalRangePane" class="custom-cal-pane" hidden>
+            <div class="custom-cal-nav">
+                <button type="button" id="btnCalPrev" aria-label="Bulan sebelumnya">‹</button>
+                <strong id="calMonthLabel">—</strong>
+                <button type="button" id="btnCalNext" aria-label="Bulan berikutnya">›</button>
+            </div>
+
+            <div class="custom-cal-weekdays" aria-hidden="true">
+                <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span>
+                <span>Jum</span><span>Sab</span><span>Min</span>
+            </div>
+
+            <div id="calDays" class="custom-cal-days"></div>
+        </div>
+
+        <p id="calRangePreview" class="custom-cal-preview">Pilih tanggal mulai, lalu tanggal akhir</p>
+
+        <div class="custom-cal-actions">
+            <button type="button" id="btnCustomApply" class="toolbar-btn-apply" disabled>Terapkan</button>
+            <button type="button" id="btnCustomCancel" class="toolbar-btn-cancel">Batal</button>
+        </div>
+
+        <!-- Internal only — readonly/hidden, bukan input manual user -->
+        <input type="hidden" id="customStartDate" value="">
+        <input type="hidden" id="customEndDate" value="">
+        <input type="hidden" id="customPeriodMode" value="month">
+    </div>
+</div>
