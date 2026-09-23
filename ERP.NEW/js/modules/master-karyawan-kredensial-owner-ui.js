@@ -25,7 +25,6 @@
   section.setAttribute('aria-label', 'Akses Login Karyawan');
   section.innerHTML = `<h4>Akses Login · Owner</h4>
     <div class="mkc-line"><span>Kode login</span><strong id="mkcCode">—</strong></div>
-    <div class="mkc-line"><span>Email kontak</span><strong id="mkcEmail">—</strong></div>
     <div class="mkc-line"><span>Status password</span><strong id="mkcStatus">Memuat…</strong></div>
     <div class="mkc-actions"><button type="button" id="mkcView">Lihat Kredensial</button><button type="button" id="mkcReset">Reset Password</button></div>
     <p class="mkc-note" id="mkcNote">Password lama tidak dapat dilihat. Reset menerbitkan password unik satu kali dan mengakhiri sesi karyawan yang masih aktif.</p>
@@ -45,7 +44,6 @@
   }
   function render(data){
     $('mkcCode').textContent=data.kode_login || 'Belum tersedia';
-    $('mkcEmail').textContent=data.email_kontak ? `${data.email_kontak}${data.email_verified ? ' · Terverifikasi':' · Belum diverifikasi'}` : 'Belum diisi';
     $('mkcStatus').textContent={PASSWORD_PRIBADI_ATAU_SEMENTARA:'Password tersimpan (tidak dapat dilihat)',KREDENSIAL_LAMA:'Password/PIN awal masih aktif',BELUM_ADA_PASSWORD:'Belum ada password'}[data.status]||'Belum diketahui';
     $('mkcReset').disabled = data.aktif !== true || !data.kode_login;
     note('Password lama tidak bisa ditampilkan. Reset membuat password unik baru, mencabut kredensial lama, dan mengakhiri sesi karyawan.');
@@ -55,7 +53,7 @@
     clearSecret();
     section.hidden = !id;
     if(!id) return;
-    $('mkcCode').textContent='Memuat…'; $('mkcEmail').textContent='Memuat…'; $('mkcStatus').textContent='Memuat…';
+    $('mkcCode').textContent='Memuat…'; $('mkcStatus').textContent='Memuat…';
     $('mkcReset').disabled=true;
     try { const data=await detail(id); if(seq===requestId && id===currentId && modal.getAttribute('aria-hidden')==='false') render(data); }
     catch(e){ if(seq===requestId){ $('mkcStatus').textContent='Tidak tersedia'; note(e.message,true); $('mkcReset').disabled=true; } }

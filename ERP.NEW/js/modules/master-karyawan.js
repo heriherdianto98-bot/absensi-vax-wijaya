@@ -306,4 +306,10 @@ const MasterKaryawan = (() => {
   return { init, render, openModal };
 })();
 
-document.addEventListener("DOMContentLoaded", () => MasterKaryawan.init(), {once:true});
+window.MasterKaryawan = MasterKaryawan;
+
+// Backward-compatible auto boot. On Master Karyawan page the deterministic
+// bootstrap loads this file after Owner Auth is ready, then calls init().
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", () => MasterKaryawan.init(), {once:true});
+}

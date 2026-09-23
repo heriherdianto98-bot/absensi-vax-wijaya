@@ -729,6 +729,21 @@ const OwnerAuth = {
             const r = this.normalizeRole(this.profile?.role);
             roleEl.textContent = (r === "svp" ? "SPV" : (r || "owner")).toUpperCase();
         }
+        const avatarEl = document.getElementById("ownerAuthAvatar");
+        if(avatarEl){
+            const avatar = String(this.session?.user?.user_metadata?.avatar_url || "").trim();
+            if(avatar){
+                avatarEl.src = avatar;
+                avatarEl.hidden = false;
+                avatarEl.onerror = () => {
+                    avatarEl.hidden = true;
+                    avatarEl.removeAttribute("src");
+                };
+            }else{
+                avatarEl.hidden = true;
+                avatarEl.removeAttribute("src");
+            }
+        }
         this.applyAccessControl();
     },
 

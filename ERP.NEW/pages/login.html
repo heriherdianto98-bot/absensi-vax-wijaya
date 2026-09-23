@@ -27,7 +27,7 @@
     <form id="ownerLoginForm" class="login-form" autocomplete="on">
         <label>Email / Kode Login<span class="login-field">
             <svg class="login-field-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/></svg>
-            <input id="ownerEmail" type="text" name="email" required placeholder="Email terverifikasi atau Kxxxx" autocomplete="username" spellcheck="false"></span></label>
+            <input id="ownerEmail" type="text" name="email" required placeholder="Email Owner/SPV atau Kxxxx" autocomplete="username" spellcheck="false"></span></label>
         <label>Password<span class="login-field login-field-password">
             <svg class="login-field-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
             <input id="ownerPassword" type="password" name="password" required placeholder="••••••••" autocomplete="current-password">
@@ -38,12 +38,10 @@
         <div class="login-feedback" id="ownerLoginFeedback"><p id="ownerLoginStatus" class="login-status" hidden></p><p id="ownerLoginError" class="login-error" hidden></p></div>
         <button id="btnOwnerLogin" class="login-submit" type="submit"><span class="login-submit-label">Masuk</span><span class="login-submit-spin" aria-hidden="true"></span><span class="login-submit-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7.5"/></svg></span></button>
     </form>
-    <a href="../../lupa-password-karyawan.html" style="display:block;margin:10px auto 0;text-align:center;color:#f2ce77;font-size:13px;text-decoration:underline">Lupa password karyawan?</a>
     <small class="login-note">Pintu masuk Owner, SPV, dan Karyawan. Hak akses mengikuti peran akun.</small>
 </section></main>
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
-<script src="../js/modules/karyawan-email-login-bridge.js?v=20260923-1"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("ownerLoginForm");
