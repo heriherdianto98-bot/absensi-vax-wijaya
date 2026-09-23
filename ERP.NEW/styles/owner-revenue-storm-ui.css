@@ -127,7 +127,7 @@ html body.page-erp-dashboard .od-filterbar .toolbar-right{
     min-height:100% !important;
 }
 
-/* Colored filter identities: Cabang = cyan, Periode = violet. Visual only. */
+/* Dashboard filters: unified dark + gold theme. Visual only. */
 html body.page-erp-dashboard .toolbar-left > *:has(#branchFilter),
 html body.page-erp-dashboard .od-filterbar > *:has(#branchFilter),
 html body.page-erp-dashboard .toolbar-left > *:has(#periodFilter),
@@ -137,6 +137,10 @@ html body.page-erp-dashboard .od-filterbar > *:has(#periodFilter){
 html body.page-erp-dashboard #branchFilter,
 html body.page-erp-dashboard #periodFilter{
     padding-left:36px !important;
+    border-color:rgba(212,175,55,.46) !important;
+    box-shadow:inset 3px 0 0 rgba(212,175,55,.82), inset 0 1px 0 rgba(255,255,255,.04) !important;
+    background:linear-gradient(180deg,#171C22 0%,#10151B 100%) !important;
+    color:#F4E6BD !important;
 }
 html body.page-erp-dashboard .toolbar-left > *:has(#branchFilter)::before,
 html body.page-erp-dashboard .od-filterbar > *:has(#branchFilter)::before{
@@ -145,10 +149,10 @@ html body.page-erp-dashboard .od-filterbar > *:has(#branchFilter)::before{
     left:11px;
     bottom:10px;
     z-index:3;
-    color:#35D5FF;
+    color:#D4AF37;
     font-size:13px;
     line-height:1;
-    text-shadow:0 0 8px rgba(53,213,255,.75);
+    text-shadow:0 0 8px rgba(212,175,55,.48);
     pointer-events:none;
 }
 html body.page-erp-dashboard .toolbar-left > *:has(#periodFilter)::before,
@@ -158,39 +162,27 @@ html body.page-erp-dashboard .od-filterbar > *:has(#periodFilter)::before{
     left:11px;
     bottom:10px;
     z-index:3;
-    color:#A78BFA;
+    color:#E3C766;
     font-size:12px;
     line-height:1;
-    text-shadow:0 0 8px rgba(167,139,250,.72);
+    text-shadow:0 0 8px rgba(227,199,102,.42);
     pointer-events:none;
 }
-html body.page-erp-dashboard #branchFilter{
-    border-color:rgba(53,213,255,.56) !important;
-    box-shadow:inset 3px 0 0 rgba(53,213,255,.85) !important;
-    background:rgba(53,213,255,.07) !important;
-    color:#DDF8FF !important;
+html body.page-erp-dashboard #branchFilter:hover,
+html body.page-erp-dashboard #periodFilter:hover,
+html body.page-erp-dashboard #branchFilter:focus,
+html body.page-erp-dashboard #periodFilter:focus{
+    border-color:rgba(242,194,48,.72) !important;
 }
-html body.page-erp-dashboard #periodFilter{
-    border-color:rgba(167,139,250,.56) !important;
-    box-shadow:inset 3px 0 0 rgba(167,139,250,.85) !important;
-    background:rgba(167,139,250,.08) !important;
-    color:#F0EAFF !important;
-}
-html body.page-erp-dashboard #branchFilter option{
-    background:#07171C !important;
-    color:#35D5FF !important;
-}
+html body.page-erp-dashboard #branchFilter option,
 html body.page-erp-dashboard #periodFilter option{
-    background:#151022 !important;
-    color:#A78BFA !important;
+    background:#11151B !important;
+    color:#F4E6BD !important;
 }
-html body.page-erp-dashboard #branchFilter option:checked{
-    background:#10323A linear-gradient(#10323A,#10323A) !important;
-    color:#7DEBFF !important;
-}
+html body.page-erp-dashboard #branchFilter option:checked,
 html body.page-erp-dashboard #periodFilter option:checked{
-    background:#2A1D46 linear-gradient(#2A1D46,#2A1D46) !important;
-    color:#C9B8FF !important;
+    background:#302814 linear-gradient(#302814,#302814) !important;
+    color:#FFD75A !important;
 }
 
 /* Executive revenue hero spacing/height — UI only. */
