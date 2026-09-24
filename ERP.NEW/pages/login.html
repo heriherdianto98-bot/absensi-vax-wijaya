@@ -9,7 +9,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Sans+3:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="../styles/login.css">
 <link rel="stylesheet" href="../styles/login-mobile-motion-ui.css?v=20260923-1">
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="../vendor/supabase-js-v2.umd.min.js"></script>
+<script>
+if (!(window.supabase && typeof window.supabase.createClient === "function")) {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"><\/script>');
+}
+</script>
 </head>
 <body class="login-page">
 <header class="login-meta"><span>Powered by Heri Herdianto</span></header>
@@ -40,8 +45,13 @@
     </form>
     <small class="login-note">Pintu masuk Owner, SPV, dan Karyawan. Hak akses mengikuti peran akun.</small>
 </section></main>
-<script src="../js/modules/connector.js"></script>
-<script src="../js/modules/owner-auth.js"></script>
+<script>
+window.__VAX_LOGIN_BOOT_READY__ = !!(window.supabase && typeof window.supabase.createClient === "function");
+if (window.__VAX_LOGIN_BOOT_READY__) {
+    document.write('<script src="../js/modules/connector.js"><\/script>');
+    document.write('<script src="../js/modules/owner-auth.js"><\/script>');
+}
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("ownerLoginForm");
@@ -66,7 +76,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const setLoading = () => { card?.classList.add("is-loading"); card?.classList.remove("is-error", "is-shake", "is-success"); btn?.classList.add("is-loading"); btn?.classList.remove("is-success"); if (btn) btn.disabled = true; if (btnLabel) btnLabel.textContent = "Memeriksa…"; if (statusEl) { statusEl.hidden = false; statusEl.textContent = "Memverifikasi akses…"; } if (errEl) { errEl.hidden = true; errEl.textContent = ""; } setGreetTone(); };
     const setSuccess = () => { card?.classList.remove("is-loading", "is-error", "is-shake"); card?.classList.add("is-success"); btn?.classList.remove("is-loading"); btn?.classList.add("is-success"); if (btn) btn.disabled = true; if (btnLabel) btnLabel.textContent = "Berhasil"; if (statusEl) { statusEl.hidden = false; statusEl.textContent = "Login berhasil. Membuka dashboard…"; } setGreetTone("is-success"); };
     const setError = (message) => { card?.classList.remove("is-loading", "is-success"); card?.classList.add("is-error", "is-shake"); form?.classList.add("is-error"); btn?.classList.remove("is-loading", "is-success"); if (btn) btn.disabled = false; if (btnLabel) btnLabel.textContent = "Masuk"; if (statusEl) { statusEl.hidden = true; statusEl.textContent = ""; } if (errEl) { errEl.hidden = false; errEl.textContent = message; } setGreetTone("is-error"); window.setTimeout(() => card?.classList.remove("is-shake"), 520); };
-    form?.addEventListener("submit", async (e) => { e.preventDefault(); clearFeedback(); const email = document.getElementById("ownerEmail")?.value || ""; const password = document.getElementById("ownerPassword")?.value || ""; setLoading(); try { await OwnerAuth.loginOwner(email, password); setSuccess(); await wait(760); OwnerAuth.redirectAfterLogin(); } catch (err) { console.error("Login ERP gagal:", err); const message = (typeof OwnerAuth.friendlyLoginError === "function") ? OwnerAuth.friendlyLoginError(err) : (err?.message || "Login gagal."); setError(message); } });
+    form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearFeedback();
+        const bootReady = window.__VAX_LOGIN_BOOT_READY__ && typeof OwnerAuth !== "undefined" && typeof db !== "undefined";
+        if (!bootReady) {
+            setError("Koneksi sistem belum siap. Muat ulang halaman lalu coba masuk kembali.");
+            return;
+        }
+        const email = document.getElementById("ownerEmail")?.value || "";
+        const password = document.getElementById("ownerPassword")?.value || "";
+        setLoading();
+        try {
+            await OwnerAuth.loginOwner(email, password);
+            setSuccess();
+            await wait(760);
+            OwnerAuth.redirectAfterLogin();
+        } catch (err) {
+            console.error("Login ERP gagal:", err);
+            const message = (typeof OwnerAuth !== "undefined" && typeof OwnerAuth.friendlyLoginError === "function")
+                ? OwnerAuth.friendlyLoginError(err)
+                : (err?.message || "Login gagal.");
+            setError(message);
+        }
+    });
 });
 </script>
 </body></html>

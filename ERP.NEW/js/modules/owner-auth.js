@@ -379,9 +379,33 @@ const OwnerAuth = {
     },
 
     async requireSession({ allowSpv, eventName, ownerOnlyPage }){
-        const result = allowSpv
+        let result = allowSpv
             ? await this.validateFinanceSession()
             : await this.validateOwnerSession();
+
+        const isTransientAuthError = (value) =>
+            value?.reason === "SESSION_ERROR" || value?.reason === "PROFILE_ERROR";
+
+        if(!result.ok && isTransientAuthError(result)){
+            for(let attempt = 1; attempt <= 2 && !result.ok && isTransientAuthError(result); attempt++){
+                await new Promise((resolve) => setTimeout(resolve, 450 * attempt));
+                result = allowSpv
+                    ? await this.validateFinanceSession()
+                    : await this.validateOwnerSession();
+            }
+
+            if(!result.ok && isTransientAuthError(result)){
+                console.warn("Auth sementara tidak tersedia; session lokal dipertahankan.", result.reason, result.message || "");
+                this.ready = false;
+                document.dispatchEvent(new CustomEvent("erp:auth-temporary-error", {
+                    detail: {
+                        reason: result.reason,
+                        message: result.message || "Koneksi autentikasi sementara tidak tersedia."
+                    }
+                }));
+                return false;
+            }
+        }
 
         if(!result.ok){
             // SPV membuka halaman Owner-only → dashboard (jangan signOut)
