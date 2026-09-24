@@ -1,0 +1,1915 @@
+/* VAX Employee Dashboard — final clean palette
+   White + navy + Provider cyan + Last Sync blue.
+   Red remains only for danger/unread states.
+   UI-only. No data, event, RPC, auth, or engine changes. */
+
+:root{
+  --emp-white:#ffffff;
+  --emp-bg:#f3f7fb;
+  --emp-navy:#17385f;
+  --emp-navy-2:#102b4d;
+  --emp-text:#17314e;
+  --emp-muted:#718399;
+  --emp-line:#dce5ee;
+  --emp-cyan:#1fb8c8;
+  --emp-cyan-hi:#59dbe5;
+  --emp-blue:#3d81ed;
+  --emp-blue-hi:#72acff;
+  --emp-red:#e64b5b;
+}
+
+/* Header logo layout. */
+html body .app .topbar-brand{
+  display:grid!important;
+  grid-template-columns:40px minmax(0,1fr)!important;
+  grid-template-areas:"logo title" "logo subtitle"!important;
+  column-gap:9px!important;
+  row-gap:2px!important;
+  align-items:center!important;
+}
+html body .app .topbar-brand .employee-erp-logo{
+  grid-area:logo!important;
+  width:40px!important;
+  height:34px!important;
+  object-fit:contain!important;
+  display:block!important;
+  filter:drop-shadow(0 3px 5px rgba(0,0,0,.20))!important;
+}
+html body .app .topbar-brand>strong{
+  grid-area:title!important;
+  align-self:end!important;
+  color:#fff!important;
+}
+html body .app .topbar-brand>.brand-subtitle{
+  grid-area:subtitle!important;
+  align-self:start!important;
+  color:#d8e5f0!important;
+}
+
+/* Header action icons: no gold. */
+html body .app .topbar .vax-employee-notif-toggle{
+  color:#65d9e4!important;
+}
+html body .app .topbar .vax-employee-notif-toggle:hover{
+  color:#9bedf3!important;
+}
+html body .app .topbar .vax-inbox-shortcut{
+  color:#76acff!important;
+}
+html body .app .topbar .vax-inbox-shortcut:hover{
+  color:#a7c9ff!important;
+}
+html body .app .topbar .vax-employee-notif-toggle:focus-visible,
+html body .app .topbar .vax-inbox-shortcut:focus-visible{
+  outline:2px solid #79a9dc!important;
+  outline-offset:2px!important;
+}
+html body .app .topbar .vax-employee-notif-count,
+html body .app .topbar .vax-inbox-badge{
+  background:var(--emp-red)!important;
+  color:#fff!important;
+  border-color:var(--emp-navy-2)!important;
+}
+
+/* Notification popup follows the white dashboard theme. */
+html body .app .vax-employee-notif-panel{
+  background:#fff!important;
+  color:var(--emp-text)!important;
+  border:1px solid var(--emp-line)!important;
+  box-shadow:0 18px 38px rgba(29,58,88,.20)!important;
+}
+html body .app .vax-employee-notif-panel-head{
+  color:var(--emp-navy)!important;
+}
+html body .app .vax-employee-notif-refresh{
+  background:#f7fafc!important;
+  color:var(--emp-blue)!important;
+  border-color:#cfdce8!important;
+}
+html body .app .vax-employee-notif-item{
+  background:#f8fafc!important;
+  color:var(--emp-text)!important;
+  border-color:#e0e7ef!important;
+}
+html body .app .vax-employee-notif-item small,
+html body .app .vax-employee-notif-empty{
+  color:var(--emp-muted)!important;
+}
+html body .app .vax-employee-notif-item.is-pengaduan{
+  background:#f4fbfc!important;
+  border-color:#b7e7ec!important;
+}
+html body .app .vax-employee-notif-item.is-pengaduan strong{
+  color:#148b99!important;
+}
+
+/* Global surface language. */
+html body .app{
+  background:var(--emp-bg)!important;
+}
+html body .app .employee-monthly-kpi-card,
+html body .app .employee-personal-target,
+html body .app .today-grid .today-item,
+html body .app #kpiCapster .kpi-service,
+html body .app .vax-performance,
+html body .app .employee-barber-ranking,
+html body .app .comm-card,
+html body .app .comm-announce,
+html body .app .comm-ticket,
+html body .app .ai-hero{
+  background:#fff!important;
+  border:1px solid var(--emp-line)!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(184,200,215,.18),
+    0 10px 21px rgba(34,65,96,.10),
+    0 2px 4px rgba(34,65,96,.06)!important;
+}
+
+/* Target omzet: blue/navy only. */
+html body .app .employee-monthly-kpi-heading{
+  color:#176fd1!important;
+}
+html body .app .employee-monthly-kpi-heading i{
+  color:var(--emp-blue)!important;
+}
+html body .app .employee-monthly-kpi-value{
+  color:#167ee8!important;
+}
+html body .app .employee-monthly-kpi-track{
+  background:#e1e9f1!important;
+}
+html body .app .employee-monthly-kpi-fill{
+  background:linear-gradient(90deg,var(--emp-cyan),var(--emp-blue))!important;
+  box-shadow:0 3px 8px rgba(61,129,237,.18)!important;
+}
+html body .app .employee-monthly-kpi-detail{
+  color:var(--emp-text)!important;
+}
+html body .app .employee-monthly-kpi-note{
+  color:var(--emp-muted)!important;
+}
+
+/* Target Anda: white + cyan/blue. */
+html body .app .employee-personal-target,
+html body .app .employee-personal-target.stage-red,
+html body .app .employee-personal-target.stage-teal,
+html body .app .employee-personal-target.stage-blue,
+html body .app .employee-personal-target.stage-finish{
+  background:#fff!important;
+  border-color:var(--emp-line)!important;
+  --target-color:var(--emp-cyan)!important;
+}
+html body .app .employee-personal-target::before{
+  background:linear-gradient(90deg,var(--emp-cyan),var(--emp-blue))!important;
+  opacity:.85!important;
+}
+html body .app .employee-personal-target-title h3{
+  color:#176fd1!important;
+}
+html body .app .employee-personal-target-icon,
+html body .app .employee-personal-target.stage-red .employee-personal-target-icon,
+html body .app .employee-personal-target.stage-teal .employee-personal-target-icon,
+html body .app .employee-personal-target.stage-blue .employee-personal-target-icon,
+html body .app .employee-personal-target.stage-finish .employee-personal-target-icon{
+  color:#fff!important;
+  background:linear-gradient(145deg,var(--emp-cyan-hi),var(--emp-cyan))!important;
+  border-color:rgba(255,255,255,.75)!important;
+}
+html body .app .employee-personal-target-pct strong{
+  color:#167ee8!important;
+}
+html body .app .employee-personal-target-money div{
+  background:linear-gradient(145deg,#244568,#193756)!important;
+  border-color:#31557b!important;
+}
+html body .app .employee-personal-target-money span{color:#cbd9e6!important}
+html body .app .employee-personal-target-money strong{color:#fff!important}
+html body .app .employee-personal-target-track{background:#dce5ee!important}
+html body .app .employee-personal-target-fill{
+  background:linear-gradient(90deg,var(--emp-cyan),var(--emp-blue))!important;
+}
+html body .app .employee-personal-target-star{
+  color:var(--emp-blue)!important;
+  text-shadow:0 2px 5px rgba(61,129,237,.22)!important;
+}
+html body .app .employee-personal-target-status{
+  background:#f8fafc!important;
+  color:#4d657e!important;
+  border-color:#dde6ef!important;
+}
+html body .app .employee-personal-target-status strong{color:#167ee8!important}
+
+/* Section heading: remove gold. */
+html body .app .today-title{
+  color:#112b48!important;
+}
+html body .app .today-title::after{
+  background:linear-gradient(90deg,var(--emp-cyan),var(--emp-blue))!important;
+  box-shadow:none!important;
+}
+
+/* Daily KPI: white cards. */
+html body .app .today-grid .today-item,
+html body .app #kpiCapster .kpi-service{
+  color:var(--emp-text)!important;
+  border-color:var(--emp-line)!important;
+}
+html body .app .today-grid .kpi-label,
+html body .app #kpiCapster .kpi-label{
+  color:#183550!important;
+}
+html body .app .today-grid .today-item strong,
+html body .app #kpiCapster .kpi-main-value,
+html body .app #kpiCapster .service-detail-list{
+  color:#17314e!important;
+  text-shadow:none!important;
+}
+html body .app #kpiCapster .kpi-share .kpi-main-value{
+  color:#176fd1!important;
+}
+html body .app #kpiCapster .kpi-fine .kpi-main-value{
+  color:var(--emp-red)!important;
+}
+html body .app #kpiCapster .service-qty{
+  color:#176fd1!important;
+}
+
+/* 3D icons: use only cyan/blue family, red for danger. */
+html body .app .kpi-ico{
+  border:1px solid rgba(255,255,255,.78)!important;
+  box-shadow:
+    inset 0 2px 2px rgba(255,255,255,.58),
+    inset 0 -3px 5px rgba(0,0,0,.13),
+    0 6px 12px rgba(40,80,118,.16)!important;
+}
+html body .app .kpi-customer .kpi-ico,
+html body .app .kpi-service .kpi-ico{
+  background:linear-gradient(145deg,var(--emp-cyan-hi),var(--emp-cyan))!important;
+}
+html body .app .kpi-share .kpi-ico,
+html body .app .kpi-pay .kpi-ico{
+  background:linear-gradient(145deg,var(--emp-blue-hi),var(--emp-blue))!important;
+}
+html body .app .kpi-fine .kpi-ico{
+  background:linear-gradient(145deg,#ff8994,var(--emp-red))!important;
+}
+html body .app .kpi-ico i{
+  color:#fff!important;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))!important;
+}
+
+/* Performance card: blue, not violet/gold. */
+html body .app .vax-performance-head h2{color:var(--emp-text)!important}
+html body .app .vax-performance-head p,
+html body .app .vax-performance-note,
+html body .app .vax-performance-state{color:var(--emp-muted)!important}
+html body .app .vax-performance-head>i{
+  background:linear-gradient(145deg,var(--emp-blue-hi),var(--emp-blue))!important;
+  color:#fff!important;
+}
+html body .app .vax-performance-controls{
+  background:#eef3f8!important;
+  border-color:#dde6ef!important;
+}
+html body .app .vax-performance-controls button{
+  color:#6c7e92!important;
+}
+html body .app .vax-performance-controls button[aria-pressed="true"]{
+  background:#fff!important;
+  color:#176fd1!important;
+  box-shadow:0 4px 9px rgba(35,81,127,.10)!important;
+}
+html body .app .vax-performance-metrics button{
+  background:#fff!important;
+  color:#6e8094!important;
+  border-color:#dce5ee!important;
+}
+html body .app .vax-performance-metrics button[aria-pressed="true"]{
+  color:#148b99!important;
+  border-color:#9bdde4!important;
+  background:#f5fcfd!important;
+}
+html body .app .vax-performance-bar{
+  background:linear-gradient(180deg,var(--emp-blue-hi),var(--emp-blue))!important;
+  box-shadow:0 4px 8px rgba(61,129,237,.16)!important;
+}
+
+/* Ranking: remove gold. */
+html body .app .employee-barber-ranking-icon{
+  background:linear-gradient(145deg,var(--emp-cyan-hi),var(--emp-cyan))!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.78)!important;
+}
+html body .app .employee-barber-ranking-self strong,
+html body .app .employee-barber-ranking-service{
+  color:#176fd1!important;
+}
+html body .app .employee-barber-ranking-tabs{
+  background:#eef3f8!important;
+  border-color:#dde6ef!important;
+}
+html body .app .employee-barber-ranking-tab{
+  color:#718399!important;
+}
+html body .app .employee-barber-ranking-tab.is-active{
+  background:#fff!important;
+  color:#176fd1!important;
+  box-shadow:0 4px 9px rgba(35,81,127,.10)!important;
+}
+html body .app .employee-barber-ranking-row.is-self{
+  background:#fff!important;
+  border-color:#9ed9df!important;
+  box-shadow:
+    inset 4px 0 0 var(--emp-cyan),
+    0 6px 12px rgba(34,65,96,.08)!important;
+}
+html body .app .employee-barber-ranking-you{
+  background:#dff7f9!important;
+  color:#147b87!important;
+}
+
+/* Announcement / complaint. */
+html body .app .comm-announce,
+html body .app .comm-ticket{
+  background:#fff!important;
+  border-color:var(--emp-line)!important;
+}
+html body .app .comm-announce .comm-icon{
+  background:linear-gradient(145deg,var(--emp-cyan-hi),var(--emp-cyan))!important;
+  color:#fff!important;
+}
+html body .app .comm-ticket .comm-icon{
+  background:linear-gradient(145deg,#ff8994,var(--emp-red))!important;
+  color:#fff!important;
+}
+html body .app .comm-announce .comm-link{color:#148b99!important}
+html body .app .comm-ticket .comm-link{color:#dc4050!important}
+html body .app .comm-card h3,
+html body .app .comm-announce h3,
+html body .app .comm-ticket h3{color:var(--emp-text)!important}
+html body .app .comm-card p,
+html body .app .comm-announce #pengumumanPreview,
+html body .app .comm-ticket #pengaduanPreview{color:var(--emp-muted)!important}
+
+/* Bottom nav: blue/cyan only. */
+html body .app #bottomNav{
+  background:rgba(255,255,255,.98)!important;
+  border-color:#dce5ee!important;
+}
+html body .app #bottomNav a,
+html body .app #bottomNav a i{
+  color:#7b8b9c!important;
+}
+html body .app #bottomNav a.active,
+html body .app #bottomNav a.active i,
+html body .app #bottomNav a:hover,
+html body .app #bottomNav a:hover i{
+  color:#176fd1!important;
+}
+html body .app #bottomNav a.active span::after{
+  background:linear-gradient(90deg,var(--emp-cyan),var(--emp-blue))!important;
+  box-shadow:none!important;
+}
+
+
+/* === Header polish + top accents + motion — UI only === */
+
+/* Brand stack: logo + title + enterprise + employee system. */
+html body .app .topbar-brand{
+  grid-template-columns:40px minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto!important;
+  grid-template-areas:
+    "logo title"
+    "logo subtitle"
+    "logo employee"!important;
+  column-gap:9px!important;
+  row-gap:1px!important;
+}
+html body .app .topbar-brand .employee-erp-logo{
+  grid-area:logo!important;
+  align-self:center!important;
+  filter:brightness(0) invert(1) drop-shadow(0 3px 5px rgba(0,0,0,.18))!important;
+}
+html body .app .topbar-brand>strong{grid-area:title!important}
+html body .app .topbar-brand>.brand-subtitle{
+  grid-area:subtitle!important;
+  white-space:nowrap!important;
+}
+html body .app .topbar-brand::after{
+  grid-area:employee!important;
+  content:"EMPLOYEE SYSTEM"!important;
+  display:block!important;
+  color:#b9cadb!important;
+  font-size:8px!important;
+  line-height:1.15!important;
+  letter-spacing:.20em!important;
+  white-space:nowrap!important;
+  align-self:start!important;
+}
+
+/* Notification + inbox: white, closer together. */
+html body .app .topbar{
+  gap:3px!important;
+}
+html body .app .topbar .vax-employee-notif{
+  margin-left:auto!important;
+  flex:0 0 34px!important;
+}
+html body .app .topbar .vax-employee-notif-toggle,
+html body .app .topbar .vax-inbox-shortcut{
+  width:34px!important;
+  height:34px!important;
+  flex:0 0 34px!important;
+  color:#fff!important;
+}
+html body .app .topbar .vax-inbox-shortcut{
+  margin-left:0!important;
+}
+html body .app .topbar .vax-employee-notif-toggle:hover,
+html body .app .topbar .vax-inbox-shortcut:hover{
+  color:#dcecff!important;
+}
+html body .app .topbar .vax-employee-notif-toggle i,
+html body .app .topbar .vax-inbox-shortcut i{
+  font-size:21px!important;
+}
+
+/* Every visible dashboard panel gets a restrained top accent. */
+html body .app .employee-sync-indicator:first-child{border-top:3px solid var(--emp-cyan)!important}
+html body .app .employee-sync-indicator:last-child{border-top:3px solid var(--emp-blue)!important}
+html body .app .profile-card:not(.tutup-ops-banner){border-top:3px solid var(--emp-cyan)!important}
+html body .app .employee-date-toolbar{border-top:3px solid var(--emp-blue)!important}
+html body .app .employee-monthly-kpi-card{border-top:3px solid var(--emp-blue)!important}
+html body .app .employee-personal-target{border-top:3px solid var(--emp-cyan)!important}
+html body .app .today-grid .kpi-customer{border-top:3px solid var(--emp-cyan)!important}
+html body .app .today-grid .kpi-share{border-top:3px solid var(--emp-blue)!important}
+html body .app #kpiCapster .kpi-service{border-top:3px solid var(--emp-cyan)!important}
+html body .app .today-grid .kpi-pay{border-top:3px solid var(--emp-blue)!important}
+html body .app .today-grid .kpi-fine{border-top:3px solid var(--emp-red)!important}
+html body .app .vax-performance{border-top:3px solid var(--emp-blue)!important}
+html body .app .employee-barber-ranking{border-top:3px solid var(--emp-cyan)!important}
+html body .app .comm-announce{border-top:3px solid var(--emp-cyan)!important}
+html body .app .comm-ticket{border-top:3px solid var(--emp-red)!important}
+html body .app .ai-hero{border-top:3px solid var(--emp-blue)!important}
+
+/* Employee photo: provider cyan ring + subtle floating motion. */
+html body .app .profile-card:not(.tutup-ops-banner) img{
+  border:3px solid #fff!important;
+  outline:3px solid var(--emp-cyan)!important;
+  outline-offset:2px!important;
+  box-shadow:
+    0 0 0 6px rgba(31,184,200,.10),
+    0 9px 18px rgba(31,122,148,.18)!important;
+  animation:employeePhotoFloat 3.6s ease-in-out infinite!important;
+  transform-origin:center!important;
+}
+@keyframes employeePhotoFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+@media(hover:hover){
+  html body .app .profile-card:not(.tutup-ops-banner) img:hover{
+    animation-play-state:paused!important;
+    transform:translateY(-3px) scale(1.045)!important;
+    box-shadow:
+      0 0 0 6px rgba(31,184,200,.14),
+      0 12px 22px rgba(31,122,148,.24)!important;
+  }
+}
+
+/* Provider / Last Sync glyph motion; icon tiles stay still. */
+html body .app .employee-sync-indicator:first-child>i::before{
+  display:inline-block!important;
+  animation:employeeHourglassTurn 2.8s ease-in-out infinite!important;
+  transform-origin:center!important;
+}
+html body .app .employee-sync-indicator:last-child>i::before{
+  display:inline-block!important;
+  animation:employeeSyncSpin 2.6s linear infinite!important;
+  transform-origin:center!important;
+}
+@keyframes employeeHourglassTurn{
+  0%,38%{transform:rotate(0deg)}
+  50%,88%{transform:rotate(180deg)}
+  100%{transform:rotate(360deg)}
+}
+@keyframes employeeSyncSpin{
+  to{transform:rotate(360deg)}
+}
+
+/* Card hover/lift for desktop inspection; mobile keeps stable 3D depth. */
+@media(hover:hover){
+  html body .app .employee-sync-indicator,
+  html body .app .profile-card:not(.tutup-ops-banner),
+  html body .app .employee-date-toolbar,
+  html body .app .employee-monthly-kpi-card,
+  html body .app .employee-personal-target,
+  html body .app .today-grid .today-item,
+  html body .app #kpiCapster .kpi-service,
+  html body .app .vax-performance,
+  html body .app .employee-barber-ranking,
+  html body .app .comm-card{
+    transition:transform .18s ease,box-shadow .18s ease!important;
+  }
+  html body .app .employee-sync-indicator:hover,
+  html body .app .employee-date-toolbar:hover,
+  html body .app .employee-monthly-kpi-card:hover,
+  html body .app .employee-personal-target:hover,
+  html body .app .today-grid .today-item:hover,
+  html body .app #kpiCapster .kpi-service:hover,
+  html body .app .vax-performance:hover,
+  html body .app .employee-barber-ranking:hover,
+  html body .app .comm-card:hover{
+    transform:translateY(-2px)!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .profile-card:not(.tutup-ops-banner) img,
+  html body .app .employee-sync-indicator>i::before{
+    animation:none!important;
+  }
+}
+
+
+/* === Target Anda + profile divider refinement — UI only === */
+
+/* Profile internal divider: stronger, still professional. */
+html body .app .profile-card:not(.tutup-ops-banner) .profile-branch{
+  border-top:2px solid #17385f!important;
+  padding-top:9px!important;
+}
+
+/* Target Anda money panels: light 3D rows like Ranking Anda, no dark cards. */
+html body .app .employee-personal-target-money div{
+  background:#ffffff!important;
+  border:1px solid #a8dce2!important;
+  border-radius:10px!important;
+  box-shadow:
+    inset 4px 0 0 var(--emp-cyan),
+    inset 0 1px 0 #ffffff,
+    0 5px 11px rgba(34,65,96,.08)!important;
+}
+html body .app .employee-personal-target-money div:nth-child(2){
+  border-color:#b5cdea!important;
+  box-shadow:
+    inset 4px 0 0 var(--emp-blue),
+    inset 0 1px 0 #ffffff,
+    0 5px 11px rgba(34,65,96,.08)!important;
+}
+html body .app .employee-personal-target-money span{
+  color:#667c92!important;
+  font-weight:700!important;
+}
+html body .app .employee-personal-target-money strong{
+  color:#17314e!important;
+  text-shadow:none!important;
+}
+
+/* Progress status panel: cyan/green family of Target Anda icon. */
+html body .app .employee-personal-target-status,
+html body .app .employee-personal-target.stage-red .employee-personal-target-status,
+html body .app .employee-personal-target.stage-teal .employee-personal-target-status,
+html body .app .employee-personal-target.stage-blue .employee-personal-target-status,
+html body .app .employee-personal-target.stage-finish .employee-personal-target-status{
+  background:linear-gradient(135deg,#e9fbf8 0%,#e5f8fb 100%)!important;
+  border:1px solid #9fddd8!important;
+  color:#355e61!important;
+  box-shadow:
+    inset 4px 0 0 var(--emp-cyan),
+    inset 0 1px 0 rgba(255,255,255,.95),
+    0 4px 10px rgba(31,184,200,.08)!important;
+}
+html body .app .employee-personal-target-status strong{
+  color:#138f96!important;
+}
+
+
+/* === Performa Hari Ini: remove legacy dark KPI backgrounds — UI only === */
+html body .app #kpiCapster.today-grid .today-item,
+html body .app #kpiCapster.today-grid .kpi-customer,
+html body .app #kpiCapster.today-grid .kpi-share,
+html body .app #kpiCapster.today-grid .kpi-pay,
+html body .app #kpiCapster.today-grid .kpi-fine,
+html body .app #kpiCapster.today-grid .kpi-service{
+  background:#ffffff!important;
+  border:1px solid var(--emp-line)!important;
+  color:var(--emp-text)!important;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -1px 0 rgba(184,200,215,.18),
+    0 9px 18px rgba(34,65,96,.10),
+    0 2px 4px rgba(34,65,96,.06)!important;
+}
+html body .app #kpiCapster.today-grid .kpi-customer{border-top:3px solid var(--emp-cyan)!important}
+html body .app #kpiCapster.today-grid .kpi-share{border-top:3px solid var(--emp-blue)!important}
+html body .app #kpiCapster.today-grid .kpi-service{border-top:3px solid var(--emp-cyan)!important}
+html body .app #kpiCapster.today-grid .kpi-pay{border-top:3px solid var(--emp-blue)!important}
+html body .app #kpiCapster.today-grid .kpi-fine{border-top:3px solid var(--emp-red)!important}
+
+html body .app #kpiCapster.today-grid .kpi-label,
+html body .app #kpiCapster.today-grid .service-detail-item,
+html body .app #kpiCapster.today-grid .service-detail-empty{
+  color:#183550!important;
+  text-shadow:none!important;
+}
+html body .app #kpiCapster.today-grid .kpi-main-value,
+html body .app #kpiCapster.today-grid .kpi-customer .kpi-main-value,
+html body .app #kpiCapster.today-grid .kpi-share .kpi-main-value,
+html body .app #kpiCapster.today-grid .kpi-pay .kpi-main-value{
+  color:#17314e!important;
+  text-shadow:none!important;
+  filter:none!important;
+}
+html body .app #kpiCapster.today-grid .kpi-share .kpi-main-value,
+html body .app #kpiCapster.today-grid .kpi-pay .kpi-main-value{
+  color:#176fd1!important;
+}
+html body .app #kpiCapster.today-grid .kpi-fine .kpi-main-value{
+  color:var(--emp-red)!important;
+}
+html body .app #kpiCapster.today-grid .kpi-customer::after,
+html body .app #kpiCapster.today-grid .kpi-service::after,
+html body .app #kpiCapster.today-grid .kpi-share::after,
+html body .app #kpiCapster.today-grid .kpi-pay::after{
+  color:#7f95aa!important;
+}
+html body .app #kpiCapster.today-grid .kpi-ghost{
+  display:none!important;
+}
+
+
+/* === Profile divider + branch text refinement — UI only === */
+html body .app .profile-card:not(.tutup-ops-banner) .profile-branch{
+  border-top:1.5px solid #1fbd78!important;
+}
+html body .app .profile-card:not(.tutup-ops-banner) .profile-branch-name{
+  font-weight:800!important;
+  color:#17314e!important;
+}
+html body .app .profile-card:not(.tutup-ops-banner) .profile-branch-address{
+  font-weight:550!important;
+  color:#667b92!important;
+}
+
+
+/* === Calendar light theme + Service typography + accent-line cleanup === */
+
+/* Calendar: match current white/navy/cyan-blue employee UI. */
+html body .app .vax-calendar{
+  background:#ffffff!important;
+  color:#17314e!important;
+  border:1px solid #dce5ee!important;
+  border-top:3px solid var(--emp-blue)!important;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 18px 42px rgba(34,65,96,.18)!important;
+}
+html body .app .vax-calendar-title{
+  color:#17385f!important;
+  font-weight:800!important;
+}
+html body .app .vax-calendar-prev,
+html body .app .vax-calendar-next{
+  background:#f4f8fc!important;
+  border:1px solid #d9e4ee!important;
+  color:#176fd1!important;
+  box-shadow:inset 0 1px 0 #fff,0 4px 9px rgba(34,65,96,.07)!important;
+}
+html body .app .vax-calendar-week{
+  color:#6f8195!important;
+}
+html body .app .vax-calendar-day{
+  color:#17314e!important;
+  background:transparent!important;
+}
+html body .app .vax-calendar-day:hover:not(:disabled){
+  background:#eef8fb!important;
+  border-color:#9fdde3!important;
+  color:#148b99!important;
+}
+html body .app .vax-calendar-day.is-today{
+  border-color:#8fd7df!important;
+  color:#148b99!important;
+}
+html body .app .vax-calendar-day.is-selected{
+  background:linear-gradient(145deg,var(--emp-cyan-hi),var(--emp-blue))!important;
+  border-color:transparent!important;
+  color:#ffffff!important;
+  box-shadow:0 5px 12px rgba(61,129,237,.20)!important;
+  font-weight:850!important;
+}
+html body .app .vax-calendar-foot{
+  border-top:1px solid #dfe7ef!important;
+}
+html body .app .vax-calendar-today,
+html body .app .vax-calendar-close{
+  background:#f7fafc!important;
+  border:1px solid #d6e1eb!important;
+  color:#17385f!important;
+}
+html body .app .vax-calendar-today{
+  color:#148b99!important;
+  border-color:#a8dde2!important;
+}
+html body .app .vax-calendar button:focus-visible{
+  outline:2px solid #66bfc9!important;
+  outline-offset:2px!important;
+}
+
+/* Service: stronger hierarchy and readability. */
+html body .app #kpiCapster.today-grid .kpi-service .kpi-label{
+  color:#17314e!important;
+  font-weight:850!important;
+}
+html body .app #kpiCapster.today-grid .kpi-service .service-detail-item{
+  font-weight:700!important;
+  color:#27445f!important;
+}
+html body .app #kpiCapster.today-grid .kpi-service .service-name{
+  color:#27445f!important;
+  font-weight:750!important;
+}
+html body .app #kpiCapster.today-grid .kpi-service .service-qty{
+  color:#176fd1!important;
+  font-weight:850!important;
+}
+html body .app #kpiCapster.today-grid .kpi-service .service-dots{
+  border-bottom:1px dotted #9aabba!important;
+}
+
+/* Reduce visual noise: small KPI cards do not need a colored top stripe. */
+html body .app #kpiCapster.today-grid .kpi-customer,
+html body .app #kpiCapster.today-grid .kpi-share,
+html body .app #kpiCapster.today-grid .kpi-service,
+html body .app #kpiCapster.today-grid .kpi-pay,
+html body .app #kpiCapster.today-grid .kpi-fine{
+  border-top-width:1px!important;
+  border-top-color:var(--emp-line)!important;
+}
+
+
+/* === Period/date emphasis + non-gold numbers + themed scrollbars — UI only === */
+
+/* Periode Dashboard: stronger hierarchy. */
+html body .app .date-toolbar-caption{
+  color:#5f7690!important;
+  font-weight:800!important;
+  letter-spacing:.085em!important;
+}
+html body .app .date-toolbar-current{
+  color:#17314e!important;
+  font-weight:850!important;
+}
+html body .app .date-toolbar-status{
+  color:#657b92!important;
+  font-weight:600!important;
+}
+
+/* Profile date: KAMIS / 24 / Sep 2026 more readable and bolder. */
+html body .app .profile-meta-date small{
+  color:#657b92!important;
+  font-weight:800!important;
+}
+html body .app .profile-meta-date strong{
+  color:#17385f!important;
+  font-weight:900!important;
+}
+html body .app .profile-meta-date span{
+  color:#657b92!important;
+  font-weight:750!important;
+}
+
+/* Progress message: clearer text inside the cyan/green panel. */
+html body .app .employee-personal-target-status{
+  font-weight:650!important;
+  color:#315c61!important;
+}
+html body .app .employee-personal-target-status strong{
+  color:#118d94!important;
+  font-weight:850!important;
+}
+
+/* Target milestones + performance chart values/labels: no legacy gold. */
+html body .app .employee-personal-target-milestones{
+  color:#637b92!important;
+  font-weight:700!important;
+}
+html body .app .vax-performance-value{
+  color:#17385f!important;
+  font-weight:750!important;
+}
+html body .app .vax-performance-label{
+  color:#687f96!important;
+  font-weight:650!important;
+}
+
+/* Ranking list scrollbar: current light employee theme, no gold. */
+html body .app .employee-barber-ranking-list{
+  scrollbar-width:thin!important;
+  scrollbar-color:#56a8e9 #edf3f8!important;
+}
+html body .app .employee-barber-ranking-list::-webkit-scrollbar{
+  width:6px!important;
+}
+html body .app .employee-barber-ranking-list::-webkit-scrollbar-track{
+  background:#edf3f8!important;
+  border-radius:999px!important;
+}
+html body .app .employee-barber-ranking-list::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,var(--emp-cyan),var(--emp-blue))!important;
+  border-radius:999px!important;
+  border:1px solid #edf3f8!important;
+}
+
+/* Main document scrollbar follows the same family. */
+html body::-webkit-scrollbar,
+html body .app::-webkit-scrollbar{
+  width:7px!important;
+}
+html body::-webkit-scrollbar-track,
+html body .app::-webkit-scrollbar-track{
+  background:#edf3f8!important;
+}
+html body::-webkit-scrollbar-thumb,
+html body .app::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#72cbd4,#5d99df)!important;
+  border-radius:999px!important;
+  border:1px solid #edf3f8!important;
+}
+html body,
+html body .app{
+  scrollbar-color:#5d99df #edf3f8!important;
+  scrollbar-width:thin!important;
+}
+
+
+/* === Profile sparkle + icon-only sync controls — UI only === */
+
+/* Provider / Last Sync: remove cards and copy; keep live status nodes hidden for engine. */
+html body .app .employee-sync-indicators{
+  display:flex!important;
+  grid-template-columns:none!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:8px!important;
+  margin:7px 2px 8px!important;
+  min-height:42px!important;
+}
+html body .app .employee-sync-indicator,
+html body .app .employee-sync-indicator:first-child,
+html body .app .employee-sync-indicator:last-child{
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+  min-width:42px!important;
+  padding:0!important;
+  border:0!important;
+  border-top:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:visible!important;
+}
+html body .app .employee-sync-copy{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+html body .app .employee-sync-indicator>i{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  color:#fff!important;
+  font-size:16px!important;
+  border:1px solid rgba(255,255,255,.8)!important;
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,.55),
+    inset 0 -4px 7px rgba(8,44,74,.22),
+    0 6px 12px rgba(27,78,120,.16)!important;
+  transform-style:preserve-3d!important;
+}
+html body .app .employee-sync-provider>i{
+  background:
+    radial-gradient(circle at 31% 24%,rgba(255,255,255,.72),transparent 21%),
+    linear-gradient(145deg,#56dce5 0%,#20b8c8 58%,#128d9f 100%)!important;
+}
+html body .app .employee-sync-last>i{
+  background:
+    radial-gradient(circle at 31% 24%,rgba(255,255,255,.72),transparent 21%),
+    linear-gradient(145deg,#78b2ff 0%,#4688ef 58%,#2866c7 100%)!important;
+}
+html body .app .employee-sync-provider>i::before,
+html body .app .employee-sync-last>i::before{
+  display:inline-block!important;
+  transform-origin:center!important;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))!important;
+}
+html body .app .employee-sync-provider>i::before{
+  animation:employeeProviderSpin 3.2s cubic-bezier(.55,.12,.45,.88) infinite!important;
+}
+html body .app .employee-sync-last>i::before{
+  animation:employeeLastSyncSpin 4s linear infinite!important;
+}
+@keyframes employeeProviderSpin{
+  0%{transform:rotate(0deg) scale(1)}
+  45%{transform:rotate(165deg) scale(1.06)}
+  55%{transform:rotate(195deg) scale(1.06)}
+  100%{transform:rotate(360deg) scale(1)}
+}
+@keyframes employeeLastSyncSpin{
+  to{transform:rotate(-360deg)}
+}
+
+/* Photo wrapper supports sparkle without changing the live image element/id. */
+html body .app .employee-profile-photo-wrap{
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+  border-radius:50%!important;
+  isolation:isolate!important;
+}
+html body .app .employee-profile-photo-wrap::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-9px!important;
+  border-radius:50%!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 50% 0%,#66e5ee 0 2px,transparent 2.8px),
+    radial-gradient(circle at 93% 24%,#1fb8c8 0 1.7px,transparent 2.5px),
+    radial-gradient(circle at 100% 63%,#8eeaf0 0 1.4px,transparent 2.3px),
+    radial-gradient(circle at 72% 96%,#27c5d4 0 1.8px,transparent 2.6px),
+    radial-gradient(circle at 20% 91%,#75e4eb 0 1.5px,transparent 2.4px),
+    radial-gradient(circle at 0% 53%,#1fb8c8 0 1.8px,transparent 2.6px),
+    radial-gradient(circle at 11% 14%,#9cf1f5 0 1.4px,transparent 2.3px)!important;
+  filter:drop-shadow(0 0 5px rgba(31,184,200,.52))!important;
+  animation:employeeSparkOrbit 4.8s linear infinite!important;
+  z-index:2!important;
+}
+html body .app .employee-profile-photo-wrap::after{
+  content:""!important;
+  position:absolute!important;
+  inset:-4px!important;
+  border-radius:50%!important;
+  border:1px solid rgba(31,184,200,.42)!important;
+  box-shadow:
+    0 0 0 3px rgba(31,184,200,.08),
+    0 0 12px rgba(31,184,200,.24)!important;
+  pointer-events:none!important;
+  animation:employeeRingPulse 2.8s ease-in-out infinite!important;
+  z-index:1!important;
+}
+html body .app .employee-profile-photo-wrap #fotoKaryawan{
+  position:relative!important;
+  z-index:3!important;
+}
+@keyframes employeeSparkOrbit{
+  0%{transform:rotate(0deg);opacity:.55}
+  35%{opacity:1}
+  70%{opacity:.65}
+  100%{transform:rotate(360deg);opacity:.55}
+}
+@keyframes employeeRingPulse{
+  0%,100%{transform:scale(1);opacity:.68}
+  50%{transform:scale(1.045);opacity:1}
+}
+
+/* Profile divider must match the cyan photo ring. */
+html body .app .profile-card:not(.tutup-ops-banner) .profile-branch{
+  border-top:1.5px solid var(--emp-cyan)!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .employee-sync-provider>i::before,
+  html body .app .employee-sync-last>i::before,
+  html body .app .employee-profile-photo-wrap::before,
+  html body .app .employee-profile-photo-wrap::after{
+    animation:none!important;
+  }
+}
+
+
+/* === Restore Provider / Last Sync copy without restoring cards === */
+html body .app .employee-sync-indicators{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:center!important;
+  margin:8px 2px 10px!important;
+  min-height:44px!important;
+}
+html body .app .employee-sync-indicator,
+html body .app .employee-sync-indicator:first-child,
+html body .app .employee-sync-indicator:last-child{
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  flex:none!important;
+  padding:0!important;
+  border:0!important;
+  border-top:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  overflow:visible!important;
+}
+html body .app .employee-sync-copy{
+  position:static!important;
+  width:auto!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:visible!important;
+  clip:auto!important;
+  white-space:normal!important;
+  border:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:1px!important;
+  min-width:0!important;
+}
+html body .app .employee-sync-copy small{
+  display:block!important;
+  color:#5f7690!important;
+  font-size:8px!important;
+  line-height:1.1!important;
+  font-weight:850!important;
+  letter-spacing:.08em!important;
+}
+html body .app .employee-sync-copy strong{
+  display:block!important;
+  color:#17314e!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  overflow-wrap:anywhere!important;
+}
+html body .app .employee-sync-indicator>i{
+  flex:0 0 38px!important;
+}
+@media(max-width:350px){
+  html body .app .employee-sync-indicators{gap:8px!important}
+  html body .app .employee-sync-indicator{gap:6px!important}
+  html body .app .employee-sync-copy small{font-size:7px!important}
+  html body .app .employee-sync-copy strong{font-size:9px!important}
+  html body .app .employee-sync-indicator>i{
+    width:34px!important;height:34px!important;flex-basis:34px!important;
+    font-size:14px!important;
+  }
+}
+
+
+/* === Sync icon size refinement — UI only === */
+html body .app .employee-sync-indicator{
+  gap:6px!important;
+}
+html body .app .employee-sync-indicator>i{
+  width:31px!important;
+  height:31px!important;
+  flex:0 0 31px!important;
+  font-size:13px!important;
+}
+html body .app .employee-sync-copy small{
+  font-size:7px!important;
+}
+html body .app .employee-sync-copy strong{
+  font-size:9px!important;
+  line-height:1.15!important;
+}
+@media(max-width:350px){
+  html body .app .employee-sync-indicator>i{
+    width:29px!important;
+    height:29px!important;
+    flex-basis:29px!important;
+    font-size:12px!important;
+  }
+}
+
+
+/* === Provider / Last Sync cards restored — UI only === */
+html body .app .employee-sync-indicators{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:stretch!important;
+  margin:8px 2px 10px!important;
+}
+html body .app .employee-sync-indicator,
+html body .app .employee-sync-indicator:first-child,
+html body .app .employee-sync-indicator:last-child{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:7px!important;
+  min-width:0!important;
+  width:auto!important;
+  height:auto!important;
+  padding:8px 10px!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fafd 100%)!important;
+  border:1px solid #d8e3ee!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 -1px 0 rgba(184,200,215,.14),
+    0 8px 18px rgba(34,65,96,.09)!important;
+  overflow:hidden!important;
+}
+html body .app .employee-sync-provider{
+  border-top:3px solid var(--emp-cyan)!important;
+}
+html body .app .employee-sync-last{
+  border-top:3px solid var(--emp-blue)!important;
+}
+html body .app .employee-sync-indicator>i{
+  width:30px!important;
+  height:30px!important;
+  flex:0 0 30px!important;
+  font-size:12px!important;
+}
+html body .app .employee-sync-copy{
+  position:static!important;
+  width:auto!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:visible!important;
+  clip:auto!important;
+  white-space:normal!important;
+  border:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:1px!important;
+  min-width:0!important;
+}
+html body .app .employee-sync-copy small{
+  color:#617891!important;
+  font-size:7px!important;
+  line-height:1.1!important;
+  font-weight:850!important;
+  letter-spacing:.08em!important;
+}
+html body .app .employee-sync-copy strong{
+  color:#17314e!important;
+  font-size:9px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:350px){
+  html body .app .employee-sync-indicators{gap:7px!important}
+  html body .app .employee-sync-indicator{padding:7px 8px!important;gap:6px!important}
+  html body .app .employee-sync-indicator>i{
+    width:28px!important;
+    height:28px!important;
+    flex-basis:28px!important;
+    font-size:11px!important;
+  }
+}
+
+
+/* === Typing brand subtitle + animated Target Omzet icon — UI only === */
+
+/* Enterprise line: type, hold, erase, repeat. */
+html body .app .topbar-brand>.brand-subtitle{
+  display:block!important;
+  width:0;
+  max-width:28ch!important;
+  overflow:hidden!important;
+  border-right:1px solid rgba(255,255,255,.85)!important;
+  animation:employeeBrandTypeEnterprise 7s steps(28,end) infinite both!important;
+}
+@keyframes employeeBrandTypeEnterprise{
+  0%,7%{width:0}
+  42%,63%{width:28ch}
+  88%,100%{width:0}
+}
+
+/* Employee line follows after Enterprise, then repeats on same cycle. */
+html body .app .topbar-brand::after{
+  width:0;
+  max-width:15ch!important;
+  overflow:hidden!important;
+  border-right:1px solid rgba(185,202,219,.82)!important;
+  animation:employeeBrandTypeSystem 7s steps(15,end) 2.8s infinite both!important;
+}
+@keyframes employeeBrandTypeSystem{
+  0%,8%{width:0}
+  38%,58%{width:15ch}
+  84%,100%{width:0}
+}
+
+/* Target Omzet icon: compact 3D rotating ring effect. */
+html body .app .employee-monthly-kpi-heading i{
+  width:25px!important;
+  height:25px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  flex:0 0 25px!important;
+  border-radius:50%!important;
+  color:#ffffff!important;
+  font-size:11px!important;
+  background:
+    radial-gradient(circle at 34% 28%,rgba(255,255,255,.82) 0 8%,transparent 23%),
+    conic-gradient(from 0deg,#20c0cc,#4b8ff6,#20c0cc)!important;
+  border:1px solid rgba(255,255,255,.82)!important;
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,.50),
+    inset 0 -3px 5px rgba(12,62,101,.18),
+    0 0 0 3px rgba(31,184,200,.10),
+    0 5px 11px rgba(38,104,165,.15)!important;
+  filter:none!important;
+  transform-origin:center!important;
+  animation:employeeTargetIconRing 3.6s linear infinite!important;
+}
+@keyframes employeeTargetIconRing{
+  0%{
+    transform:rotate(0deg) scale(1);
+    box-shadow:
+      inset 0 2px 3px rgba(255,255,255,.50),
+      inset 0 -3px 5px rgba(12,62,101,.18),
+      0 0 0 2px rgba(31,184,200,.12),
+      0 5px 11px rgba(38,104,165,.15);
+  }
+  50%{
+    transform:rotate(180deg) scale(1.055);
+    box-shadow:
+      inset 0 2px 3px rgba(255,255,255,.55),
+      inset 0 -3px 5px rgba(12,62,101,.18),
+      0 0 0 6px rgba(31,184,200,.10),
+      0 0 13px rgba(61,129,237,.24),
+      0 6px 13px rgba(38,104,165,.17);
+  }
+  100%{
+    transform:rotate(360deg) scale(1);
+    box-shadow:
+      inset 0 2px 3px rgba(255,255,255,.50),
+      inset 0 -3px 5px rgba(12,62,101,.18),
+      0 0 0 2px rgba(31,184,200,.12),
+      0 5px 11px rgba(38,104,165,.15);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .topbar-brand>.brand-subtitle,
+  html body .app .topbar-brand::after,
+  html body .app .employee-monthly-kpi-heading i{
+    animation:none!important;
+  }
+  html body .app .topbar-brand>.brand-subtitle{width:28ch!important}
+  html body .app .topbar-brand::after{width:15ch!important}
+}
+
+
+/* === Greeting motivation + daily wisdom + employee name typing — UI only === */
+html body .app .home-greet{
+  margin-bottom:0!important;
+}
+html body .app .employee-greeting-motivation{
+  display:block!important;
+  margin-top:2px!important;
+  color:#3a6f8f!important;
+  font-size:9px!important;
+  line-height:1.25!important;
+  font-weight:700!important;
+  max-width:210px!important;
+}
+
+/* Preserve real name text in DOM, show the typed visual layer above it. */
+html body .app #namaKaryawan{
+  position:relative!important;
+  color:transparent!important;
+  min-width:7ch!important;
+}
+html body .app #namaKaryawan::after{
+  content:attr(data-typing-name)!important;
+  position:absolute!important;
+  inset:0 auto auto 0!important;
+  color:#17314e!important;
+  white-space:nowrap!important;
+  pointer-events:none!important;
+}
+html body .app #namaKaryawan::before{
+  content:""!important;
+  position:absolute!important;
+  left:calc((var(--employee-name-chars, 0) * 1ch) + 2px)!important;
+  top:.08em!important;
+  width:1px!important;
+  height:.9em!important;
+  background:#20b8c8!important;
+  opacity:.85!important;
+  animation:employeeNameCaret .75s steps(1,end) infinite!important;
+}
+@keyframes employeeNameCaret{50%{opacity:0}}
+
+/* Branch info / daily quote alternate in the same panel. */
+html body .app .profile-branch{
+  overflow:hidden!important;
+}
+html body .app .profile-branch>.employee-branch-source,
+html body .app .profile-branch>.employee-branch-quote{
+  transition:opacity .26s ease,transform .26s ease!important;
+}
+html body .app .employee-branch-quote{
+  display:none!important;
+  min-width:0!important;
+}
+html body .app .employee-branch-quote-label{
+  display:block!important;
+  color:#148f98!important;
+  font-size:7px!important;
+  letter-spacing:.10em!important;
+  font-weight:900!important;
+  margin-bottom:2px!important;
+}
+html body .app .employee-branch-quote-text{
+  display:block!important;
+  color:#36566f!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+  font-weight:700!important;
+}
+html body .app .profile-branch.is-quote>.employee-branch-source{
+  display:none!important;
+}
+html body .app .profile-branch.is-quote>.employee-branch-quote{
+  display:block!important;
+}
+html body .app .profile-branch.is-changing>.employee-branch-source,
+html body .app .profile-branch.is-changing>.employee-branch-quote{
+  opacity:0!important;
+  transform:translateY(3px)!important;
+}
+
+/* When quote is visible, location pin becomes a simple wisdom marker. */
+html body .app .profile-branch.is-quote>i{
+  color:#20b8c8!important;
+}
+html body .app .profile-branch.is-quote>i::before{
+  content:"\f005"!important; /* star */
+  font-family:"Font Awesome 6 Free"!important;
+  font-weight:900!important;
+}
+
+@media(max-width:350px){
+  html body .app .employee-greeting-motivation{font-size:8px!important;max-width:175px!important}
+  html body .app .employee-branch-quote-text{font-size:8px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html body .app #namaKaryawan::before{animation:none!important}
+  html body .app .profile-branch>.employee-branch-source,
+  html body .app .profile-branch>.employee-branch-quote{transition:none!important}
+}
+
+
+/* === Unified Period + Provider + Last Sync toolbar — UI only === */
+html body .app .employee-date-toolbar{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,1.65fr) auto!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:9px 10px!important;
+  border:1px solid #dce5ee!important;
+  border-top:3px solid var(--emp-blue)!important;
+  border-radius:16px!important;
+  background:#ffffff!important;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -1px 0 rgba(184,200,215,.16),
+    0 9px 18px rgba(34,65,96,.09)!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-info{
+  min-width:0!important;
+  padding-right:8px!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-caption{
+  font-size:7px!important;
+  line-height:1.05!important;
+  font-weight:850!important;
+  letter-spacing:.08em!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-current{
+  font-size:9px!important;
+  line-height:1.25!important;
+  font-weight:850!important;
+  white-space:normal!important;
+}
+html body .app .employee-date-toolbar .employee-sync-indicators.is-period-toolbar-sync{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:0!important;
+  margin:0!important;
+  min-height:0!important;
+  border-left:1px solid #dfe7ef!important;
+  border-right:1px solid #dfe7ef!important;
+}
+html body .app .employee-date-toolbar .employee-sync-indicator,
+html body .app .employee-date-toolbar .employee-sync-indicator:first-child,
+html body .app .employee-date-toolbar .employee-sync-indicator:last-child{
+  min-width:0!important;
+  width:auto!important;
+  height:auto!important;
+  padding:2px 8px!important;
+  gap:5px!important;
+  border:0!important;
+  border-top:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+html body .app .employee-date-toolbar .employee-sync-indicator+ .employee-sync-indicator{
+  border-left:1px solid #e3eaf1!important;
+}
+html body .app .employee-date-toolbar .employee-sync-indicator>i{
+  width:24px!important;
+  height:24px!important;
+  flex:0 0 24px!important;
+  font-size:10px!important;
+}
+html body .app .employee-date-toolbar .employee-sync-copy{
+  min-width:0!important;
+}
+html body .app .employee-date-toolbar .employee-sync-copy small{
+  font-size:6px!important;
+  line-height:1.05!important;
+  letter-spacing:.07em!important;
+  font-weight:850!important;
+}
+html body .app .employee-date-toolbar .employee-sync-copy strong{
+  font-size:7.5px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  white-space:normal!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-picker{
+  margin:0!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-button{
+  min-height:32px!important;
+  padding:7px 9px!important;
+  gap:5px!important;
+  border-radius:10px!important;
+  font-size:8px!important;
+  white-space:nowrap!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-button i{
+  font-size:10px!important;
+}
+
+/* On narrow phones keep one toolbar, but allow a clean two-row composition. */
+@media(max-width:380px){
+  html body .app .employee-date-toolbar{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:
+      "date picker"
+      "sync sync"!important;
+    gap:7px 8px!important;
+  }
+  html body .app .employee-date-toolbar .date-toolbar-info{grid-area:date!important}
+  html body .app .employee-date-toolbar .date-toolbar-picker{grid-area:picker!important}
+  html body .app .employee-date-toolbar .employee-sync-indicators.is-period-toolbar-sync{
+    grid-area:sync!important;
+    border-left:0!important;
+    border-right:0!important;
+    border-top:1px solid #e3eaf1!important;
+    padding-top:6px!important;
+  }
+  html body .app .employee-date-toolbar .employee-sync-indicator{
+    padding:0 7px!important;
+  }
+}
+
+
+/* === Unified toolbar sizing + profile watermark + compact omzet card — UI only === */
+
+/* Toolbar: give sync copy enough room and add ring-inspired gradient. */
+html body .app .employee-date-toolbar{
+  grid-template-columns:minmax(104px,.95fr) minmax(185px,1.85fr) auto!important;
+  gap:7px!important;
+  background:
+    linear-gradient(135deg,#ffffff 0%,#f7fffd 48%,#eefcf9 100%)!important;
+  border-color:#cfe9e7!important;
+  border-top-color:var(--emp-cyan)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98),
+    inset 0 -1px 0 rgba(111,199,196,.10),
+    0 9px 18px rgba(34,101,111,.09)!important;
+}
+html body .app .employee-date-toolbar .employee-sync-indicators.is-period-toolbar-sync{
+  grid-template-columns:minmax(78px,.92fr) minmax(96px,1.08fr)!important;
+}
+html body .app .employee-date-toolbar .employee-sync-indicator,
+html body .app .employee-date-toolbar .employee-sync-indicator:first-child,
+html body .app .employee-date-toolbar .employee-sync-indicator:last-child{
+  padding:2px 6px!important;
+  gap:5px!important;
+}
+html body .app .employee-date-toolbar .employee-sync-copy{
+  overflow:visible!important;
+}
+html body .app .employee-date-toolbar .employee-sync-copy small{
+  font-size:6.3px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+html body .app .employee-date-toolbar .employee-sync-copy strong{
+  font-size:6.8px!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-caption{
+  white-space:nowrap!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-current{
+  font-size:8.5px!important;
+  line-height:1.15!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-button{
+  min-width:86px!important;
+  padding:7px 8px!important;
+  font-size:7.7px!important;
+}
+
+/* Profile watermark V: smaller and precisely centered away from date/content. */
+html body .app .profile-card:not(.tutup-ops-banner)::before{
+  display:block!important;
+  content:"V"!important;
+  right:54px!important;
+  top:48%!important;
+  transform:translateY(-50%)!important;
+  font-size:82px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  color:rgba(31,184,200,.045)!important;
+  opacity:1!important;
+  pointer-events:none!important;
+}
+
+/* Target omzet: compact vertical rhythm so it no longer dominates. */
+html body .app .employee-monthly-kpi-card{
+  padding:9px 11px!important;
+  min-height:0!important;
+  border-radius:15px!important;
+}
+html body .app .employee-monthly-kpi-heading{
+  margin-bottom:2px!important;
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+html body .app .employee-monthly-kpi-heading i{
+  width:22px!important;
+  height:22px!important;
+  flex:0 0 22px!important;
+  font-size:9px!important;
+}
+html body .app .employee-monthly-kpi-value{
+  margin:1px 0 3px!important;
+  font-size:28px!important;
+  line-height:1!important;
+}
+html body .app .employee-monthly-kpi-track{
+  height:5px!important;
+  margin:2px 0 4px!important;
+}
+html body .app .employee-monthly-kpi-detail{
+  font-size:9px!important;
+  line-height:1.1!important;
+}
+html body .app .employee-monthly-kpi-note{
+  margin-top:3px!important;
+  font-size:7.5px!important;
+  line-height:1.15!important;
+}
+
+/* Keep the unified toolbar on one row at normal 430px employee viewport. */
+@media(min-width:381px){
+  html body .app .employee-date-toolbar{
+    grid-template-areas:none!important;
+  }
+}
+
+/* === Headbar sync row + Powered by owner — UI only === */
+html body .app .topbar{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:0!important;
+  padding:10px 12px 8px!important;
+}
+html body .app .topbar-brand{
+  order:1!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+html body .app .topbar-brand::after{
+  content:"Powered by Heri Herdianto"!important;
+  color:#b9cadb!important;
+  font-size:7px!important;
+  line-height:1.15!important;
+  letter-spacing:.10em!important;
+  white-space:nowrap!important;
+}
+
+html body .app .topbar .vax-employee-notif{
+  order:2!important;
+  margin-left:auto!important;
+}
+html body .app .topbar .vax-inbox-shortcut{
+  order:3!important;
+  margin-left:2px!important;
+}
+html body .app .topbar .topbar-meta{
+  order:5!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync{
+  order:4!important;
+  flex:0 0 100%!important;
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.18fr)!important;
+  gap:10px!important;
+  margin:7px 0 0!important;
+  padding-top:7px!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+}
+
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-indicator,
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-indicator:first-child,
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-indicator:last-child{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  min-width:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-indicator>i{
+  width:22px!important;
+  height:22px!important;
+  flex:0 0 22px!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:0!important;
+  color:#69e3e8!important;
+}
+
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-provider>i::before{
+  content:"◔"!important;
+  font-family:inherit!important;
+  font-size:20px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  color:#69e3e8!important;
+  text-shadow:0 0 5px rgba(105,227,232,.80),0 0 10px rgba(105,227,232,.38)!important;
+  animation:employeeHeadSyncSpin 1.15s linear infinite!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-last>i::before{
+  content:"◷"!important;
+  font-family:inherit!important;
+  font-size:19px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  color:#8ebcff!important;
+  text-shadow:0 0 5px rgba(110,168,255,.75),0 0 10px rgba(110,168,255,.32)!important;
+  animation:employeeHeadSyncSpin 1.8s linear infinite!important;
+}
+@keyframes employeeHeadSyncSpin{to{transform:rotate(360deg)}}
+
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-copy{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:1px!important;
+  min-width:0!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-copy small{
+  color:#a9bfd3!important;
+  font-size:6px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  letter-spacing:.08em!important;
+  white-space:nowrap!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-copy strong{
+  color:#ffffff!important;
+  font-size:7px!important;
+  line-height:1.12!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+/* Period toolbar kembali sederhana: periode + tombol tanggal saja. */
+html body .app .employee-date-toolbar{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:9px 11px!important;
+  background:linear-gradient(135deg,#ffffff 0%,#f7fffd 100%)!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-current{
+  font-size:9.5px!important;
+  line-height:1.2!important;
+}
+html body .app .employee-date-toolbar .date-toolbar-button{
+  min-width:auto!important;
+  font-size:8.5px!important;
+}
+
+@media(max-width:350px){
+  html body .app .employee-sync-indicators.is-headbar-sync{
+    gap:7px!important;
+    grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)!important;
+  }
+  html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-copy strong{
+    font-size:6.4px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-provider>i::before,
+  html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-last>i::before{
+    animation:none!important;
+  }
+}
+
+/* Final headbar owner credit + narrow period toolbar correction. */
+html body .app .topbar-brand::after{
+  content:"Powered by Heri Herdianto"!important;
+  width:auto!important;
+  max-width:none!important;
+  overflow:visible!important;
+  border-right:0!important;
+  animation:none!important;
+}
+@media(max-width:380px){
+  html body .app .employee-date-toolbar{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"date picker"!important;
+    grid-template-rows:auto!important;
+  }
+}
+
+/* === Compact headbar + right aligned Last Sync + remove profile watermark — UI only === */
+html body .app .topbar{
+  padding:7px 10px 6px!important;
+  min-height:0!important;
+}
+html body .app .topbar-brand strong{
+  font-size:14px!important;
+  line-height:1.05!important;
+}
+html body .app .topbar-brand>.brand-subtitle{
+  font-size:6.5px!important;
+  line-height:1.05!important;
+}
+html body .app .topbar-brand::after{
+  font-size:6px!important;
+  line-height:1!important;
+}
+
+html body .app .employee-sync-indicators.is-headbar-sync{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:8px!important;
+  margin:5px 0 0!important;
+  padding-top:5px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-provider{
+  justify-self:start!important;
+  justify-content:flex-start!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-last{
+  justify-self:end!important;
+  justify-content:flex-end!important;
+  text-align:right!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-last .employee-sync-copy{
+  align-items:flex-end!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-indicator>i{
+  width:19px!important;
+  height:19px!important;
+  flex:0 0 19px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-provider>i::before{
+  font-size:17px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-last>i::before{
+  font-size:16px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-copy small{
+  font-size:5.5px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-copy strong{
+  font-size:6.4px!important;
+}
+
+/* Remove decorative V watermark from employee profile card. */
+html body .app .profile-card:not(.tutup-ops-banner)::before{
+  content:none!important;
+  display:none!important;
+}
+
+/* === Final compact single-row headbar — UI only === */
+html body .app .topbar{
+  display:grid!important;
+  grid-template-columns:minmax(132px,1fr) minmax(155px,1.25fr) auto auto!important;
+  grid-template-areas:"brand sync bell inbox"!important;
+  align-items:center!important;
+  column-gap:7px!important;
+  row-gap:0!important;
+  flex-wrap:nowrap!important;
+  padding:6px 9px!important;
+  min-height:54px!important;
+}
+html body .app .topbar-brand{
+  grid-area:brand!important;
+  min-width:0!important;
+}
+html body .app .topbar .vax-employee-notif{
+  grid-area:bell!important;
+  margin:0!important;
+}
+html body .app .topbar .vax-inbox-shortcut{
+  grid-area:inbox!important;
+  margin:0!important;
+}
+
+html body .app .employee-sync-indicators.is-headbar-sync{
+  grid-area:sync!important;
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)!important;
+  gap:5px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-indicator{
+  padding:0!important;
+  gap:4px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-last{
+  justify-self:end!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-copy small{
+  font-size:5px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-copy strong{
+  font-size:5.8px!important;
+  line-height:1.05!important;
+}
+
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-indicator>i{
+  width:17px!important;
+  height:17px!important;
+  flex:0 0 17px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-provider>i::before{
+  font-size:15px!important;
+}
+html body .app .employee-sync-indicators.is-headbar-sync .employee-sync-last>i::before{
+  content:"↻"!important;
+  font-family:Arial,sans-serif!important;
+  font-size:16px!important;
+  font-weight:800!important;
+  color:#8ebcff!important;
+  text-shadow:0 0 5px rgba(110,168,255,.75),0 0 9px rgba(110,168,255,.30)!important;
+  animation:employeeHeadSyncSpin 1.15s linear infinite!important;
+}
+html body .app .topbar .vax-employee-notif-toggle,
+html body .app .topbar .vax-inbox-shortcut{
+  width:30px!important;
+  height:30px!important;
+  flex:0 0 30px!important;
+}
+html body .app .topbar .vax-employee-notif-toggle i,
+html body .app .topbar .vax-inbox-shortcut i{
+  font-size:18px!important;
+}

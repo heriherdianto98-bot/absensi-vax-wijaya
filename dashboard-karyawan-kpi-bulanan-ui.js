@@ -39,7 +39,7 @@
     #kpiCapster .kpi-fine{background:#222422!important;border-color:#3b403a!important}
     .employee-performance-date{font-size:11px;color:#bcb6a9;font-weight:500;white-space:nowrap;margin-left:auto}
     .today-section .today-title{display:flex;align-items:center;gap:8px}
-    .dash-body{padding-bottom:max(110px,calc(88px + env(safe-area-inset-bottom,0px)))!important}
+    .dash-body{padding-bottom:calc(58px + env(safe-area-inset-bottom,0px))!important}
     .employee-monthly-kpi{margin:8px 0 10px;min-width:0;color:#f2ede3}
     .employee-monthly-kpi[hidden]{display:none!important}
     .employee-monthly-kpi-card{padding:10px 12px 11px;border:1px solid #80673f;border-radius:12px;background:#282720;box-shadow:inset 0 1px 0 #ffffff10}

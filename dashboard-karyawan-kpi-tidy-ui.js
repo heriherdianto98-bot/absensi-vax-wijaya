@@ -74,7 +74,7 @@
   'use strict';
   if (document.querySelector('script[data-vax-employee-monthly-kpi]')) return;
   const script = document.createElement('script');
-  script.src = 'dashboard-karyawan-kpi-bulanan-ui.js?v=20260922-1';
+  script.src = 'dashboard-karyawan-kpi-bulanan-ui.js?v=20260924-2';
   script.dataset.vaxEmployeeMonthlyKpi = '1';
   document.head.appendChild(script);
 })();

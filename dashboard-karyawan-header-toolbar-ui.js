@@ -79,7 +79,17 @@
   input.max = initialDate;
   input.value = initialDate;
   pickerWrap.append(button, input);
+
+  // UI-only: pindahkan status Provider / Last Sync ke headbar.
+  // Node asli dipindahkan sehingga ID/status live dan engine sync tetap sama.
+  const syncIndicators = app.querySelector('.employee-sync-indicators');
+  if (syncIndicators) {
+    syncIndicators.classList.remove('is-period-toolbar-sync');
+    syncIndicators.classList.add('is-headbar-sync');
+    topbar.appendChild(syncIndicators);
+  }
   toolbar.append(caption, pickerWrap);
+
   profile.insertAdjacentElement('afterend', toolbar);
   const status = document.createElement('span');
   status.className = 'date-toolbar-status';

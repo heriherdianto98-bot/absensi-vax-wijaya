@@ -1,0 +1,179 @@
+/* STEP 1–2 — Employee Dashboard clean white UI
+   Scope: headbar + provider/last sync + profile + period only.
+   UI-only. No data, event, RPC, auth, or engine changes. */
+
+/* 1) Frozen headbar: navy, no gold-on-white treatment. */
+.app .topbar{
+  background:linear-gradient(145deg,#17385f 0%,#102b4d 58%,#0d2542 100%)!important;
+  border-bottom:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 8px 18px rgba(16,43,77,.20)!important;
+  backdrop-filter:blur(14px)!important;
+}
+.app .topbar-brand strong{
+  color:#ffffff!important;
+  text-shadow:none!important;
+}
+.app .topbar-brand .brand-subtitle{
+  color:#d8e4ef!important;
+}
+.app .topbar-meta,
+.app .topbar-meta small,
+.app .topbar-meta b,
+.app .topbar-meta i,
+.app .topbar-meta svg{
+  color:#ffffff!important;
+  fill:currentColor!important;
+}
+.app .topbar-meta button,
+.app .topbar-meta a{
+  color:#ffffff!important;
+  background:rgba(255,255,255,.07)!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:12px!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.11),
+    0 5px 12px rgba(0,0,0,.12)!important;
+}
+
+/* Provider / Last Sync: same white 3D card, color only on icon. */
+.employee-sync-indicator,
+.employee-sync-indicator:first-child,
+.employee-sync-indicator:last-child{
+  background:#ffffff!important;
+  border:1px solid #dce5ee!important;
+  border-radius:14px!important;
+  color:#17324f!important;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -1px 0 rgba(185,201,216,.20),
+    0 9px 18px rgba(34,65,96,.10),
+    0 2px 4px rgba(34,65,96,.06)!important;
+}
+.employee-sync-indicator>i{
+  width:34px!important;
+  height:34px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  border-radius:11px!important;
+  color:#ffffff!important;
+  box-shadow:
+    inset 0 2px 2px rgba(255,255,255,.55),
+    inset 0 -3px 5px rgba(0,0,0,.13),
+    0 6px 12px rgba(35,75,111,.16)!important;
+}
+.employee-sync-indicator:first-child>i{
+  background:linear-gradient(145deg,#56d7e3 0%,#19adc0 72%,#128a9d 100%)!important;
+  filter:none!important;
+}
+.employee-sync-indicator:last-child>i{
+  background:linear-gradient(145deg,#72acff 0%,#3d81ed 70%,#2768cf 100%)!important;
+  filter:none!important;
+}
+.employee-sync-copy small{
+  color:#52769d!important;
+}
+.employee-sync-copy strong{
+  color:#18314f!important;
+}
+
+/* 2) Profile: white 3D, navy/neutral only. */
+.app .profile-card:not(.tutup-ops-banner){
+  background:#ffffff!important;
+  border:1px solid #dce5ee!important;
+  border-radius:16px!important;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -1px 0 rgba(185,201,216,.18),
+    0 11px 22px rgba(34,65,96,.11),
+    0 2px 5px rgba(34,65,96,.06)!important;
+}
+.app .profile-card:not(.tutup-ops-banner)::before{
+  color:rgba(20,64,104,.035)!important;
+}
+.app .profile-card:not(.tutup-ops-banner)::after{
+  display:none!important;
+}
+.app .profile-card img{
+  border:3px solid #ffffff!important;
+  box-shadow:
+    0 0 0 1px #d3dee9,
+    0 7px 14px rgba(34,65,96,.15)!important;
+}
+.app .home-greet{
+  color:#4d739b!important;
+  text-shadow:none!important;
+}
+.app .profile-copy h1{
+  color:#112c4b!important;
+}
+.app .profile-line{
+  color:#536b83!important;
+}
+.app .profile-line i,
+.app .profile-branch>i{
+  color:#335c85!important;
+  filter:none!important;
+}
+.app .profile-meta-date{
+  border-left-color:#dbe4ed!important;
+}
+.app .profile-meta-date small,
+.app .profile-meta-date span{
+  color:#718399!important;
+}
+.app .profile-meta-date strong{
+  color:#17385f!important;
+}
+.app .profile-branch{
+  border-top-color:#e2e9f0!important;
+}
+.app .profile-branch-name{
+  color:#183550!important;
+}
+.app .profile-branch-address{
+  color:#728297!important;
+}
+
+/* Periode Dashboard: same white 3D surface, no gold. */
+.app .employee-date-toolbar{
+  background:#ffffff!important;
+  border:1px solid #dce5ee!important;
+  border-radius:15px!important;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -1px 0 rgba(185,201,216,.18),
+    0 10px 20px rgba(34,65,96,.10),
+    0 2px 4px rgba(34,65,96,.06)!important;
+}
+.app .date-toolbar-caption{
+  color:#6b8097!important;
+}
+.app .date-toolbar-current{
+  color:#17314e!important;
+}
+.app .date-toolbar-button{
+  color:#17385f!important;
+  background:#ffffff!important;
+  border:1px solid #b9c8d8!important;
+  border-radius:11px!important;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 5px 11px rgba(34,65,96,.09)!important;
+}
+.app .date-toolbar-button i{
+  color:#335c85!important;
+}
+.app .date-toolbar-button:focus-visible{
+  outline:2px solid #6f91b4!important;
+  outline-offset:2px!important;
+}
+.app .date-toolbar-status{
+  color:#728297!important;
+}
+.app .employee-date-toolbar.is-custom-date{
+  border-color:#b9c8d8!important;
+}
