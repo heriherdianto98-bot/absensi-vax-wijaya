@@ -1,0 +1,48 @@
+.target-capster-owner-page .erp-content{padding:0!important;max-width:none!important}
+.tco-shell{width:100%;padding:6px 8px 18px;box-sizing:border-box;color:#f2f4f6}
+.tco-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border:1px solid #4b3c15;border-left:4px solid #d3aa35;border-radius:15px;background:linear-gradient(180deg,#151b22,#0e1318);box-shadow:0 10px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.04)}
+.tco-head small{color:#d9b84a;font-weight:900;letter-spacing:1.4px}
+.tco-head h2{margin:4px 0 5px;font-size:28px}
+.tco-head p{margin:0;color:#aeb8c3;font-weight:600}
+.tco-head-badge{padding:8px 10px;border:1px solid #80651f;border-radius:999px;background:#211c12;color:#efd376;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 0 18px rgba(212,170,53,.12)}
+.tco-toolbar{position:relative;display:grid;grid-template-columns:190px minmax(220px,340px) auto 1fr;gap:10px;align-items:end;margin-top:12px;padding:12px;border:1px solid #34404c;border-radius:13px;background:#11171d;box-shadow:0 8px 18px rgba(0,0,0,.2)}
+.tco-toolbar label{position:relative;display:grid;gap:5px;color:#aeb8c3;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.tco-toolbar select,.tco-month-trigger{height:40px;border:1px solid #4a5661;border-radius:10px;background:linear-gradient(180deg,#1a2330,#151d28);color:#f2f4f6;padding:0 12px;font-size:13px;font-weight:800;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 4px 10px rgba(0,0,0,.18)}
+.tco-month-trigger{display:flex;align-items:center;justify-content:space-between;cursor:pointer;width:100%;text-transform:none}
+.tco-month-trigger:hover,.tco-toolbar select:hover{border-color:#9b7a26;box-shadow:0 0 0 1px rgba(211,170,53,.1),0 0 16px rgba(211,170,53,.08)}
+.tco-month-icon{color:#d9b84a;font-size:14px}
+.tco-month-popover{position:absolute;left:0;top:62px;z-index:20;width:290px;padding:12px;border:1px solid #705a20;border-radius:14px;background:linear-gradient(180deg,#151b22,#0d1218);box-shadow:0 18px 36px rgba(0,0,0,.48),0 0 24px rgba(211,170,53,.08)}
+.tco-month-popover[hidden]{display:none!important}
+.tco-month-head{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;gap:8px;margin-bottom:10px}
+.tco-month-head strong{text-align:center;color:#f2d477;font-size:15px}
+.tco-month-head button{height:34px;border:1px solid #4e421f;border-radius:9px;background:#171d22;color:#f3d779;font-size:20px;font-weight:900;cursor:pointer}
+.tco-month-head button:hover{background:#2a2415;box-shadow:0 0 14px rgba(211,170,53,.16)}
+.tco-month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tco-month-option{height:38px;border:1px solid #323c45;border-radius:9px;background:#10161c;color:#d7dde3;font-size:12px;font-weight:800;cursor:pointer}
+.tco-month-option:hover{border-color:#8e7123;color:#f1d57a;background:#19170f;box-shadow:0 0 12px rgba(211,170,53,.12)}
+.tco-month-option.is-active{border-color:#c59d31;background:linear-gradient(180deg,#5a481c,#30260f);color:#fff2b8;box-shadow:0 0 16px rgba(211,170,53,.18)}
+#tcoRefresh{height:40px;padding:0 15px;border:1px solid #80651f;border-radius:10px;background:linear-gradient(180deg,#dab544,#a77d1e);color:#17130a;font-weight:900;cursor:pointer;box-shadow:0 7px 14px rgba(176,129,20,.18),inset 0 1px 0 rgba(255,255,255,.24);transition:.18s}
+#tcoRefresh:hover{transform:translateY(-2px);box-shadow:0 12px 20px rgba(176,129,20,.25),0 0 18px rgba(211,170,53,.2)}
+.tco-asof{text-align:right;color:#8f9aa5;font-size:11px;padding-bottom:10px}
+.tco-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+.tco-summary article{position:relative;overflow:hidden;padding:13px 14px;border-radius:14px;border:1px solid #34404c;background:#11171d;box-shadow:0 9px 20px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.04);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.tco-summary article::after{content:"";position:absolute;inset:-35% -10% auto auto;width:110px;height:110px;border-radius:50%;filter:blur(2px);opacity:.14;pointer-events:none}
+.tco-summary article:hover{transform:translateY(-3px) perspective(800px) rotateX(1.2deg);z-index:2}
+.tco-summary article:nth-child(1){border-color:rgba(77,156,255,.28);background:linear-gradient(145deg,#121c29,#0e141b)}.tco-summary article:nth-child(1)::after{background:#4d9cff}.tco-summary article:nth-child(1):hover{box-shadow:0 15px 30px rgba(35,87,160,.28),0 0 20px rgba(77,156,255,.16)}
+.tco-summary article:nth-child(2){border-color:rgba(52,210,176,.26);background:linear-gradient(145deg,#11231f,#0e1517)}.tco-summary article:nth-child(2)::after{background:#34d2b0}.tco-summary article:nth-child(2):hover{box-shadow:0 15px 30px rgba(38,121,103,.28),0 0 20px rgba(52,210,176,.15)}
+.tco-summary article:nth-child(3){border-color:rgba(216,178,70,.28);background:linear-gradient(145deg,#211b10,#12140f)}.tco-summary article:nth-child(3)::after{background:#d8b246}.tco-summary article:nth-child(3):hover{box-shadow:0 15px 30px rgba(126,92,17,.28),0 0 20px rgba(216,178,70,.16)}
+.tco-summary article:nth-child(4){border-color:rgba(235,94,94,.28);background:linear-gradient(145deg,#241416,#151114)}.tco-summary article:nth-child(4)::after{background:#eb5e5e}.tco-summary article:nth-child(4):hover{box-shadow:0 15px 30px rgba(143,49,49,.28),0 0 20px rgba(235,94,94,.16)}
+.tco-summary article:nth-child(5){border-color:rgba(151,113,242,.28);background:linear-gradient(145deg,#1e1729,#121118)}.tco-summary article:nth-child(5)::after{background:#9771f2}.tco-summary article:nth-child(5):hover{box-shadow:0 15px 30px rgba(89,59,157,.28),0 0 20px rgba(151,113,242,.16)}
+.tco-summary span{display:block;color:#9ba6b1;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.tco-summary strong{display:block;margin-top:5px;font-size:25px;color:#f2d477;line-height:1;font-weight:900}
+.tco-table-card{margin-top:10px;border:1px solid #34404c;border-radius:13px;background:#0f151a;overflow:hidden;box-shadow:0 11px 24px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.03)}
+.tco-table-wrap{overflow:auto;max-height:calc(100vh - 360px);scrollbar-width:thin;scrollbar-color:#8a713a #11161b}
+.tco-table-card table{width:100%;border-collapse:collapse;min-width:1080px}
+.tco-table-card thead th{position:sticky;top:0;z-index:2;padding:13px 11px;background:linear-gradient(180deg,#1b242c,#151c23);color:#f0c94e;border-bottom:1px solid #5e4b18;text-align:left;font-size:13px;font-weight:950;letter-spacing:.055em;text-transform:uppercase;text-shadow:0 1px 0 #000}
+.tco-table-card tbody td{padding:12px 11px;border-bottom:1px solid #26313a;color:#e8edf2;font-size:14px;font-weight:700;vertical-align:middle}
+.tco-table-card tbody tr{transition:background .16s ease,transform .16s ease}
+.tco-table-card tbody tr:hover{background:rgba(255,255,255,.028)}
+.tco-name{font-size:15px;font-weight:900;color:#fff}.tco-branch{font-size:13px;color:#b9c3cc;font-weight:700}.tco-money{font-variant-numeric:tabular-nums;font-weight:900}
+.tco-progress{min-width:165px}.tco-progress-top{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}.tco-progress-top strong{font-size:14px;font-weight:900}.tco-progress-bar{height:7px;border-radius:99px;background:#353b3f;overflow:hidden}.tco-progress-fill{display:block;height:100%;border-radius:99px;background:#31c7c2;box-shadow:0 0 10px rgba(49,199,194,.22)}.tco-progress.is-low .tco-progress-fill{background:#e05252;box-shadow:0 0 10px rgba(224,82,82,.22)}.tco-progress.is-near .tco-progress-fill{background:#55aef5;box-shadow:0 0 10px rgba(85,174,245,.22)}.tco-progress.is-finish .tco-progress-fill{background:#5fd68a;box-shadow:0 0 12px rgba(95,214,138,.26)}
+.tco-status{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;border:1px solid #49545d;background:#171d22;font-size:10px;font-weight:900}.tco-status.finish{border-color:#3b8c5a;color:#70dda0}.tco-status.eval{border-color:#8b5c2b;color:#f3bd70}.tco-status.wait{border-color:#675892;color:#c3adff}.tco-status.review{border-color:#875252;color:#ef9292}.tco-seasonal{display:block;margin-top:4px;font-size:9px;color:#78c7ff}.tco-empty{text-align:center!important;padding:32px!important;color:#8f9aa5!important;font-size:14px!important;font-weight:800!important}
+@media(max-width:900px){.tco-toolbar{grid-template-columns:1fr 1fr}.tco-summary{grid-template-columns:repeat(2,1fr)}.tco-head{align-items:flex-start;flex-direction:column}.tco-month-popover{width:270px}}

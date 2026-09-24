@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Target Capster | VAX ERP</title>
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/setoran-dark-premium.css">
+<link rel="stylesheet" href="../styles/target-capster-owner.css?v=20260924-2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="setoran-dark payroll-aruskas-theme target-capster-owner-page">
+<div id="sidebar"></div>
+<div class="erp-wrapper"><div id="header"></div>
+<main class="erp-content">
+<section class="tco-shell">
+<header class="tco-head">
+  <div><small>OWNER · READ ONLY</small><h2>Target Capster</h2><p>Pantau target pendapatan, Hak Dibayar, progres, seasonal guard, dan status evaluasi seluruh Capster.</p></div>
+  <div class="tco-head-badge">AUTO TARGET ENGINE</div>
+</header>
+
+<section class="tco-toolbar">
+  <label>Bulan
+    <input id="tcoMonth" type="hidden">
+    <button type="button" class="tco-month-trigger" id="tcoMonthTrigger" aria-haspopup="dialog" aria-expanded="false">
+      <span id="tcoMonthLabel">September 2026</span>
+      <span class="tco-month-icon">▣</span>
+    </button>
+    <div class="tco-month-popover" id="tcoMonthPopover" hidden>
+      <div class="tco-month-head">
+        <button type="button" id="tcoYearPrev" aria-label="Tahun sebelumnya">‹</button>
+        <strong id="tcoYearLabel">2026</strong>
+        <button type="button" id="tcoYearNext" aria-label="Tahun berikutnya">›</button>
+      </div>
+      <div class="tco-month-grid" id="tcoMonthGrid"></div>
+    </div>
+  </label>
+  <label>Cabang<select id="tcoBranch"><option value="">Semua Cabang</option></select></label>
+  <button type="button" id="tcoRefresh">Refresh</button>
+  <div class="tco-asof" id="tcoAsOf">—</div>
+</section>
+
+<section class="tco-summary">
+  <article><span>Total Capster</span><strong id="sumTotal">0</strong></article>
+  <article><span>Target Aktif</span><strong id="sumActive">0</strong></article>
+  <article><span>Finish</span><strong id="sumFinish">0</strong></article>
+  <article><span>Evaluasi</span><strong id="sumEval">0</strong></article>
+  <article><span>Menunggu Baseline</span><strong id="sumWait">0</strong></article>
+</section>
+
+<section class="tco-table-card">
+  <div class="tco-table-wrap">
+    <table>
+      <thead><tr>
+        <th>Capster</th><th>Cabang</th><th>Target</th><th>Hak Dibayar</th><th>Progress</th><th>Sisa</th><th>Streak</th><th>Status</th>
+      </tr></thead>
+      <tbody id="tcoBody"><tr><td colspan="8" class="tco-empty">Memuat data…</td></tr></tbody>
+    </table>
+  </div>
+</section>
+</section>
+</main></div>
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/target-capster-owner.js?v=20260924-2"></script>
+</body></html>
