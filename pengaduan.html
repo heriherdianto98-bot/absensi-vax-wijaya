@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Pengaduan | VAX WIJAYA</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="pengaduan.css?v=20260924-4">
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <a href="dashboard-karyawan.html" class="back-btn" aria-label="Kembali"><i class="fa-solid fa-chevron-left"></i></a>
+  <div class="top-title"><strong>PENGADUAN</strong><small>VAX WIJAYA</small></div>
+  <button type="button" id="btnRefresh" class="icon-btn" aria-label="Refresh"><i class="fa-solid fa-rotate"></i></button>
+</header>
+
+<main>
+<section id="homeView">
+  <div class="hero">
+    <div><small>LAYANAN KARYAWAN</small><h1>Pengaduan & Penanganan</h1><p>Laporkan masalah kerja dan pantau penanganannya sampai selesai.</p></div>
+    <button type="button" id="btnNew"><i class="fa-solid fa-plus"></i> Buat Pengaduan</button>
+  </div>
+  <div class="summary">
+    <article><span>Aktif</span><strong id="sumAktif">0</strong></article>
+    <article><span>Menunggu SVP</span><strong id="sumSvp">0</strong></article>
+    <article><span>Eskalasi Owner</span><strong id="sumOwner">0</strong></article>
+    <article><span>Selesai</span><strong id="sumDone">0</strong></article>
+  </div>
+  <div id="ticketList" class="ticket-list"></div>
+  <div id="emptyState" class="empty" hidden><i class="fa-solid fa-inbox"></i><p>Belum ada pengaduan.</p></div>
+</section>
+
+<section id="formView" hidden>
+  <div class="section-head"><button type="button" id="btnCancel" class="ghost"><i class="fa-solid fa-chevron-left"></i></button><div><small>INTAKE ERP</small><h2>Buat Pengaduan</h2></div></div>
+  <form id="complaintForm">
+    <label>Kategori
+      <select id="kategori" required>
+        <option value="">Pilih kategori</option>
+        <option value="ALAT_KERJA">Alat Kerja</option>
+        <option value="FASILITAS_BARBER">Fasilitas Barber</option>
+        <option value="REKAN_KERJA">Rekan Kerja</option>
+        <option value="LAIN_LAIN">Lain-lain</option>
+      </select>
+    </label>
+    <label>Judul singkat<input id="subjek" maxlength="120" required placeholder="Contoh: Mesin clipper tidak menyala"></label>
+    <label>Penjelasan awal<textarea id="deskripsi" rows="3" maxlength="1000" placeholder="Jelaskan singkat masalahnya"></textarea></label>
+    <div id="intakeBox" class="intake-box" hidden>
+      <div class="intake-title"><i class="fa-solid fa-wand-magic-sparkles"></i><div><strong>ERP perlu beberapa informasi</strong><small>Jawaban ini akan dirangkum untuk SVP.</small></div></div>
+      <div id="intakeQuestions"></div>
+    </div>
+    <label>Prioritas
+      <select id="prioritas">
+        <option value="NORMAL">Normal</option>
+        <option value="TINGGI">Tinggi</option>
+        <option value="KRITIS">Kritis</option>
+        <option value="RENDAH">Rendah</option>
+      </select>
+    </label>
+    <button type="submit" id="btnSubmit" class="primary">Kirim Pengaduan</button>
+    <p id="formMessage" class="message"></p>
+  </form>
+</section>
+
+<section id="detailView" hidden>
+  <div class="section-head"><button type="button" id="btnDetailBack" class="ghost"><i class="fa-solid fa-chevron-left"></i></button><div><small id="detailTicket">—</small><h2 id="detailSubject">—</h2></div></div>
+  <div class="detail-card">
+    <div class="detail-grid">
+      <div><span>Status</span><strong id="detailStatus">—</strong></div>
+      <div><span>Umur Pengaduan</span><strong id="detailAge">—</strong></div>
+      <div><span>Estimasi Selesai</span><strong id="detailEstimate">—</strong></div>
+      <div><span>Prioritas</span><strong id="detailPriority">—</strong></div>
+    </div>
+    <p id="detailDescription"></p>
+  </div>
+  <div id="confirmBox" class="confirm-box" hidden>
+    <strong>SVP menyatakan masalah sudah selesai.</strong>
+    <p>Apakah masalah benar-benar sudah selesai?</p>
+    <div><button type="button" id="btnResolvedYes" class="success">Ya, selesai</button><button type="button" id="btnResolvedNo" class="danger">Belum selesai</button></div>
+  </div>
+  <div id="replyBox" class="reply-box">
+    <strong id="replyTitle">Tambahkan informasi</strong>
+    <p id="replyHint">Gunakan ini bila ada informasi tambahan untuk SVP.</p>
+    <textarea id="replyText" rows="3" maxlength="800" placeholder="Tulis informasi tambahan..."></textarea>
+    <div class="reply-photo-tools">
+      <input type="file" id="replyPhotos" accept="image/jpeg,image/png,image/webp" multiple hidden>
+      <button type="button" id="btnPickPhotos" class="photo-pick"><i class="fa-solid fa-camera"></i> Tambah Foto</button>
+      <span id="replyPhotoCount">Maks. 5 foto · JPG/PNG/WebP · 5 MB/foto</span>
+    </div>
+    <div id="replyPhotoPreview" class="reply-photo-preview" hidden></div>
+    <button type="button" id="btnReply" class="primary">Kirim ke SVP</button>
+    <span id="replyMessage" class="message"></span>
+  </div>
+  <div id="photoHistoryWrap" class="photo-history-wrap" hidden>
+    <div class="photo-history-head"><h3>Lampiran Foto</h3><span>Riwayat foto pengaduan</span></div>
+    <div id="photoHistory" class="photo-history"></div>
+  </div>
+  <div class="timeline-wrap"><h3>Perjalanan Pengaduan</h3><div id="timeline" class="timeline"></div></div>
+  <div id="photoViewer" class="photo-viewer" hidden>
+    <button type="button" id="photoViewerClose" aria-label="Tutup">×</button>
+    <img id="photoViewerImage" alt="Foto pengaduan">
+  </div>
+</section>
+</main>
+</div>
+
+<nav id="bottomNav">
+<a href="dashboard-karyawan.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+<a href="absensi.html"><i class="fa-solid fa-fingerprint"></i><span>Absensi</span></a>
+<a href="gaji-saya.html"><i class="fa-solid fa-file-invoice"></i><span>Gaji Saya</span></a>
+<a href="profil.html"><i class="fa-solid fa-user"></i><span>Profil</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="karyawan-session.js"></script>
+<script src="pengaduan.js?v=20260924-3"></script>
+</body>
+</html>

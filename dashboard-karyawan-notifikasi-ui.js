@@ -1,5 +1,5 @@
-/* Capster dashboard notification UI. Data and read receipts come exclusively from
-   employee-scoped RPCs; no owner data or payroll engine is modified here. */
+/* Employee dashboard notification UI. Merges legacy employee notifications with
+   employee-scoped Pengaduan notifications; no owner, attendance or payroll engine is modified here. */
 (() => {
   'use strict';
   if (window.__vaxEmployeeNotifBellV1) return;
@@ -20,6 +20,8 @@
     .vax-employee-notif-refresh{border:1px solid #57472f;border-radius:7px;background:#28261f;color:#f2d590;padding:5px 8px;cursor:pointer;font-size:11px}
     .vax-employee-notif-item{display:flex;flex-direction:column;gap:4px;width:100%;padding:10px 8px;margin:0 0 6px;border-radius:9px;border:1px solid #38352c;background:#232421;color:#f2efe7;text-align:left;cursor:pointer}
     .vax-employee-notif-item strong{font-size:12px;line-height:1.3}.vax-employee-notif-item small{font-size:10px;color:#c7bb9f;line-height:1.4}
+    .vax-employee-notif-item.is-pengaduan{border-color:#2e7280;background:linear-gradient(145deg,#16262a,#202421)}
+    .vax-employee-notif-item.is-pengaduan strong{color:#8fdee6}
     .vax-employee-notif-empty{font-size:11px;color:#beb8a9;line-height:1.5;margin:7px 2px}
     .vax-employee-notif-item:focus-visible,.vax-employee-notif-toggle:focus-visible{outline:2px solid #e9c776;outline-offset:2px}
     @media(max-width:350px){.vax-employee-notif-panel{width:calc(100vw - 26px)}}
@@ -43,7 +45,7 @@
     if(!items.length){showMessage('Belum ada pemberitahuan baru.');return;}
     list.replaceChildren();
     for(const row of items){
-      const button=document.createElement('button');button.type='button';button.className='vax-employee-notif-item';
+      const button=document.createElement('button');button.type='button';button.className='vax-employee-notif-item'+(row.jenis==='PENGADUAN'?' is-pengaduan':'');
       const heading=document.createElement('strong');heading.textContent=String(row.judul||'Pemberitahuan');
       const description=document.createElement('small');description.textContent=String(row.ringkasan||'');
       button.append(heading,description);button.addEventListener('click',()=>openItem(row,button));list.appendChild(button);
@@ -58,17 +60,34 @@
     return payload;
   }
   async function refresh(){
-    if(loading||document.hidden||document.documentElement.dataset.homeKpi!=='capster')return;
+    if(loading||document.hidden)return;
     loading=true;
+    let merged=[],loaded=false;
     try{
       const data=await rpc('karyawan_dashboard_notifikasi_self_v1',{});
-      items=Array.isArray(data.items)?data.items.filter(x=>x&&['PENGUMUMAN','IZIN','DENDA'].includes(x.jenis)&&Number.isSafeInteger(Number(x.id))):[];
-      render();
-    }catch(error){console.warn('Notifikasi Capster:',error);if(!items.length)showMessage('Pemberitahuan belum bisa dimuat. Coba refresh.');}
-    finally{loading=false;}
+      const legacy=Array.isArray(data.items)?data.items.filter(x=>x&&['PENGUMUMAN','IZIN','DENDA'].includes(x.jenis)&&Number.isSafeInteger(Number(x.id))):[];
+      merged.push(...legacy);loaded=true;
+    }catch(error){console.warn('Notifikasi Karyawan:',error);}
+    try{
+      const data=await rpc('karyawan_pengaduan_notifications_self',{});
+      const complaints=Array.isArray(data.items)?data.items.filter(x=>x&&!x.read_at&&Number.isSafeInteger(Number(x.id))&&Number.isSafeInteger(Number(x.ticket_id))).map(x=>({
+        jenis:'PENGADUAN',
+        id:Number(x.id),
+        ticket_id:Number(x.ticket_id),
+        judul:String(x.title||'Update pengaduan'),
+        ringkasan:String(x.body||''),
+        created_at:x.created_at||null,
+        level:x.level||'INFO'
+      })):[];
+      merged.push(...complaints);loaded=true;
+    }catch(error){console.warn('Notifikasi Pengaduan Karyawan:',error);}
+    items=merged.sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+    if(loaded)render();else if(!items.length)showMessage('Pemberitahuan belum bisa dimuat. Coba refresh.');
+    loading=false;
   }
   function destination(row){
     const id=Number(row.id);
+    if(row.jenis==='PENGADUAN')return 'pengaduan.html?ticket='+encodeURIComponent(Number(row.ticket_id));
     if(row.jenis==='PENGUMUMAN')return 'pengumuman.html#'+id;
     if(row.jenis==='IZIN')return 'riwayat.html';
     return 'absensi.html';
@@ -77,20 +96,22 @@
     if(button.disabled)return;
     button.disabled=true;
     try{
-      await rpc('karyawan_dashboard_notifikasi_baca_self_v1',{p_jenis:row.jenis,p_id:Number(row.id)});
+      if(row.jenis==='PENGADUAN'){
+        await rpc('karyawan_pengaduan_notification_read',{p_notification_id:Number(row.id)});
+      }else{
+        await rpc('karyawan_dashboard_notifikasi_baca_self_v1',{p_jenis:row.jenis,p_id:Number(row.id)});
+      }
       items=items.filter(x=>!(x.jenis===row.jenis&&Number(x.id)===Number(row.id)));
       render();
       window.location.assign(destination(row));
-    }catch(error){button.disabled=false;console.warn('Mark read Capster:',error);showMessage('Gagal menandai dibaca. Coba lagi melalui Refresh.');}
+    }catch(error){button.disabled=false;console.warn('Mark read Karyawan:',error);showMessage('Gagal menandai dibaca. Coba lagi melalui Refresh.');}
   }
   toggle.addEventListener('click',()=>{const open=panel.hidden;panel.hidden=!open;toggle.setAttribute('aria-expanded',String(open));if(open)void refresh();});
   wrap.querySelector('.vax-employee-notif-refresh').addEventListener('click',()=>void refresh());
   document.addEventListener('click',event=>{if(!wrap.contains(event.target)){panel.hidden=true;toggle.setAttribute('aria-expanded','false');}});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'){panel.hidden=true;toggle.setAttribute('aria-expanded','false');}});
-  const roleObserver=new MutationObserver(()=>{wrap.hidden=document.documentElement.dataset.homeKpi!=='capster';if(!wrap.hidden)void refresh();});
-  roleObserver.observe(document.documentElement,{attributes:true,attributeFilter:['data-home-kpi']});
-  wrap.hidden=document.documentElement.dataset.homeKpi!=='capster';
-  if(!wrap.hidden)void refresh();
+  wrap.hidden=false;
+  void refresh();
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh();});
   setInterval(()=>{if(!document.hidden)void refresh();},60000);
 })();

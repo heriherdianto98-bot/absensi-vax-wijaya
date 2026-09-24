@@ -37,7 +37,7 @@
     }
     if(document.querySelector('script[data-vax-employee-notif]')){loadInbox();return;}
     const script=document.createElement('script');
-    script.src='dashboard-karyawan-notifikasi-ui.js?v=20260923-1';
+    script.src='dashboard-karyawan-notifikasi-ui.js?v=20260924-2';
     script.dataset.vaxEmployeeNotif='1';
     script.onload=loadInbox;
     script.onerror=loadInbox;

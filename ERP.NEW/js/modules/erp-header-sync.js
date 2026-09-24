@@ -23,6 +23,13 @@
       f.dataset.erpGlobalNotifFinanceJs='1';
       document.head.appendChild(f);
     }
+    if(!document.querySelector('script[data-erp-global-notif-pengaduan-js]')){
+      const p=document.createElement('script');
+      p.src='../js/modules/erp-global-notifications-pengaduan-ui.js?v=20260924-1';
+      p.async=false;
+      p.dataset.erpGlobalNotifPengaduanJs='1';
+      document.head.appendChild(p);
+    }
   };
   const ensureKasbonListReadFix=()=>{
     const path=String(window.location.pathname||'').toLowerCase();

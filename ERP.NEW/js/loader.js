@@ -158,6 +158,7 @@ function markActiveSidebarLink(){
     }
     else if(path.includes("absensi") || path.includes("dashboard_owner") || path.includes("dashboard-owner")) nav = "absensi";
     else if(path.includes("pengumuman")) nav = "pengumuman";
+    else if(path.includes("pengaduan")) nav = "pengaduan";
     else if(path.includes("payroll")) nav = "payroll";
     else if(path.includes("karyawan")) nav = "karyawan";
     else if(path.includes("cabang")) nav = "cabang";

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pengaduan | ERP VAX</title>
+<link rel="stylesheet" href="../styles/theme.css">
+<link rel="stylesheet" href="../styles/sidebar.css">
+<link rel="stylesheet" href="../styles/header.css">
+<link rel="stylesheet" href="../styles/erp.css">
+<link rel="stylesheet" href="../styles/responsive.css">
+<link rel="stylesheet" href="../styles/owner-auth.css">
+<link rel="stylesheet" href="../styles/pengaduan-staff.css?v=20260924-12">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="pengaduan-staff-page">
+<div id="sidebar"></div>
+<div class="erp-wrapper">
+  <div id="header"></div>
+  <main class="erp-content">
+    <section class="pgs-shell">
+      <header class="pgs-hero">
+        <div>
+          <small id="pgsRoleLabel">SVP / OWNER</small>
+          <h1>Pengaduan Karyawan</h1>
+          <p>Kelola tiket pengaduan, SLA, estimasi penyelesaian, eskalasi, dan riwayat penanganan.</p>
+        </div>
+        <div class="pgs-hero-stats">
+          <span><b id="heroOpen">0</b> Aktif</span>
+          <span><b id="heroEscalated">0</b> Eskalasi</span>
+        </div>
+      </header>
+
+      <section class="pgs-toolbar">
+        <label>Status
+          <select id="filterStatus">
+            <option value="">Semua Status</option>
+            <option value="MENUNGGU_SVP">Menunggu SVP</option>
+            <option value="DITERIMA_SVP">Diterima SVP</option>
+            <option value="DALAM_PENANGANAN">Dalam Penanganan</option>
+            <option value="MENUNGGU_INFO">Menunggu Info</option>
+            <option value="MENUNGGU_TINDAKAN">Menunggu Tindakan</option>
+            <option value="SELESAI_MENUNGGU_KONFIRMASI">Menunggu Konfirmasi Pelapor</option>
+            <option value="DIBUKA_KEMBALI">Dibuka Kembali</option>
+            <option value="ESKALASI_OWNER">Eskalasi Owner</option>
+            <option value="SELESAI">Selesai</option>
+            <option value="DITUTUP_OTOMATIS">Ditutup Otomatis</option>
+          </select>
+        </label>
+        <label>Prioritas
+          <select id="filterPriority">
+            <option value="">Semua Prioritas</option>
+            <option value="KRITIS">Kritis</option>
+            <option value="TINGGI">Tinggi</option>
+            <option value="NORMAL">Normal</option>
+            <option value="RENDAH">Rendah</option>
+          </select>
+        </label>
+        <label>Cabang
+          <select id="filterBranch"><option value="">Semua Cabang</option></select>
+        </label>
+        <label>Pencarian
+          <input id="filterSearch" type="search" placeholder="Nomor tiket / nama / subjek">
+        </label>
+        <button type="button" id="btnReload">Refresh</button>
+      </section>
+
+      <section class="pgs-summary">
+        <article><span>Menunggu SVP</span><strong id="sumWaiting">0</strong></article>
+        <article><span>Dalam Penanganan</span><strong id="sumHandling">0</strong></article>
+        <article><span>Melewati SLA</span><strong id="sumSla">0</strong></article>
+        <article><span>Eskalasi Owner</span><strong id="sumEscalated">0</strong></article>
+        <article><span>Selesai</span><strong id="sumDone">0</strong></article>
+      </section>
+
+      <section class="pgs-workspace">
+        <aside class="pgs-list-panel">
+          <div class="pgs-list-head"><strong>Daftar Pengaduan</strong><span id="listCount">0 tiket</span></div>
+          <div id="ticketList" class="pgs-ticket-list"></div>
+          <div id="emptyTickets" class="pgs-empty" hidden>Tidak ada pengaduan sesuai filter.</div>
+        </aside>
+
+        <article class="pgs-detail-panel" id="detailPanel">
+          <div class="pgs-empty-detail" id="detailEmpty">
+            <div class="pgs-empty-icon">⚑</div>
+            <strong>Pilih tiket pengaduan</strong>
+            <p>Detail, rangkuman ERP, tindakan, SLA, dan timeline akan tampil di sini.</p>
+          </div>
+
+          <div id="detailContent" hidden>
+            <button type="button" id="btnBackToList" class="pgs-back-list" aria-label="Kembali ke daftar pengaduan">← Kembali ke Daftar Pengaduan</button>
+            <div class="pgs-detail-top">
+              <div>
+                <small id="detailTicketNo">—</small>
+                <h2 id="detailSubject">—</h2>
+                <p id="detailPerson">—</p>
+              </div>
+              <div class="pgs-badges">
+                <span id="detailPriority" class="pgs-pill">—</span>
+                <span id="detailStatus" class="pgs-pill">—</span>
+              </div>
+            </div>
+
+            <div class="pgs-meta-grid">
+              <div><span>Umur Pengaduan</span><strong id="detailAge">—</strong></div>
+              <div><span>Target SLA SVP</span><strong id="detailSla">—</strong></div>
+              <div><span>Auto Eskalasi Owner</span><strong id="detailEscalateAt">—</strong></div>
+              <div><span>Estimasi Selesai</span><strong id="detailEstimate">—</strong></div>
+            </div>
+
+            <section class="pgs-section">
+              <div class="pgs-section-title"><span>Rangkuman ERP</span><em id="detailSensitive" hidden>RAHASIA / SENSITIF</em></div>
+              <pre id="detailSummary" class="pgs-summary-box">—</pre>
+            </section>
+
+            <section class="pgs-section">
+              <div class="pgs-section-title"><span>Jawaban Intake Karyawan</span></div>
+              <div id="answerGrid" class="pgs-answer-grid"></div>
+            </section>
+
+            <section class="pgs-section pgs-photo-section" id="staffPhotoSection" hidden>
+              <div class="pgs-section-title"><span>Lampiran Foto Karyawan</span><em>PRIVATE GALLERY</em></div>
+              <div id="staffPhotoGallery" class="pgs-photo-gallery"></div>
+            </section>
+
+            <section class="pgs-section" id="actionSection">
+              <div class="pgs-section-title"><span>Tindakan Penanganan</span></div>
+              <div class="pgs-action-form">
+                <label>Estimasi selesai <span aria-hidden="true">*</span>
+                  <input type="datetime-local" id="actionEstimate" required aria-required="true">
+                </label>
+                <label>Catatan / alasan
+                  <textarea id="actionNote" rows="3" placeholder="Catatan tindakan, kebutuhan, kendala, atau alasan eskalasi"></textarea>
+                </label>
+              </div>
+              <div class="pgs-actions" id="actionButtons"></div>
+              <p id="actionMessage" class="pgs-action-message"></p>
+            </section>
+
+            <section class="pgs-section">
+              <div class="pgs-section-title"><span>Timeline & Audit Trail</span></div>
+              <div id="timeline" class="pgs-timeline"></div>
+            </section>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+</div>
+<div id="staffPhotoViewer" class="pgs-photo-viewer" hidden>
+  <button type="button" id="staffPhotoViewerClose" aria-label="Tutup">×</button>
+  <img id="staffPhotoViewerImage" alt="Foto pengaduan">
+</div>
+
+<script src="../js/modules/connector.js"></script>
+<script src="../js/modules/owner-auth.js"></script>
+<script src="../js/loader.js"></script>
+<script src="../js/modules/erp-header-sync.js"></script>
+<script src="../js/modules/pengaduan-staff.js?v=20260924-7"></script>
+<script src="../js/modules/pengaduan-estimate-picker-ui.js?v=20260924-1"></script>
+</body>
+</html>

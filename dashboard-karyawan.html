@@ -133,11 +133,12 @@
                 <span class="comm-art"><i class="fa-solid fa-bullhorn"></i></span>
             </article>
 
-            <article class="comm-card comm-ticket" onclick="window.location.href='riwayat.html'">
-                <div class="comm-head"><span class="comm-icon"><i class="fa-solid fa-clock-rotate-left"></i></span><h3>Riwayat</h3></div>
-                <p>Lihat detail kehadiran, izin, libur dan denda.</p>
-                <span class="comm-link">Buka riwayat <i class="fa-solid fa-chevron-right"></i></span>
-                <span class="comm-art"><i class="fa-solid fa-receipt"></i></span>
+            <article class="comm-card comm-ticket" id="cardPengaduan" tabindex="0">
+                <span id="pengaduanBadge" class="comm-new" hidden>0</span>
+                <div class="comm-head"><span class="comm-icon"><i class="fa-solid fa-headset"></i></span><h3>Pengaduan</h3></div>
+                <p id="pengaduanPreview">Laporkan masalah kerja dan pantau penanganannya.</p>
+                <span class="comm-link">Buka pengaduan <i class="fa-solid fa-chevron-right"></i></span>
+                <span class="comm-art"><i class="fa-solid fa-comments"></i></span>
             </article>
         </section>
 
@@ -163,12 +164,13 @@
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan.js"></script>
-<script src="izin-telat-dashboard-entry.js?v=20260921-1"></script>
+<script src="izin-telat-dashboard-entry.js?v=20260924-2"></script>
 <script src="dashboard-karyawan-header-toolbar-ui.js?v=20260922-5"></script>
 <script src="dashboard-karyawan-calendar-theme.js?v=20260922-6"></script>
 <script src="dashboard-karyawan-kpi-tidy-ui.js?v=20260922-7"></script>
 <script src="dashboard-karyawan-performa-ui.js?v=20260922-8"></script>
 <script src="dashboard-karyawan-ranking-barber.js?v=20260923-1"></script>
 <script src="dashboard-karyawan-target-anda.js?v=20260924-1"></script>
+<script src="dashboard-karyawan-pengaduan-ui.js?v=20260924-1"></script>
 </body>
 </html>
