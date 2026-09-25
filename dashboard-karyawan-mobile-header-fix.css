@@ -1,3 +1,6 @@
+/* 🔒 OWNER LOCK — Dashboard Karyawan mobile header brand sizing/spacing | PASS 2026-09-26 */
+/* Do not modify without explicit Owner approval. */
+/* OWNER APPROVED 2026-09-26: brand/logo size only; header geometry remains locked. */
 /* 🔒 OWNER LOCK — DASHBOARD KARYAWAN HEADER MOBILE
    PASS by Owner on 2026-09-26.
    Do not modify header layout, bell/inbox positioning, notification badge, or notification popup UI without explicit Owner approval.
@@ -33,7 +36,7 @@
       "logo title"
       "logo subtitle"
       "logo powered"!important;
-    column-gap:7px!important;
+    column-gap:10px!important;
     row-gap:1px!important;
     align-items:center!important;
     width:100%!important;
@@ -46,8 +49,8 @@
 
   html body .app .topbar-brand .employee-erp-logo{
     grid-area:logo!important;
-    width:36px!important;
-    height:31px!important;
+    width:40px!important;
+    height:34px!important;
     object-fit:contain!important;
     align-self:center!important;
   }
@@ -57,7 +60,7 @@
     min-width:0!important;
     margin:0!important;
     padding:0!important;
-    font-size:12.6px!important;
+    font-size:14.2px!important;
     line-height:1!important;
     letter-spacing:.09em!important;
     white-space:nowrap!important;
@@ -82,7 +85,7 @@
     border-right:1px solid rgba(255,255,255,.88)!important;
     clip-path:inset(0 100% 0 0);
     animation:employeeMobileBrandTypeEnterprise 8s steps(30,end) infinite both!important;
-    font-size:5.15px!important;
+    font-size:5.8px!important;
     line-height:1!important;
     letter-spacing:.03em!important;
     justify-self:start!important;
@@ -103,7 +106,7 @@
     white-space:nowrap!important;
     text-overflow:clip!important;
     color:#ffffff!important;
-    font-size:4.8px!important;
+    font-size:5.4px!important;
     line-height:1!important;
     font-weight:650!important;
     letter-spacing:0!important;
@@ -157,11 +160,11 @@
 
   html body .app .topbar-brand{
     grid-template-columns:32px minmax(0,1fr)!important;
-    column-gap:6px!important;
+    column-gap:8px!important;
   }
 
   html body .app .topbar-brand .employee-erp-logo{
-    width:32px!important;
+    width:35px!important;
     height:28px!important;
   }
 
