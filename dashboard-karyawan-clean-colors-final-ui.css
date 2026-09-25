@@ -1913,3 +1913,9 @@ html body .app .topbar .vax-employee-notif-toggle i,
 html body .app .topbar .vax-inbox-shortcut i{
   font-size:18px!important;
 }
+
+
+/* UI only — profile date vertical alignment */
+html body .app .profile-card:not(.tutup-ops-banner) .profile-meta-date{
+  transform:translateY(4px)!important;
+}
