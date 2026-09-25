@@ -1917,5 +1917,7 @@ html body .app .topbar .vax-inbox-shortcut i{
 
 /* UI only — profile date vertical alignment */
 html body .app .profile-card:not(.tutup-ops-banner) .profile-meta-date{
-  transform:translateY(4px)!important;
+  position:relative!important;
+  top:5px!important;
+  transform:none!important;
 }
