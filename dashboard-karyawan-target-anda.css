@@ -35,3 +35,179 @@
 @keyframes vaxTargetStar{0%,100%{transform:translate(-50%,-50%) scale(.92);opacity:.8}50%{transform:translate(-50%,-50%) scale(1.18);opacity:1}}
 @media(prefers-reduced-motion:reduce){.employee-personal-target-fill,.employee-personal-target-star{transition:none;animation:none}}
 @media(max-width:345px){.employee-personal-target{padding:10px}.employee-personal-target-pct strong{font-size:21px}.employee-personal-target-money strong{font-size:12px}}
+
+
+/* UI ONLY — Target Anda visual polish 2026-09-26 */
+@media (max-width:380px){
+  html body .app .employee-personal-target-title h3{
+    font-size:14px!important;
+    line-height:1.08!important;
+    font-weight:900!important;
+    letter-spacing:.035em!important;
+  }
+
+  html body .app .employee-personal-target-title small{
+    margin-top:2px!important;
+    font-size:10.2px!important;
+    line-height:1.2!important;
+    font-weight:650!important;
+  }
+
+  html body .app .employee-personal-target-icon{
+    width:27px!important;
+    height:27px!important;
+    flex:0 0 27px!important;
+    font-size:13px!important;
+  }
+
+  html body .app .employee-personal-target-pct{
+    position:relative!important;
+    width:58px!important;
+    height:58px!important;
+    flex:0 0 58px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border-radius:50%!important;
+    background:
+      radial-gradient(circle at 50% 50%,#ffffff 0 58%,#f3fbf9 59% 100%)!important;
+    box-shadow:
+      0 0 0 1px rgba(56,193,171,.18),
+      0 5px 14px rgba(37,143,127,.10)!important;
+    overflow:visible!important;
+  }
+
+  html body .app .employee-personal-target-pct::before{
+    content:""!important;
+    position:absolute!important;
+    inset:-4px!important;
+    border-radius:50%!important;
+    border:3px solid transparent!important;
+    border-top-color:var(--target-color,#31c7c2)!important;
+    border-right-color:color-mix(in srgb,var(--target-color,#31c7c2) 60%,transparent)!important;
+    filter:drop-shadow(0 0 4px color-mix(in srgb,var(--target-color,#31c7c2) 35%,transparent))!important;
+    animation:vaxTargetPctOrbit 2.6s linear infinite!important;
+    pointer-events:none!important;
+  }
+
+  html body .app .employee-personal-target-pct::after{
+    content:""!important;
+    position:absolute!important;
+    inset:3px!important;
+    border-radius:50%!important;
+    border:1px solid color-mix(in srgb,var(--target-color,#31c7c2) 24%,transparent)!important;
+    animation:vaxTargetPctPulse 1.8s ease-in-out infinite!important;
+    pointer-events:none!important;
+  }
+
+  html body .app .employee-personal-target-pct strong{
+    position:relative!important;
+    z-index:1!important;
+    font-size:23px!important;
+    line-height:1!important;
+    font-weight:900!important;
+  }
+
+  html body .app .employee-personal-target-pct span{
+    position:relative!important;
+    z-index:1!important;
+    margin-top:2px!important;
+    font-size:7.5px!important;
+    line-height:1!important;
+  }
+}
+
+@keyframes vaxTargetPctOrbit{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+@keyframes vaxTargetPctPulse{
+  0%,100%{transform:scale(1);opacity:.55}
+  50%{transform:scale(1.06);opacity:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body .app .employee-personal-target-pct::before,
+  html body .app .employee-personal-target-pct::after{
+    animation:none!important;
+  }
+}
+
+
+/* UI ONLY — Target Anda green accents + larger milestones 2026-09-26 */
+@media (max-width:380px){
+  /* Replace blue stage accents with dashboard green theme. */
+  html body .app .employee-personal-target.stage-blue{
+    --target-color:#31c7b2!important;
+    border-color:#8fd9cd!important;
+  }
+
+  html body .app .employee-personal-target.stage-blue::before{
+    background:#31c7b2!important;
+  }
+
+  html body .app .employee-personal-target.stage-blue .employee-personal-target-status{
+    border-color:#9bded3!important;
+    background:linear-gradient(145deg,#f3fbf8,#eef9f6)!important;
+    color:#315f63!important;
+  }
+
+  /* Progress bar + moving star follow the same green palette. */
+  html body .app .employee-personal-target-fill{
+    background:#31c7b2!important;
+    box-shadow:0 0 10px rgba(49,199,178,.30)!important;
+  }
+
+  html body .app .employee-personal-target-star{
+    color:#31c7b2!important;
+    text-shadow:0 0 8px rgba(49,199,178,.55)!important;
+  }
+
+  /* Make 0 / 50 / 100 easier to read. */
+  html body .app .employee-personal-target-milestones{
+    margin-top:4px!important;
+    font-size:8.5px!important;
+    line-height:1.15!important;
+    font-weight:750!important;
+    color:#5f817c!important;
+  }
+}
+
+
+/* UI ONLY — Target Anda high-specificity green override after audit 2026-09-26 */
+@media (max-width:380px){
+  /* ID-scoped selectors intentionally outrank later legacy theme files without changing load order. */
+  html body .app #employeePersonalTarget.employee-personal-target.stage-blue,
+  html body .app #employeePersonalTarget.employee-personal-target.stage-teal,
+  html body .app #employeePersonalTarget.employee-personal-target.stage-finish{
+    --target-color:#31c7b2!important;
+    --target-stage-main:#31c7b2!important;
+    --target-stage-dark:#22af9c!important;
+    border-color:#9edfd4!important;
+  }
+
+  html body .app #employeePersonalTarget.employee-personal-target::before{
+    background:#31c7b2!important;
+    opacity:.92!important;
+  }
+
+  html body .app #employeePersonalTarget.employee-personal-target .employee-personal-target-fill{
+    background:linear-gradient(90deg,#3ad2bc 0%,#31c7b2 55%,#26b6a2 100%)!important;
+    box-shadow:0 0 9px rgba(49,199,178,.28)!important;
+  }
+
+  html body .app #employeePersonalTarget.employee-personal-target .employee-personal-target-star{
+    color:#31c7b2!important;
+    text-shadow:0 0 7px rgba(49,199,178,.48)!important;
+  }
+
+  html body .app #employeePersonalTarget.employee-personal-target .employee-personal-target-milestones{
+    margin-top:4px!important;
+    font-size:8.8px!important;
+    line-height:1.15!important;
+    font-weight:800!important;
+    color:#537b75!important;
+  }
+}
