@@ -1,0 +1,28 @@
+name: Dashboard Karyawan UI Lock Guard
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  ui-lock-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Determine diff base
+        id: base
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Enforce Dashboard Karyawan UI locks
+        run: node scripts/dashboard-karyawan-ui-lock-guard.mjs "${{ steps.base.outputs.base }}" "${{ github.sha }}"
