@@ -29,3 +29,38 @@ html body .app .profile-card:not(.tutup-ops-banner)::after{
   display:none!important;
   animation:none!important;
 }
+
+
+/* OWNER APPROVED 2026-09-26 — profile photo size only */
+@media (max-width:380px){
+  html body .app .employee-profile-photo-wrap{
+    width:78px!important;
+    height:78px!important;
+    flex:0 0 78px!important;
+  }
+  html body .app .employee-profile-photo-wrap #fotoKaryawan{
+    width:72px!important;
+    height:72px!important;
+    min-width:72px!important;
+    min-height:72px!important;
+    max-width:72px!important;
+    max-height:72px!important;
+    object-fit:cover!important;
+    object-position:center!important;
+  }
+}
+@media (max-width:340px){
+  html body .app .employee-profile-photo-wrap{
+    width:72px!important;
+    height:72px!important;
+    flex-basis:72px!important;
+  }
+  html body .app .employee-profile-photo-wrap #fotoKaryawan{
+    width:66px!important;
+    height:66px!important;
+    min-width:66px!important;
+    min-height:66px!important;
+    max-width:66px!important;
+    max-height:66px!important;
+  }
+}
