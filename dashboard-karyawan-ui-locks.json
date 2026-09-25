@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "scope": "Dashboard Karyawan",
+  "policy": "LOCK means no direct edit and no indirect selector override unless the Owner explicitly unlocks that component.",
+  "unlock_commit_token": "UI-UNLOCK=<component>",
+  "components": {
+    "header": {
+      "dedicated_files": [
+        "dashboard-karyawan-mobile-header-fix.css"
+      ],
+      "shared_rules": {
+        "dashboard-karyawan-green-final.css": [
+          "topbar",
+          "topbar-brand",
+          "brand-subtitle",
+          "brand-powered",
+          "vax-employee-notif",
+          "vax-inbox-shortcut"
+        ],
+        "dashboard-karyawan-header-toolbar-ui.js": [
+          "topbar",
+          "topbar-brand",
+          "brand-subtitle",
+          "brand-powered"
+        ]
+      }
+    },
+    "profile": {
+      "dedicated_files": [
+        "dashboard-karyawan-profile-date-fix.css"
+      ],
+      "shared_rules": {
+        "dashboard-karyawan-green-final.css": [
+          "profile-card",
+          "profile-copy",
+          "namaKaryawan",
+          "profile-line",
+          "profile-meta-date"
+        ]
+      }
+    },
+    "sync_cards": {
+      "dedicated_files": [],
+      "shared_rules": {
+        "dashboard-karyawan-header-toolbar-ui.js": [
+          "employee-sync-indicators",
+          "employeeProviderStatus",
+          "employeeProviderLastSync"
+        ],
+        "dashboard-karyawan-clean-colors-final-ui.css": [
+          "employee-sync-indicators",
+          "employee-sync-indicator",
+          "employee-sync-copy"
+        ],
+        "dashboard-karyawan-green-final.css": [
+          "employee-sync-indicators",
+          "employee-sync-indicator",
+          "employee-sync-copy"
+        ],
+        "dashboard-karyawan-mobile-header-fix.css": [
+          "employee-sync-indicators",
+          "is-headbar-sync"
+        ]
+      }
+    },
+    "period_calendar": {
+      "dedicated_files": [
+        "dashboard-karyawan-calendar-theme.css",
+        "dashboard-karyawan-calendar-theme.js"
+      ],
+      "shared_rules": {
+        "dashboard-karyawan-header-toolbar-ui.js": [
+          "employee-date-toolbar",
+          "date-toolbar",
+          "showPeriod"
+        ],
+        "dashboard-karyawan-clean-colors-final-ui.css": [
+          "employee-date-toolbar",
+          "date-toolbar",
+          "vax-calendar"
+        ]
+      }
+    },
+    "target_anda": {
+      "dedicated_files": [
+        "dashboard-karyawan-target-anda.css"
+      ],
+      "shared_rules": {}
+    },
+    "performa_today": {
+      "dedicated_files": [
+        "dashboard-karyawan-kpi-tidy-ui.css"
+      ],
+      "shared_rules": {}
+    },
+    "performa_chart": {
+      "dedicated_files": [
+        "dashboard-karyawan-performa-ui.js"
+      ],
+      "shared_rules": {}
+    }
+  }
+}
