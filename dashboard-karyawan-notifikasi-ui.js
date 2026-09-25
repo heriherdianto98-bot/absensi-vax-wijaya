@@ -1,3 +1,8 @@
+/* 🔒 OWNER LOCK — DASHBOARD KARYAWAN HEADER NOTIFICATION
+   PASS by Owner on 2026-09-26.
+   Do not modify bell badge/popup presentation or header notification behavior without explicit Owner approval.
+*/
+
 /* Employee dashboard notification UI. Merges legacy employee notifications with
    employee-scoped Pengaduan notifications; no owner, attendance or payroll engine is modified here. */
 (() => {
@@ -44,8 +49,9 @@
     toggle.setAttribute('aria-label',items.length?`Pemberitahuan baru: ${items.length}`:'Buka pemberitahuan');
     if(!items.length){showMessage('Belum ada pemberitahuan baru.');return;}
     list.replaceChildren();
-    for(const row of items){
-      const button=document.createElement('button');button.type='button';button.className='vax-employee-notif-item'+(row.jenis==='PENGADUAN'?' is-pengaduan':'');
+    const visibleItems=items.slice(0,7);
+    for(const row of visibleItems){
+      const button=document.createElement('button');button.type='button';button.className='vax-employee-notif-item'+(row.jenis==='PENGADUAN'?' is-pengaduan':'')+' is-'+String(row.jenis||'info').toLowerCase();
       const heading=document.createElement('strong');heading.textContent=String(row.judul||'Pemberitahuan');
       const description=document.createElement('small');description.textContent=String(row.ringkasan||'');
       button.append(heading,description);button.addEventListener('click',()=>openItem(row,button));list.appendChild(button);
@@ -65,7 +71,7 @@
     let merged=[],loaded=false;
     try{
       const data=await rpc('karyawan_dashboard_notifikasi_self_v1',{});
-      const legacy=Array.isArray(data.items)?data.items.filter(x=>x&&['PENGUMUMAN','IZIN','DENDA'].includes(x.jenis)&&Number.isSafeInteger(Number(x.id))):[];
+      const legacy=Array.isArray(data.items)?data.items.filter(x=>x&&['PENGUMUMAN','IZIN','DENDA','SP','INBOX','GAJI'].includes(x.jenis)&&Number.isSafeInteger(Number(x.id))).map(x=>({...x,created_at:x.created_at||x.waktu||null})):[];
       merged.push(...legacy);loaded=true;
     }catch(error){console.warn('Notifikasi Karyawan:',error);}
     try{
@@ -88,6 +94,9 @@
   function destination(row){
     const id=Number(row.id);
     if(row.jenis==='PENGADUAN')return 'pengaduan.html?ticket='+encodeURIComponent(Number(row.ticket_id));
+    if(row.jenis==='SP')return 'surat-peringatan-saya.html?id='+encodeURIComponent(id);
+    if(row.jenis==='INBOX')return 'pesan-karyawan.html';
+    if(row.jenis==='GAJI')return 'gaji-saya.html';
     if(row.jenis==='PENGUMUMAN')return 'pengumuman.html#'+id;
     if(row.jenis==='IZIN')return 'riwayat.html';
     return 'absensi.html';
