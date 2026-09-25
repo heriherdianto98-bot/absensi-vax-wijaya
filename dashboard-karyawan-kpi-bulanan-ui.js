@@ -1,3 +1,7 @@
+/* 🔒 OWNER LOCK — TARGET OMZET EMPLOYEE UI | PASS/STOP 2026-09-26
+   Current accepted state. Do not modify Target Omzet employee UI behavior/markup without explicit Owner approval.
+*/
+
 /* VAX ERP — Employee UI-only layout + read-only Owner TARGET BULAN consumer.
    All original KPI nodes, IDs, data handlers, target RPC, and sync remain unchanged. */
 (() => {
@@ -77,9 +81,10 @@
   section.className = 'employee-monthly-kpi';
   section.hidden = true;
   section.setAttribute('aria-label','Target omzet cabang dari ERP Owner');
-  section.innerHTML = `<article class="employee-monthly-kpi-card"><div class="employee-monthly-kpi-heading"><span>TARGET OMZET · <span id="employeeTargetBranch">CABANG</span></span><i class="fa-solid fa-bullseye" aria-hidden="true"></i></div><strong class="employee-monthly-kpi-value" id="employeeOwnerTargetPct">—</strong><div class="employee-monthly-kpi-track" role="progressbar" aria-label="Pencapaian target omzet" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="employee-monthly-kpi-fill"></span></div><div class="employee-monthly-kpi-detail" id="employeeOwnerTargetDetail">— / —</div></article><p class="employee-monthly-kpi-note" id="employeeOwnerTargetNote" role="status" aria-live="polite">Memuat target omzet cabang dari ERP…</p>`;
+  section.innerHTML = `<article class="employee-monthly-kpi-card"><div class="employee-monthly-kpi-heading"><span>TARGET OMZET · <span id="employeeTargetBranch">CABANG</span></span><i class="fa-solid fa-arrows-rotate employee-monthly-kpi-icon" aria-hidden="true"></i></div><div class="employee-monthly-kpi-value-row"><strong class="employee-monthly-kpi-value" id="employeeOwnerTargetPct">—</strong><span class="employee-monthly-kpi-remaining" id="employeeOwnerTargetRemaining">Sisa target —</span></div><div class="employee-monthly-kpi-track" role="progressbar" aria-label="Pencapaian target omzet" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="employee-monthly-kpi-fill"></span></div><div class="employee-monthly-kpi-detail" id="employeeOwnerTargetDetail">— / —</div></article><p class="employee-monthly-kpi-note" id="employeeOwnerTargetNote" role="status" aria-live="polite">Memuat target omzet cabang dari ERP…</p>`;
   daily.insertAdjacentElement('beforebegin',section);
   const pct=section.querySelector('#employeeOwnerTargetPct');
+  const remaining=section.querySelector('#employeeOwnerTargetRemaining');
   const detail=section.querySelector('#employeeOwnerTargetDetail');
   const note=section.querySelector('#employeeOwnerTargetNote');
   const track=section.querySelector('.employee-monthly-kpi-track');
@@ -92,7 +97,7 @@
   const isCapster=()=>document.documentElement.dataset.homeKpi==='capster';
   const rupiah=n=>'Rp'+Math.round(n).toLocaleString('id-ID');
   let busy=false,run=0;
-  function reset(message){pct.textContent='—';detail.textContent='— / —';track.setAttribute('aria-valuenow','0');track.removeAttribute('aria-valuetext');fill.style.width='0%';note.textContent=message;}
+  function reset(message){pct.textContent='—';remaining.textContent='Sisa target —';detail.textContent='— / —';track.setAttribute('aria-valuenow','0');track.removeAttribute('aria-valuetext');fill.style.width='0%';note.textContent=message;}
   async function refresh(){
     if(busy||document.hidden||!isCapster())return;
     const current=++run;busy=true;
@@ -105,6 +110,7 @@
       const percent=Number(data.persen),omzet=Number(data.omzet),target=Number(data.target);
       if(![percent,omzet,target].every(Number.isFinite)||target<=0)throw new Error('TARGET_DATA_INVALID');
       pct.textContent=`${percent}%`;
+      remaining.textContent=`Sisa ${rupiah(Math.max(0,target-omzet))}`;
       detail.textContent=`${rupiah(omzet)} / ${rupiah(target)}`;
       track.setAttribute('aria-valuenow',String(Math.min(100,Math.max(0,percent))));
       track.setAttribute('aria-valuetext',`${percent}% dari target cabang`);
