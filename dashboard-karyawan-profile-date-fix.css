@@ -1,7 +1,31 @@
-/* UI only — profile date vertical alignment override.
-   Loaded after dashboard-karyawan-green-final.css in local runtime. */
+/* LOCKED UI — Employee profile calendar + orbit behavior.
+   Owner PASS 2026-09-26.
+   Do not change without explicit Owner approval. */
+
+/* Calendar date alignment: lower only the date number. */
 html body .app .profile-card:not(.tutup-ops-banner) .profile-meta-date{
   position:relative!important;
-  top:6px!important;
+  top:0!important;
   transform:none!important;
+}
+
+html body .app .profile-card:not(.tutup-ops-banner) .profile-meta-date strong{
+  position:relative!important;
+  top:3px!important;
+  line-height:1!important;
+}
+
+/* Keep the photo-ring orbit effect active. */
+html body .app .employee-profile-photo-wrap::before{
+  content:""!important;
+  display:block!important;
+  animation:employeeSparkOrbit 4.8s linear infinite!important;
+}
+
+/* Remove only the small orbit/dot travelling around the profile-card perimeter. */
+html body .app .profile-card:not(.tutup-ops-banner)::before,
+html body .app .profile-card:not(.tutup-ops-banner)::after{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
 }
