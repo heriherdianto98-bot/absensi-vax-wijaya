@@ -271,3 +271,9 @@
     animation:none!important;
   }
 }
+
+
+/* OWNER APPROVED 2026-09-26 — hide Target Omzet source note */
+html body .app .employee-monthly-kpi-note{
+  display:none!important;
+}
