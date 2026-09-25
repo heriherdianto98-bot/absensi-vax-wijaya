@@ -1,0 +1,7 @@
+/* UI only — profile date vertical alignment override.
+   Loaded after dashboard-karyawan-green-final.css in local runtime. */
+html body .app .profile-card:not(.tutup-ops-banner) .profile-meta-date{
+  position:relative!important;
+  top:6px!important;
+  transform:none!important;
+}
