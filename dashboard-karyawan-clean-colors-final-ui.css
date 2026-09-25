@@ -2347,7 +2347,8 @@ html body .app .profile-card:not(.tutup-ops-banner) .profile-meta-date{
 
   html body .app .vax-calendar-week{
     margin-bottom:4px!important;
-    font-size:7px!important;
+    font-size:9px!important;
+    font-weight:800!important;
   }
 
   html body .app .vax-calendar-week span{
@@ -2356,7 +2357,8 @@ html body .app .profile-card:not(.tutup-ops-banner) .profile-meta-date{
 
   html body .app .vax-calendar-day{
     border-radius:7px!important;
-    font-size:9px!important;
+    font-size:11px!important;
+    font-weight:750!important;
   }
 
   html body .app .vax-calendar-foot{
