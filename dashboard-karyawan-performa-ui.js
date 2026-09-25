@@ -32,6 +32,101 @@
     .vax-performance-empty{width:100%;align-self:center;text-align:center;color:#c1b8a6;font-size:11px;line-height:1.5;padding:18px 8px}
     @media(max-width:350px){.vax-performance{padding:12px 9px}.vax-performance-label,.vax-performance-value{font-size:8px}}
     @media(prefers-reduced-motion:reduce){.vax-performance-bar{transition:none}}
+
+    /* UI ONLY — enlarged Performa Saya + green chart icon 2026-09-26 */
+    html[data-home-kpi="capster"] body .app .vax-performance{
+      padding:17px 15px 15px!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-head{
+      margin-bottom:12px!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-head h2{
+      font-size:18px!important;
+      line-height:1.18!important;
+      font-weight:900!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-head p{
+      margin-top:4px!important;
+      font-size:11px!important;
+      line-height:1.3!important;
+      font-weight:650!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-head>i{
+      width:34px!important;
+      height:34px!important;
+      display:inline-flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      border-radius:10px!important;
+      font-size:17px!important;
+      color:#ffffff!important;
+      background:linear-gradient(145deg,#43d5c0,#27bca8)!important;
+      border:1px solid rgba(39,188,168,.32)!important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.42),
+        0 5px 13px rgba(39,188,168,.24)!important;
+      filter:none!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-controls{
+      padding:5px!important;
+      gap:6px!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-controls button{
+      min-height:36px!important;
+      font-size:12px!important;
+      font-weight:800!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-metrics{
+      margin:12px 0 10px!important;
+      gap:8px!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-metrics button{
+      min-height:35px!important;
+      padding:8px 6px!important;
+      font-size:11px!important;
+      font-weight:800!important;
+    }
+
+    /* UI ONLY — active performance metric uses VAX green theme 2026-09-26 */
+    html[data-home-kpi="capster"] body .app .vax-performance-metrics button[aria-pressed="true"]{
+      color:#ffffff!important;
+      border-color:rgba(39,188,168,.34)!important;
+      background:linear-gradient(145deg,#43d5c0,#27bca8)!important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.35),
+        0 4px 10px rgba(39,188,168,.20)!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-state{
+      min-height:17px!important;
+      margin-bottom:7px!important;
+      font-size:11px!important;
+      line-height:1.35!important;
+      font-weight:650!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-plot{
+      min-height:178px!important;
+      gap:6px!important;
+      padding-top:9px!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-value{
+      font-size:11px!important;
+      line-height:1!important;
+      font-weight:850!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-bar-wrap{
+      height:118px!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-label{
+      font-size:10px!important;
+      line-height:1.15!important;
+      font-weight:750!important;
+    }
+    html[data-home-kpi="capster"] body .app .vax-performance-note{
+      margin-top:11px!important;
+      font-size:11px!important;
+      line-height:1.45!important;
+      font-weight:550!important;
+    }
   `;
   document.head.appendChild(style);
   const section = document.createElement('section');
