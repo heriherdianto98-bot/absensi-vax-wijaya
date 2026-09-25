@@ -1921,3 +1921,475 @@ html body .app .profile-card:not(.tutup-ops-banner) .profile-meta-date{
   top:5px!important;
   transform:none!important;
 }
+
+
+/* UI ONLY — mobile spacing between profile and Provider/Last Sync cards */
+@media (max-width:380px){
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync){
+    margin-top:14px!important;
+  }
+}
+
+
+/* UI ONLY — Provider / Last Sync 3D card treatment */
+@media (max-width:380px){
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync){
+    gap:10px!important;
+    margin-top:14px!important;
+  }
+
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync) .employee-sync-indicator{
+    position:relative!important;
+    overflow:hidden!important;
+    min-height:46px!important;
+    padding:8px 10px!important;
+    border:1px solid #d6e9e5!important;
+    border-radius:16px!important;
+    background:
+      linear-gradient(145deg,#ffffff 0%,#f7fcfb 58%,#eef8f5 100%)!important;
+    box-shadow:
+      0 9px 18px rgba(32,91,86,.10),
+      0 3px 7px rgba(32,91,86,.06),
+      inset 0 1px 0 rgba(255,255,255,.98),
+      inset 0 -1px 0 rgba(114,180,168,.08)!important;
+    transform:translateY(0)!important;
+  }
+
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync) .employee-sync-indicator::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    background:
+      radial-gradient(circle at 16% 18%,rgba(48,199,176,.13),transparent 34%),
+      linear-gradient(180deg,rgba(255,255,255,.18),transparent 46%)!important;
+    pointer-events:none!important;
+    z-index:0!important;
+  }
+
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync) .employee-sync-indicator::after{
+    content:""!important;
+    position:absolute!important;
+    left:9px!important;
+    right:9px!important;
+    bottom:4px!important;
+    height:5px!important;
+    border-radius:999px!important;
+    background:rgba(36,168,149,.10)!important;
+    filter:blur(5px)!important;
+    pointer-events:none!important;
+    z-index:0!important;
+  }
+
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync) .employee-sync-indicator > *{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync) .employee-sync-indicator>i{
+    width:30px!important;
+    height:30px!important;
+    flex:0 0 30px!important;
+    display:grid!important;
+    place-items:center!important;
+    border:1px solid #cdebe5!important;
+    border-radius:12px!important;
+    background:
+      linear-gradient(145deg,#f5fffc 0%,#e6f8f3 100%)!important;
+    color:#31bda8!important;
+    box-shadow:
+      0 4px 9px rgba(49,189,168,.12),
+      inset 0 1px 0 rgba(255,255,255,.95)!important;
+  }
+
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync) .employee-sync-copy small{
+    color:#2db29f!important;
+    font-weight:850!important;
+  }
+
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync) .employee-sync-copy strong{
+    color:#173d45!important;
+    font-weight:850!important;
+  }
+}
+
+
+/* UI ONLY — compact vertical spacing between employee dashboard cards */
+@media (max-width:380px){
+  /* Keep the locked header untouched; only tighten the cards below profile. */
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync){
+    margin-top:9px!important;
+    margin-bottom:7px!important;
+  }
+
+  html body .app .employee-date-toolbar{
+    margin-top:7px!important;
+    margin-bottom:7px!important;
+  }
+
+  html body .app .employee-date-toolbar + *{
+    margin-top:7px!important;
+  }
+
+  html body .app .profile-card:not(.tutup-ops-banner){
+    margin-bottom:0!important;
+  }
+}
+
+
+/* UI ONLY — tighten Periode Dashboard to Target Omzet gap */
+@media (max-width:380px){
+  html body .app .employee-date-toolbar{
+    margin-bottom:2px!important;
+  }
+
+  html body .app .employee-monthly-kpi{
+    margin-top:0!important;
+  }
+
+  html body .app .employee-date-toolbar + .employee-monthly-kpi{
+    margin-top:0!important;
+  }
+}
+
+
+/* UI ONLY — mobile Periode Dashboard full green card */
+@media (max-width:380px){
+  html body .app .employee-date-toolbar{
+    min-height:50px!important;
+    padding:9px 11px!important;
+    border:1px solid rgba(31,164,146,.34)!important;
+    border-top:1px solid rgba(31,164,146,.34)!important;
+    border-radius:16px!important;
+    background:
+      linear-gradient(135deg,#31c8b3 0%,#25bba7 52%,#1fae9d 100%)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.28),
+      inset 0 -1px 0 rgba(8,99,87,.10),
+      0 9px 18px rgba(27,128,114,.16)!important;
+  }
+
+  html body .app .employee-date-toolbar .date-toolbar-caption,
+  html body .app .employee-date-toolbar .date-toolbar-current{
+    color:#ffffff!important;
+  }
+
+  html body .app .employee-date-toolbar .date-toolbar-caption{
+    font-weight:850!important;
+    opacity:.92!important;
+  }
+
+  html body .app .employee-date-toolbar .date-toolbar-current{
+    font-size:10px!important;
+    font-weight:850!important;
+  }
+
+  html body .app .employee-date-toolbar .date-toolbar-button{
+    min-height:30px!important;
+    padding:6px 9px!important;
+    border:1px solid rgba(255,255,255,.55)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.96)!important;
+    color:#199783!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 4px 9px rgba(8,92,82,.13)!important;
+  }
+
+  html body .app .employee-date-toolbar .date-toolbar-button i{
+    color:#199783!important;
+  }
+}
+
+
+/* UI ONLY — FORCE mobile Periode Dashboard green card above later theme overrides */
+@media (max-width:380px){
+  html body .app .employee-date-toolbar.employee-date-toolbar{
+    min-height:54px!important;
+    padding:10px 12px!important;
+    margin-top:7px!important;
+    margin-bottom:2px!important;
+    border:1px solid rgba(20,141,123,.42)!important;
+    border-top:1px solid rgba(20,141,123,.42)!important;
+    border-radius:16px!important;
+    background:
+      linear-gradient(135deg,#35cdb7 0%,#29bea9 48%,#20ad9a 100%)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.32),
+      inset 0 -2px 0 rgba(8,95,83,.08),
+      0 10px 20px rgba(26,125,111,.18)!important;
+  }
+
+  html body .app .employee-date-toolbar.employee-date-toolbar .date-toolbar-info{
+    align-self:center!important;
+  }
+
+  html body .app .employee-date-toolbar.employee-date-toolbar .date-toolbar-caption{
+    color:#eafffb!important;
+    font-size:8px!important;
+    line-height:1.1!important;
+    font-weight:850!important;
+    letter-spacing:.04em!important;
+  }
+
+  html body .app .employee-date-toolbar.employee-date-toolbar .date-toolbar-current{
+    color:#ffffff!important;
+    font-size:11px!important;
+    line-height:1.2!important;
+    font-weight:900!important;
+    text-shadow:0 1px 2px rgba(7,88,77,.12)!important;
+  }
+
+  html body .app .employee-date-toolbar.employee-date-toolbar .date-toolbar-button{
+    min-height:31px!important;
+    padding:6px 10px!important;
+    border:1px solid rgba(255,255,255,.72)!important;
+    border-radius:10px!important;
+    background:#ffffff!important;
+    color:#168f7c!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 4px 9px rgba(8,88,77,.14)!important;
+  }
+
+  html body .app .employee-date-toolbar.employee-date-toolbar .date-toolbar-button i{
+    color:#168f7c!important;
+  }
+}
+
+
+/* UI ONLY — mobile compact dashboard card rhythm */
+@media (max-width:380px){
+  /* Header is LOCKED; tighten only dashboard content below it. */
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync){
+    margin-top:7px!important;
+    margin-bottom:5px!important;
+  }
+
+  html body .app .employee-date-toolbar.employee-date-toolbar{
+    margin-top:4px!important;
+    margin-bottom:3px!important;
+  }
+
+  html body .app .employee-monthly-kpi{
+    margin-top:0!important;
+    margin-bottom:4px!important;
+  }
+
+  html body .app .employee-monthly-kpi-note{
+    margin-top:2px!important;
+    margin-bottom:0!important;
+  }
+
+  html body .app .employee-personal-target{
+    margin-top:4px!important;
+    margin-bottom:4px!important;
+  }
+
+  html body .app .today-section{
+    margin-top:4px!important;
+    margin-bottom:4px!important;
+  }
+
+  html body .app .vax-performance{
+    margin-top:4px!important;
+    margin-bottom:4px!important;
+  }
+
+  html body .app .employee-barber-ranking{
+    margin-top:4px!important;
+    margin-bottom:4px!important;
+  }
+
+  html body .app .comm-row{
+    margin-top:4px!important;
+    margin-bottom:4px!important;
+    gap:6px!important;
+  }
+
+  html body .app .ai-hero{
+    margin-top:4px!important;
+    margin-bottom:4px!important;
+  }
+}
+
+
+/* UI ONLY — final green calendar + stronger Periode Dashboard label */
+@media (max-width:380px){
+  html body .app .employee-date-toolbar .date-toolbar-caption{
+    color:#ffffff!important;
+    font-size:8.4px!important;
+    font-weight:950!important;
+    letter-spacing:.055em!important;
+    text-shadow:0 1px 2px rgba(6,88,76,.16)!important;
+  }
+
+  html body .app .vax-calendar{
+    border:1px solid rgba(44,181,159,.34)!important;
+    border-top:3px solid #28bda7!important;
+    border-radius:16px!important;
+    background:
+      radial-gradient(circle at 88% 4%,rgba(71,211,188,.13),transparent 28%),
+      linear-gradient(180deg,#ffffff 0%,#f4fcfa 100%)!important;
+    color:#173d45!important;
+    box-shadow:
+      0 18px 38px rgba(30,107,96,.18),
+      inset 0 1px 0 rgba(255,255,255,.98)!important;
+  }
+
+  html body .app .vax-calendar-title{
+    color:#197f70!important;
+    font-weight:900!important;
+  }
+
+  html body .app .vax-calendar-prev,
+  html body .app .vax-calendar-next{
+    border:1px solid #c9e9e3!important;
+    background:linear-gradient(145deg,#f7fffd,#eaf8f4)!important;
+    color:#1aaa95!important;
+    box-shadow:
+      inset 0 1px 0 #fff,
+      0 4px 9px rgba(38,151,135,.10)!important;
+  }
+
+  html body .app .vax-calendar-week{
+    color:#6a8d88!important;
+    font-weight:750!important;
+  }
+
+  html body .app .vax-calendar-day{
+    color:#244a50!important;
+    background:transparent!important;
+    border-color:transparent!important;
+  }
+
+  html body .app .vax-calendar-day:hover:not(:disabled){
+    background:#eaf9f5!important;
+    border-color:#a8ddd4!important;
+    color:#168b79!important;
+  }
+
+  html body .app .vax-calendar-day.is-today{
+    border-color:#70cfbf!important;
+    color:#148d7a!important;
+    background:#f2fbf9!important;
+  }
+
+  html body .app .vax-calendar-day.is-selected{
+    background:linear-gradient(145deg,#3acbb4,#22ad98)!important;
+    border-color:#25b09c!important;
+    color:#ffffff!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.34),
+      0 5px 12px rgba(33,163,144,.22)!important;
+  }
+
+  html body .app .vax-calendar-foot{
+    border-top:1px solid #d9ebe7!important;
+  }
+
+  html body .app .vax-calendar-today{
+    border:1px solid #a9ddd4!important;
+    background:#effaf7!important;
+    color:#168b79!important;
+    font-weight:800!important;
+  }
+
+  html body .app .vax-calendar-close{
+    border:1px solid #d3e5e1!important;
+    background:#ffffff!important;
+    color:#31555b!important;
+    font-weight:750!important;
+  }
+
+  html body .app .vax-calendar button:focus-visible{
+    outline:2px solid #38bba6!important;
+    outline-offset:2px!important;
+  }
+}
+
+
+/* UI ONLY — compact mobile calendar popup */
+@media (max-width:380px){
+  html body .app .vax-calendar{
+    right:-1px!important;
+    top:calc(100% + 5px)!important;
+    width:220px!important;
+    max-width:220px!important;
+    padding:9px!important;
+    border-radius:13px!important;
+    box-shadow:
+      0 14px 30px rgba(30,107,96,.16),
+      inset 0 1px 0 rgba(255,255,255,.98)!important;
+  }
+
+  html body .app .vax-calendar-head{
+    gap:5px!important;
+    margin-bottom:8px!important;
+  }
+
+  html body .app .vax-calendar-title{
+    font-size:11px!important;
+    line-height:1.1!important;
+  }
+
+  html body .app .vax-calendar-prev,
+  html body .app .vax-calendar-next{
+    width:27px!important;
+    height:27px!important;
+    border-radius:8px!important;
+    font-size:9px!important;
+  }
+
+  html body .app .vax-calendar-week,
+  html body .app .vax-calendar-days{
+    gap:2px!important;
+  }
+
+  html body .app .vax-calendar-week{
+    margin-bottom:4px!important;
+    font-size:7px!important;
+  }
+
+  html body .app .vax-calendar-week span{
+    padding:3px 0!important;
+  }
+
+  html body .app .vax-calendar-day{
+    border-radius:7px!important;
+    font-size:9px!important;
+  }
+
+  html body .app .vax-calendar-foot{
+    gap:7px!important;
+    margin-top:7px!important;
+    padding-top:7px!important;
+  }
+
+  html body .app .vax-calendar-today,
+  html body .app .vax-calendar-close{
+    padding:6px 9px!important;
+    border-radius:8px!important;
+    font-size:9px!important;
+  }
+}
+
+
+/* UI ONLY — soften Provider / Last Sync value text */
+@media (max-width:380px){
+  html body .app > .employee-sync-indicators:not(.is-headbar-sync):not(.is-period-toolbar-sync) .employee-sync-copy strong{
+    color:#315f63!important;
+    font-weight:800!important;
+  }
+}
+
+
+/* 🔒 OWNER LOCK — Dashboard Karyawan cards/spacing/calendar UI | PASS 2026-09-26 */
+/*
+  Locked by Owner:
+  - Provider / Last Sync card spacing + 3D styling
+  - Periode Dashboard green card
+  - compact spacing between dashboard cards
+  - calendar popup green theme + compact sizing
+  - Provider / Last Sync value text color
+  Do not modify these locked areas without explicit Owner approval.
+*/
