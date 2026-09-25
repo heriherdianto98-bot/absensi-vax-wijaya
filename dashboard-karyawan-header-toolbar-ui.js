@@ -15,6 +15,12 @@
     subtitle.textContent = 'ENTERPRISE MANAGEMENT SYSTEM';
     brand.appendChild(subtitle);
   }
+  if (brand && !brand.querySelector('.brand-powered')) {
+    const powered = document.createElement('span');
+    powered.className = 'brand-powered';
+    powered.textContent = 'Powered by Heri Herdianto';
+    brand.appendChild(powered);
+  }
 
   const dateMeta = document.createElement('div');
   dateMeta.className = 'profile-meta-date';
@@ -81,17 +87,20 @@
   input.value = initialDate;
   pickerWrap.append(button, input);
 
-  // UI-only: pindahkan status Provider / Last Sync ke headbar.
-  // Node asli dipindahkan sehingga ID/status live dan engine sync tetap sama.
+  // UI-only LOCK restore: Provider / Last Sync tetap sebagai 2 card di bawah profil.
+  // Jangan pindahkan node ke headbar; ID/status live dan engine sync tetap sama.
   const syncIndicators = app.querySelector('.employee-sync-indicators');
   if (syncIndicators) {
-    syncIndicators.classList.remove('is-period-toolbar-sync');
-    syncIndicators.classList.add('is-headbar-sync');
-    topbar.appendChild(syncIndicators);
+    syncIndicators.classList.remove('is-period-toolbar-sync', 'is-headbar-sync');
+    profile.insertAdjacentElement('afterend', syncIndicators);
   }
   toolbar.append(caption, pickerWrap);
 
-  profile.insertAdjacentElement('afterend', toolbar);
+  if (syncIndicators) {
+    syncIndicators.insertAdjacentElement('afterend', toolbar);
+  } else {
+    profile.insertAdjacentElement('afterend', toolbar);
+  }
   const status = document.createElement('span');
   status.className = 'date-toolbar-status';
   status.setAttribute('role', 'status');
