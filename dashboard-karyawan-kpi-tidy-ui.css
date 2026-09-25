@@ -1,3 +1,5 @@
+/* 🔒 OWNER LOCK — Performa Saya KPI UI | PASS 2026-09-26 */
+/* Do not modify without explicit Owner approval. */
 /* Employee dashboard presentation only. No canonical engine or shared styles changed. */
 #kpiCapster.today-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:100px;gap:8px!important}
 #kpiCapster .today-item,#kpiCapster .kpi-service{box-sizing:border-box;height:100px!important;min-height:100px!important;max-height:100px!important;min-width:0;aspect-ratio:auto!important;padding:10px!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important}
@@ -81,3 +83,301 @@ html[data-home-kpi="capster"] .app .comm-row{margin:0!important}
 html[data-home-kpi="capster"] #kpiCapster.today-grid .kpi-customer .kpi-label,
 html[data-home-kpi="capster"] #kpiCapster.today-grid .kpi-share .kpi-label{font-size:15px!important;line-height:1.2!important;font-weight:750!important}
 @media(max-width:350px){html[data-home-kpi="capster"] #kpiCapster.today-grid .kpi-customer .kpi-label,html[data-home-kpi="capster"] #kpiCapster.today-grid .kpi-share .kpi-label{font-size:13px!important}}
+
+
+/* UI ONLY — Performa Saya width + KPI value vertical alignment 2026-09-26 */
+@media (max-width:380px){
+  /* Green-final adds 10px side padding to today-section; neutralize only for Capster Performa Saya
+     so this KPI group aligns with the full-width cards above. */
+  html[data-home-kpi="capster"] body .app main.dash-body .today-section{
+    padding-left:0!important;
+    padding-right:0!important;
+    width:100%!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+    align-self:stretch!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body .today-section #kpiCapster.today-grid{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body .today-section #kpiCapster.today-grid > .today-item,
+  html[data-home-kpi="capster"] body .app main.dash-body .today-section #kpiCapster.today-grid > .kpi-service{
+    box-sizing:border-box!important;
+  }
+
+  /* Lift only the two top KPI values; labels and all data stay unchanged. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-customer #todayCustomer.kpi-main-value,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-share #todayShare.kpi-main-value{
+    position:relative!important;
+    top:-5px!important;
+    transform:none!important;
+    padding-top:0!important;
+  }
+}
+
+
+/* UI ONLY — Performa Saya service spacing + title icon 2026-09-26 */
+@media (max-width:380px){
+  /* Match the vertical rhythm: give Service the same breathing room below the top KPI row. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service{
+    margin-top:0!important;
+    margin-bottom:0!important;
+  }
+
+  /* Add a themed scissors glyph to the Service heading only. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .kpi-label{
+    display:flex!important;
+    align-items:center!important;
+    gap:7px!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .kpi-label::before{
+    content:"\f0c4";
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:22px!important;
+    height:22px!important;
+    flex:0 0 22px!important;
+    border-radius:50%!important;
+    font-family:"Font Awesome 6 Free"!important;
+    font-weight:900!important;
+    font-size:10px!important;
+    color:#fff!important;
+    background:linear-gradient(145deg,#43d5c0,#27bca8)!important;
+    box-shadow:0 4px 9px rgba(39,188,168,.22)!important;
+  }
+}
+
+
+/* UI ONLY — Performa Saya service detail + payment panels 2026-09-26 */
+@media (max-width:380px){
+  /* Rename the Service heading visually without touching dashboard HTML/load order. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .kpi-label{
+    font-size:0!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .kpi-label::after{
+    content:"Rincian service hari ini";
+    display:inline-block!important;
+    font-size:14px!important;
+    line-height:1.2!important;
+    font-weight:800!important;
+    color:#263a38!important;
+    letter-spacing:0!important;
+  }
+
+  /* Service detail text, quantities and dotted leaders: dark/black for stronger readability. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .service-detail-item,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .service-name,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .service-qty{
+    color:#172622!important;
+    font-weight:750!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .service-dots{
+    border-bottom-color:#172622!important;
+    opacity:.72!important;
+  }
+
+  /* Give Hak Dibayar and Denda their own larger green theme rows. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid{
+    grid-template-rows:82px auto 72px 72px!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine{
+    height:72px!important;
+    min-height:72px!important;
+    max-height:72px!important;
+    padding:11px 13px!important;
+    border:1px solid rgba(24,153,134,.18)!important;
+    border-top:0!important;
+    background:linear-gradient(145deg,#40d1ba 0%,#2fc3ac 55%,#25b49f 100%)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.38),
+      0 5px 14px rgba(31,158,139,.16)!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay .kpi-label,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine .kpi-label{
+    color:#ffffff!important;
+    font-size:11px!important;
+    line-height:1.15!important;
+    font-weight:800!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay #todayPayable.kpi-main-value,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine #todayFine.kpi-main-value{
+    color:#ffffff!important;
+    font-size:21px!important;
+    line-height:1!important;
+    font-weight:900!important;
+    text-shadow:none!important;
+  }
+}
+
+
+/* UI ONLY — Performa Saya title sizing + compact green panels 2026-09-26 */
+@media (max-width:380px){
+  /* Make the renamed Service heading easier to read. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .kpi-label::after{
+    font-size:16px!important;
+    line-height:1.15!important;
+    font-weight:850!important;
+  }
+
+  /* Reduce green payment panel height while keeping the full-theme treatment. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid{
+    grid-template-rows:82px auto 58px 58px!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine{
+    height:58px!important;
+    min-height:58px!important;
+    max-height:58px!important;
+    padding:8px 12px!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay #todayPayable.kpi-main-value,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine #todayFine.kpi-main-value{
+    font-size:19px!important;
+  }
+}
+
+
+/* UI ONLY — Performa Saya service title accent + larger pay/fine text 2026-09-26 */
+@media (max-width:380px){
+  /* Add a restrained VAX-green accent to the Service title so it does not look flat. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .kpi-head{
+    position:relative!important;
+    padding-left:8px!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .kpi-head::before{
+    content:""!important;
+    position:absolute!important;
+    left:0!important;
+    top:3px!important;
+    bottom:3px!important;
+    width:3px!important;
+    border-radius:999px!important;
+    background:linear-gradient(180deg,#43d5c0,#25b49f)!important;
+    box-shadow:0 0 7px rgba(37,180,159,.28)!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-service .kpi-label::after{
+    color:#1f6f63!important;
+    text-shadow:0 1px 0 rgba(255,255,255,.65)!important;
+  }
+
+  /* Increase only the typography inside the two green panels. */
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay .kpi-label,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine .kpi-label{
+    font-size:13px!important;
+    line-height:1.1!important;
+    font-weight:850!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay #todayPayable.kpi-main-value,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine #todayFine.kpi-main-value{
+    font-size:22px!important;
+    line-height:1!important;
+    font-weight:900!important;
+  }
+}
+
+
+/* UI ONLY — Performa Saya larger pay/fine headings 2026-09-26 */
+@media (max-width:380px){
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay .kpi-head,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine .kpi-head{
+    min-height:25px!important;
+    align-items:center!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay .kpi-label,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine .kpi-label{
+    font-size:15px!important;
+    line-height:1.05!important;
+    font-weight:900!important;
+    letter-spacing:0!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay #todayPayable.kpi-main-value,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine #todayFine.kpi-main-value{
+    font-size:23px!important;
+    line-height:1!important;
+    font-weight:900!important;
+  }
+}
+
+
+/* UI ONLY — Performa Saya pay/fine pulse emphasis 2026-09-26 */
+@media (max-width:380px){
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine{
+    position:relative!important;
+    animation:vaxPayFinePulse 1.55s ease-in-out infinite!important;
+    will-change:box-shadow,filter!important;
+  }
+}
+
+@keyframes vaxPayFinePulse{
+  0%,100%{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.38),
+      0 5px 14px rgba(31,158,139,.16),
+      0 0 0 1px rgba(31,183,160,.30);
+    filter:saturate(1);
+  }
+  50%{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.48),
+      0 7px 18px rgba(31,158,139,.24),
+      0 0 0 2px rgba(34,201,175,.78),
+      0 0 14px rgba(40,202,177,.48);
+    filter:saturate(1.08);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-pay,
+  html[data-home-kpi="capster"] body .app main.dash-body #kpiCapster.today-grid .kpi-fine{
+    animation:none!important;
+  }
+}
+
+
+/* UI ONLY — Performa Saya date alignment 2026-09-26 */
+@media (max-width:380px){
+  html[data-home-kpi="capster"] body .app main.dash-body .today-section .today-title{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:8px!important;
+    padding-left:2px!important;
+    padding-right:8px!important;
+    box-sizing:border-box!important;
+  }
+
+  html[data-home-kpi="capster"] body .app main.dash-body .today-section .today-title > span:last-child,
+  html[data-home-kpi="capster"] body .app main.dash-body .today-section .today-title .today-date{
+    position:relative!important;
+    right:auto!important;
+    margin-left:auto!important;
+    padding-right:2px!important;
+    font-size:10px!important;
+    line-height:1!important;
+    font-weight:800!important;
+    color:#5f7773!important;
+    white-space:nowrap!important;
+  }
+}
