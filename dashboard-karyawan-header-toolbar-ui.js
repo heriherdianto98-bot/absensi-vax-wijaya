@@ -1,5 +1,6 @@
 /* Employee presentation adapter: read-only consumer of the existing canonical Supabase self-read RPC.
    No employee-side financial calculation, schema changes, or edits to locked ERP engines. */
+/* 🔒 OWNER LOCK — Customer KPI label consistency | PASS 2026-09-26 | Do not modify without explicit Owner approval. */
 (() => {
   'use strict';
   const app = document.querySelector('.app');
@@ -99,7 +100,7 @@
 
   const sectionTitle = app.querySelector('.today-title');
   const kpiLabels = [
-    [app.querySelector('#kpiCapster .kpi-customer .kpi-label'), 'Customer Hari Ini', 'Customer'],
+    [app.querySelector('#kpiCapster .kpi-customer .kpi-label'), 'Customer', 'Customer'],
     [app.querySelector('#kpiCapster .kpi-service .kpi-label'), 'Service Hari Ini', 'Service']
   ];
   const showPeriod = date => {
@@ -178,6 +179,9 @@
     input.click();
   });
   input.addEventListener('change', () => { if (input.value) void selectDate(input.value); });
+
+  /* UI ONLY — initialize consistent Customer label on first load 2026-09-26 */
+  showPeriod(initialDate);
 
   async function loadMasterAddress() {
     try {
