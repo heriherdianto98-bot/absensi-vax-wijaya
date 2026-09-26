@@ -1,0 +1,16 @@
+[Unit]
+Description=ERP VAX Ranking Award Push Config API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/erp-vax-notification
+EnvironmentFile=/opt/erp-vax-notification/.env
+ExecStart=/usr/bin/node /opt/erp-vax-notification/ranking-award-api.js
+Restart=on-failure
+RestartSec=3
+User=root
+
+[Install]
+WantedBy=multi-user.target
