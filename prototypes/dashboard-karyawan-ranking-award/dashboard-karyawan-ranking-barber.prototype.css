@@ -1,0 +1,259 @@
+/* Employee Barber Ranking — isolated presentation only. */
+.employee-barber-ranking{margin:0;padding:12px;border:1px solid rgba(212,175,55,.28);border-radius:13px;background:linear-gradient(145deg,#242522,#141616 82%);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 12px rgba(0,0,0,.32);color:#f5f1e8}
+.employee-barber-ranking[hidden]{display:none!important}
+.employee-barber-ranking-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.employee-barber-ranking-title{display:flex;align-items:center;gap:8px;min-width:0}
+.employee-barber-ranking-icon{display:flex;align-items:center;justify-content:center;width:29px;height:29px;flex:0 0 29px;border-radius:50%;background:#57492b;color:#ffe096;font-size:12px}
+.employee-barber-ranking-title h3{margin:0;font-size:14px;line-height:1.15;font-weight:800;color:#fff}
+.employee-barber-ranking-title small{display:block;margin-top:3px;font-size:9px;line-height:1.25;font-weight:500;color:#aaa69d}
+.employee-barber-ranking-self{flex:0 0 auto;text-align:right}
+.employee-barber-ranking-self strong{display:block;font-size:17px;line-height:1;color:#f1ce78}
+.employee-barber-ranking-self span{display:block;margin-top:4px;font-size:9px;color:#aaa69d}
+.employee-barber-ranking-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;padding:3px;border:1px solid #353730;border-radius:10px;background:#0f1110}
+.employee-barber-ranking-tab{min-height:34px;border:0;border-radius:8px;background:transparent;color:#aaa8a1;font:700 11px/1 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}
+.employee-barber-ranking-tab.is-active{background:linear-gradient(180deg,#ead087,#bf9b4f);color:#171713;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+.employee-barber-ranking-status{min-height:16px;margin:0 0 7px;font-size:10px;line-height:1.3;color:#aaa69d}
+.employee-barber-ranking-list{display:flex;flex-direction:column;gap:5px;max-height:300px;overflow:auto;scrollbar-width:thin;scrollbar-color:#8a713a #171918}
+.employee-barber-ranking-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:7px;min-height:42px;padding:7px 8px;border:1px solid #343631;border-radius:9px;background:#171918}
+.employee-barber-ranking-row.is-self{border-color:rgba(231,199,121,.7);background:linear-gradient(100deg,rgba(231,199,121,.14),#171918 70%);box-shadow:inset 3px 0 0 #e7c779}
+.employee-barber-ranking-rank{display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#e8c875}
+.employee-barber-ranking-main{min-width:0}
+.employee-barber-ranking-name{display:flex;align-items:center;gap:5px;min-width:0;font-size:12px;font-weight:750;color:#f5f3ed}
+.employee-barber-ranking-name>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.employee-barber-ranking-you{flex:0 0 auto;padding:2px 5px;border-radius:999px;background:#e7c779;color:#171713;font-size:8px;font-weight:900;letter-spacing:.04em}
+.employee-barber-ranking-branch{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:#aaa69d}
+.employee-barber-ranking-service{text-align:right;font-size:12px;font-weight:800;color:#f0cf7b;white-space:nowrap}
+.employee-barber-ranking-empty{padding:18px 8px;text-align:center;font-size:11px;color:#aaa69d}
+@media(max-width:359px){.employee-barber-ranking{padding:10px}.employee-barber-ranking-row{grid-template-columns:30px minmax(0,1fr) auto;padding:6px}.employee-barber-ranking-name,.employee-barber-ranking-service{font-size:11px}}
+
+
+/* UI ONLY — Ranking Barber orbit + larger tabs + self emphasis 2026-09-26 */
+html body .app .employee-barber-ranking{
+  position:relative!important;
+  isolation:isolate!important;
+}
+
+/* Entire Ranking Barber card now pulses in VAX green; orbit removed. */
+html body .app .employee-barber-ranking{
+  animation:vaxRankingCardPulse 1.7s ease-in-out infinite!important;
+}
+
+html body .app .employee-barber-ranking::before{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+}
+
+@keyframes vaxRankingCardPulse{
+  0%,100%{
+    border-color:rgba(47,188,168,.34)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.98),
+      0 10px 22px rgba(47,188,168,.12)!important;
+  }
+  50%{
+    border-color:rgba(47,200,180,.82)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 0 0 2px rgba(47,200,180,.22),
+      0 12px 26px rgba(47,188,168,.28),
+      0 0 18px rgba(47,200,180,.24)!important;
+  }
+}
+
+/* Larger scope titles: Cabang Saya / Semua Cabang. */
+html body .app .employee-barber-ranking .employee-barber-ranking-tab{
+  min-height:38px!important;
+  font-size:11.5px!important;
+  line-height:1!important;
+  font-weight:850!important;
+  letter-spacing:.005em!important;
+}
+
+/* Current employee row: full VAX green panel + clear repeating emphasis. */
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self{
+  border-color:rgba(38,182,160,.82)!important;
+  background:linear-gradient(135deg,#43d5c0 0%,#27bca8 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    0 5px 13px rgba(39,188,168,.22)!important;
+  animation:vaxRankingSelfPulse 1.45s ease-in-out infinite!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .employee-barber-ranking-name,
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .employee-barber-ranking-rank,
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .employee-barber-ranking-service{
+  color:#ffffff!important;
+  text-shadow:0 1px 1px rgba(0,88,77,.18)!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .employee-barber-ranking-you{
+  color:#087563!important;
+  background:rgba(255,255,255,.92)!important;
+  border:1px solid rgba(255,255,255,.78)!important;
+  box-shadow:0 2px 7px rgba(14,109,94,.14)!important;
+}
+
+@keyframes vaxRankingSelfPulse{
+  0%,100%{
+    filter:brightness(1);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.42),
+      0 5px 13px rgba(39,188,168,.22);
+  }
+  50%{
+    filter:brightness(1.08);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.50),
+      0 0 0 2px rgba(66,219,196,.42),
+      0 7px 18px rgba(39,188,168,.38),
+      0 0 14px rgba(57,200,180,.28);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .employee-barber-ranking::before,
+  html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self{
+    animation:none!important;
+  }
+}
+
+
+/* UI ONLY — ranking self rank color + themed scrollbar 2026-09-26 */
+html body .app .employee-barber-ranking .employee-barber-ranking-self strong{
+  color:#27bca8!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.75),0 0 8px rgba(39,188,168,.18)!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-self span{
+  color:#4c8f86!important;
+  font-weight:750!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list{
+  scrollbar-width:thin!important;
+  scrollbar-color:#35c7b2 #e8f7f4!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-scrollbar{
+  width:6px!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-scrollbar-track{
+  background:#e8f7f4!important;
+  border-radius:999px!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#43d5c0,#27bca8)!important;
+  border-radius:999px!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,#4adbc6,#22ad9a)!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .employee-barber-ranking{
+    animation:none!important;
+  }
+}
+
+
+/* UI ONLY — ranking scope/date status inset + bold 2026-09-26 */
+html body .app .employee-barber-ranking .employee-barber-ranking-status{
+  padding-left:6px!important;
+  padding-right:6px!important;
+  box-sizing:border-box!important;
+  font-size:10px!important;
+  line-height:1.3!important;
+  font-weight:800!important;
+  color:#52766f!important;
+}
+
+
+/* UI ONLY — Ranking #1 company celebration overlay 2026-09-26 */
+.vax-ranking-award{
+  position:fixed!important;
+  inset:0!important;
+  z-index:99999!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:18px!important;
+  overflow:hidden!important;
+  background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.22),rgba(5,47,42,.38) 46%,rgba(4,31,29,.66))!important;
+  backdrop-filter:blur(7px)!important;
+}
+.vax-ranking-award-confetti{
+  position:absolute!important;
+  inset:-12% 0 0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+.vax-ranking-award-confetti i{
+  position:absolute!important;
+  left:var(--x)!important;
+  top:-12%!important;
+  font-style:normal!important;
+  font-size:12px!important;
+  color:hsl(var(--hue) 88% 58%)!important;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.16))!important;
+  transform:rotate(var(--rot))!important;
+  animation:vaxRankingConfettiFall var(--dur) linear infinite!important;
+  animation-delay:var(--delay)!important;
+}
+@keyframes vaxRankingConfettiFall{
+  0%{transform:translate3d(0,-8vh,0) rotate(var(--rot));opacity:0}
+  8%{opacity:1}
+  100%{transform:translate3d(var(--drift),118vh,0) rotate(calc(var(--rot) + 760deg));opacity:.96}
+}
+.vax-ranking-award-card{
+  position:relative!important;
+  z-index:2!important;
+  width:min(360px,calc(100vw - 32px))!important;
+  padding:25px 21px 20px!important;
+  border-radius:22px!important;
+  text-align:center!important;
+  color:#214b45!important;
+  background:linear-gradient(155deg,rgba(255,255,255,.98),rgba(235,253,248,.97))!important;
+  border:1px solid rgba(59,202,180,.62)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    0 0 0 4px rgba(65,210,188,.14),
+    0 22px 55px rgba(0,64,55,.32)!important;
+  animation:vaxRankingAwardEnter .48s cubic-bezier(.2,.85,.25,1.12) both!important;
+}
+@keyframes vaxRankingAwardEnter{
+  from{transform:translateY(26px) scale(.88);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+.vax-ranking-award-trophy{
+  width:64px!important;height:64px!important;margin:-3px auto 10px!important;border-radius:50%!important;
+  display:grid!important;place-items:center!important;
+  color:#fff!important;font-size:28px!important;
+  background:linear-gradient(145deg,#43d5c0,#20ad98)!important;
+  box-shadow:0 9px 22px rgba(34,181,157,.32),inset 0 1px 0 rgba(255,255,255,.45)!important;
+  animation:vaxRankingTrophy 1.25s ease-in-out infinite!important;
+}
+@keyframes vaxRankingTrophy{0%,100%{transform:rotate(-4deg) scale(1)}50%{transform:rotate(4deg) scale(1.07)}}
+.vax-ranking-award-kicker{
+  margin-bottom:7px!important;color:#15977f!important;font-size:10px!important;font-weight:950!important;letter-spacing:.14em!important;
+}
+.vax-ranking-award-card h2{
+  margin:0 0 13px!important;color:#166d60!important;font-size:20px!important;line-height:1.18!important;font-weight:950!important;letter-spacing:-.02em!important;
+}
+.vax-ranking-award-card p{
+  margin:8px 0!important;color:#486b66!important;font-size:12px!important;line-height:1.48!important;font-weight:650!important;
+}
+.vax-ranking-award-close{
+  min-width:150px!important;min-height:42px!important;margin-top:12px!important;padding:10px 16px!important;
+  border:0!important;border-radius:13px!important;color:#fff!important;font-size:12px!important;font-weight:900!important;
+  background:linear-gradient(145deg,#43d5c0,#27bca8)!important;
+  box-shadow:0 7px 16px rgba(39,188,168,.26)!important;cursor:pointer!important;
+}
+.vax-ranking-award.is-settled .vax-ranking-award-confetti i{animation-iteration-count:1!important}
+
+@media(prefers-reduced-motion:reduce){
+  .vax-ranking-award-confetti i,.vax-ranking-award-card,.vax-ranking-award-trophy{animation:none!important}
+}
