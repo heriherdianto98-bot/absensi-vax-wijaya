@@ -1225,23 +1225,28 @@ html body .app .statistik{
   padding:12px!important;
   border:1px solid rgba(28,112,103,.28)!important;
   border-radius:18px!important;
-  background:linear-gradient(145deg,#ffffff 0%,#f8fcfb 100%)!important;
+  background:
+    radial-gradient(circle at 88% 14%,rgba(255,255,255,.18),transparent 25%),
+    linear-gradient(145deg,#48d4c0 0%,#2fc8b4 48%,#20ad99 100%)!important;
+  border-color:rgba(20,151,132,.30)!important;
   box-shadow:
-    0 10px 24px rgba(43,102,94,.10),
-    inset 0 1px 0 rgba(255,255,255,.92)!important;
+    0 12px 24px rgba(31,157,140,.24),
+    0 4px 8px rgba(24,116,105,.12),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -2px 0 rgba(9,121,106,.12)!important;
 }
 html body .app .statistik-heading{
   display:flex!important;flex-direction:column!important;align-items:flex-start!important;
   gap:5px!important;margin:0 0 11px!important;
 }
 html body .app .statistik-heading h3{
-  margin:0!important;color:#173e46!important;font-size:15px!important;line-height:1.1!important;
+  margin:0!important;color:#ffffff!important;font-size:15px!important;line-height:1.1!important;text-shadow:0 1px 4px rgba(9,99,88,.18)!important;
   font-weight:950!important;text-transform:uppercase!important;letter-spacing:.02em!important;
 }
 html body .app .statistik-heading-accent{
   display:block!important;width:42px!important;height:3px!important;border-radius:99px!important;
-  background:linear-gradient(90deg,#35d6be,#74ead8)!important;
-  box-shadow:0 0 12px rgba(53,214,190,.38)!important;
+  background:linear-gradient(90deg,#ffffff,rgba(255,255,255,.58))!important;
+  box-shadow:0 2px 8px rgba(9,111,98,.18)!important;
 }
 html body .app .grid-stat{
   display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;
