@@ -30,6 +30,13 @@
       p.dataset.erpGlobalNotifPengaduanJs='1';
       document.head.appendChild(p);
     }
+    if(!document.querySelector('script[data-erp-global-notif-kasbon-employee-js]')){
+      const k=document.createElement('script');
+      k.src='../js/modules/erp-global-notifications-kasbon-employee-ui.js?v=20260926-1';
+      k.async=false;
+      k.dataset.erpGlobalNotifKasbonEmployeeJs='1';
+      document.head.appendChild(k);
+    }
   };
   const ensureKasbonListReadFix=()=>{
     const path=String(window.location.pathname||'').toLowerCase();

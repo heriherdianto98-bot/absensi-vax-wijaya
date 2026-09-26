@@ -58,7 +58,7 @@
           .eq('status','MENUNGGU OWNER').order('request_date',{ascending:false}).limit(40);
         if(error)throw error;
         (data||[]).forEach(r=>N.add({key:`kasbon-owner:${r.id}`,tone:'warning',icon:'⇧',
-          module:'KASBON',href:'./finance.html?menu=kasbon',title:'Pengajuan Kasbon menunggu keputusan Owner',
+          module:'KASBON',href:`./finance.html?menu=cash-in&focus=owner-kasbon&kasbon=${encodeURIComponent(r.id)}`,title:'Pengajuan Kasbon menunggu keputusan Owner',
           detail:`${r.employee_name_snapshot||'Karyawan'} • ${r.branch_name_snapshot||'—'} • ${N.money(r.requested_amount)}`}));
       }catch(e){console.warn('[Finance notif] Kasbon read',e)}
     };

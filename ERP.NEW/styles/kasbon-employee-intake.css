@@ -1,0 +1,59 @@
+/* Employee → SVP Kasbon intake. Isolated from existing KasbonModule. */
+.ek-svp-intake{
+  margin:0 0 14px;
+  padding:14px;
+  border:1px solid rgba(34,211,238,.24);
+  border-radius:16px;
+  background:linear-gradient(160deg,#0b171c 0%,#091217 100%);
+  box-shadow:0 12px 28px rgba(0,0,0,.22);
+}
+.ek-svp-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:11px}
+.ek-svp-head small{display:block;color:#67e8f9;font-size:10px;font-weight:900;letter-spacing:.12em}
+.ek-svp-head h3{margin:2px 0 0;color:#fff;font-size:18px}
+.ek-svp-head button{
+  min-height:34px;padding:0 11px;border-radius:10px;border:1px solid rgba(103,232,249,.28);
+  background:#0b232a;color:#a5f3fc;font-weight:800;cursor:pointer
+}
+.ek-svp-count{
+  display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;
+  margin-left:7px;border-radius:999px;background:#f2c230;color:#1a1f24;font-size:11px;font-weight:900
+}
+.ek-svp-list{display:grid;gap:8px}
+.ek-svp-empty{padding:15px;text-align:center;border:1px dashed #29434b;border-radius:12px;color:#7f9ca5;font-size:12px}
+.ek-svp-item{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;
+  padding:11px 12px;border:1px solid rgba(103,232,249,.16);border-radius:13px;
+  background:linear-gradient(180deg,rgba(10,34,40,.82),rgba(7,22,27,.92))
+}
+.ek-svp-meta{min-width:0}.ek-svp-meta strong{display:block;color:#eefcff;font-size:13px}
+.ek-svp-meta span{display:block;margin-top:2px;color:#85aab2;font-size:10px}
+.ek-svp-meta p{margin:6px 0 0;color:#c4d9dd;font-size:11px;line-height:1.4}
+.ek-svp-amount{color:#67e8f9!important;font-size:15px!important;font-weight:900}
+.ek-svp-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.ek-svp-actions button{
+  min-height:32px;padding:0 10px;border-radius:9px;font-size:10px;font-weight:900;cursor:pointer
+}
+.ek-svp-forward{border:1px solid #37d0b8;background:#133a34;color:#78f1dc}
+.ek-svp-reject{border:1px solid #83424d;background:#32181e;color:#f5a2ae}
+.ek-svp-modal[hidden]{display:none!important}
+.ek-svp-modal{position:fixed;inset:0;z-index:35000;display:grid;place-items:center;padding:16px}
+.ek-svp-backdrop{position:absolute;inset:0;background:rgba(2,8,11,.72);backdrop-filter:blur(5px)}
+.ek-svp-dialog{
+  position:relative;width:min(430px,94vw);padding:15px;border-radius:16px;
+  border:1px solid rgba(103,232,249,.38);background:#07151a;
+  box-shadow:0 26px 70px rgba(0,0,0,.6),0 0 30px rgba(34,211,238,.12)
+}
+.ek-svp-dialog h4{margin:0;color:#fff;font-size:17px}.ek-svp-dialog p{margin:5px 0 10px;color:#8fb0b8;font-size:11px}
+.ek-svp-dialog textarea{
+  width:100%;min-height:86px;resize:vertical;border:1px solid #28505a;border-radius:11px;
+  background:#091d23;color:#eefcff;padding:10px;font:inherit;font-size:12px;outline:none
+}
+.ek-svp-dialog textarea:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.ek-svp-dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.ek-svp-dialog-actions button{min-height:34px;padding:0 12px;border-radius:9px;font-weight:900;cursor:pointer}
+.ek-svp-cancel{border:1px solid #354b52;background:#101d22;color:#c8d5d8}
+.ek-svp-confirm{border:1px solid #38d4bc;background:linear-gradient(180deg,#2fc8b4,#20aa97);color:#06221e}
+@media(max-width:700px){
+  .ek-svp-item{grid-template-columns:1fr}
+  .ek-svp-actions{justify-content:flex-start}
+}

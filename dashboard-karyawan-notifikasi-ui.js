@@ -27,6 +27,8 @@
     .vax-employee-notif-item strong{font-size:12px;line-height:1.3}.vax-employee-notif-item small{font-size:10px;color:#c7bb9f;line-height:1.4}
     .vax-employee-notif-item.is-pengaduan{border-color:#2e7280;background:linear-gradient(145deg,#16262a,#202421)}
     .vax-employee-notif-item.is-pengaduan strong{color:#8fdee6}
+    .vax-employee-notif-item.is-kasbon{border-color:#2a8d78;background:linear-gradient(145deg,#112a25,#202421)}
+    .vax-employee-notif-item.is-kasbon strong{color:#73e1c8}
     .vax-employee-notif-empty{font-size:11px;color:#beb8a9;line-height:1.5;margin:7px 2px}
     .vax-employee-notif-item:focus-visible,.vax-employee-notif-toggle:focus-visible{outline:2px solid #e9c776;outline-offset:2px}
     @media(max-width:350px){.vax-employee-notif-panel{width:calc(100vw - 26px)}}
@@ -87,6 +89,18 @@
       })):[];
       merged.push(...complaints);loaded=true;
     }catch(error){console.warn('Notifikasi Pengaduan Karyawan:',error);}
+    try{
+      const data=await rpc('employee_kasbon_notifications_self',{});
+      const kasbon=Array.isArray(data.items)?data.items.filter(x=>x&&x.request_id).map(x=>({
+        jenis:'KASBON',
+        id:String(x.request_id),
+        request_id:String(x.request_id),
+        judul:String(x.judul||'Kasbon sudah dicairkan'),
+        ringkasan:String(x.ringkasan||'Kasbon Anda sudah dicairkan dan aktif.'),
+        created_at:x.created_at||null
+      })):[];
+      merged.push(...kasbon);loaded=true;
+    }catch(error){console.warn('Notifikasi Kasbon Karyawan:',error);}
     items=merged.sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
     if(loaded)render();else if(!items.length)showMessage('Pemberitahuan belum bisa dimuat. Coba refresh.');
     loading=false;
@@ -94,6 +108,7 @@
   function destination(row){
     const id=Number(row.id);
     if(row.jenis==='PENGADUAN')return 'pengaduan.html?ticket='+encodeURIComponent(Number(row.ticket_id));
+    if(row.jenis==='KASBON')return 'kasbon-karyawan.html';
     if(row.jenis==='SP')return 'surat-peringatan-saya.html?id='+encodeURIComponent(id);
     if(row.jenis==='INBOX')return 'pesan-karyawan.html';
     if(row.jenis==='GAJI')return 'gaji-saya.html';
@@ -107,10 +122,12 @@
     try{
       if(row.jenis==='PENGADUAN'){
         await rpc('karyawan_pengaduan_notification_read',{p_notification_id:Number(row.id)});
+      }else if(row.jenis==='KASBON'){
+        await rpc('employee_kasbon_notification_read',{p_request_id:String(row.request_id||row.id)});
       }else{
         await rpc('karyawan_dashboard_notifikasi_baca_self_v1',{p_jenis:row.jenis,p_id:Number(row.id)});
       }
-      items=items.filter(x=>!(x.jenis===row.jenis&&Number(x.id)===Number(row.id)));
+      items=items.filter(x=>!(x.jenis===row.jenis&&String(x.id)===String(row.id)));
       render();
       window.location.assign(destination(row));
     }catch(error){button.disabled=false;console.warn('Mark read Karyawan:',error);showMessage('Gagal menandai dibaca. Coba lagi melalui Refresh.');}

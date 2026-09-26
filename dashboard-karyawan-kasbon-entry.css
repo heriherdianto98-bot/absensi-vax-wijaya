@@ -1,0 +1,72 @@
+/* Employee Dashboard — Kasbon entry card. UI only. */
+.employee-kasbon-entry{
+  position:relative;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  margin:10px 0 0;
+  padding:12px 13px;
+  border:1px solid rgba(47,200,180,.34);
+  border-radius:16px;
+  background:linear-gradient(145deg,#ffffff 0%,#effaf8 100%);
+  box-shadow:0 9px 22px rgba(63,108,105,.08);
+  color:#244b52;
+  text-decoration:none;
+  overflow:hidden;
+}
+.employee-kasbon-entry::after{
+  content:"";
+  position:absolute;
+  width:90px;height:90px;
+  right:-38px;top:-42px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(47,200,180,.16),transparent 68%);
+}
+.employee-kasbon-entry-icon{
+  width:42px;height:42px;
+  border-radius:13px;
+  display:grid;place-items:center;
+  color:#fff;
+  background:linear-gradient(145deg,#38d0bc,#21ad99);
+  box-shadow:0 7px 16px rgba(47,200,180,.24);
+  font-size:18px;
+}
+.employee-kasbon-entry-copy{display:flex;flex-direction:column;min-width:0}
+.employee-kasbon-entry-copy small{
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.12em;
+  color:#4ea99c;
+}
+.employee-kasbon-entry-copy strong{
+  margin-top:1px;
+  font-size:13px;
+  line-height:1.2;
+  color:#23474e;
+}
+.employee-kasbon-entry-copy span{
+  margin-top:2px;
+  font-size:9px;
+  line-height:1.35;
+  color:#70898e;
+}
+.employee-kasbon-entry-go{
+  position:relative;z-index:1;
+  width:28px;height:28px;
+  border-radius:9px;
+  display:grid;place-items:center;
+  color:#168f7e;
+  background:#e0f6f2;
+  border:1px solid #bee7df;
+}
+.employee-kasbon-entry:hover,.employee-kasbon-entry:focus-visible{
+  outline:none;
+  border-color:rgba(47,200,180,.68);
+  box-shadow:0 10px 24px rgba(47,200,180,.13);
+}
+@media(max-width:360px){
+  .employee-kasbon-entry{grid-template-columns:38px minmax(0,1fr) 26px;padding:10px}
+  .employee-kasbon-entry-icon{width:38px;height:38px}
+}
