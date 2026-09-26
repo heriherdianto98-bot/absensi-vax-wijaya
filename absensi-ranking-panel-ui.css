@@ -1,0 +1,860 @@
+/* Absensi Karyawan — attendance/action panels matched to Ranking Barber card family.
+   UI only. No attendance, leave, GPS, slider or request logic changes. */
+
+html body .app .info{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:10px!important;
+  border:1px solid #cfe4e1!important;
+  border-radius:14px!important;
+  background:#ffffff!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98),
+    0 9px 20px rgba(33,84,79,.10),
+    0 2px 5px rgba(33,84,79,.06)!important;
+}
+
+html body .app .info::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0 auto 0 0!important;
+  width:4px!important;
+  background:linear-gradient(180deg,#43d5c0,#27bca8)!important;
+  pointer-events:none!important;
+}
+
+html body .app .info .today-clock{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:7px!important;
+  color:#17314e!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+
+html body .app .info .today-clock span{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:3px!important;
+  min-height:44px!important;
+  padding:7px 9px!important;
+  border:1px solid #dce9e7!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f5fbfa 100%)!important;
+  color:#648078!important;
+  box-shadow:inset 0 1px 0 #fff,0 3px 8px rgba(34,97,89,.05)!important;
+  white-space:normal!important;
+}
+
+html body .app .info .today-clock span:first-child::before{
+  content:"\f2f2";
+  font-family:"Font Awesome 6 Free";
+  font-weight:900;
+  color:#27bca8;
+  margin-right:4px;
+}
+
+html body .app .info .today-clock span:last-child::before{
+  content:"\f017";
+  font-family:"Font Awesome 6 Free";
+  font-weight:900;
+  color:#4a9de8;
+  margin-right:4px;
+}
+
+html body .app .info .today-clock b{
+  display:block!important;
+  width:100%!important;
+  color:#17385f!important;
+  font-size:15px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  text-align:left!important;
+  text-shadow:none!important;
+}
+
+html body .app .info #infoAbsen{
+  position:relative!important;
+  z-index:1!important;
+  margin:7px 2px 0!important;
+  color:#668078!important;
+  font-size:9.5px!important;
+  line-height:1.35!important;
+  font-weight:650!important;
+}
+
+/* Request leave card: same white ranking-card treatment. */
+html body .app .izin-shortcut{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  min-height:54px!important;
+  padding:9px 42px 9px 10px!important;
+  overflow:hidden!important;
+  border:1px solid #cfe4e1!important;
+  border-radius:14px!important;
+  background:#ffffff!important;
+  color:#17314e!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98),
+    0 9px 20px rgba(33,84,79,.10),
+    0 2px 5px rgba(33,84,79,.06)!important;
+  text-decoration:none!important;
+}
+
+html body .app .izin-shortcut::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0 auto 0 0!important;
+  width:4px!important;
+  background:linear-gradient(180deg,#43d5c0,#27bca8)!important;
+  pointer-events:none!important;
+}
+
+html body .app .izin-shortcut::after{
+  content:"\f054"!important;
+  position:absolute!important;
+  right:13px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  font-family:"Font Awesome 6 Free"!important;
+  font-weight:900!important;
+  color:#27bca8!important;
+  font-size:11px!important;
+}
+
+html body .app .izin-shortcut i{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  place-items:center!important;
+  width:32px!important;
+  height:32px!important;
+  flex:0 0 32px!important;
+  border-radius:50%!important;
+  color:#ffffff!important;
+  background:linear-gradient(145deg,#43d5c0,#27bca8)!important;
+  border:1px solid rgba(31,163,144,.18)!important;
+  box-shadow:
+    inset 0 2px 2px rgba(255,255,255,.45),
+    inset 0 -2px 4px rgba(0,0,0,.10),
+    0 4px 9px rgba(39,188,168,.20)!important;
+  font-size:13px!important;
+  filter:none!important;
+}
+
+html body .app .izin-shortcut span{
+  position:relative!important;
+  z-index:1!important;
+  color:#17314e!important;
+  font-size:11.5px!important;
+  font-weight:850!important;
+  letter-spacing:0!important;
+  text-align:left!important;
+}
+
+html body .app .izin-shortcut:hover{
+  transform:translateY(-1px)!important;
+  border-color:#8fd7cc!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 11px 24px rgba(39,188,168,.16)!important;
+}
+
+html body .app .izin-shortcut:active{
+  transform:translateY(0) scale(.995)!important;
+}
+
+@media(max-width:340px){
+  html body .app .info{padding:8px!important}
+  html body .app .info .today-clock{gap:5px!important}
+  html body .app .info .today-clock span{padding:6px 7px!important;min-height:42px!important}
+  html body .app .info .today-clock b{font-size:14px!important}
+  html body .app .izin-shortcut{min-height:50px!important;padding-left:8px!important}
+  html body .app .izin-shortcut i{width:29px!important;height:29px!important;flex-basis:29px!important}
+  html body .app .izin-shortcut span{font-size:10.5px!important}
+}
+
+
+/* UI ONLY — 3D Jam Masuk / Jam Pulang mini cards, label beside icon */
+html body .app .info .today-clock span{
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  align-items:center!important;
+  column-gap:8px!important;
+  row-gap:2px!important;
+  min-height:52px!important;
+  padding:8px 9px!important;
+  color:#5b7580!important;
+  font-size:10px!important;
+  line-height:1.05!important;
+  font-weight:850!important;
+  text-align:left!important;
+}
+
+html body .app .info .today-clock span::before{
+  grid-column:1!important;
+  grid-row:1 / span 2!important;
+  display:grid!important;
+  place-items:center!important;
+  width:31px!important;
+  height:31px!important;
+  margin:0!important;
+  border-radius:50%!important;
+  color:#fff!important;
+  font-family:"Font Awesome 6 Free"!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  border:1px solid rgba(255,255,255,.88)!important;
+  box-shadow:
+    inset 0 2px 2px rgba(255,255,255,.62),
+    inset 0 -3px 5px rgba(0,0,0,.15),
+    0 5px 9px rgba(34,85,112,.18),
+    0 0 0 1px rgba(37,139,163,.08)!important;
+  text-shadow:0 1px 1px rgba(0,0,0,.15)!important;
+}
+
+html body .app .info .today-clock span:first-child::before{
+  content:"\f2f2"!important;
+  background:
+    radial-gradient(circle at 30% 23%,rgba(255,255,255,.78),transparent 24%),
+    linear-gradient(145deg,#49ddc9 0%,#22b9a5 58%,#128b7b 100%)!important;
+}
+
+html body .app .info .today-clock span:last-child::before{
+  content:"\f017"!important;
+  background:
+    radial-gradient(circle at 30% 23%,rgba(255,255,255,.78),transparent 24%),
+    linear-gradient(145deg,#70c7ff 0%,#3a94e8 58%,#246db8 100%)!important;
+}
+
+html body .app .info .today-clock b{
+  grid-column:2!important;
+  grid-row:2!important;
+  align-self:start!important;
+  margin:0!important;
+  color:#17385f!important;
+  font-size:15px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  text-align:left!important;
+}
+
+html body .app .info .today-clock span:first-child{
+  border-color:#bfe8df!important;
+  background:
+    linear-gradient(180deg,#ffffff 0%,#f2fbf8 100%)!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(80,181,160,.12),
+    0 6px 12px rgba(37,135,116,.10),
+    0 2px 4px rgba(37,135,116,.06)!important;
+}
+
+html body .app .info .today-clock span:last-child{
+  border-color:#c5ddf3!important;
+  background:
+    linear-gradient(180deg,#ffffff 0%,#f3f8fd 100%)!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(74,157,232,.12),
+    0 6px 12px rgba(55,123,184,.10),
+    0 2px 4px rgba(55,123,184,.06)!important;
+}
+
+@media(max-width:340px){
+  html body .app .info .today-clock span{
+    grid-template-columns:30px minmax(0,1fr)!important;
+    column-gap:6px!important;
+    min-height:48px!important;
+    padding:7px!important;
+    font-size:9.5px!important;
+  }
+  html body .app .info .today-clock span::before{
+    width:28px!important;
+    height:28px!important;
+    font-size:12px!important;
+  }
+  html body .app .info .today-clock b{
+    font-size:14px!important;
+  }
+}
+
+
+/* UI ONLY — compact direct icons for Jam Masuk / Jam Pulang */
+html body .app .info .today-clock span{
+  grid-template-columns:18px minmax(0,1fr)!important;
+  column-gap:6px!important;
+  min-height:48px!important;
+  padding:7px 8px!important;
+}
+
+html body .app .info .today-clock span::before{
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  font-size:13px!important;
+  line-height:1!important;
+  align-self:center!important;
+  justify-self:center!important;
+}
+
+html body .app .info .today-clock span:first-child::before{
+  content:"\f2f2"!important;
+  color:#27bca8!important;
+}
+
+html body .app .info .today-clock span:last-child::before{
+  content:"\f017"!important;
+  color:#3a94e8!important;
+}
+
+html body .app .info .today-clock b{
+  font-size:14px!important;
+}
+
+@media(max-width:340px){
+  html body .app .info .today-clock span{
+    grid-template-columns:16px minmax(0,1fr)!important;
+    column-gap:5px!important;
+    min-height:46px!important;
+    padding:6px 7px!important;
+  }
+  html body .app .info .today-clock span::before{
+    font-size:12px!important;
+  }
+}
+
+
+/* UI ONLY — full theme color Jam Masuk / Jam Pulang cards */
+html body .app .info .today-clock span:first-child{
+  border:1px solid rgba(255,255,255,.28)!important;
+  background:
+    radial-gradient(circle at 88% 16%,rgba(255,255,255,.18),transparent 24%),
+    linear-gradient(135deg,#43d5c0 0%,#27bca8 56%,#169986 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.34),
+    0 7px 15px rgba(39,188,168,.20)!important;
+  color:#fff!important;
+}
+
+html body .app .info .today-clock span:last-child{
+  border:1px solid rgba(255,255,255,.28)!important;
+  background:
+    radial-gradient(circle at 88% 16%,rgba(255,255,255,.18),transparent 24%),
+    linear-gradient(135deg,#63b8f7 0%,#3a94e8 56%,#2b73bc 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.34),
+    0 7px 15px rgba(58,148,232,.20)!important;
+  color:#fff!important;
+}
+
+html body .app .info .today-clock span:first-child::before,
+html body .app .info .today-clock span:last-child::before{
+  color:#fff!important;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.14))!important;
+}
+
+html body .app .info .today-clock span:first-child,
+html body .app .info .today-clock span:last-child{
+  text-shadow:0 1px 1px rgba(0,0,0,.10)!important;
+}
+
+html body .app .info .today-clock span:first-child b,
+html body .app .info .today-clock span:last-child b{
+  color:#fff!important;
+  text-shadow:0 1px 1px rgba(0,0,0,.12)!important;
+}
+
+
+/* UI ONLY — premium 3D attendance slider + animated fingerprint hint */
+html body .app .slider{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:46px!important;
+  border:1px solid rgba(255,255,255,.34)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(circle at 82% 18%,rgba(255,255,255,.22),transparent 24%),
+    linear-gradient(135deg,#49dcc9 0%,#31c9b5 48%,#1ba58f 100%)!important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.34),
+    inset 0 -5px 10px rgba(0,91,78,.14),
+    0 9px 20px rgba(24,168,145,.24),
+    0 2px 5px rgba(20,104,91,.10)!important;
+}
+
+html body .app .slider::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  border-radius:inherit!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.15),transparent 40%),
+    linear-gradient(90deg,rgba(255,255,255,.08),transparent 38%,rgba(255,255,255,.05))!important;
+}
+
+html body .app .slider::after{
+  content:""!important;
+  position:absolute!important;
+  left:62px!important;
+  right:18px!important;
+  top:50%!important;
+  height:2px!important;
+  transform:translateY(-50%)!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,rgba(255,255,255,.10),rgba(255,255,255,.42),rgba(255,255,255,.08))!important;
+  opacity:.75!important;
+  pointer-events:none!important;
+}
+
+html body .app .slider .slider-text{
+  position:relative!important;
+  z-index:2!important;
+  display:block!important;
+  width:100%!important;
+  padding:0 48px 0 58px!important;
+  color:#ffffff!important;
+  font-size:11.5px!important;
+  line-height:46px!important;
+  font-weight:950!important;
+  letter-spacing:.01em!important;
+  text-align:center!important;
+  text-shadow:0 1px 2px rgba(0,71,61,.28)!important;
+  white-space:nowrap!important;
+}
+
+html body .app .slider .thumb{
+  z-index:4!important;
+  width:40px!important;
+  height:40px!important;
+  top:3px!important;
+  left:3px!important;
+  border:1px solid rgba(255,255,255,.88)!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 32% 24%,rgba(255,255,255,.98),rgba(255,255,255,.68) 34%,transparent 35%),
+    linear-gradient(180deg,#fbfffe 0%,#e8fbf7 100%)!important;
+  color:#20ad99!important;
+  box-shadow:
+    inset 0 2px 2px rgba(255,255,255,.92),
+    inset 0 -4px 7px rgba(38,126,112,.10),
+    0 6px 13px rgba(21,95,84,.22),
+    0 0 0 1px rgba(44,187,166,.10)!important;
+}
+
+html body .app .slider .thumb i{
+  position:relative!important;
+  z-index:2!important;
+  display:inline-block!important;
+  color:#20ad99!important;
+  font-size:17px!important;
+  filter:drop-shadow(0 1px 1px rgba(17,110,96,.14))!important;
+  animation:vaxFingerprintHint 1.45s ease-in-out infinite!important;
+  will-change:transform,opacity!important;
+}
+
+/* Repeating hint moves only the icon, not the draggable thumb itself. */
+@keyframes vaxFingerprintHint{
+  0%,18%,100%{
+    transform:translateX(0) scale(1)!important;
+    opacity:1;
+  }
+  48%{
+    transform:translateX(5px) scale(1.06)!important;
+    opacity:.92;
+  }
+  72%{
+    transform:translateX(9px) scale(1.02)!important;
+    opacity:.78;
+  }
+}
+
+html body .app .slider:hover{
+  filter:brightness(1.025)!important;
+}
+
+html body .app .slider:active{
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.28),
+    inset 0 -4px 8px rgba(0,91,78,.16),
+    0 6px 13px rgba(24,168,145,.20)!important;
+}
+
+/* Stop hint after attendance is complete. */
+html body .app .slider.is-done .thumb i,
+html body .app .slider[aria-disabled="true"].is-done .thumb i{
+  animation:none!important;
+  transform:none!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .slider .thumb i{
+    animation:none!important;
+  }
+}
+
+@media(max-width:340px){
+  html body .app .slider{
+    min-height:43px!important;
+  }
+  html body .app .slider .slider-text{
+    line-height:43px!important;
+    font-size:10.5px!important;
+    padding-left:53px!important;
+    padding-right:38px!important;
+  }
+  html body .app .slider .thumb{
+    width:37px!important;
+    height:37px!important;
+  }
+  html body .app .slider .thumb i{
+    font-size:16px!important;
+  }
+}
+
+
+/* UI ONLY — keep slider visually vivid even while GPS gate is not ready.
+   Functional guard remains controlled by absensi.js / aria-disabled. */
+html body .app .slider{
+  opacity:1!important;
+  filter:saturate(1.08) contrast(1.03)!important;
+  background:
+    radial-gradient(circle at 84% 14%,rgba(255,255,255,.20),transparent 23%),
+    linear-gradient(135deg,#20d5bd 0%,#11bea5 46%,#078f79 100%)!important;
+  border-color:rgba(255,255,255,.46)!important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.42),
+    inset 0 -6px 12px rgba(0,76,65,.18),
+    0 10px 22px rgba(8,151,128,.30),
+    0 2px 5px rgba(0,74,63,.14)!important;
+}
+
+html body .app .slider .slider-text{
+  color:#ffffff!important;
+  font-weight:950!important;
+  text-shadow:
+    0 1px 2px rgba(0,67,57,.34),
+    0 0 8px rgba(255,255,255,.10)!important;
+}
+
+/* Make the fingerprint hint clearly visible: longer horizontal travel + pulse. */
+html body .app .slider:not(.is-done) .thumb i{
+  transform-origin:center!important;
+  animation:vaxFingerprintHintStrong 1.25s cubic-bezier(.4,0,.2,1) infinite!important;
+}
+
+@keyframes vaxFingerprintHintStrong{
+  0%,12%,100%{
+    transform:translateX(-2px) scale(1)!important;
+    opacity:1;
+  }
+  38%{
+    transform:translateX(5px) scale(1.08)!important;
+    opacity:1;
+  }
+  68%{
+    transform:translateX(13px) scale(1.12)!important;
+    opacity:.82;
+  }
+  82%{
+    transform:translateX(16px) scale(.96)!important;
+    opacity:.42;
+  }
+}
+
+/* Add a subtle moving light inside the thumb to reinforce the swipe direction. */
+html body .app .slider:not(.is-done) .thumb::after{
+  content:""!important;
+  position:absolute!important;
+  top:8px!important;
+  left:7px!important;
+  width:7px!important;
+  height:24px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.70),transparent)!important;
+  opacity:.45!important;
+  pointer-events:none!important;
+  animation:vaxThumbLightSweep 1.25s ease-in-out infinite!important;
+}
+
+@keyframes vaxThumbLightSweep{
+  0%,100%{transform:translateX(0);opacity:.20}
+  55%{transform:translateX(17px);opacity:.65}
+  80%{transform:translateX(21px);opacity:.10}
+}
+
+html body .app .slider.is-done{
+  opacity:.72!important;
+  filter:saturate(.85)!important;
+}
+
+html body .app .slider.is-done .thumb::after{
+  animation:none!important;
+  display:none!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .slider:not(.is-done) .thumb i,
+  html body .app .slider:not(.is-done) .thumb::after{
+    animation:none!important;
+  }
+}
+
+
+/* UI ONLY — full swipe demo hint.
+   A ghost fingerprint travels across the track while the real draggable thumb stays untouched. */
+html body .app .slider:not(.is-done) .slider-text{
+  position:relative!important;
+  overflow:visible!important;
+}
+
+html body .app .slider:not(.is-done) .slider-text::after{
+  content:"\f2f2"!important;
+  position:absolute!important;
+  top:50%!important;
+  left:6px!important;
+  z-index:3!important;
+  width:30px!important;
+  height:30px!important;
+  display:grid!important;
+  place-items:center!important;
+  transform:translateY(-50%) translateX(0)!important;
+  border-radius:50%!important;
+  font-family:"Font Awesome 6 Free"!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  color:#ffffff!important;
+  background:rgba(255,255,255,.16)!important;
+  border:1px solid rgba(255,255,255,.32)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.32),
+    0 4px 10px rgba(0,83,70,.18)!important;
+  text-shadow:0 1px 2px rgba(0,68,58,.28)!important;
+  pointer-events:none!important;
+  opacity:0!important;
+  animation:vaxSwipeDemoFingerprint 2.15s ease-in-out infinite!important;
+}
+
+@keyframes vaxSwipeDemoFingerprint{
+  0%,12%{
+    transform:translateY(-50%) translateX(0) scale(.92)!important;
+    opacity:0;
+  }
+  20%{
+    transform:translateY(-50%) translateX(0) scale(1)!important;
+    opacity:.95;
+  }
+  68%{
+    transform:translateY(-50%) translateX(calc(100% + 175px)) scale(1.04)!important;
+    opacity:1;
+  }
+  82%{
+    transform:translateY(-50%) translateX(calc(100% + 205px)) scale(.96)!important;
+    opacity:.18;
+  }
+  83%,100%{
+    transform:translateY(-50%) translateX(0) scale(.92)!important;
+    opacity:0;
+  }
+}
+
+/* Keep the real thumb icon subtle while the demo gesture shows the direction. */
+html body .app .slider:not(.is-done) .thumb i{
+  animation:vaxRealThumbFingerprintPulse 1.4s ease-in-out infinite!important;
+}
+
+@keyframes vaxRealThumbFingerprintPulse{
+  0%,100%{transform:scale(1)!important;opacity:1}
+  50%{transform:scale(1.10)!important;opacity:.78}
+}
+
+html body .app .slider.is-done .slider-text::after{
+  display:none!important;
+  animation:none!important;
+}
+
+@media(max-width:340px){
+  @keyframes vaxSwipeDemoFingerprint{
+    0%,12%{
+      transform:translateY(-50%) translateX(0) scale(.92)!important;
+      opacity:0;
+    }
+    20%{
+      transform:translateY(-50%) translateX(0) scale(1)!important;
+      opacity:.95;
+    }
+    68%{
+      transform:translateY(-50%) translateX(calc(100% + 145px)) scale(1.04)!important;
+      opacity:1;
+    }
+    82%{
+      transform:translateY(-50%) translateX(calc(100% + 168px)) scale(.96)!important;
+      opacity:.18;
+    }
+    83%,100%{
+      transform:translateY(-50%) translateX(0) scale(.92)!important;
+      opacity:0;
+    }
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .slider:not(.is-done) .slider-text::after,
+  html body .app .slider:not(.is-done) .thumb i{
+    animation:none!important;
+  }
+}
+
+
+/* UI ONLY — canonical swipe demo element.
+   Uses a dedicated DOM node, not slider-text pseudo content. */
+html body .app .slider .slider-swipe-demo{
+  position:absolute!important;
+  top:50%!important;
+  left:7px!important;
+  z-index:3!important;
+  width:32px!important;
+  height:32px!important;
+  display:grid!important;
+  place-items:center!important;
+  transform:translateY(-50%) translateX(0)!important;
+  border-radius:50%!important;
+  color:#ffffff!important;
+  background:rgba(255,255,255,.15)!important;
+  border:1px solid rgba(255,255,255,.32)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.30),
+    0 4px 11px rgba(0,78,66,.20)!important;
+  pointer-events:none!important;
+  opacity:0!important;
+  animation:vaxSwipeHintTravel 2.05s cubic-bezier(.4,0,.2,1) infinite!important;
+}
+
+html body .app .slider .slider-swipe-demo i{
+  color:#ffffff!important;
+  font-size:15px!important;
+  filter:drop-shadow(0 1px 2px rgba(0,65,55,.26))!important;
+}
+
+@keyframes vaxSwipeHintTravel{
+  0%,10%{
+    left:7px;
+    opacity:0;
+    transform:translateY(-50%) scale(.92)!important;
+  }
+  18%{
+    left:7px;
+    opacity:.96;
+    transform:translateY(-50%) scale(1)!important;
+  }
+  72%{
+    left:calc(100% - 45px);
+    opacity:.96;
+    transform:translateY(-50%) scale(1.04)!important;
+  }
+  84%{
+    left:calc(100% - 40px);
+    opacity:0;
+    transform:translateY(-50%) scale(.94)!important;
+  }
+  85%,100%{
+    left:7px;
+    opacity:0;
+    transform:translateY(-50%) scale(.92)!important;
+  }
+}
+
+html body .app .slider .slider-swipe-demo.is-hidden{
+  display:none!important;
+  animation:none!important;
+}
+
+/* Disable the obsolete pseudo demo to avoid duplicate hints. */
+html body .app .slider:not(.is-done) .slider-text::after{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .slider .slider-swipe-demo{
+    animation:none!important;
+    display:none!important;
+  }
+}
+
+
+/* UI ONLY — JS now animates the real thumb. Remove competing CSS hint animations. */
+html body .app .slider:not(.is-done) .thumb i{
+  animation:none!important;
+  transform:none!important;
+  opacity:1!important;
+}
+html body .app .slider:not(.is-done) .thumb::after{
+  display:none!important;
+  content:none!important;
+  animation:none!important;
+}
+html body .app .slider .slider-swipe-demo,
+html body .app .slider:not(.is-done) .slider-text::after{
+  display:none!important;
+  content:none!important;
+  animation:none!important;
+}
+
+
+/* FINAL UI — static attendance thumb. No demo movement. */
+html body .app .slider .thumb,
+html body .app .slider .thumb i,
+html body .app .slider .thumb::after,
+html body .app .slider .slider-text::after,
+html body .app .slider .slider-swipe-demo{
+  animation:none!important;
+}
+
+html body .app .slider .thumb i{
+  transform:none!important;
+  opacity:1!important;
+}
+
+html body .app .slider .thumb::after,
+html body .app .slider .slider-text::after,
+html body .app .slider .slider-swipe-demo{
+  display:none!important;
+  content:none!important;
+}
+
+
+/* UI ONLY — tighten end-of-page spacing above fixed bottom nav */
+html body .app{
+  padding-bottom:calc(58px + env(safe-area-inset-bottom,0px))!important;
+}
+
+html body .app .absen-body{
+  padding-bottom:4px!important;
+}
+
+html body .app .absen-action{
+  padding-bottom:0!important;
+  margin-bottom:0!important;
+}
+
+html body .app .footer-text{
+  margin-bottom:0!important;
+  padding-bottom:0!important;
+}

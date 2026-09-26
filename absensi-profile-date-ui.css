@@ -1,0 +1,51 @@
+/* Absensi Karyawan — profile calendar date UI only.
+   Mirrors the approved employee-dashboard profile date without touching locked dashboard files. */
+.app .profile-card[aria-label="Profil karyawan"] .profile-meta-date{
+  margin-left:auto;
+  align-self:center;
+  flex:0 0 42px;
+  min-width:42px;
+  text-align:right;
+  border-left:1px solid rgba(31,98,111,.18);
+  padding-left:8px;
+  position:relative;
+  z-index:2;
+}
+.app .profile-card[aria-label="Profil karyawan"] .profile-meta-date small{
+  display:block;
+  font-size:8px;
+  line-height:1.1;
+  color:#657b92;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.app .profile-card[aria-label="Profil karyawan"] .profile-meta-date strong{
+  display:block;
+  position:relative;
+  top:3px;
+  margin:0;
+  color:#17385f;
+  font-size:23px;
+  line-height:1;
+  font-weight:900;
+}
+.app .profile-card[aria-label="Profil karyawan"] .profile-meta-date span{
+  display:block;
+  margin-top:5px;
+  color:#657b92;
+  font-size:8px;
+  line-height:1.1;
+  font-weight:750;
+  white-space:nowrap;
+}
+@media(max-width:380px){
+  .app .profile-card[aria-label="Profil karyawan"] .profile-meta-date{
+    flex-basis:38px;
+    min-width:38px;
+    padding-left:6px;
+  }
+  .app .profile-card[aria-label="Profil karyawan"] .profile-meta-date strong{font-size:21px}
+  .app .profile-card[aria-label="Profil karyawan"] .profile-meta-date small,
+  .app .profile-card[aria-label="Profil karyawan"] .profile-meta-date span{font-size:7px}
+}
