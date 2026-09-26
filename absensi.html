@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="absensi-profile-date-ui.css?v=20260927-1">
 <link rel="stylesheet" href="dashboard-karyawan-bottomnav-edge-theme-ui.css?v=20260926-1">
 <link rel="stylesheet" href="employee-bottomnav-canonical-ui.css?v=20260927-1">
+<link rel="stylesheet" href="absensi-employee-month-summary-consumer.css?v=20260927-1">
 <link rel="stylesheet" href="absensi-main-theme-ui.css?v=20260926-1">
 <link rel="stylesheet" href="absensi-ranking-panel-ui.css?v=20260927-1">
 <link rel="stylesheet" href="absensi-location-detail-ui.css?v=20260927-1">
@@ -121,8 +122,16 @@
 
     <section class="card statistik" aria-label="Ringkasan bulan ini">
         <div class="statistik-heading">
-            <h3>Ringkasan Bulan Ini</h3>
+            <h3 id="employeeSummaryMonthTitle">Ringkasan Bulan Ini</h3>
+            <button type="button" id="employeeSummaryMonthButton" class="employee-summary-month-button" aria-label="Pilih bulan ringkasan" aria-expanded="false">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+            </button>
             <span class="statistik-heading-accent" aria-hidden="true"></span>
+            <div id="employeeSummaryMonthPopup" class="employee-summary-month-popup" hidden>
+                <label for="employeeSummaryMonthInput">Pilih Bulan</label>
+                <input id="employeeSummaryMonthInput" type="month">
+                <button type="button" id="employeeSummaryMonthApply" class="employee-summary-month-apply">Tampilkan</button>
+            </div>
         </div>
         <div class="grid-stat">
             <div class="item item-hadir">
@@ -229,6 +238,7 @@
 <script src="absensi-profile-date-ui.js?v=20260927-1"></script>
 <script src="absensi-location-detail-ui.js?v=20260927-1"></script>
 <script src="dashboard-karyawan-notifikasi-ui.js?v=20260926-1"></script>
+<script src="absensi-employee-month-summary-consumer.js?v=20260927-1"></script>
 
 </body>
 </html>
