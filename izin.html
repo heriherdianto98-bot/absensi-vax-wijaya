@@ -68,6 +68,7 @@
                 <option value="IZIN">Izin</option>
                 <option value="LIBUR">Libur</option>
                 <option value="SAKIT">Sakit</option>
+                <option value="PULANG_AWAL">Pulang Lebih Awal</option>
             </select>
             <div class="jenis-custom" id="jenisCustom">
                 <button type="button" class="jenis-trigger" id="jenisTrigger" aria-haspopup="listbox" aria-expanded="false">
@@ -78,10 +79,22 @@
                     <button type="button" class="jenis-option is-selected" data-value="IZIN" role="option" aria-selected="true"><i class="fas fa-user-clock"></i><span>Izin</span></button>
                     <button type="button" class="jenis-option" data-value="LIBUR" role="option" aria-selected="false"><i class="fas fa-calendar-check"></i><span>Libur</span></button>
                     <button type="button" class="jenis-option" data-value="SAKIT" role="option" aria-selected="false"><i class="fas fa-briefcase-medical"></i><span>Sakit</span></button>
+                    <button type="button" class="jenis-option jenis-pulang-awal" data-value="PULANG_AWAL" role="option" aria-selected="false"><i class="fas fa-person-walking-arrow-right"></i><span>Pulang Lebih Awal</span></button>
                     <a class="jenis-telat-link" href="izin-telat.html" role="option" aria-label="Izin Telat Masuk, buka formulir khusus"><i class="fas fa-clock" aria-hidden="true"></i><span>Izin Telat Masuk</span></a>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="field pulang-awal-kind" id="fieldPulangAwalKind" hidden>
+        <label>Status Setelah SPV ACC</label>
+        <div class="pulang-awal-kind-grid" role="group" aria-label="Status setelah SPV ACC">
+            <button type="button" class="pulang-awal-kind-btn active" data-pulang-kind="IZIN"><i class="fas fa-circle-info"></i><span>Izin</span></button>
+            <button type="button" class="pulang-awal-kind-btn" data-pulang-kind="SAKIT"><i class="fas fa-briefcase-medical"></i><span>Sakit</span></button>
+            <button type="button" class="pulang-awal-kind-btn" data-pulang-kind="LIBUR"><i class="fas fa-calendar-day"></i><span>Libur</span></button>
+        </div>
+        <input id="pulangAwalKind" type="hidden" value="IZIN">
+        <p class="pulang-awal-help">Hanya tersedia jika Anda sudah Absen Masuk hari ini. Setelah SPV ACC, status absensi otomatis berubah sesuai pilihan ini.</p>
     </div>
 
     <div class="field">
@@ -106,10 +119,37 @@
 
     <section class="info-box">
         <i class="fas fa-shield-halved"></i>
-        <p>Setelah reviewer <b>ACC</b>, status langsung final. Capster: max 14 hari, max 2 orang/cabang/tanggal. Kasir: wajib ada coverage.</p>
+        <p id="izinInfoText">Setelah reviewer <b>ACC</b>, status langsung final. Capster: max 14 hari, max 2 orang/cabang/tanggal. Kasir: wajib ada coverage.</p>
     </section>
 
     <p id="izinBentrokWarn" class="izin-bentrok-warn" hidden></p>
+
+    <section id="hasilPengajuanCard" class="hasil-pengajuan-card" hidden aria-live="polite">
+        <div class="hasil-pengajuan-head">
+            <span class="hasil-pengajuan-icon"><i class="fas fa-paper-plane"></i></span>
+            <div>
+                <small>PENGAJUAN TERKIRIM</small>
+                <h3 id="hasilPengajuanTitle">Pengajuan berhasil dikirim</h3>
+            </div>
+            <span id="hasilPengajuanBadge" class="hasil-pengajuan-badge">MENUNGGU SPV</span>
+        </div>
+
+        <div class="hasil-pengajuan-main">
+            <div class="hasil-pengajuan-copy">
+                <strong id="hasilPengajuanJenis">—</strong>
+                <span id="hasilPengajuanTanggal">—</span>
+                <p id="hasilPengajuanAlasan">—</p>
+            </div>
+            <div id="hasilPengajuanFotoWrap" class="hasil-pengajuan-foto" hidden>
+                <img id="hasilPengajuanFoto" alt="Bukti pengajuan">
+            </div>
+        </div>
+
+        <div class="hasil-pengajuan-foot">
+            <i class="fas fa-clock"></i>
+            <span id="hasilPengajuanFlow">Menunggu review SPV</span>
+        </div>
+    </section>
     </div>
 
     <div class="form-end">

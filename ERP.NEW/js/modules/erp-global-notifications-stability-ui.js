@@ -173,7 +173,7 @@
         N.items=[];
         try{await N.loadIdentity(db)}catch(e){console.warn('[Notif stability] identity',e)}
         if(!['owner','svp'].includes(N.role))N.role=N.resolveRoleFromHeader();
-        const jobs=[N.loadInvoices,N.loadTagihan,N.loadArusKas,N.loadSetoran,N.loadIzin,N.loadPengumuman]
+        const jobs=[N.loadInvoices,N.loadTagihan,N.loadArusKas,N.loadSetoran,N.loadIzin,N.loadPulangAwal,N.loadPengumuman]
           .filter(fn=>typeof fn==='function')
           .map(fn=>Promise.resolve().then(()=>fn.call(N,db)));
         await Promise.allSettled(jobs);

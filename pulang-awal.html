@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Pengajuan Pulang Lebih Awal</title>
+  <link rel="stylesheet" href="pulang-awal.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="back" href="absensi.html" aria-label="Kembali"><i class="fas fa-chevron-left"></i></a>
+    <div><strong>PULANG LEBIH AWAL</strong><small>VAX WIJAYA</small></div>
+    <span></span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-icon"><i class="fas fa-person-walking-arrow-right"></i></div>
+      <div>
+        <h1>Pengajuan Pulang Lebih Awal</h1>
+        <p>Hanya untuk karyawan yang sudah Absen Masuk. Setelah SPV menyetujui, status hari ini otomatis berubah sesuai jenis pengajuan.</p>
+      </div>
+    </section>
+
+    <section class="attendance-card">
+      <div><span>Status Hari Ini</span><b id="statusHariIni">Memuat...</b></div>
+      <div><span>Jam Masuk</span><b id="jamMasuk">—</b></div>
+      <div><span>Jam Pulang</span><b id="jamPulang">—</b></div>
+    </section>
+
+    <section id="requestStatus" class="request-status" hidden>
+      <small>Pengajuan Hari Ini</small>
+      <strong id="requestStatusText">—</strong>
+      <p id="requestStatusNote"></p>
+    </section>
+
+    <form id="pulangAwalForm" class="form-card" novalidate>
+      <label>Jenis Pengajuan</label>
+      <div class="type-grid" role="group" aria-label="Jenis pengajuan">
+        <button type="button" class="type-btn active" data-kind="IZIN"><i class="fas fa-circle-info"></i><span>Izin</span></button>
+        <button type="button" class="type-btn" data-kind="SAKIT"><i class="fas fa-briefcase-medical"></i><span>Sakit</span></button>
+        <button type="button" class="type-btn" data-kind="LIBUR"><i class="fas fa-calendar-day"></i><span>Libur</span></button>
+      </div>
+      <input id="jenisPulangAwal" type="hidden" value="IZIN">
+
+      <label for="alasanPulangAwal">Alasan</label>
+      <textarea id="alasanPulangAwal" maxlength="300" rows="4" placeholder="Tuliskan alasan pulang lebih awal..." required></textarea>
+      <div class="meta"><span>Wajib diisi</span><span id="alasanCounter">0/300</span></div>
+
+      <label>Bukti / Foto</label>
+      <label class="upload" for="buktiPulangAwal">
+        <input id="buktiPulangAwal" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+        <div id="uploadEmpty">
+          <i class="fas fa-camera"></i>
+          <div><strong>Ambil / Pilih Foto</strong><small>Wajib. JPG/PNG/WEBP, maksimal 5 MB.</small></div>
+        </div>
+        <img id="previewBukti" alt="Preview bukti" hidden>
+      </label>
+      <button type="button" id="hapusBukti" class="remove" hidden><i class="fas fa-trash"></i> Hapus Foto</button>
+
+      <div class="rule"><i class="fas fa-shield-halved"></i><p>SPV hanya ACC atau Tolak. Jika ACC, sistem otomatis mengubah status absensi hari ini menjadi Izin/Sakit/Libur dan mencatat jam pulang.</p></div>
+
+      <p id="formMessage" class="message" aria-live="polite"></p>
+      <button id="submitPulangAwal" class="submit" type="submit"><i class="fas fa-paper-plane"></i><span>Kirim ke SPV</span></button>
+    </form>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="karyawan-session.js"></script>
+<script src="pulang-awal.js"></script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+/* VAX ERP — Absensi status/activity colors follow Matrix codes. UI ONLY. */
+#absensiRoot{
+  --mx-h:#3ddc84;
+  --mx-t:#fb923c;
+  --mx-l:#ef4444;
+  --mx-i:#22d3ee;
+  --mx-s:#7c3aed;
+  --mx-a:#0b1118;
+  --mx-none:#64748b;
+}
+
+/* Badge status mengikuti warna Matrix */
+#absensiRoot .absensi-status.st-masuk{
+  color:#8cf5b4!important;
+  background:rgba(61,220,132,.14)!important;
+  border-color:rgba(61,220,132,.50)!important;
+  box-shadow:0 0 10px rgba(61,220,132,.13)!important;
+}
+#absensiRoot .absensi-status.st-terlambat{
+  color:#ffbd82!important;
+  background:rgba(251,146,60,.14)!important;
+  border-color:rgba(251,146,60,.50)!important;
+  box-shadow:0 0 10px rgba(251,146,60,.13)!important;
+}
+#absensiRoot .absensi-status.st-libur{
+  color:#ff9797!important;
+  background:rgba(239,68,68,.14)!important;
+  border-color:rgba(239,68,68,.50)!important;
+  box-shadow:0 0 10px rgba(239,68,68,.13)!important;
+}
+#absensiRoot .absensi-status.st-izin{
+  color:#7cecff!important;
+  background:rgba(34,211,238,.14)!important;
+  border-color:rgba(34,211,238,.50)!important;
+  box-shadow:0 0 10px rgba(34,211,238,.13)!important;
+}
+#absensiRoot .absensi-status.st-sakit{
+  color:#d7b7ff!important;
+  background:rgba(124,58,237,.18)!important;
+  border-color:rgba(124,58,237,.55)!important;
+  box-shadow:0 0 11px rgba(124,58,237,.16)!important;
+}
+#absensiRoot .absensi-status.st-belum{
+  color:#b8c3d0!important;
+  background:rgba(100,116,139,.13)!important;
+  border-color:rgba(100,116,139,.36)!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+
+/* Card/row Status Karyawan mengikuti warna badge */
+#absensiRoot #statusKaryawan tr{
+  --status-accent:var(--mx-none);
+  --status-rgb:100,116,139;
+  position:relative;
+  background:
+    linear-gradient(90deg,rgba(var(--status-rgb),.085),transparent 26%),
+    #171d24!important;
+  box-shadow:
+    inset 3px 0 0 var(--status-accent),
+    inset 0 0 0 1px rgba(var(--status-rgb),.14)!important;
+}
+#absensiRoot #statusKaryawan tr:has(.st-masuk){--status-accent:var(--mx-h);--status-rgb:61,220,132}
+#absensiRoot #statusKaryawan tr:has(.st-terlambat){--status-accent:var(--mx-t);--status-rgb:251,146,60}
+#absensiRoot #statusKaryawan tr:has(.st-libur){--status-accent:var(--mx-l);--status-rgb:239,68,68}
+#absensiRoot #statusKaryawan tr:has(.st-izin){--status-accent:var(--mx-i);--status-rgb:34,211,238}
+#absensiRoot #statusKaryawan tr:has(.st-sakit){--status-accent:var(--mx-s);--status-rgb:124,58,237}
+#absensiRoot #statusKaryawan tr:has(.st-belum){--status-accent:var(--mx-none);--status-rgb:100,116,139}
+
+/* Aktivitas Absensi: class ditempel oleh bridge UI, data tetap dari engine lama */
+#absensiRoot .absensi-activity-row{
+  --activity-accent:var(--mx-none);
+  --activity-rgb:100,116,139;
+  position:relative!important;
+  margin:8px 10px!important;
+  border:1px solid rgba(var(--activity-rgb),.28)!important;
+  border-left:3px solid var(--activity-accent)!important;
+  border-radius:12px!important;
+  background:
+    linear-gradient(90deg,rgba(var(--activity-rgb),.10),transparent 38%),
+    #151b22!important;
+  box-shadow:0 7px 16px rgba(0,0,0,.20),0 0 10px rgba(var(--activity-rgb),.05)!important;
+}
+#absensiRoot .absensi-activity-row.is-status-hadir{--activity-accent:var(--mx-h);--activity-rgb:61,220,132}
+#absensiRoot .absensi-activity-row.is-status-terlambat{--activity-accent:var(--mx-t);--activity-rgb:251,146,60}
+#absensiRoot .absensi-activity-row.is-status-libur{--activity-accent:var(--mx-l);--activity-rgb:239,68,68}
+#absensiRoot .absensi-activity-row.is-status-izin{--activity-accent:var(--mx-i);--activity-rgb:34,211,238}
+#absensiRoot .absensi-activity-row.is-status-sakit{--activity-accent:var(--mx-s);--activity-rgb:124,58,237}
+#absensiRoot .absensi-activity-row.is-status-alfa{--activity-accent:var(--mx-a);--activity-rgb:11,17,24}
+#absensiRoot .absensi-activity-row.is-status-belum{--activity-accent:var(--mx-none);--activity-rgb:100,116,139}
+
+#absensiRoot .absensi-activity-row .absensi-activity-aksi{
+  color:var(--activity-accent)!important;
+  font-weight:900!important;
+  text-shadow:0 0 8px rgba(var(--activity-rgb),.16)!important;
+}
+#absensiRoot .absensi-activity-row .absensi-activity-time{
+  color:#c9d3de!important;
+}
+
+
+/* ===== MATRIX STATUS FULL PANEL COLORS — UI ONLY ===== */
+
+/* STATUS KARYAWAN — seluruh panel ikut warna kode Matrix */
+#absensiRoot #statusKaryawan tr{
+  --panel-bg:#475569;
+  --panel-bg-2:#334155;
+  --panel-text:#f8fafc;
+  --panel-muted:#e2e8f0;
+  --panel-border:rgba(255,255,255,.22);
+  background:linear-gradient(135deg,var(--panel-bg),var(--panel-bg-2))!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 -1px 0 rgba(0,0,0,.20),
+    0 7px 15px rgba(0,0,0,.22)!important;
+  border-color:var(--panel-border)!important;
+}
+
+#absensiRoot #statusKaryawan tr:has(.st-masuk){
+  --panel-bg:#24c875;
+  --panel-bg-2:#159c57;
+  --panel-text:#062f1b;
+  --panel-muted:#0b4d2e;
+  --panel-border:rgba(7,71,40,.28);
+}
+
+#absensiRoot #statusKaryawan tr:has(.st-terlambat){
+  --panel-bg:#fb923c;
+  --panel-bg-2:#dc6b13;
+  --panel-text:#361801;
+  --panel-muted:#5a2905;
+  --panel-border:rgba(84,39,4,.30);
+}
+
+#absensiRoot #statusKaryawan tr:has(.st-libur){
+  --panel-bg:#ef4444;
+  --panel-bg-2:#be2f2f;
+  --panel-text:#fff7f7;
+  --panel-muted:#ffe2e2;
+  --panel-border:rgba(255,255,255,.22);
+}
+
+#absensiRoot #statusKaryawan tr:has(.st-izin){
+  --panel-bg:#22d3ee;
+  --panel-bg-2:#0fa8c0;
+  --panel-text:#05343b;
+  --panel-muted:#07515c;
+  --panel-border:rgba(3,78,88,.25);
+}
+
+#absensiRoot #statusKaryawan tr:has(.st-sakit){
+  --panel-bg:#7c3aed;
+  --panel-bg-2:#5b21b6;
+  --panel-text:#ffffff;
+  --panel-muted:#ede9fe;
+  --panel-border:rgba(255,255,255,.22);
+}
+
+#absensiRoot #statusKaryawan tr:has(.st-belum){
+  --panel-bg:#475569;
+  --panel-bg-2:#334155;
+  --panel-text:#f8fafc;
+  --panel-muted:#d7dee7;
+  --panel-border:rgba(255,255,255,.14);
+}
+
+#absensiRoot #statusKaryawan tr td,
+#absensiRoot #statusKaryawan tr td *{
+  color:var(--panel-text)!important;
+}
+
+#absensiRoot #statusKaryawan tr td:nth-child(2),
+#absensiRoot #statusKaryawan tr td:nth-child(2) *{
+  color:var(--panel-muted)!important;
+}
+
+/* Badge dibuat kontras di atas full panel */
+#absensiRoot #statusKaryawan .absensi-status{
+  background:rgba(255,255,255,.18)!important;
+  border:1px solid rgba(255,255,255,.34)!important;
+  color:var(--panel-text)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    0 2px 7px rgba(0,0,0,.16)!important;
+  text-shadow:none!important;
+}
+
+/* AKTIVITAS ABSENSI — full card color */
+#absensiRoot .absensi-activity-row{
+  --activity-bg:#475569;
+  --activity-bg-2:#334155;
+  --activity-text:#f8fafc;
+  --activity-muted:#d7dee7;
+  --activity-border:rgba(255,255,255,.16);
+  background:linear-gradient(135deg,var(--activity-bg),var(--activity-bg-2))!important;
+  border:1px solid var(--activity-border)!important;
+  border-left:0!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 -1px 0 rgba(0,0,0,.18),
+    0 8px 17px rgba(0,0,0,.24)!important;
+}
+
+#absensiRoot .absensi-activity-row.is-status-hadir{
+  --activity-bg:#24c875;
+  --activity-bg-2:#159c57;
+  --activity-text:#062f1b;
+  --activity-muted:#0b4d2e;
+  --activity-border:rgba(7,71,40,.28);
+}
+
+#absensiRoot .absensi-activity-row.is-status-terlambat{
+  --activity-bg:#fb923c;
+  --activity-bg-2:#dc6b13;
+  --activity-text:#361801;
+  --activity-muted:#5a2905;
+  --activity-border:rgba(84,39,4,.30);
+}
+
+#absensiRoot .absensi-activity-row.is-status-libur{
+  --activity-bg:#ef4444;
+  --activity-bg-2:#be2f2f;
+  --activity-text:#fff7f7;
+  --activity-muted:#ffe2e2;
+  --activity-border:rgba(255,255,255,.22);
+}
+
+#absensiRoot .absensi-activity-row.is-status-izin{
+  --activity-bg:#22d3ee;
+  --activity-bg-2:#0fa8c0;
+  --activity-text:#05343b;
+  --activity-muted:#07515c;
+  --activity-border:rgba(3,78,88,.25);
+}
+
+#absensiRoot .absensi-activity-row.is-status-sakit{
+  --activity-bg:#7c3aed;
+  --activity-bg-2:#5b21b6;
+  --activity-text:#ffffff;
+  --activity-muted:#ede9fe;
+  --activity-border:rgba(255,255,255,.22);
+}
+
+#absensiRoot .absensi-activity-row.is-status-alfa{
+  --activity-bg:#111827;
+  --activity-bg-2:#030712;
+  --activity-text:#f8fafc;
+  --activity-muted:#cbd5e1;
+  --activity-border:rgba(148,163,184,.20);
+}
+
+#absensiRoot .absensi-activity-row.is-status-belum{
+  --activity-bg:#475569;
+  --activity-bg-2:#334155;
+  --activity-text:#f8fafc;
+  --activity-muted:#d7dee7;
+  --activity-border:rgba(255,255,255,.14);
+}
+
+#absensiRoot .absensi-activity-row .absensi-activity-title,
+#absensiRoot .absensi-activity-row .absensi-activity-title span,
+#absensiRoot .absensi-activity-row .absensi-activity-aksi,
+#absensiRoot .absensi-activity-row .absensi-activity-time{
+  color:var(--activity-text)!important;
+  text-shadow:none!important;
+}
+
+#absensiRoot .absensi-activity-row .absensi-activity-title span,
+#absensiRoot .absensi-activity-row .absensi-activity-time{
+  color:var(--activity-muted)!important;
+}
+
+/* sedikit depth tanpa mengubah layout */
+@media(hover:hover) and (pointer:fine){
+  #absensiRoot #statusKaryawan tr:hover,
+  #absensiRoot .absensi-activity-row:hover{
+    filter:brightness(1.06)!important;
+  }
+}
+
+
+/* ===== STATUS KARYAWAN FULL MATRIX PANELS — UI ONLY ===== */
+#absensiRoot #statusKaryawan tr{
+  --status-bg:#475569;
+  --status-bg-2:#334155;
+  --status-text:#f8fafc;
+  --status-muted:#d7dee7;
+  --status-border:rgba(255,255,255,.16);
+}
+
+#absensiRoot #statusKaryawan tr.is-status-hadir{
+  --status-bg:#24c875;
+  --status-bg-2:#159c57;
+  --status-text:#062f1b;
+  --status-muted:#0b4d2e;
+  --status-border:rgba(7,71,40,.28);
+}
+#absensiRoot #statusKaryawan tr.is-status-terlambat{
+  --status-bg:#fb923c;
+  --status-bg-2:#dc6b13;
+  --status-text:#361801;
+  --status-muted:#5a2905;
+  --status-border:rgba(84,39,4,.30);
+}
+#absensiRoot #statusKaryawan tr.is-status-libur{
+  --status-bg:#ef4444;
+  --status-bg-2:#be2f2f;
+  --status-text:#fff7f7;
+  --status-muted:#ffe2e2;
+  --status-border:rgba(255,255,255,.22);
+}
+#absensiRoot #statusKaryawan tr.is-status-izin{
+  --status-bg:#22d3ee;
+  --status-bg-2:#0fa8c0;
+  --status-text:#05343b;
+  --status-muted:#07515c;
+  --status-border:rgba(3,78,88,.25);
+}
+#absensiRoot #statusKaryawan tr.is-status-sakit{
+  --status-bg:#7c3aed;
+  --status-bg-2:#5b21b6;
+  --status-text:#ffffff;
+  --status-muted:#ede9fe;
+  --status-border:rgba(255,255,255,.22);
+}
+#absensiRoot #statusKaryawan tr.is-status-alfa{
+  --status-bg:#111827;
+  --status-bg-2:#030712;
+  --status-text:#f8fafc;
+  --status-muted:#cbd5e1;
+  --status-border:rgba(148,163,184,.20);
+}
+#absensiRoot #statusKaryawan tr.is-status-belum{
+  --status-bg:#475569;
+  --status-bg-2:#334155;
+  --status-text:#f8fafc;
+  --status-muted:#d7dee7;
+  --status-border:rgba(255,255,255,.14);
+}
+
+#absensiRoot #statusKaryawan tr > td{
+  background:
+    linear-gradient(135deg,var(--status-bg),var(--status-bg-2))!important;
+  color:var(--status-text)!important;
+  border-top:1px solid var(--status-border)!important;
+  border-bottom:1px solid var(--status-border)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -1px 0 rgba(0,0,0,.14)!important;
+}
+
+#absensiRoot #statusKaryawan tr > td:first-child{
+  border-left:1px solid var(--status-border)!important;
+  border-radius:12px 0 0 12px!important;
+}
+#absensiRoot #statusKaryawan tr > td:last-child{
+  border-right:1px solid var(--status-border)!important;
+  border-radius:0 12px 12px 0!important;
+}
+
+#absensiRoot #statusKaryawan tr > td:nth-child(2){
+  color:var(--status-muted)!important;
+}
+
+#absensiRoot #statusKaryawan tr > td .absensi-status{
+  color:var(--status-text)!important;
+  background:rgba(255,255,255,.18)!important;
+  border:1px solid rgba(255,255,255,.30)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    0 2px 7px rgba(0,0,0,.14)!important;
+}
+
+#absensiRoot #statusKaryawan tr + tr td{
+  border-top-width:6px!important;
+  border-top-color:#11161d!important;
+}
+
+#absensiRoot #statusKaryawan tr:hover > td{
+  filter:brightness(1.05)!important;
+}

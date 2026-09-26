@@ -1,0 +1,510 @@
+/* ERP VAX — Pulang Lebih Awal embed in Absensi */
+.pulang-awal-spv-embed{margin:16px 0;padding:0;overflow:hidden;border:1px solid #c7e8e2;border-radius:18px;background:#f7fcfb;box-shadow:0 10px 28px rgba(15,23,42,.08)}
+.pulang-awal-spv-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;background:linear-gradient(180deg,#1e2430,#171c23);color:#fff}
+.pulang-awal-spv-head small{display:block;color:#56d9c7;font-size:10px;font-weight:900;letter-spacing:.12em}.pulang-awal-spv-head h2{margin:3px 0 0;font-size:24px}.pulang-awal-spv-head p{margin:4px 0 0;color:#cbd5e1;font-size:13px}
+.pulang-awal-spv-refresh{width:40px;height:40px;border:1px solid rgba(86,217,199,.35);border-radius:12px;background:rgba(86,217,199,.1);color:#56d9c7;font-size:20px;cursor:pointer}
+.pulang-awal-spv-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px 0}.pulang-awal-spv-summary article{padding:11px 12px;border:1px solid #d8e7e3;border-radius:12px;background:#fff}.pulang-awal-spv-summary span{display:block;color:#64748b;font-size:11px}.pulang-awal-spv-summary strong{display:block;margin-top:3px;color:#0f172a;font-size:24px}
+.pulang-awal-spv-list{display:grid;gap:10px;padding:14px 16px 16px}.pulang-awal-spv-state{margin:14px 16px;padding:18px;border:1px dashed #cbd5e1;border-radius:12px;text-align:center;color:#64748b;background:#fff}.pulang-awal-spv-state[hidden]{display:none!important}
+.pulang-awal-spv-card{padding:14px;border:1px solid #d7e5e2;border-radius:15px;background:#fff;box-shadow:0 5px 16px rgba(15,23,42,.05)}.pulang-awal-spv-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.pulang-awal-spv-card h3{margin:0;color:#0f172a;font-size:18px}.pulang-awal-spv-card-head p{margin:3px 0 0;color:#64748b;font-size:12px}.pulang-awal-kind{padding:5px 9px;border-radius:999px;background:#ede9fe;color:#7c3aed;font-size:11px;font-weight:900}
+.pulang-awal-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:11px 0}.pulang-awal-meta div{padding:8px 9px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0}.pulang-awal-meta small{display:block;color:#64748b;font-size:9px}.pulang-awal-meta b{display:block;margin-top:3px;color:#0f172a;font-size:11px}
+.pulang-awal-reason{padding:10px 11px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;font-size:13px}.pulang-awal-actions{display:flex;gap:8px;margin-top:11px}.pulang-awal-actions button{min-height:40px;padding:0 14px;border-radius:10px;font-weight:900;cursor:pointer}.pulang-awal-proof{border:1px solid #67e8f9;background:#ecfeff;color:#0e7490}.pulang-awal-review{margin-left:auto;border:0;background:linear-gradient(90deg,#43d2bd,#159d8b);color:#fff}
+.pulang-awal-spv-modal[hidden],.pulang-awal-proof-modal[hidden]{display:none!important}.pulang-awal-spv-modal,.pulang-awal-proof-modal{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;padding:18px}.pulang-awal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px)}
+.pulang-awal-dialog{position:relative;width:min(100%,560px);max-height:90vh;overflow:auto;padding:18px;border-radius:18px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.35)}.pulang-awal-dialog h3{margin:0 38px 10px 0;color:#0f172a;font-size:22px}.pulang-awal-close{position:absolute;right:12px;top:12px;width:34px;height:34px;border:0;border-radius:50%;background:#eef8f6;color:#25645b;font-size:22px}
+.pulang-awal-dialog textarea{width:100%;min-height:90px;padding:10px;border:1px solid #cfe8e3;border-radius:11px;resize:none}.pulang-awal-dialog label{display:block;margin:10px 0 5px;color:#334155;font-weight:800}.pulang-awal-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.pulang-awal-dialog-actions button{height:44px;border:0;border-radius:11px;font-weight:900}.pulang-awal-reject{background:#fff0f1;color:#c64752}.pulang-awal-approve{background:linear-gradient(90deg,#43d2bd,#159d8b);color:#fff}.pulang-awal-modal-msg{min-height:16px;margin:8px 0 0;text-align:center;font-size:11px}
+.pulang-awal-proof-modal .pulang-awal-dialog{padding:8px;background:#0f172a}.pulang-awal-proof-modal img{display:block;max-width:90vw;max-height:82vh;border-radius:12px}
+@media(max-width:760px){.pulang-awal-spv-summary{grid-template-columns:1fr}.pulang-awal-meta{grid-template-columns:1fr 1fr}.pulang-awal-actions{flex-direction:column}.pulang-awal-review{margin-left:0}}
+
+
+/* ===== PULANG AWAL ABSENSI DARK PREMIUM THEME — UI ONLY ===== */
+#pulangAwalSpvEmbed.pulang-awal-spv-embed{
+  position:relative!important;
+  isolation:isolate!important;
+  margin:16px 0!important;
+  overflow:hidden!important;
+  border:1px solid rgba(212,175,55,.28)!important;
+  border-radius:18px!important;
+  background:linear-gradient(160deg,#15191e 0%,#0d1116 100%)!important;
+  color:#e8edf4!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.045),
+    0 17px 42px rgba(0,0,0,.42)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-head{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:18px!important;
+  background:
+    linear-gradient(110deg,transparent 12%,rgba(240,196,63,.055) 45%,transparent 76%),
+    linear-gradient(155deg,#20252c,#11151a 75%)!important;
+  border-bottom:1px solid rgba(212,175,55,.22)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-head small{
+  color:#f2c230!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.14em!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-head h2{
+  margin:4px 0 0!important;
+  color:#fff!important;
+  font-size:28px!important;
+  line-height:1.08!important;
+  font-weight:900!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-head p{
+  margin:6px 0 0!important;
+  color:#bac5d2!important;
+  font-size:13px!important;
+  font-weight:600!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-refresh{
+  width:42px!important;
+  height:42px!important;
+  border:1px solid rgba(212,175,55,.40)!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#2a3038,#171c22)!important;
+  color:#f2c230!important;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.10),
+    0 3px 0 #080b10,
+    0 8px 14px rgba(0,0,0,.35)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-summary{
+  padding:14px 16px 0!important;
+  gap:10px!important;
+  perspective:1000px!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-summary article{
+  min-height:82px!important;
+  padding:12px 15px!important;
+  border:1px solid #39424e!important;
+  border-radius:13px!important;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.11),transparent 38%),
+    linear-gradient(165deg,#232a32,#11161c 70%,#0c1015)!important;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.15),
+    inset -2px -3px 7px rgba(0,0,0,.48),
+    0 4px 0 #070a0e,
+    0 10px 19px rgba(0,0,0,.44)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-summary article:nth-child(1){
+  border-color:rgba(245,193,63,.55)!important;
+}
+#pulangAwalSpvEmbed .pulang-awal-spv-summary article:nth-child(2){
+  border-color:rgba(82,211,160,.42)!important;
+}
+#pulangAwalSpvEmbed .pulang-awal-spv-summary article:nth-child(3){
+  border-color:rgba(255,123,139,.42)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-summary span{
+  color:#d7dee8!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-summary strong{
+  margin-top:5px!important;
+  font-size:28px!important;
+  line-height:1!important;
+  font-weight:900!important;
+}
+#pulangAwalSpvEmbed .pulang-awal-spv-summary article:nth-child(1) strong{color:#ffd25b!important}
+#pulangAwalSpvEmbed .pulang-awal-spv-summary article:nth-child(2) strong{color:#65e7ab!important}
+#pulangAwalSpvEmbed .pulang-awal-spv-summary article:nth-child(3) strong{color:#ff818c!important}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-list{
+  padding:14px 16px 16px!important;
+  gap:10px!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-state{
+  margin:14px 16px!important;
+  color:#bfccda!important;
+  border-color:#3b4858!important;
+  background:#141c26!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-card{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:16px!important;
+  border:1px solid #3b4858!important;
+  border-radius:16px!important;
+  background:
+    linear-gradient(150deg,rgba(255,255,255,.055),transparent 34%),
+    linear-gradient(150deg,#20252c,#11161e)!important;
+  box-shadow:
+    inset 1px 1px rgba(255,255,255,.07),
+    0 4px 0 #080b10,
+    0 12px 21px rgba(0,0,0,.42)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-card::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,rgba(124,58,237,.08),transparent 28%)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-card>*{
+  position:relative!important;
+  z-index:1!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-card h3{
+  color:#f5f8fc!important;
+  font-size:20px!important;
+  font-weight:900!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-card-head p{
+  color:#aebdce!important;
+  font-size:13px!important;
+  font-weight:650!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-kind{
+  padding:6px 10px!important;
+  border:1px solid rgba(157,117,255,.42)!important;
+  border-radius:999px!important;
+  background:#39254f!important;
+  color:#ddbaff!important;
+  font-size:11px!important;
+  font-weight:900!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-meta{
+  margin:13px 0!important;
+  gap:8px!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-meta div{
+  padding:10px 11px!important;
+  border:1px solid #36414e!important;
+  border-radius:11px!important;
+  background:#111820!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-meta small{
+  color:#98a8ba!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  text-transform:uppercase!important;
+  letter-spacing:.055em!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-meta b{
+  margin-top:5px!important;
+  color:#f4f6fb!important;
+  font-size:13px!important;
+  font-weight:850!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-reason{
+  padding:12px 13px!important;
+  border:1px solid #36414e!important;
+  border-radius:12px!important;
+  background:#111820!important;
+  color:#eef1f4!important;
+  font-size:14px!important;
+  line-height:1.45!important;
+  font-weight:650!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-actions{
+  margin-top:12px!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-actions button{
+  min-height:42px!important;
+  padding:0 15px!important;
+  border-radius:11px!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.10),
+    0 3px 0 #080b10,
+    0 7px 12px rgba(0,0,0,.30)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-proof{
+  border:1px solid #316e78!important;
+  background:#153039!important;
+  color:#8bf2f7!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-review{
+  border:1px solid rgba(212,175,55,.42)!important;
+  background:linear-gradient(145deg,#3b321e,#1b1710)!important;
+  color:#ffd96d!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-refresh:hover,
+#pulangAwalSpvEmbed .pulang-awal-actions button:hover{
+  filter:brightness(1.12)!important;
+  transform:translateY(-1px)!important;
+}
+
+/* Modal mengikuti dialog Review Absensi */
+.pulang-awal-spv-modal .pulang-awal-dialog{
+  background:#20242a!important;
+  border:1px solid rgba(240,196,63,.40)!important;
+  color:#eef1f4!important;
+  box-shadow:0 28px 80px rgba(0,0,0,.55)!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-dialog h3{
+  color:#fff!important;
+}
+
+.pulang-awal-spv-modal #pulangAwalModalMeta{
+  color:#b6c2cf!important;
+  font-size:13px!important;
+  font-weight:650!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-reason{
+  border-color:#3c434d!important;
+  background:#14181d!important;
+  color:#eef1f4!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-close{
+  border:1px solid #444b55!important;
+  background:#15191e!important;
+  color:#fff!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-dialog label{
+  color:#fff!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-dialog textarea{
+  border:1px solid #3c434d!important;
+  background:#14181d!important;
+  color:#fff!important;
+  outline:0!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-dialog textarea:focus{
+  border-color:#d2a928!important;
+  box-shadow:0 0 0 2px rgba(210,169,40,.12)!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-reject{
+  border:1px solid #6c2d33!important;
+  background:#35171b!important;
+  color:#ff7a83!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-approve{
+  border:1px solid rgba(240,196,63,.45)!important;
+  background:linear-gradient(90deg,#ffe695,#e4b91d)!important;
+  color:#111!important;
+}
+
+.pulang-awal-spv-modal .pulang-awal-modal-msg{
+  color:#cbd5e1!important;
+}
+
+@media(max-width:760px){
+  #pulangAwalSpvEmbed .pulang-awal-spv-head h2{font-size:24px!important}
+  #pulangAwalSpvEmbed .pulang-awal-spv-summary{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #pulangAwalSpvEmbed .pulang-awal-spv-summary article{min-height:72px!important;padding:10px!important}
+  #pulangAwalSpvEmbed .pulang-awal-spv-summary span{font-size:10px!important}
+  #pulangAwalSpvEmbed .pulang-awal-spv-summary strong{font-size:24px!important}
+}
+
+
+/* ===== PULANG AWAL PENDING HEADER ALERT — UI ONLY ===== */
+@keyframes pulangAwalHeaderGoldPulse{
+  0%,100%{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.05),
+      0 0 0 rgba(242,194,48,0);
+    filter:brightness(1);
+  }
+  50%{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.10),
+      0 0 20px rgba(242,194,48,.34),
+      0 0 42px rgba(212,175,55,.14);
+    filter:brightness(1.08);
+  }
+}
+
+@keyframes pulangAwalHeaderTextBlink{
+  0%,100%{
+    color:#ffd96d;
+    text-shadow:0 0 0 rgba(255,217,109,0);
+  }
+  50%{
+    color:#fff2b8;
+    text-shadow:
+      0 0 7px rgba(255,217,109,.65),
+      0 0 16px rgba(242,194,48,.28);
+  }
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-head{
+  border-color:rgba(212,175,55,.28)!important;
+}
+
+#pulangAwalSpvEmbed .pulang-awal-spv-head small,
+#pulangAwalSpvEmbed .pulang-awal-spv-head h2,
+#pulangAwalSpvEmbed .pulang-awal-spv-head p{
+  color:#ffd96d!important;
+}
+
+#pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-head{
+  animation:pulangAwalHeaderGoldPulse 1.35s ease-in-out infinite!important;
+  border-bottom-color:rgba(255,214,92,.72)!important;
+}
+
+#pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-head small,
+#pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-head h2,
+#pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-head p{
+  animation:pulangAwalHeaderTextBlink 1.35s ease-in-out infinite!important;
+}
+
+#pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-refresh{
+  border-color:rgba(255,214,92,.62)!important;
+  color:#ffe889!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  #pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-head,
+  #pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-head small,
+  #pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-head h2,
+  #pulangAwalSpvEmbed.has-pending-pulang-awal .pulang-awal-spv-head p{
+    animation:none!important;
+  }
+}
+
+
+/* ===== OWNER PULANG AWAL REVIEW ALERT — UI ONLY ===== */
+#pulangAwalSpvEmbed.has-owner-pulang-awal-alert .pulang-awal-spv-head{
+  animation:pulangAwalHeaderGoldPulse 1.35s ease-in-out infinite!important;
+  border-bottom-color:rgba(255,214,92,.72)!important;
+}
+
+#pulangAwalSpvEmbed.has-owner-pulang-awal-alert .pulang-awal-spv-head small,
+#pulangAwalSpvEmbed.has-owner-pulang-awal-alert .pulang-awal-spv-head h2,
+#pulangAwalSpvEmbed.has-owner-pulang-awal-alert .pulang-awal-spv-head p{
+  animation:pulangAwalHeaderTextBlink 1.35s ease-in-out infinite!important;
+}
+
+#pulangAwalSpvEmbed.has-owner-pulang-awal-alert{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.045),
+    0 17px 42px rgba(0,0,0,.42),
+    0 0 22px rgba(242,194,48,.16)!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  #pulangAwalSpvEmbed.has-owner-pulang-awal-alert .pulang-awal-spv-head,
+  #pulangAwalSpvEmbed.has-owner-pulang-awal-alert .pulang-awal-spv-head small,
+  #pulangAwalSpvEmbed.has-owner-pulang-awal-alert .pulang-awal-spv-head h2,
+  #pulangAwalSpvEmbed.has-owner-pulang-awal-alert .pulang-awal-spv-head p{
+    animation:none!important;
+  }
+}
+
+
+/* ===== PULANG AWAL MODAL MATRIX STATUS THEME — UI ONLY ===== */
+.pulang-awal-spv-modal{
+  --modal-status-bg:#20242a;
+  --modal-status-bg2:#14181d;
+  --modal-status-text:#ffffff;
+  --modal-status-muted:#d7dee7;
+  --modal-status-border:rgba(255,255,255,.18);
+}
+
+.pulang-awal-spv-modal.is-sakit{
+  --modal-status-bg:#7c3aed;
+  --modal-status-bg2:#5b21b6;
+  --modal-status-text:#ffffff;
+  --modal-status-muted:#ede9fe;
+  --modal-status-border:rgba(255,255,255,.24);
+}
+
+.pulang-awal-spv-modal.is-izin{
+  --modal-status-bg:#22d3ee;
+  --modal-status-bg2:#0fa8c0;
+  --modal-status-text:#05343b;
+  --modal-status-muted:#07515c;
+  --modal-status-border:rgba(3,78,88,.28);
+}
+
+.pulang-awal-spv-modal.is-libur{
+  --modal-status-bg:#ef4444;
+  --modal-status-bg2:#be2f2f;
+  --modal-status-text:#fff7f7;
+  --modal-status-muted:#ffe2e2;
+  --modal-status-border:rgba(255,255,255,.24);
+}
+
+.pulang-awal-spv-modal.is-sakit .pulang-awal-dialog,
+.pulang-awal-spv-modal.is-izin .pulang-awal-dialog,
+.pulang-awal-spv-modal.is-libur .pulang-awal-dialog{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.12),transparent 36%),
+    linear-gradient(135deg,var(--modal-status-bg),var(--modal-status-bg2))!important;
+  border:1px solid var(--modal-status-border)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    0 28px 80px rgba(0,0,0,.48)!important;
+  color:var(--modal-status-text)!important;
+}
+
+.pulang-awal-spv-modal.is-sakit .pulang-awal-dialog h3,
+.pulang-awal-spv-modal.is-izin .pulang-awal-dialog h3,
+.pulang-awal-spv-modal.is-libur .pulang-awal-dialog h3,
+.pulang-awal-spv-modal.is-sakit #pulangAwalModalMeta,
+.pulang-awal-spv-modal.is-izin #pulangAwalModalMeta,
+.pulang-awal-spv-modal.is-libur #pulangAwalModalMeta,
+.pulang-awal-spv-modal.is-sakit .pulang-awal-reason,
+.pulang-awal-spv-modal.is-izin .pulang-awal-reason,
+.pulang-awal-spv-modal.is-libur .pulang-awal-reason{
+  color:var(--modal-status-text)!important;
+}
+
+.pulang-awal-spv-modal.is-sakit #pulangAwalModalMeta,
+.pulang-awal-spv-modal.is-izin #pulangAwalModalMeta,
+.pulang-awal-spv-modal.is-libur #pulangAwalModalMeta{
+  color:var(--modal-status-muted)!important;
+}
+
+.pulang-awal-spv-modal.is-sakit .pulang-awal-reason,
+.pulang-awal-spv-modal.is-izin .pulang-awal-reason,
+.pulang-awal-spv-modal.is-libur .pulang-awal-reason{
+  background:rgba(0,0,0,.14)!important;
+  border-color:var(--modal-status-border)!important;
+}
+
+.pulang-awal-spv-modal.is-sakit .pulang-awal-close,
+.pulang-awal-spv-modal.is-izin .pulang-awal-close,
+.pulang-awal-spv-modal.is-libur .pulang-awal-close{
+  background:rgba(255,255,255,.18)!important;
+  border-color:rgba(255,255,255,.30)!important;
+  color:var(--modal-status-text)!important;
+}
+
+.pulang-awal-spv-modal.is-sakit #pulangAwalDecisionRead,
+.pulang-awal-spv-modal.is-izin #pulangAwalDecisionRead,
+.pulang-awal-spv-modal.is-libur #pulangAwalDecisionRead{
+  background:rgba(255,255,255,.14)!important;
+  border-color:rgba(255,255,255,.24)!important;
+  color:var(--modal-status-text)!important;
+}

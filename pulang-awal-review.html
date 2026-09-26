@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Review Pulang Lebih Awal</title>
+  <link rel="stylesheet" href="pulang-awal-review.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div>
+      <strong id="pageTitle">PULANG LEBIH AWAL</strong>
+      <small id="pageSub">REVIEW SPV</small>
+    </div>
+    <button id="refreshBtn" type="button" aria-label="Muat ulang"><i class="fas fa-rotate"></i></button>
+  </header>
+
+  <main>
+    <section class="summary">
+      <button class="summary-card active" data-scope="PENDING"><small>Menunggu SPV</small><b id="countPending">0</b></button>
+      <button class="summary-card" data-scope="DECIDED"><small>Sudah Diputus</small><b id="countDecided">0</b></button>
+      <button class="summary-card" data-scope="ALL"><small>Semua</small><b id="countAll">0</b></button>
+    </section>
+
+    <section class="toolbar">
+      <input id="searchInput" type="search" placeholder="Cari nama / cabang / alasan">
+      <select id="kindFilter">
+        <option value="ALL">Semua Jenis</option>
+        <option value="IZIN">Izin</option>
+        <option value="SAKIT">Sakit</option>
+        <option value="LIBUR">Libur</option>
+      </select>
+    </section>
+
+    <p id="pageMessage" class="page-message"></p>
+    <section id="requestList" class="request-list"></section>
+  </main>
+</div>
+
+<div id="reviewModal" class="modal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <section class="modal-card" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <div><small>Review Pengajuan</small><h2 id="modalName">—</h2></div>
+      <button type="button" data-close aria-label="Tutup">×</button>
+    </div>
+    <div class="facts">
+      <div><small>Cabang</small><b id="modalBranch">—</b></div>
+      <div><small>Tanggal</small><b id="modalDate">—</b></div>
+      <div><small>Jam Masuk</small><b id="modalIn">—</b></div>
+      <div><small>Status Awal</small><b id="modalBefore">—</b></div>
+    </div>
+    <div class="reason-box"><small>Jenis & Alasan</small><b id="modalKind">—</b><p id="modalReason">—</p></div>
+    <button id="proofBtn" type="button" class="proof-btn"><i class="fas fa-image"></i> Lihat Bukti Foto</button>
+
+    <div id="decisionBox" class="decision-box" hidden></div>
+
+    <div id="spvActions">
+      <label for="spvNote">Catatan SPV <span>(opsional untuk ACC, wajib jika Tolak)</span></label>
+      <textarea id="spvNote" rows="3" maxlength="300" placeholder="Catatan keputusan..."></textarea>
+      <p id="modalMessage" class="modal-message"></p>
+      <div class="actions">
+        <button id="rejectBtn" type="button" class="reject">Tolak</button>
+        <button id="approveBtn" type="button" class="approve">ACC Pengajuan</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="proofModal" class="proof-modal" hidden>
+  <div class="modal-backdrop" data-proof-close></div>
+  <section><button type="button" data-proof-close>×</button><img id="proofImage" alt="Bukti pengajuan"></section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="pulang-awal-review.js"></script>
+</body>
+</html>

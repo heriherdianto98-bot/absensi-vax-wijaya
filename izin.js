@@ -21,6 +21,18 @@
     const message = document.getElementById("formMessage");
     const btnSubmit = document.getElementById("btnKirimIzin");
     const bentrokWarn = document.getElementById("izinBentrokWarn");
+    const fieldPulangAwalKind = document.getElementById("fieldPulangAwalKind");
+    const pulangAwalKind = document.getElementById("pulangAwalKind");
+    const infoText = document.getElementById("izinInfoText");
+    const hasilCard = document.getElementById("hasilPengajuanCard");
+    const hasilTitle = document.getElementById("hasilPengajuanTitle");
+    const hasilBadge = document.getElementById("hasilPengajuanBadge");
+    const hasilJenis = document.getElementById("hasilPengajuanJenis");
+    const hasilTanggal = document.getElementById("hasilPengajuanTanggal");
+    const hasilAlasan = document.getElementById("hasilPengajuanAlasan");
+    const hasilFotoWrap = document.getElementById("hasilPengajuanFotoWrap");
+    const hasilFoto = document.getElementById("hasilPengajuanFoto");
+    const hasilFlow = document.getElementById("hasilPengajuanFlow");
 
     let karyawanAktif = null;
     let submitBusy = false;
@@ -43,6 +55,32 @@
         if(!message) return;
         message.textContent = text || "";
         message.className = `form-message${type ? " " + type : ""}`;
+    }
+
+    function renderHasilPengajuan({jenisLabel,tanggalValue,statusLabel,alasanValue,fotoSrc,flowText}){
+        if(!hasilCard) return;
+
+        hasilCard.hidden = false;
+        hasilCard.classList.remove("is-approved","is-rejected");
+
+        if(hasilTitle) hasilTitle.textContent = "Pengajuan berhasil dikirim";
+        if(hasilBadge) hasilBadge.textContent = statusLabel || "MENUNGGU SPV";
+        if(hasilJenis) hasilJenis.textContent = jenisLabel || "Pengajuan";
+        if(hasilTanggal) hasilTanggal.textContent = fmtDateLong(tanggalValue || todayWib());
+        if(hasilAlasan) hasilAlasan.textContent = alasanValue || "—";
+        if(hasilFlow) hasilFlow.textContent = flowText || "Menunggu review SPV";
+
+        if(hasilFotoWrap && hasilFoto){
+            if(fotoSrc){
+                hasilFoto.src = fotoSrc;
+                hasilFotoWrap.hidden = false;
+            }else{
+                hasilFoto.removeAttribute("src");
+                hasilFotoWrap.hidden = true;
+            }
+        }
+
+        hasilCard.scrollIntoView({ behavior:"smooth", block:"nearest" });
     }
 
     function joinNames(names){
@@ -162,23 +200,41 @@
     }
 
     function buktiWajib(){
-        return ["IZIN","SAKIT"].includes(jenisAktif());
+        return ["IZIN","SAKIT","PULANG_AWAL"].includes(jenisAktif());
     }
 
     function syncJenisUi(){
-        const isLibur = jenisAktif() === "LIBUR";
+        const currentJenis = jenisAktif();
+        const isLibur = currentJenis === "LIBUR";
+        const isPulangAwal = currentJenis === "PULANG_AWAL";
         if(fieldTanggalSelesai) fieldTanggalSelesai.hidden = !isLibur;
+        if(fieldPulangAwalKind) fieldPulangAwalKind.hidden = !isPulangAwal;
+        if(isPulangAwal && tanggal){
+            tanggal.value = todayWib();
+            tanggal.min = todayWib();
+            tanggal.max = todayWib();
+            tanggal.dispatchEvent(new Event("input", { bubbles:true }));
+        }else if(tanggal){
+            tanggal.max = "";
+        }
         if(tanggalSelesai){
             if(isLibur && !tanggalSelesai.value) tanggalSelesai.value = tanggal?.value || todayWib();
             tanggalSelesai.min = tanggal?.value || todayWib();
         }
         if(buktiHint){
             const jenis = jenisAktif();
-            buktiHint.textContent = jenis === "IZIN"
-                ? "Foto bukti wajib untuk pengajuan Izin"
-                : jenis === "SAKIT"
-                    ? "Foto bukti wajib untuk pengajuan Sakit"
-                    : "Foto bukti opsional untuk pengajuan Libur";
+            buktiHint.textContent = jenis === "PULANG_AWAL"
+                ? "Foto bukti wajib untuk Pulang Lebih Awal"
+                : jenis === "IZIN"
+                    ? "Foto bukti wajib untuk pengajuan Izin"
+                    : jenis === "SAKIT"
+                        ? "Foto bukti wajib untuk pengajuan Sakit"
+                        : "Foto bukti opsional untuk pengajuan Libur";
+        }
+        if(infoText){
+            infoText.innerHTML = isPulangAwal
+                ? 'Khusus karyawan yang sudah <b>Absen Masuk</b>. Setelah SPV <b>ACC</b>, status hari ini otomatis berubah menjadi Izin / Sakit / Libur dan jam pulang tercatat.'
+                : 'Setelah reviewer <b>ACC</b>, status langsung final. Capster: max 14 hari, max 2 orang/cabang/tanggal. Kasir: wajib ada coverage.';
         }
         setMessage("");
         scheduleBentrokCheck();
@@ -209,6 +265,16 @@
         jenis.addEventListener("change", syncJenisUi);
         syncJenisUi();
     }
+
+    document.querySelectorAll("[data-pulang-kind]").forEach((btn) => {
+        btn.addEventListener("click", function(){
+            const value = String(btn.dataset.pulangKind || "IZIN").toUpperCase();
+            if(pulangAwalKind) pulangAwalKind.value = value;
+            document.querySelectorAll("[data-pulang-kind]").forEach((node) => {
+                node.classList.toggle("active", node === btn);
+            });
+        });
+    });
 
     if(alasan && counter){
         alasan.addEventListener("input", function(){
@@ -343,7 +409,8 @@
 
         const file = bukti?.files?.[0] || null;
         if(buktiWajib() && !file){
-            setMessage(`Bukti/foto wajib untuk pengajuan ${jenisAktif() === "SAKIT" ? "Sakit" : "Izin"}.`, "error");
+            const label = jenisAktif() === "PULANG_AWAL" ? "Pulang Lebih Awal" : (jenisAktif() === "SAKIT" ? "Sakit" : "Izin");
+            setMessage(`Bukti/foto wajib untuk pengajuan ${label}.`, "error");
             return;
         }
 
@@ -371,6 +438,50 @@
             }
 
             setMessage("Menyimpan pengajuan...");
+
+            if(jenisAktif() === "PULANG_AWAL"){
+                const finalKind = String(pulangAwalKind?.value || "IZIN").toUpperCase();
+                const resultTanggal = tanggal?.value || todayWib();
+                const resultFotoSrc = preview?.src || "";
+                const rpcRes = await db.rpc("submit_pulang_awal_v1", {
+                    p_session_token: KaryawanSession.getToken(),
+                    p_jenis: finalKind,
+                    p_alasan: alasanValue,
+                    p_bukti_path: buktiPath
+                });
+                if(rpcRes.error) throw rpcRes.error;
+
+                form.reset();
+                if(tanggal){
+                    tanggal.value = todayWib();
+                    tanggal.min = todayWib();
+                    tanggal.max = "";
+                    tanggal.dispatchEvent(new Event("change", { bubbles:true }));
+                }
+                if(tanggalSelesai){
+                    tanggalSelesai.value = todayWib();
+                    tanggalSelesai.min = todayWib();
+                    tanggalSelesai.dispatchEvent(new Event("change", { bubbles:true }));
+                }
+                if(jenis){
+                    jenis.value = "IZIN";
+                    jenis.dispatchEvent(new Event("change", { bubbles:true }));
+                }
+                if(pulangAwalKind) pulangAwalKind.value = "IZIN";
+                document.querySelectorAll("[data-pulang-kind]").forEach((node, index) => node.classList.toggle("active", index === 0));
+                if(counter) counter.textContent = "0/300";
+                clearPreview();
+                renderHasilPengajuan({
+                    jenisLabel:`Pulang Lebih Awal · ${finalKind === "SAKIT" ? "Sakit" : finalKind === "LIBUR" ? "Libur" : "Izin"}`,
+                    tanggalValue:resultTanggal,
+                    statusLabel:"MENUNGGU SPV",
+                    alasanValue,
+                    fotoSrc:resultFotoSrc,
+                    flowText:"Menunggu review SPV"
+                });
+                setMessage("");
+                return;
+            }
 
             if(jenisAktif() === "LIBUR"){
                 const names = await checkLiburBentrok();
@@ -430,6 +541,8 @@
             const jenisNow = jenisAktif();
             const jenisSukses = jenisNow === "LIBUR" ? "Libur" : jenisNow === "SAKIT" ? "Sakit" : "Izin";
             const statusSukses = saved?.status === "MENUNGGU_OWNER" ? "MENUNGGU OWNER" : "MENUNGGU SPV";
+            const resultTanggal = tanggal?.value || todayWib();
+            const resultFotoSrc = preview?.src || "";
 
             form.reset();
             if(tanggal){
@@ -447,10 +560,15 @@
             clearPreview();
             syncJenisUi();
 
-            setMessage(
-                `Pengajuan ${jenisSukses} berhasil dikirim. Status: ${statusSukses}.`,
-                "success"
-            );
+            renderHasilPengajuan({
+                jenisLabel:jenisSukses,
+                tanggalValue:resultTanggal,
+                statusLabel:statusSukses,
+                alasanValue,
+                fotoSrc:resultFotoSrc,
+                flowText:statusSukses === "MENUNGGU OWNER" ? "Menunggu review Owner" : "Menunggu review SPV"
+            });
+            setMessage("");
 
         }catch(error){
             console.error("Gagal kirim pengajuan:", error);
@@ -492,6 +610,7 @@
 
     function labelFor(v){
         const key = String(v || "IZIN").toUpperCase();
+        if(key === "PULANG_AWAL") return "Pulang Lebih Awal";
         return key === "LIBUR" ? "Libur" : key === "SAKIT" ? "Sakit" : "Izin";
     }
 
@@ -579,11 +698,57 @@
     });
 
     trigger.addEventListener("keydown", function(event){
-        if(event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Enter" || event.key === " "){
+        const currentIndex = Math.max(0, options.findIndex((b)=>
+            String(b.dataset.value || "").toUpperCase() === String(select.value || "").toUpperCase()
+        ));
+
+        if(event.key === "ArrowDown"){
             event.preventDefault();
-            if(!isOpen()) openMenu(true);
+            if(!isOpen()){
+                openMenu(false);
+                requestAnimationFrame(()=>options[currentIndex].focus());
+            }else{
+                requestAnimationFrame(()=>options[(currentIndex + 1) % options.length].focus());
+            }
             return;
         }
+
+        if(event.key === "ArrowUp"){
+            event.preventDefault();
+            if(!isOpen()){
+                openMenu(false);
+                requestAnimationFrame(()=>options[currentIndex].focus());
+            }else{
+                requestAnimationFrame(()=>options[(currentIndex - 1 + options.length) % options.length].focus());
+            }
+            return;
+        }
+
+        if(event.key === "Enter" || event.key === " "){
+            event.preventDefault();
+            if(!isOpen()){
+                openMenu(false);
+                requestAnimationFrame(()=>options[currentIndex].focus());
+            }else{
+                requestAnimationFrame(()=>options[currentIndex].focus());
+            }
+            return;
+        }
+
+        if(event.key === "Home"){
+            event.preventDefault();
+            if(!isOpen()) openMenu(false);
+            requestAnimationFrame(()=>options[0].focus());
+            return;
+        }
+
+        if(event.key === "End"){
+            event.preventDefault();
+            if(!isOpen()) openMenu(false);
+            requestAnimationFrame(()=>options[options.length - 1].focus());
+            return;
+        }
+
         if(event.key === "Escape" && isOpen()){
             event.preventDefault();
             closeMenu(true);

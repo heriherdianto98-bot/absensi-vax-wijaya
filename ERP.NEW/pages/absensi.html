@@ -19,12 +19,14 @@
 <link rel="stylesheet" href="../styles/light-contrast.css">
 <link rel="stylesheet" href="../styles/absensi-laporan-bulanan.css?v=20260920-meta-text1">
 <link rel="stylesheet" href="../styles/izin-spv-embed.css?v=20260817-ownercal">
+<link rel="stylesheet" href="../styles/pulang-awal-spv-embed.css?v=20260927-1">
 <link rel="stylesheet" href="../styles/jadwal-tutup-operasional.css?v=20260816p2">
 <link rel="stylesheet" href="../styles/absensi-kpi-3d.css?v=20260919-ui3d6">
 <link rel="stylesheet" href="../styles/absensi-review-dark-ui.css?v=20260919-9">
 <link rel="stylesheet" href="../styles/absensi-review-refresh-fx-ui.css?v=20260919-2">
 <link rel="stylesheet" href="../styles/absensi-monthly-align-ui.css?v=20260919-2">
 <link rel="stylesheet" href="../styles/absensi-employee-filter-ui.css?v=20260920-2">
+<link rel="stylesheet" href="../styles/absensi-status-matrix-theme-ui.css?v=20260927-2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -140,7 +142,26 @@
                 <div id="izinSpvList" class="izin-spv-list"></div>
             </section>
 
-            <div id="absensiDailyAuditBridge" class="absensi-daily-audit-bridge" aria-label="Rincian dan Matriks Absensi"></div>
+            <section id="pulangAwalSpvEmbed" class="pulang-awal-spv-embed" hidden aria-label="Review Pulang Lebih Awal">
+                <div class="pulang-awal-spv-head">
+                    <div>
+                        <small>PERSETUJUAN SPV</small>
+                        <h2>Pulang Lebih Awal</h2>
+                        <p>Review pengajuan karyawan yang sudah Absen Masuk lalu perlu pulang lebih awal.</p>
+                    </div>
+                    <button type="button" id="pulangAwalSpvRefresh" class="pulang-awal-spv-refresh" aria-label="Refresh">↻</button>
+                </div>
+                <div class="pulang-awal-spv-summary">
+                    <article><span>Menunggu SPV</span><strong id="pulangAwalCountPending">0</strong></article>
+                    <article><span>Disetujui SPV</span><strong id="pulangAwalCountApproved">0</strong></article>
+                    <article><span>Ditolak SPV</span><strong id="pulangAwalCountRejected">0</strong></article>
+                </div>
+                <div id="pulangAwalSpvLoading" class="pulang-awal-spv-state" hidden>Memuat pengajuan…</div>
+                <div id="pulangAwalSpvEmpty" class="pulang-awal-spv-state" hidden>Tidak ada pengajuan Pulang Lebih Awal.</div>
+                <div id="pulangAwalSpvList" class="pulang-awal-spv-list"></div>
+            </section>
+
+                        <div id="absensiDailyAuditBridge" class="absensi-daily-audit-bridge" aria-label="Rincian dan Matriks Absensi"></div>
 
             <section id="jadwalTutupEmbed" class="jadwal-tutup-embed" hidden>
                 <span class="tutup-ops-kicker">KALENDER OPERASIONAL</span>
@@ -210,6 +231,34 @@
     </section>
 </div>
 
+<div id="pulangAwalSpvModal" class="pulang-awal-spv-modal" hidden>
+    <div class="pulang-awal-backdrop" data-pulang-awal-close></div>
+    <section class="pulang-awal-dialog" role="dialog" aria-modal="true">
+        <button type="button" class="pulang-awal-close" data-pulang-awal-close>×</button>
+        <h3 id="pulangAwalModalTitle">Review Pulang Lebih Awal</h3>
+        <p id="pulangAwalModalMeta"></p>
+        <div class="pulang-awal-reason" id="pulangAwalModalReason">—</div>
+        <div id="pulangAwalDecisionRead" class="pulang-awal-reason" hidden></div>
+        <div id="pulangAwalDecisionActions">
+            <label for="pulangAwalSpvNote">Catatan SPV</label>
+            <textarea id="pulangAwalSpvNote" maxlength="300" placeholder="Opsional untuk ACC, wajib untuk Tolak"></textarea>
+            <p id="pulangAwalModalMsg" class="pulang-awal-modal-msg"></p>
+            <div class="pulang-awal-dialog-actions">
+                <button id="pulangAwalReject" type="button" class="pulang-awal-reject">Tolak</button>
+                <button id="pulangAwalApprove" type="button" class="pulang-awal-approve">ACC Pengajuan</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div id="pulangAwalProofModal" class="pulang-awal-proof-modal" hidden>
+    <div class="pulang-awal-backdrop" data-pulang-proof-close></div>
+    <section class="pulang-awal-dialog">
+        <button type="button" class="pulang-awal-close" data-pulang-proof-close>×</button>
+        <img id="pulangAwalProofImage" alt="Bukti Pulang Lebih Awal">
+    </section>
+</div>
+
 <nav class="erp-bottom-nav" aria-label="Navigasi bawah">
     <a href="./erp-dashboard.html"><span class="bn-icon">▣</span>Dashboard</a>
     <a href="./setoran-3-harian.html"><span class="bn-icon">⬡</span>Setoran</a>
@@ -226,6 +275,8 @@
 <script src="../js/modules/erp-header-sync.js"></script>
 <script src="../js/modules/absensi-owner.js?v=20260920-status-fix1"></script>
 <script src="../js/modules/izin-spv-embed.js?v=20260817-ownercal"></script>
+<script src="../js/modules/pulang-awal-spv-embed.js?v=20260927-1"></script>
+<script src="../js/modules/absensi-status-matrix-theme-ui.js?v=20260927-1"></script>
 <script src="../js/modules/absensi-review-collapse-ui.js?v=20260919-1"></script>
 <script src="../js/modules/absensi-review-value-ui.js?v=20260919-1"></script>
 <script src="../js/modules/absensi-review-refresh-fx-ui.js?v=20260919-2"></script>
@@ -269,6 +320,10 @@ document.addEventListener("erp:finance-ready", async () => {
     if(typeof IzinSpvEmbed !== "undefined"){
         try{ await IzinSpvEmbed.boot(); }
         catch(err){ console.error("Izin SPV:", err); }
+    }
+    if(typeof PulangAwalSpvEmbed !== "undefined"){
+        try{ await PulangAwalSpvEmbed.boot(); }
+        catch(err){ console.error("Pulang Awal SPV:", err); }
     }
     try{ await AbsensiOwner.boot(); }
     catch(err){ console.error("Absensi owner:", err); }

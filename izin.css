@@ -504,3 +504,919 @@ textarea:focus{border-color:rgba(255,224,102,.85);box-shadow:0 0 0 2px rgba(255,
     }
     .izin-body,.form-card{overflow:visible}
 }
+
+
+/* ===== IZIN MAIN EMPLOYEE THEME — UI ONLY ===== */
+:root{
+  --izin-main:#2fc8b4;
+  --izin-main-dark:#159d8b;
+  --izin-main-soft:#eaf8f5;
+  --izin-ink:#244b52;
+  --izin-muted:#70878c;
+  --izin-line:#c7e8e2;
+}
+
+html,
+html body{
+  width:100%!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  background:#eef8f6!important;
+  color:var(--izin-ink)!important;
+}
+
+html body .app{
+  position:relative!important;
+  width:100%!important;
+  max-width:430px!important;
+  height:100dvh!important;
+  min-height:0!important;
+  max-height:100dvh!important;
+  margin:0 auto!important;
+  padding:0 12px calc(66px + env(safe-area-inset-bottom,0px))!important;
+  display:block!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-y:none!important;
+  background:
+    radial-gradient(100% 30% at 50% 0%,rgba(47,200,180,.11),transparent 62%),
+    linear-gradient(180deg,#f8fcfb 0%,#eef8f6 100%)!important;
+}
+
+/* Header — same visual language as Employee Dashboard */
+html body .app .topbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:200!important;
+  min-height:56px!important;
+  margin:0 -12px 10px!important;
+  padding:7px 12px!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) 34px!important;
+  align-items:center!important;
+  gap:8px!important;
+  border:0!important;
+  border-radius:0 0 15px 15px!important;
+  background:linear-gradient(135deg,#44cfbd 0%,#27bda9 100%)!important;
+  box-shadow:
+    0 8px 22px rgba(28,115,105,.18),
+    inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+
+html body .app .back-btn{
+  width:32px!important;
+  height:32px!important;
+  border-radius:10px!important;
+  border:1px solid rgba(255,255,255,.28)!important;
+  background:rgba(255,255,255,.10)!important;
+  color:#fff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+
+html body .app .topbar-title strong{
+  color:#fff!important;
+  font-size:12px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+  letter-spacing:.045em!important;
+  text-shadow:none!important;
+}
+
+html body .app .topbar-title small{
+  color:rgba(255,255,255,.82)!important;
+  font-size:7px!important;
+  font-weight:750!important;
+  letter-spacing:.12em!important;
+  opacity:1!important;
+}
+
+html body .app .topbar-spacer{
+  width:32px!important;
+  height:32px!important;
+}
+
+/* Content */
+html body .app .izin-body{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:10px!important;
+  min-height:auto!important;
+  overflow:visible!important;
+  padding-bottom:14px!important;
+}
+
+html body .app .intro-card{
+  flex:none!important;
+  padding:11px 12px!important;
+  gap:10px!important;
+  border:1px solid var(--izin-line)!important;
+  border-top:3px solid var(--izin-main)!important;
+  border-radius:17px!important;
+  background:linear-gradient(145deg,#fff 0%,#f7fcfb 100%)!important;
+  box-shadow:0 9px 22px rgba(43,100,95,.10)!important;
+}
+
+html body .app .intro-icon{
+  width:38px!important;
+  height:38px!important;
+  flex:0 0 38px!important;
+  border-radius:12px!important;
+  color:#fff!important;
+  background:linear-gradient(145deg,#43d2bd,#22b6a1)!important;
+  box-shadow:0 6px 14px rgba(47,200,180,.24)!important;
+}
+
+html body .app .intro-card h1{
+  color:var(--izin-ink)!important;
+  font-size:16px!important;
+  font-weight:900!important;
+}
+
+html body .app .intro-card p{
+  color:var(--izin-muted)!important;
+  font-size:10.5px!important;
+  line-height:1.35!important;
+}
+
+/* Approval flow */
+html body .app .status-flow{
+  min-height:36px!important;
+  padding:3px 4px!important;
+}
+html body .app .flow-step{
+  color:#7f9296!important;
+}
+html body .app .flow-step span{
+  color:#6e858a!important;
+  background:#fff!important;
+  border:1px solid #d9ebe7!important;
+}
+html body .app .flow-step.active{
+  color:var(--izin-main-dark)!important;
+}
+html body .app .flow-step.active span{
+  color:#fff!important;
+  background:linear-gradient(145deg,#43d2bd,#22b6a1)!important;
+  border-color:transparent!important;
+  box-shadow:0 4px 10px rgba(47,200,180,.22)!important;
+}
+html body .app .flow-line{
+  background:#d9ebe7!important;
+}
+
+/* Main form card */
+html body .app .form-card{
+  flex:none!important;
+  min-height:auto!important;
+  padding:12px!important;
+  overflow:visible!important;
+  border:1px solid var(--izin-line)!important;
+  border-radius:17px!important;
+  background:linear-gradient(145deg,#fff 0%,#f8fcfb 100%)!important;
+  box-shadow:0 10px 24px rgba(43,100,95,.10)!important;
+}
+
+html body .app .form-fields{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  gap:11px!important;
+  overflow:visible!important;
+}
+
+html body .app .field > label{
+  color:#31565d!important;
+  font-size:11px!important;
+  font-weight:850!important;
+}
+
+/* Inputs */
+html body .app .input-wrap,
+html body .app textarea{
+  color:var(--izin-ink)!important;
+  background:#fff!important;
+  border:1px solid #cfe8e3!important;
+  box-shadow:inset 0 1px 2px rgba(35,87,81,.03)!important;
+}
+
+html body .app .input-wrap{
+  min-height:44px!important;
+  height:44px!important;
+}
+
+html body .app .input-wrap:focus-within,
+html body .app .date-trigger:focus,
+html body .app textarea:focus{
+  border-color:#54cfbd!important;
+  box-shadow:0 0 0 3px rgba(47,200,180,.10)!important;
+}
+
+html body .app .input-wrap > i:first-child{
+  color:var(--izin-main)!important;
+}
+
+html body .app .date-trigger span,
+html body .app .jenis-trigger,
+html body .app .jenis-trigger .jenis-value{
+  color:var(--izin-ink)!important;
+}
+
+html body .app .date-chevron,
+html body .app .jenis-trigger .jenis-chevron{
+  color:#49bdaa!important;
+}
+
+html body .app textarea{
+  min-height:84px!important;
+  height:84px!important;
+  max-height:100px!important;
+}
+
+html body .app textarea::placeholder{
+  color:#9aabad!important;
+}
+
+html body .app .field-meta{
+  color:#8b9da1!important;
+}
+
+/* Custom jenis dropdown */
+html body .app .jenis-menu{
+  background:#fff!important;
+  border:1px solid #bfe4dd!important;
+  box-shadow:0 16px 32px rgba(34,89,82,.17)!important;
+}
+
+html body .app .jenis-option{
+  background:#fff!important;
+  color:#31565d!important;
+}
+
+html body .app .jenis-option:hover,
+html body .app .jenis-option:focus{
+  background:#edf9f7!important;
+  color:#168f7e!important;
+}
+
+html body .app .jenis-option.is-selected{
+  background:linear-gradient(90deg,rgba(47,200,180,.16),rgba(47,200,180,.05))!important;
+  color:#168f7e!important;
+  border:1px solid rgba(47,200,180,.28)!important;
+}
+
+html body .app .jenis-option i{
+  color:#2fc8b4!important;
+}
+
+html body .app #jenisMenu .jenis-telat-link{
+  background:#fff!important;
+  color:#31565d!important;
+  border:1px solid transparent!important;
+}
+html body .app #jenisMenu .jenis-telat-link i{
+  color:#2fc8b4!important;
+}
+html body .app #jenisMenu .jenis-telat-link:hover,
+html body .app #jenisMenu .jenis-telat-link:focus-visible{
+  background:#edf9f7!important;
+  color:#168f7e!important;
+  outline:none!important;
+  border-color:#bfe4dd!important;
+}
+
+/* Upload */
+html body .app .upload-box{
+  min-height:62px!important;
+  height:62px!important;
+  max-height:70px!important;
+  border:1px dashed #70d7c8!important;
+  background:linear-gradient(145deg,#f8fffd,#eef9f7)!important;
+}
+
+html body .app .upload-icon{
+  color:#1aa991!important;
+  background:rgba(47,200,180,.10)!important;
+  border-color:rgba(47,200,180,.34)!important;
+}
+
+html body .app .upload-empty strong{
+  color:#31565d!important;
+}
+html body .app .upload-empty small{
+  color:#7f9498!important;
+}
+
+/* Info */
+html body .app .info-box{
+  padding:8px 10px!important;
+  border:1px solid #bfe4dd!important;
+  background:linear-gradient(145deg,#f5fcfa,#eaf8f5)!important;
+}
+
+html body .app .info-box i{
+  color:#20b7a2!important;
+}
+html body .app .info-box p{
+  color:#5d777d!important;
+}
+html body .app .info-box b{
+  color:#168f7e!important;
+}
+
+/* Submit */
+html body .app .submit-btn{
+  min-height:48px!important;
+  height:48px!important;
+  border-radius:13px!important;
+  color:#fff!important;
+  background:linear-gradient(90deg,#43d2bd 0%,#2fc8b4 48%,#159d8b 100%)!important;
+  box-shadow:
+    0 8px 18px rgba(47,200,180,.24),
+    inset 0 1px 0 rgba(255,255,255,.25)!important;
+}
+
+html body .app .form-message{
+  color:#71878c!important;
+}
+html body .app .form-message.error{color:#e34a55!important}
+html body .app .form-message.success{color:#149a84!important}
+
+/* Bottom nav — same as Dashboard Karyawan */
+html body .app #bottomNav{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:0!important;
+  width:min(100%,430px)!important;
+  max-width:430px!important;
+  transform:translateX(-50%)!important;
+  min-height:58px!important;
+  height:auto!important;
+  padding:7px 10px max(7px,env(safe-area-inset-bottom,0px))!important;
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.34)!important;
+  border-radius:16px 16px 0 0!important;
+  background:linear-gradient(135deg,#47d4c1 0%,#29bca8 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.30),
+    0 -8px 20px rgba(47,188,168,.18)!important;
+  z-index:220!important;
+}
+
+html body .app #bottomNav a{
+  color:#fff!important;
+  min-height:44px!important;
+  border-radius:10px!important;
+}
+html body .app #bottomNav a i{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  filter:none!important;
+}
+html body .app #bottomNav a span{
+  color:#fff!important;
+  font-size:9px!important;
+  font-weight:750!important;
+}
+html body .app #bottomNav a:hover,
+html body .app #bottomNav a:focus-visible{
+  background:rgba(255,255,255,.14)!important;
+  outline:none!important;
+}
+
+/* Calendar */
+html body .date-modal-backdrop{
+  background:rgba(20,58,54,.42)!important;
+}
+html body .date-card{
+  color:var(--izin-ink)!important;
+  background:#fff!important;
+  border:1px solid #bfe4dd!important;
+  box-shadow:0 20px 46px rgba(32,88,81,.22)!important;
+}
+html body .date-head{
+  border-bottom-color:#d9ebe7!important;
+}
+html body .date-head small,
+html body .date-weekdays{
+  color:#789095!important;
+}
+html body .date-head strong{
+  color:#244b52!important;
+}
+html body .date-nav-btn,
+html body .date-today-btn,
+html body .date-close-btn{
+  color:#168f7e!important;
+  background:#eef9f7!important;
+  border-color:#c7e8e2!important;
+}
+
+/* scrollbar */
+html body .app{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(47,200,180,.55) transparent;
+}
+html body .app::-webkit-scrollbar{width:5px}
+html body .app::-webkit-scrollbar-track{background:transparent}
+html body .app::-webkit-scrollbar-thumb{
+  background:rgba(47,200,180,.55);
+  border-radius:99px;
+}
+
+@media(max-width:380px){
+  html body .app{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+  html body .app .topbar{
+    margin-left:-10px!important;
+    margin-right:-10px!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+  html body .app .intro-card{
+    padding:10px!important;
+  }
+  html body .app .form-card{
+    padding:10px!important;
+  }
+}
+
+
+/* ===== IZIN CALENDAR MAIN THEME — UI ONLY ===== */
+html body .date-modal-backdrop{
+  background:rgba(24,67,61,.34)!important;
+  backdrop-filter:blur(4px)!important;
+  -webkit-backdrop-filter:blur(4px)!important;
+}
+
+html body .date-card{
+  width:min(calc(100% - 22px),410px)!important;
+  margin-bottom:calc(64px + env(safe-area-inset-bottom,0px) + 10px)!important;
+  padding:14px!important;
+  border:1px solid #bfe4dd!important;
+  border-radius:20px!important;
+  background:
+    radial-gradient(circle at 88% 8%,rgba(47,200,180,.10),transparent 28%),
+    linear-gradient(180deg,#ffffff 0%,#f7fcfb 100%)!important;
+  box-shadow:
+    0 22px 54px rgba(31,91,83,.22),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+
+html body .date-head{
+  grid-template-columns:40px 1fr 40px!important;
+  margin-bottom:10px!important;
+}
+html body .date-head small{
+  color:#7b9195!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  letter-spacing:.14em!important;
+}
+html body .date-head strong{
+  color:#244b52!important;
+  font-size:17px!important;
+  font-weight:900!important;
+  margin-top:2px!important;
+}
+
+html body .date-nav-btn{
+  width:36px!important;
+  height:36px!important;
+  border:1px solid #c6e8e2!important;
+  border-radius:50%!important;
+  background:#eef9f7!important;
+  color:#179f8c!important;
+  box-shadow:0 4px 10px rgba(47,200,180,.10)!important;
+}
+html body .date-nav-btn:hover,
+html body .date-nav-btn:focus-visible{
+  background:#e2f6f2!important;
+  outline:none!important;
+}
+
+html body .date-weekdays,
+html body .date-grid-days{
+  gap:5px!important;
+}
+html body .date-weekdays{
+  margin-bottom:6px!important;
+  color:#779095!important;
+  font-size:9px!important;
+  font-weight:800!important;
+}
+
+html body .date-day{
+  aspect-ratio:1!important;
+  border:1px solid #e1efec!important;
+  border-radius:10px!important;
+  background:#f3f8f7!important;
+  color:#365b62!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.90)!important;
+}
+
+html body .date-day:hover,
+html body .date-day:focus-visible{
+  background:#e8f6f3!important;
+  border-color:#b8dfd7!important;
+  outline:none!important;
+}
+
+html body .date-day.is-out{
+  opacity:.42!important;
+  color:#8fa0a3!important;
+  background:#f7faf9!important;
+}
+
+html body .date-day.is-disabled{
+  opacity:.34!important;
+  pointer-events:none!important;
+}
+
+html body .date-day.is-today{
+  color:#168f7e!important;
+  background:#eaf8f5!important;
+  border-color:#76d7c8!important;
+  outline:2px solid rgba(47,200,180,.18)!important;
+  outline-offset:-2px!important;
+}
+
+html body .date-day.is-selected{
+  color:#fff!important;
+  background:linear-gradient(145deg,#43d2bd 0%,#2fc8b4 52%,#159d8b 100%)!important;
+  border-color:#22b7a2!important;
+  box-shadow:
+    0 5px 12px rgba(47,200,180,.25),
+    inset 0 1px 0 rgba(255,255,255,.24)!important;
+}
+
+html body .date-actions{
+  gap:8px!important;
+  margin-top:11px!important;
+}
+html body .date-actions button{
+  height:42px!important;
+  border-radius:12px!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+
+html body .date-today-btn{
+  color:#168f7e!important;
+  background:#edf9f7!important;
+  border:1px solid #bfe4dd!important;
+}
+html body .date-close-btn{
+  color:#fff!important;
+  background:linear-gradient(90deg,#43d2bd 0%,#2fc8b4 48%,#159d8b 100%)!important;
+  border:1px solid #20ad99!important;
+  box-shadow:0 6px 14px rgba(47,200,180,.20)!important;
+}
+
+
+/* ===== IZIN PULANG LEBIH AWAL INTEGRATED — UI ONLY ===== */
+html body .app #jenisMenu .jenis-pulang-awal{
+  margin-top:4px!important;
+  border-top:1px solid #dcefeb!important;
+  border-radius:10px!important;
+}
+html body .app #jenisMenu .jenis-pulang-awal i{
+  color:#20b7a2!important;
+}
+
+html body .app .pulang-awal-kind{
+  padding:10px!important;
+  border:1px solid #bfe4dd!important;
+  border-radius:13px!important;
+  background:linear-gradient(145deg,#f8fffd,#eef9f7)!important;
+}
+html body .app .pulang-awal-kind > label{
+  margin-bottom:7px!important;
+}
+html body .app .pulang-awal-kind-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+html body .app .pulang-awal-kind-btn{
+  min-width:0!important;
+  height:42px!important;
+  border:1px solid #cfe8e3!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:#557177!important;
+  font-size:10px!important;
+  font-weight:850!important;
+}
+html body .app .pulang-awal-kind-btn i{
+  margin-right:4px!important;
+  color:#2fc8b4!important;
+}
+html body .app .pulang-awal-kind-btn.active{
+  border-color:#2fc8b4!important;
+  background:#e9f9f6!important;
+  color:#168f7e!important;
+  box-shadow:0 0 0 2px rgba(47,200,180,.08)!important;
+}
+html body .app .pulang-awal-help{
+  margin:7px 0 0!important;
+  color:#6f868b!important;
+  font-size:9px!important;
+  line-height:1.35!important;
+}
+
+
+/* ===== PULANG AWAL STATUS CARDS FULL COLOR — UI ONLY ===== */
+html body .app .pulang-awal-kind-grid{
+  gap:8px!important;
+}
+
+html body .app .pulang-awal-kind-btn{
+  min-height:46px!important;
+  padding:8px 9px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  border-radius:12px!important;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    background .18s ease,
+    color .18s ease,
+    border-color .18s ease!important;
+}
+
+html body .app .pulang-awal-kind-btn i{
+  font-size:17px!important;
+  line-height:1!important;
+  width:20px!important;
+  height:20px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+html body .app .pulang-awal-kind-btn span{
+  font-size:10.5px!important;
+  font-weight:900!important;
+  line-height:1!important;
+}
+
+/* Default / not selected */
+html body .app .pulang-awal-kind-btn[data-pulang-kind="IZIN"]{
+  border-color:rgba(27,193,139,.28)!important;
+}
+html body .app .pulang-awal-kind-btn[data-pulang-kind="IZIN"] i{
+  color:#1bc18b!important;
+}
+
+html body .app .pulang-awal-kind-btn[data-pulang-kind="SAKIT"]{
+  border-color:rgba(239,83,80,.26)!important;
+}
+html body .app .pulang-awal-kind-btn[data-pulang-kind="SAKIT"] i{
+  color:#ef5350!important;
+}
+
+html body .app .pulang-awal-kind-btn[data-pulang-kind="LIBUR"]{
+  border-color:rgba(242,165,26,.28)!important;
+}
+html body .app .pulang-awal-kind-btn[data-pulang-kind="LIBUR"] i{
+  color:#e8a015!important;
+}
+
+/* Selected = full color */
+html body .app .pulang-awal-kind-btn.active{
+  color:#fff!important;
+  border-color:transparent!important;
+  transform:translateY(-1px)!important;
+  box-shadow:
+    0 8px 16px rgba(37,95,88,.16),
+    inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+
+html body .app .pulang-awal-kind-btn.active i,
+html body .app .pulang-awal-kind-btn.active span{
+  color:#fff!important;
+}
+
+html body .app .pulang-awal-kind-btn[data-pulang-kind="IZIN"].active{
+  background:linear-gradient(135deg,#28d3a3 0%,#16b88d 100%)!important;
+}
+
+html body .app .pulang-awal-kind-btn[data-pulang-kind="SAKIT"].active{
+  background:linear-gradient(135deg,#ff6b6b 0%,#ef4444 100%)!important;
+}
+
+html body .app .pulang-awal-kind-btn[data-pulang-kind="LIBUR"].active{
+  background:linear-gradient(135deg,#f7bd49 0%,#e79b16 100%)!important;
+}
+
+html body .app .pulang-awal-kind-btn:hover{
+  transform:translateY(-1px)!important;
+}
+
+html body .app .pulang-awal-kind-btn:active{
+  transform:scale(.985)!important;
+}
+
+@media(max-width:380px){
+  html body .app .pulang-awal-kind-btn{
+    min-height:44px!important;
+    gap:6px!important;
+    padding:7px 8px!important;
+  }
+
+  html body .app .pulang-awal-kind-btn i{
+    font-size:18px!important;
+    width:21px!important;
+    height:21px!important;
+  }
+
+  html body .app .pulang-awal-kind-btn span{
+    font-size:10px!important;
+  }
+}
+
+
+/* ===== IZIN SUBMISSION RESULT CARD — UI ONLY ===== */
+html body .app .hasil-pengajuan-card{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:11px!important;
+  border:1px solid #bfe4dd!important;
+  border-left:4px solid #2fc8b4!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(circle at 90% 12%,rgba(47,200,180,.10),transparent 28%),
+    linear-gradient(145deg,#ffffff 0%,#f3fbf9 100%)!important;
+  box-shadow:
+    0 9px 20px rgba(43,100,95,.10),
+    inset 0 1px 0 rgba(255,255,255,.90)!important;
+}
+
+html body .app .hasil-pengajuan-head{
+  display:grid!important;
+  grid-template-columns:36px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:9px!important;
+}
+
+html body .app .hasil-pengajuan-icon{
+  width:36px!important;
+  height:36px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:11px!important;
+  color:#fff!important;
+  background:linear-gradient(145deg,#43d2bd,#1fae99)!important;
+  box-shadow:0 6px 13px rgba(47,200,180,.22)!important;
+}
+
+html body .app .hasil-pengajuan-icon i{
+  font-size:15px!important;
+}
+
+html body .app .hasil-pengajuan-head small{
+  display:block!important;
+  color:#6e8a8e!important;
+  font-size:7px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.12em!important;
+}
+
+html body .app .hasil-pengajuan-head h3{
+  margin:3px 0 0!important;
+  color:#244b52!important;
+  font-size:12px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+}
+
+html body .app .hasil-pengajuan-badge{
+  max-width:96px!important;
+  padding:5px 7px!important;
+  border:1px solid rgba(231,159,22,.24)!important;
+  border-radius:999px!important;
+  background:#fff7e7!important;
+  color:#b87805!important;
+  font-size:7.5px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+
+html body .app .hasil-pengajuan-main{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:9px!important;
+  margin-top:9px!important;
+  padding-top:9px!important;
+  border-top:1px solid #e0efec!important;
+}
+
+html body .app .hasil-pengajuan-copy{
+  min-width:0!important;
+}
+
+html body .app .hasil-pengajuan-copy strong{
+  display:block!important;
+  color:#168f7e!important;
+  font-size:11px!important;
+  font-weight:950!important;
+}
+
+html body .app .hasil-pengajuan-copy span{
+  display:block!important;
+  margin-top:2px!important;
+  color:#7b9195!important;
+  font-size:8.5px!important;
+  font-weight:750!important;
+}
+
+html body .app .hasil-pengajuan-copy p{
+  margin:6px 0 0!important;
+  color:#536f74!important;
+  font-size:9.5px!important;
+  line-height:1.35!important;
+  font-weight:700!important;
+  overflow-wrap:anywhere!important;
+}
+
+html body .app .hasil-pengajuan-foto{
+  width:58px!important;
+  height:58px!important;
+  overflow:hidden!important;
+  border:1px solid #c6e8e2!important;
+  border-radius:10px!important;
+  background:#eef8f6!important;
+  box-shadow:0 4px 10px rgba(43,100,95,.10)!important;
+}
+
+html body .app .hasil-pengajuan-foto img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+
+html body .app .hasil-pengajuan-foot{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin-top:9px!important;
+  padding:7px 8px!important;
+  border-radius:9px!important;
+  background:#eaf8f5!important;
+  color:#4f7778!important;
+  font-size:8.5px!important;
+  font-weight:800!important;
+}
+
+html body .app .hasil-pengajuan-foot i{
+  color:#20b7a2!important;
+  font-size:10px!important;
+}
+
+html body .app .hasil-pengajuan-card.is-approved{
+  border-left-color:#22b573!important;
+}
+html body .app .hasil-pengajuan-card.is-approved .hasil-pengajuan-badge{
+  border-color:rgba(34,181,115,.22)!important;
+  background:#eaf9f1!important;
+  color:#168b59!important;
+}
+
+html body .app .hasil-pengajuan-card.is-rejected{
+  border-left-color:#ef5350!important;
+}
+html body .app .hasil-pengajuan-card.is-rejected .hasil-pengajuan-badge{
+  border-color:rgba(239,83,80,.22)!important;
+  background:#fff0f1!important;
+  color:#c5444c!important;
+}
+
+@media(max-width:380px){
+  html body .app .hasil-pengajuan-head{
+    grid-template-columns:34px minmax(0,1fr) auto!important;
+    gap:7px!important;
+  }
+  html body .app .hasil-pengajuan-icon{
+    width:34px!important;
+    height:34px!important;
+  }
+  html body .app .hasil-pengajuan-badge{
+    max-width:88px!important;
+    padding:5px 6px!important;
+    font-size:7px!important;
+  }
+}

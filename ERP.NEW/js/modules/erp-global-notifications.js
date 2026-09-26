@@ -88,6 +88,50 @@
     async loadSetoran(db){
       try{const since=this.isoAddDays(this.jakartaToday(),-14),{data,error}=await db.from('setoran_3_harian').select('id,period_start,period_end,cabang_id,status,owner_verified,request_proof,proof_path,outside_correction_status,outside_correction_note').gte('period_end',since).order('period_end',{ascending:false}).limit(40);if(error)throw error;(data||[]).forEach(r=>{if(r.request_proof&&!r.proof_path)this.add({tone:'urgent',icon:'📷',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Bukti setoran diminta',detail:`Periode ${r.period_start} — ${r.period_end} • cabang ID ${r.cabang_id}`});const cs=String(r.outside_correction_status||'').toUpperCase();if(cs&&/REQUEST|KOREKSI|CORRECTION/.test(cs))this.add({tone:'urgent',icon:'!',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Koreksi setoran perlu ditindaklanjuti',detail:`Periode ${r.period_start} — ${r.period_end}${r.outside_correction_note?` • ${r.outside_correction_note}`:''}`});if(this.role==='owner'&&r.owner_verified===false&&String(r.status||'').toUpperCase()!=='CLEAR')this.add({tone:'warning',icon:'✓',module:'SETORAN 3 HARIAN',href:'./setoran-3-harian.html',title:'Setoran belum Owner Verified',detail:`Periode ${r.period_start} — ${r.period_end} • ${r.status||'menunggu review'}`})})}catch(e){console.warn('[Notif] setoran',e)}
     },
+    async loadPulangAwal(db){
+      if(!['svp','owner'].includes(this.role))return;
+      try{
+        const scope=this.role==='svp'?'PENDING':'ALL';
+        const {data,error}=await db.rpc('pulang_awal_list_reviewer_v1',{p_scope:scope});
+        if(error)throw error;
+        const rows=Array.isArray(data?.rows)?data.rows:[];
+
+        if(this.role==='svp'){
+          rows.filter(r=>String(r.status||'').toUpperCase()==='MENUNGGU_SPV').forEach(r=>{
+            const name=r.nama_karyawan||`Karyawan ID ${r.karyawan_id}`;
+            const cabang=r.nama_cabang||'Cabang tidak tersedia';
+            const jenis=String(r.jenis||'IZIN').toUpperCase();
+            this.add({
+              key:`pulang-awal:${r.id}:svp`,
+              tone:'urgent',
+              icon:'↗',
+              module:'ABSENSI / PULANG AWAL',
+              href:'./absensi.html#pulangAwalSpvEmbed',
+              title:'Pulang lebih awal menunggu keputusan SVP',
+              detail:`${name} • ${jenis} • ${cabang} • ${r.tanggal||'—'}`
+            });
+          });
+          return;
+        }
+
+        rows.filter(r=>['DISETUJUI_SPV','DITOLAK_SPV'].includes(String(r.status||'').toUpperCase())&&!r.owner_read_at).forEach(r=>{
+          const name=r.nama_karyawan||`Karyawan ID ${r.karyawan_id}`;
+          const cabang=r.nama_cabang||'Cabang tidak tersedia';
+          const jenis=String(r.jenis||'IZIN').toUpperCase();
+          const status=String(r.status||'').toUpperCase();
+          const approved=status==='DISETUJUI_SPV';
+          this.add({
+            key:`pulang-awal:${r.id}:owner:${status}`,
+            tone:approved?'info':'warning',
+            icon:approved?'✓':'!',
+            module:'ABSENSI / PULANG AWAL',
+            href:'./absensi.html#pulangAwalSpvEmbed',
+            title:approved?'Pulang lebih awal disetujui SPV':'Pulang lebih awal ditolak SPV',
+            detail:`${name} • ${jenis} • ${cabang} • ${r.tanggal||'—'} • Read only Owner`
+          });
+        });
+      }catch(e){console.warn('[Notif] pulang awal',e)}
+    },
     async loadIzin(db){
       if(!['owner','svp'].includes(this.role))return;
       try{
@@ -115,7 +159,7 @@
     focusLinkedModule(){
       if(!/master-tagihan\.html$/i.test(location.pathname))return;const q=new URLSearchParams(location.search),focus=q.get('focus');if(!focus)return;const target=focus==='invoice'?'#mtInvoiceCard':'.mt-card';let tries=0;const t=setInterval(()=>{const el=document.querySelector(target);if(el){clearInterval(t);el.scrollIntoView({behavior:'smooth',block:'center'});el.animate([{boxShadow:'0 0 0 0 rgba(68,190,235,0)'},{boxShadow:'0 0 0 3px rgba(68,190,235,.55)'},{boxShadow:'0 0 0 0 rgba(68,190,235,0)'}],{duration:1400,easing:'ease-out'})}else if(++tries>30)clearInterval(t)},180)
     },
-    async refresh(){if(this.loading)return;this.loading=true;this.ensureUi();const rf=document.getElementById('erpGlobalNotifRefresh');if(rf){rf.classList.add('is-loading');rf.disabled=true}if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Memuat notifikasi…</div>';try{const db=await this.waitDb();if(!db)throw new Error('Supabase belum siap');this.items=[];await this.loadIdentity(db);await Promise.all([this.loadInvoices(db),this.loadTagihan(db),this.loadArusKas(db),this.loadCashOutWarnings(db),this.loadSetoran(db),this.loadIzin(db),this.loadPengumuman(db)]);this.render()}catch(e){console.warn('[Notif] refresh',e);if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Notifikasi belum dapat dimuat.</div>'}finally{if(rf){rf.classList.remove('is-loading');rf.disabled=false}this.loading=false}},
+    async refresh(){if(this.loading)return;this.loading=true;this.ensureUi();const rf=document.getElementById('erpGlobalNotifRefresh');if(rf){rf.classList.add('is-loading');rf.disabled=true}if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Memuat notifikasi…</div>';try{const db=await this.waitDb();if(!db)throw new Error('Supabase belum siap');this.items=[];await this.loadIdentity(db);await Promise.all([this.loadInvoices(db),this.loadTagihan(db),this.loadArusKas(db),this.loadCashOutWarnings(db),this.loadSetoran(db),this.loadIzin(db),this.loadPulangAwal(db),this.loadPengumuman(db)]);this.render()}catch(e){console.warn('[Notif] refresh',e);if(this.list)this.list.innerHTML='<div class="erp-global-notif-empty">Notifikasi belum dapat dimuat.</div>'}finally{if(rf){rf.classList.remove('is-loading');rf.disabled=false}this.loading=false}},
     open(){this.ensureUi();this.panel.hidden=false;this.button.setAttribute('aria-expanded','true');this.refresh()},
     close(){if(this.panel)this.panel.hidden=true;if(this.button)this.button.setAttribute('aria-expanded','false')},
     toggle(){if(!this.panel||this.panel.hidden)this.open();else this.close()},

@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Absensi Karyawan</title>
 <link rel="stylesheet" href="absensi.css">
+<link rel="stylesheet" href="dashboard-karyawan-bottomnav-edge-theme-ui.css?v=20260926-1">
+<link rel="stylesheet" href="absensi-main-theme-ui.css?v=20260926-1">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 </head>
 
@@ -17,23 +19,29 @@
 
 <header class="topbar">
     <div class="topbar-brand">
+        <img class="employee-erp-logo" src="ERP.NEW/assets/brand/erp-vax-wijaya.png" alt="ERP VAX WIJAYA" width="42" height="36" decoding="async">
         <strong>VAX WIJAYA</strong>
+        <span class="brand-subtitle">ENTERPRISE MANAGEMENT SYSTEM</span>
+        <span class="brand-powered">Powered by Heri Herdianto</span>
     </div>
-    <div class="topbar-meta">
-        <small>Powered by <b>Heri Herdianto</b></small>
-    </div>
+    <a class="vax-inbox-shortcut" href="pesan-karyawan.html" aria-label="Buka Inbox">
+        <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+    </a>
 </header>
 
 <!-- ================= 2. PROFILE / SESSION ================= -->
 
 <section class="profile-card" aria-label="Profil karyawan">
-    <img
-        id="fotoKaryawan"
-        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23111111'/%3E%3Ccircle cx='32' cy='24' r='10' fill='%23d4a017'/%3E%3Cpath d='M14 56c2.4-12 12.2-18 18-18s15.6 6 18 18' fill='%23d4a017'/%3E%3C/svg%3E"
-        alt="Foto profil">
+    <span class="employee-profile-photo-wrap">
+        <img
+            id="fotoKaryawan"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23111111'/%3E%3Ccircle cx='32' cy='24' r='10' fill='%23d4a017'/%3E%3Cpath d='M14 56c2.4-12 12.2-18 18-18s15.6 6 18 18' fill='%23d4a017'/%3E%3C/svg%3E"
+            alt="Foto profil">
+    </span>
 
     <div class="profile-copy">
         <p class="home-greet" id="greetingTitle">Selamat Pagi</p>
+        <p id="greetingMessage" class="profile-greeting-message">Semoga hari ini penuh semangat.</p>
         <h1 id="namaKaryawan">Loading...</h1>
         <p class="profile-line">
             <i class="fas fa-briefcase" aria-hidden="true"></i>
@@ -45,9 +53,15 @@
         </p>
         <label id="statusKaryawan">Karyawan Aktif</label>
     </div>
-</section>
 
-<p id="greetingMessage" class="sr-only">Semoga hari ini penuh semangat.</p>
+    <div class="profile-branch" aria-label="Cabang asal karyawan">
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+        <div>
+            <span class="profile-branch-name" id="absensiProfileBranchName">Memuat cabang…</span>
+            <span class="profile-branch-address" id="absensiProfileBranchAddress">Memuat alamat Master Cabang…</span>
+        </div>
+    </div>
+</section>
 <span id="emojiGreeting" hidden>☀️</span>
 
 <main class="absen-body">
@@ -96,31 +110,52 @@
     <!-- ================= BULAN INI ================= -->
 
     <section class="card statistik" aria-label="Ringkasan bulan ini">
-        <h3>Ringkasan Bulan Ini</h3>
+        <div class="statistik-heading">
+            <h3>Ringkasan Bulan Ini</h3>
+            <span class="statistik-heading-accent" aria-hidden="true"></span>
+        </div>
         <div class="grid-stat">
             <div class="item item-hadir">
-                <h2 id="hadir">0</h2>
-                <span>Masuk</span>
+                <span class="stat-icon" aria-hidden="true"><i class="fas fa-calendar-check"></i></span>
+                <div class="stat-copy">
+                    <h2 id="hadir">0</h2>
+                    <span>Masuk</span>
+                </div>
             </div>
             <div class="item item-late">
-                <h2 id="terlambat">0</h2>
-                <span>Terlambat</span>
+                <span class="stat-icon" aria-hidden="true"><i class="fas fa-clock"></i></span>
+                <div class="stat-copy">
+                    <h2 id="terlambat">0</h2>
+                    <span>Terlambat</span>
+                </div>
             </div>
             <div class="item item-izin">
-                <h2 id="izin">0</h2>
-                <span>Izin</span>
+                <span class="stat-icon" aria-hidden="true"><i class="fas fa-file-lines"></i></span>
+                <div class="stat-copy">
+                    <h2 id="izin">0</h2>
+                    <span>Izin</span>
+                </div>
             </div>
             <div class="item item-sakit">
-                <h2 id="sakit">0</h2>
-                <span>Sakit</span>
+                <span class="stat-icon" aria-hidden="true"><i class="fas fa-briefcase-medical"></i></span>
+                <div class="stat-copy">
+                    <h2 id="sakit">0</h2>
+                    <span>Sakit</span>
+                </div>
             </div>
             <div class="item item-libur">
-                <h2 id="libur">0</h2>
-                <span>Libur</span>
+                <span class="stat-icon" aria-hidden="true"><i class="fas fa-calendar-days"></i></span>
+                <div class="stat-copy">
+                    <h2 id="libur">0</h2>
+                    <span>Libur</span>
+                </div>
             </div>
             <div class="item item-denda">
-                <h2 id="denda">Rp0</h2>
-                <span>Total Denda</span>
+                <span class="stat-icon" aria-hidden="true"><i class="fas fa-coins"></i></span>
+                <div class="stat-copy">
+                    <h2 id="denda">Rp0</h2>
+                    <span>Total Denda</span>
+                </div>
             </div>
         </div>
     </section>
@@ -180,6 +215,8 @@
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
 <script src="absensi.js?v=20260919-secure"></script>
+<script src="absensi-profile-branch-ui.js?v=20260926-1"></script>
+<script src="dashboard-karyawan-notifikasi-ui.js?v=20260926-1"></script>
 
 </body>
 </html>
