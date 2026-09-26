@@ -25,3 +25,149 @@
 .employee-barber-ranking-service{text-align:right;font-size:12px;font-weight:800;color:#f0cf7b;white-space:nowrap}
 .employee-barber-ranking-empty{padding:18px 8px;text-align:center;font-size:11px;color:#aaa69d}
 @media(max-width:359px){.employee-barber-ranking{padding:10px}.employee-barber-ranking-row{grid-template-columns:30px minmax(0,1fr) auto;padding:6px}.employee-barber-ranking-name,.employee-barber-ranking-service{font-size:11px}}
+
+
+/* UI ONLY — Ranking Barber orbit + larger tabs + self emphasis 2026-09-26 */
+html body .app .employee-barber-ranking{
+  position:relative!important;
+  isolation:isolate!important;
+}
+
+/* Entire Ranking Barber card now pulses in VAX green; orbit removed. */
+html body .app .employee-barber-ranking{
+  animation:vaxRankingCardPulse 1.7s ease-in-out infinite!important;
+}
+
+html body .app .employee-barber-ranking::before{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+}
+
+@keyframes vaxRankingCardPulse{
+  0%,100%{
+    border-color:rgba(47,188,168,.34)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.98),
+      0 10px 22px rgba(47,188,168,.12)!important;
+  }
+  50%{
+    border-color:rgba(47,200,180,.82)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 0 0 2px rgba(47,200,180,.22),
+      0 12px 26px rgba(47,188,168,.28),
+      0 0 18px rgba(47,200,180,.24)!important;
+  }
+}
+
+/* Larger scope titles: Cabang Saya / Semua Cabang. */
+html body .app .employee-barber-ranking .employee-barber-ranking-tab{
+  min-height:38px!important;
+  font-size:11.5px!important;
+  line-height:1!important;
+  font-weight:850!important;
+  letter-spacing:.005em!important;
+}
+
+/* Current employee row: full VAX green panel + clear repeating emphasis. */
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self{
+  border-color:rgba(38,182,160,.82)!important;
+  background:linear-gradient(135deg,#43d5c0 0%,#27bca8 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    0 5px 13px rgba(39,188,168,.22)!important;
+  animation:vaxRankingSelfPulse 1.45s ease-in-out infinite!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .employee-barber-ranking-name,
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .employee-barber-ranking-rank,
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .employee-barber-ranking-service{
+  color:#ffffff!important;
+  text-shadow:0 1px 1px rgba(0,88,77,.18)!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .employee-barber-ranking-you{
+  color:#087563!important;
+  background:rgba(255,255,255,.92)!important;
+  border:1px solid rgba(255,255,255,.78)!important;
+  box-shadow:0 2px 7px rgba(14,109,94,.14)!important;
+}
+
+@keyframes vaxRankingSelfPulse{
+  0%,100%{
+    filter:brightness(1);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.42),
+      0 5px 13px rgba(39,188,168,.22);
+  }
+  50%{
+    filter:brightness(1.08);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.50),
+      0 0 0 2px rgba(66,219,196,.42),
+      0 7px 18px rgba(39,188,168,.38),
+      0 0 14px rgba(57,200,180,.28);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .employee-barber-ranking::before,
+  html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self{
+    animation:none!important;
+  }
+}
+
+
+/* UI ONLY — ranking self rank color + themed scrollbar 2026-09-26 */
+html body .app .employee-barber-ranking .employee-barber-ranking-self strong{
+  color:#27bca8!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.75),0 0 8px rgba(39,188,168,.18)!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-self span{
+  color:#4c8f86!important;
+  font-weight:750!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list{
+  scrollbar-width:thin!important;
+  scrollbar-color:#35c7b2 #e8f7f4!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-scrollbar{
+  width:6px!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-scrollbar-track{
+  background:#e8f7f4!important;
+  border-radius:999px!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#43d5c0,#27bca8)!important;
+  border-radius:999px!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+}
+
+html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,#4adbc6,#22ad9a)!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .employee-barber-ranking{
+    animation:none!important;
+  }
+}
+
+
+/* UI ONLY — ranking scope/date status inset + bold 2026-09-26 */
+html body .app .employee-barber-ranking .employee-barber-ranking-status{
+  padding-left:6px!important;
+  padding-right:6px!important;
+  box-sizing:border-box!important;
+  font-size:10px!important;
+  line-height:1.3!important;
+  font-weight:800!important;
+  color:#52766f!important;
+}
