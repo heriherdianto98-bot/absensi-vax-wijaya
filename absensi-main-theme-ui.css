@@ -1305,6 +1305,77 @@ html body .app .statistik .item-denda #denda{
   html body .app .statistik .item .stat-copy>span{font-size:7.5px!important}
 }
 
+/* ===== ABSENSI MONTHLY SUMMARY REFINEMENT — UI ONLY ===== */
+@keyframes absensiSummaryGreenPulse{
+  0%,100%{box-shadow:0 4px 10px rgba(44,95,89,.055),inset 0 0 0 0 rgba(47,200,180,0)}
+  50%{box-shadow:0 7px 16px rgba(47,200,180,.14),inset 0 0 0 1px rgba(47,200,180,.22)}
+}
+html body .app .statistik .item,
+html body .app .statistik .item-hadir,
+html body .app .statistik .item-late,
+html body .app .statistik .item-izin,
+html body .app .statistik .item-sakit,
+html body .app .statistik .item-libur,
+html body .app .statistik .item-denda{
+  position:relative!important;
+  min-height:76px!important;
+  padding:10px 8px 8px!important;
+  align-items:flex-start!important;
+  justify-content:flex-end!important;
+  animation:absensiSummaryGreenPulse 3.2s ease-in-out infinite!important;
+}
+html body .app .statistik .item:nth-child(2){animation-delay:.18s!important}
+html body .app .statistik .item:nth-child(3){animation-delay:.36s!important}
+html body .app .statistik .item:nth-child(4){animation-delay:.54s!important}
+html body .app .statistik .item:nth-child(5){animation-delay:.72s!important}
+html body .app .statistik .item:nth-child(6){animation-delay:.90s!important}
+html body .app .statistik .stat-icon{
+  position:absolute!important;
+  top:8px!important;
+  left:8px!important;
+  width:26px!important;
+  height:26px!important;
+  border-radius:8px!important;
+  background:#eef8f6!important;
+  color:#2b7e75!important;
+}
+html body .app .statistik .stat-copy{
+  width:100%!important;
+  align-items:flex-start!important;
+  text-align:left!important;
+  padding-top:28px!important;
+}
+html body .app .statistik .item h2,
+html body .app .statistik .item-hadir h2,
+html body .app .statistik .item-late h2,
+html body .app .statistik .item-izin h2,
+html body .app .statistik .item-sakit h2,
+html body .app .statistik .item-libur h2,
+html body .app .statistik .item-denda h2{
+  font-size:19px!important;
+}
+html body .app .statistik .item .stat-copy>span{
+  font-size:9.5px!important;
+  font-weight:850!important;
+}
+html body .app .statistik .item-denda #denda{
+  font-size:clamp(10px,3.2vw,15px)!important;
+}
+@media(max-width:380px){
+  html body .app .statistik .item,
+  html body .app .statistik .item-hadir,
+  html body .app .statistik .item-late,
+  html body .app .statistik .item-izin,
+  html body .app .statistik .item-sakit,
+  html body .app .statistik .item-libur,
+  html body .app .statistik .item-denda{min-height:73px!important}
+  html body .app .statistik .item h2{font-size:18px!important}
+  html body .app .statistik .item .stat-copy>span{font-size:8.5px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html body .app .statistik .item{animation:none!important}
+}
+
 /* ===== ABSENSI GPS STATIC CARD COMPOSITING FIX — UI ONLY ===== */
 /* Keep the green location card visually static. Animation is isolated to the GPS icon/rings only. */
 html body .app .lokasi{
