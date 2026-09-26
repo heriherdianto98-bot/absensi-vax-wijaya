@@ -1376,6 +1376,40 @@ html body .app .statistik .item-denda #denda{
   html body .app .statistik .item{animation:none!important}
 }
 
+/* ===== ABSENSI MONTHLY SUMMARY CENTER + GREEN BORDER — UI ONLY ===== */
+html body .app .statistik .item,
+html body .app .statistik .item-hadir,
+html body .app .statistik .item-late,
+html body .app .statistik .item-izin,
+html body .app .statistik .item-sakit,
+html body .app .statistik .item-libur,
+html body .app .statistik .item-denda{
+  border:1.5px solid #2fc8b4!important;
+}
+html body .app .statistik .stat-copy{
+  width:100%!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+html body .app .statistik .item h2,
+html body .app .statistik .item-hadir h2,
+html body .app .statistik .item-late h2,
+html body .app .statistik .item-izin h2,
+html body .app .statistik .item-sakit h2,
+html body .app .statistik .item-libur h2,
+html body .app .statistik .item-denda h2{
+  width:100%!important;
+  text-align:center!important;
+}
+html body .app .statistik .item .stat-copy>span{
+  width:100%!important;
+  text-align:center!important;
+}
+html body .app .statistik .item-denda #denda{
+  text-align:center!important;
+}
+
 /* ===== ABSENSI GPS STATIC CARD COMPOSITING FIX — UI ONLY ===== */
 /* Keep the green location card visually static. Animation is isolated to the GPS icon/rings only. */
 html body .app .lokasi{
