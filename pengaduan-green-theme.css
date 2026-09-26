@@ -1,0 +1,853 @@
+/* VAX WIJAYA — Pengaduan employee page light/green theme.
+   UI ONLY: page chrome, cards, form, detail, timeline, gallery, bottom nav.
+   No RPC, Supabase, submit flow, refresh, navigation, ticket logic, or data behavior changes. */
+
+:root{
+  --pd-green:#2fc8b4;
+  --pd-green-2:#48d7c3;
+  --pd-green-deep:#159b88;
+  --pd-green-soft:#eafaf6;
+  --pd-green-line:#b9e5de;
+  --pd-text:#264a54;
+  --pd-muted:#71858b;
+  --pd-panel:#ffffff;
+  --pd-page:#f3fbf9;
+}
+
+html,body{background:#eaf5f3!important}
+body{
+  color:var(--pd-text)!important;
+  scrollbar-width:thin;
+  scrollbar-color:var(--pd-green) #dff1ed;
+}
+body::-webkit-scrollbar{width:6px}
+body::-webkit-scrollbar-track{background:#dff1ed}
+body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--pd-green-2),var(--pd-green));border-radius:999px}
+
+html body .app{
+  background:
+    radial-gradient(115% 34% at 50% 0%,rgba(47,200,180,.15),transparent 55%),
+    linear-gradient(180deg,#f8fcfb 0%,#f1f8f7 100%)!important;
+  color:var(--pd-text)!important;
+}
+
+/* Header */
+html body .topbar{
+  margin:0 10px 10px!important;
+  top:8px!important;
+  min-height:46px!important;
+  padding:4px 6px!important;
+  border:1px solid rgba(255,255,255,.42)!important;
+  border-radius:14px!important;
+  background:linear-gradient(135deg,#47d4c1,#29bca8)!important;
+  box-shadow:0 8px 20px rgba(47,188,168,.18)!important;
+}
+html body .back-btn,
+html body .icon-btn,
+html body .ghost{
+  color:#fff!important;
+  background:rgba(255,255,255,.14)!important;
+  border:1px solid rgba(255,255,255,.35)!important;
+  box-shadow:none!important;
+}
+html body .top-title strong{
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  text-shadow:0 1px 1px rgba(0,92,80,.15)!important;
+}
+html body .top-title small{
+  color:rgba(255,255,255,.82)!important;
+  font-weight:750!important;
+}
+
+/* Home hero */
+html body .hero{
+  margin:10px 12px 12px!important;
+  padding:15px!important;
+  border:1px solid var(--pd-green-line)!important;
+  border-radius:17px!important;
+  background:
+    linear-gradient(145deg,rgba(72,215,195,.10),rgba(255,255,255,.98) 38%),
+    #fff!important;
+  box-shadow:inset 0 1px 0 #fff,0 10px 24px rgba(53,102,105,.10)!important;
+}
+html body .hero small,
+html body .section-head small{
+  color:var(--pd-green-deep)!important;
+  font-weight:900!important;
+}
+html body .hero h1,
+html body .section-head h2{
+  color:#24454e!important;
+  font-weight:950!important;
+}
+html body .hero p{
+  color:#61777e!important;
+  font-weight:600!important;
+}
+html body .hero button,
+html body .primary{
+  border:1px solid rgba(37,174,154,.72)!important;
+  background:linear-gradient(145deg,var(--pd-green-2),var(--pd-green))!important;
+  color:#fff!important;
+  box-shadow:0 6px 14px rgba(39,188,168,.20)!important;
+}
+
+/* Summary */
+html body .summary article{
+  border:1px solid var(--pd-green-line)!important;
+  background:linear-gradient(145deg,#fff,#f3fbf9)!important;
+  box-shadow:inset 0 1px 0 #fff,0 6px 14px rgba(53,102,105,.08)!important;
+}
+html body .summary span{
+  color:#71868c!important;
+  font-weight:850!important;
+}
+html body .summary strong{
+  color:var(--pd-green-deep)!important;
+  font-weight:950!important;
+}
+
+/* Ticket list */
+html body .ticket-list{
+  scrollbar-width:thin;
+  scrollbar-color:var(--pd-green) #e2f3f0;
+}
+html body .ticket-list::-webkit-scrollbar{width:6px}
+html body .ticket-list::-webkit-scrollbar-track{background:#e2f3f0;border-radius:999px}
+html body .ticket-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--pd-green-2),var(--pd-green));border-radius:999px}
+html body .ticket{
+  border:1px solid var(--pd-green-line)!important;
+  background:linear-gradient(145deg,rgba(72,215,195,.07),#fff 38%)!important;
+  box-shadow:inset 0 1px 0 #fff,0 8px 18px rgba(53,102,105,.10)!important;
+}
+html body .ticket:hover{
+  border-color:rgba(47,200,180,.72)!important;
+  box-shadow:0 0 0 2px rgba(47,200,180,.08),0 10px 22px rgba(47,188,168,.13)!important;
+}
+html body .ticket-no{color:var(--pd-green-deep)!important}
+html body .ticket h3{color:#24454e!important;font-weight:900!important}
+html body .ticket-meta{color:#7b8e93!important;font-weight:650!important}
+html body .status{
+  color:#2e5d63!important;
+  background:#f5fbfa!important;
+  border-color:#cce9e4!important;
+}
+html body .status.wait{color:#9a6f10!important;background:#fff8e4!important;border-color:#ecd791!important}
+html body .status.owner{color:#b25252!important;background:#fff1f1!important;border-color:#efbcbc!important}
+html body .status.done{color:#167c5a!important;background:#eaf8f0!important;border-color:#b9e2c9!important}
+html body .empty{color:#7b9297!important}
+
+/* Section header + form */
+html body .section-head{margin:10px 12px!important}
+html body .section-head .ghost{
+  color:var(--pd-green-deep)!important;
+  background:#fff!important;
+  border-color:var(--pd-green-line)!important;
+  box-shadow:0 4px 10px rgba(53,102,105,.08)!important;
+}
+html body form{
+  border:1px solid var(--pd-green-line)!important;
+  background:linear-gradient(145deg,rgba(72,215,195,.05),#fff 34%)!important;
+  box-shadow:inset 0 1px 0 #fff,0 9px 20px rgba(53,102,105,.09)!important;
+}
+html body label{
+  color:#557178!important;
+  font-weight:850!important;
+}
+html body input,
+html body select,
+html body textarea,
+html body .reply-box textarea{
+  color:#294b54!important;
+  background:#fff!important;
+  border:1px solid #b9dcd6!important;
+  box-shadow:inset 0 1px 0 #fff!important;
+}
+html body input::placeholder,
+html body textarea::placeholder{color:#91a6aa!important}
+html body input:focus,
+html body select:focus,
+html body textarea:focus,
+html body .reply-box textarea:focus{
+  border-color:var(--pd-green)!important;
+  box-shadow:0 0 0 3px rgba(47,200,180,.13)!important;
+}
+html body .intake-box{
+  border:1px solid var(--pd-green-line)!important;
+  background:#f0fbf8!important;
+}
+html body .intake-title i{color:var(--pd-green-deep)!important}
+html body .intake-title strong{color:#24454e!important}
+html body .intake-title small{color:#73898e!important}
+html body .message{color:var(--pd-green-deep)!important;font-weight:750!important}
+
+/* Detail */
+html body .detail-card,
+html body .timeline-wrap,
+html body .confirm-box,
+html body .reply-box,
+html body .photo-history-wrap{
+  border:1px solid var(--pd-green-line)!important;
+  background:linear-gradient(145deg,rgba(72,215,195,.05),#fff 34%)!important;
+  box-shadow:inset 0 1px 0 #fff,0 8px 18px rgba(53,102,105,.09)!important;
+}
+html body .detail-grid div{
+  background:#f1faf8!important;
+  border:1px solid #d7eeea!important;
+}
+html body .detail-grid span{color:#71868c!important;font-weight:800!important}
+html body .detail-grid strong{color:#294b54!important}
+html body .detail-card>p{color:#5f777d!important}
+html body .timeline-wrap h3,
+html body .reply-box strong,
+html body .photo-history-head h3{color:#1b8878!important}
+html body .reply-box p,
+html body .photo-history-head span,
+html body .reply-photo-tools>span{color:#788f95!important}
+
+html body .event:before{
+  background:var(--pd-green)!important;
+  box-shadow:0 0 10px rgba(47,200,180,.30)!important;
+}
+html body .event:after{background:#cfe7e2!important}
+html body .event strong{color:#31565e!important}
+html body .event small{color:#81959a!important}
+html body .event p{color:#597278!important}
+
+html body .confirm-box{
+  border-color:#cde4b9!important;
+  background:#f7fbef!important;
+}
+html body .confirm-box strong{color:#6f7e1f!important}
+html body .confirm-box p{color:#6c7b67!important}
+html body .success{border-color:#9dd7b3!important;background:#e9f8ef!important;color:#18754f!important}
+html body .danger{border-color:#efc0c0!important;background:#fff1f1!important;color:#b64f4f!important}
+
+/* Photo UI */
+html body .photo-pick{
+  border-color:#a9ddd4!important;
+  background:#eef9f7!important;
+  color:#168a79!important;
+}
+html body .photo-pick:hover{border-color:var(--pd-green)!important;background:#e6f8f4!important}
+html body .reply-photo-thumb,
+html body .photo-history-item{
+  border-color:#c9e7e2!important;
+  background:#f7fbfa!important;
+}
+html body .photo-history-meta{border-top-color:#d9ece8!important}
+html body .photo-history-meta span{color:#3f5e65!important}
+html body .photo-history-meta small{color:#87999d!important}
+html body .photo-expired{color:#84989d!important}
+html body .photo-expired i{color:#91aaa6!important}
+html body .photo-expired strong{color:#5e757b!important}
+html body .photo-viewer{background:rgba(23,48,52,.82)!important}
+html body .photo-viewer button{
+  border-color:#9fd8ce!important;
+  background:#fff!important;
+  color:#168a79!important;
+}
+
+/* Bottom nav */
+html body #bottomNav{
+  background:rgba(255,255,255,.97)!important;
+  border:1px solid #b8ded8!important;
+  border-bottom:0!important;
+  box-shadow:0 -6px 18px rgba(53,102,105,.10)!important;
+}
+html body #bottomNav a{color:#72868c!important}
+html body #bottomNav a:hover,
+html body #bottomNav a:focus-visible{color:var(--pd-green-deep)!important}
+
+/* Compact mobile polish */
+@media(max-width:430px){
+  html body .hero{gap:10px!important}
+  html body .hero h1{font-size:20px!important}
+  html body .hero p{font-size:11.5px!important}
+  html body .summary{gap:7px!important}
+}
+
+
+/* Header freeze — UI ONLY */
+html body .topbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:50!important;
+  margin-top:0!important;
+}
+
+
+/* Pengaduan shell alignment fix — UI ONLY
+   Header is viewport-fixed; bottom nav matches Dashboard Karyawan floating dock. */
+html body .topbar{
+  position:fixed!important;
+  top:max(6px,env(safe-area-inset-top,0px))!important;
+  left:50%!important;
+  right:auto!important;
+  width:min(calc(100% - 20px),410px)!important;
+  transform:translateX(-50%)!important;
+  margin:0!important;
+  z-index:120!important;
+}
+html body .app > main{
+  padding-top:62px!important;
+}
+
+/* Dashboard Karyawan-style bottom navigation */
+html body #bottomNav{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:max(8px,env(safe-area-inset-bottom,0px))!important;
+  width:min(calc(100% - 30px),400px)!important;
+  transform:translateX(-50%)!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:center!important;
+  gap:0!important;
+  box-sizing:border-box!important;
+  padding:7px 6px 6px!important;
+  border:1px solid #b8ded8!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.98)!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 -2px 7px rgba(42,72,103,.05),
+    0 14px 30px rgba(42,72,103,.17)!important;
+  backdrop-filter:blur(14px)!important;
+  overflow:hidden!important;
+  z-index:125!important;
+}
+html body #bottomNav > a{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:3px 1px!important;
+  color:#78889b!important;
+  text-align:center!important;
+  text-decoration:none!important;
+  font-size:9px!important;
+}
+html body #bottomNav > a > i{
+  color:#78889b!important;
+  font-size:15px!important;
+  filter:none!important;
+}
+html body #bottomNav > a:hover,
+html body #bottomNav > a:focus-visible,
+html body #bottomNav > a:hover > i,
+html body #bottomNav > a:focus-visible > i{
+  color:#159b88!important;
+}
+html body .app{
+  padding-bottom:94px!important;
+}
+
+
+/* Form clarity + themed native selects — UI ONLY */
+html body #formView form{
+  overflow:hidden!important;
+}
+
+/* Stronger section/field headings */
+html body #formView label{
+  color:#315e66!important;
+  font-size:10.5px!important;
+  line-height:1.25!important;
+  font-weight:950!important;
+  letter-spacing:.055em!important;
+}
+html body #formView .section-head small{
+  font-size:9.5px!important;
+  font-weight:950!important;
+  letter-spacing:.12em!important;
+}
+html body #formView .section-head h2{
+  font-size:20px!important;
+  line-height:1.1!important;
+  font-weight:950!important;
+  color:#24454e!important;
+}
+
+/* Native select control stays inside the form width and matches theme. */
+html body #formView select{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  height:38px!important;
+  padding:0 34px 0 12px!important;
+  border:1px solid #9edbd2!important;
+  border-radius:10px!important;
+  background:
+    linear-gradient(180deg,#ffffff 0%,#f4fbfa 100%)!important;
+  color:#294b54!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 4px 10px rgba(53,102,105,.07)!important;
+  outline:none!important;
+  appearance:auto!important;
+}
+html body #formView select:focus{
+  border-color:var(--pd-green)!important;
+  box-shadow:0 0 0 3px rgba(47,200,180,.13)!important;
+}
+html body #formView select option{
+  background:#f7fbfa!important;
+  color:#294b54!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+
+/* Inputs/textareas clearer and more compact. */
+html body #formView input,
+html body #formView textarea{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  color:#294b54!important;
+  background:#fff!important;
+  border-color:#b9dcd6!important;
+  font-size:12px!important;
+  font-weight:650!important;
+}
+html body #formView input::placeholder,
+html body #formView textarea::placeholder{
+  color:#90a3a8!important;
+  font-weight:650!important;
+}
+
+/* ERP information panel: softer but clearly themed. */
+html body #formView .intake-box{
+  margin-top:2px!important;
+  padding:11px 10px!important;
+  border:1px solid #9fded4!important;
+  border-radius:12px!important;
+  background:
+    linear-gradient(145deg,rgba(72,215,195,.14),rgba(236,250,247,.96))!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    0 5px 12px rgba(47,153,136,.08)!important;
+}
+html body #formView .intake-title{
+  margin-bottom:10px!important;
+  padding-bottom:8px!important;
+  border-bottom:1px solid rgba(47,200,180,.24)!important;
+}
+html body #formView .intake-title i{
+  color:#159b88!important;
+  font-size:13px!important;
+}
+html body #formView .intake-title strong{
+  color:#24454e!important;
+  font-size:11.5px!important;
+  line-height:1.2!important;
+  font-weight:950!important;
+}
+html body #formView .intake-title small{
+  color:#71888d!important;
+  font-size:8.8px!important;
+  font-weight:650!important;
+}
+html body #formView .intake-q{
+  color:#365f67!important;
+  font-size:10px!important;
+  line-height:1.32!important;
+  font-weight:950!important;
+  letter-spacing:.045em!important;
+}
+html body #formView .intake-q textarea{
+  margin-top:5px!important;
+  background:#fff!important;
+  border-color:#b8ded8!important;
+}
+
+/* Priority dropdown emphasis, still same form logic. */
+html body #prioritas{
+  border-color:#9fded4!important;
+  background:linear-gradient(180deg,#f6fffd 0%,#edf9f6 100%)!important;
+  color:#176f64!important;
+  font-weight:900!important;
+}
+
+
+/* Custom complaint selects — UI ONLY */
+html body #formView form{overflow:visible!important}
+html body #formView .pd-native-select{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+html body #formView .pd-select{
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  z-index:1!important;
+}
+html body #formView .pd-select.is-open{z-index:60!important}
+html body #formView .pd-select-btn{
+  width:100%!important;
+  min-width:0!important;
+  height:38px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding:0 12px!important;
+  border:1px solid #9edbd2!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f4fbfa 100%)!important;
+  color:#294b54!important;
+  box-shadow:inset 0 1px 0 #fff,0 4px 10px rgba(53,102,105,.07)!important;
+  font:inherit!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+html body #formView .pd-select-btn:hover,
+html body #formView .pd-select-btn:focus-visible{
+  border-color:var(--pd-green)!important;
+  box-shadow:0 0 0 3px rgba(47,200,180,.12),0 5px 12px rgba(53,102,105,.09)!important;
+  outline:none!important;
+}
+html body #formView .pd-select-btn i{
+  flex:0 0 auto!important;
+  color:#159b88!important;
+  font-size:10px!important;
+  transition:transform .15s ease!important;
+}
+html body #formView .pd-select.is-open .pd-select-btn i{
+  transform:rotate(180deg)!important;
+}
+html body #formView .pd-select-value{
+  min-width:0!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+html body #formView .pd-select-menu{
+  position:absolute!important;
+  top:calc(100% + 5px)!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  max-height:210px!important;
+  display:none!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:5px!important;
+  border:1px solid #9fded4!important;
+  border-radius:11px!important;
+  background:#f7fcfb!important;
+  box-shadow:0 12px 28px rgba(39,104,98,.20)!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:var(--pd-green) #e3f3f0!important;
+}
+html body #formView .pd-select.is-open .pd-select-menu{
+  display:grid!important;
+  gap:3px!important;
+}
+html body #formView .pd-select-menu::-webkit-scrollbar{width:5px!important}
+html body #formView .pd-select-menu::-webkit-scrollbar-track{background:#e3f3f0!important;border-radius:999px!important}
+html body #formView .pd-select-menu::-webkit-scrollbar-thumb{background:var(--pd-green)!important;border-radius:999px!important}
+html body #formView .pd-select-option{
+  width:100%!important;
+  min-width:0!important;
+  min-height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  padding:7px 10px!important;
+  border:1px solid transparent!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#31565e!important;
+  font:inherit!important;
+  font-size:11.5px!important;
+  font-weight:750!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+html body #formView .pd-select-option:hover,
+html body #formView .pd-select-option:focus-visible{
+  background:#e8f8f4!important;
+  border-color:#b8e6de!important;
+  color:#147f70!important;
+  outline:none!important;
+}
+html body #formView .pd-select-option.is-selected{
+  background:linear-gradient(145deg,#47d4c1,#29bca8)!important;
+  border-color:#28b6a3!important;
+  color:#fff!important;
+  font-weight:900!important;
+}
+
+/* Priority dropdown keeps the same themed custom popup. */
+html body #formView .pd-select[data-for="prioritas"] .pd-select-btn{
+  background:linear-gradient(180deg,#f6fffd 0%,#edf9f6 100%)!important;
+  color:#176f64!important;
+}
+
+
+/* ERP intake panel — full green theme, UI ONLY */
+html body #formView .intake-box{
+  border:1px solid #20a997!important;
+  background:linear-gradient(145deg,#38cdb9 0%,#23b6a4 58%,#159b88 100%)!important;
+  box-shadow:
+    inset 0 2px 2px rgba(255,255,255,.34),
+    inset 0 -4px 8px rgba(0,91,80,.14),
+    0 8px 18px rgba(34,155,137,.22)!important;
+}
+html body #formView .intake-title{
+  border-bottom:1px solid rgba(255,255,255,.32)!important;
+}
+html body #formView .intake-title i,
+html body #formView .intake-title strong,
+html body #formView .intake-title small,
+html body #formView .intake-q{
+  color:#ffffff!important;
+  text-shadow:0 1px 1px rgba(0,83,73,.14)!important;
+}
+html body #formView .intake-title i{
+  filter:drop-shadow(0 1px 1px rgba(0,83,73,.20))!important;
+}
+html body #formView .intake-q textarea{
+  background:#ffffff!important;
+  color:#294b54!important;
+  border:1px solid rgba(255,255,255,.88)!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 3px 8px rgba(0,102,90,.12)!important;
+}
+html body #formView .intake-q textarea:focus{
+  border-color:#ffffff!important;
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,.22),
+    0 4px 10px rgba(0,102,90,.14)!important;
+}
+
+
+/* Initial complaint media — UI + storage guidance */
+html body #formView .initial-media-box{
+  display:grid!important;
+  gap:8px!important;
+  padding:10px!important;
+  border:1px solid #9fded4!important;
+  border-radius:12px!important;
+  background:#f4fbfa!important;
+  box-shadow:inset 0 1px 0 #fff,0 5px 12px rgba(47,153,136,.07)!important;
+}
+html body #formView .initial-media-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+}
+html body #formView .initial-media-head>div{min-width:0!important}
+html body #formView .initial-media-head strong{
+  display:block!important;
+  color:#24454e!important;
+  font-size:11.5px!important;
+  font-weight:950!important;
+  line-height:1.2!important;
+}
+html body #formView .initial-media-head small{
+  display:block!important;
+  margin-top:2px!important;
+  color:#71888d!important;
+  font-size:8.7px!important;
+  font-weight:700!important;
+  line-height:1.35!important;
+}
+html body #formView .initial-media-pick{
+  flex:0 0 auto!important;
+  min-height:34px!important;
+  padding:0 10px!important;
+  border:1px solid #28b6a3!important;
+  border-radius:9px!important;
+  background:linear-gradient(145deg,#47d4c1,#29bca8)!important;
+  color:#fff!important;
+  font:inherit!important;
+  font-size:10.5px!important;
+  font-weight:900!important;
+  box-shadow:0 4px 10px rgba(39,188,168,.18)!important;
+  cursor:pointer!important;
+}
+html body #formView .initial-media-preview{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+html body #formView .initial-media-thumb{
+  position:relative!important;
+  min-width:0!important;
+  aspect-ratio:1/1!important;
+  overflow:hidden!important;
+  border:1px solid #b9dcd6!important;
+  border-radius:10px!important;
+  background:#fff!important;
+}
+html body #formView .initial-media-thumb img,
+html body #formView .initial-media-thumb video{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  background:#eef7f5!important;
+}
+html body #formView .initial-media-thumb button{
+  position:absolute!important;
+  top:5px!important;
+  right:5px!important;
+  width:26px!important;
+  height:26px!important;
+  border:1px solid rgba(255,255,255,.8)!important;
+  border-radius:50%!important;
+  background:rgba(164,47,58,.92)!important;
+  color:#fff!important;
+  font:800 17px/1 sans-serif!important;
+  cursor:pointer!important;
+}
+html body #formView .initial-media-type{
+  position:absolute!important;
+  left:6px!important;
+  bottom:6px!important;
+  padding:3px 6px!important;
+  border-radius:999px!important;
+  background:rgba(14,93,85,.82)!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.06em!important;
+}
+html body #formView .initial-media-note{
+  margin:0!important;
+  color:#6f858a!important;
+  font-size:8.7px!important;
+  line-height:1.4!important;
+  font-weight:650!important;
+}
+
+/* Gallery supports both retained photos and retained videos. */
+html body .photo-history-item>video{
+  display:block!important;
+  width:100%!important;
+  aspect-ratio:1/1!important;
+  object-fit:cover!important;
+  background:#eaf5f3!important;
+}
+
+
+/* Scrollbar leak fix — UI ONLY
+   Keep vertical scrolling functional, hide the outer browser scrollbar,
+   and prevent any panel/media from escaping the employee app shell. */
+html{
+  overflow-x:hidden!important;
+  scrollbar-width:none!important;
+}
+html::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+
+html body{
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+  scrollbar-width:none!important;
+  -ms-overflow-style:none!important;
+}
+html body::-webkit-scrollbar{
+  display:none!important;
+  width:0!important;
+  height:0!important;
+}
+
+html body .app{
+  width:100%!important;
+  max-width:430px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  overflow-x:clip!important;
+}
+
+html body .app > main,
+html body #homeView,
+html body #formView,
+html body #detailView,
+html body .detail-card,
+html body .reply-box,
+html body .photo-history-wrap,
+html body .timeline-wrap{
+  width:auto!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow-x:hidden!important;
+}
+
+html body .photo-history,
+html body .reply-photo-preview,
+html body .initial-media-preview{
+  min-width:0!important;
+  max-width:100%!important;
+}
+
+html body .photo-history-item,
+html body .reply-photo-thumb,
+html body .initial-media-thumb{
+  min-width:0!important;
+  max-width:100%!important;
+}
+
+
+/* Header full-top cover fix — UI ONLY
+   Prevent scrolled content from showing above/behind the fixed header. */
+html body .topbar{
+  top:0!important;
+  left:50%!important;
+  width:min(100%,430px)!important;
+  max-width:430px!important;
+  min-height:48px!important;
+  margin:0!important;
+  border-radius:0 0 14px 14px!important;
+  border-top:0!important;
+  background:linear-gradient(135deg,#47d4c1 0%,#29bca8 100%)!important;
+  box-shadow:0 8px 20px rgba(47,188,168,.20)!important;
+  z-index:200!important;
+}
+
+html body .topbar::before{
+  content:""!important;
+  position:fixed!important;
+  top:0!important;
+  left:50%!important;
+  width:min(100%,430px)!important;
+  height:max(env(safe-area-inset-top,0px),1px)!important;
+  transform:translateX(-50%)!important;
+  background:#47d4c1!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+}
+
+html body .app > main{
+  padding-top:58px!important;
+}

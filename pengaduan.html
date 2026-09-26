@@ -6,6 +6,7 @@
 <title>Pengaduan | VAX WIJAYA</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="pengaduan.css?v=20260924-4">
+<link rel="stylesheet" href="pengaduan-green-theme.css?v=20260926-6">
 </head>
 <body>
 <div class="app">
@@ -45,6 +46,15 @@
     </label>
     <label>Judul singkat<input id="subjek" maxlength="120" required placeholder="Contoh: Mesin clipper tidak menyala"></label>
     <label>Penjelasan awal<textarea id="deskripsi" rows="3" maxlength="1000" placeholder="Jelaskan singkat masalahnya"></textarea></label>
+    <div class="initial-media-box">
+      <div class="initial-media-head">
+        <div><strong>Foto / Video Pendukung</strong><small>Opsional · maks. 3 foto (2 MB/foto) + 1 video (8 MB) · total 12 MB</small></div>
+        <button type="button" id="btnInitialMedia" class="initial-media-pick"><i class="fa-solid fa-camera"></i> Tambah</button>
+      </div>
+      <input type="file" id="initialMedia" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime" multiple hidden>
+      <div id="initialMediaPreview" class="initial-media-preview" hidden></div>
+      <p id="initialMediaNote" class="initial-media-note">File lampiran otomatis dihapus dari Storage setelah 30 hari. Riwayat pengaduan tetap tersimpan.</p>
+    </div>
     <div id="intakeBox" class="intake-box" hidden>
       <div class="intake-title"><i class="fa-solid fa-wand-magic-sparkles"></i><div><strong>ERP perlu beberapa informasi</strong><small>Jawaban ini akan dirangkum untuk SVP.</small></div></div>
       <div id="intakeQuestions"></div>
@@ -114,6 +124,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
-<script src="pengaduan.js?v=20260924-3"></script>
+<script src="pengaduan.js?v=20260926-7"></script>
+<script src="pengaduan-custom-select-ui.js?v=20260926-1"></script>
 </body>
 </html>

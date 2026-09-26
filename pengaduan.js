@@ -5,7 +5,58 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'
 const fmt=d=>d?new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short'}).format(new Date(d)):'—';
 const labelStatus=s=>String(s||'').replaceAll('_',' ');
 const PHOTO_MAX=5,PHOTO_MAX_SIZE=5*1024*1024,PHOTO_TYPES=new Set(['image/jpeg','image/png','image/webp']);
+const INITIAL_PHOTO_MAX=2*1024*1024,INITIAL_VIDEO_MAX=8*1024*1024,INITIAL_TOTAL_MAX=12*1024*1024;
+const INITIAL_PHOTO_TYPES=new Set(['image/jpeg','image/png','image/webp']);
+const INITIAL_VIDEO_TYPES=new Set(['video/mp4','video/webm','video/quicktime']);
+let selectedInitialMedia=[];
 function show(id){['homeView','formView','detailView'].forEach(x=>$(x).hidden=x!==id)}
+function clearInitialMedia(){
+ selectedInitialMedia.forEach(x=>{if(x.preview)URL.revokeObjectURL(x.preview)});
+ selectedInitialMedia=[];$('initialMedia').value='';renderInitialMedia();
+}
+function renderInitialMedia(){
+ const wrap=$('initialMediaPreview');if(!wrap)return;wrap.replaceChildren();wrap.hidden=selectedInitialMedia.length===0;
+ selectedInitialMedia.forEach((item,index)=>{
+   const card=document.createElement('div');card.className='initial-media-thumb';
+   if(INITIAL_VIDEO_TYPES.has(item.file.type)){
+     const video=document.createElement('video');video.src=item.preview;video.muted=true;video.playsInline=true;video.preload='metadata';card.appendChild(video);
+     const badge=document.createElement('span');badge.className='initial-media-type';badge.textContent='VIDEO';card.appendChild(badge);
+   }else{
+     const img=document.createElement('img');img.src=item.preview;img.alt='Preview lampiran '+(index+1);card.appendChild(img);
+   }
+   const remove=document.createElement('button');remove.type='button';remove.setAttribute('aria-label','Hapus lampiran');remove.innerHTML='×';
+   remove.onclick=()=>{URL.revokeObjectURL(item.preview);selectedInitialMedia.splice(index,1);renderInitialMedia();};
+   card.appendChild(remove);wrap.appendChild(card);
+ });
+}
+function addInitialMedia(fileList){
+ const incoming=[...fileList];let error='';let photos=selectedInitialMedia.filter(x=>INITIAL_PHOTO_TYPES.has(x.file.type)).length;let videos=selectedInitialMedia.filter(x=>INITIAL_VIDEO_TYPES.has(x.file.type)).length;
+ let total=selectedInitialMedia.reduce((sum,x)=>sum+x.file.size,0);
+ for(const file of incoming){
+   if(!INITIAL_PHOTO_TYPES.has(file.type)&&!INITIAL_VIDEO_TYPES.has(file.type)){error='Format hanya JPG, PNG, WebP, MP4, WebM, atau MOV.';continue;}
+   if(INITIAL_PHOTO_TYPES.has(file.type)){
+     if(photos>=3){error='Maksimal 3 foto.';continue;}
+     if(file.size<1||file.size>INITIAL_PHOTO_MAX){error='Ukuran foto maksimal 2 MB per file.';continue;}
+     photos++;
+   }else{
+     if(videos>=1){error='Maksimal 1 video.';continue;}
+     if(file.size<1||file.size>INITIAL_VIDEO_MAX){error='Ukuran video maksimal 8 MB.';continue;}
+     videos++;
+   }
+   if(total+file.size>INITIAL_TOTAL_MAX){error='Total lampiran maksimal 12 MB.';continue;}
+   total+=file.size;selectedInitialMedia.push({file,preview:URL.createObjectURL(file)});
+ }
+ $('initialMedia').value='';renderInitialMedia();$('formMessage').textContent=error;
+}
+async function uploadInitialMedia(ticketId){
+ if(!selectedInitialMedia.length)return {ok:true};
+ const form=new FormData();form.append('context','INITIAL');
+ selectedInitialMedia.forEach(x=>form.append('media',x.file,x.file.name));
+ const res=await fetch(photoEndpoint(ticketId),{method:'POST',headers:employeeHeaders(),body:form});
+ const data=await res.json();if(!res.ok||!data?.ok)throw new Error(data?.reason||'INITIAL_MEDIA_UPLOAD_FAILED');
+ return data;
+}
+
 function statusClass(s){return s==='SELESAI'?'done':s==='ESKALASI_OWNER'?'owner':s==='MENUNGGU_SVP'?'wait':''}
 function photoEndpoint(ticketId){return SUPABASE_URL+'/functions/v1/pengaduan-photo?ticket_id='+encodeURIComponent(ticketId);}
 function employeeHeaders(){return {'x-employee-session-token':token(),'apikey':SUPABASE_KEY};}
@@ -31,8 +82,11 @@ async function submit(e){
    const answers={};document.querySelectorAll('[data-q]').forEach(el=>answers[el.dataset.q]=el.value.trim());
    const {data,error}=await db.rpc('karyawan_pengaduan_create',{p_token:token(),p_kategori:$('kategori').value,p_subjek:$('subjek').value.trim(),p_deskripsi:$('deskripsi').value.trim(),p_answers:answers,p_prioritas:$('prioritas').value});
    if(error||!data?.ok)throw error||new Error(data?.reason||'SUBMIT_FAILED');
-   $('complaintForm').reset();$('intakeBox').hidden=true;questions=[];$('formMessage').textContent='';
+   let mediaWarning='';
+   try{await uploadInitialMedia(data.id);}catch(mediaErr){console.error(mediaErr);mediaWarning='Pengaduan dibuat, tetapi lampiran awal belum berhasil diunggah. Kirim ulang melalui Tambahkan informasi.';}
+   $('complaintForm').reset();$('intakeBox').hidden=true;questions=[];$('formMessage').textContent='';clearInitialMedia();
    await loadList();show('homeView');await openDetail(data.id);
+   if(mediaWarning)$('replyMessage').textContent=mediaWarning;
  }catch(err){console.error(err);$('formMessage').textContent='Pengaduan belum terkirim. Periksa data dan coba lagi.'}
  finally{$('btnSubmit').disabled=false;}
 }
@@ -79,8 +133,12 @@ async function loadPhotoHistory(ticketId){
      if(item.deleted||!item.signed_url){
        card.innerHTML='<div class="photo-expired"><i class="fa-solid fa-image"></i><strong>Foto arsip</strong><span>File foto sudah dihapus otomatis setelah 40 hari. Riwayat tetap tersimpan.</span></div>';
      }else{
-       const img=document.createElement('img');img.src=item.signed_url;img.loading='lazy';img.alt='Foto pengaduan';
-       img.onclick=()=>openPhotoViewer(item.signed_url);card.appendChild(img);
+       if(String(item.mime_type||'').startsWith('video/')){
+         const video=document.createElement('video');video.src=item.signed_url;video.controls=true;video.preload='metadata';video.playsInline=true;video.setAttribute('aria-label','Video pengaduan');card.appendChild(video);
+       }else{
+         const img=document.createElement('img');img.src=item.signed_url;img.loading='lazy';img.alt='Foto pengaduan';
+         img.onclick=()=>openPhotoViewer(item.signed_url);card.appendChild(img);
+       }
      }
      const meta=document.createElement('div');meta.className='photo-history-meta';meta.innerHTML='<span>'+esc(fmt(item.created_at))+'</span><small>'+esc(item.original_name||'Foto')+'</small>';card.appendChild(meta);
      grid.appendChild(card);
@@ -99,7 +157,7 @@ async function openDetail(id){
  $('replyTitle').textContent=current.status==='MENUNGGU_INFO'?'SVP meminta informasi tambahan':'Tambahkan informasi';
  $('replyHint').textContent=current.status==='MENUNGGU_INFO'?'Jawab kebutuhan informasi SVP. Bila diminta bukti, lampirkan maksimal 5 foto.':'Gunakan ini bila ada informasi atau foto tambahan untuk SVP.';
  $('replyText').value='';$('replyMessage').textContent='';clearPhotoSelection();
- $('timeline').innerHTML=(data.timeline||[]).map(e=>'<div class="event"><strong>'+esc(labelStatus(e.status_to||e.event))+'</strong><small>'+esc(e.actor)+' · '+fmt(e.created_at)+'</small>'+(e.message?'<p>'+esc(e.message)+'</p>':'')+'</div>').join('');
+ $('timeline').innerHTML=(data.timeline||[]).map(e=>{const actor=String(e.actor||'').toUpperCase()==='KARYAWAN'?'ANDA · PEMILIK AKUN':e.actor;return '<div class="event"><strong>'+esc(labelStatus(e.status_to||e.event))+'</strong><small>'+esc(actor)+' · '+fmt(e.created_at)+'</small>'+(e.message?'<p>'+esc(e.message)+'</p>':'')+'</div>';}).join('');
  await loadPhotoHistory(ticketId);
  try{await db.rpc('karyawan_pengaduan_notifications_mark_ticket',{p_token:token(),p_pengaduan_id:ticketId});}catch(_){}
  show('detailView');
@@ -130,6 +188,7 @@ async function init(){
  me=await KaryawanSession.requirePage();if(!me)return;
  await loadList();
  $('btnNew').onclick=()=>show('formView');$('btnCancel').onclick=()=>show('homeView');$('btnDetailBack').onclick=()=>show('homeView');$('btnRefresh').onclick=loadList;
+ $('btnInitialMedia').onclick=()=>$('initialMedia').click();$('initialMedia').addEventListener('change',e=>addInitialMedia(e.target.files||[]));
  $('kategori').addEventListener('change',()=>loadSchema().catch(console.error));$('complaintForm').addEventListener('submit',submit);
  $('ticketList').addEventListener('click',e=>{const card=e.target.closest('[data-id]');if(card)openDetail(card.dataset.id).catch(console.error)});
  $('btnResolvedYes').onclick=()=>confirmResolution(true);$('btnResolvedNo').onclick=()=>confirmResolution(false);$('btnReply').onclick=sendReply;
