@@ -141,7 +141,7 @@
     }
 
     function formatWhen(value){
-        if(!value) return "â€”";
+        if(!value) return "—";
         const d = new Date(value);
         if(Number.isNaN(d.getTime())){
             const m = String(value).match(/(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})/);
@@ -309,7 +309,7 @@
             return `<button type="button" class="${cls}" data-id="${id || ""}">
                 <div class="pg-item-main">
                     <h3>${judul}</h3>
-                    <p>${isi || "â€”"}</p>
+                    <p>${isi || "—"}</p>
                     <div class="pg-item-foot">
                         <span>${pembuat}</span>
                         <span>${when}</span>
@@ -359,7 +359,7 @@
 
     function renderDetail(detail){
         const pri=normalizePrioritas(pick(detail,["prioritas","priority"],"normal"));const judul=pick(detail,["judul","title"],"Tanpa judul");const isi=pick(detail,["isi","body","konten","content"],"");const pembuat=pick(detail,["pembuat_nama","nama_pembuat","created_by_nama","pembuat","author_nama"],"Staff");const when=formatWhen(pick(detail,["created_at","tanggal","waktu","published_at"],""));const open=diskusiOpen(detail);
-        const badge=document.getElementById("detailPrioritas");if(badge){badge.className=`pri-badge pri-${pri}`;badge.textContent=prioritasLabel(pri);}const unreadEl=document.getElementById("detailUnread");if(unreadEl)unreadEl.hidden=true;document.getElementById("detailJudul").textContent=judul;document.getElementById("detailMeta").textContent=`${pembuat} Â· ${when}`;document.getElementById("detailIsi").textContent=isi||"â€”";
+        const badge=document.getElementById("detailPrioritas");if(badge){badge.className=`pri-badge pri-${pri}`;badge.textContent=prioritasLabel(pri);}const unreadEl=document.getElementById("detailUnread");if(unreadEl)unreadEl.hidden=true;document.getElementById("detailJudul").textContent=judul;document.getElementById("detailMeta").textContent=`${pembuat} · ${when}`;document.getElementById("detailIsi").textContent=isi||"—";
         const replies=threadRows(detail);const threadList=document.getElementById("threadList");const threadEmpty=document.getElementById("threadEmpty");if(threadEmpty)threadEmpty.hidden=replies.length>0;if(threadList){threadList.innerHTML=replies.map((row)=>{const staff=isStaffSender(row);const cls=bubbleClass(row);const senderRole=senderRoleKey(row)||"karyawan";const nestedPerson=[row.pengirim,row.sender,row.author].find((x)=>x&&typeof x==="object");const nama=escapeHtml(pick(row,["pengirim_nama","sender_nama","nama","nama_karyawan","created_by_nama"],"")||pick(nestedPerson||{},["nama","nama_karyawan","name"],"")||(staff?"Staff":"Karyawan"));const pesan=escapeHtml(pick(row,["isi","pesan","message","body","text"],""));const jam=escapeHtml(formatJam(pick(row,["created_at","waktu","jam","sent_at"],"")));return `<article class="${cls}" data-role="${senderRole}"><small class="nama">${nama}</small><p>${pesan}</p><time>${jam}</time></article>`;}).join("");}
         if(diskusiClosed)diskusiClosed.hidden=open;if(composerForm)composerForm.hidden=!open;if(replyInput){replyInput.disabled=!open;replyInput.placeholder=open?"Tulis pesan...":"Diskusi ditutup";}if(btnKirim)btnKirim.disabled=!open;const thread=document.getElementById("threadList");if(thread)thread.scrollTop=thread.scrollHeight;
     }
