@@ -1,0 +1,33 @@
+/* Dashboard Karyawan — header edge alignment only.
+   UI ONLY. Preserve existing header content, colors, height, actions, and logic. */
+
+html body .app > .topbar{
+  width:calc(100% + (var(--pad) * 2))!important;
+  max-width:none!important;
+  margin-left:calc(var(--pad) * -1)!important;
+  margin-right:calc(var(--pad) * -1)!important;
+  box-sizing:border-box!important;
+}
+
+
+/* Header brand text readability — UI ONLY */
+@media (max-width:380px){
+  html body .app .topbar-brand>strong{
+    font-size:16.5px!important;
+    line-height:1.02!important;
+    letter-spacing:.075em!important;
+  }
+
+  html body .app .topbar-brand>.brand-subtitle{
+    font-size:7.2px!important;
+    line-height:1.05!important;
+    letter-spacing:.025em!important;
+    font-weight:700!important;
+  }
+
+  html body .app .topbar-brand>.brand-powered{
+    font-size:6.5px!important;
+    line-height:1.05!important;
+    font-weight:750!important;
+  }
+}
