@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="dashboard-karyawan-bottomnav-edge-theme-ui.css?v=20260926-1">
 <link rel="stylesheet" href="absensi-main-theme-ui.css?v=20260926-1">
 <link rel="stylesheet" href="absensi-ranking-panel-ui.css?v=20260927-1">
+<link rel="stylesheet" href="absensi-location-detail-ui.css?v=20260927-1">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 </head>
 
@@ -91,9 +92,11 @@
 
     <section class="card lokasi" aria-label="Lokasi GPS">
         <div class="lokasi-left">
-            <small>Lokasi Anda</small>
             <p class="green" id="statusLokasi">Mendeteksi lokasi...</p>
-            <small>Jarak ke Cabang</small>
+            <div class="gps-row gps-row-branch">
+                <span class="gps-row-label">Cabang Terdekat</span>
+                <strong class="gps-row-value nearest-branch-name" id="nearestBranchName">Mendeteksi cabang terdekat...</strong>
+            </div>
             <h2 id="jarak">-</h2>
             <small id="radiusInfo">Radius maksimal - meter</small>
         </div>
@@ -105,6 +108,10 @@
                 <div class="center-dot">
                     <i class="fas fa-location-dot"></i>
                 </div>
+            </div>
+            <div class="gps-under-radar">
+                <span class="gps-under-label">Lokasi Anda</span>
+                <span class="gps-under-address gps-user-address" id="gpsUserAddress">Membaca alamat lokasi...</span>
             </div>
         </div>
     </section>
@@ -219,6 +226,7 @@
 <script src="absensi.js?v=20260919-secure"></script>
 <script src="absensi-profile-branch-ui.js?v=20260926-1"></script>
 <script src="absensi-profile-date-ui.js?v=20260927-1"></script>
+<script src="absensi-location-detail-ui.js?v=20260927-1"></script>
 <script src="dashboard-karyawan-notifikasi-ui.js?v=20260926-1"></script>
 
 </body>
