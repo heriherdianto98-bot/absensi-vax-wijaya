@@ -1,0 +1,464 @@
+/* VAX WIJAYA — Pengumuman employee page green/light theme.
+   UI ONLY: list cards, announcement detail, conversation, composer and local page chrome.
+   No RPC, thread, notification, read-state or navigation engine changes. */
+
+:root{
+  --pg-green:#2fc8b4;
+  --pg-green-2:#48d7c3;
+  --pg-green-deep:#159b88;
+  --pg-green-soft:#eafaf6;
+  --pg-green-line:#b9e5de;
+  --pg-text:#264a54;
+  --pg-muted:#71858b;
+  --pg-panel:#ffffff;
+  --pg-page:#f3fbf9;
+}
+
+/* Page shell */
+html body{
+  background:#eaf5f3!important;
+  color:var(--pg-text)!important;
+}
+html body .app{
+  background:
+    radial-gradient(115% 34% at 50% 0%,rgba(47,200,180,.15),transparent 55%),
+    linear-gradient(180deg,#f8fcfb 0%,#f1f8f7 100%)!important;
+}
+
+/* Header */
+html body .topbar{
+  min-height:46px!important;
+  margin-bottom:10px!important;
+  padding:4px 2px!important;
+  border-radius:14px!important;
+  background:linear-gradient(135deg,#47d4c1,#29bca8)!important;
+  box-shadow:0 8px 20px rgba(47,188,168,.18)!important;
+}
+html body .back-btn,
+html body .icon-btn{
+  color:#fff!important;
+  background:rgba(255,255,255,.14)!important;
+  border:1px solid rgba(255,255,255,.35)!important;
+  box-shadow:none!important;
+}
+html body .topbar-title strong{
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  text-shadow:0 1px 1px rgba(0,92,80,.15)!important;
+}
+html body .topbar-title small{
+  color:rgba(255,255,255,.82)!important;
+  font-weight:700!important;
+}
+
+/* List meta + scrollbar */
+html body .pg-meta{
+  color:#58747a!important;
+  font-weight:750!important;
+}
+html body .pg-list{
+  scrollbar-width:thin!important;
+  scrollbar-color:var(--pg-green) #e2f3f0!important;
+}
+html body .pg-list::-webkit-scrollbar{width:6px!important}
+html body .pg-list::-webkit-scrollbar-track{
+  background:#e2f3f0!important;border-radius:999px!important
+}
+html body .pg-list::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,var(--pg-green-2),var(--pg-green))!important;
+  border-radius:999px!important;
+}
+
+/* Announcement list card */
+html body .pg-item{
+  padding:13px 14px!important;
+  border-radius:16px!important;
+  color:var(--pg-text)!important;
+  background:
+    linear-gradient(145deg,rgba(72,215,195,.08),rgba(255,255,255,.98) 36%),
+    #fff!important;
+  border:1px solid var(--pg-green-line)!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 8px 18px rgba(53,102,105,.10)!important;
+}
+html body .pg-item.is-unread{
+  border-color:rgba(47,200,180,.78)!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 0 0 2px rgba(47,200,180,.10),
+    0 10px 22px rgba(47,188,168,.15)!important;
+}
+html body .pg-item h3{
+  color:#24454e!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+html body .pg-item p{
+  color:#61777e!important;
+  font-size:11.5px!important;
+  font-weight:600!important;
+}
+html body .pg-item-foot{
+  color:#7b8e93!important;
+  font-weight:650!important;
+}
+html body .unread-dot{
+  background:var(--pg-green)!important;
+  box-shadow:0 0 8px rgba(47,200,180,.38)!important;
+}
+
+/* Priority badges keep semantic distinction but fit the theme. */
+html body .pri-badge{
+  border-radius:999px!important;
+  font-weight:850!important;
+}
+html body .pri-normal{
+  color:#11806f!important;
+  background:#e7f8f4!important;
+  border-color:#b8e6df!important;
+}
+
+/* Detail header and announcement body */
+html body .detail-head h1{
+  color:#24454e!important;
+  font-size:19px!important;
+  font-weight:950!important;
+}
+html body .detail-meta{
+  color:#70868c!important;
+  font-weight:650!important;
+}
+html body .detail-body{
+  color:#334f57!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  line-height:1.55!important;
+  padding:14px!important;
+  border-radius:16px!important;
+  background:
+    linear-gradient(145deg,rgba(72,215,195,.07),#fff 38%)!important;
+  border:1px solid var(--pg-green-line)!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 9px 20px rgba(53,102,105,.10)!important;
+}
+html body .photo-gallery img{
+  border-color:rgba(47,200,180,.42)!important;
+  background:#eef9f7!important;
+}
+
+/* Conversation panel */
+html body .thread-wrap{
+  padding:12px 12px 10px!important;
+  border-radius:17px!important;
+  border:1px solid var(--pg-green-line)!important;
+  background:
+    linear-gradient(180deg,rgba(237,250,247,.96),rgba(255,255,255,.98))!important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 10px 22px rgba(53,102,105,.10)!important;
+}
+html body .thread-wrap h2{
+  color:#168a79!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  letter-spacing:.03em!important;
+  border-bottom:1px solid rgba(47,200,180,.34)!important;
+}
+html body .thread-empty{
+  color:#789096!important;
+}
+
+/* Visible themed scrollbar for conversation. */
+html body .thread-list{
+  gap:9px!important;
+  padding:2px 3px 6px 0!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:var(--pg-green) #e2f3f0!important;
+}
+html body .thread-list::-webkit-scrollbar{
+  display:block!important;
+  width:5px!important;
+}
+html body .thread-list::-webkit-scrollbar-track{
+  background:#e2f3f0!important;
+  border-radius:999px!important;
+}
+html body .thread-list::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,var(--pg-green-2),var(--pg-green))!important;
+  border-radius:999px!important;
+}
+
+/* Base bubble */
+html body .thread-list .bubble{
+  max-width:88%!important;
+  padding:9px 11px!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  border:1px solid #cfe9e4!important;
+  box-shadow:0 4px 10px rgba(50,91,96,.08)!important;
+}
+html body .thread-list .bubble small{
+  color:#668189!important;
+  font-size:9.5px!important;
+  font-weight:850!important;
+}
+html body .thread-list .bubble p{
+  color:#36545c!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+  font-weight:600!important;
+}
+html body .thread-list .bubble time{
+  color:#8aa0a5!important;
+}
+
+/* Employee messages */
+html body .thread-list .bubble.is-me{
+  align-self:flex-end!important;
+  background:linear-gradient(145deg,#43d5c0,#29bca8)!important;
+  border-color:rgba(37,174,154,.72)!important;
+  box-shadow:0 6px 14px rgba(39,188,168,.18)!important;
+}
+html body .thread-list .bubble.is-me small,
+html body .thread-list .bubble.is-me p,
+html body .thread-list .bubble.is-me time{
+  color:#fff!important;
+}
+html body .thread-list .bubble.is-karyawan{
+  background:#f8fcfb!important;
+  border-color:#c9e9e3!important;
+}
+html body .thread-list .bubble.is-karyawan small{
+  color:#348e82!important;
+}
+
+/* Staff and SPV use green-family panels, while Owner name remains gold as previously approved. */
+html body .thread-list .bubble.is-staff{
+  background:#eef9f7!important;
+  border-color:#b9e5de!important;
+}
+html body .thread-list .bubble.is-staff small{
+  color:#188b79!important;
+}
+html body .thread-list article[data-role="spv"],
+html body .thread-list .bubble.is-spv{
+  background:#edf8f6!important;
+  border-color:#9edbd2!important;
+}
+html body .thread-list article[data-role="spv"] > small.nama,
+html body .thread-list .bubble.is-spv small{
+  color:#127f70!important;
+}
+html body .thread-list article[data-role="owner"],
+html body .thread-list .bubble.is-owner,
+html body .thread-list .bubble.is-staff.is-owner{
+  background:#fffaf0!important;
+  border-color:rgba(212,175,55,.46)!important;
+  box-shadow:0 4px 11px rgba(176,138,37,.08)!important;
+}
+html body .thread-list article[data-role="owner"] > small.nama,
+html body .thread-list article.bubble.is-owner > small.nama{
+  color:#c08f17!important;
+  text-shadow:none!important;
+}
+
+/* Closed status + composer */
+html body .diskusi-closed{
+  color:#168a79!important;
+  font-weight:850!important;
+}
+html body .composer{
+  border-top:1px solid rgba(47,200,180,.32)!important;
+}
+html body .composer input{
+  height:44px!important;
+  border-radius:14px!important;
+  border:1px solid #b9e5de!important;
+  background:#fff!important;
+  color:#294b54!important;
+  box-shadow:inset 0 1px 0 #fff,0 4px 10px rgba(53,102,105,.07)!important;
+}
+html body .composer input::placeholder{
+  color:#89a0a5!important;
+}
+html body .composer input:focus{
+  border-color:var(--pg-green)!important;
+  box-shadow:0 0 0 3px rgba(47,200,180,.13)!important;
+}
+html body .composer button{
+  width:44px!important;
+  height:44px!important;
+  border-radius:14px!important;
+  background:linear-gradient(145deg,var(--pg-green-2),var(--pg-green))!important;
+  color:#fff!important;
+  box-shadow:0 6px 14px rgba(39,188,168,.22)!important;
+}
+html body .form-message{
+  color:#168a79!important;
+}
+
+/* Bottom nav aligned with Dashboard Karyawan light/green theme. */
+html body #bottomNav{
+  background:rgba(255,255,255,.97)!important;
+  border:1px solid #b8ded8!important;
+  box-shadow:0 8px 22px rgba(53,102,105,.14)!important;
+}
+html body #bottomNav a{
+  color:#72868c!important;
+}
+html body #bottomNav a:hover,
+html body #bottomNav a:focus-visible{
+  color:var(--pg-green-deep)!important;
+}
+
+@media(max-width:360px){
+  html body .detail-head h1{font-size:18px!important}
+  html body .thread-list .bubble p{font-size:11.5px!important}
+}
+
+
+/* WhatsApp-like conversation refinement 2026-09-26 */
+html body .thread-wrap{
+  background:
+    radial-gradient(circle at 20% 20%,rgba(47,200,180,.045) 0 1px,transparent 1.5px) 0 0/18px 18px,
+    radial-gradient(circle at 80% 70%,rgba(47,200,180,.035) 0 1px,transparent 1.5px) 0 0/22px 22px,
+    linear-gradient(180deg,#edf8f5 0%,#f7fbfa 100%)!important;
+}
+
+html body .thread-list{
+  padding:7px 4px 9px 2px!important;
+  gap:7px!important;
+}
+
+html body .thread-list .bubble{
+  position:relative!important;
+  width:auto!important;
+  max-width:82%!important;
+  padding:8px 10px 18px!important;
+  border-radius:12px!important;
+  border:0!important;
+  background:#ffffff!important;
+  box-shadow:0 1px 2px rgba(45,72,75,.14)!important;
+}
+
+html body .thread-list .bubble.is-karyawan,
+html body .thread-list .bubble.is-staff,
+html body .thread-list .bubble.is-spv,
+html body .thread-list .bubble.is-owner{
+  align-self:flex-start!important;
+  border-top-left-radius:4px!important;
+}
+
+html body .thread-list .bubble.is-me{
+  align-self:flex-end!important;
+  border-top-right-radius:4px!important;
+  background:linear-gradient(145deg,#3fd3bd,#28bca8)!important;
+  box-shadow:0 1px 3px rgba(34,137,121,.20)!important;
+}
+
+html body .thread-list .bubble > small.nama{
+  margin-bottom:3px!important;
+  font-size:9.5px!important;
+  line-height:1.2!important;
+  font-weight:850!important;
+}
+
+html body .thread-list .bubble > p{
+  margin:0!important;
+  padding:0!important;
+  font-size:12px!important;
+  line-height:1.42!important;
+  font-weight:550!important;
+}
+
+html body .thread-list .bubble > time{
+  position:absolute!important;
+  right:8px!important;
+  bottom:4px!important;
+  margin:0!important;
+  font-size:8.5px!important;
+  line-height:1!important;
+  color:#8ea2a6!important;
+  text-align:right!important;
+}
+
+html body .thread-list .bubble.is-me > time{
+  color:rgba(255,255,255,.78)!important;
+}
+
+html body .thread-list .bubble.is-me > small.nama,
+html body .thread-list .bubble.is-me > p{
+  color:#ffffff!important;
+}
+
+html body .thread-list .bubble.is-karyawan{
+  background:#ffffff!important;
+}
+
+html body .thread-list .bubble.is-staff,
+html body .thread-list .bubble.is-spv{
+  background:#f0fbf8!important;
+}
+
+html body .thread-list .bubble.is-owner{
+  background:#fff8e8!important;
+}
+
+/* Small chat-tail cues. */
+html body .thread-list .bubble.is-karyawan::before,
+html body .thread-list .bubble.is-staff::before,
+html body .thread-list .bubble.is-spv::before,
+html body .thread-list .bubble.is-owner::before{
+  content:""!important;
+  position:absolute!important;
+  left:-6px!important;
+  top:0!important;
+  width:0!important;
+  height:0!important;
+  border-top:7px solid currentColor!important;
+  border-left:7px solid transparent!important;
+  color:#ffffff!important;
+}
+
+html body .thread-list .bubble.is-staff::before,
+html body .thread-list .bubble.is-spv::before{
+  color:#f0fbf8!important;
+}
+
+html body .thread-list .bubble.is-owner::before{
+  color:#fff8e8!important;
+}
+
+html body .thread-list .bubble.is-me::after{
+  content:""!important;
+  position:absolute!important;
+  right:-6px!important;
+  top:0!important;
+  width:0!important;
+  height:0!important;
+  border-top:7px solid #34c9b4!important;
+  border-right:7px solid transparent!important;
+}
+
+html body .composer{
+  position:relative!important;
+  gap:7px!important;
+  margin-top:6px!important;
+  padding:8px 0 2px!important;
+  border-top:0!important;
+}
+
+html body .composer input{
+  border-radius:999px!important;
+  padding:0 15px!important;
+  background:#ffffff!important;
+  border:1px solid #c6e7e1!important;
+}
+
+html body .composer button{
+  flex:0 0 44px!important;
+  border-radius:50%!important;
+}
