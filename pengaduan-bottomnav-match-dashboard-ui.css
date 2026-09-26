@@ -1,0 +1,77 @@
+/* Pengaduan — bottom nav visual match to LOCKED Dashboard Karyawan.
+   UI ONLY. Navigation targets and Pengaduan logic remain unchanged. */
+
+html body #bottomNav{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:0!important;
+  width:min(100%,430px)!important;
+  max-width:430px!important;
+  transform:translateX(-50%)!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  gap:0!important;
+  min-height:58px!important;
+  height:auto!important;
+  padding:7px 10px max(7px,env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box!important;
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.34)!important;
+  border-radius:16px 16px 0 0!important;
+  background:linear-gradient(135deg,#47d4c1 0%,#29bca8 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.30),
+    0 -8px 20px rgba(47,188,168,.18)!important;
+  backdrop-filter:none!important;
+  overflow:hidden!important;
+  z-index:125!important;
+  touch-action:manipulation!important;
+}
+
+html body #bottomNav>a{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:44px!important;
+  margin:0!important;
+  padding:3px 1px!important;
+  border-radius:10px!important;
+  color:#fff!important;
+  text-align:center!important;
+  text-decoration:none!important;
+  transition:background .16s ease,color .16s ease,transform .16s ease!important;
+}
+
+html body #bottomNav>a>i{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:15px!important;
+  filter:none!important;
+  opacity:1!important;
+}
+
+html body #bottomNav>a>span{
+  color:#fff!important;
+  font-size:9px!important;
+  font-weight:750!important;
+}
+
+html body #bottomNav>a:hover,
+html body #bottomNav>a:focus-visible{
+  color:#fff!important;
+  background:rgba(255,255,255,.15)!important;
+  outline:none!important;
+}
+
+/* Keep content clear of the fixed nav without changing Pengaduan layout. */
+html body .app{
+  padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))!important;
+}
