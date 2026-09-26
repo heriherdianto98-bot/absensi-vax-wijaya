@@ -1,0 +1,243 @@
+/* Dashboard Karyawan — bottom navigation edge + theme alignment.
+   UI ONLY. Preserve navigation targets, active logic, icons, labels, and click behavior. */
+
+html body .app #bottomNav{
+  left:50%!important;
+  right:auto!important;
+  bottom:0!important;
+  width:min(100%,430px)!important;
+  max-width:430px!important;
+  transform:translateX(-50%)!important;
+  min-height:58px!important;
+  height:auto!important;
+  padding:7px 10px max(7px,env(safe-area-inset-bottom,0px))!important;
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.34)!important;
+  border-radius:16px 16px 0 0!important;
+  background:linear-gradient(135deg,#47d4c1 0%,#29bca8 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.30),
+    0 -8px 20px rgba(47,188,168,.18)!important;
+  backdrop-filter:none!important;
+  overflow:hidden!important;
+  z-index:120!important;
+}
+
+html body .app #bottomNav>a{
+  min-height:44px!important;
+  color:rgba(255,255,255,.78)!important;
+  border-radius:10px!important;
+  transition:background .16s ease,color .16s ease,transform .16s ease!important;
+}
+
+html body .app #bottomNav>a>i{
+  color:currentColor!important;
+  font-size:15px!important;
+  filter:none!important;
+}
+
+html body .app #bottomNav>a>span{
+  color:currentColor!important;
+  font-size:9px!important;
+  font-weight:750!important;
+}
+
+html body .app #bottomNav>a.active,
+html body .app #bottomNav>a:hover,
+html body .app #bottomNav>a:focus-visible{
+  color:#ffffff!important;
+  background:rgba(255,255,255,.15)!important;
+  outline:none!important;
+}
+
+html body .app #bottomNav>a.active{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    0 3px 8px rgba(0,116,102,.12)!important;
+}
+
+html body .app #bottomNav>a.active span::after{
+  background:#ffffff!important;
+  box-shadow:0 0 6px rgba(255,255,255,.72)!important;
+}
+
+html body .app{
+  padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))!important;
+}
+
+
+/* Force all bottom-nav icons/labels to white, including active state. */
+html body .app #bottomNav>a,
+html body .app #bottomNav>a>i,
+html body .app #bottomNav>a>span,
+html body .app #bottomNav>a.active,
+html body .app #bottomNav>a.active>i,
+html body .app #bottomNav>a.active>span,
+html body .app #bottomNav>a:hover,
+html body .app #bottomNav>a:hover>i,
+html body .app #bottomNav>a:hover>span,
+html body .app #bottomNav>a:focus-visible,
+html body .app #bottomNav>a:focus-visible>i,
+html body .app #bottomNav>a:focus-visible>span{
+  color:#ffffff!important;
+}
+
+html body .app #bottomNav>a>i{
+  -webkit-text-fill-color:#ffffff!important;
+  opacity:1!important;
+}
+
+
+/* Dashboard shell scroll boundary fix — UI ONLY.
+   Lock the browser page; make .app the only vertical scroll container.
+   Prevent pull-down blank space and stop exactly at the last content card. */
+html,
+html body{
+  width:100%!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+  background:#eef8f6!important;
+}
+
+@supports(height:100svh){
+  html,
+  html body{
+    height:100svh!important;
+    min-height:100svh!important;
+    max-height:100svh!important;
+  }
+}
+
+html body .app{
+  position:relative!important;
+  width:100%!important;
+  max-width:430px!important;
+  height:100dvh!important;
+  min-height:0!important;
+  max-height:100dvh!important;
+  margin:0 auto!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:none!important;
+  overscroll-behavior-x:none!important;
+  -webkit-overflow-scrolling:touch!important;
+  scroll-behavior:smooth;
+  background:#f4fbfa!important;
+}
+
+@supports(height:100svh){
+  html body .app{
+    height:100svh!important;
+    max-height:100svh!important;
+  }
+}
+
+/* Header remains pinned to the top edge of the app scroll container. */
+html body .app > .topbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:200!important;
+}
+
+/* Avoid browser scroll chaining at the content limits. */
+html body .app,
+html body .app *{
+  overscroll-behavior-y:contain;
+}
+
+html body .app{
+  overscroll-behavior-y:none!important;
+}
+
+
+/* Scroll gesture reliability fix — UI ONLY.
+   Keep .app as the sole page scroll container without trapping gestures in every child. */
+html body .app{
+  touch-action:pan-y!important;
+  scroll-behavior:auto!important;
+  overscroll-behavior-y:none!important;
+  overscroll-behavior-x:none!important;
+}
+
+/* Remove the broad child overscroll trap introduced by the previous shell fix. */
+html body .app *{
+  overscroll-behavior-y:auto!important;
+}
+
+/* Only true nested scrollers keep containment. */
+html body .app .service-detail-list,
+html body .app .vax-employee-notif-panel{
+  overscroll-behavior-y:contain!important;
+  touch-action:pan-y!important;
+}
+
+/* Fixed/sticky controls must not block vertical gestures outside their controls. */
+html body .app > .topbar{
+  touch-action:pan-y!important;
+}
+html body .app #bottomNav{
+  touch-action:manipulation!important;
+}
+
+
+/* Remove excess white space below the last dashboard card.
+   Keep only the exact clearance needed for the fixed bottom nav. */
+html body .app{
+  padding-bottom:calc(58px + env(safe-area-inset-bottom,0px))!important;
+}
+
+
+/* Final bottom-content boundary fix — UI ONLY.
+   Ensure hidden legacy/CTA elements do not reserve layout space,
+   and make the communication cards the true end of the dashboard content. */
+html body .app #btnAbsen[hidden]{
+  display:none!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+html body .app .home-legacy{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+
+html body .app .dash-body{
+  flex:none!important;
+  min-height:0!important;
+  height:auto!important;
+  padding-bottom:0!important;
+  margin-bottom:0!important;
+}
+
+html body .app .comm-row{
+  margin-bottom:0!important;
+  padding-bottom:0!important;
+}
+
+
+/* Final micro-gap trim: bring the last dashboard cards closer to bottom nav. */
+html body .app{
+  padding-bottom:calc(46px + env(safe-area-inset-bottom,0px))!important;
+}
+
+
+/* Tight final card-to-nav spacing. */
+html body .app{
+  padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:0!important;
+}
