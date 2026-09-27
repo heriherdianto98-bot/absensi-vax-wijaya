@@ -1,26 +1,124 @@
-/* Employee monthly summary calendar — UI only for the six-card panel */
-.statistik-heading{position:relative!important;padding-right:34px!important}
+/* Employee monthly summary calendar — isolated UI for the six-card panel */
+
+.absensi-title-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  position:relative;
+}
+
+.absensi-title-row .room-title{
+  margin-right:auto;
+}
+
+.employee-summary-calendar-wrap{
+  position:relative;
+  flex:0 0 auto;
+}
+
 .employee-summary-month-button{
-  position:absolute;right:0;top:-4px;width:28px;height:28px;padding:0;
-  border:1px solid #b5ddd7;border-radius:9px;background:linear-gradient(180deg,#fff,#f2faf8);
-  color:#22a991;display:grid;place-items:center;cursor:pointer;
-  box-shadow:0 3px 0 rgba(35,166,147,.13),0 5px 9px rgba(32,103,94,.08)
+  height:30px;
+  padding:0 10px;
+  border:1px solid #b5ddd7;
+  border-radius:9px;
+  background:linear-gradient(180deg,#fff,#f2faf8);
+  color:#1b8f80;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:10px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 3px 0 rgba(35,166,147,.13),0 5px 9px rgba(32,103,94,.08);
 }
-.employee-summary-month-button:active{transform:translateY(2px)}
+
+.employee-summary-month-button i{
+  font-size:11px;
+}
+
+.employee-summary-month-button:active{
+  transform:translateY(2px);
+  box-shadow:0 1px 0 rgba(35,166,147,.13),0 3px 6px rgba(32,103,94,.08);
+}
+
 .employee-summary-month-popup{
-  position:absolute;z-index:70;right:0;top:31px;width:180px;box-sizing:border-box;
-  padding:11px;border:1px solid #b5ddd7;border-radius:13px;background:#fff;
-  box-shadow:0 12px 28px rgba(24,76,69,.18),0 3px 0 rgba(35,166,147,.12)
+  position:absolute;
+  z-index:80;
+  right:0;
+  top:36px;
+  width:224px;
+  box-sizing:border-box;
+  padding:12px;
+  border:1px solid #b5ddd7;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 14px 32px rgba(24,76,69,.20),0 3px 0 rgba(35,166,147,.12);
 }
-.employee-summary-month-popup[hidden]{display:none!important}
-.employee-summary-month-popup label{display:block;margin-bottom:7px;color:#173f47;font-size:10px;font-weight:900}
-.employee-summary-month-popup input{
-  box-sizing:border-box;width:100%;height:34px;padding:0 7px;border:1px solid #c8e4df;
-  border-radius:8px;background:#f8fcfb;color:#173f47;font-size:11px;font-weight:800;outline:none
+
+.employee-summary-month-popup[hidden]{
+  display:none!important;
 }
-.employee-summary-month-popup input:focus{border-color:#2ab59f;box-shadow:0 0 0 3px rgba(42,181,159,.10)}
-.employee-summary-month-apply{
-  width:100%;height:32px;margin-top:8px;border:0;border-radius:8px;
-  background:linear-gradient(180deg,#38cdb8,#20b29d);color:#fff;font-size:9px;font-weight:900;
-  box-shadow:0 3px 0 #168e7d;cursor:pointer
+
+.employee-summary-month-popup-head{
+  display:grid;
+  grid-template-columns:30px 1fr 30px;
+  align-items:center;
+  gap:6px;
+  margin-bottom:10px;
+}
+
+.employee-summary-month-popup-head strong{
+  text-align:center;
+  color:#173f47;
+  font-size:12px;
+  font-weight:900;
+}
+
+.employee-summary-year-nav{
+  width:30px;
+  height:30px;
+  padding:0;
+  border:1px solid #d4e8e4;
+  border-radius:8px;
+  background:#f7fbfa;
+  color:#1c8e80;
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.employee-summary-month-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+
+.employee-summary-month-item{
+  height:34px;
+  padding:0;
+  border:1px solid #d6e9e5;
+  border-radius:9px;
+  background:#f9fcfb;
+  color:#29484d;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 2px 5px rgba(25,87,78,.05);
+}
+
+.employee-summary-month-item:hover{
+  border-color:#53c8b7;
+  background:#f1fbf8;
+}
+
+.employee-summary-month-item.is-current{
+  border-color:#86d9ce;
+}
+
+.employee-summary-month-item.is-active{
+  border-color:#20b39d;
+  background:linear-gradient(180deg,#38cdb8,#20b29d);
+  color:#fff;
+  box-shadow:0 3px 0 #168e7d;
 }
