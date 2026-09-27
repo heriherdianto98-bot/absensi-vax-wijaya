@@ -42,57 +42,75 @@
     let timer=0;
     let observer=null;
     let started=false;
+    let fullName="";
 
     const isPlaceholder=(value)=>{
       const text=String(value||"").trim();
       return !text || /^(loading\.\.\.|loading|memuat\.\.\.|memuat|—|-)$/i.test(text);
     };
 
-    const typeName=(value)=>{
-      const full=String(value||"").replace(/\s+/g," ").trim();
-      if(started || isPlaceholder(full)) return;
-
-      started=true;
-      nameEl.dataset.fullEmployeeName=full;
-
-      // Critical: stop observing BEFORE our own textContent writes.
-      // This prevents the animation from recursively restarting on "A".
-      if(observer){
-        observer.disconnect();
-        observer=null;
-      }
+    const runLoop=()=>{
+      if(!fullName) return;
 
       window.clearTimeout(timer);
       nameEl.classList.add("employee-name-typing");
       nameEl.textContent="";
 
       let index=0;
-      const step=()=>{
-        index+=1;
-        nameEl.textContent=full.slice(0,index);
 
-        if(index<full.length){
-          timer=window.setTimeout(step,58);
-        }else{
-          timer=window.setTimeout(()=>{
-            nameEl.classList.remove("employee-name-typing");
-          },420);
+      const typeStep=()=>{
+        index+=1;
+        nameEl.textContent=fullName.slice(0,index);
+
+        if(index<fullName.length){
+          timer=window.setTimeout(typeStep,58);
+          return;
         }
+
+        // Hold full name briefly, then erase and type again.
+        timer=window.setTimeout(()=>{
+          const eraseStep=()=>{
+            const current=String(nameEl.textContent||"");
+            if(current.length>0){
+              nameEl.textContent=current.slice(0,-1);
+              timer=window.setTimeout(eraseStep,36);
+            }else{
+              timer=window.setTimeout(runLoop,520);
+            }
+          };
+          eraseStep();
+        },1100);
       };
 
-      timer=window.setTimeout(step,90);
+      timer=window.setTimeout(typeStep,90);
+    };
+
+    const startTyping=(value)=>{
+      const full=String(value||"").replace(/\s+/g," ").trim();
+      if(started || isPlaceholder(full)) return;
+
+      started=true;
+      fullName=full;
+      nameEl.dataset.fullEmployeeName=full;
+
+      if(observer){
+        observer.disconnect();
+        observer=null;
+      }
+
+      runLoop();
     };
 
     const initial=String(nameEl.textContent||"").trim();
     if(!isPlaceholder(initial)){
-      typeName(initial);
+      startTyping(initial);
       return;
     }
 
     observer=new MutationObserver(()=>{
       const current=String(nameEl.textContent||"").trim();
       if(!isPlaceholder(current)){
-        typeName(current);
+        startTyping(current);
       }
     });
 
