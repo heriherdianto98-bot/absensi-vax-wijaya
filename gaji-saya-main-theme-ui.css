@@ -1,0 +1,454 @@
+/* VAX WIJAYA — Gaji Saya main employee theme
+   UI ONLY. Canonical header/bottom nav + light teal employee portal visual language.
+   Payroll/session/calculation logic untouched. */
+
+:root{
+  --gaji-main:#2fc8b4;
+  --gaji-main-2:#20b39f;
+  --gaji-ink:#173f47;
+  --gaji-muted:#71878c;
+  --gaji-line:#d3e9e5;
+  --gaji-bg:#eef8f6;
+  --gaji-card:#ffffff;
+}
+
+@media screen{
+  html,body{
+    width:100%!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    overflow:hidden!important;
+    background:#eaf5f3!important;
+    color:var(--gaji-ink)!important;
+  }
+
+  html body .app{
+    width:100%!important;
+    max-width:430px!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    min-height:100dvh!important;
+    margin:0 auto!important;
+    padding:0 12px calc(76px + env(safe-area-inset-bottom,0px))!important;
+    display:block!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    background:
+      radial-gradient(100% 32% at 50% 0%,rgba(47,200,180,.10),transparent 60%),
+      linear-gradient(180deg,#f7fcfb 0%,#eef8f6 100%)!important;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(47,200,180,.58) transparent;
+  }
+
+  html body .app::-webkit-scrollbar{width:5px}
+  html body .app::-webkit-scrollbar-track{background:transparent}
+  html body .app::-webkit-scrollbar-thumb{background:rgba(47,200,180,.58);border-radius:99px}
+
+  /* Freeze only canonical top header while the page content scrolls. */
+  html body .app .page-head{
+    display:block!important;
+    margin:0!important;
+    min-width:0!important;
+  }
+
+  html body .app .page-head > .topbar.employee-canonical-header{
+    position:sticky!important;
+    top:0!important;
+    z-index:260!important;
+    margin:0 -12px 10px!important;
+    min-height:54px!important;
+    padding:6px 9px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 28px 28px!important;
+    grid-template-areas:"brand bell inbox"!important;
+    align-items:center!important;
+    column-gap:4px!important;
+    border:0!important;
+    border-radius:0 0 15px 15px!important;
+    background:linear-gradient(135deg,#44cfbd 0%,#27bda9 100%)!important;
+    box-shadow:0 8px 22px rgba(28,115,105,.18),inset 0 1px 0 rgba(255,255,255,.28)!important;
+    overflow:visible!important;
+  }
+
+  html body .app .employee-canonical-header .topbar-brand{
+    grid-area:brand!important;
+    display:grid!important;
+    grid-template-columns:40px minmax(0,1fr)!important;
+    grid-template-rows:auto auto auto!important;
+    grid-template-areas:"logo title" "logo subtitle" "logo powered"!important;
+    column-gap:9px!important;
+    row-gap:1px!important;
+    width:100%!important;
+    min-width:0!important;
+    align-items:center!important;
+  }
+
+  html body .app .employee-canonical-header .employee-erp-logo{
+    grid-area:logo!important;
+    width:40px!important;
+    height:34px!important;
+    object-fit:contain!important;
+    filter:brightness(0) invert(1)!important;
+  }
+
+  html body .app .employee-canonical-header .topbar-brand>strong{
+    grid-area:title!important;
+    justify-self:start!important;
+    align-self:end!important;
+    margin:0!important;
+    color:#fff!important;
+    font-size:16.5px!important;
+    line-height:1.02!important;
+    font-weight:900!important;
+    letter-spacing:.075em!important;
+    white-space:nowrap!important;
+  }
+
+  html body .app .employee-canonical-header .brand-subtitle{
+    grid-area:subtitle!important;
+    display:block!important;
+    width:max-content!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    color:#fff!important;
+    border-right:1px solid rgba(255,255,255,.88)!important;
+    clip-path:inset(0 100% 0 0);
+    animation:employeeMobileBrandTypeEnterprise 8s steps(30,end) infinite both!important;
+    font-size:7.2px!important;
+    line-height:1.05!important;
+    font-weight:700!important;
+    letter-spacing:.025em!important;
+  }
+
+  html body .app .employee-canonical-header .brand-powered{
+    grid-area:powered!important;
+    display:block!important;
+    color:#fff!important;
+    font-size:6.5px!important;
+    line-height:1.05!important;
+    font-weight:750!important;
+    white-space:nowrap!important;
+  }
+
+  /* Bell + inbox = same canonical header action geometry as locked Absensi. */
+  html body .app .topbar .vax-employee-notif{
+    grid-area:bell!important;
+    position:relative!important;
+    margin:0!important;
+    width:28px!important;
+    height:28px!important;
+    align-self:center!important;
+    justify-self:end!important;
+    z-index:280!important;
+  }
+
+  html body .app .topbar .vax-employee-notif-toggle,
+  html body .app .topbar .vax-inbox-shortcut{
+    width:28px!important;
+    height:28px!important;
+    min-width:28px!important;
+    min-height:28px!important;
+    display:grid!important;
+    place-items:center!important;
+    padding:0!important;
+    margin:0!important;
+    border:1px solid rgba(255,255,255,.30)!important;
+    border-radius:0!important;
+    background:rgba(255,255,255,.06)!important;
+    color:#fff!important;
+    box-shadow:none!important;
+    text-decoration:none!important;
+  }
+
+  html body .app .topbar .vax-employee-notif-toggle i,
+  html body .app .topbar .vax-inbox-shortcut i{
+    font-size:16px!important;
+    color:#fff!important;
+  }
+
+  html body .app .topbar .vax-inbox-shortcut{
+    grid-area:inbox!important;
+    align-self:center!important;
+    justify-self:end!important;
+  }
+
+  html body .app .topbar .vax-employee-notif-count{
+    right:-5px!important;
+    top:-6px!important;
+    min-width:14px!important;
+    height:14px!important;
+    line-height:14px!important;
+    padding:0 3px!important;
+    font-size:8px!important;
+    border:1.5px solid #2ebdaa!important;
+  }
+
+  html body .app .topbar .vax-employee-notif-panel{
+    right:-32px!important;
+    top:calc(100% + 8px)!important;
+  }
+
+  /* Page title */
+  html body .app .gaji-page-title{
+    margin:0 0 8px!important;
+    color:#244b52!important;
+    font-size:18px!important;
+    line-height:1.1!important;
+    font-weight:900!important;
+    letter-spacing:0!important;
+    text-transform:none!important;
+    text-shadow:none!important;
+  }
+
+  /* Profile card language copied from the locked Absensi employee profile. */
+  html body .app .gaji-profile-card{
+    position:relative!important;
+    min-height:104px!important;
+    margin:0 0 10px!important;
+    padding:12px 14px!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    align-items:center!important;
+    gap:14px!important;
+    border:1px solid var(--gaji-line)!important;
+    border-top:3px solid #31bda8!important;
+    border-radius:18px!important;
+    background:linear-gradient(145deg,#fff 0%,#f8fcfb 58%,#eef8f5 100%)!important;
+    box-shadow:0 10px 24px rgba(32,91,86,.10),0 3px 8px rgba(32,91,86,.06),inset 0 1px 0 rgba(255,255,255,.98)!important;
+    color:var(--gaji-ink)!important;
+  }
+
+  html body .app .gaji-profile-card::before,
+  html body .app .gaji-profile-card::after{content:none!important;display:none!important}
+
+  html body .app .gaji-profile-card .employee-profile-photo-wrap{
+    position:relative!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:78px!important;
+    height:78px!important;
+    flex:0 0 78px!important;
+    border-radius:50%!important;
+    isolation:isolate!important;
+  }
+
+  html body .app .gaji-profile-card .employee-profile-photo-wrap::after{
+    content:""!important;
+    position:absolute!important;
+    inset:-4px!important;
+    border-radius:50%!important;
+    border:1px solid rgba(31,184,200,.42)!important;
+    box-shadow:0 0 0 3px rgba(31,184,200,.08),0 0 12px rgba(31,184,200,.24)!important;
+    pointer-events:none!important;
+  }
+
+  html body .app .gaji-profile-card #fotoGaji{
+    position:relative!important;
+    z-index:2!important;
+    width:72px!important;
+    height:72px!important;
+    min-width:72px!important;
+    min-height:72px!important;
+    object-fit:cover!important;
+    object-position:center!important;
+    border:3px solid #fff!important;
+    outline:3px solid #1fb8c8!important;
+    outline-offset:2px!important;
+    border-radius:50%!important;
+    box-shadow:0 0 0 6px rgba(31,184,200,.10),0 9px 18px rgba(31,122,148,.18)!important;
+  }
+
+  html body .app .gaji-profile-card .profile-copy{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+  }
+
+  html body .app .gaji-profile-card .home-greet{
+    margin:0!important;
+    color:#60777d!important;
+    font-size:11px!important;
+    line-height:1.15!important;
+    font-weight:700!important;
+  }
+
+  html body .app .gaji-profile-card .profile-greeting-message{
+    display:block!important;
+    margin:2px 0 1px!important;
+    color:#5f777c!important;
+    font-size:9px!important;
+    line-height:1.25!important;
+    font-weight:700!important;
+  }
+
+  html body .app .gaji-profile-card #namaGaji{
+    margin:1px 0 2px!important;
+    color:#27bda9!important;
+    font-size:20px!important;
+    line-height:1.02!important;
+    font-weight:900!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    max-width:100%!important;
+  }
+
+  html body .app .gaji-profile-card .profile-line{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    margin:2px 0 0!important;
+    color:#45656b!important;
+    font-size:10px!important;
+    line-height:1.2!important;
+    font-weight:700!important;
+  }
+
+  html body .app .gaji-profile-card .profile-line i{width:12px!important;color:#2fc8b4!important;font-size:11px!important}
+
+  html body .app .gaji-profile-card .profile-branch{
+    width:100%!important;
+    flex:0 0 100%!important;
+    display:grid!important;
+    grid-template-columns:28px minmax(0,1fr)!important;
+    align-items:center!important;
+    gap:9px!important;
+    margin-top:4px!important;
+    padding:9px 10px 0!important;
+    border-top:1.5px solid #1fbd78!important;
+  }
+
+  html body .app .gaji-profile-card .profile-branch>i{
+    width:28px!important;
+    height:28px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:10px!important;
+    background:linear-gradient(145deg,#eafff9,#dff8f2)!important;
+    border:1px solid #bce9df!important;
+    color:#2fc8b4!important;
+    font-size:13px!important;
+    box-shadow:0 4px 9px rgba(47,200,180,.10)!important;
+  }
+
+  html body .app .gaji-profile-card .profile-branch>div{display:flex!important;flex-direction:column!important;min-width:0!important;gap:2px!important}
+  html body .app .gaji-profile-card .profile-branch-name{color:#17314e!important;font-size:10.5px!important;line-height:1.2!important;font-weight:850!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  html body .app .gaji-profile-card .profile-branch-address{color:#667b92!important;font-size:8.6px!important;line-height:1.35!important;font-weight:550!important;white-space:normal!important;overflow-wrap:anywhere!important}
+
+  /* Scrollable content */
+  html body .app .gaji-body{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:9px!important;
+    min-height:auto!important;
+    overflow:visible!important;
+    padding-bottom:18px!important;
+  }
+
+  html body .app .panel,
+  html body .app .ringkasan{
+    min-width:0!important;
+    padding:11px 12px!important;
+    border:1px solid var(--gaji-line)!important;
+    border-radius:16px!important;
+    background:linear-gradient(145deg,#fff 0%,#f8fcfb 100%)!important;
+    box-shadow:0 8px 20px rgba(49,99,95,.08)!important;
+    color:var(--gaji-ink)!important;
+  }
+
+  html body .app .panel h2{color:#234b52!important;text-shadow:none!important}
+  html body .app .period-range,
+  html body .app .gaji-note,
+  html body .app .sum-helper{color:#71878c!important}
+
+  html body .app .period-field>span:first-child{color:#20a994!important}
+  html body .app .period-input{
+    background:#fff!important;
+    border:1px solid #cfe6e2!important;
+    box-shadow:inset 0 1px 0 #fff!important;
+  }
+  html body .app .period-input span{color:#29484d!important}
+
+  html body .app .btn-apply{
+    border:0!important;
+    background:linear-gradient(180deg,#3ad0bb,#22b59f)!important;
+    color:#fff!important;
+    box-shadow:0 4px 10px rgba(32,154,137,.18),inset 0 1px 0 rgba(255,255,255,.28)!important;
+  }
+
+  html body .app .btn-print{
+    border:1px solid #b8ded8!important;
+    background:#f7fcfb!important;
+    color:#178f7f!important;
+  }
+
+  html body .app .sum-card{
+    border-radius:14px!important;
+    background:linear-gradient(145deg,#fff 0%,#f7fcfb 100%)!important;
+    box-shadow:0 6px 14px rgba(38,94,88,.07),inset 0 1px 0 #fff!important;
+  }
+
+  html body .app .sum-bruto{border:1px solid #9fdcd2!important}
+  html body .app .sum-bruto small{color:#1a9f8d!important}
+  html body .app .sum-bruto strong{color:#234b52!important}
+
+  html body .app .sum-denda{border:1px solid #efb6bc!important}
+  html body .app .sum-denda small{color:#c55f69!important}
+  html body .app .sum-denda strong{color:#7b333a!important}
+
+  html body .app .sum-net{
+    border:1px solid rgba(25,181,145,.50)!important;
+    background:
+      radial-gradient(90% 80% at 100% 100%,rgba(47,200,180,.17),transparent 55%),
+      linear-gradient(145deg,#f7fffd,#e9f9f5)!important;
+    box-shadow:0 8px 18px rgba(32,154,137,.13),inset 0 1px 0 #fff!important;
+  }
+  html body .app .sum-net small{color:#178f7f!important}
+  html body .app .sum-net strong{color:#16aa83!important;text-shadow:none!important}
+  html body .app .sum-ghost{color:#1ab08d!important;opacity:.24!important;filter:none!important}
+
+  html body .app .cmp-panel h2{border-bottom-color:#d9ebe8!important}
+  html body .app .cmp-list li{
+    border-color:#e0eeeb!important;
+    background:#fbfefd!important;
+  }
+  html body .app .cmp-list li span{color:#758a8f!important}
+  html body .app .cmp-list li b{color:#234b52!important}
+
+  html body .app .daily-panel{min-height:190px!important}
+  html body .app .daily-scroll{overflow:visible!important}
+  html body .app .daily-card{
+    border:1px solid #d6e9e5!important;
+    background:#fff!important;
+    color:#29484d!important;
+    box-shadow:0 4px 10px rgba(38,94,88,.05)!important;
+  }
+  html body .app .daily-date{color:#1c8e80!important}
+  html body .app .daily-empty{color:#7b9095!important}
+
+  /* Canonical nav is loaded separately; protect it from legacy Gaji Saya dark styles. */
+  html body #bottomNav{
+    z-index:300!important;
+  }
+
+  @media(max-width:380px){
+    html body .app{padding-left:10px!important;padding-right:10px!important}
+    html body .app .page-head > .topbar.employee-canonical-header{
+      margin-left:-10px!important;
+      margin-right:-10px!important;
+      padding-left:7px!important;
+      padding-right:7px!important;
+    }
+    html body .app .gaji-profile-card{gap:11px!important;padding:10px 12px!important}
+    html body .app .gaji-profile-card .employee-profile-photo-wrap{width:72px!important;height:72px!important;flex-basis:72px!important}
+    html body .app .gaji-profile-card #fotoGaji{width:66px!important;height:66px!important;min-width:66px!important;min-height:66px!important}
+    html body .app .gaji-profile-card #namaGaji{font-size:18px!important}
+  }
+}
