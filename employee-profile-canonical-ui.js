@@ -33,8 +33,69 @@
     window.setInterval(render,60000);
   }
 
+
+  function bindNameTypewriter(profile){
+    const nameEl=profile?.querySelector(".profile-copy h1");
+    if(!nameEl || nameEl.dataset.canonicalTypingBound==="1") return;
+    nameEl.dataset.canonicalTypingBound="1";
+
+    let timer=0;
+    let internalWrite=false;
+    let lastTyped="";
+
+    const isPlaceholder=(value)=>{
+      const text=String(value||"").trim();
+      return !text || /^(loading\.\.\.|loading|memuat\.\.\.|memuat|—|-)$/i.test(text);
+    };
+
+    const typeName=(value)=>{
+      const full=String(value||"").replace(/\s+/g," ").trim();
+      if(isPlaceholder(full) || full===lastTyped) return;
+
+      window.clearTimeout(timer);
+      internalWrite=true;
+      nameEl.classList.add("employee-name-typing");
+      nameEl.textContent="";
+      internalWrite=false;
+
+      let index=0;
+      const step=()=>{
+        index+=1;
+        internalWrite=true;
+        nameEl.textContent=full.slice(0,index);
+        internalWrite=false;
+
+        if(index<full.length){
+          timer=window.setTimeout(step,58);
+        }else{
+          lastTyped=full;
+          timer=window.setTimeout(()=>{
+            nameEl.classList.remove("employee-name-typing");
+          },420);
+        }
+      };
+      timer=window.setTimeout(step,90);
+    };
+
+    const observer=new MutationObserver(()=>{
+      if(internalWrite) return;
+      const current=String(nameEl.textContent||"").trim();
+      if(!isPlaceholder(current) && current!==lastTyped){
+        typeName(current);
+      }
+    });
+
+    observer.observe(nameEl,{childList:true,characterData:true,subtree:true});
+
+    const initial=String(nameEl.textContent||"").trim();
+    if(!isPlaceholder(initial)) typeName(initial);
+  }
+
   function init(){
-    document.querySelectorAll(".app .employee-profile-canonical").forEach(renderDate);
+    document.querySelectorAll(".app .employee-profile-canonical").forEach((profile)=>{
+      renderDate(profile);
+      bindNameTypewriter(profile);
+    });
   }
 
   if(document.readyState==="loading"){
