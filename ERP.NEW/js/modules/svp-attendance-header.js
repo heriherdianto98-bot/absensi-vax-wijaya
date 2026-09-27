@@ -36,7 +36,7 @@
       const owner=header.querySelector(".vax-owner");
       if(owner) owner.insertAdjacentElement("beforebegin",button);
       else header.appendChild(button);
-      button.addEventListener("click",()=>{ if(actionMode()!=="DONE") openModal(); });
+      button.addEventListener("click",()=>openModal());
     }
 
     if(!document.getElementById("svpAttendanceBackdrop")){
@@ -62,6 +62,16 @@
             </div>
             <p class="svp-attendance-msg" id="svpAttMessage">GPS wajib aktif. SVP tidak dibatasi radius cabang.</p>
             <button type="button" class="svp-attendance-action" id="svpAttAction" disabled>Memeriksa GPS…</button>
+            <button type="button" class="svp-attendance-history-toggle" id="svpAttHistoryToggle">Riwayat Absensi Saya</button>
+            <section class="svp-attendance-history" id="svpAttHistory" hidden>
+              <div class="svp-attendance-history-head">
+                <strong>Riwayat Absensi</strong>
+                <span>30 data terakhir</span>
+              </div>
+              <div class="svp-attendance-history-list" id="svpAttHistoryList">
+                <div class="svp-attendance-history-empty">Belum ada riwayat.</div>
+              </div>
+            </section>
             <p class="svp-attendance-note">Jam kerja fleksibel. Tidak memakai aturan terlambat/denda karyawan cabang.</p>
           </div>
         </section>`;
@@ -69,6 +79,7 @@
       bd.addEventListener("click",(e)=>{if(e.target===bd) closeModal();});
       document.getElementById("svpAttendanceClose")?.addEventListener("click",closeModal);
       document.getElementById("svpAttAction")?.addEventListener("click",submitAttendance);
+      document.getElementById("svpAttHistoryToggle")?.addEventListener("click",toggleHistory);
     }
 
     paintState();
@@ -185,7 +196,77 @@
     bd.hidden=false;
     currentLocation=null;
     paintState();
+
+    if(actionMode()==="DONE"){
+      const address=document.getElementById("svpAttAddress");
+      const accuracy=document.getElementById("svpAttAccuracy");
+      if(address) address.textContent=todayState?.alamat_pulang || todayState?.alamat_masuk || "Lokasi absensi hari ini sudah tersimpan.";
+      if(accuracy) accuracy.textContent="Absensi hari ini sudah selesai.";
+      setMessage("Absensi hari ini selesai. Riwayat tetap dapat dibuka.");
+      return;
+    }
+
     await readGps();
+  }
+
+  function formatDateId(value){
+    if(!value) return "—";
+    try{
+      return new Intl.DateTimeFormat("id-ID",{
+        timeZone:"Asia/Jakarta",
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+      }).format(new Date(String(value)+"T00:00:00+07:00"));
+    }catch(_e){
+      return String(value);
+    }
+  }
+
+  function historyItem(row){
+    const masuk=fmtTime(row?.jam_masuk);
+    const pulang=fmtTime(row?.jam_pulang);
+    const locMasuk=clean(row?.alamat_masuk)||"Lokasi masuk belum tersedia";
+    const locPulang=clean(row?.alamat_pulang)||"Lokasi pulang belum tersedia";
+    return `
+      <article class="svp-attendance-history-item">
+        <div class="svp-attendance-history-date">${formatDateId(row?.tanggal)}</div>
+        <div class="svp-attendance-history-times">
+          <span><small>MASUK</small><strong>${masuk}</strong></span>
+          <span><small>PULANG</small><strong>${pulang}</strong></span>
+        </div>
+        <div class="svp-attendance-history-location">
+          <p><b>Masuk:</b> ${locMasuk}</p>
+          <p><b>Pulang:</b> ${locPulang}</p>
+        </div>
+      </article>`;
+  }
+
+  async function loadHistory(){
+    const list=document.getElementById("svpAttHistoryList");
+    if(!list || typeof db==="undefined") return;
+    list.innerHTML='<div class="svp-attendance-history-empty">Memuat riwayat…</div>';
+    try{
+      const {data,error}=await db.rpc("svp_absensi_self_history_v1",{p_limit:30});
+      if(error) throw error;
+      const rows=Array.isArray(data)?data:[];
+      list.innerHTML=rows.length
+        ? rows.map(historyItem).join("")
+        : '<div class="svp-attendance-history-empty">Belum ada riwayat absensi.</div>';
+    }catch(err){
+      console.error("[SVP Attendance] history:",err);
+      list.innerHTML='<div class="svp-attendance-history-empty">Riwayat belum dapat dimuat.</div>';
+    }
+  }
+
+  async function toggleHistory(){
+    const panel=document.getElementById("svpAttHistory");
+    const btn=document.getElementById("svpAttHistoryToggle");
+    if(!panel || !btn) return;
+    const willOpen=panel.hidden;
+    panel.hidden=!willOpen;
+    btn.textContent=willOpen?"Tutup Riwayat":"Riwayat Absensi Saya";
+    if(willOpen) await loadHistory();
   }
 
   function closeModal(){
