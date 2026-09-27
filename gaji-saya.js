@@ -41,6 +41,40 @@ function monthWibFirstIso(){
     return `${todayWibIso().slice(0, 7)}-01`;
 }
 
+function calendarMonthRangeFromIso(iso){
+    const raw = String(iso || "").slice(0, 10);
+    const m = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!m) return null;
+    const year = Number(m[1]);
+    const month = Number(m[2]);
+    if(!year || month < 1 || month > 12) return null;
+    const lastDay = new Date(year, month, 0).getDate();
+    return {
+        year,
+        month,
+        dari: `${year}-${String(month).padStart(2, "0")}-01`,
+        sampai: `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`
+    };
+}
+
+function previousCalendarMonthRange(dari){
+    const current = calendarMonthRangeFromIso(dari);
+    if(!current) return null;
+    let year = current.year;
+    let month = current.month - 1;
+    if(month < 1){
+        month = 12;
+        year -= 1;
+    }
+    return calendarMonthRangeFromIso(`${year}-${String(month).padStart(2, "0")}-01`);
+}
+
+function formatMonthLabelFromIso(iso){
+    const range = calendarMonthRangeFromIso(iso);
+    if(!range) return "—";
+    return `${MONTHS_ID[range.month - 1]} ${range.year}`;
+}
+
 function formatTanggalPanjang(iso){
     const raw = String(iso || "").slice(0, 10);
     const m = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -113,10 +147,10 @@ function setPeriodMessage(text){
 }
 
 function setApplyBusy(busy){
-    const btn = document.getElementById("btnTerapkan");
+    const btn = document.getElementById("gajiMonthButton");
     if(!btn) return;
     btn.disabled = Boolean(busy);
-    btn.textContent = busy ? "Memuat..." : "Terapkan";
+    btn.classList.toggle("is-loading", Boolean(busy));
 }
 
 function setTrend(kind){
@@ -169,20 +203,38 @@ function renderComparisonEmptyPrev(periodeIni){
     setTrend("flat");
 }
 
-function renderComparison(summaryNet, comparison){
+function renderComparison(summaryNet, previousPayload){
     resetPrevCellLayout();
-    const cmp = comparison && typeof comparison === "object" ? comparison : {};
-    const hasData = cmp.has_data === true;
 
-    if(!hasData){
+    const prevSummary = previousPayload && typeof previousPayload === "object"
+        ? (previousPayload.summary && typeof previousPayload.summary === "object"
+            ? previousPayload.summary
+            : previousPayload)
+        : null;
+
+    const prevDaily = previousPayload
+        ? (previousPayload.daily || previousPayload.days || previousPayload.rincian || [])
+        : [];
+
+    const hasPrev = Boolean(prevSummary) && (
+        Number(prevSummary.share_bruto || 0) !== 0 ||
+        Number(prevSummary.total_denda || 0) !== 0 ||
+        Number(prevSummary.net_diterima || 0) !== 0 ||
+        (Array.isArray(prevDaily) && prevDaily.length > 0)
+    );
+
+    if(!hasPrev){
         renderComparisonEmptyPrev(summaryNet);
         return;
     }
 
-    const selisih = Number(cmp.selisih);
-    const persen = Number(cmp.perubahan_persen);
-    setText("cmpPeriodeIni", summaryNet);
-    setText("cmpPeriodePrev", formatRupiahId(cmp.net_diterima));
+    const currentNet = Number(String(summaryNet).replace(/[^0-9-]/g, "")) || 0;
+    const previousNet = Number(prevSummary.net_diterima || 0);
+    const selisih = currentNet - previousNet;
+    const persen = previousNet !== 0 ? (selisih / Math.abs(previousNet)) * 100 : (currentNet === 0 ? 0 : 100);
+
+    setText("cmpPeriodeIni", formatRupiahId(currentNet));
+    setText("cmpPeriodePrev", formatRupiahId(previousNet));
     setText("cmpSelisih", formatRupiahId(selisih));
     setText("cmpPerubahan", formatPersen(persen));
     setTrend(persen > 0 ? "up" : persen < 0 ? "down" : "flat");
@@ -272,7 +324,7 @@ function renderUnavailable(){
     renderDailyEmpty(MSG_NO_DAILY);
 }
 
-function renderPayload(payload){
+function renderPayload(payload, previousPayload){
     const summary = payload.summary && typeof payload.summary === "object"
         ? payload.summary
         : payload;
@@ -280,7 +332,7 @@ function renderPayload(payload){
     const denda = formatRupiahId(summary.total_denda);
     const net = formatRupiahId(summary.net_diterima);
     renderSummary(share, denda, net);
-    renderComparison(net, payload.comparison);
+    renderComparison(net, previousPayload);
     renderDaily(payload.daily || payload.days || payload.rincian || []);
 }
 
@@ -293,6 +345,15 @@ function selectedPeriod(){
     };
 }
 
+async function fetchGajiRange(token, dari, sampai){
+    const { data, error } = await db.rpc("karyawan_gaji_capster_self", {
+        p_token: token,
+        p_from: dari,
+        p_to: sampai
+    });
+    return { data, error };
+}
+
 async function loadGaji(dari, sampai){
     const token = sessionToken();
     if(!token){
@@ -300,17 +361,19 @@ async function loadGaji(dari, sampai){
         return;
     }
 
+    const selectedMonth = calendarMonthRangeFromIso(dari);
+    const previousMonth = previousCalendarMonthRange(dari);
+    if(!selectedMonth || !previousMonth){
+        setPeriodMessage("Bulan tidak valid.");
+        return;
+    }
+
     setApplyBusy(true);
     try{
-        const { data, error } = await db.rpc("karyawan_gaji_capster_self", {
-            p_token: token,
-            p_from: dari,
-            p_to: sampai
-        });
-
-        if(error){
-            console.error("Gaji Saya gagal (karyawan_gaji_capster_self):", error);
-            const reason = String(error.message || error.code || "").toUpperCase();
+        const currentResult = await fetchGajiRange(token, selectedMonth.dari, selectedMonth.sampai);
+        if(currentResult.error){
+            console.error("Gaji Saya gagal (karyawan_gaji_capster_self):", currentResult.error);
+            const reason = String(currentResult.error.message || currentResult.error.code || "").toUpperCase();
             if(handleSelfReadSession(reason)) return;
             if(reason.includes("ROLE_NOT_CAPSTER")){
                 renderBlockedCapster();
@@ -321,7 +384,7 @@ async function loadGaji(dari, sampai){
             return;
         }
 
-        const payload = unwrapRpcPayload(data);
+        const payload = unwrapRpcPayload(currentResult.data);
         if(!payload || payload.ok === false){
             const reason = String(payload?.reason || "SESSION_INVALID").toUpperCase();
             console.error("Gaji Saya ditolak:", reason);
@@ -335,8 +398,21 @@ async function loadGaji(dari, sampai){
             return;
         }
 
+        let previousPayload = null;
+        try{
+            const previousResult = await fetchGajiRange(token, previousMonth.dari, previousMonth.sampai);
+            if(!previousResult.error){
+                const prev = unwrapRpcPayload(previousResult.data);
+                if(prev && prev.ok !== false) previousPayload = prev;
+            }else{
+                console.warn("Perbandingan bulan sebelumnya gagal dimuat:", previousResult.error);
+            }
+        }catch(compareError){
+            console.warn("Perbandingan bulan sebelumnya gagal dimuat:", compareError);
+        }
+
         setPeriodMessage("");
-        renderPayload(payload);
+        renderPayload(payload, previousPayload);
     }catch(err){
         console.error("Gaji Saya error:", err);
         setPeriodMessage("Gagal memuat data gaji.");
@@ -347,51 +423,44 @@ async function loadGaji(dari, sampai){
 }
 
 function syncDateDisplays(){
-    const { dari, sampai } = selectedPeriod();
-    setText("dariDisplay", formatTanggalPanjang(dari));
-    setText("sampaiDisplay", formatTanggalPanjang(sampai));
-    setText("periodRangeLabel", formatRangeLabel(dari, sampai));
+    const { dari } = selectedPeriod();
+    setText("periodRangeLabel", formatMonthLabelFromIso(dari));
 }
 
-function applyPeriod(){
-    const { dari, sampai } = selectedPeriod();
-    if(!isIsoDate(dari) || !isIsoDate(sampai)){
-        setPeriodMessage("Pilih tanggal Dari dan Sampai.");
-        return;
-    }
-    if(dari > sampai){
-        setPeriodMessage("Tanggal Dari tidak boleh setelah Sampai.");
-        return;
-    }
-    setPeriodMessage("");
-    syncDateDisplays();
-    loadGaji(dari, sampai);
+function ensureCurrentMonthPeriod(){
+    const dariEl = document.getElementById("periodeDari");
+    const sampaiEl = document.getElementById("periodeSampai");
+    if(!dariEl || !sampaiEl) return;
+    if(isIsoDate(dariEl.value) && isIsoDate(sampaiEl.value)) return;
+
+    const range = calendarMonthRangeFromIso(todayWibIso());
+    if(!range) return;
+    dariEl.value = range.dari;
+    sampaiEl.value = range.sampai;
+
+    const label = document.getElementById("gajiMonthButtonLabel");
+    if(label) label.textContent = formatMonthLabelFromIso(range.dari);
 }
 
 function bindPeriod(){
-    const dariEl = document.getElementById("periodeDari");
-    const sampaiEl = document.getElementById("periodeSampai");
-    const btn = document.getElementById("btnTerapkan");
     const btnPrint = document.getElementById("btnCetakSlip");
 
-    if(dariEl){
-        dariEl.value = monthWibFirstIso();
-        dariEl.addEventListener("change", syncDateDisplays);
-        dariEl.addEventListener("input", syncDateDisplays);
-    }
-    if(sampaiEl){
-        sampaiEl.value = todayWibIso();
-        sampaiEl.addEventListener("change", syncDateDisplays);
-        sampaiEl.addEventListener("input", syncDateDisplays);
-    }
-    if(btn){
-        btn.addEventListener("click", applyPeriod);
-    }
+    ensureCurrentMonthPeriod();
+    syncDateDisplays();
+
+    document.addEventListener("gaji:month-change", async (event) => {
+        const dari = String(event.detail?.dari || "");
+        const sampai = String(event.detail?.sampai || "");
+        if(!isIsoDate(dari) || !isIsoDate(sampai)) return;
+
+        setPeriodMessage("");
+        syncDateDisplays();
+        await loadGaji(dari, sampai);
+    });
+
     if(btnPrint){
         btnPrint.addEventListener("click", cetakSlipGaji);
     }
-
-    syncDateDisplays();
 }
 
 function screenText(id){
