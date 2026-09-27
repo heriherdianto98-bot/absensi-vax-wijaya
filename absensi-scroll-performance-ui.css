@@ -205,3 +205,102 @@ html body .app .gps-under-address{
 html body .app .center-dot{
   margin:0 auto!important;
 }
+
+
+/* ===== GPS RIGHT COLUMN FINAL ALIGNMENT — UI ONLY =====
+   Explicitly neutralize legacy absolute positioning from absensi-location-detail-ui.css.
+   No GPS/geofence/attendance logic touched. */
+html body .app .lokasi-right{
+  position:relative!important;
+  flex:0 0 92px!important;
+  width:92px!important;
+  min-height:104px!important;
+  height:auto!important;
+  align-self:stretch!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:10px!important;
+  padding:8px 0 6px!important;
+  box-sizing:border-box!important;
+}
+
+html body .app .lokasi-right .radar{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:56px!important;
+  height:56px!important;
+  flex:0 0 56px!important;
+  margin:0 auto!important;
+  transform:none!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:visible!important;
+}
+
+html body .app .lokasi-right .center-dot{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:42px!important;
+  height:42px!important;
+  margin:0!important;
+  transform:none!important;
+}
+
+html body .app .lokasi-right .gps-under-radar{
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0 2px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:2px!important;
+  text-align:center!important;
+  box-sizing:border-box!important;
+}
+
+html body .app .lokasi-right .gps-under-label{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  text-align:center!important;
+  line-height:1.1!important;
+}
+
+html body .app .lokasi-right .gps-under-address{
+  display:block!important;
+  width:100%!important;
+  max-width:88px!important;
+  margin:0!important;
+  text-align:center!important;
+  line-height:1.15!important;
+  white-space:normal!important;
+}
+
+@media(max-width:380px){
+  html body .app .lokasi-right{
+    flex-basis:86px!important;
+    width:86px!important;
+    min-height:100px!important;
+    gap:8px!important;
+  }
+  html body .app .lokasi-right .radar{
+    width:54px!important;
+    height:54px!important;
+    flex-basis:54px!important;
+  }
+}
