@@ -452,3 +452,198 @@
     html body .app .gaji-profile-card #namaGaji{font-size:18px!important}
   }
 }
+
+
+/* ===== GAJI PROFILE — exact Absensi motion language ===== */
+@keyframes gajiEmployeeSparkOrbit{
+  0%{transform:rotate(0deg);opacity:.55}
+  35%{opacity:1}
+  70%{opacity:.65}
+  100%{transform:rotate(360deg);opacity:.55}
+}
+@keyframes gajiEmployeeRingPulse{
+  0%,100%{transform:scale(1);opacity:.68}
+  50%{transform:scale(1.045);opacity:1}
+}
+@keyframes gajiEmployeePhotoFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+
+html body .app .gaji-profile-card{
+  min-height:104px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:14px!important;
+  padding:12px 14px!important;
+  border-top:3px solid #31bda8!important;
+  border-radius:18px!important;
+  background:linear-gradient(145deg,#fff 0%,#f8fcfb 58%,#eef8f5 100%)!important;
+  box-shadow:
+    0 10px 24px rgba(32,91,86,.10),
+    0 3px 8px rgba(32,91,86,.06),
+    inset 0 1px 0 rgba(255,255,255,.98)!important;
+}
+
+html body .app .gaji-profile-card .employee-profile-photo-wrap{
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:78px!important;
+  height:78px!important;
+  flex:0 0 78px!important;
+  border-radius:50%!important;
+  isolation:isolate!important;
+}
+
+html body .app .gaji-profile-card .employee-profile-photo-wrap::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-9px!important;
+  display:block!important;
+  border-radius:50%!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 50% 0%,#66e5ee 0 2px,transparent 2.8px),
+    radial-gradient(circle at 93% 24%,#1fb8c8 0 1.7px,transparent 2.5px),
+    radial-gradient(circle at 100% 63%,#8eeaf0 0 1.4px,transparent 2.3px),
+    radial-gradient(circle at 72% 96%,#27c5d4 0 1.8px,transparent 2.6px),
+    radial-gradient(circle at 20% 91%,#75e4eb 0 1.5px,transparent 2.4px),
+    radial-gradient(circle at 0% 53%,#1fb8c8 0 1.8px,transparent 2.6px),
+    radial-gradient(circle at 11% 14%,#9cf1f5 0 1.4px,transparent 2.3px)!important;
+  filter:drop-shadow(0 0 5px rgba(31,184,200,.52))!important;
+  animation:gajiEmployeeSparkOrbit 4.8s linear infinite!important;
+  z-index:2!important;
+}
+
+html body .app .gaji-profile-card .employee-profile-photo-wrap::after{
+  content:""!important;
+  position:absolute!important;
+  inset:-4px!important;
+  display:block!important;
+  border-radius:50%!important;
+  border:1px solid rgba(31,184,200,.42)!important;
+  box-shadow:
+    0 0 0 3px rgba(31,184,200,.08),
+    0 0 12px rgba(31,184,200,.24)!important;
+  pointer-events:none!important;
+  animation:gajiEmployeeRingPulse 2.8s ease-in-out infinite!important;
+  z-index:1!important;
+}
+
+html body .app .gaji-profile-card #fotoGaji{
+  position:relative!important;
+  z-index:3!important;
+  width:72px!important;
+  height:72px!important;
+  min-width:72px!important;
+  min-height:72px!important;
+  max-width:72px!important;
+  max-height:72px!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border:3px solid #fff!important;
+  outline:3px solid #1fb8c8!important;
+  outline-offset:2px!important;
+  border-radius:50%!important;
+  box-shadow:
+    0 0 0 6px rgba(31,184,200,.10),
+    0 9px 18px rgba(31,122,148,.18)!important;
+  animation:gajiEmployeePhotoFloat 3.6s ease-in-out infinite!important;
+}
+
+html body .app .gaji-profile-card .profile-copy{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+}
+
+html body .app .gaji-profile-card .profile-copy h1{
+  margin:1px 0 2px!important;
+  color:#27bda9!important;
+  font-size:20px!important;
+  line-height:1.02!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  max-width:100%!important;
+}
+
+html body .app .gaji-profile-card .profile-line{
+  margin-top:2px!important;
+  gap:6px!important;
+  color:#45656b!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-weight:700!important;
+}
+
+html body .app .gaji-profile-card{
+  flex-wrap:wrap!important;
+}
+
+html body .app .gaji-profile-card .profile-branch{
+  width:100%!important;
+  flex:0 0 100%!important;
+  display:grid!important;
+  grid-template-columns:28px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:9px!important;
+  margin-top:4px!important;
+  padding:9px 10px 0!important;
+  border-top:1.5px solid #1fbd78!important;
+}
+
+/* Date block must sit on the same top row as Absensi, before branch row. */
+html body .app .gaji-profile-card .profile-meta-date{
+  margin-left:auto!important;
+  align-self:center!important;
+  flex:0 0 42px!important;
+  min-width:42px!important;
+  text-align:right!important;
+  border-left:1px solid rgba(31,98,111,.18)!important;
+  padding-left:8px!important;
+  position:relative!important;
+  z-index:2!important;
+}
+
+@media(max-width:380px){
+  html body .app .gaji-profile-card{
+    gap:11px!important;
+    padding:10px 12px!important;
+  }
+  html body .app .gaji-profile-card .employee-profile-photo-wrap{
+    width:72px!important;
+    height:72px!important;
+    flex-basis:72px!important;
+  }
+  html body .app .gaji-profile-card #fotoGaji{
+    width:66px!important;
+    height:66px!important;
+    min-width:66px!important;
+    min-height:66px!important;
+    max-width:66px!important;
+    max-height:66px!important;
+  }
+  html body .app .gaji-profile-card .profile-copy h1{
+    font-size:18px!important;
+  }
+  html body .app .gaji-profile-card .profile-meta-date{
+    flex-basis:38px!important;
+    min-width:38px!important;
+    padding-left:6px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .gaji-profile-card .employee-profile-photo-wrap::before,
+  html body .app .gaji-profile-card .employee-profile-photo-wrap::after,
+  html body .app .gaji-profile-card #fotoGaji{
+    animation:none!important;
+  }
+}
