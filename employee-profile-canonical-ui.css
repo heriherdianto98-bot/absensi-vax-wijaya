@@ -341,3 +341,22 @@ html body .app .employee-profile-canonical .profile-copy h1.employee-name-typing
     display:none!important;
   }
 }
+
+
+/* ===== MATCH DASHBOARD UTAMA NAME TYPOGRAPHY =====
+   Dashboard employee profile final UI uses 23px / 1.08 / 800 on mobile. */
+html body .app .employee-profile-canonical .profile-copy h1{
+  font-size:23px!important;
+  line-height:1.08!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+  padding-bottom:2px!important;
+}
+
+@media(max-width:380px){
+  html body .app .employee-profile-canonical .profile-copy h1{
+    font-size:23px!important;
+    line-height:1.08!important;
+    font-weight:800!important;
+  }
+}
