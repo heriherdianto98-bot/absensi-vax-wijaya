@@ -1,0 +1,42 @@
+/* Absensi consumer sizing for canonical Employee Profile
+   UI ONLY. Keeps shared canonical structure/animation, restores compact Absensi photo scale. */
+
+html body .app .employee-profile-canonical .employee-profile-photo-wrap:has(#fotoKaryawan){
+  width:64px!important;
+  height:64px!important;
+  flex:0 0 64px!important;
+}
+
+html body .app .employee-profile-canonical .employee-profile-photo-wrap:has(#fotoKaryawan)::before{
+  inset:-7px!important;
+}
+
+html body .app .employee-profile-canonical .employee-profile-photo-wrap:has(#fotoKaryawan)::after{
+  inset:-3px!important;
+}
+
+html body .app .employee-profile-canonical .employee-profile-photo-wrap #fotoKaryawan{
+  width:58px!important;
+  height:58px!important;
+  min-width:58px!important;
+  min-height:58px!important;
+  max-width:58px!important;
+  max-height:58px!important;
+}
+
+@media(max-width:380px){
+  html body .app .employee-profile-canonical .employee-profile-photo-wrap:has(#fotoKaryawan){
+    width:62px!important;
+    height:62px!important;
+    flex-basis:62px!important;
+  }
+
+  html body .app .employee-profile-canonical .employee-profile-photo-wrap #fotoKaryawan{
+    width:56px!important;
+    height:56px!important;
+    min-width:56px!important;
+    min-height:56px!important;
+    max-width:56px!important;
+    max-height:56px!important;
+  }
+}
