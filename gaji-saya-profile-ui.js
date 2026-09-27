@@ -35,16 +35,21 @@
     applyPhoto(employee.foto);
 
     const address=document.getElementById("gajiCabangAddress");
+    const locationLine=document.getElementById("gajiProfileLocationLine");
     if(!address) return;
     if(!employee.cabang_id || typeof db==="undefined"){
       address.textContent="Alamat cabang belum tersedia";
+      if(locationLine) locationLine.textContent="Cabang belum tersedia";
       return;
     }
     try{
-      const {data,error}=await db.from("cabang").select("alamat").eq("id",employee.cabang_id).maybeSingle();
+      const {data,error}=await db.from("cabang").select("nama_cabang,alamat").eq("id",employee.cabang_id).maybeSingle();
+      const branchName=!error && data ? (String(data.nama_cabang||"").trim() || "Cabang belum tersedia") : "Cabang belum tersedia";
       address.textContent=!error && data ? (String(data.alamat||"").trim() || "Alamat belum diisi di Master Cabang") : "Alamat cabang belum tersedia";
+      if(locationLine) locationLine.textContent=branchName;
     }catch(_error){
       address.textContent="Alamat cabang belum tersedia";
+      if(locationLine) locationLine.textContent="Cabang belum tersedia";
     }
   }
 
