@@ -224,3 +224,105 @@
 @media(prefers-reduced-motion:reduce){
   .svp-attendance-modal{animation:none!important;}
 }
+
+
+/* SVP self-history — UI only */
+.svp-attendance-history-toggle{
+  width:100%;
+  height:40px;
+  margin-top:9px;
+  border:1px solid rgba(242,194,48,.42);
+  border-radius:11px;
+  background:linear-gradient(180deg,rgba(242,194,48,.13),rgba(242,194,48,.055));
+  color:#f6cf5b;
+  font-size:11.5px;
+  font-weight:900;
+  cursor:pointer;
+}
+.svp-attendance-history-toggle:hover{
+  border-color:rgba(255,224,138,.72);
+  background:linear-gradient(180deg,rgba(242,194,48,.19),rgba(242,194,48,.08));
+}
+.svp-attendance-history{
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+.svp-attendance-history[hidden]{display:none!important;}
+.svp-attendance-history-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+}
+.svp-attendance-history-head strong{
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+}
+.svp-attendance-history-head span{
+  color:#9ca8b5;
+  font-size:9.5px;
+  font-weight:700;
+}
+.svp-attendance-history-list{
+  display:grid;
+  gap:8px;
+  max-height:265px;
+  overflow:auto;
+  padding-right:3px;
+  scrollbar-width:thin;
+  scrollbar-color:#8d741d #1a222b;
+}
+.svp-attendance-history-item{
+  padding:10px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:12px;
+  background:linear-gradient(180deg,#26313b,#202933);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.svp-attendance-history-date{
+  margin-bottom:8px;
+  color:#f5cf59;
+  font-size:11px;
+  font-weight:900;
+}
+.svp-attendance-history-times{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+.svp-attendance-history-times span{
+  padding:7px 8px;
+  border-radius:9px;
+  background:rgba(255,255,255,.045);
+}
+.svp-attendance-history-times small{
+  display:block;
+  color:#91a0ae;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+.svp-attendance-history-times strong{
+  display:block;
+  margin-top:3px;
+  color:#fff;
+  font-size:11.5px;
+  font-weight:900;
+}
+.svp-attendance-history-location{
+  margin-top:7px;
+  color:#c2ccd6;
+  font-size:9.5px;
+  line-height:1.35;
+}
+.svp-attendance-history-location p{margin:3px 0;}
+.svp-attendance-history-location b{color:#8fe6b0;}
+.svp-attendance-history-empty{
+  padding:16px 10px;
+  text-align:center;
+  color:#9ca8b5;
+  font-size:10.5px;
+}
