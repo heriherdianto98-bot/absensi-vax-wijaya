@@ -63,7 +63,7 @@
         nameEl.textContent=fullName.slice(0,index);
 
         if(index<fullName.length){
-          timer=window.setTimeout(typeStep,58);
+          timer=window.setTimeout(typeStep,105);
           return;
         }
 
@@ -73,13 +73,13 @@
             const current=String(nameEl.textContent||"");
             if(current.length>0){
               nameEl.textContent=current.slice(0,-1);
-              timer=window.setTimeout(eraseStep,36);
+              timer=window.setTimeout(eraseStep,62);
             }else{
               timer=window.setTimeout(runLoop,520);
             }
           };
           eraseStep();
-        },1100);
+        },2100);
       };
 
       timer=window.setTimeout(typeStep,90);
