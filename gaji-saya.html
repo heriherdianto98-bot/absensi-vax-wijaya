@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="employee-bottomnav-canonical-ui.css?v=20260927-1">
     <link rel="stylesheet" href="gaji-saya-main-theme-ui.css?v=20260927-1">
     <link rel="stylesheet" href="absensi-employee-month-summary-consumer.css?v=20260927-1">
-    <link rel="stylesheet" href="gaji-saya-month-period-ui.css?v=20260927-1">
+    <link rel="stylesheet" href="gaji-saya-month-period-ui.css?v=20260927-2">
     <link rel="stylesheet" href="employee-profile-canonical-ui.css?v=20260927-1">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -55,14 +55,20 @@
     <main class="gaji-body">
         <section class="panel period-panel gaji-month-period-panel" aria-label="Pilih Bulan">
             <div class="period-head gaji-month-period-head">
-                <div>
-                    <h2>Pilih Bulan</h2>
-                    <p class="period-range" id="periodRangeLabel">—</p>
-                </div>
+                <h2>Pilih Bulan</h2>
+            </div>
+
+            <p class="period-range gaji-period-range-sr" id="periodRangeLabel">—</p>
+
+            <div id="gajiQuickMonthGrid" class="gaji-quick-month-grid" aria-label="Bulan cepat">
+                <button type="button" class="gaji-quick-month-card" data-gaji-quick-index="0"><span>—</span><small>Terbaru</small></button>
+                <button type="button" class="gaji-quick-month-card" data-gaji-quick-index="1"><span>—</span><small>1 bulan lalu</small></button>
+                <button type="button" class="gaji-quick-month-card" data-gaji-quick-index="2"><span>—</span><small>2 bulan lalu</small></button>
+
                 <div class="employee-summary-calendar-wrap gaji-month-picker-wrap">
-                    <button type="button" id="gajiMonthButton" class="employee-summary-month-button" aria-haspopup="dialog" aria-expanded="false">
+                    <button type="button" id="gajiMonthButton" class="gaji-quick-month-card gaji-other-month-card" aria-haspopup="dialog" aria-expanded="false">
                         <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-                        <span id="gajiMonthButtonLabel">Kalender</span>
+                        <span id="gajiMonthButtonLabel">Lainnya</span>
                     </button>
                     <div id="gajiMonthPopup" class="employee-summary-month-popup" hidden>
                         <div class="employee-summary-month-popup-head">
@@ -235,7 +241,7 @@
 <script src="dashboard-karyawan-notifikasi-ui.js?v=20260926-1"></script>
 <script src="gaji-saya-profile-ui.js?v=20260927-1"></script>
 <script src="employee-profile-canonical-ui.js?v=20260927-1"></script>
-<script src="gaji-saya-month-period-ui.js?v=20260927-1"></script>
+<script src="gaji-saya-month-period-ui.js?v=20260927-2"></script>
 <script src="gaji-saya.js?v=20260927-monthly-1"></script>
 </body>
 </html>
