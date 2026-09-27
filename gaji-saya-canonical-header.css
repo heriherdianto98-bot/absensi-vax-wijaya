@@ -1,0 +1,126 @@
+/* VAX WIJAYA — Gaji Saya canonical employee header
+   UI ONLY. Mirrors the canonical Employee Dashboard header visual language.
+   No payroll/session/finance logic changes. */
+
+html body .app .page-head{
+  padding-top:0!important;
+}
+
+html body .app .page-head > .topbar.employee-canonical-header{
+  position:sticky!important;
+  top:0!important;
+  z-index:260!important;
+  min-height:58px!important;
+  margin:0 -12px 10px!important;
+  padding:7px 12px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:8px!important;
+  border:0!important;
+  border-radius:0 0 15px 15px!important;
+  background:linear-gradient(135deg,#44cfbd 0%,#27bda9 100%)!important;
+  box-shadow:
+    0 8px 22px rgba(28,115,105,.18),
+    inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+
+html body .app .employee-canonical-header .topbar-brand{
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr)!important;
+  grid-template-areas:
+    "logo title"
+    "logo subtitle"
+    "logo powered"!important;
+  align-items:center!important;
+  column-gap:7px!important;
+  min-width:0!important;
+}
+
+html body .app .employee-canonical-header .employee-erp-logo{
+  grid-area:logo!important;
+  width:42px!important;
+  height:36px!important;
+  object-fit:contain!important;
+  filter:brightness(0) invert(1)!important;
+}
+
+html body .app .employee-canonical-header .topbar-brand>strong{
+  grid-area:title!important;
+  margin:0!important;
+  color:#fff!important;
+  font-size:16.5px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.075em!important;
+  white-space:nowrap!important;
+}
+
+html body .app .employee-canonical-header .brand-subtitle{
+  grid-area:subtitle!important;
+  display:block!important;
+  color:#fff!important;
+  font-size:7.2px!important;
+  line-height:1.05!important;
+  font-weight:750!important;
+  letter-spacing:.025em!important;
+  white-space:nowrap!important;
+}
+
+html body .app .employee-canonical-header .brand-powered{
+  grid-area:powered!important;
+  display:block!important;
+  color:#fff!important;
+  font-size:6.5px!important;
+  line-height:1.05!important;
+  font-weight:700!important;
+  white-space:nowrap!important;
+}
+
+html body .app .employee-canonical-header .vax-inbox-shortcut{
+  width:30px!important;
+  height:30px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.45)!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.08)!important;
+  color:#fff!important;
+  text-decoration:none!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+
+html body .app .employee-canonical-header .vax-inbox-shortcut i{
+  font-size:15px!important;
+}
+
+@media(max-width:380px){
+  html body .app .page-head > .topbar.employee-canonical-header{
+    min-height:54px!important;
+    padding:6px 7px!important;
+    margin-left:-12px!important;
+    margin-right:-12px!important;
+  }
+
+  html body .app .employee-canonical-header .topbar-brand{
+    grid-template-columns:40px minmax(0,1fr)!important;
+    column-gap:8px!important;
+  }
+
+  html body .app .employee-canonical-header .employee-erp-logo{
+    width:40px!important;
+    height:34px!important;
+  }
+
+  html body .app .employee-canonical-header .topbar-brand>strong{
+    font-size:14.2px!important;
+  }
+
+  html body .app .employee-canonical-header .brand-subtitle{
+    font-size:5.8px!important;
+  }
+
+  html body .app .employee-canonical-header .brand-powered{
+    font-size:5.4px!important;
+  }
+}
