@@ -71,7 +71,23 @@
 
 <main class="absen-body">
 
-    <h2 class="room-title">Absensi</h2>
+    <div class="absensi-title-row">
+        <h2 class="room-title">Absensi</h2>
+        <div class="employee-summary-calendar-wrap">
+            <button type="button" id="employeeSummaryMonthButton" class="employee-summary-month-button" aria-haspopup="dialog" aria-expanded="false">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                <span>Kalender</span>
+            </button>
+            <div id="employeeSummaryMonthPopup" class="employee-summary-month-popup" hidden>
+                <div class="employee-summary-month-popup-head">
+                    <button type="button" id="employeeSummaryYearPrev" class="employee-summary-year-nav" aria-label="Tahun sebelumnya">‹</button>
+                    <strong id="employeeSummaryYearLabel"></strong>
+                    <button type="button" id="employeeSummaryYearNext" class="employee-summary-year-nav" aria-label="Tahun berikutnya">›</button>
+                </div>
+                <div id="employeeSummaryMonthGrid" class="employee-summary-month-grid" aria-label="Pilih bulan"></div>
+            </div>
+        </div>
+    </div>
 
     <div class="absen-hero">
         <section class="card cabang" aria-label="Cabang operasional">
@@ -123,15 +139,7 @@
     <section class="card statistik" aria-label="Ringkasan bulan ini">
         <div class="statistik-heading">
             <h3 id="employeeSummaryMonthTitle">Ringkasan Bulan Ini</h3>
-            <button type="button" id="employeeSummaryMonthButton" class="employee-summary-month-button" aria-label="Pilih bulan ringkasan" aria-expanded="false">
-                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-            </button>
             <span class="statistik-heading-accent" aria-hidden="true"></span>
-            <div id="employeeSummaryMonthPopup" class="employee-summary-month-popup" hidden>
-                <label for="employeeSummaryMonthInput">Pilih Bulan</label>
-                <input id="employeeSummaryMonthInput" type="month">
-                <button type="button" id="employeeSummaryMonthApply" class="employee-summary-month-apply">Tampilkan</button>
-            </div>
         </div>
         <div class="grid-stat">
             <div class="item item-hadir">
