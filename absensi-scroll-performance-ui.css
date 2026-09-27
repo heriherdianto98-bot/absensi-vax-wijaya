@@ -171,3 +171,37 @@ html body .app .lokasi:has(#statusLokasi[style*="63, 242, 160"]) .center-dot i{
 html body .app .lokasi:has(#statusLokasi[style*="255, 77, 85"]) .center-dot i{
   color:#ff4d5a!important;
 }
+
+
+/* ===== GPS ICON ALIGNMENT — UI ONLY ===== */
+html body .app .lokasi-right{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+
+html body .app .radar{
+  margin:0 auto 2px!important;
+}
+
+html body .app .gps-under-radar{
+  width:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  gap:2px!important;
+  margin-top:2px!important;
+}
+
+html body .app .gps-under-label,
+html body .app .gps-under-address{
+  text-align:center!important;
+}
+
+html body .app .center-dot{
+  margin:0 auto!important;
+}
