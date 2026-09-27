@@ -308,3 +308,36 @@ html body .app .employee-profile-canonical .profile-copy h1{
   padding-bottom:2px!important;
   margin-bottom:0!important;
 }
+
+
+/* ===== CANONICAL EMPLOYEE NAME TYPEWRITER — UI ONLY ===== */
+html body .app .employee-profile-canonical .profile-copy h1.employee-name-typing{
+  position:relative!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+}
+
+html body .app .employee-profile-canonical .profile-copy h1.employee-name-typing::after{
+  content:""!important;
+  display:inline-block!important;
+  width:2px!important;
+  height:.92em!important;
+  margin-left:4px!important;
+  vertical-align:-.06em!important;
+  border-radius:2px!important;
+  background:currentColor!important;
+  animation:employeeProfileNameCaretBlink .72s step-end infinite!important;
+}
+
+@keyframes employeeProfileNameCaretBlink{
+  0%,48%{opacity:1}
+  49%,100%{opacity:0}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .employee-profile-canonical .profile-copy h1.employee-name-typing::after{
+    animation:none!important;
+    display:none!important;
+  }
+}
