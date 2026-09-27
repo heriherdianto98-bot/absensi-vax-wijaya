@@ -1,0 +1,113 @@
+/* VAX WIJAYA — Absensi scroll performance UI
+   UI only. No attendance/GPS/geofence/business logic changes. */
+
+/* Keep the six monthly summary cards visually 3D, but stop continuous shadow repaint. */
+html body .app .statistik .item,
+html body .app .statistik .item-hadir,
+html body .app .statistik .item-late,
+html body .app .statistik .item-izin,
+html body .app .statistik .item-sakit,
+html body .app .statistik .item-libur,
+html body .app .statistik .item-denda{
+  animation:none!important;
+  box-shadow:
+    0 3px 0 rgba(41,167,149,.08),
+    0 5px 10px rgba(38,94,88,.07),
+    inset 0 1px 0 #fff!important;
+}
+
+/* GPS radar: animate compositor-friendly transform + opacity only. */
+html body .app .wave1,
+html body .app .wave2,
+html body .app .wave3{
+  width:92px!important;
+  height:92px!important;
+  margin:-46px 0 0 -46px!important;
+  transform:scale(.37)!important;
+  transform-origin:center center!important;
+  will-change:transform,opacity!important;
+}
+
+@keyframes absensiGpsRingSpreadPerf{
+  0%{
+    transform:scale(.37);
+    opacity:0;
+  }
+  15%{
+    opacity:.90;
+  }
+  55%{
+    opacity:.42;
+  }
+  100%{
+    transform:scale(1);
+    opacity:0;
+  }
+}
+
+html body .app .wave1{
+  animation:absensiGpsRingSpreadPerf 2.2s ease-out infinite!important;
+}
+html body .app .wave2{
+  animation:absensiGpsRingSpreadPerf 2.2s ease-out .55s infinite!important;
+}
+html body .app .wave3{
+  animation:absensiGpsRingSpreadPerf 2.2s ease-out 1.10s infinite!important;
+}
+
+/* Keep the locator alive visually, but at a lower update frequency. */
+html body .app .center-dot{
+  animation:absensiGpsQuakeStaticCard 1.6s ease-in-out infinite!important;
+  will-change:transform,opacity!important;
+}
+
+/* Outer radar ripple also uses transform/opacity only. */
+html body .app .radar::before{
+  width:92px!important;
+  height:92px!important;
+  margin:-46px 0 0 -46px!important;
+  transform:scale(.56)!important;
+  transform-origin:center center!important;
+  filter:none!important;
+  box-shadow:none!important;
+  will-change:transform,opacity!important;
+  animation:absensiGpsOuterRingPerf 2.8s ease-out 1.2s infinite!important;
+}
+
+@keyframes absensiGpsOuterRingPerf{
+  0%{
+    transform:scale(.56);
+    opacity:.55;
+  }
+  100%{
+    transform:scale(1);
+    opacity:0;
+  }
+}
+
+/* Avoid expensive paint effects on moving GPS children. */
+html body .app .radar,
+html body .app .center-dot,
+html body .app .wave1,
+html body .app .wave2,
+html body .app .wave3,
+html body .app .radar::before{
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+/* No smooth-scroll work on the attendance page; native scrolling is cheaper. */
+html body{
+  scroll-behavior:auto!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .app .wave1,
+  html body .app .wave2,
+  html body .app .wave3,
+  html body .app .radar::before,
+  html body .app .center-dot{
+    animation:none!important;
+  }
+}
