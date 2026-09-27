@@ -40,8 +40,8 @@
     nameEl.dataset.canonicalTypingBound="1";
 
     let timer=0;
-    let internalWrite=false;
-    let lastTyped="";
+    let observer=null;
+    let started=false;
 
     const isPlaceholder=(value)=>{
       const text=String(value||"").trim();
@@ -50,45 +50,53 @@
 
     const typeName=(value)=>{
       const full=String(value||"").replace(/\s+/g," ").trim();
-      if(isPlaceholder(full) || full===lastTyped) return;
+      if(started || isPlaceholder(full)) return;
+
+      started=true;
+      nameEl.dataset.fullEmployeeName=full;
+
+      // Critical: stop observing BEFORE our own textContent writes.
+      // This prevents the animation from recursively restarting on "A".
+      if(observer){
+        observer.disconnect();
+        observer=null;
+      }
 
       window.clearTimeout(timer);
-      internalWrite=true;
       nameEl.classList.add("employee-name-typing");
       nameEl.textContent="";
-      internalWrite=false;
 
       let index=0;
       const step=()=>{
         index+=1;
-        internalWrite=true;
         nameEl.textContent=full.slice(0,index);
-        internalWrite=false;
 
         if(index<full.length){
           timer=window.setTimeout(step,58);
         }else{
-          lastTyped=full;
           timer=window.setTimeout(()=>{
             nameEl.classList.remove("employee-name-typing");
           },420);
         }
       };
+
       timer=window.setTimeout(step,90);
     };
 
-    const observer=new MutationObserver(()=>{
-      if(internalWrite) return;
+    const initial=String(nameEl.textContent||"").trim();
+    if(!isPlaceholder(initial)){
+      typeName(initial);
+      return;
+    }
+
+    observer=new MutationObserver(()=>{
       const current=String(nameEl.textContent||"").trim();
-      if(!isPlaceholder(current) && current!==lastTyped){
+      if(!isPlaceholder(current)){
         typeName(current);
       }
     });
 
     observer.observe(nameEl,{childList:true,characterData:true,subtree:true});
-
-    const initial=String(nameEl.textContent||"").trim();
-    if(!isPlaceholder(initial)) typeName(initial);
   }
 
   function init(){
