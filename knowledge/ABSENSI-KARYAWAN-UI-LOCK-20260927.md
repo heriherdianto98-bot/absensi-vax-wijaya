@@ -32,3 +32,16 @@ Jika task berikutnya berpotensi menyentuh scope LOCK:
 - `employee-bottomnav-canonical-ui.css`
 
 Catatan: engine Absensi, GPS/geofence, radius, Absen Masuk/Pulang, dan modul Owner tetap dianggap LOCK dan tidak boleh disentuh tanpa izin Owner.
+
+
+## PASS tambahan — 27 Sep 2026
+Owner menyatakan **PASS** untuk tampilan terakhir card profil Absensi setelah kompatibilitas canonical diterapkan.
+
+Kondisi final yang ikut LOCK:
+- ukuran nama karyawan pada modul Absensi menggunakan override compact yang sudah disetujui;
+- animasi mengetik tetap aktif;
+- struktur/card profil canonical tidak boleh diubah tanpa izin Owner;
+- file kompatibilitas Absensi: `absensi-profile-canonical-compat-ui.css`;
+- versi cache aktif di `absensi.html`: `absensi-profile-canonical-compat-ui.css?v=20260927-2`.
+
+Aturan tetap: **jangan sentuh scope ini tanpa izin eksplisit Owner.**
