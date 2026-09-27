@@ -647,3 +647,9 @@ html body .app .gaji-profile-card .profile-meta-date{
     animation:none!important;
   }
 }
+
+
+/* Owner UI request: profile card is the first content block, so hide redundant page title. */
+html body .app .gaji-page-title{
+  display:none!important;
+}
