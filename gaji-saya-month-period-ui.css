@@ -1,5 +1,5 @@
 /* Gaji Saya — monthly period selector
-   UI uses the same Jan–Dec popup language as locked Absensi. */
+   3 recent month cards + Lainnya popup. Popup reuses locked Absensi month UI language. */
 
 .gaji-month-period-panel{
   overflow:visible!important;
@@ -7,23 +7,102 @@
 
 .gaji-month-period-head{
   display:flex!important;
-  align-items:flex-start!important;
+  align-items:center!important;
   justify-content:space-between!important;
   gap:10px!important;
   position:relative!important;
+  margin-bottom:9px!important;
 }
 
-.gaji-month-period-head>div:first-child{
-  min-width:0!important;
-  flex:1 1 auto!important;
+.gaji-month-period-head h2{
+  margin:0!important;
+}
+
+.gaji-period-range-sr{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+}
+
+.gaji-quick-month-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+  position:relative!important;
+}
+
+.gaji-quick-month-card{
+  min-height:50px!important;
+  padding:8px 9px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:3px!important;
+  border:1px solid #d2e8e4!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#fff 0%,#f6fbfa 100%)!important;
+  color:#29484d!important;
+  box-shadow:0 4px 10px rgba(35,95,88,.06),inset 0 1px 0 #fff!important;
+  cursor:pointer!important;
+  text-align:left!important;
+}
+
+.gaji-quick-month-card>span{
+  font-size:11px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  color:#244b52!important;
+}
+
+.gaji-quick-month-card>small{
+  font-size:8px!important;
+  line-height:1!important;
+  font-weight:750!important;
+  color:#7a9095!important;
+}
+
+.gaji-quick-month-card.is-active{
+  border-color:#25bda7!important;
+  background:linear-gradient(145deg,#ecfbf8 0%,#dcf6f1 100%)!important;
+  box-shadow:0 4px 0 rgba(31,174,153,.12),0 8px 15px rgba(35,95,88,.08)!important;
+}
+
+.gaji-quick-month-card.is-active>span{
+  color:#168f7d!important;
 }
 
 .gaji-month-picker-wrap{
-  z-index:40;
+  position:relative!important;
+  width:100%!important;
+  z-index:40!important;
+}
+
+.gaji-other-month-card{
+  width:100%!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  color:#178f7f!important;
+}
+
+.gaji-other-month-card i{
+  font-size:12px!important;
+}
+
+.gaji-other-month-card>span{
+  color:inherit!important;
 }
 
 .gaji-month-picker-wrap .employee-summary-month-popup{
   z-index:160!important;
+  right:0!important;
+  top:58px!important;
 }
 
 .gaji-month-actions{
@@ -37,11 +116,17 @@
 }
 
 @media(max-width:380px){
-  .gaji-month-period-head{
-    align-items:center!important;
+  .gaji-quick-month-grid{
+    gap:7px!important;
+  }
+  .gaji-quick-month-card{
+    min-height:48px!important;
+    padding:7px 8px!important;
+  }
+  .gaji-quick-month-card>span{
+    font-size:10px!important;
   }
   .gaji-month-picker-wrap .employee-summary-month-popup{
-    right:0!important;
     width:218px!important;
   }
 }
