@@ -210,40 +210,76 @@
   function bindUi(){
     const button = document.getElementById("employeeSummaryMonthButton");
     const popup = document.getElementById("employeeSummaryMonthPopup");
-    const input = document.getElementById("employeeSummaryMonthInput");
-    const apply = document.getElementById("employeeSummaryMonthApply");
-    if(!button || !popup || !input || !apply || button.dataset.bound === "1") return;
+    const grid = document.getElementById("employeeSummaryMonthGrid");
+    const yearLabel = document.getElementById("employeeSummaryYearLabel");
+    const prev = document.getElementById("employeeSummaryYearPrev");
+    const next = document.getElementById("employeeSummaryYearNext");
+    if(!button || !popup || !grid || !yearLabel || !prev || !next || button.dataset.bound === "1") return;
 
     button.dataset.bound = "1";
     const now = todayJakarta();
-    input.value = now.slice(0,7);
+    const currentYear = Number(now.slice(0,4));
+    const currentMonth = Number(now.slice(5,7));
+    let viewYear = currentYear;
+    let activeYear = currentYear;
+    let activeMonth = currentMonth;
+
+    function renderMonthGrid(){
+      yearLabel.textContent = String(viewYear);
+      grid.replaceChildren();
+      MONTHS.forEach((name, index) => {
+        const month = index + 1;
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "employee-summary-month-item";
+        item.textContent = name.slice(0,3);
+        item.dataset.month = String(month);
+        item.classList.toggle("is-active", viewYear === activeYear && month === activeMonth);
+        item.classList.toggle("is-current", viewYear === currentYear && month === currentMonth);
+        item.addEventListener("click", async () => {
+          popup.hidden = true;
+          button.setAttribute("aria-expanded", "false");
+          try{
+            button.disabled = true;
+            await renderMonth(viewYear, month);
+            activeYear = viewYear;
+            activeMonth = month;
+            renderMonthGrid();
+          }catch(err){
+            console.error("[EmployeeMonthSummary] gagal memuat ringkasan:", err);
+          }finally{
+            button.disabled = false;
+          }
+        });
+        grid.appendChild(item);
+      });
+    }
 
     button.addEventListener("click", (e) => {
       e.stopPropagation();
       popup.hidden = !popup.hidden;
       button.setAttribute("aria-expanded", String(!popup.hidden));
+      if(!popup.hidden) renderMonthGrid();
     });
+
     popup.addEventListener("click", (e) => e.stopPropagation());
+
+    prev.addEventListener("click", () => {
+      viewYear -= 1;
+      renderMonthGrid();
+    });
+
+    next.addEventListener("click", () => {
+      viewYear += 1;
+      renderMonthGrid();
+    });
+
     document.addEventListener("click", () => {
       popup.hidden = true;
       button.setAttribute("aria-expanded", "false");
     });
-    apply.addEventListener("click", async () => {
-      const m = String(input.value || "").match(/^(\d{4})-(\d{2})$/);
-      if(!m) return;
-      const year = Number(m[1]);
-      const month = Number(m[2]);
-      popup.hidden = true;
-      button.setAttribute("aria-expanded", "false");
-      try{
-        button.disabled = true;
-        await renderMonth(year, month);
-      }catch(err){
-        console.error("[EmployeeMonthSummary] gagal memuat ringkasan:", err);
-      }finally{
-        button.disabled = false;
-      }
-    });
+
+    renderMonthGrid();
   }
 
   if(document.readyState === "loading"){
