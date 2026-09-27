@@ -1,0 +1,47 @@
+/* Gaji Saya — monthly period selector
+   UI uses the same Jan–Dec popup language as locked Absensi. */
+
+.gaji-month-period-panel{
+  overflow:visible!important;
+}
+
+.gaji-month-period-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  position:relative!important;
+}
+
+.gaji-month-period-head>div:first-child{
+  min-width:0!important;
+  flex:1 1 auto!important;
+}
+
+.gaji-month-picker-wrap{
+  z-index:40;
+}
+
+.gaji-month-picker-wrap .employee-summary-month-popup{
+  z-index:160!important;
+}
+
+.gaji-month-actions{
+  margin-top:10px!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+}
+
+.gaji-month-actions .btn-print{
+  width:100%!important;
+}
+
+@media(max-width:380px){
+  .gaji-month-period-head{
+    align-items:center!important;
+  }
+  .gaji-month-picker-wrap .employee-summary-month-popup{
+    right:0!important;
+    width:218px!important;
+  }
+}
