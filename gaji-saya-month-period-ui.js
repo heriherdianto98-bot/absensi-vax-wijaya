@@ -1,5 +1,6 @@
 /* Gaji Saya — monthly period selector adapter
-   Reuses existing payroll RPC by mapping one selected calendar month to p_from/p_to.
+   3 recent month cards + "Lainnya" popup.
+   Reuses existing payroll RPC by mapping selected calendar month to p_from/p_to.
    No new payroll engine/calculation logic. */
 (() => {
   "use strict";
@@ -18,9 +19,17 @@
     return `${get("year")}-${get("month")}-${get("day")}`;
   }
 
+  function shiftMonth(year,month,delta){
+    const d=new Date(year,month-1+delta,1);
+    return {year:d.getFullYear(),month:d.getMonth()+1};
+  }
+
+  function monthLabel(year,month){
+    return `${MONTHS[month-1]} ${year}`;
+  }
+
   function bind(){
     const button=document.getElementById("gajiMonthButton");
-    const buttonLabel=document.getElementById("gajiMonthButtonLabel");
     const popup=document.getElementById("gajiMonthPopup");
     const grid=document.getElementById("gajiMonthGrid");
     const yearLabel=document.getElementById("gajiMonthYearLabel");
@@ -28,7 +37,8 @@
     const next=document.getElementById("gajiMonthYearNext");
     const dari=document.getElementById("periodeDari");
     const sampai=document.getElementById("periodeSampai");
-    if(!button||!popup||!grid||!yearLabel||!prev||!next||!dari||!sampai||button.dataset.bound==="1") return;
+    const quickCards=[...document.querySelectorAll("[data-gaji-quick-index]")];
+    if(!button||!popup||!grid||!yearLabel||!prev||!next||!dari||!sampai||quickCards.length<3||button.dataset.bound==="1") return;
 
     button.dataset.bound="1";
 
@@ -44,12 +54,37 @@
       activeMonth=month;
       dari.value=isoDay(year,month,1);
       sampai.value=isoDay(year,month,daysInMonth(year,month));
-      if(buttonLabel) buttonLabel.textContent=`${MONTHS[month-1]} ${year}`;
+      updateQuickActive();
+
       if(notify){
         document.dispatchEvent(new CustomEvent("gaji:month-change",{
           detail:{year,month,dari:dari.value,sampai:sampai.value}
         }));
       }
+    }
+
+    function updateQuickActive(){
+      quickCards.forEach((card,index)=>{
+        const target=shiftMonth(currentYear,currentMonth,-index);
+        card.classList.toggle("is-active",target.year===activeYear&&target.month===activeMonth);
+      });
+      button.classList.toggle("is-active",!quickCards.some((card)=>card.classList.contains("is-active")));
+    }
+
+    function renderQuickCards(){
+      quickCards.forEach((card,index)=>{
+        const target=shiftMonth(currentYear,currentMonth,-index);
+        const title=card.querySelector("span");
+        if(title) title.textContent=monthLabel(target.year,target.month);
+        card.dataset.year=String(target.year);
+        card.dataset.month=String(target.month);
+        card.addEventListener("click",()=>{
+          applyMonth(target.year,target.month,true);
+          popup.hidden=true;
+          button.setAttribute("aria-expanded","false");
+        });
+      });
+      updateQuickActive();
     }
 
     function renderGrid(){
@@ -61,6 +96,7 @@
         item.type="button";
         item.className="employee-summary-month-item";
         item.textContent=name.slice(0,3);
+        item.dataset.month=String(month);
         item.classList.toggle("is-active",viewYear===activeYear&&month===activeMonth);
         item.classList.toggle("is-current",viewYear===currentYear&&month===currentMonth);
         item.addEventListener("click",()=>{
@@ -77,7 +113,10 @@
       e.stopPropagation();
       popup.hidden=!popup.hidden;
       button.setAttribute("aria-expanded",String(!popup.hidden));
-      if(!popup.hidden) renderGrid();
+      if(!popup.hidden){
+        viewYear=activeYear;
+        renderGrid();
+      }
     });
 
     popup.addEventListener("click",(e)=>e.stopPropagation());
@@ -89,6 +128,7 @@
       button.setAttribute("aria-expanded","false");
     });
 
+    renderQuickCards();
     applyMonth(activeYear,activeMonth,false);
     renderGrid();
   }
