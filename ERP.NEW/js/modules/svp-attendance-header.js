@@ -6,6 +6,7 @@
   let todayState=null;
   let currentLocation=null;
   let busy=false;
+  let submitLocked=false;
 
   const clean=(v)=>String(v||"").trim();
   const isSpv=()=>typeof OwnerAuth!=="undefined" && OwnerAuth.profile && OwnerAuth.isSpvRole(OwnerAuth.profile.role);
@@ -103,7 +104,7 @@
 
     if(action){
       action.textContent=mode==="MASUK"?"Simpan Absen Masuk":mode==="PULANG"?"Simpan Absen Pulang":"Absensi Hari Ini Selesai";
-      action.disabled=busy || mode==="DONE" || !currentLocation || currentLocation.accuracy>100;
+      action.disabled=busy || submitLocked || mode==="DONE" || !currentLocation || currentLocation.accuracy>100;
     }
   }
 
@@ -194,6 +195,7 @@
     const bd=document.getElementById("svpAttendanceBackdrop");
     if(!bd) return;
     bd.hidden=false;
+    submitLocked=false;
     currentLocation=null;
     paintState();
 
@@ -291,7 +293,8 @@
       if(error) throw error;
       if(!data?.ok) throw new Error("Absensi gagal disimpan.");
       todayState=data;
-      setMessage(mode==="MASUK"?"Absen masuk berhasil dicatat.":"Absen pulang berhasil dicatat.");
+      submitLocked=true;
+      setMessage(mode==="MASUK"?"Absen masuk berhasil dicatat. Tutup lalu buka kembali untuk Absen Pulang.":"Absen pulang berhasil dicatat.");
       paintState();
       setTimeout(closeModal,700);
     }catch(err){
@@ -300,6 +303,7 @@
       setMessage(
         /GPS_INVALID/i.test(raw)?"GPS belum memenuhi syarat akurasi.":
         /ABSEN_MASUK_SUDAH_TERCATAT/i.test(raw)?"Absen masuk hari ini sudah tercatat.":
+        /PULANG_TOO_SOON/i.test(raw)?"Absen Pulang belum dapat dilakukan sesaat setelah Absen Masuk. Buka ulang setelah beberapa detik.":
         /ABSEN_PULANG_TIDAK_TERSEDIA/i.test(raw)?"Absen pulang belum tersedia atau sudah tercatat.":
         "Absensi gagal disimpan. Coba lagi."
       );
