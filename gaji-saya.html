@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="dashboard-karyawan-mobile-header-fix.css?v=20260926-3">
     <link rel="stylesheet" href="employee-bottomnav-canonical-ui.css?v=20260927-1">
     <link rel="stylesheet" href="gaji-saya-main-theme-ui.css?v=20260927-1">
-    <link rel="stylesheet" href="absensi-profile-date-ui.css?v=20260927-1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="employee-profile-canonical-ui.css?v=20260927-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 <div class="app">
@@ -28,7 +28,7 @@
             </a>
         </div>
         <h1 class="gaji-page-title">Gaji Saya</h1>
-        <section class="profile-card gaji-profile-card" aria-label="Profil karyawan">
+        <section class="profile-card employee-profile-canonical gaji-profile-card" aria-label="Profil karyawan">
             <span class="employee-profile-photo-wrap">
                 <img id="fotoGaji"
                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23e5f5f2'/%3E%3Ccircle cx='32' cy='24' r='10' fill='%232fc8b4'/%3E%3Cpath d='M14 56c2.4-12 12.2-18 18-18s15.6 6 18 18' fill='%232fc8b4'/%3E%3C/svg%3E"
@@ -38,7 +38,8 @@
                 <p class="home-greet" id="gajiGreetingTitle">Selamat Datang,</p>
                 <p class="profile-greeting-message" id="gajiGreetingMessage">Semoga hari ini penuh semangat.</p>
                 <h1 id="namaGaji">Loading...</h1>
-                <p class="profile-line"><i class="fa-solid fa-user-tie" aria-hidden="true"></i><span id="jabatanGaji">—</span></p>
+                <p class="profile-line"><i class="fas fa-briefcase" aria-hidden="true"></i><span id="jabatanGaji">—</span></p>
+                <p class="profile-line"><i class="fas fa-location-dot" aria-hidden="true"></i><span id="gajiProfileLocationLine">—</span></p>
             </div>
             <div class="profile-branch">
                 <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
@@ -229,7 +230,7 @@
 <script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan-notifikasi-ui.js?v=20260926-1"></script>
 <script src="gaji-saya-profile-ui.js?v=20260927-1"></script>
-<script src="gaji-saya-profile-date-ui.js?v=20260927-1"></script>
+<script src="employee-profile-canonical-ui.js?v=20260927-1"></script>
 <script src="gaji-saya-calendar.js"></script>
 <script src="gaji-saya.js"></script>
 </body>
