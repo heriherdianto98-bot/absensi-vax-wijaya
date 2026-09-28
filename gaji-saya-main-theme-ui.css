@@ -330,7 +330,7 @@
     height:28px!important;
     display:grid!important;
     place-items:center!important;
-    border-radius:10px!important;
+    border-radius:8px!important;
     background:linear-gradient(145deg,#eafff9,#dff8f2)!important;
     border:1px solid #bce9df!important;
     color:#2fc8b4!important;
@@ -478,13 +478,13 @@
   html body .app .cmp-title{
     display:flex!important;
     align-items:center!important;
-    gap:9px!important;
+    gap:7px!important;
   }
 
   html body .app .cmp-title-icon{
-    flex:0 0 30px!important;
-    width:30px!important;
-    height:30px!important;
+    flex:0 0 24px!important;
+    width:24px!important;
+    height:24px!important;
     display:grid!important;
     place-items:center!important;
     border:1px solid #19aa94!important;
@@ -499,7 +499,7 @@
 
   html body .app .cmp-title-icon i{
     color:#ffffff!important;
-    font-size:13px!important;
+    font-size:10px!important;
   }
 
   html body .app .cmp-list{
