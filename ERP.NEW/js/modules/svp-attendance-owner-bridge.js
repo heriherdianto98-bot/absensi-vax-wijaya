@@ -52,7 +52,7 @@ Safety:
       tanggal: row.tanggal,
       jam_masuk: row.jam_masuk,
       jam_pulang: row.jam_pulang,
-      status: done ? "Hadir · Selesai" : "Hadir",
+      status: done ? "Hadir - Selesai" : "Hadir",
       status_absensi: "H",
       terlambat_menit: 0,
       denda: 0,
