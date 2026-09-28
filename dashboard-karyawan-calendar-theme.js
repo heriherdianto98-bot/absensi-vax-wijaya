@@ -67,7 +67,7 @@
   next.addEventListener('click', () => { if (next.disabled) return; if (++month > 11) { month = 0; ++year; } render(); });
   popup.querySelector('.vax-calendar-today').addEventListener('click', () => choose(todayWib()));
   popup.querySelector('.vax-calendar-close').addEventListener('click', close);
-  document.addEventListener('pointerdown', event => { if (!popup.hidden && !toolbar.contains(event.target) ) close(); });
+  document.addEventListener('pointerdown', event => { if (!popup.hidden && !toolbar.contains(event.target)) close(); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && !popup.hidden) { close(); trigger.focus(); } });
   trigger.setAttribute('aria-controls', popup.id);
   trigger.setAttribute('aria-haspopup', 'dialog');
