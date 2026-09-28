@@ -59,7 +59,14 @@ Safety:
       status_denda: "",
       __svp_floating: true,
       __svp_address_in: row.alamat_masuk || "",
-      __svp_address_out: row.alamat_pulang || ""
+      __svp_address_out: row.alamat_pulang || "",
+      __svp_lat_in: row.latitude_masuk,
+      __svp_lon_in: row.longitude_masuk,
+      __svp_accuracy_in: row.accuracy_masuk,
+      __svp_lat_out: row.latitude_pulang,
+      __svp_lon_out: row.longitude_pulang,
+      __svp_accuracy_out: row.accuracy_pulang,
+      __svp_name: row.nama_karyawan || ""
     };
   }
 
@@ -104,6 +111,51 @@ Safety:
     }
   }
 
+  function coordText(lat, lon){
+    const a=Number(lat), b=Number(lon);
+    if(!Number.isFinite(a) || !Number.isFinite(b)) return "Koordinat belum tersedia";
+    return `${a.toFixed(6)}, ${b.toFixed(6)}`;
+  }
+
+  function locationHtml(source){
+    const masukAddr=String(source?.alamat_masuk || "").trim() || "Alamat masuk belum tersedia";
+    const pulangAddr=String(source?.alamat_pulang || "").trim() || "Alamat pulang belum tersedia";
+    const masukCoord=coordText(source?.latitude_masuk, source?.longitude_masuk);
+    const pulangCoord=coordText(source?.latitude_pulang, source?.longitude_pulang);
+    const masukAcc=Number(source?.accuracy_masuk);
+    const pulangAcc=Number(source?.accuracy_pulang);
+
+    return `
+      <div class="svp-owner-location-block">
+        <div><b>Masuk</b><span>${masukAddr}</span><small>${masukCoord}${Number.isFinite(masukAcc) ? ` · ±${Math.round(masukAcc)} m` : ""}</small></div>
+        <div><b>Pulang</b><span>${pulangAddr}</span><small>${pulangCoord}${Number.isFinite(pulangAcc) ? ` · ±${Math.round(pulangAcc)} m` : ""}</small></div>
+      </div>`;
+  }
+
+  function paintOwnerLocations(rows){
+    const list=Array.isArray(rows)?rows:[];
+    for(const source of list){
+      const id=normId(source?.karyawan_id);
+      if(!id) continue;
+
+      const statusRow=document.querySelector(`#statusKaryawan tr[data-absensi-row-id="${CSS.escape(id)}"]`);
+      if(statusRow){
+        const branchCell=statusRow.cells?.[1];
+        if(branchCell){
+          branchCell.innerHTML=`<div class="svp-owner-branch-label">SVP / Floating</div>${locationHtml(source)}`;
+        }
+      }
+
+      const name=String(source?.nama_karyawan || "").trim().toLowerCase();
+      document.querySelectorAll("#aktivitasTerbaru .absensi-activity-row").forEach((row) => {
+        const title=String(row.querySelector(".absensi-activity-title")?.textContent || "").trim().toLowerCase();
+        if(!name || !title.includes(name)) return;
+        row.querySelector(".svp-owner-location-block")?.remove();
+        row.insertAdjacentHTML("beforeend", locationHtml(source));
+      });
+    }
+  }
+
   function mergeDailyRows(rows){
     if(typeof AbsensiOwner === "undefined") return;
 
@@ -117,13 +169,35 @@ Safety:
     AbsensiOwner.refreshKpiFromCache?.();
     AbsensiOwner.applyStatusTableFilter?.();
     AbsensiOwner.loadAktivitasTerbaru?.();
+    paintOwnerLocations(rows);
   }
 
   function installDailyBridge(){
     if(typeof AbsensiOwner === "undefined" || AbsensiOwner.__svpOwnerBridgeInstalled) return;
     AbsensiOwner.__svpOwnerBridgeInstalled = true;
 
-    const original = AbsensiOwner.loadDashboard.bind(AbsensiOwner);
+    const originalActivity = AbsensiOwner.loadAktivitasTerbaru.bind(AbsensiOwner);
+    AbsensiOwner.loadAktivitasTerbaru = function(){
+      const result = originalActivity();
+      const svpRows = (this._absensiDay || [])
+        .filter((r) => r?.__svp_floating)
+        .map((r) => ({
+          karyawan_id:r.karyawan_id,
+          nama_karyawan:r.__svp_name,
+          alamat_masuk:r.__svp_address_in,
+          alamat_pulang:r.__svp_address_out,
+          latitude_masuk:r.__svp_lat_in,
+          longitude_masuk:r.__svp_lon_in,
+          accuracy_masuk:r.__svp_accuracy_in,
+          latitude_pulang:r.__svp_lat_out,
+          longitude_pulang:r.__svp_lon_out,
+          accuracy_pulang:r.__svp_accuracy_out
+        }));
+      paintOwnerLocations(svpRows);
+      return result;
+    };
+
+        const original = AbsensiOwner.loadDashboard.bind(AbsensiOwner);
     AbsensiOwner.loadDashboard = async function(){
       const result = await original();
       if(!isOwner()) return result;
