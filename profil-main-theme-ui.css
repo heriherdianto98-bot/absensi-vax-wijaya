@@ -31,7 +31,7 @@ body{
   height:100dvh!important;
   max-height:100dvh!important;
   margin:0 auto!important;
-  padding:0 12px calc(72px + env(safe-area-inset-bottom,0px))!important;
+  padding:0 12px calc(64px + env(safe-area-inset-bottom,0px))!important;
   display:flex!important;
   flex-direction:column!important;
   overflow:hidden!important;
@@ -111,7 +111,7 @@ body{
   overflow-y:auto!important;
   -webkit-overflow-scrolling:touch!important;
   overscroll-behavior:none!important;
-  padding:10px 0 6px!important;
+  padding:10px 0 2px!important;
   background:
     linear-gradient(180deg,#f7fcfb 0%,#eef8f6 100%)!important;
   scrollbar-width:thin!important;
@@ -505,7 +505,7 @@ body{
 /* ===== PROFILE LOGOUT — COMPACT CARD ===== */
 .profile-logout-card{
   padding:10px 12px!important;
-  margin-bottom:6px!important;
+  margin-bottom:0!important;
 }
 
 .profile-logout-card h2{
