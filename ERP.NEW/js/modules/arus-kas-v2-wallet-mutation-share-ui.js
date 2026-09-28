@@ -37,14 +37,30 @@
     const clone=table.cloneNode(true);
     clone.querySelectorAll("button,[title]").forEach(el=>el.removeAttribute?.("title"));
 
-    /* Print only: tandai awal setiap tanggal agar mutasi terbaca seperti rekening koran/bank.
+    /* Print only: klasifikasi visual seperti mutasi bank.
        Tidak mengubah data, urutan, saldo, atau renderer layar. */
     let lastDate="";
     clone.querySelectorAll("tbody tr").forEach(tr=>{
-      const date=String(tr.children?.[0]?.textContent||"").replace(/\s+/g," ").trim();
+      const cells=tr.children;
+      const date=String(cells?.[0]?.textContent||"").replace(/\s+/g," ").trim();
+      const mutasiText=String(cells?.[1]?.textContent||"").replace(/\s+/g," ").trim().toUpperCase();
+      const statusText=String(cells?.[6]?.textContent||"").replace(/\s+/g," ").trim().toUpperCase();
+
       if(date && date!=="—" && date!==lastDate){
         tr.classList.add("ak2-mut-date-start");
         lastDate=date;
+      }
+
+      const mutasiBadge=tr.querySelector(".ak2-mut-kind");
+      if(mutasiBadge){
+        mutasiBadge.classList.remove("is-in","is-out");
+        if(mutasiText.includes("KELUAR")) mutasiBadge.classList.add("is-out");
+        else if(mutasiText.includes("MASUK")) mutasiBadge.classList.add("is-in");
+      }
+
+      const statusBadge=tr.querySelector(".ak2-mut-status")||cells?.[6];
+      if(statusBadge && (statusText.includes("OWNER VERIFIED")||statusText.includes("VERIFIED"))){
+        statusBadge.classList.add("is-verified");
       }
     });
 
@@ -66,13 +82,18 @@
       .title{margin-bottom:9px}.title h2{margin:0;font-size:16pt}.title p{margin:3px 0 0;color:#665f50;font-size:9pt}
       .meta{display:grid;grid-template-columns:1.3fr .8fr .8fr;gap:2px 20px;padding:8px 10px;margin-bottom:10px;border:1px solid var(--line);border-left:4px solid var(--gold-line);background:#fbfaf6}
       .meta span{display:block;font-size:7pt;font-weight:800;letter-spacing:.09em;color:#746d52;text-transform:uppercase}.meta strong{font-size:10pt}
-      table{width:100%;border-collapse:collapse;table-layout:fixed;border:1px solid var(--line)}thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
-      th{background:var(--head)!important;color:#fff!important;padding:6px 5px;border-right:1px solid #333;border-bottom:2px solid var(--gold-line);font-size:6.9pt;text-transform:uppercase;letter-spacing:.028em;text-align:left;line-height:1.12}
-      td{padding:5px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:7.9pt;vertical-align:top;overflow-wrap:anywhere;background:#fff!important;color:#181818!important;line-height:1.18}
-      tbody tr:nth-child(even) td{background:#fafaf8!important}
-      tbody tr.ak2-mut-date-start td{border-top:5px solid #e3e5e8!important;background:#f1f2f4!important}
-      tbody tr.ak2-mut-date-start td:first-child{font-weight:900!important;color:#30343a!important}
-      .ak2-mut-kind,.ak2-mut-status{display:inline-block;padding:2px 5px;border:1px solid #bbb;border-radius:999px;font-size:6.5pt;font-weight:800;background:#f4f4f4!important;color:#222!important}
+      table{width:100%;border-collapse:collapse;table-layout:fixed;border:1px solid #aeb4bc}thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
+      th{background:#1f2329!important;color:#fff!important;padding:6px 5px;border-right:1px solid #3a4048;border-bottom:2px solid #5b616a;font-size:6.9pt;text-transform:uppercase;letter-spacing:.028em;text-align:left;line-height:1.12}
+      td{padding:5px;border-right:1px solid #c3c8cf;border-bottom:1px solid #c3c8cf;font-size:7.9pt;vertical-align:top;overflow-wrap:anywhere;background:#fff!important;color:#181818!important;line-height:1.18}
+      tbody tr:nth-child(even) td{background:#f6f7f8!important}
+      tbody tr.ak2-mut-date-start td{border-top:4px solid #7a828c!important;background:#eceff2!important}
+      tbody tr.ak2-mut-date-start td:first-child{font-weight:900!important;color:#2f3640!important}
+      .ak2-mut-kind,.ak2-mut-status{display:inline-block;padding:2px 6px;border:1px solid #b8bec6;border-radius:999px;font-size:6.5pt;font-weight:800;background:#f4f4f4!important;color:#222!important}
+      .ak2-mut-kind.is-in{background:#eaf8ef!important;border-color:#79b88b!important;color:#18794e!important}
+      .ak2-mut-kind.is-out{background:#fdeeee!important;border-color:#d09191!important;color:#b42318!important}
+      .ak2-mut-status.is-verified{background:#eef8f4!important;border-color:#8fc6ab!important;color:#0f6b52!important}
+      .ak2-mut-status.is-verified::before{content:"●";color:#18a957;margin-right:4px;font-size:8px;vertical-align:middle}
+      tbody td:last-child{font-weight:800}
       .ak2-mut-amount,.ak2-mut-running{font-weight:900}
       .foot{display:flex;justify-content:space-between;gap:16px;margin-top:10px;padding-top:7px;border-top:1px solid var(--line);font-size:7.5pt;color:#666}
       .no-print{margin:12px 0}.no-print button{display:inline-block!important;border:1px solid var(--gold);background:#f7f1de;color:#111;font-weight:800;padding:8px 13px;border-radius:6px;cursor:pointer}
