@@ -67,7 +67,7 @@
             <section class="svp-attendance-history" id="svpAttHistory" hidden>
               <div class="svp-attendance-history-head">
                 <strong>Riwayat Absensi</strong>
-                <span>30 data terakhir</span>
+                <span>31 data terakhir</span>
               </div>
               <div class="svp-attendance-history-list" id="svpAttHistoryList">
                 <div class="svp-attendance-history-empty">Belum ada riwayat.</div>
@@ -249,7 +249,7 @@
     if(!list || typeof db==="undefined") return;
     list.innerHTML='<div class="svp-attendance-history-empty">Memuat riwayat…</div>';
     try{
-      const {data,error}=await db.rpc("svp_absensi_self_history_v1",{p_limit:30});
+      const {data,error}=await db.rpc("svp_absensi_self_history_v1",{p_limit:31});
       if(error) throw error;
       const rows=Array.isArray(data)?data:[];
       list.innerHTML=rows.length
