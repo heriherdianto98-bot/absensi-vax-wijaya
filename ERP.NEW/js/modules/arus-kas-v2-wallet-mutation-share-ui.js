@@ -129,8 +129,15 @@
       w.document.open();w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Menyiapkan Print...</title></head><body style="font-family:Arial,sans-serif;padding:32px">Menyiapkan laporan mutasi Arus Kas...</body></html>');w.document.close();
       const html=await documentHtml(data);
       if(w.closed)return;
-      const directPrint=html.replace("</body>","<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\\/script></body>");
-      w.document.open();w.document.write(directPrint);w.document.close();
+      w.document.open();w.document.write(html);w.document.close();
+      const firePrint=()=>{
+        if(w.closed||w.__ak2MutationPrintOpened)return;
+        w.__ak2MutationPrintOpened=true;
+        try{w.focus();w.print();}catch(_e){}
+      };
+      if(w.document.readyState==="complete")setTimeout(firePrint,250);
+      else w.addEventListener("load",()=>setTimeout(firePrint,250),{once:true});
+      setTimeout(firePrint,700);
     }catch(err){try{if(!w.closed)w.close();}catch(_e){}alert(err?.message||"Gagal menyiapkan print mutasi.");}
   }
 
