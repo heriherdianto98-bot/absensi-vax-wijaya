@@ -76,13 +76,9 @@ Safety:
       if(id) state.svpIds.add(id);
     }
 
-    if(typeof AbsensiOwner !== "undefined"){
-      (AbsensiOwner._karyawanIndex || []).forEach((k) => {
-        if(state.svpIds.has(normId(k.id))){
-          k.cabang = "SVP / Floating";
-        }
-      });
-    }
+    // Keep the employee's canonical branch name untouched.
+    // Rangga must remain "Vax Wijaya Floating" so Owner branch filtering
+    // includes him together with Hairi and Ryan.
   }
 
   function paintDailyStatus(rows){
@@ -94,7 +90,6 @@ Safety:
 
       let statusRow = (AbsensiOwner._statusRows || []).find((r) => normId(r.id) === id);
       if(statusRow){
-        statusRow.cabang = "SVP / Floating";
         statusRow.status = "MASUK";
         statusRow.statusClass = "st-masuk";
         statusRow.denda = 0;
@@ -102,7 +97,6 @@ Safety:
 
       const tr = document.querySelector(`#statusKaryawan tr[data-absensi-row-id="${CSS.escape(id)}"]`);
       if(tr){
-        if(tr.cells[1]) tr.cells[1].textContent = "SVP / Floating";
         if(tr.cells[2]){
           tr.cells[2].innerHTML = '<span class="absensi-status st-masuk">MASUK</span>';
         }
@@ -158,7 +152,9 @@ Safety:
       if(statusRow){
         const branchCell=statusRow.cells?.[1];
         if(branchCell){
-          branchCell.innerHTML=`<div class="svp-owner-branch-label">SVP / Floating</div>${locationHtml(source)}`;
+          const employee=(AbsensiOwner._karyawanIndex || []).find((k) => normId(k.id) === id);
+          const branchName=String(employee?.cabang || branchCell.textContent || "Vax Wijaya Floating").trim();
+          branchCell.innerHTML=`<div class="svp-owner-branch-label">${branchName}</div>${locationHtml(source)}`;
         }
       }
 
