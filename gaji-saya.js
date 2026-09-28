@@ -119,6 +119,71 @@ function unwrapRpcPayload(data){
     return null;
 }
 
+let currentPayrollConsumer = null;
+
+function payrollSourceToConsumer(payload){
+    if(!payload?.data || typeof PayrollUnifiedEngine === "undefined") return null;
+
+    const employee = payload.employee || {};
+    const data = payload.data || {};
+    const rows = Array.isArray(data.payroll_manual_adjustments) ? data.payroll_manual_adjustments : [];
+    const lastAdjustment = rows.length ? rows[rows.length - 1] : null;
+    const adjustments = {};
+    if(lastAdjustment){
+        adjustments[String(employee.id)] = {
+            bonusInsentif: Number(lastAdjustment.bonus_insentif || 0),
+            bonusKpi: Number(lastAdjustment.bonus_kpi || 0)
+        };
+    }
+
+    const cabangRows = Array.isArray(data.cabang) ? data.cabang : [];
+    const ctx = {
+        range: {
+            start: String(payload?.periode?.dari || ""),
+            end: String(payload?.periode?.sampai || "")
+        },
+        cabangMap: new Map(cabangRows.map((row) => [Number(row.id), row.nama_cabang])),
+        providerRows: Array.isArray(data.provider_sales_daily_source) ? data.provider_sales_daily_source : [],
+        productRows: Array.isArray(data.product_sales_source) ? data.product_sales_source : [],
+        absensiRows: Array.isArray(data.absensi) ? data.absensi : [],
+        kasbonRows: Array.isArray(data.employee_cash_advances) ? data.employee_cash_advances : [],
+        backupAssignments: { assigned: [], pending: [], fuelAllowances: [], backups: [] },
+        salaryData: { rows: Array.isArray(data.payroll_salary_master) ? data.payroll_salary_master : [], byEmployee: {} },
+        adjustments
+    };
+
+    const row = PayrollUnifiedEngine.buildEmployeePayroll(employee, ctx);
+    const summary = row?.summary || {};
+    const daily = (row?.daily || []).map((item) => ({
+        tanggal: item.tanggal,
+        share_bruto: Number(item.gajiPokok || 0),
+        denda: Number(item.denda || 0),
+        net_harian: Number(item.gajiPokok || 0)
+            - Number(item.denda || 0)
+            - Number(item.kasbon || 0)
+            + Number(item.bonusProduk || 0)
+    }));
+
+    return {
+        ok: true,
+        source: "PAYROLL_UNIFIED_ENGINE",
+        employee: {
+            id: row.employeeId,
+            nama: row.namaKaryawan,
+            jabatan: row.jabatan,
+            cabang: row.homeCabang
+        },
+        periode: payload.periode,
+        summary: {
+            share_bruto: Number(summary.gajiPokok || 0),
+            total_denda: Number(summary.denda || 0),
+            net_diterima: Number(summary.gajiBersih || 0)
+        },
+        payroll_summary: summary,
+        daily
+    };
+}
+
 function handleSelfReadSession(reason){
     if(String(reason || "").toUpperCase() !== "SESSION_INVALID") return false;
     if(typeof KaryawanSession !== "undefined" && typeof KaryawanSession.logout === "function"){
@@ -384,9 +449,9 @@ async function loadGaji(dari, sampai){
             return;
         }
 
-        const payload = unwrapRpcPayload(currentResult.data);
-        if(!payload || payload.ok === false){
-            const reason = String(payload?.reason || "SESSION_INVALID").toUpperCase();
+        const sourcePayload = unwrapRpcPayload(currentResult.data);
+        if(!sourcePayload || sourcePayload.ok === false){
+            const reason = String(sourcePayload?.reason || "SESSION_INVALID").toUpperCase();
             console.error("Gaji Saya ditolak:", reason);
             if(handleSelfReadSession(reason)) return;
             if(reason.includes("ROLE_NOT_CAPSTER")){
@@ -398,12 +463,20 @@ async function loadGaji(dari, sampai){
             return;
         }
 
+        const payload = payrollSourceToConsumer(sourcePayload);
+        if(!payload){
+            console.error("Gaji Saya: Payroll Unified Engine tidak tersedia.");
+            setPeriodMessage("Payroll belum dapat dimuat.");
+            renderUnavailable();
+            return;
+        }
+
         let previousPayload = null;
         try{
             const previousResult = await fetchGajiRange(token, previousMonth.dari, previousMonth.sampai);
             if(!previousResult.error){
-                const prev = unwrapRpcPayload(previousResult.data);
-                if(prev && prev.ok !== false) previousPayload = prev;
+                const prevSource = unwrapRpcPayload(previousResult.data);
+                if(prevSource && prevSource.ok !== false) previousPayload = payrollSourceToConsumer(prevSource);
             }else{
                 console.warn("Perbandingan bulan sebelumnya gagal dimuat:", previousResult.error);
             }
@@ -411,6 +484,7 @@ async function loadGaji(dari, sampai){
             console.warn("Perbandingan bulan sebelumnya gagal dimuat:", compareError);
         }
 
+        currentPayrollConsumer = payload;
         setPeriodMessage("");
         renderPayload(payload, previousPayload);
     }catch(err){
@@ -467,31 +541,25 @@ function screenText(id){
     return String(document.getElementById(id)?.textContent || "").trim() || "—";
 }
 
-function collectSlipFromScreen(){
-    const list = document.getElementById("listHarian");
-    const daily = [];
-    if(list && !list.hidden){
-        list.querySelectorAll(".daily-card").forEach((card) => {
-            const vals = [...card.querySelectorAll(".daily-row b")].map((el) => (
-                String(el.textContent || "").trim() || "Rp0"
-            ));
-            daily.push({
-                tanggal: String(card.querySelector(".daily-date")?.textContent || "—").trim() || "—",
-                share: vals[0] || "Rp0",
-                denda: vals[1] || "Rp0",
-                net: vals[2] || "Rp0"
-            });
-        });
-    }
+function collectSlipFromPayroll(){
+    const payload = currentPayrollConsumer;
+    if(!payload) return null;
+    const employee = payload.employee || {};
+    const summary = payload.summary || {};
     return {
-        nama: screenText("namaGaji"),
-        jabatan: screenText("jabatanGaji"),
-        cabang: screenText("cabangGaji"),
-        periode: screenText("periodRangeLabel"),
-        share: screenText("valShareBruto"),
-        denda: screenText("valTotalDenda"),
-        net: screenText("valNetDiterima"),
-        daily
+        nama: employee.nama || screenText("namaGaji"),
+        jabatan: employee.jabatan || screenText("jabatanGaji"),
+        cabang: employee.cabang || screenText("cabangGaji"),
+        periode: formatMonthLabelFromIso(payload?.periode?.dari),
+        share: formatRupiahId(summary.share_bruto),
+        denda: formatRupiahId(summary.total_denda),
+        net: formatRupiahId(summary.net_diterima),
+        daily: (payload.daily || []).map((row) => ({
+            tanggal: formatTanggalPanjang(row.tanggal),
+            share: formatRupiahId(row.share_bruto),
+            denda: formatRupiahId(row.denda),
+            net: formatRupiahId(row.net_harian)
+        }))
     };
 }
 
@@ -544,7 +612,12 @@ function fillSlipPrint(slip){
 }
 
 function cetakSlipGaji(){
-    fillSlipPrint(collectSlipFromScreen());
+    const slip = collectSlipFromPayroll();
+    if(!slip){
+        setPeriodMessage("Data Payroll belum siap dicetak.");
+        return;
+    }
+    fillSlipPrint(slip);
     window.print();
 }
 
