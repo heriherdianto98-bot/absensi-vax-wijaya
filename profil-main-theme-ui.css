@@ -16,6 +16,7 @@ html,body{
   height:100dvh!important;
   max-height:100dvh!important;
   overflow:hidden!important;
+  overscroll-behavior:none!important;
   background:#eaf5f3!important;
   color:var(--profil-ink)!important;
 }
@@ -34,6 +35,7 @@ body{
   display:flex!important;
   flex-direction:column!important;
   overflow:hidden!important;
+  overscroll-behavior:none!important;
   background:
     radial-gradient(100% 32% at 50% 0%,rgba(47,200,180,.10),transparent 60%),
     linear-gradient(180deg,#f7fcfb 0%,#eef8f6 100%)!important;
@@ -45,7 +47,7 @@ body{
   z-index:260!important;
   flex:0 0 auto!important;
   min-height:54px!important;
-  margin:0 -12px 10px!important;
+  margin:0 -12px 0!important;
   padding:6px 10px!important;
   display:flex!important;
   align-items:center!important;
@@ -108,8 +110,10 @@ body{
   overflow-x:hidden!important;
   overflow-y:auto!important;
   -webkit-overflow-scrolling:touch!important;
-  overscroll-behavior-y:contain!important;
-  padding:0 0 6px!important;
+  overscroll-behavior:none!important;
+  padding:10px 0 6px!important;
+  background:
+    linear-gradient(180deg,#f7fcfb 0%,#eef8f6 100%)!important;
   scrollbar-width:thin!important;
   scrollbar-color:rgba(47,200,180,.58) transparent!important;
   background:transparent!important;
