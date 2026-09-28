@@ -4,7 +4,7 @@ let audioCtx=null;
 
 function haptic(){
   try{
-    if('vibrate' in navigator) navigator.vibrate(12);
+    if('vibrate' in navigator) navigator.vibrate(35);
   }catch(_){}
 }
 
@@ -45,11 +45,18 @@ function init(){
   if(!nav||nav.dataset.feedbackReady==='1') return;
   nav.dataset.feedbackReady='1';
 
-  nav.addEventListener('pointerdown',(event)=>{
+  let lastFeedbackAt=0;
+  const trigger=(event)=>{
     const link=event.target.closest('a');
     if(!link||!nav.contains(link)) return;
+    const now=Date.now();
+    if(now-lastFeedbackAt<120) return;
+    lastFeedbackAt=now;
     feedback();
-  },{passive:true});
+  };
+
+  nav.addEventListener('touchstart',trigger,{passive:true});
+  nav.addEventListener('pointerdown',trigger,{passive:true});
 }
 
 if(document.readyState==='loading'){
