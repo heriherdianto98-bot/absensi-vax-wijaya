@@ -439,3 +439,25 @@
 #statusKaryawan .svp-owner-branch-label{
   display:none!important;
 }
+
+
+/* SVP Status row — branch + masuk/pulang time only, UI ONLY */
+#statusKaryawan .svp-status-branch{
+  color:inherit!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.2!important;
+}
+#statusKaryawan .svp-status-times{
+  display:flex!important;
+  gap:8px!important;
+  margin-top:3px!important;
+  color:inherit!important;
+  font-size:9px!important;
+  font-weight:700!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+}
+#statusKaryawan .svp-status-times span{
+  color:inherit!important;
+}
