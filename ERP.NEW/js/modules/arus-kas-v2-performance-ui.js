@@ -291,7 +291,7 @@ Tujuan:
   function loadSoftDeleteUi(){
     if(document.querySelector('script[data-ak2-soft-delete-ui]')) return;
     const s=document.createElement("script");
-    s.src="../js/modules/arus-kas-v2-soft-delete-ui.js";
+    s.src="../js/modules/arus-kas-v2-soft-delete-ui.js?v=20260928-deleteverify1";
     s.async=false;
     s.dataset.ak2SoftDeleteUi="1";
     document.body.appendChild(s);
