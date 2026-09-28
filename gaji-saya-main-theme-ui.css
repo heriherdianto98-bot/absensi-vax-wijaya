@@ -470,13 +470,88 @@
   }
 
 
-  html body .app .cmp-panel h2{border-bottom-color:#d9ebe8!important}
-  html body .app .cmp-list li{
-    border-color:#e0eeeb!important;
-    background:#fbfefd!important;
+  html body .app .cmp-panel h2{
+    border-bottom-color:#d9ebe8!important;
+    margin-bottom:9px!important;
   }
-  html body .app .cmp-list li span{color:#758a8f!important}
-  html body .app .cmp-list li b{color:#234b52!important}
+
+  html body .app .cmp-list{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    border:0!important;
+    border-radius:0!important;
+    overflow:visible!important;
+  }
+
+  html body .app .cmp-list li{
+    position:relative!important;
+    overflow:hidden!important;
+    min-height:58px!important;
+    padding:9px 10px 8px!important;
+    border:1px solid #b5ddd7!important;
+    border-top-color:#d9eeea!important;
+    border-bottom-color:#80c9bd!important;
+    border-radius:12px!important;
+    background:linear-gradient(180deg,#ffffff 0%,#fbfefd 58%,#f0f8f6 100%)!important;
+    box-shadow:
+      0 4px 0 rgba(35,166,147,.18),
+      0 7px 10px rgba(32,103,94,.12),
+      0 11px 18px rgba(32,103,94,.06),
+      inset 0 2px 0 rgba(255,255,255,1),
+      inset 0 -1px 0 rgba(42,171,152,.10)!important;
+  }
+
+  html body .app .cmp-list li::before{
+    content:""!important;
+    position:absolute!important;
+    left:7px!important;
+    right:7px!important;
+    top:1px!important;
+    height:1px!important;
+    border-radius:99px!important;
+    background:rgba(255,255,255,.95)!important;
+    pointer-events:none!important;
+  }
+
+  html body .app .cmp-list li span{
+    position:relative!important;
+    z-index:1!important;
+    color:#526d72!important;
+    font-weight:800!important;
+  }
+
+  html body .app .cmp-list li b{
+    position:relative!important;
+    z-index:1!important;
+    color:#173f47!important;
+    text-shadow:none!important;
+  }
+
+  html body .app .cmp-change{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+  }
+
+  html body .app .cmp-trend{
+    flex:0 0 22px!important;
+    width:22px!important;
+    height:22px!important;
+    background:linear-gradient(145deg,#e9faf7,#dff5f1)!important;
+    color:#25a995!important;
+    box-shadow:
+      0 2px 0 rgba(34,159,142,.10),
+      0 4px 7px rgba(31,115,104,.10),
+      inset 0 1px 0 #fff!important;
+  }
+
+  html body .app .cmp-trend.is-down,
+  html body .app .cmp-trend.is-up,
+  html body .app .cmp-trend.is-flat{
+    color:#25a995!important;
+    background:linear-gradient(145deg,#e9faf7,#dff5f1)!important;
+  }
 
   html body .app .daily-panel{min-height:190px!important}
   html body .app .daily-scroll{overflow:visible!important}
