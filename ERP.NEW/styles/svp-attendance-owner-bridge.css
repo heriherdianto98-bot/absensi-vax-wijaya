@@ -432,3 +432,10 @@
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* Status Karyawan Hari Ini — remove SVP address detail, match normal employee row */
+#statusKaryawan .svp-owner-location-block,
+#statusKaryawan .svp-owner-branch-label{
+  display:none!important;
+}
