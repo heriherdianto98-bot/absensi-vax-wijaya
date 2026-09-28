@@ -23,10 +23,6 @@
   popup.hidden = true;
   popup.innerHTML = '<div class="vax-calendar-head"><button type="button" class="vax-calendar-prev" aria-label="Bulan sebelumnya"><i class="fa-solid fa-chevron-left"></i></button><span class="vax-calendar-title"></span><button type="button" class="vax-calendar-next" aria-label="Bulan berikutnya"><i class="fa-solid fa-chevron-right"></i></button></div><div class="vax-calendar-week" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div><div class="vax-calendar-days" role="group" aria-label="Tanggal"></div><div class="vax-calendar-foot"><button type="button" class="vax-calendar-today">Hari ini</button><button type="button" class="vax-calendar-close">Tutup</button></div>';
   toolbar.appendChild(popup);
-  const placePopup = () => {
-    if (window.matchMedia('(max-width:480px)').matches) toolbar.insertAdjacentElement('afterend', popup);
-    else toolbar.appendChild(popup);
-  };
   const title = popup.querySelector('.vax-calendar-title');
   const days = popup.querySelector('.vax-calendar-days');
   const prev = popup.querySelector('.vax-calendar-prev');
@@ -65,13 +61,13 @@
     event.preventDefault(); event.stopImmediatePropagation();
     if (!popup.hidden) { close(); return; }
     year = Number(selected().slice(0, 4)); month = Number(selected().slice(5, 7)) - 1;
-    placePopup(); render(); popup.hidden = false; trigger.setAttribute('aria-expanded', 'true');
+    render(); popup.hidden = false; trigger.setAttribute('aria-expanded', 'true');
   }, true);
   prev.addEventListener('click', () => { if (--month < 0) { month = 11; --year; } render(); });
   next.addEventListener('click', () => { if (next.disabled) return; if (++month > 11) { month = 0; ++year; } render(); });
   popup.querySelector('.vax-calendar-today').addEventListener('click', () => choose(todayWib()));
   popup.querySelector('.vax-calendar-close').addEventListener('click', close);
-  document.addEventListener('pointerdown', event => { if (!popup.hidden && !toolbar.contains(event.target) && !popup.contains(event.target)) close(); });
+  document.addEventListener('pointerdown', event => { if (!popup.hidden && !toolbar.contains(event.target) ) close(); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && !popup.hidden) { close(); trigger.focus(); } });
   trigger.setAttribute('aria-controls', popup.id);
   trigger.setAttribute('aria-haspopup', 'dialog');
