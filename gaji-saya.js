@@ -678,7 +678,7 @@ function cetakSlipGaji(){
         return;
     }
     PayrollCapsterPrint.openSnapshot(snap,{
-        logo:new URL("ERP.NEW/assets/logo-vax-wijaya.png",window.location.href).href,
+        logo:new URL("ERP.NEW/assets/brand/erp-vax-wijaya.png",window.location.href).href,
         ownerSignatureUrl:new URL("ERP.NEW/assets/owner-signature.png",window.location.href).href,
         supervisorSignatureUrl:new URL("ERP.NEW/assets/supervisor-signature-rangga.svg",window.location.href).href
     });
