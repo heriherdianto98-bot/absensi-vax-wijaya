@@ -278,3 +278,139 @@ body{
   .card{padding:12px!important}
   .card h1,.card h2{font-size:16px!important}
 }
+
+
+/* ===== MASTER KARYAWAN CONSUMER — PROFILE READ ONLY ===== */
+.profile-master-card{
+  padding:13px!important;
+}
+
+.profile-data-grid{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+
+.profile-data-item,
+.profile-history-item{
+  min-width:0!important;
+  padding:9px 10px!important;
+  border:1px solid #b5ddd7!important;
+  border-top-color:#d9eeea!important;
+  border-bottom-color:#80c9bd!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfefd 58%,#f0f8f6 100%)!important;
+  box-shadow:
+    0 3px 0 rgba(35,166,147,.13),
+    0 6px 10px rgba(32,103,94,.07),
+    inset 0 1px 0 #fff!important;
+}
+
+.profile-data-item span,
+.profile-history-item span{
+  display:block!important;
+  margin-bottom:3px!important;
+  color:#71878c!important;
+  font-size:9px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  text-transform:uppercase!important;
+  letter-spacing:.035em!important;
+}
+
+.profile-data-item strong{
+  display:block!important;
+  color:#173f47!important;
+  font-size:11px!important;
+  line-height:1.28!important;
+  font-weight:900!important;
+  overflow-wrap:anywhere!important;
+}
+
+.profile-data-wide{
+  grid-column:1/-1!important;
+}
+
+.profile-history-grid{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+
+.profile-history-item{
+  text-align:center!important;
+}
+
+.profile-history-item strong{
+  display:block!important;
+  color:#169b88!important;
+  font-size:18px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+}
+
+.profile-source-note{
+  margin:10px 0 0!important;
+  padding:8px 9px!important;
+  border:1px solid #d4eae6!important;
+  border-radius:10px!important;
+  background:#f8fcfb!important;
+  color:#71878c!important;
+  font-size:10px!important;
+  line-height:1.4!important;
+}
+
+.profile-salary-card{
+  position:relative!important;
+  z-index:1!important;
+  margin-top:9px!important;
+  padding:11px 12px!important;
+  border:1px solid #11a78f!important;
+  border-radius:12px!important;
+  background:
+    radial-gradient(90% 120% at 100% 0%,rgba(255,255,255,.16),transparent 58%),
+    linear-gradient(135deg,#39cfbc 0%,#24b9a4 56%,#16a890 100%)!important;
+  color:#fff!important;
+  box-shadow:
+    0 4px 0 rgba(13,130,116,.18),
+    0 9px 15px rgba(20,140,126,.13),
+    inset 0 1px 0 rgba(255,255,255,.30)!important;
+}
+
+.profile-salary-card>span{
+  display:block!important;
+  color:rgba(255,255,255,.86)!important;
+  font-size:9px!important;
+  font-weight:850!important;
+  text-transform:uppercase!important;
+  letter-spacing:.045em!important;
+}
+
+.profile-salary-card>strong{
+  display:block!important;
+  margin-top:2px!important;
+  color:#fff!important;
+  font-size:21px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+}
+
+.profile-salary-card>small{
+  display:block!important;
+  margin-top:5px!important;
+  color:rgba(255,255,255,.82)!important;
+  font-size:9px!important;
+  line-height:1.35!important;
+}
+
+@media(max-width:380px){
+  .profile-data-grid{gap:7px!important}
+  .profile-data-item,.profile-history-item{padding:8px 9px!important}
+  .profile-data-item strong{font-size:10.5px!important}
+  .profile-history-grid{gap:7px!important}
+  .profile-history-item strong{font-size:17px!important}
+}
