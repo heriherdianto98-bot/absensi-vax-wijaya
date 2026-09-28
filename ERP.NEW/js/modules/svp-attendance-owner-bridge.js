@@ -153,8 +153,8 @@ Safety:
         const branchCell=statusRow.cells?.[1];
         if(branchCell){
           const employee=(AbsensiOwner._karyawanIndex || []).find((k) => normId(k.id) === id);
-          const branchName=String(employee?.cabang || branchCell.textContent || "Vax Wijaya Floating").trim();
-          branchCell.innerHTML=`<div class="svp-owner-branch-label">${branchName}</div>${locationHtml(source)}`;
+          const branchName=String(employee?.cabang || "Vax Wijaya Floating").trim();
+          branchCell.textContent=branchName;
         }
       }
 
