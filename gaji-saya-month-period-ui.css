@@ -183,3 +183,28 @@
     font-size:9.5px!important;
   }
 }
+
+
+/* Gaji Saya — full-theme Cetak Slip Gaji button, UI ONLY */
+.gaji-month-actions .btn-print{
+  min-height:40px!important;
+  border:1px solid #1eb6a1!important;
+  background:linear-gradient(145deg,#2fc8b4 0%,#20b29f 100%)!important;
+  color:#ffffff!important;
+  box-shadow:
+    0 5px 12px rgba(30,182,161,.22),
+    inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+
+.gaji-month-actions .btn-print i,
+.gaji-month-actions .btn-print span{
+  color:#ffffff!important;
+}
+
+.gaji-month-actions .btn-print:hover{
+  filter:brightness(1.04)!important;
+}
+
+.gaji-month-actions .btn-print:active{
+  transform:scale(.985)!important;
+}
