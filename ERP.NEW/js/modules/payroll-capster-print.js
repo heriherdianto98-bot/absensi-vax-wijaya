@@ -78,7 +78,7 @@
   function openSnapshot(snap,assets={}){
     if(!snap?.cards?.length){alert('Tidak ada data payroll untuk dicetak.');return;}
     const w=window.open('','_blank');if(!w){alert('Popup print diblokir browser.');return;}
-    const logo=assets.logo||'../assets/logo-vax-wijaya.png';
+    const logo=assets.logo||new URL('../assets/brand/erp-vax-wijaya.png',window.location.href).href;
     const ownerSignatureUrl=assets.ownerSignatureUrl||new URL('../assets/owner-signature.png',window.location.href).href;
     const supervisorSignatureUrl=assets.supervisorSignatureUrl||new URL('../assets/supervisor-signature-rangga.svg',window.location.href).href;
     const printedAt=nowWib();
