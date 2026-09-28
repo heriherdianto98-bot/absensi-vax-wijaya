@@ -104,7 +104,7 @@
 
     if(action){
       action.textContent=mode==="MASUK"?"Simpan Absen Masuk":mode==="PULANG"?"Simpan Absen Pulang":"Absensi Hari Ini Selesai";
-      action.disabled=busy || submitLocked || mode==="DONE" || !currentLocation || currentLocation.accuracy>100;
+      action.disabled=busy || submitLocked || mode==="DONE" || !currentLocation || currentLocation.accuracy>300;
     }
   }
 
@@ -174,7 +174,7 @@
 
       if(address) address.textContent=human || `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
       if(accuracy) accuracy.textContent=`Akurasi ±${Math.round(acc)} meter`;
-      setMessage(acc>100
+      setMessage(acc>300
         ? "Akurasi GPS terlalu rendah. Tunggu sinyal lebih akurat lalu buka ulang absensi."
         : "Lokasi siap. Alamat dan koordinat ini akan dicatat saat absen.");
       paintState();
