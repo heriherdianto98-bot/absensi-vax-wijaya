@@ -1096,7 +1096,9 @@ const AbsensiLaporanBulanan = {
         const { data, error } = await db.from("cabang").select("id,nama_cabang,aktif");
         if(error) throw error;
         this._cabangList = (data || [])
-            .filter((c) => c && c.nama_cabang && !this.isFloatingCabang(c.nama_cabang))
+            // Floating is a valid attendance group (Hairi, Ryan, SVP/Floating).
+            // Keep it available in Absensi filters; attendance logic is unchanged.
+            .filter((c) => c && c.nama_cabang)
             .sort((a, b) => String(a.nama_cabang).localeCompare(String(b.nama_cabang), "id"));
 
         const sel = document.getElementById("ablFilterCabang");
