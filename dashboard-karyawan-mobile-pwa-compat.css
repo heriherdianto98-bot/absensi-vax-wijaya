@@ -627,3 +627,18 @@
     box-sizing:border-box!important;
   }
 }
+
+/* Calendar is a sibling of the period card on phones, so KPI cards move down. */
+@media (max-width:480px){
+  html body .app > .vax-calendar:not([hidden]){
+    position:relative!important;
+    z-index:2!important;
+    top:auto!important;
+    right:auto!important;
+    width:min(280px,100%)!important;
+    max-width:100%!important;
+    margin:8px 0 12px auto!important;
+    box-sizing:border-box!important;
+    background:linear-gradient(180deg,#fff 0%,#f4fcfa 100%)!important;
+  }
+}
