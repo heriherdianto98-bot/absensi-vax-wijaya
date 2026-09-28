@@ -138,27 +138,61 @@
 }
 
 .gaji-quick-month-card{
+  position:relative!important;
+  overflow:hidden!important;
   min-height:40px!important;
   padding:6px 8px!important;
   gap:2px!important;
+  border:1px solid #b5ddd7!important;
+  border-top-color:#d9eeea!important;
+  border-bottom-color:#80c9bd!important;
   border-radius:10px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfefd 58%,#f0f8f6 100%)!important;
+  box-shadow:
+    0 4px 0 rgba(35,166,147,.18),
+    0 7px 10px rgba(32,103,94,.12),
+    0 11px 18px rgba(32,103,94,.06),
+    inset 0 2px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(42,171,152,.10)!important;
+}
+
+.gaji-quick-month-card::before{
+  content:""!important;
+  position:absolute!important;
+  left:7px!important;
+  right:7px!important;
+  top:1px!important;
+  height:1px!important;
+  border-radius:99px!important;
+  background:rgba(255,255,255,.95)!important;
+  pointer-events:none!important;
 }
 
 .gaji-quick-month-card>span{
+  position:relative!important;
+  z-index:1!important;
   font-size:10px!important;
+  color:#173f47!important;
 }
 
 .gaji-quick-month-card>small{
+  position:relative!important;
+  z-index:1!important;
   font-size:7px!important;
+  color:#526d72!important;
 }
 
 .gaji-quick-month-card.is-active{
   border-color:#1eb6a1!important;
-  background:linear-gradient(145deg,#2fc8b4 0%,#20b29f 100%)!important;
+  border-top-color:#72ead8!important;
+  border-bottom-color:#0fa48f!important;
+  background:linear-gradient(180deg,#46d8c9 0%,#2fc8b7 52%,#1eb5a3 100%)!important;
   color:#ffffff!important;
   box-shadow:
-    0 4px 10px rgba(30,182,161,.22),
-    inset 0 1px 0 rgba(255,255,255,.30)!important;
+    0 5px 0 rgba(13,130,116,.24),
+    0 12px 22px rgba(16,137,123,.18),
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 -1px 0 rgba(0,0,0,.07)!important;
 }
 
 .gaji-quick-month-card.is-active>span,
