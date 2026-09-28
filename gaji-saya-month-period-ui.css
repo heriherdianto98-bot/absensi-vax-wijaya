@@ -18,6 +18,33 @@
   margin:0!important;
 }
 
+.gaji-period-title{
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+}
+
+.gaji-period-title-icon{
+  flex:0 0 30px!important;
+  width:30px!important;
+  height:30px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #19aa94!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#42d5c1 0%,#24baa4 100%)!important;
+  color:#ffffff!important;
+  box-shadow:
+    0 4px 0 rgba(20,140,126,.20),
+    0 7px 13px rgba(20,140,126,.16),
+    inset 0 1px 0 rgba(255,255,255,.38)!important;
+}
+
+.gaji-period-title-icon i{
+  color:#ffffff!important;
+  font-size:13px!important;
+}
+
 .gaji-period-range-sr{
   position:absolute!important;
   width:1px!important;
