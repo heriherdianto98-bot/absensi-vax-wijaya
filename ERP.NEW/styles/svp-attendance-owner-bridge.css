@@ -200,3 +200,59 @@
 #aktivitasTerbaru .absensi-activity-title{
   white-space:nowrap!important;
 }
+
+
+/* Remove horizontal scrollbar from SVP activity card; keep all content visible — UI ONLY */
+#aktivitasTerbaru{
+  overflow-x:hidden!important;
+}
+#aktivitasTerbaru .absensi-activity-row{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  display:grid!important;
+  grid-template-columns:minmax(175px,220px) minmax(0,1fr)!important;
+  align-items:start!important;
+  gap:12px!important;
+}
+#aktivitasTerbaru .absensi-activity-row>div:first-child{
+  min-width:0!important;
+  max-width:none!important;
+  width:auto!important;
+}
+#aktivitasTerbaru .absensi-activity-title{
+  white-space:normal!important;
+}
+#aktivitasTerbaru .absensi-activity-time{
+  white-space:nowrap!important;
+}
+#aktivitasTerbaru .svp-owner-location-block{
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin-left:0!important;
+  padding-left:12px!important;
+  overflow:hidden!important;
+}
+#aktivitasTerbaru .svp-owner-location-block>div{
+  min-width:0!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+}
+#aktivitasTerbaru .svp-owner-location-block span,
+#aktivitasTerbaru .svp-owner-location-block small{
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+}
+@media(max-width:1100px){
+  #aktivitasTerbaru .absensi-activity-row{
+    grid-template-columns:1fr!important;
+  }
+  #aktivitasTerbaru .svp-owner-location-block{
+    padding-left:0!important;
+    padding-top:8px!important;
+    border-left:0!important;
+    border-top:1px solid rgba(212,168,38,.14)!important;
+  }
+}
