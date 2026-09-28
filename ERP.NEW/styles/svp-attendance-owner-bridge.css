@@ -256,3 +256,44 @@
     border-top:1px solid rgba(212,168,38,.14)!important;
   }
 }
+
+
+/* Align PULANG card exactly with MASUK in Owner activity — UI ONLY */
+#aktivitasTerbaru .svp-owner-location-block{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  align-items:stretch!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#aktivitasTerbaru .svp-owner-location-block>div{
+  display:grid!important;
+  grid-template-columns:56px minmax(0,1fr)!important;
+  align-items:start!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+#aktivitasTerbaru .svp-owner-location-block>div+div{
+  margin-top:0!important;
+}
+#aktivitasTerbaru .svp-owner-location-block b{
+  grid-row:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:56px!important;
+  min-width:56px!important;
+  min-height:24px!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  white-space:nowrap!important;
+}
+#aktivitasTerbaru .svp-owner-location-block span,
+#aktivitasTerbaru .svp-owner-location-block small{
+  grid-column:2!important;
+  min-width:0!important;
+}
