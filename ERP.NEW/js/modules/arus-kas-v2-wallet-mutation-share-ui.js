@@ -136,7 +136,7 @@
   async function email(){
     let data;try{data=currentData();}catch(err){alert(err.message);return;}
     if(!window.confirm(`Kirim PDF ${data.title} ke SVP (${EMAIL_TO})?`))return;
-    const client=window.db;
+    const client=(typeof db!=="undefined"&&db?.auth)?db:window.db;
     if(!client?.auth) return alert("Sesi database belum tersedia.");
     try{
       const {data:session,error}=await client.auth.getSession();if(error)throw error;
