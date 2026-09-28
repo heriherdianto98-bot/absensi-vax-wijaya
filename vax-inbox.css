@@ -794,3 +794,31 @@ body[data-inbox-mode="employee"] .inbox-list-view{
   -webkit-overflow-scrolling:touch!important;
   scrollbar-width:thin!important;
 }
+/* === OWNER-APPROVED real-phone viewport fix 2026-09-29 | UI ONLY ===
+   Inbox uses the full employee viewport; header stays fixed while list/thread scrolls. */
+@media (max-width:480px){
+  body[data-inbox-mode="employee"] .inbox-shell{
+    width:100%!important;
+    max-width:none!important;
+    min-height:100dvh!important;
+    height:100dvh!important;
+    padding:12px 12px 12px!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+
+  body[data-inbox-mode="employee"] .inbox-list-view{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding-bottom:4px!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+
+  body[data-inbox-mode="employee"] .inbox-list{
+    padding-bottom:4px!important;
+  }
+}
