@@ -104,10 +104,18 @@
     group.querySelector("[data-mut-wa]").addEventListener("click",e=>{e.stopPropagation();whatsapp();});
     if(!document.getElementById("ak2MutShareStyle")){
       const s=document.createElement("style");s.id="ak2MutShareStyle";s.textContent=`
-        .ak2-mut-head-right{min-width:460px}.ak2-mut-share-actions{display:flex;justify-content:flex-end;gap:7px;margin:8px 48px 0 0}
-        .ak2-mut-share-actions button{border:1px solid #705b2b;border-radius:8px;background:#141e27;color:#e8edf1;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer}
+        .ak2-mut-head{padding:14px 18px!important;min-height:0!important}
+        .ak2-mut-kicker{font-size:9px!important;letter-spacing:.14em!important}
+        .ak2-mut-head h2{margin:3px 0 2px!important;font-size:22px!important}
+        .ak2-mut-period{font-size:11px!important}
+        .ak2-mut-head-right{min-width:430px!important;padding-right:44px!important;display:grid!important;grid-template-columns:auto 1fr!important;grid-template-areas:"label actions" "value actions"!important;align-items:center!important;column-gap:12px!important;row-gap:1px!important}
+        .ak2-mut-balance-label{grid-area:label!important;font-size:9px!important}
+        .ak2-mut-head-right>strong{grid-area:value!important;margin-top:0!important;font-size:23px!important;line-height:1.05!important}
+        .ak2-mut-share-actions{grid-area:actions;display:flex;justify-content:flex-end;align-items:center;gap:6px;margin:0!important}
+        .ak2-mut-share-actions button{border:1px solid #705b2b;border-radius:8px;background:#141e27;color:#e8edf1;padding:6px 9px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap}
         .ak2-mut-share-actions button:hover{filter:brightness(1.15)}.ak2-mut-share-actions [data-mut-email]{color:#f2d276}.ak2-mut-share-actions [data-mut-wa]{color:#77e39c;border-color:#246b3e}
-        @media(max-width:900px){.ak2-mut-head{align-items:flex-start}.ak2-mut-head-right{min-width:0}.ak2-mut-share-actions{flex-wrap:wrap;margin-right:45px}.ak2-mut-share-actions button{font-size:10px;padding:6px 8px}}
+        .ak2-mut-close{width:36px!important;height:36px!important;font-size:22px!important}
+        @media(max-width:900px){.ak2-mut-head{align-items:flex-start!important;padding:12px!important}.ak2-mut-head-right{min-width:0!important;display:block!important;padding-right:42px!important}.ak2-mut-share-actions{flex-wrap:wrap;margin-top:7px!important}.ak2-mut-share-actions button{font-size:9px;padding:5px 7px}}
       `;document.head.appendChild(s);
     }
   }
