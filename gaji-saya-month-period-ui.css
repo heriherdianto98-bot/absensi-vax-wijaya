@@ -130,3 +130,56 @@
     width:218px!important;
   }
 }
+
+
+/* Gaji Saya — compact month cards + full theme active state, UI ONLY */
+.gaji-quick-month-grid{
+  gap:6px!important;
+}
+
+.gaji-quick-month-card{
+  min-height:40px!important;
+  padding:6px 8px!important;
+  gap:2px!important;
+  border-radius:10px!important;
+}
+
+.gaji-quick-month-card>span{
+  font-size:10px!important;
+}
+
+.gaji-quick-month-card>small{
+  font-size:7px!important;
+}
+
+.gaji-quick-month-card.is-active{
+  border-color:#1eb6a1!important;
+  background:linear-gradient(145deg,#2fc8b4 0%,#20b29f 100%)!important;
+  color:#ffffff!important;
+  box-shadow:
+    0 4px 10px rgba(30,182,161,.22),
+    inset 0 1px 0 rgba(255,255,255,.30)!important;
+}
+
+.gaji-quick-month-card.is-active>span,
+.gaji-quick-month-card.is-active>small,
+.gaji-quick-month-card.is-active i{
+  color:#ffffff!important;
+}
+
+.gaji-other-month-card{
+  min-height:40px!important;
+}
+
+@media(max-width:380px){
+  .gaji-quick-month-grid{
+    gap:5px!important;
+  }
+  .gaji-quick-month-card{
+    min-height:38px!important;
+    padding:5px 7px!important;
+  }
+  .gaji-quick-month-card>span{
+    font-size:9.5px!important;
+  }
+}
