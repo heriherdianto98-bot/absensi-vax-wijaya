@@ -297,3 +297,87 @@
   grid-column:2!important;
   min-width:0!important;
 }
+
+
+/* SVP Owner Activity — MASUK & PULANG side-by-side, UI ONLY */
+#aktivitasTerbaru .svp-owner-location-block{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:stretch!important;
+  width:100%!important;
+  min-width:0!important;
+  padding-left:0!important;
+  border-left:0!important;
+}
+
+#aktivitasTerbaru .svp-owner-location-block>div{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  column-gap:8px!important;
+  row-gap:2px!important;
+  align-items:start!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:8px 10px!important;
+  box-sizing:border-box!important;
+  border-radius:10px!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.008)),
+    #18202a!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+}
+
+#aktivitasTerbaru .svp-owner-location-block b{
+  grid-column:1!important;
+  grid-row:1 / span 2!important;
+  align-self:start!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:auto!important;
+  min-width:56px!important;
+  min-height:24px!important;
+  margin:0!important;
+  padding:3px 7px!important;
+  box-sizing:border-box!important;
+  white-space:nowrap!important;
+  color:#f3c94f!important;
+  background:rgba(212,168,38,.10)!important;
+  border:1px solid rgba(212,168,38,.18)!important;
+  border-radius:6px!important;
+}
+
+#aktivitasTerbaru .svp-owner-location-block span{
+  grid-column:2!important;
+  grid-row:1!important;
+  display:block!important;
+  min-width:0!important;
+  margin:0!important;
+  color:#eef3f8!important;
+  font-size:10px!important;
+  line-height:1.3!important;
+  font-weight:800!important;
+  overflow-wrap:anywhere!important;
+}
+
+#aktivitasTerbaru .svp-owner-location-block small{
+  grid-column:2!important;
+  grid-row:2!important;
+  display:block!important;
+  min-width:0!important;
+  margin:0!important;
+  color:#98a5b3!important;
+  font-size:9px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  overflow-wrap:anywhere!important;
+}
+
+@media(max-width:900px){
+  #aktivitasTerbaru .svp-owner-location-block{
+    grid-template-columns:1fr!important;
+  }
+}
