@@ -94,7 +94,15 @@ Alur:
     const now=new Date().toISOString();
     const metadata={...(row.metadata||{}),delete_status:DELETE_VERIFIED,delete_verified_by:flow.user?.id||null,delete_verified_at:now};
     const {data,error}=await db.from(flow.TX_TABLE)
-      .update({metadata,updated_by:flow.user?.id||null,updated_at:now})
+      .update({
+        metadata,
+        verification_status:"OWNER_VERIFIED",
+        verified_by:flow.user?.id||null,
+        verified_at:now,
+        correction_note:null,
+        updated_by:flow.user?.id||null,
+        updated_at:now
+      })
       .eq("id",row.id).select("*").single();
     if(error) throw error;
     await flow.audit?.(row.id,"DELETE_OWNER_VERIFY",{before:row,after:data});
