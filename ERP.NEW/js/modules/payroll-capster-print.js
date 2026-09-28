@@ -75,12 +75,12 @@
     return `<section class="employee"><div class="emp-head"><div><h3>${esc(c.name)}${employeeId}</h3><p>${esc(c.info)}${branchIdBadge}</p></div><div class="net"><span>Pendapatan Bersih</span><strong>${esc(net)}</strong></div></div><table class="tbl"><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th class="num">Service</th><th class="num">Gaji Pokok</th><th class="num">Denda</th><th class="num">Kasbon</th><th class="num">Share Produk</th></tr></thead><tbody>${rows}</tbody></table><div class="summary">${sums}</div>${note}</section>`;
   }
 
-  function open(mode='print'){
-    const snap=snapshot();if(!snap.cards.length){alert('Tidak ada data payroll untuk dicetak.');return;}
+  function openSnapshot(snap,assets={}){
+    if(!snap?.cards?.length){alert('Tidak ada data payroll untuk dicetak.');return;}
     const w=window.open('','_blank');if(!w){alert('Popup print diblokir browser.');return;}
-    const logo='../assets/logo-vax-wijaya.png';
-    const ownerSignatureUrl=new URL('../assets/owner-signature.png',window.location.href).href;
-    const supervisorSignatureUrl=new URL('../assets/supervisor-signature-rangga.svg',window.location.href).href;
+    const logo=assets.logo||'../assets/logo-vax-wijaya.png';
+    const ownerSignatureUrl=assets.ownerSignatureUrl||new URL('../assets/owner-signature.png',window.location.href).href;
+    const supervisorSignatureUrl=assets.supervisorSignatureUrl||new URL('../assets/supervisor-signature-rangga.svg',window.location.href).href;
     const printedAt=nowWib();
     const header=`<header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">PAYROLL KARYAWAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN OPERASIONAL</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>`;
     const footer=`<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
@@ -94,5 +94,10 @@
       <script>window.addEventListener('load',async()=>{await Promise.all([...document.images].map(i=>i.complete?Promise.resolve():new Promise(resolve=>{i.addEventListener('load',resolve,{once:true});i.addEventListener('error',resolve,{once:true});})));setTimeout(()=>window.print(),120);});<\/script></body></html>`;
     w.document.open();w.document.write(html);w.document.close();
   }
-  window.PayrollCapsterPrint={open};
+
+  function open(mode='print'){
+    return openSnapshot(snapshot());
+  }
+
+  window.PayrollCapsterPrint={open,openSnapshot};
 })();
