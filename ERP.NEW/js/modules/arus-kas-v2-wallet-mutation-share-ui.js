@@ -136,17 +136,17 @@
   async function email(){
     let data;try{data=currentData();}catch(err){alert(err.message);return;}
     if(!window.confirm(`Kirim PDF ${data.title} ke SVP (${EMAIL_TO})?`))return;
-    const client=(typeof db!=="undefined"&&db?.auth)?db:window.db;
-    if(!client?.auth) return alert("Sesi database belum tersedia.");
     try{
-      const {data:session,error}=await client.auth.getSession();if(error)throw error;
+      if(typeof db==="undefined"||!db?.auth)throw new Error("Sesi database belum tersedia.");
+      const {data:session,error}=await db.auth.getSession();if(error)throw error;
       const token=session?.session?.access_token;if(!token)throw new Error("Sesi login tidak tersedia.");
+      const html=await documentHtml(data);
       const response=await fetch(API,{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},body:JSON.stringify({
-        title:data.title,period:data.period,balance:data.balance,html:await documentHtml(data)
+        title:data.title,period:data.period,balance:data.balance,html
       })});
       const result=await response.json().catch(()=>({}));
-      if(!response.ok||result.sent!==true)throw new Error(result.error||`Pengiriman gagal (HTTP ${response.status})`);
-      alert(`Email mutasi berhasil dikirim ke ${EMAIL_TO}.`);
+      if(!response.ok||result.sent!==true)throw new Error(result.error||`Pengiriman gagal (HTTP ${response.status}). Periksa layanan email di server.`);
+      alert(`Email diterima server pengirim untuk ${EMAIL_TO}. ID: ${result.messageId||"—"}`);
     }catch(err){alert("Gagal mengirim email: "+(err?.message||String(err)));}
   }
 
