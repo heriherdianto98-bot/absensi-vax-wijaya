@@ -111,6 +111,11 @@ Safety:
     return `${a.toFixed(6)}, ${b.toFixed(6)}`;
   }
 
+  function formatHm(value){
+    const m=String(value || "").match(/(\d{2}:\d{2})/);
+    return m ? m[1] : "—";
+  }
+
   function locationHtml(source){
     const masukAddr=String(source?.alamat_masuk || "").trim() || "Alamat masuk belum tersedia";
     const pulangAddr=String(source?.alamat_pulang || "").trim() || "Alamat pulang belum tersedia";
@@ -154,7 +159,12 @@ Safety:
         if(branchCell){
           const employee=(AbsensiOwner._karyawanIndex || []).find((k) => normId(k.id) === id);
           const branchName=String(employee?.cabang || "Vax Wijaya Floating").trim();
-          branchCell.textContent=branchName;
+          branchCell.innerHTML=`
+            <div class="svp-status-branch">${branchName}</div>
+            <div class="svp-status-times">
+              <span>Masuk ${formatHm(source?.jam_masuk)}</span>
+              <span>Pulang ${formatHm(source?.jam_pulang)}</span>
+            </div>`;
         }
       }
 
