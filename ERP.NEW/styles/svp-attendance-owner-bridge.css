@@ -472,3 +472,61 @@
   opacity:1!important;
   text-shadow:none!important;
 }
+
+
+/* Normal employee Activity: show MASUK/PULANG like SVP, UI ONLY */
+#aktivitasTerbaru .absensi-activity-shifts{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  min-width:260px!important;
+  max-width:360px!important;
+  width:100%!important;
+  margin-left:auto!important;
+}
+
+#aktivitasTerbaru .absensi-activity-shift{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-width:0!important;
+  padding:8px 10px!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:10px!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01)),
+    #18202a!important;
+}
+
+#aktivitasTerbaru .absensi-activity-shift b{
+  flex:0 0 auto!important;
+  min-width:52px!important;
+  padding:3px 6px!important;
+  border-radius:6px!important;
+  border:1px solid rgba(212,168,38,.22)!important;
+  background:rgba(212,168,38,.11)!important;
+  color:#f3c94f!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  letter-spacing:.6px!important;
+  text-align:center!important;
+}
+
+#aktivitasTerbaru .absensi-activity-shift span{
+  min-width:0!important;
+  color:#f8fafc!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+
+@media(max-width:900px){
+  #aktivitasTerbaru .absensi-activity-shifts{
+    min-width:0!important;
+    max-width:none!important;
+    grid-template-columns:1fr!important;
+  }
+}
