@@ -390,29 +390,71 @@
   }
 
   html body .app .sum-card{
+    position:relative!important;
+    overflow:hidden!important;
     border-radius:14px!important;
-    background:linear-gradient(145deg,#fff 0%,#f7fcfb 100%)!important;
-    box-shadow:0 6px 14px rgba(38,94,88,.07),inset 0 1px 0 #fff!important;
+    background:linear-gradient(145deg,#ffffff 0%,#f7fcfb 100%)!important;
+    box-shadow:
+      0 10px 20px rgba(25,92,84,.12),
+      0 3px 7px rgba(25,92,84,.08),
+      inset 0 1px 0 rgba(255,255,255,.95),
+      inset 0 -1px 0 rgba(22,130,115,.06)!important;
+    transform:translateZ(0)!important;
+  }
+  html body .app .sum-card::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:linear-gradient(135deg,rgba(255,255,255,.52) 0%,rgba(255,255,255,0) 42%)!important;
   }
 
-  html body .app .sum-bruto{border:1px solid #9fdcd2!important}
+  html body .app .sum-bruto{
+    border:1px solid #8fd6cb!important;
+    box-shadow:
+      0 11px 22px rgba(24,143,125,.14),
+      0 4px 8px rgba(24,143,125,.09),
+      inset 0 1px 0 #fff,
+      inset 0 -2px 0 rgba(27,159,141,.08)!important;
+  }
   html body .app .sum-bruto small{color:#1a9f8d!important}
   html body .app .sum-bruto strong{color:#234b52!important}
 
-  html body .app .sum-denda{border:1px solid #efb6bc!important}
+  html body .app .sum-denda{
+    border:1px solid #efb6bc!important;
+    box-shadow:
+      0 11px 22px rgba(183,74,84,.13),
+      0 4px 8px rgba(183,74,84,.08),
+      inset 0 1px 0 #fff,
+      inset 0 -2px 0 rgba(197,95,105,.08)!important;
+  }
   html body .app .sum-denda small{color:#c55f69!important}
   html body .app .sum-denda strong{color:#7b333a!important}
 
   html body .app .sum-net{
-    border:1px solid rgba(25,181,145,.50)!important;
+    border:1px solid #12a98f!important;
     background:
-      radial-gradient(90% 80% at 100% 100%,rgba(47,200,180,.17),transparent 55%),
-      linear-gradient(145deg,#f7fffd,#e9f9f5)!important;
-    box-shadow:0 8px 18px rgba(32,154,137,.13),inset 0 1px 0 #fff!important;
+      radial-gradient(95% 120% at 100% 100%,rgba(255,255,255,.16),transparent 58%),
+      linear-gradient(145deg,#34cfb8 0%,#1db89f 54%,#14a98f 100%)!important;
+    box-shadow:
+      0 13px 26px rgba(20,169,143,.24),
+      0 5px 10px rgba(20,169,143,.15),
+      inset 0 1px 0 rgba(255,255,255,.34),
+      inset 0 -2px 0 rgba(7,112,95,.16)!important;
   }
-  html body .app .sum-net small{color:#178f7f!important}
-  html body .app .sum-net strong{color:#16aa83!important;text-shadow:none!important}
-  html body .app .sum-ghost{color:#1ab08d!important;opacity:.24!important;filter:none!important}
+  html body .app .sum-net::before{
+    background:linear-gradient(135deg,rgba(255,255,255,.24) 0%,rgba(255,255,255,0) 44%)!important;
+  }
+  html body .app .sum-net small{color:rgba(255,255,255,.88)!important}
+  html body .app .sum-net strong{
+    color:#ffffff!important;
+    text-shadow:0 2px 6px rgba(3,83,70,.18)!important;
+  }
+  html body .app .sum-ghost{
+    color:#ffffff!important;
+    opacity:.30!important;
+    filter:drop-shadow(0 3px 6px rgba(4,98,83,.18))!important;
+  }
 
   html body .app .cmp-panel h2{border-bottom-color:#d9ebe8!important}
   html body .app .cmp-list li{
