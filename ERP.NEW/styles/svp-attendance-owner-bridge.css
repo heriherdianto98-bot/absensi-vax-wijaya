@@ -62,3 +62,34 @@
     border-top:1px solid rgba(255,255,255,.08);
   }
 }
+
+
+/* Improve SVP Owner activity location contrast — UI ONLY */
+#aktivitasTerbaru .svp-owner-location-block b{
+  color:#071b10!important;
+  background:rgba(255,255,255,.34)!important;
+  padding:2px 5px!important;
+  border-radius:5px!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.7px!important;
+  text-shadow:none!important;
+}
+#aktivitasTerbaru .svp-owner-location-block span{
+  color:#071b10!important;
+  font-weight:800!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+}
+#aktivitasTerbaru .svp-owner-location-block small{
+  color:#123a28!important;
+  font-weight:800!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+}
+#aktivitasTerbaru .svp-owner-location-block>div{
+  background:rgba(255,255,255,.16)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  border-radius:9px!important;
+  padding:6px 8px!important;
+}
