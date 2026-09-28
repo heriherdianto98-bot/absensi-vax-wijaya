@@ -159,12 +159,7 @@ Safety:
         if(branchCell){
           const employee=(AbsensiOwner._karyawanIndex || []).find((k) => normId(k.id) === id);
           const branchName=String(employee?.cabang || "Vax Wijaya Floating").trim();
-          branchCell.innerHTML=`
-            <div class="svp-status-branch">${branchName}</div>
-            <div class="svp-status-times">
-              <span>Masuk ${formatHm(source?.jam_masuk)}</span>
-              <span>Pulang ${formatHm(source?.jam_pulang)}</span>
-            </div>`;
+          branchCell.textContent=branchName;
         }
       }
 
