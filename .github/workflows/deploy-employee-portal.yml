@@ -30,6 +30,8 @@ jobs:
           done
 
           cp ERP.NEW/assets/brand/erp-vax-wijaya.png _employee_stage/ERP.NEW/assets/brand/
+          cp ERP.NEW/assets/owner-signature.png _employee_stage/ERP.NEW/assets/
+          cp ERP.NEW/assets/supervisor-signature-rangga.svg _employee_stage/ERP.NEW/assets/
           cp ERP.NEW/vendor/supabase-js-v2.umd.min.js _employee_stage/ERP.NEW/vendor/
           cp ERP.NEW/styles/login.css _employee_stage/ERP.NEW/styles/
           [ -f ERP.NEW/styles/login-mobile-motion-ui.css ] && cp ERP.NEW/styles/login-mobile-motion-ui.css _employee_stage/ERP.NEW/styles/
@@ -78,6 +80,8 @@ jobs:
             test -s /var/www/karyawan-vax/profil.html &&
             test -s /var/www/karyawan-vax/employee-device-readiness.js &&
             test -s /var/www/karyawan-vax/ERP.NEW/js/modules/erp-freshness.js &&
+            test -s /var/www/karyawan-vax/ERP.NEW/assets/owner-signature.png &&
+            test -s /var/www/karyawan-vax/ERP.NEW/assets/supervisor-signature-rangga.svg &&
             test -s /var/www/karyawan-vax/ERP.NEW/pages/login.html &&
             echo EMPLOYEE_PORTAL_DEPLOY_OK
           '
