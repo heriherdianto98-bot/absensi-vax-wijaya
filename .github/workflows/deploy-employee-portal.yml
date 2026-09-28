@@ -1,0 +1,81 @@
+name: Deploy Employee Portal to VPS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'deploy/employee-portal-release-trigger.txt'
+
+concurrency:
+  group: erp-vax-employee-portal-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Prepare employee portal staging
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _employee_stage/ERP.NEW/{assets/brand,vendor,styles,pages,js/modules}
+          shopt -s nullglob
+          for f in             dashboard-karyawan*.html dashboard-karyawan*.js dashboard-karyawan*.css             absensi*.html absensi*.js absensi*.css             gaji-saya*.html gaji-saya*.js gaji-saya*.css             profil*.html profil*.js profil*.css             employee-*.js employee-*.css             karyawan-session.js config.js             kasbon-karyawan*.html kasbon-karyawan*.js kasbon-karyawan*.css             izin*.html izin*.js izin*.css             pengumuman*.html pengumuman*.js pengumuman*.css             pengaduan*.html pengaduan*.js pengaduan*.css             pesan-karyawan.html vax-inbox*.js vax-inbox*.css             vax-sp-employee*.js vax-sp-employee*.css surat-peringatan-saya.html
+          do
+            [ -f "$f" ] && cp "$f" _employee_stage/
+          done
+
+          cp ERP.NEW/assets/brand/erp-vax-wijaya.png _employee_stage/ERP.NEW/assets/brand/
+          cp ERP.NEW/vendor/supabase-js-v2.umd.min.js _employee_stage/ERP.NEW/vendor/
+          cp ERP.NEW/styles/login.css _employee_stage/ERP.NEW/styles/
+          [ -f ERP.NEW/styles/login-mobile-motion-ui.css ] && cp ERP.NEW/styles/login-mobile-motion-ui.css _employee_stage/ERP.NEW/styles/
+          cp ERP.NEW/pages/login.html _employee_stage/ERP.NEW/pages/
+          cp ERP.NEW/js/modules/connector.js _employee_stage/ERP.NEW/js/modules/
+          cp ERP.NEW/js/modules/owner-auth.js _employee_stage/ERP.NEW/js/modules/
+          cp ERP.NEW/js/modules/payroll-unified-engine.js _employee_stage/ERP.NEW/js/modules/
+          cp ERP.NEW/js/modules/payroll-capster-print.js _employee_stage/ERP.NEW/js/modules/
+
+      - name: Prepare SSH
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_erp_vax_deploy
+          chmod 600 ~/.ssh/id_erp_vax_deploy
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy employee portal only
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          SSH_KEY="$HOME/.ssh/id_erp_vax_deploy"
+          ssh -i "$SSH_KEY" "$VPS_USER@$VPS_HOST" 'mkdir -p /var/www/absensi-vax-wijaya'
+          rsync -az -e "ssh -i $SSH_KEY" _employee_stage/ "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/"
+
+      - name: Verify deployed files
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          SSH_KEY="$HOME/.ssh/id_erp_vax_deploy"
+          ssh -i "$SSH_KEY" "$VPS_USER@$VPS_HOST" '
+            test -s /var/www/absensi-vax-wijaya/dashboard-karyawan.html &&
+            test -s /var/www/absensi-vax-wijaya/absensi.html &&
+            test -s /var/www/absensi-vax-wijaya/gaji-saya.html &&
+            test -s /var/www/absensi-vax-wijaya/profil.html &&
+            test -s /var/www/absensi-vax-wijaya/employee-device-readiness.js &&
+            test -s /var/www/absensi-vax-wijaya/ERP.NEW/pages/login.html &&
+            echo EMPLOYEE_PORTAL_DEPLOY_OK
+          '
