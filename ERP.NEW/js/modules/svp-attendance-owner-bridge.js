@@ -132,6 +132,22 @@ Safety:
       </div>`;
   }
 
+  function compactActivityHeader(){
+    document.querySelectorAll("#aktivitasTerbaru .absensi-activity-row").forEach((row) => {
+      const info=row.querySelector(":scope > div:first-child");
+      const title=info?.querySelector(".absensi-activity-title");
+      const action=info?.querySelector(".absensi-activity-aksi");
+      const time=row.querySelector(".absensi-activity-time");
+      if(!info || !title || !time) return;
+
+      time.classList.add("svp-owner-activity-time-top");
+      if(time.parentNode !== info || time.nextSibling !== title){
+        info.insertBefore(time,title);
+      }
+      if(action) action.classList.add("svp-owner-activity-status-inline");
+    });
+  }
+
   function paintOwnerLocations(rows){
     const list=Array.isArray(rows)?rows:[];
     for(const source of list){
@@ -170,6 +186,7 @@ Safety:
     AbsensiOwner.applyStatusTableFilter?.();
     AbsensiOwner.loadAktivitasTerbaru?.();
     paintOwnerLocations(rows);
+    compactActivityHeader();
   }
 
   function installDailyBridge(){
@@ -194,6 +211,7 @@ Safety:
           accuracy_pulang:r.__svp_accuracy_out
         }));
       paintOwnerLocations(svpRows);
+      compactActivityHeader();
       return result;
     };
 
