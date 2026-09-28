@@ -36,6 +36,7 @@ jobs:
           cp ERP.NEW/pages/login.html _employee_stage/ERP.NEW/pages/
           cp ERP.NEW/js/modules/connector.js _employee_stage/ERP.NEW/js/modules/
           cp ERP.NEW/js/modules/owner-auth.js _employee_stage/ERP.NEW/js/modules/
+          cp ERP.NEW/js/modules/erp-freshness.js _employee_stage/ERP.NEW/js/modules/
           cp ERP.NEW/js/modules/payroll-unified-engine.js _employee_stage/ERP.NEW/js/modules/
           cp ERP.NEW/js/modules/payroll-capster-print.js _employee_stage/ERP.NEW/js/modules/
 
@@ -76,6 +77,7 @@ jobs:
             test -s /var/www/karyawan-vax/gaji-saya.html &&
             test -s /var/www/karyawan-vax/profil.html &&
             test -s /var/www/karyawan-vax/employee-device-readiness.js &&
+            test -s /var/www/karyawan-vax/ERP.NEW/js/modules/erp-freshness.js &&
             test -s /var/www/karyawan-vax/ERP.NEW/pages/login.html &&
             echo EMPLOYEE_PORTAL_DEPLOY_OK
           '
