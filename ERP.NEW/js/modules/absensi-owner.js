@@ -2,7 +2,7 @@
 =========================================================
 VAX ERP — Absensi Owner (shell ERP)
 Logic inti dari dashboard-OWNER.js.
-UI: search→detail (laporan.js #karyawan), Floating excluded,
+UI: search→detail (laporan.js #karyawan), Floating included,
 custom calendar ERP, KPI accent + filter sync.
 =========================================================
 */
@@ -32,8 +32,10 @@ const AbsensiOwner = {
     },
 
     operationalCabang(list){
+        // Absensi Owner must include Floating because Hairi, Ryan and SVP/Floating
+        // are valid attendance subjects. This changes filter visibility only.
         return (list || [])
-            .filter((c) => c && c.nama_cabang && !this.isFloatingCabang(c.nama_cabang))
+            .filter((c) => c && c.nama_cabang)
             .sort((a, b) => String(a.nama_cabang).localeCompare(String(b.nama_cabang), "id"));
     },
 
