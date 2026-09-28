@@ -326,3 +326,63 @@
   color:#9ca8b5;
   font-size:10.5px;
 }
+
+
+/* 31-day SVP history layout — UI ONLY */
+.svp-attendance-modal{
+  width:min(680px,calc(100vw - 32px))!important;
+}
+.svp-attendance-body{
+  padding:16px 18px 17px!important;
+}
+.svp-attendance-history{
+  margin-top:12px!important;
+  padding-top:12px!important;
+}
+.svp-attendance-history-list{
+  max-height:360px!important;
+  gap:7px!important;
+}
+.svp-attendance-history-item{
+  display:grid!important;
+  grid-template-columns:112px 170px minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:start!important;
+  padding:10px 12px!important;
+}
+.svp-attendance-history-date{
+  margin:0!important;
+  align-self:center!important;
+  font-size:11px!important;
+}
+.svp-attendance-history-times{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+}
+.svp-attendance-history-times span{
+  padding:7px 8px!important;
+}
+.svp-attendance-history-location{
+  margin:0!important;
+  padding-left:10px!important;
+  border-left:1px solid rgba(255,255,255,.09)!important;
+}
+.svp-attendance-history-location p{
+  margin:2px 0 5px!important;
+}
+@media(max-width:700px){
+  .svp-attendance-modal{
+    width:min(96vw,560px)!important;
+  }
+  .svp-attendance-history-item{
+    grid-template-columns:1fr!important;
+    gap:7px!important;
+  }
+  .svp-attendance-history-location{
+    padding-left:0!important;
+    padding-top:7px!important;
+    border-left:0!important;
+    border-top:1px solid rgba(255,255,255,.08)!important;
+  }
+}
