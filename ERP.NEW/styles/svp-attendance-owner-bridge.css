@@ -274,3 +274,52 @@
   padding-top:6px!important;
   padding-bottom:6px!important;
 }
+
+
+/* Status Karyawan Hari Ini — SVP branch/location contrast fix, UI ONLY */
+#statusKaryawan .svp-owner-branch-label{
+  color:#F8FAFC!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  line-height:1.25!important;
+  margin-bottom:5px!important;
+  text-shadow:none!important;
+}
+
+#statusKaryawan .svp-owner-location-block{
+  margin-top:4px!important;
+  padding-top:0!important;
+  border-top:0!important;
+  gap:4px!important;
+}
+
+#statusKaryawan .svp-owner-location-block>div{
+  padding:4px 6px!important;
+  background:rgba(255,255,255,.035)!important;
+  border:1px solid rgba(255,255,255,.06)!important;
+  border-radius:7px!important;
+}
+
+#statusKaryawan .svp-owner-location-block b{
+  color:#F2C230!important;
+  background:transparent!important;
+  border:0!important;
+  padding:0!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.55px!important;
+}
+
+#statusKaryawan .svp-owner-location-block span{
+  color:#E8EDF5!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  line-height:1.3!important;
+}
+
+#statusKaryawan .svp-owner-location-block small{
+  color:#AAB6C4!important;
+  font-size:8px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+}
