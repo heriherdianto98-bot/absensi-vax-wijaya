@@ -121,15 +121,16 @@
     </body></html>`;
   }
 
-  async function print(){
-    let data;try{data=currentData();}catch(err){alert(err.message);return;}
-    const w=window.open("","_blank");
+  async function print(preopenedWindow){
+    let data;try{data=currentData();}catch(err){alert(err.message);if(preopenedWindow&&!preopenedWindow.closed)preopenedWindow.close();return;}
+    const w=preopenedWindow||window.open("","_blank");
     if(!w){alert("Popup print diblokir browser.");return;}
     try{
       w.document.open();w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Menyiapkan Print...</title></head><body style="font-family:Arial,sans-serif;padding:32px">Menyiapkan laporan mutasi Arus Kas...</body></html>');w.document.close();
       const html=await documentHtml(data);
       if(w.closed)return;
-      w.document.open();w.document.write(html.replace("</body>","<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\\/script></body>"));w.document.close();
+      const directPrint=html.replace("</body>","<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\\/script></body>");
+      w.document.open();w.document.write(directPrint);w.document.close();
     }catch(err){try{if(!w.closed)w.close();}catch(_e){}alert(err?.message||"Gagal menyiapkan print mutasi.");}
   }
 
@@ -164,7 +165,12 @@
     const group=document.createElement("div");group.className="ak2-mut-share-actions";
     group.innerHTML='<button type="button" data-mut-print>Print / PDF</button><button type="button" data-mut-email>Email SVP</button><button type="button" data-mut-wa>WhatsApp SVP</button>';
     right.insertBefore(group,right.querySelector(".ak2-mut-close"));
-    group.querySelector("[data-mut-print]").addEventListener("click",e=>{e.stopPropagation();print();});
+    group.querySelector("[data-mut-print]").addEventListener("click",e=>{
+      e.preventDefault();e.stopPropagation();
+      const w=window.open("","_blank");
+      if(!w){alert("Popup print diblokir browser.");return;}
+      print(w).catch(err=>{console.error("WalletMutationPrint:",err);try{if(!w.closed)w.close();}catch(_e){}alert(err?.message||"Gagal menyiapkan print mutasi.");});
+    });
     group.querySelector("[data-mut-email]").addEventListener("click",e=>{e.stopPropagation();email();});
     group.querySelector("[data-mut-wa]").addEventListener("click",e=>{e.stopPropagation();whatsapp();});
     if(!document.getElementById("ak2MutShareStyle")){
