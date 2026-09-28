@@ -39,7 +39,7 @@ function validateMutation(body){
   const title=String(body?.title||'').trim(),period=String(body?.period||'').trim(),balance=String(body?.balance||'').trim(),html=String(body?.html||'');
   if(!/^Mutasi\s+/i.test(title)||title.length>120||!period||period.length>120||!balance||balance.length>80)
     throw new Error('Data mutasi tidak valid');
-  if(html.length<500||html.length>1800000||!html.includes('LAPORAN MUTASI ARUS KAS')||!html.includes('<table'))
+  if(html.length<500||html.length>1800000||!html.includes('LAPORAN ARUS KAS')||!html.includes('<table'))
     throw new Error('Dokumen PDF mutasi tidak valid');
   return {title,period,balance,html};
 }
