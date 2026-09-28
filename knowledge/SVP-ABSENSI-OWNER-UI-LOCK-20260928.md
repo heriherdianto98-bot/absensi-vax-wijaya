@@ -29,3 +29,12 @@ Branch: feature/employee-profile-canonical-20260927
 ## Important
 Do not modify this locked flow/UI unless Owner explicitly authorizes a new change.
 Do not change employee GPS/geofence/denda/attendance engine as part of SVP work.
+
+
+## Latest owner activity checkpoint
+- Status Karyawan Hari Ini remains compact: name, canonical branch, status only.
+- Aktivitas Absensi for normal employees shows MASUK and PULANG time cards.
+- Aktivitas Absensi for SVP shows MASUK/PULANG time plus address, coordinates, and GPS accuracy.
+- Owner layout gives more width to Aktivitas Absensi and keeps Status panel narrower.
+- Vax Wijaya Floating is available in Absensi filters and includes Rangga, Hairi, and Ryan.
+- This checkpoint is UI/read presentation only; do not alter locked attendance engine, GPS/geofence, denda, or SVP attendance flow without Owner approval.
