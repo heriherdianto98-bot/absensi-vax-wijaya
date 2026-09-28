@@ -126,8 +126,8 @@ Safety:
 
     return `
       <div class="svp-owner-location-block">
-        <div><b>Masuk</b><span>${masukAddr}</span><small>${masukCoord}${Number.isFinite(masukAcc) ? ` · ±${Math.round(masukAcc)} m` : ""}</small></div>
-        <div><b>Pulang</b><span>${pulangAddr}</span><small>${pulangCoord}${Number.isFinite(pulangAcc) ? ` · ±${Math.round(pulangAcc)} m` : ""}</small></div>
+        <div><b>Masuk · ${formatHm(source?.jam_masuk)} WIB</b><span>${masukAddr}</span><small>${masukCoord}${Number.isFinite(masukAcc) ? ` · ±${Math.round(masukAcc)} m` : ""}</small></div>
+        <div><b>Pulang · ${formatHm(source?.jam_pulang)} WIB</b><span>${pulangAddr}</span><small>${pulangCoord}${Number.isFinite(pulangAcc) ? ` · ±${Math.round(pulangAcc)} m` : ""}</small></div>
       </div>`;
   }
 
@@ -202,6 +202,8 @@ Safety:
         .map((r) => ({
           karyawan_id:r.karyawan_id,
           nama_karyawan:r.__svp_name,
+          jam_masuk:r.jam_masuk,
+          jam_pulang:r.jam_pulang,
           alamat_masuk:r.__svp_address_in,
           alamat_pulang:r.__svp_address_out,
           latitude_masuk:r.__svp_lat_in,
