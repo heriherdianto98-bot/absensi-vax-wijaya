@@ -469,6 +469,13 @@
     filter:drop-shadow(0 3px 6px rgba(4,98,83,.18))!important;
   }
 
+  /* UI ONLY — keep helper text tucked neatly inside Ringkasan card */
+  html body .app .ringkasan .sum-helper{
+    margin:7px 0 0!important;
+    padding:0 2px 1px!important;
+    line-height:1.2!important;
+  }
+
   html body .app .cmp-panel h2{border-bottom-color:#d9ebe8!important}
   html body .app .cmp-list li{
     border-color:#e0eeeb!important;
