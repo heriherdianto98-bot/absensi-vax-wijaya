@@ -610,35 +610,26 @@
   }
 }
 
-/* Mobile date picker stays in document flow so it never covers KPI cards. */
+/* Floating phone calendar sits above KPI cards without changing their layout. */
 @media (max-width:480px){
-  html body .app .employee-date-toolbar:has(.vax-calendar:not([hidden])){
-    grid-template-areas:"date picker" "calendar calendar"!important;
-    grid-template-rows:auto auto!important;
+  html body .app .employee-date-toolbar.employee-date-toolbar:has(.vax-calendar:not([hidden])){
+    position:relative!important;
+    z-index:1000!important;
+    overflow:visible!important;
+    grid-template-areas:"date picker"!important;
+    grid-template-rows:auto!important;
   }
   html body .app .employee-date-toolbar .vax-calendar:not([hidden]){
-    grid-area:calendar!important;
-    position:relative!important;
-    top:auto!important;
-    right:auto!important;
-    width:100%!important;
+    position:absolute!important;
+    z-index:1001!important;
+    grid-area:auto!important;
+    top:calc(100% + 8px)!important;
+    right:0!important;
+    width:min(280px,calc(100vw - 32px))!important;
     max-width:none!important;
-    margin:8px 0 0!important;
+    margin:0!important;
     box-sizing:border-box!important;
-  }
-}
-
-/* Calendar is a sibling of the period card on phones, so KPI cards move down. */
-@media (max-width:480px){
-  html body .app > .vax-calendar:not([hidden]){
-    position:relative!important;
-    z-index:2!important;
-    top:auto!important;
-    right:auto!important;
-    width:min(280px,100%)!important;
-    max-width:100%!important;
-    margin:8px 0 12px auto!important;
-    box-sizing:border-box!important;
-    background:linear-gradient(180deg,#fff 0%,#f4fcfa 100%)!important;
+    background:#f8fffd!important;
+    box-shadow:0 18px 44px rgba(15,78,70,.26),inset 0 1px 0 #fff!important;
   }
 }
