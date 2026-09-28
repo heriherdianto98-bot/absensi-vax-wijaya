@@ -609,3 +609,21 @@
     box-sizing:border-box!important;
   }
 }
+
+/* Mobile date picker stays in document flow so it never covers KPI cards. */
+@media (max-width:480px){
+  html body .app .employee-date-toolbar:has(.vax-calendar:not([hidden])){
+    grid-template-areas:"date picker" "calendar calendar"!important;
+    grid-template-rows:auto auto!important;
+  }
+  html body .app .employee-date-toolbar .vax-calendar:not([hidden]){
+    grid-area:calendar!important;
+    position:relative!important;
+    top:auto!important;
+    right:auto!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:8px 0 0!important;
+    box-sizing:border-box!important;
+  }
+}
