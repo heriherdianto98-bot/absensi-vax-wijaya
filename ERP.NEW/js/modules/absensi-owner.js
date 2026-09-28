@@ -632,7 +632,7 @@ const AbsensiOwner = {
 
         let absenRes = await db
             .from("absensi")
-            .select("karyawan_id, status, denda, jam_masuk, terlambat_menit, status_denda")
+            .select("karyawan_id, status, denda, jam_masuk, jam_pulang, terlambat_menit, status_denda")
             .eq("tanggal", hariIni);
         if(absenRes.error && /column/i.test(absenRes.error.message || "")){
             absenRes = await db
@@ -739,9 +739,16 @@ const AbsensiOwner = {
             box.appendChild(empty);
             return;
         }
+
+        const hm = (value) => {
+            const match = String(value || "").match(/(?:^|T)(\d{2}:\d{2})/);
+            return match ? match[1] + " WIB" : "—";
+        };
+
         for(const { rec, employee } of records){
             const row = document.createElement("div");
             row.className = "absensi-activity-row";
+
             const info = document.createElement("div");
             const title = document.createElement("div");
             title.className = "absensi-activity-title";
@@ -749,15 +756,34 @@ const AbsensiOwner = {
             const branch = document.createElement("span");
             branch.textContent = ` (${employee.cabang})`;
             title.appendChild(branch);
+
             const action = document.createElement("div");
             action.className = "absensi-activity-aksi";
             action.textContent = `Absensi: ${String(rec.status || "Tercatat")}`;
-            const time = document.createElement("div");
-            time.className = "absensi-activity-time";
-            const match = String(rec.jam_masuk || "").match(/(?:^|T)(\d{2}:\d{2})/);
-            time.textContent = `${this.selectedDate()} · ${match ? match[1] + " WIB" : "Jam belum tersedia"}`;
+
+            const date = document.createElement("div");
+            date.className = "absensi-activity-time";
+            date.textContent = this.selectedDate();
+
             info.append(title, action);
-            row.append(info, time);
+
+            row.append(info, date);
+
+            if(!rec.__svp_floating){
+                const shifts = document.createElement("div");
+                shifts.className = "absensi-activity-shifts";
+                shifts.innerHTML = `
+                    <div class="absensi-activity-shift is-masuk">
+                        <b>MASUK</b>
+                        <span>${hm(rec.jam_masuk)}</span>
+                    </div>
+                    <div class="absensi-activity-shift is-pulang">
+                        <b>PULANG</b>
+                        <span>${hm(rec.jam_pulang)}</span>
+                    </div>`;
+                row.appendChild(shifts);
+            }
+
             box.appendChild(row);
         }
     }
