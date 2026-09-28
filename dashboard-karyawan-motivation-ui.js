@@ -127,16 +127,23 @@
     quote.querySelector('.employee-branch-quote-text').textContent = dailyQuote();
     branch.appendChild(quote);
 
-    let showingQuote = false;
+    /* UI only: panel ini hanya bergantian antara alamat dan kata bijak.
+       Provider/Last Sync tetap berada di panel terpisah di luar profile-branch. */
+    let state = 0; // 0=alamat, 1=motivasi
+    const applyState = () => {
+      branch.classList.toggle('is-quote', state === 1);
+      branch.classList.remove('is-sync');
+    };
     const swap = () => {
       branch.classList.add('is-changing');
       window.setTimeout(() => {
-        showingQuote = !showingQuote;
-        branch.classList.toggle('is-quote', showingQuote);
+        state = (state + 1) % 2;
+        applyState();
         branch.classList.remove('is-changing');
-      }, 260);
+      }, 220);
     };
-    window.setInterval(swap, 7500);
+    applyState();
+    window.setInterval(swap, 6000);
   };
 
   const init = () => {

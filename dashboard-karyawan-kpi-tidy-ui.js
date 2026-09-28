@@ -36,7 +36,7 @@
   const unavailable = () => { provider.textContent = 'Status belum tersedia'; last.textContent = '—'; };
   const fmtWib = iso => {
     if (!iso || !Number.isFinite(Date.parse(iso))) return '—';
-    return new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(iso)) + ' WIB';
+    return new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(iso)) + ' WIB';
   };
   const ensureOwnerEvaluator = () => new Promise((resolve, reject) => {
     if (window.ErpFreshness?.evaluate) { resolve(window.ErpFreshness); return; }
@@ -57,7 +57,7 @@
       if (error || !data || data.ok !== true) throw error || new Error('SYNC_METADATA_UNAVAILABLE');
       const engine = await ensureOwnerEvaluator();
       const result = engine.evaluate(data);
-      provider.textContent = result.provider?.label || 'Status belum tersedia';
+      provider.textContent = String(result.provider?.label || 'Status belum tersedia').replace(/^[^A-Za-z0-9]+/, '');
       last.textContent = fmtWib(result.lastSyncIso);
     } catch (error) {
       unavailable();
@@ -74,7 +74,7 @@
   'use strict';
   if (document.querySelector('script[data-vax-employee-monthly-kpi]')) return;
   const script = document.createElement('script');
-  script.src = 'dashboard-karyawan-kpi-bulanan-ui.js?v=20260924-2';
+  script.src = 'dashboard-karyawan-kpi-bulanan-ui.js?v=20260925-3';
   script.dataset.vaxEmployeeMonthlyKpi = '1';
   document.head.appendChild(script);
 })();

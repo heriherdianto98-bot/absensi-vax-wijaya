@@ -1,5 +1,3 @@
-/* 🔒 OWNER LOCK — Performa Saya KPI UI | PASS 2026-09-26 */
-/* Do not modify without explicit Owner approval. */
 /* Employee dashboard presentation only. No canonical engine or shared styles changed. */
 #kpiCapster.today-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:100px;gap:8px!important}
 #kpiCapster .today-item,#kpiCapster .kpi-service{box-sizing:border-box;height:100px!important;min-height:100px!important;max-height:100px!important;min-width:0;aspect-ratio:auto!important;padding:10px!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important}

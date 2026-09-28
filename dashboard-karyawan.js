@@ -112,8 +112,9 @@ function renderServiceDetail(items){
     }).join("");
 }
 
-function setCapsterKpiText(customer, service, share, payable){
+function setCapsterKpiText(customer, service, share, payable, serviceTotal = "—"){
     setText("todayCustomer", customer);
+    setText("todayServiceTotal", serviceTotal);
     if(typeof service === "object"){
         renderServiceDetail(service);
     }else{
@@ -168,13 +169,15 @@ async function loadCapsterKpiHariIni(){
         }
 
         const customer = Number(payload.customer);
+        const serviceTotal = Number(payload.service);
         const share = Number(payload.share_bruto);
         const detail = Array.isArray(payload.service_detail) ? payload.service_detail : [];
         setCapsterKpiText(
             formatCustomerCount(Number.isFinite(customer) ? customer : 0),
             detail,
             formatRupiahId(Number.isFinite(share) ? share : 0),
-            "—"
+            "—",
+            (Number.isFinite(serviceTotal) ? formatCustomerCount(serviceTotal) : "0") + " svc"
         );
     }catch(err){
         console.error("KPI Capster hari ini error:", err);

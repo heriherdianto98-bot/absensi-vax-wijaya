@@ -1,4 +1,4 @@
-/* Employee Barber Ranking — isolated presentation only. */
+/* Employee Barber Ranking ΓÇö isolated presentation only. */
 .employee-barber-ranking{margin:0;padding:12px;border:1px solid rgba(212,175,55,.28);border-radius:13px;background:linear-gradient(145deg,#242522,#141616 82%);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 12px rgba(0,0,0,.32);color:#f5f1e8}
 .employee-barber-ranking[hidden]{display:none!important}
 .employee-barber-ranking-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
@@ -27,7 +27,7 @@
 @media(max-width:359px){.employee-barber-ranking{padding:10px}.employee-barber-ranking-row{grid-template-columns:30px minmax(0,1fr) auto;padding:6px}.employee-barber-ranking-name,.employee-barber-ranking-service{font-size:11px}}
 
 
-/* UI ONLY — Ranking Barber orbit + larger tabs + self emphasis 2026-09-26 */
+/* UI ONLY ΓÇö Ranking Barber orbit + larger tabs + self emphasis 2026-09-26 */
 html body .app .employee-barber-ranking{
   position:relative!important;
   isolation:isolate!important;
@@ -119,7 +119,7 @@ html body .app .employee-barber-ranking .employee-barber-ranking-row.is-self .em
 }
 
 
-/* UI ONLY — ranking self rank color + themed scrollbar 2026-09-26 */
+/* UI ONLY ΓÇö ranking self rank color + themed scrollbar 2026-09-26 */
 html body .app .employee-barber-ranking .employee-barber-ranking-self strong{
   color:#27bca8!important;
   text-shadow:0 1px 0 rgba(255,255,255,.75),0 0 8px rgba(39,188,168,.18)!important;
@@ -161,7 +161,7 @@ html body .app .employee-barber-ranking .employee-barber-ranking-list::-webkit-s
 }
 
 
-/* UI ONLY — ranking scope/date status inset + bold 2026-09-26 */
+/* UI ONLY ΓÇö ranking scope/date status inset + bold 2026-09-26 */
 html body .app .employee-barber-ranking .employee-barber-ranking-status{
   padding-left:6px!important;
   padding-right:6px!important;

@@ -64,3 +64,14 @@ html body .app .profile-card:not(.tutup-ops-banner)::after{
     max-height:66px!important;
   }
 }
+
+
+
+
+/* UI ONLY — correct Capster icon vertical offset 2026-09-26 */
+@media (max-width:380px){
+  html body .app .profile-card:not(.tutup-ops-banner) .profile-line i.fa-user-tie{
+    position:relative!important;
+    top:4px!important;
+  }
+}
