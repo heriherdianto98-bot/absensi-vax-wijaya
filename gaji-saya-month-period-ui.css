@@ -208,3 +208,30 @@
 .gaji-month-actions .btn-print:active{
   transform:scale(.985)!important;
 }
+
+
+/* FINAL OVERRIDE — Cetak Slip Gaji full hijau tema, UI ONLY */
+html body .app .gaji-month-period-panel .gaji-month-actions .btn-print{
+  width:100%!important;
+  min-height:40px!important;
+  border:1px solid #16a991!important;
+  background:linear-gradient(180deg,#36cfb8 0%,#22b89f 100%)!important;
+  color:#ffffff!important;
+  box-shadow:
+    0 6px 14px rgba(34,184,159,.24),
+    inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+
+html body .app .gaji-month-period-panel .gaji-month-actions .btn-print i,
+html body .app .gaji-month-period-panel .gaji-month-actions .btn-print span{
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+}
+
+html body .app .gaji-month-period-panel .gaji-month-actions .btn-print:hover{
+  background:linear-gradient(180deg,#3bd4bd 0%,#25bea5 100%)!important;
+}
+
+html body .app .gaji-month-period-panel .gaji-month-actions .btn-print:active{
+  transform:scale(.985)!important;
+}
