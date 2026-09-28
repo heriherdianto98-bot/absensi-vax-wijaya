@@ -452,3 +452,27 @@ body{
   .profile-history-grid{gap:7px!important}
   .profile-history-item strong{font-size:17px!important}
 }
+
+
+/* ===== IDENTITAS KARYAWAN — FULL THEME GREEN MINI CARDS ===== */
+.profile-identity-card .profile-data-item{
+  border:1px solid #0f9e8a!important;
+  border-top-color:#64e0cf!important;
+  border-bottom-color:#0b8f7d!important;
+  background:
+    radial-gradient(90% 130% at 100% 0%,rgba(255,255,255,.15),transparent 58%),
+    linear-gradient(135deg,#39cfbc 0%,#24b9a4 56%,#16a890 100%)!important;
+  box-shadow:
+    0 4px 0 rgba(13,130,116,.20),
+    0 8px 14px rgba(20,140,126,.15),
+    inset 0 1px 0 rgba(255,255,255,.30)!important;
+}
+
+.profile-identity-card .profile-data-item span{
+  color:rgba(255,255,255,.82)!important;
+}
+
+.profile-identity-card .profile-data-item strong{
+  color:#ffffff!important;
+  text-shadow:0 1px 2px rgba(3,83,70,.15)!important;
+}
