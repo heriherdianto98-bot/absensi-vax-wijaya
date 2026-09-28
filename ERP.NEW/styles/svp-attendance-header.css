@@ -445,3 +445,35 @@
   border-color:rgba(255,255,255,.07)!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
 }
+
+
+/* History time cards — match top MASUK/PULANG colors. UI ONLY. */
+.svp-attendance-history-times span:first-child{
+  background:
+    radial-gradient(110% 120% at 100% 0%,rgba(255,255,255,.14),transparent 45%),
+    linear-gradient(145deg,#15965b 0%,#127b4d 58%,#0d6540 100%)!important;
+  border:1px solid rgba(94,234,154,.24)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -7px 16px rgba(0,0,0,.08),
+    0 6px 14px rgba(16,185,129,.12)!important;
+}
+.svp-attendance-history-times span:last-child{
+  background:
+    radial-gradient(110% 120% at 100% 0%,rgba(255,255,255,.16),transparent 45%),
+    linear-gradient(145deg,#c79524 0%,#a87517 58%,#855b10 100%)!important;
+  border:1px solid rgba(250,204,21,.25)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -7px 16px rgba(0,0,0,.08),
+    0 6px 14px rgba(245,158,11,.12)!important;
+}
+.svp-attendance-history-times span:first-child small,
+.svp-attendance-history-times span:last-child small{
+  color:rgba(255,255,255,.80)!important;
+}
+.svp-attendance-history-times span:first-child strong,
+.svp-attendance-history-times span:last-child strong{
+  color:#fff!important;
+  text-shadow:0 1px 1px rgba(0,0,0,.18)!important;
+}
