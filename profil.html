@@ -3,8 +3,55 @@
 <style>
 *{box-sizing:border-box}html{background:#0c0d0c}body{margin:0;min-height:100dvh;color:#f5f0e6;background:#0c0d0c;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}.shell{max-width:430px;margin:auto;padding:18px 16px 100px}.head{display:flex;align-items:center;gap:12px;margin-bottom:18px}.back{color:#f3d08a;text-decoration:none;font-size:22px;padding:4px 8px}.head strong{color:#f4d088;letter-spacing:.08em}.card{border:1px solid #68552e;background:linear-gradient(135deg,#24231e,#171918);border-radius:18px;padding:18px;margin:0 0 12px;box-shadow:0 8px 28px #0005}.card h1,.card h2{margin:0 0 7px;font-size:19px}.card p{margin:0 0 13px;color:#c7bda9;font-size:13px}.field{display:block;margin:13px 0 0;font-size:13px;font-weight:700}.field input{display:block;margin-top:5px;width:100%;padding:12px 13px;border-radius:11px;border:1px solid #725e32;background:#0b0d0c;color:#fff;font:inherit;min-height:46px}.field input:focus{outline:2px solid #ddbb69}.field small{font-weight:400;color:#c1b6a1}.hint{border:1px solid #725e32;border-radius:12px;background:#312a19;padding:11px 12px;color:#ffdf96;font-size:13px;margin-top:12px}.muted{color:#c9c2b6}.btn{width:100%;min-height:47px;margin-top:16px;border:0;border-radius:12px;background:linear-gradient(#ffe39a,#d6aa37);color:#18120a;font-weight:800;font-size:15px;cursor:pointer}.btn:disabled{opacity:.6;cursor:wait}.notice{margin:12px 0 0;padding:10px;border-radius:10px;background:#14251b;color:#b8edc9;white-space:pre-wrap}.notice.error{background:#301b1b;color:#ffbebe}.profile-photo-wrap{display:flex;align-items:center;gap:14px}.profile-photo{width:78px;height:78px;border-radius:50%;object-fit:cover;border:2px solid #c9a33a;box-shadow:0 0 18px #d4a01735;background:#111}.profile-photo-copy{flex:1;min-width:0}.profile-photo-copy p{margin:2px 0 0}.photo-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.photo-actions .btn{margin-top:0}.btn-secondary{background:#1a1d1b!important;color:#f4d088!important;border:1px solid #725e32!important}.btn-danger{background:linear-gradient(#f04444,#b81f1f)!important;color:#fff!important;border:1px solid #ff6565!important}.logout-copy{text-align:center;margin-bottom:2px!important}.hidden{display:none!important}.nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(calc(100% - 30px),400px);background:#171917;border:1px solid #3c372b;border-radius:17px;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 0;z-index:5}.nav a{text-align:center;color:#c1b9a9;text-decoration:none;font-size:12px}.nav a.current{color:#f4d088;font-weight:800}@media(prefers-reduced-motion:no-preference){.card{animation:rise .3s ease both}@keyframes rise{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}}
 </style><link rel="stylesheet" href="employee-bottomnav-canonical-ui.css?v=20260927-1"><link rel="stylesheet" href="profil-main-theme-ui.css?v=20260928-1"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></head><body><main class="shell"><header class="head"><a class="back" href="dashboard-karyawan.html" aria-label="Kembali ke dashboard">‹</a><strong>VAX WIJAYA · PROFIL</strong></header>
-<section class="card"><h1>Identitas Akun</h1><p>Data identitas mengikuti Master Karyawan. Kode login tetap melekat pada akun Anda.</p><div id="identity" class="muted">Memeriksa sesi…</div><div id="status" class="hint hidden" role="status"></div></section>
+<section class="card profile-master-card">
+<h1>Identitas Karyawan</h1>
+<p>Data berikut hanya dibaca dari Master Karyawan. Perubahan identitas dilakukan oleh Owner dari Master Karyawan.</p>
+<div id="profileMasterError" class="notice error" hidden></div>
+<div class="profile-data-grid">
+  <div class="profile-data-item"><span>Nama Karyawan</span><strong id="profileMasterName">Memuat…</strong></div>
+  <div class="profile-data-item"><span>ID Karyawan</span><strong id="profileEmployeeId">—</strong></div>
+  <div class="profile-data-item"><span>Kode Login</span><strong id="profileLoginCode">Memuat…</strong></div>
+  <div class="profile-data-item"><span>Cabang</span><strong id="profileBranch">—</strong></div>
+  <div class="profile-data-item"><span>Jabatan</span><strong id="profileRole">—</strong></div>
+  <div class="profile-data-item"><span>Status</span><strong id="profileStatus">—</strong></div>
+  <div class="profile-data-item"><span>No. HP / WhatsApp</span><strong id="profilePhone">—</strong></div>
+  <div class="profile-data-item profile-data-wide"><span>Alamat KTP</span><strong id="profileAddress">—</strong></div>
+</div>
+</section>
+
+<section class="card profile-master-card">
+<h2>Data Pribadi</h2>
+<p>Identitas resmi mengikuti data yang tersimpan pada Master Karyawan.</p>
+<div class="profile-data-grid">
+  <div class="profile-data-item profile-data-wide"><span>Nama Lengkap KTP</span><strong id="profileKtpName">—</strong></div>
+  <div class="profile-data-item"><span>NIK</span><strong id="profileNik">—</strong></div>
+  <div class="profile-data-item"><span>Status Identitas</span><strong id="profileIdentityStatus">—</strong></div>
+  <div class="profile-data-item"><span>Tempat Lahir</span><strong id="profileBirthPlace">—</strong></div>
+  <div class="profile-data-item"><span>Tanggal Lahir</span><strong id="profileBirthDate">—</strong></div>
+  <div class="profile-data-item"><span>Tanggal Bergabung</span><strong id="profileJoinDate">—</strong></div>
+  <div class="profile-data-item"><span>Lama Kerja</span><strong id="profileTenure">—</strong></div>
+</div>
+</section>
+
+<section class="card profile-master-card">
+<h2>Riwayat Masa Kerja</h2>
+<p>Ringkasan mengikuti ID karyawan yang sama walaupun pernah berpindah cabang.</p>
+<div class="profile-history-grid">
+  <div class="profile-history-item"><span>Hadir</span><strong id="profileHadir">—</strong></div>
+  <div class="profile-history-item"><span>Terlambat</span><strong id="profileLate">—</strong></div>
+  <div class="profile-history-item"><span>Libur</span><strong id="profileLibur">—</strong></div>
+  <div class="profile-history-item"><span>Sakit</span><strong id="profileSakit">—</strong></div>
+  <div class="profile-history-item"><span>Izin</span><strong id="profileIzin">—</strong></div>
+</div>
+<p id="profileHistoryNote" class="profile-source-note">Memuat riwayat…</p>
+<div class="profile-salary-card">
+  <span>Total Gaji Tercatat</span>
+  <strong id="profileSalaryTotal">Memuat…</strong>
+  <small id="profileSalaryNote">Mengikuti sumber yang tersedia di Master Karyawan.</small>
+</div>
+</section>
+
 <section class="card"><h2>Foto Profil</h2><div class="profile-photo-wrap"><img id="profilePhotoPreview" class="profile-photo" alt="Foto profil karyawan"><div class="profile-photo-copy"><strong>Foto Karyawan</strong><p>Ganti foto yang tampil di dashboard karyawan.</p></div></div><input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp" hidden><div class="photo-actions"><button type="button" id="profilePhotoChoose" class="btn btn-secondary">Ganti Foto</button><button type="button" id="profilePhotoSave" class="btn" disabled>Simpan Foto</button></div><p id="profileActionNotice" class="notice" hidden role="status" aria-live="polite"></p></section>
-<section class="card"><h2>Pengaturan Akun</h2><p>Gunakan password pribadi. Setelah email diverifikasi, Anda dapat masuk dengan email atau kode login dan password yang sama.</p><form id="credentialForm" autocomplete="on"><label class="field">Email pribadi<input id="email" type="email" maxlength="254" autocomplete="email" placeholder="nama@email.com"><small>Email baru perlu diverifikasi sebelum bisa digunakan untuk login dan pemulihan password.</small></label><label class="field">Password saat ini<input id="currentPassword" type="password" autocomplete="current-password" required maxlength="128"></label><label class="field">Password baru<input id="newPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128"><small>Minimal 12 karakter. Hindari password awal bersama.</small></label><label class="field">Ulangi password baru<input id="confirmPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><button class="btn" id="save" type="submit">Simpan Email & Ganti Password</button><p id="notice" class="notice hidden" role="status" aria-live="polite"></p></form></section><section class="card"><h2>Keluar dari Akun</h2><p class="logout-copy">Keluar aman dari ERP di perangkat ini.</p><button type="button" id="profileLogout" class="btn btn-danger">Logout</button></section></main>
+<section class="card"><h2>Keamanan Akun</h2><p>Login karyawan menggunakan kode login dan password pribadi. Email tidak digunakan sebagai identitas login pada halaman ini.</p><div id="status" class="hint hidden" role="status"></div><form id="credentialForm" autocomplete="on"><label class="field">Password saat ini<input id="currentPassword" type="password" autocomplete="current-password" required maxlength="128"></label><label class="field">Password baru<input id="newPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128"><small>Minimal 12 karakter dan berbeda dari password saat ini.</small></label><label class="field">Ulangi password baru<input id="confirmPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><button class="btn" id="save" type="submit">Ganti Password</button><p id="notice" class="notice hidden" role="status" aria-live="polite"></p></form></section><section class="card"><h2>Keluar dari Akun</h2><p class="logout-copy">Keluar aman dari ERP di perangkat ini.</p><button type="button" id="profileLogout" class="btn btn-danger">Logout</button></section></main>
 <nav id="bottomNav" class="nav" aria-label="Navigasi Karyawan"><a href="dashboard-karyawan.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a><a href="absensi.html"><i class="fa-solid fa-fingerprint"></i><span>Absensi</span></a><a href="gaji-saya.html"><i class="fa-solid fa-file-invoice"></i><span>Gaji Saya</span></a><a class="current active" href="profil.html" aria-current="page"><i class="fa-solid fa-user"></i><span>Profil</span></a></nav>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="karyawan-session.js"></script><script src="employee-credential-profile.js?v=20260923-1"></script><script src="employee-email-verification-ui.js?v=20260923-1"></script><script src="employee-profile-actions.js?v=20260923-1"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="karyawan-session.js"></script><script src="employee-master-profile-consumer.js?v=20260928-1"></script><script src="employee-credential-profile.js?v=20260928-code-only1"></script><script src="employee-profile-actions.js?v=20260923-1"></script></body></html>
