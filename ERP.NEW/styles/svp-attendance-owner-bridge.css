@@ -154,3 +154,30 @@
   font-size:9px!important;
   line-height:1.3!important;
 }
+
+
+/* Fix left-side SVP activity text contrast on dark ERP card — UI ONLY */
+#aktivitasTerbaru .absensi-activity-row .absensi-activity-title,
+#aktivitasTerbaru .absensi-activity-row .absensi-activity-title span,
+#aktivitasTerbaru .absensi-activity-row .absensi-activity-aksi,
+#aktivitasTerbaru .absensi-activity-row .absensi-activity-time{
+  opacity:1!important;
+  text-shadow:none!important;
+}
+
+#aktivitasTerbaru .absensi-activity-row .absensi-activity-title{
+  color:#f5f7fa!important;
+  font-weight:900!important;
+}
+#aktivitasTerbaru .absensi-activity-row .absensi-activity-title span{
+  color:#d9b94e!important;
+  font-weight:800!important;
+}
+#aktivitasTerbaru .absensi-activity-row .absensi-activity-aksi{
+  color:#dfe7ef!important;
+  font-weight:800!important;
+}
+#aktivitasTerbaru .absensi-activity-row .absensi-activity-time{
+  color:#c9d3dc!important;
+  font-weight:800!important;
+}
