@@ -181,3 +181,22 @@
   color:#c9d3dc!important;
   font-weight:800!important;
 }
+
+
+/* Keep SVP activity status on one line and reduce left block width — UI ONLY */
+#aktivitasTerbaru .absensi-activity-aksi{
+  white-space:nowrap!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  width:auto!important;
+  max-width:none!important;
+}
+#aktivitasTerbaru .absensi-activity-row>div:first-child{
+  flex:0 0 auto!important;
+  min-width:190px!important;
+  max-width:220px!important;
+}
+#aktivitasTerbaru .absensi-activity-title{
+  white-space:nowrap!important;
+}
