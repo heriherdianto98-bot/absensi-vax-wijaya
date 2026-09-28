@@ -1,0 +1,39 @@
+﻿/* VAX WIJAYA — canonical employee notification popup UI.
+   UI ONLY. Mirrors the locked Dashboard Karyawan white/green visual language. */
+html body .app .vax-employee-notif-panel{
+  background:#fff!important;
+  color:#244b52!important;
+  border:1px solid #cfe6e2!important;
+  box-shadow:0 18px 38px rgba(29,91,88,.18)!important;
+}
+html body .app .vax-employee-notif-panel-head{
+  color:#1f555c!important;
+}
+html body .app .vax-employee-notif-refresh{
+  background:#f4fbfa!important;
+  color:#169884!important;
+  border-color:#bfe1dc!important;
+}
+html body .app .vax-employee-notif-item{
+  background:#f8fcfb!important;
+  color:#244b52!important;
+  border-color:#d9ebe8!important;
+}
+html body .app .vax-employee-notif-item small,
+html body .app .vax-employee-notif-empty{
+  color:#6d858a!important;
+}
+html body .app .vax-employee-notif-item.is-pengaduan{
+  background:#f2fbfa!important;
+  border-color:#b7e7df!important;
+}
+html body .app .vax-employee-notif-item.is-pengaduan strong{
+  color:#148f80!important;
+}
+html body .app .vax-employee-notif-item.is-kasbon{
+  background:#f2fbf8!important;
+  border-color:#b8e6d9!important;
+}
+html body .app .vax-employee-notif-item.is-kasbon strong{
+  color:#15816f!important;
+}
