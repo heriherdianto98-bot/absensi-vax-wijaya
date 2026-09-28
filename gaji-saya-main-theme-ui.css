@@ -582,8 +582,10 @@
 
   /* RINCIAN HARIAN — UI ONLY: 3D card + inner scroll + frozen header */
   html body .app .daily-panel{
-    min-height:260px!important;
-    max-height:360px!important;
+    flex:0 0 300px!important;
+    height:300px!important;
+    min-height:300px!important;
+    max-height:300px!important;
     display:flex!important;
     flex-direction:column!important;
     overflow:hidden!important;
@@ -602,8 +604,9 @@
   }
 
   html body .app .daily-head{
-    position:relative!important;
-    z-index:4!important;
+    position:sticky!important;
+    top:0!important;
+    z-index:10!important;
     flex:0 0 auto!important;
     margin:0!important;
     padding:11px 12px 9px!important;
@@ -714,8 +717,10 @@
 
   @media(max-width:380px){
     html body .app .daily-panel{
-      min-height:250px!important;
-      max-height:330px!important;
+      flex-basis:280px!important;
+      height:280px!important;
+      min-height:280px!important;
+      max-height:280px!important;
     }
     html body .app .daily-head{
       padding:10px 11px 8px!important;
