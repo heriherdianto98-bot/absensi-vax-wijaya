@@ -409,27 +409,40 @@
     background:linear-gradient(135deg,rgba(255,255,255,.52) 0%,rgba(255,255,255,0) 42%)!important;
   }
 
-  html body .app .sum-bruto{
-    border:1px solid #8fd6cb!important;
-    box-shadow:
-      0 11px 22px rgba(24,143,125,.14),
-      0 4px 8px rgba(24,143,125,.09),
-      inset 0 1px 0 #fff,
-      inset 0 -2px 0 rgba(27,159,141,.08)!important;
-  }
-  html body .app .sum-bruto small{color:#1a9f8d!important}
-  html body .app .sum-bruto strong{color:#234b52!important}
-
+  html body .app .sum-bruto,
   html body .app .sum-denda{
-    border:1px solid #efb6bc!important;
+    border:1px solid #b5ddd7!important;
+    border-top-color:#d9eeea!important;
+    border-bottom-color:#80c9bd!important;
+    background:linear-gradient(180deg,#ffffff 0%,#fbfefd 58%,#f0f8f6 100%)!important;
     box-shadow:
-      0 11px 22px rgba(183,74,84,.13),
-      0 4px 8px rgba(183,74,84,.08),
-      inset 0 1px 0 #fff,
-      inset 0 -2px 0 rgba(197,95,105,.08)!important;
+      0 4px 0 rgba(35,166,147,.18),
+      0 7px 10px rgba(32,103,94,.12),
+      0 11px 18px rgba(32,103,94,.06),
+      inset 0 2px 0 rgba(255,255,255,1),
+      inset 0 -1px 0 rgba(42,171,152,.10)!important;
   }
-  html body .app .sum-denda small{color:#c55f69!important}
-  html body .app .sum-denda strong{color:#7b333a!important}
+  html body .app .sum-bruto::before,
+  html body .app .sum-denda::before{
+    content:""!important;
+    position:absolute!important;
+    left:7px!important;
+    right:7px!important;
+    top:1px!important;
+    height:1px!important;
+    border-radius:99px!important;
+    background:rgba(255,255,255,.95)!important;
+    pointer-events:none!important;
+  }
+  html body .app .sum-bruto small,
+  html body .app .sum-denda small{
+    color:#526d72!important;
+  }
+  html body .app .sum-bruto strong,
+  html body .app .sum-denda strong{
+    color:#173f47!important;
+    text-shadow:none!important;
+  }
 
   html body .app .sum-net{
     border:1px solid #12a98f!important;
