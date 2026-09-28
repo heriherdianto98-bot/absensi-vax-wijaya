@@ -520,7 +520,11 @@ const AbsensiOwner = {
         const employeeId = this.selectedEmployeeId();
 
         document.querySelectorAll("#statusKaryawan tr").forEach((row) => {
-            const cab = (row.cells[1]?.innerText || "").toLowerCase();
+            const cab = String(
+                row.getAttribute("data-cabang")
+                || row.cells[1]?.innerText
+                || ""
+            ).trim().toLowerCase();
             const status = (row.cells[2]?.innerText || "").trim().toUpperCase();
             const denda = Number(row.getAttribute("data-denda") || 0);
             const okCabang = !cabang || cab === cabang;
@@ -701,6 +705,7 @@ const AbsensiOwner = {
                 <tr class="absensi-status-row" style="cursor:pointer"
                     data-absensi-row-id="${r.id}"
                     data-absensi-row-nama="${String(r.nama).replace(/"/g, "&quot;")}"
+                    data-cabang="${String(r.cabang || "").replace(/"/g, "&quot;")}"
                     data-denda="${r.denda || 0}">
                     <td>${r.nama}</td>
                     <td>${r.cabang}</td>
