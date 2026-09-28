@@ -278,7 +278,7 @@
 
   async function submitAttendance(){
     const mode=actionMode();
-    if(busy || mode==="DONE" || !currentLocation || currentLocation.accuracy>100) return;
+    if(busy || submitLocked || mode==="DONE" || !currentLocation || currentLocation.accuracy>300) return;
     busy=true;
     paintState();
     setMessage("Menyimpan absensi…");
