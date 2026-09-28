@@ -180,6 +180,7 @@ function payrollSourceToConsumer(payload){
             net_diterima: Number(summary.gajiBersih || 0)
         },
         payroll_summary: summary,
+        payroll_row: row,
         daily
     };
 }
@@ -611,14 +612,76 @@ function fillSlipPrint(slip){
         </tr>`).join("");
 }
 
+function payrollPrintDateLabel(iso){
+    if(!isIsoDate(iso)) return String(iso || "—");
+    return new Intl.DateTimeFormat("id-ID",{
+        timeZone:"Asia/Jakarta",
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    }).format(new Date(iso + "T12:00:00+07:00"));
+}
+
+function buildCanonicalPayrollPrintSnapshot(){
+    const payload=currentPayrollConsumer;
+    const row=payload?.payroll_row;
+    if(!payload || !row) return null;
+
+    const sm=row.summary || {};
+    const money=(value)=>formatRupiahId(Number(value||0)).replace(/^Rp(?=\d)/,"Rp ");
+    const daily=(Array.isArray(row.daily)?row.daily:[]).map(item=>[
+        payrollPrintDateLabel(item.tanggal),
+        item.cabang || row.homeCabang || "—",
+        item.service == null ? "—" : String(Number(item.service)||0),
+        money(item.gajiPokok),
+        money(item.denda),
+        money(item.kasbon),
+        money(item.bonusProduk)
+    ]);
+
+    const sums=[
+        {label:"Pendapatan Kotor",value:money(sm.gajiKotor ?? sm.gajiPokok)},
+        {label:"Denda",value:money(sm.denda)},
+        {label:"Kasbon",value:money(sm.kasbon)},
+        {label:"Bonus Insentif",value:money(sm.bonusInsentif)},
+        {label:"Bonus KPI",value:money(sm.bonusKpi)},
+        {label:"Share Produk",value:money(sm.bonusProduk)},
+        {label:"Pendapatan Bersih",value:money(sm.gajiBersih)},
+        {label:"Hak Dibayar",value:money(sm.gajiBersih)}
+    ];
+
+    return {
+        month:formatMonthLabelFromIso(payload?.periode?.dari),
+        employeeLabel:`${row.namaKaryawan} · ${row.jabatan}`,
+        branchLabel:row.homeCabang || payload?.employee?.cabang || "—",
+        branchId:String(row.homeCabangId || ""),
+        cards:[{
+            employeeId:String(row.employeeId || ""),
+            name:row.namaKaryawan || "—",
+            info:`${row.homeCabang || "—"} · ${row.jabatan || "—"}`,
+            rows:daily,
+            sums,
+            payoutNet:Number(sm.gajiBersih || 0),
+            displayNet:money(sm.gajiBersih)
+        }]
+    };
+}
+
 function cetakSlipGaji(){
-    const slip = collectSlipFromPayroll();
-    if(!slip){
+    const snap=buildCanonicalPayrollPrintSnapshot();
+    if(!snap){
         setPeriodMessage("Data Payroll belum siap dicetak.");
         return;
     }
-    fillSlipPrint(slip);
-    window.print();
+    if(typeof PayrollCapsterPrint?.openSnapshot !== "function"){
+        setPeriodMessage("Presenter Payroll belum siap.");
+        return;
+    }
+    PayrollCapsterPrint.openSnapshot(snap,{
+        logo:new URL("ERP.NEW/assets/logo-vax-wijaya.png",window.location.href).href,
+        ownerSignatureUrl:new URL("ERP.NEW/assets/owner-signature.png",window.location.href).href,
+        supervisorSignatureUrl:new URL("ERP.NEW/assets/supervisor-signature-rangga.svg",window.location.href).href
+    });
 }
 
 async function loadCabangName(cabangId){
