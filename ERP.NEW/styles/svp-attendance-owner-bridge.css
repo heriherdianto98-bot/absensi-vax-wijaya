@@ -181,3 +181,14 @@
   color:#c9d3dc!important;
   font-weight:800!important;
 }
+
+
+/* Final SVP activity status line — UI ONLY */
+#aktivitasTerbaru .absensi-activity-aksi{
+  display:block!important;
+  white-space:nowrap!important;
+  width:max-content!important;
+  max-width:100%!important;
+  overflow:visible!important;
+  line-height:1.3!important;
+}
