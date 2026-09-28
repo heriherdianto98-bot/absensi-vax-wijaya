@@ -461,3 +461,14 @@
 #statusKaryawan .svp-status-times span{
   color:inherit!important;
 }
+
+
+/* SVP Status row — force readable white text over status-theme row, UI ONLY */
+#absensiRoot #statusKaryawan .svp-status-branch,
+#absensiRoot #statusKaryawan .svp-status-times,
+#absensiRoot #statusKaryawan .svp-status-times span{
+  color:#F8FAFC!important;
+  -webkit-text-fill-color:#F8FAFC!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
