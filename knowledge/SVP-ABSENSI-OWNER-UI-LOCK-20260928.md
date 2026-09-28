@@ -38,3 +38,28 @@ Do not change employee GPS/geofence/denda/attendance engine as part of SVP work.
 - Owner layout gives more width to Aktivitas Absensi and keeps Status panel narrower.
 - Vax Wijaya Floating is available in Absensi filters and includes Rangga, Hairi, and Ryan.
 - This checkpoint is UI/read presentation only; do not alter locked attendance engine, GPS/geofence, denda, or SVP attendance flow without Owner approval.
+
+
+## FINAL CHECKPOINT — 2026-09-28
+Semua perubahan sesi SVP Absensi + Owner Absensi sudah tersimpan di branch:
+`feature/employee-profile-canonical-20260927`
+
+### Final state
+- SVP absensi dari header dashboard.
+- Jam kerja SVP fleksibel.
+- GPS SVP tetap dicatat tanpa radius cabang.
+- Riwayat SVP tersedia.
+- Owner dapat melihat SVP di Matrix, Status Karyawan, dan Aktivitas Absensi.
+- Cabang `Vax Wijaya Floating` tersedia di filter Absensi.
+- Rangga/SVP tetap memakai cabang canonical `Vax Wijaya Floating`.
+- Hairi dan Ryan tetap terbaca sebagai karyawan Floating.
+- Status Karyawan Hari Ini dibuat ringkas: nama, cabang, status.
+- Badge MASUK mengikuti kode warna hijau Absensi.
+- Aktivitas Absensi SVP menampilkan jam masuk/pulang + alamat + koordinat + akurasi GPS.
+- Aktivitas Absensi karyawan biasa menampilkan jam masuk/pulang.
+- Layout Owner: panel Status lebih sempit, Aktivitas lebih lebar.
+- Data tes SVP tanggal 2026-09-28 sudah dihapus dari database untuk pengujian ulang.
+
+### Guardrail LOCK
+Jangan mengubah engine Absensi karyawan, GPS/geofence karyawan, denda, payroll, atau modul LOCK lain tanpa persetujuan Owner.
+Perubahan berikutnya harus melanjutkan dari checkpoint ini.
