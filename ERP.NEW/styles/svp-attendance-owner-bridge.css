@@ -323,3 +323,112 @@
   font-weight:700!important;
   line-height:1.25!important;
 }
+
+
+/* Status Karyawan Hari Ini — compact SVP row + readable theme, UI ONLY */
+#statusKaryawan tr[data-absensi-row-id]{
+  height:auto!important;
+}
+
+#statusKaryawan tr[data-absensi-row-id] td{
+  vertical-align:middle!important;
+}
+
+/* Keep SVP detail inside the branch column without overflowing the row */
+#statusKaryawan .svp-owner-branch-label{
+  color:#F8FAFC!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  line-height:1.2!important;
+  margin:0 0 4px 0!important;
+  text-shadow:none!important;
+}
+
+#statusKaryawan .svp-owner-location-block{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+}
+
+#statusKaryawan .svp-owner-location-block>div{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  column-gap:5px!important;
+  row-gap:1px!important;
+  min-width:0!important;
+  width:100%!important;
+  margin:0!important;
+  padding:4px 5px!important;
+  box-sizing:border-box!important;
+  background:#171d25!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+}
+
+#statusKaryawan .svp-owner-location-block b{
+  grid-column:1!important;
+  grid-row:1 / span 2!important;
+  align-self:start!important;
+  color:#F2C230!important;
+  background:rgba(242,194,48,.08)!important;
+  border:1px solid rgba(242,194,48,.14)!important;
+  border-radius:4px!important;
+  padding:2px 4px!important;
+  margin:0!important;
+  font-size:7.5px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  letter-spacing:.4px!important;
+  text-transform:uppercase!important;
+  text-shadow:none!important;
+}
+
+#statusKaryawan .svp-owner-location-block span{
+  grid-column:2!important;
+  grid-row:1!important;
+  color:#E8EDF5!important;
+  background:transparent!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  line-height:1.18!important;
+  text-shadow:none!important;
+  white-space:normal!important;
+  word-break:normal!important;
+  overflow-wrap:break-word!important;
+}
+
+#statusKaryawan .svp-owner-location-block small{
+  grid-column:2!important;
+  grid-row:2!important;
+  color:#9AA7B6!important;
+  background:transparent!important;
+  margin:1px 0 0!important;
+  padding:0!important;
+  font-size:7px!important;
+  font-weight:700!important;
+  line-height:1.12!important;
+  text-shadow:none!important;
+  white-space:normal!important;
+  word-break:normal!important;
+  overflow-wrap:break-word!important;
+}
+
+/* Prevent old green SVP presentation styles from leaking into Status panel */
+#statusKaryawan .svp-owner-location-block *{
+  opacity:1!important;
+}
+
+@media(max-width:1050px){
+  #statusKaryawan .svp-owner-location-block{
+    grid-template-columns:1fr!important;
+  }
+}
