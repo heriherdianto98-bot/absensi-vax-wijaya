@@ -2,3 +2,4 @@ Employee Portal V1 production release trigger
 Date: 2026-09-29
 Scope: Capster Dashboard, Absensi, Gaji Saya, Profil, shared employee UI/security assets.
 Fix 2026-09-29: include canonical read-only freshness evaluator for Provider / Last Sync.
+Fix 2026-09-29: mobile calendar opens below toolbar and keeps KPI cards visible.
