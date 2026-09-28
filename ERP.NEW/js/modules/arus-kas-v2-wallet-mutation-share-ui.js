@@ -36,6 +36,18 @@
     if(!table) throw new Error("Tabel mutasi belum tersedia.");
     const clone=table.cloneNode(true);
     clone.querySelectorAll("button,[title]").forEach(el=>el.removeAttribute?.("title"));
+
+    /* Print only: tandai awal setiap tanggal agar mutasi terbaca seperti rekening koran/bank.
+       Tidak mengubah data, urutan, saldo, atau renderer layar. */
+    let lastDate="";
+    clone.querySelectorAll("tbody tr").forEach(tr=>{
+      const date=String(tr.children?.[0]?.textContent||"").replace(/\s+/g," ").trim();
+      if(date && date!=="—" && date!==lastDate){
+        tr.classList.add("ak2-mut-date-start");
+        lastDate=date;
+      }
+    });
+
     return {title,period,balance,table:clone};
   }
 
@@ -57,7 +69,10 @@
       table{width:100%;border-collapse:collapse;table-layout:fixed;border:1px solid var(--line)}thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
       th{background:var(--head)!important;color:#fff!important;padding:6px 5px;border-right:1px solid #333;border-bottom:2px solid var(--gold-line);font-size:6.9pt;text-transform:uppercase;letter-spacing:.028em;text-align:left;line-height:1.12}
       td{padding:5px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:7.9pt;vertical-align:top;overflow-wrap:anywhere;background:#fff!important;color:#181818!important;line-height:1.18}
-      tbody tr:nth-child(even) td{background:#fafaf8!important}.ak2-mut-kind,.ak2-mut-status{display:inline-block;padding:2px 5px;border:1px solid #bbb;border-radius:999px;font-size:6.5pt;font-weight:800;background:#f4f4f4!important;color:#222!important}
+      tbody tr:nth-child(even) td{background:#fafaf8!important}
+      tbody tr.ak2-mut-date-start td{border-top:5px solid #e3e5e8!important;background:#f1f2f4!important}
+      tbody tr.ak2-mut-date-start td:first-child{font-weight:900!important;color:#30343a!important}
+      .ak2-mut-kind,.ak2-mut-status{display:inline-block;padding:2px 5px;border:1px solid #bbb;border-radius:999px;font-size:6.5pt;font-weight:800;background:#f4f4f4!important;color:#222!important}
       .ak2-mut-amount,.ak2-mut-running{font-weight:900}
       .foot{display:flex;justify-content:space-between;gap:16px;margin-top:10px;padding-top:7px;border-top:1px solid var(--line);font-size:7.5pt;color:#666}
       .no-print{margin:12px 0}.no-print button{display:inline-block!important;border:1px solid var(--gold);background:#f7f1de;color:#111;font-weight:800;padding:8px 13px;border-radius:6px;cursor:pointer}
