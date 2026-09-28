@@ -5,7 +5,7 @@
   'use strict';
   const $=id=>document.getElementById(id);
   const staff=document.body.dataset.inboxMode==='staff';
-  const state={active:null,contacts:[],threads:[],tab:'THREADS',busy:false,me:'',timer:null};
+  const state={active:null,contacts:[],threads:[],tab:'THREADS',busy:false,deleteBusy:false,me:'',timer:null};
   const list=$('inboxList'),search=$('inboxSearch'),view=$('inboxListView'),thread=$('inboxThread');
   const status=$('inboxThreadStatus'),messages=$('inboxMessages'),input=$('inboxText');
   const text=(el,value)=>{if(el)el.textContent=value;};
@@ -17,6 +17,15 @@
     if(error)throw error;
     const payload=Array.isArray(data)?data[0]:data;
     if(!payload||payload.ok!==true)throw new Error(payload?.reason||'Gagal memuat inbox.');
+    return payload;
+  }
+  async function deleteThreadRpc(threadId){
+    const t=token();
+    if(!staff&&!t)throw new Error('Sesi karyawan tidak tersedia.');
+    const {data,error}=await db.rpc('vax_inbox_delete_thread_v1',{p_token:t,p_thread_id:threadId});
+    if(error)throw error;
+    const payload=Array.isArray(data)?data[0]:data;
+    if(!payload||payload.ok!==true)throw new Error(payload?.reason||'Gagal menghapus percakapan.');
     return payload;
   }
   function errorLabel(error){const code=String(error?.message||error||'');
@@ -73,11 +82,11 @@
   }
   function fmtDate(value){const date=new Date(value);return Number.isFinite(date.getTime())?date.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';}
   async function loadMessages(markRead=false){
-    if(!state.active)return;
+    if(!state.active||state.deleteBusy)return;
     const id=state.active.id;
     try{
       const data=await rpc('MESSAGES',{p_thread_id:id});
-      if(!state.active||state.active.id!==id)return;
+      if(!state.active||state.active.id!==id||state.deleteBusy)return;
       messages.replaceChildren();
       const rows=Array.isArray(data.items)?data.items:[];
       if(!rows.length){const p=document.createElement('p');p.className='inbox-empty';p.textContent='Belum ada pesan. Mulai percakapan di sini.';messages.appendChild(p);}
@@ -85,7 +94,7 @@
         const body=document.createElement('span');body.textContent=String(row.body||'');
         const time=document.createElement('time');time.textContent=fmtDate(row.created_at);bubble.append(body,time);messages.appendChild(bubble);}
       messages.scrollTop=messages.scrollHeight;
-      if(markRead||rows.some(row=>String(row.sender_key)!==state.me))await rpc('READ',{p_thread_id:id});
+      if(!state.deleteBusy&&state.active&&state.active.id===id&&(markRead||rows.some(row=>String(row.sender_key)!==state.me)))await rpc('READ',{p_thread_id:id});
       text(status,'');
     }catch(e){console.warn('Inbox messages:',e);text(status,errorLabel(e));}
   }
@@ -96,6 +105,103 @@
     catch(e){console.warn('Inbox send:',e);text(status,errorLabel(e));}
     finally{submit.disabled=false;}
   }
+  function setupDeleteThreadButton(){
+    if(staff)return;
+    const header=document.querySelector('.inbox-thread-header');
+    if(!header||header.querySelector('.inbox-thread-delete'))return;
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='inbox-thread-delete';
+    button.setAttribute('aria-label','Hapus percakapan permanen');
+    button.title='Hapus percakapan';
+    button.innerHTML='<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+    button.addEventListener('click',async()=>{
+      if(!state.active||state.deleteBusy)return;
+      const ok=window.confirm('Hapus percakapan ini secara permanen? Semua pesan akan hilang untuk kedua pihak dan tidak dapat dikembalikan.');
+      if(!ok)return;
+      const deleting=state.active;
+      state.deleteBusy=true;
+      state.active=null;
+      button.disabled=true;
+      text(status,'Menghapus percakapan…');
+      try{
+        await deleteThreadRpc(deleting.id);
+        thread.hidden=true;
+        view.hidden=false;
+        state.tab='THREADS';
+        $('inboxTabChats').setAttribute('aria-pressed','true');
+        $('inboxTabContacts').setAttribute('aria-pressed','false');
+        search.value='';
+        await loadList();
+        text(status,'');
+      }catch(e){
+        state.active=deleting;
+        console.warn('Inbox delete:',e);
+        text(status,errorLabel(e));
+      }finally{
+        state.deleteBusy=false;
+        button.disabled=false;
+      }
+    });
+    header.appendChild(button);
+  }
+
+  function setupEmojiPicker(){
+    if(staff)return;
+    const form=$('inboxForm');
+    if(!form||form.querySelector('.inbox-emoji-toggle'))return;
+
+    const toggle=document.createElement('button');
+    toggle.type='button';
+    toggle.className='inbox-emoji-toggle';
+    toggle.setAttribute('aria-label','Pilih emoji');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.innerHTML='<i class="fa-regular fa-face-smile" aria-hidden="true"></i>';
+
+    const picker=document.createElement('div');
+    picker.className='inbox-emoji-picker';
+    picker.hidden=true;
+    picker.setAttribute('role','dialog');
+    picker.setAttribute('aria-label','Pilih emoji');
+
+    const emojis=['😀','😁','😂','😊','😍','🥰','😎','👍','🙏','👏','💪','🔥','❤️','💚','✨','🎉','✅','👌','🤝','🙌','😅','🙂','😉','🤗'];
+    for(const emoji of emojis){
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='inbox-emoji-option';
+      button.textContent=emoji;
+      button.setAttribute('aria-label','Emoji '+emoji);
+      button.addEventListener('click',()=>{
+        const start=input.selectionStart??input.value.length;
+        const end=input.selectionEnd??start;
+        input.value=input.value.slice(0,start)+emoji+input.value.slice(end);
+        const next=start+emoji.length;
+        input.focus();
+        input.setSelectionRange(next,next);
+        picker.hidden=true;
+        toggle.setAttribute('aria-expanded','false');
+      });
+      picker.appendChild(button);
+    }
+
+    form.insertBefore(toggle,input);
+    form.appendChild(picker);
+
+    toggle.addEventListener('click',()=>{
+      const open=picker.hidden;
+      picker.hidden=!open;
+      toggle.setAttribute('aria-expanded',String(open));
+      if(!open)input.focus();
+    });
+
+    document.addEventListener('click',event=>{
+      if(picker.hidden)return;
+      if(form.contains(event.target))return;
+      picker.hidden=true;
+      toggle.setAttribute('aria-expanded','false');
+    });
+  }
+
   async function initialize(){
     try{
       if(staff){
@@ -116,6 +222,8 @@
   search.addEventListener('input',renderList);
   $('inboxForm').addEventListener('submit',send);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(state.active)void loadMessages(true);else void loadList();}});
-  state.timer=setInterval(()=>{if(document.hidden)return;if(state.active)void loadMessages(true);else void loadList();},15000);
+  state.timer=setInterval(()=>{if(document.hidden||state.deleteBusy)return;if(state.active)void loadMessages(true);else void loadList();},15000);
+  setupDeleteThreadButton();
+  setupEmojiPicker();
   void initialize();
 })();

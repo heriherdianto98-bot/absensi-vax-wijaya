@@ -783,3 +783,14 @@ body[data-inbox-mode="employee"] .inbox-thread-delete i{
   font-size:14px!important;
   transform:none!important;
 }
+
+/* === Employee Inbox list scroll canonical fix | UI ONLY === */
+body[data-inbox-mode="employee"] .inbox-list-view{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-width:thin!important;
+}

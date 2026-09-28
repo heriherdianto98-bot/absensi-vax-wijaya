@@ -1,0 +1,231 @@
+/* UI ONLY — Employee SP page theme matching Dashboard Karyawan / Inbox */
+:root{
+  color-scheme:light;
+}
+
+body{
+  background:#eef7f6!important;
+  color:#294956!important;
+}
+
+.sp-shell{
+  max-width:430px!important;
+  min-height:100dvh!important;
+  padding:12px 12px 50px!important;
+  background:
+    radial-gradient(circle at 88% 2%,rgba(50,199,179,.12),transparent 24%),
+    linear-gradient(180deg,#f8fcfc 0%,#eef7f6 100%)!important;
+  box-shadow:0 0 30px rgba(32,91,104,.08)!important;
+}
+
+.sp-header{
+  gap:10px!important;
+  margin-bottom:12px!important;
+  padding:11px 12px!important;
+  border:1px solid rgba(39,169,151,.22)!important;
+  border-radius:14px!important;
+  background:linear-gradient(135deg,#39c8b4 0%,#2fb6a4 100%)!important;
+  box-shadow:0 8px 22px rgba(38,143,131,.18),inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+
+.sp-header>a{
+  color:#fff!important;
+  font-size:27px!important;
+  min-width:28px!important;
+  text-align:center!important;
+}
+
+.sp-header h1{
+  margin:0!important;
+  color:#fff!important;
+  font-size:16px!important;
+  line-height:1.15!important;
+  letter-spacing:.01em!important;
+}
+
+.sp-header small{
+  display:block!important;
+  margin-top:3px!important;
+  color:rgba(255,255,255,.82)!important;
+  font-size:9px!important;
+  line-height:1.25!important;
+  letter-spacing:.02em!important;
+}
+
+.sp-card{
+  margin-bottom:10px!important;
+  padding:13px!important;
+  border:1px solid #d2e5e2!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#fff 0%,#f8fcfb 100%)!important;
+  box-shadow:0 5px 14px rgba(43,85,96,.07)!important;
+}
+
+.sp-card h2{
+  margin:0 0 10px!important;
+  color:#2d8f82!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+}
+
+#spMyList{
+  color:#5d747b!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+}
+
+.sp-entry{
+  margin:7px 0!important;
+  padding:11px!important;
+  border:1px solid #d3e6e3!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:#294956!important;
+  box-shadow:0 3px 9px rgba(43,85,96,.06)!important;
+}
+
+.sp-entry small{
+  color:#789097!important;
+  font-size:10px!important;
+}
+
+.sp-line{
+  gap:8px!important;
+}
+
+.sp-card button{
+  border:0!important;
+  border-radius:10px!important;
+  background:linear-gradient(135deg,#39c8b4,#2fb6a4)!important;
+  color:#fff!important;
+  box-shadow:0 4px 10px rgba(47,182,164,.18)!important;
+}
+
+.sp-card button.secondary{
+  padding:8px 10px!important;
+  border:1px solid #c8dfdb!important;
+  background:#fff!important;
+  color:#2d8f82!important;
+  box-shadow:none!important;
+}
+
+.sp-document{
+  padding:16px!important;
+  border:1px solid #d9e7e4!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#243f47!important;
+  box-shadow:0 5px 14px rgba(43,85,96,.06)!important;
+}
+
+.sp-document h2{
+  color:#244853!important;
+}
+
+.sp-warn{
+  margin:10px 0!important;
+  padding:11px!important;
+  border:1px solid #bfe0da!important;
+  border-radius:11px!important;
+  background:#eaf8f5!important;
+  color:#315a62!important;
+}
+
+.sp-card label{
+  color:#41636b!important;
+}
+
+input,select,textarea{
+  border:1px solid #c8dfdb!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#294956!important;
+}
+
+textarea:focus,input:focus,select:focus{
+  outline:none!important;
+  border-color:#45c5b3!important;
+  box-shadow:0 0 0 3px rgba(57,200,180,.12)!important;
+}
+
+.sp-ack input{
+  accent-color:#2fb6a4!important;
+}
+
+#spMyStatus{
+  color:#607a81!important;
+  font-size:11px!important;
+}
+
+@media(max-width:380px){
+  .sp-shell{
+    padding:9px!important;
+  }
+
+  .sp-header{
+    padding:9px 10px!important;
+  }
+
+  .sp-header h1{
+    font-size:15px!important;
+  }
+
+  .sp-card{
+    padding:11px!important;
+  }
+}
+
+
+/* === Employee SP freeze header / scroll content only | UI ONLY === */
+body{
+  height:100dvh!important;
+  overflow:hidden!important;
+}
+
+.sp-shell{
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+
+.sp-header{
+  flex:0 0 auto!important;
+  position:relative!important;
+  z-index:20!important;
+}
+
+.sp-shell > .sp-card,
+.sp-shell > #spMyStatus{
+  flex:0 0 auto!important;
+}
+
+#spMyDetail:not([hidden]){
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-width:thin!important;
+}
+
+#spMyDetail[hidden]{
+  display:none!important;
+}
+
+#spMyList{
+  max-height:calc(100dvh - 150px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+
+@media(max-width:380px){
+  #spMyList{
+    max-height:calc(100dvh - 138px)!important;
+  }
+}

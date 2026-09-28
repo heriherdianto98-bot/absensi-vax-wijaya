@@ -24,7 +24,7 @@ jobs:
           set -euo pipefail
           mkdir -p _employee_stage/ERP.NEW/{assets/brand,vendor,styles,pages,js/modules}
           shopt -s nullglob
-          for f in             dashboard-karyawan*.html dashboard-karyawan*.js dashboard-karyawan*.css             absensi*.html absensi*.js absensi*.css             gaji-saya*.html gaji-saya*.js gaji-saya*.css             profil*.html profil*.js profil*.css             employee-*.js employee-*.css             karyawan-session.js config.js             kasbon-karyawan*.html kasbon-karyawan*.js kasbon-karyawan*.css             izin*.html izin*.js izin*.css             pengumuman*.html pengumuman*.js pengumuman*.css             pengaduan*.html pengaduan*.js pengaduan*.css             pesan-karyawan.html vax-inbox*.js vax-inbox*.css             vax-sp-employee*.js vax-sp-employee*.css surat-peringatan-saya.html
+          for f in             dashboard-karyawan*.html dashboard-karyawan*.js dashboard-karyawan*.css             absensi*.html absensi*.js absensi*.css             gaji-saya*.html gaji-saya*.js gaji-saya*.css             profil*.html profil*.js profil*.css             employee-*.js employee-*.css             karyawan-session.js config.js             kasbon-karyawan*.html kasbon-karyawan*.js kasbon-karyawan*.css             izin*.html izin*.js izin*.css             pengumuman*.html pengumuman*.js pengumuman*.css             pengaduan*.html pengaduan*.js pengaduan*.css             pesan-karyawan.html vax-inbox*.js vax-inbox*.css             vax-sp*.js vax-sp*.css surat-peringatan-saya.html             pulang-awal.html riwayat.html
           do
             [ -f "$f" ] && cp "$f" _employee_stage/
           done
@@ -59,8 +59,8 @@ jobs:
         run: |
           set -euo pipefail
           SSH_KEY="$HOME/.ssh/id_erp_vax_deploy"
-          ssh -i "$SSH_KEY" "$VPS_USER@$VPS_HOST" 'mkdir -p /var/www/absensi-vax-wijaya'
-          rsync -az -e "ssh -i $SSH_KEY" _employee_stage/ "$VPS_USER@$VPS_HOST:/var/www/absensi-vax-wijaya/"
+          ssh -i "$SSH_KEY" "$VPS_USER@$VPS_HOST" 'mkdir -p /var/www/karyawan-vax'
+          rsync -az -e "ssh -i $SSH_KEY" _employee_stage/ "$VPS_USER@$VPS_HOST:/var/www/karyawan-vax/"
 
       - name: Verify deployed files
         shell: bash
@@ -71,11 +71,11 @@ jobs:
           set -euo pipefail
           SSH_KEY="$HOME/.ssh/id_erp_vax_deploy"
           ssh -i "$SSH_KEY" "$VPS_USER@$VPS_HOST" '
-            test -s /var/www/absensi-vax-wijaya/dashboard-karyawan.html &&
-            test -s /var/www/absensi-vax-wijaya/absensi.html &&
-            test -s /var/www/absensi-vax-wijaya/gaji-saya.html &&
-            test -s /var/www/absensi-vax-wijaya/profil.html &&
-            test -s /var/www/absensi-vax-wijaya/employee-device-readiness.js &&
-            test -s /var/www/absensi-vax-wijaya/ERP.NEW/pages/login.html &&
+            test -s /var/www/karyawan-vax/dashboard-karyawan.html &&
+            test -s /var/www/karyawan-vax/absensi.html &&
+            test -s /var/www/karyawan-vax/gaji-saya.html &&
+            test -s /var/www/karyawan-vax/profil.html &&
+            test -s /var/www/karyawan-vax/employee-device-readiness.js &&
+            test -s /var/www/karyawan-vax/ERP.NEW/pages/login.html &&
             echo EMPLOYEE_PORTAL_DEPLOY_OK
           '
