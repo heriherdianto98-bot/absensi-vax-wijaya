@@ -1,0 +1,153 @@
+/* ERP VAX Employee Portal — Device Readiness Gate
+   ADDITIVE UI ONLY. Does not modify attendance, payroll, GPS engine, or session engine. */
+
+.employee-readiness-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:18px 12px max(18px,env(safe-area-inset-bottom,0px));
+  background:rgba(10,31,35,.38);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  box-sizing:border-box;
+}
+.employee-readiness-overlay.is-open{display:flex}
+.employee-readiness-panel{
+  width:min(100%,400px);
+  max-height:min(82dvh,680px);
+  overflow:auto;
+  border:1px solid rgba(37,188,168,.34);
+  border-radius:20px;
+  background:linear-gradient(180deg,#ffffff 0%,#f4fbfa 100%);
+  box-shadow:0 24px 64px rgba(13,73,78,.28),inset 0 1px 0 #fff;
+  color:#173f47;
+}
+.employee-readiness-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 14px 11px;
+  border-bottom:1px solid #dcefed;
+}
+.employee-readiness-icon{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  flex:0 0 38px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#3ad0bd,#1eb29d);
+  color:#fff;
+  box-shadow:0 5px 12px rgba(24,165,147,.22),inset 0 1px 0 rgba(255,255,255,.35);
+  font-size:16px;
+}
+.employee-readiness-head h2{
+  margin:0;
+  font-size:16px;
+  line-height:1.15;
+  font-weight:900;
+}
+.employee-readiness-head p{
+  margin:3px 0 0;
+  color:#70858a;
+  font-size:10px;
+  line-height:1.35;
+}
+.employee-readiness-body{padding:11px 14px 14px}
+.employee-readiness-list{
+  display:grid;
+  gap:8px;
+}
+.employee-readiness-row{
+  display:grid;
+  grid-template-columns:32px minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  padding:9px 10px;
+  border:1px solid #d6ebe7;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 3px 0 rgba(34,158,143,.07);
+}
+.employee-readiness-row .ico{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:#e9f8f5;
+  color:#1aa28f;
+}
+.employee-readiness-row strong{
+  display:block;
+  font-size:11px;
+  line-height:1.2;
+}
+.employee-readiness-row small{
+  display:block;
+  margin-top:2px;
+  color:#7b8d91;
+  font-size:9px;
+  line-height:1.3;
+}
+.employee-readiness-status{
+  min-width:54px;
+  padding:5px 7px;
+  border-radius:999px;
+  text-align:center;
+  font-size:8px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.03em;
+}
+.employee-readiness-status.ok{background:#ddf7ef;color:#12816f}
+.employee-readiness-status.warn{background:#fff4d7;color:#9d6d00}
+.employee-readiness-status.bad{background:#ffe7e8;color:#b63b46}
+.employee-readiness-status.info{background:#e9f3ff;color:#326b9a}
+.employee-readiness-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+.employee-readiness-btn{
+  min-height:39px;
+  border:1px solid #1ca58f;
+  border-radius:11px;
+  background:#fff;
+  color:#188b7b;
+  font:inherit;
+  font-size:10px;
+  font-weight:900;
+}
+.employee-readiness-btn.primary{
+  background:linear-gradient(135deg,#3ad0bd,#1eb29d);
+  color:#fff;
+  box-shadow:0 4px 0 rgba(13,130,116,.16);
+}
+.employee-readiness-btn:disabled{opacity:.5}
+.employee-readiness-note{
+  margin:10px 0 0;
+  padding:8px 9px;
+  border-radius:10px;
+  background:#eef8f6;
+  color:#60797f;
+  font-size:9px;
+  line-height:1.4;
+}
+.employee-readiness-local{
+  margin-top:8px;
+  padding:8px 9px;
+  border:1px solid #ffe1a8;
+  border-radius:10px;
+  background:#fff8e8;
+  color:#8b650b;
+  font-size:9px;
+  line-height:1.35;
+}
+@media(min-width:700px){
+  .employee-readiness-overlay{align-items:center}
+}
