@@ -1,305 +1,159 @@
-/* SVP Owner attendance location bridge — UI only */
+/* =========================================================
+   VAX ERP — SVP Attendance Owner Bridge
+   UI ONLY
+   Final consolidated layout.
+   Does not touch attendance engine / GPS / denda / locked logic.
+   ========================================================= */
+
 .svp-owner-branch-label{
-  font-weight:800;
+  margin-bottom:5px;
   color:#dce6ef;
-  margin-bottom:4px;
+  font-size:11px;
+  font-weight:800;
 }
+
+/* Generic location block (also safe inside Status panel) */
 .svp-owner-location-block{
   display:grid;
-  gap:5px;
-  margin-top:6px;
-  padding-top:6px;
-  border-top:1px solid rgba(255,255,255,.07);
+  gap:7px;
+  min-width:0;
+  width:100%;
 }
+
 .svp-owner-location-block>div{
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr);
-  gap:2px 7px;
-  align-items:start;
+  min-width:0;
+  box-sizing:border-box;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:9px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01)),
+    #18202a;
 }
+
 .svp-owner-location-block b{
-  grid-row:1 / span 2;
-  color:#67dda0;
+  color:#f3c94f;
   font-size:9px;
-  line-height:1.25;
+  font-weight:900;
+  letter-spacing:.65px;
   text-transform:uppercase;
-  letter-spacing:.5px;
 }
+
 .svp-owner-location-block span{
-  color:#dbe3eb;
+  color:#eef3f8;
   font-size:10px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.svp-owner-location-block small{
+  color:#98a5b3;
+  font-size:9px;
+  font-weight:800;
   line-height:1.3;
 }
-.svp-owner-location-block small{
-  color:#8996a5;
-  font-size:9px;
-  line-height:1.25;
+
+/* Status Karyawan Hari Ini */
+#statusKaryawan .svp-owner-location-block{
+  margin-top:7px;
 }
-#aktivitasTerbaru .svp-owner-location-block{
-  min-width:260px;
-  margin-left:auto;
-  margin-top:0;
-  padding-top:0;
-  padding-left:12px;
-  border-top:0;
-  border-left:1px solid rgba(255,255,255,.08);
+
+#statusKaryawan .svp-owner-location-block>div{
+  padding:7px 8px;
 }
+
+#statusKaryawan .svp-owner-location-block b,
+#statusKaryawan .svp-owner-location-block span,
+#statusKaryawan .svp-owner-location-block small{
+  display:block;
+  margin:0;
+}
+
+#statusKaryawan .svp-owner-location-block span{
+  margin-top:3px;
+}
+
+#statusKaryawan .svp-owner-location-block small{
+  margin-top:2px;
+}
+
+/* =========================================================
+   Aktivitas Absensi — desktop final
+   kiri = identitas/status
+   kanan = MASUK + PULANG sejajar
+   ========================================================= */
+
+#aktivitasTerbaru{
+  overflow-x:hidden!important;
+}
+
 #aktivitasTerbaru .absensi-activity-row{
-  align-items:flex-start;
-  gap:12px;
-}
-@media(max-width:900px){
-  #aktivitasTerbaru .absensi-activity-row{
-    flex-wrap:wrap;
-  }
-  #aktivitasTerbaru .svp-owner-location-block{
-    width:100%;
-    min-width:0;
-    margin-left:0;
-    padding-left:0;
-    padding-top:7px;
-    border-left:0;
-    border-top:1px solid rgba(255,255,255,.08);
-  }
-}
-
-
-/* Improve SVP Owner activity location contrast — UI ONLY */
-#aktivitasTerbaru .svp-owner-location-block b{
-  color:#071b10!important;
-  background:rgba(255,255,255,.34)!important;
-  padding:2px 5px!important;
-  border-radius:5px!important;
-  font-size:9px!important;
-  font-weight:900!important;
-  letter-spacing:.7px!important;
-  text-shadow:none!important;
-}
-#aktivitasTerbaru .svp-owner-location-block span{
-  color:#071b10!important;
-  font-weight:800!important;
-  font-size:10px!important;
-  line-height:1.35!important;
-}
-#aktivitasTerbaru .svp-owner-location-block small{
-  color:#123a28!important;
-  font-weight:800!important;
-  font-size:9px!important;
-  line-height:1.3!important;
-}
-#aktivitasTerbaru .svp-owner-location-block>div{
-  background:rgba(255,255,255,.16)!important;
-  border:1px solid rgba(255,255,255,.18)!important;
-  border-radius:9px!important;
-  padding:6px 8px!important;
-}
-
-
-/* Theme-match SVP activity card while preserving readability — UI ONLY */
-#aktivitasTerbaru .absensi-activity-row{
+  display:grid!important;
+  grid-template-columns:minmax(180px,210px) minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:start!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  padding:12px 14px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
   background:
     linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01)),
     #141a22!important;
   border:1px solid rgba(212,168,38,.18)!important;
   border-radius:12px!important;
+  color:#e8edf3!important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.035),
     0 8px 20px rgba(0,0,0,.12)!important;
-  color:#e8edf3!important;
 }
+
+#aktivitasTerbaru .absensi-activity-row>div:first-child{
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+}
+
 #aktivitasTerbaru .absensi-activity-title{
-  color:#f4f7fb!important;
-}
-#aktivitasTerbaru .absensi-activity-title span{
-  color:#aeb9c5!important;
-}
-#aktivitasTerbaru .absensi-activity-aksi{
-  color:#d8e0e8!important;
-}
-#aktivitasTerbaru .absensi-activity-time{
-  color:#c5ced8!important;
-}
-
-#aktivitasTerbaru .svp-owner-location-block{
-  border-left:1px solid rgba(212,168,38,.14)!important;
-}
-#aktivitasTerbaru .svp-owner-location-block>div{
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012)),
-    #18202a!important;
-  border:1px solid rgba(255,255,255,.07)!important;
-  border-radius:9px!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.03)!important;
-}
-#aktivitasTerbaru .svp-owner-location-block b{
-  color:#f3c94f!important;
-  background:rgba(212,168,38,.10)!important;
-  border:1px solid rgba(212,168,38,.18)!important;
-  padding:2px 5px!important;
-  border-radius:5px!important;
-  font-size:9px!important;
-  font-weight:900!important;
-  letter-spacing:.7px!important;
-  text-shadow:none!important;
-}
-#aktivitasTerbaru .svp-owner-location-block span{
-  color:#e6edf4!important;
-  font-weight:800!important;
-  font-size:10px!important;
-  line-height:1.35!important;
-}
-#aktivitasTerbaru .svp-owner-location-block small{
-  color:#95a2b0!important;
-  font-weight:800!important;
-  font-size:9px!important;
-  line-height:1.3!important;
-}
-
-
-/* Fix left-side SVP activity text contrast on dark ERP card — UI ONLY */
-#aktivitasTerbaru .absensi-activity-row .absensi-activity-title,
-#aktivitasTerbaru .absensi-activity-row .absensi-activity-title span,
-#aktivitasTerbaru .absensi-activity-row .absensi-activity-aksi,
-#aktivitasTerbaru .absensi-activity-row .absensi-activity-time{
-  opacity:1!important;
-  text-shadow:none!important;
-}
-
-#aktivitasTerbaru .absensi-activity-row .absensi-activity-title{
   color:#f5f7fa!important;
+  font-size:13px!important;
   font-weight:900!important;
-}
-#aktivitasTerbaru .absensi-activity-row .absensi-activity-title span{
-  color:#d9b94e!important;
-  font-weight:800!important;
-}
-#aktivitasTerbaru .absensi-activity-row .absensi-activity-aksi{
-  color:#dfe7ef!important;
-  font-weight:800!important;
-}
-#aktivitasTerbaru .absensi-activity-row .absensi-activity-time{
-  color:#c9d3dc!important;
-  font-weight:800!important;
-}
-
-
-/* Keep SVP activity status on one line and reduce left block width — UI ONLY */
-#aktivitasTerbaru .absensi-activity-aksi{
-  white-space:nowrap!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  gap:4px!important;
-  width:auto!important;
-  max-width:none!important;
-}
-#aktivitasTerbaru .absensi-activity-row>div:first-child{
-  flex:0 0 auto!important;
-  min-width:190px!important;
-  max-width:220px!important;
-}
-#aktivitasTerbaru .absensi-activity-title{
-  white-space:nowrap!important;
-}
-
-
-/* Remove horizontal scrollbar from SVP activity card; keep all content visible — UI ONLY */
-#aktivitasTerbaru{
-  overflow-x:hidden!important;
-}
-#aktivitasTerbaru .absensi-activity-row{
-  width:100%!important;
-  max-width:100%!important;
-  min-width:0!important;
-  overflow:hidden!important;
-  display:grid!important;
-  grid-template-columns:minmax(175px,220px) minmax(0,1fr)!important;
-  align-items:start!important;
-  gap:12px!important;
-}
-#aktivitasTerbaru .absensi-activity-row>div:first-child{
-  min-width:0!important;
-  max-width:none!important;
-  width:auto!important;
-}
-#aktivitasTerbaru .absensi-activity-title{
+  line-height:1.25!important;
   white-space:normal!important;
+  opacity:1!important;
 }
+
+#aktivitasTerbaru .absensi-activity-title span{
+  color:#d9b94e!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  opacity:1!important;
+}
+
+#aktivitasTerbaru .absensi-activity-aksi{
+  display:block!important;
+  width:auto!important;
+  margin-top:5px!important;
+  color:#dfe7ef!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1.3!important;
+  white-space:nowrap!important;
+  opacity:1!important;
+}
+
 #aktivitasTerbaru .absensi-activity-time{
+  margin-top:8px!important;
+  color:#c9d3dc!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.25!important;
+  text-align:left!important;
   white-space:nowrap!important;
-}
-#aktivitasTerbaru .svp-owner-location-block{
-  min-width:0!important;
-  width:100%!important;
-  max-width:100%!important;
-  margin-left:0!important;
-  padding-left:12px!important;
-  overflow:hidden!important;
-}
-#aktivitasTerbaru .svp-owner-location-block>div{
-  min-width:0!important;
-  grid-template-columns:auto minmax(0,1fr)!important;
-}
-#aktivitasTerbaru .svp-owner-location-block span,
-#aktivitasTerbaru .svp-owner-location-block small{
-  min-width:0!important;
-  overflow-wrap:anywhere!important;
-  word-break:break-word!important;
-}
-@media(max-width:1100px){
-  #aktivitasTerbaru .absensi-activity-row{
-    grid-template-columns:1fr!important;
-  }
-  #aktivitasTerbaru .svp-owner-location-block{
-    padding-left:0!important;
-    padding-top:8px!important;
-    border-left:0!important;
-    border-top:1px solid rgba(212,168,38,.14)!important;
-  }
+  opacity:1!important;
 }
 
-
-/* Align PULANG card exactly with MASUK in Owner activity — UI ONLY */
-#aktivitasTerbaru .svp-owner-location-block{
-  display:flex!important;
-  flex-direction:column!important;
-  gap:8px!important;
-  align-items:stretch!important;
-  width:100%!important;
-  min-width:0!important;
-}
-#aktivitasTerbaru .svp-owner-location-block>div{
-  display:grid!important;
-  grid-template-columns:56px minmax(0,1fr)!important;
-  align-items:start!important;
-  gap:8px!important;
-  width:100%!important;
-  min-width:0!important;
-  margin:0!important;
-  box-sizing:border-box!important;
-}
-#aktivitasTerbaru .svp-owner-location-block>div+div{
-  margin-top:0!important;
-}
-#aktivitasTerbaru .svp-owner-location-block b{
-  grid-row:auto!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  width:56px!important;
-  min-width:56px!important;
-  min-height:24px!important;
-  box-sizing:border-box!important;
-  margin:0!important;
-  white-space:nowrap!important;
-}
-#aktivitasTerbaru .svp-owner-location-block span,
-#aktivitasTerbaru .svp-owner-location-block small{
-  grid-column:2!important;
-  min-width:0!important;
-}
-
-
-/* SVP Owner Activity — MASUK & PULANG side-by-side, UI ONLY */
+/* MASUK and PULANG: side-by-side in one row */
 #aktivitasTerbaru .svp-owner-location-block{
   display:grid!important;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
@@ -307,47 +161,56 @@
   align-items:stretch!important;
   width:100%!important;
   min-width:0!important;
-  padding-left:0!important;
-  border-left:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:visible!important;
 }
 
 #aktivitasTerbaru .svp-owner-location-block>div{
   display:grid!important;
-  grid-template-columns:auto minmax(0,1fr)!important;
+  grid-template-columns:58px minmax(0,1fr)!important;
   grid-template-rows:auto auto!important;
   column-gap:8px!important;
-  row-gap:2px!important;
-  align-items:start!important;
+  row-gap:3px!important;
+  align-content:start!important;
   width:100%!important;
   min-width:0!important;
   margin:0!important;
-  padding:8px 10px!important;
+  padding:8px 9px!important;
   box-sizing:border-box!important;
+  border:1px solid rgba(255,255,255,.08)!important;
   border-radius:10px!important;
   background:
-    linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.008)),
+    linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01)),
     #18202a!important;
-  border:1px solid rgba(255,255,255,.07)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
 }
 
 #aktivitasTerbaru .svp-owner-location-block b{
   grid-column:1!important;
   grid-row:1 / span 2!important;
   align-self:start!important;
-  display:inline-flex!important;
+  display:flex!important;
   align-items:center!important;
   justify-content:center!important;
-  width:auto!important;
-  min-width:56px!important;
-  min-height:24px!important;
+  min-width:58px!important;
+  width:58px!important;
+  min-height:25px!important;
   margin:0!important;
-  padding:3px 7px!important;
+  padding:3px 6px!important;
   box-sizing:border-box!important;
-  white-space:nowrap!important;
-  color:#f3c94f!important;
-  background:rgba(212,168,38,.10)!important;
-  border:1px solid rgba(212,168,38,.18)!important;
+  border:1px solid rgba(212,168,38,.22)!important;
   border-radius:6px!important;
+  background:rgba(212,168,38,.11)!important;
+  color:#f3c94f!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  letter-spacing:.7px!important;
+  white-space:nowrap!important;
+  text-shadow:none!important;
 }
 
 #aktivitasTerbaru .svp-owner-location-block span{
@@ -358,9 +221,10 @@
   margin:0!important;
   color:#eef3f8!important;
   font-size:10px!important;
-  line-height:1.3!important;
   font-weight:800!important;
-  overflow-wrap:anywhere!important;
+  line-height:1.32!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
 }
 
 #aktivitasTerbaru .svp-owner-location-block small{
@@ -371,13 +235,23 @@
   margin:0!important;
   color:#98a5b3!important;
   font-size:9px!important;
-  line-height:1.25!important;
   font-weight:800!important;
-  overflow-wrap:anywhere!important;
+  line-height:1.28!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
 }
 
-@media(max-width:900px){
+/* Only collapse on genuinely narrow/mobile screens. */
+@media(max-width:700px){
+  #aktivitasTerbaru .absensi-activity-row{
+    grid-template-columns:1fr!important;
+  }
+
   #aktivitasTerbaru .svp-owner-location-block{
     grid-template-columns:1fr!important;
+  }
+
+  #aktivitasTerbaru .absensi-activity-time{
+    white-space:normal!important;
   }
 }
