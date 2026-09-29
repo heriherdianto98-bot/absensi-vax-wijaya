@@ -1,23 +1,23 @@
 {
   "id": "/employee-app/",
-  "name": "VAX WIJAYA Karyawan",
-  "short_name": "VAX Karyawan",
+  "name": "VAX WIJAYA",
+  "short_name": "VAX WIJAYA",
   "description": "Portal karyawan VAX WIJAYA",
   "lang": "id",
   "start_url": "/employee-app/index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#eaf5f3",
-  "theme_color": "#27bda9",
+  "theme_color": "#29bca8",
   "icons": [
     {
-      "src": "/employee-app/icon-192.png",
+      "src": "/employee-app/icon-192-v2.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/employee-app/icon-512.png",
+      "src": "/employee-app/icon-512-v2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

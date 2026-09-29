@@ -1,12 +1,12 @@
 /* Offline install shell only. Employee pages, sessions, and API data are never cached. */
-const CACHE = 'vax-employee-install-v1';
+const CACHE = 'vax-employee-install-v2';
 const APP = '/employee-app/';
 const ASSETS = [
   APP + 'index.html',
   APP + 'manifest.json',
   APP + 'install.js',
-  APP + 'icon-192.png',
-  APP + 'icon-512.png'
+  APP + 'icon-192-v2.png',
+  APP + 'icon-512-v2.png'
 ];
 
 self.addEventListener('install', event => {
