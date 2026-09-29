@@ -7,3 +7,4 @@ Fix 2026-09-29: Izin Telat employee light theme and Payroll slip signature asset
 Release 2026-09-29: employee salary slip attendance summary from Absensi monthly consumer.
 Release 2026-09-29: refresh print presenter cache and keep attendance with signatures.
 Release 2026-09-29: deploy standalone PWA full-scroll compatibility fix.
+Release 2026-09-29: rerun employee portal deploy after Actions budget restored.
