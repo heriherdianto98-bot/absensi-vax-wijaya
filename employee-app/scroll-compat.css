@@ -1,27 +1,56 @@
-/* Standalone PWA viewport scroll space. UI only; employee data and logic stay untouched. */
+/* Standalone PWA viewport scroll compatibility.
+   UI-only: does not alter employee data, business logic, locked module CSS, or navigation logic.
+   Scope is intentionally limited to installed PWA mode on phone viewports. */
 @media (display-mode: standalone) and (max-width: 480px) {
   html body .app:has(> .dash-body) {
     overflow-y: auto !important;
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  html body .app:has(> .absen-body) {
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  html body .app .gaji-body {
-    padding-bottom: 28px !important;
     overscroll-behavior-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
   }
+
+  html body .app:has(> .absen-body) {
+    overflow-y: auto !important;
+    overscroll-behavior-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body .app .gaji-body,
   html body .app .daily-scroll {
     overscroll-behavior-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
   }
+
+  html body .app .gaji-body {
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)) !important;
+    scroll-padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
   html body .shell .profile-body {
-    padding-bottom: 28px !important;
     overscroll-behavior-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)) !important;
+    scroll-padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)) !important;
   }
+
+  body[data-inbox-mode="employee"] .inbox-list-view,
+  body[data-inbox-mode="employee"] .inbox-list,
+  body[data-inbox-mode="employee"] .inbox-messages {
+    overscroll-behavior-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+  }
+
   body[data-inbox-mode="employee"] .inbox-list-view,
   body[data-inbox-mode="employee"] .inbox-list {
-    padding-bottom: 28px !important;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)) !important;
+    scroll-padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
