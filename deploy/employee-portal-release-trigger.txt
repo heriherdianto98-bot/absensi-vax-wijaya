@@ -4,3 +4,4 @@ Scope: Capster Dashboard, Absensi, Gaji Saya, Profil, shared employee UI/securit
 Fix 2026-09-29: include canonical read-only freshness evaluator for Provider / Last Sync.
 Fix 2026-09-29: mobile calendar opens below toolbar and keeps KPI cards visible.
 Fix 2026-09-29: Izin Telat employee light theme and Payroll slip signature assets.
+Release 2026-09-29: employee salary slip attendance summary from Absensi monthly consumer.
