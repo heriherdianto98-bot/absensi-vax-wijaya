@@ -78,6 +78,18 @@
     .employee-slip .slip-attendance-note{margin:1.5mm 0 0;color:#6b7a8c;font-size:7pt}
     .employee-slip .slip-note{margin:3mm 0 0;padding:2mm 3mm;border:1px solid #e6ebf0;background:#fafbfc;color:#6b7a8c;font-size:7.5pt}
     @media print{
+      .employee-slip-print .foot-space{height:12mm}
+      .employee-slip-print .sign{position:static;left:auto;right:auto;bottom:auto;margin-top:5mm}
+      .employee-slip-print .slip-profile{padding:2mm 3mm;gap:1mm 7mm;margin-bottom:2mm}
+      .employee-slip-print .slip-field strong{font-size:8pt;margin-top:.2mm}
+      .employee-slip-print .slip-summary{margin-bottom:2mm}
+      .employee-slip-print .slip-total{padding:1.5mm 2mm}
+      .employee-slip-print .slip-total strong{font-size:9.5pt;margin-top:.4mm}
+      .employee-slip-print .slip-daily th,.employee-slip-print .slip-daily td{padding:.55mm 1.2mm;font-size:7pt;line-height:1.08}
+      .employee-slip-print .slip-attendance{margin-top:2mm}
+      .employee-slip-print .slip-attendance-item{padding:1.5mm 1mm}
+      .employee-slip-print .slip-attendance-item strong{font-size:9.5pt;margin-top:.5mm}
+      .employee-slip-print .slip-note{margin-top:1.5mm;padding:1mm 2mm}
       .employee{break-inside:auto;page-break-inside:auto;margin-bottom:1mm}
       .report-title{margin-bottom:1.1mm}.report-title h2{font-size:11.8pt}.report-title p{margin-top:.2mm;font-size:6.4pt}
       .meta{gap:.55mm 8mm;padding:1mm 3mm;margin-bottom:1mm;font-size:6.9pt}.meta .item{gap:3mm}
@@ -129,7 +141,7 @@
     const reportContent=snap.presentation==='employee-slip'&&snap.employeeSlip?employeeSlipHtml(snap.employeeSlip,printedAt):`        <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Pendapatan Kotor − Denda − Kasbon + Bonus Insentif + Bonus KPI + Share Produk</p></section>
         <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
         ${snap.cards.map(c=>cardHtml(c,snap.branchId)).join('')}`;
-    const html=`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Payroll Karyawan ${esc(snap.month)}</title><style>${css()}</style></head><body>
+    const html=`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Payroll Karyawan ${esc(snap.month)}</title><style>${css()}</style></head><body class="${snap.presentation==='employee-slip'?'employee-slip-print':''}">
       <table class="page-frame"><thead><tr><td><div class="head-space">${header}</div></td></tr></thead><tfoot><tr><td><div class="foot-space">${footer}</div></td></tr></tfoot><tbody><tr><td><main class="content">
         ${reportContent}
         <section class="sign"><div class="box supervisor-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Supervisor</div><div class="stage"><div class="ttd"><img src="${supervisorSignatureUrl}" alt="Tanda tangan Supervisor" onerror="this.style.display='none'"></div></div><div class="name">Rangga Putra Pratama</div><div class="supervisor-line"></div><div class="job">SUPERVISOR</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${ownerSignatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
