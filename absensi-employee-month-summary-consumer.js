@@ -207,6 +207,27 @@
     if(title) title.textContent = `Ringkasan ${MONTHS[month-1]} ${year}`;
   }
 
+  // Read-only consumer for the logged-in employee's slip, using this module's
+  // existing attendance queries and monthly status rules.
+  async function readMonthForEmployee(year, month, expectedEmployeeId){
+    const y = Number(year), m = Number(month);
+    const employeeId = await loadEmployeeId();
+    if(!Number.isInteger(y) || !Number.isInteger(m) || m < 1 || m > 12 ||
+       !employeeId || employeeId !== Number(expectedEmployeeId)){
+      throw new Error("Ringkasan kehadiran tidak tersedia untuk karyawan ini.");
+    }
+    const start = isoDay(y, m, 1);
+    const end = isoDay(y, m, daysInMonth(y, m));
+    const [absensiRows, jadwalRows, settings] = await Promise.all([
+      loadAbsensi(employeeId, start, end),
+      loadJadwal(employeeId, start, end),
+      loadSettings()
+    ]);
+    return buildSummary(absensiRows, jadwalRows, settings, y, m);
+  }
+
+  window.EmployeeMonthSummary = Object.freeze({ readMonthForEmployee });
+
   function bindUi(){
     const button = document.getElementById("employeeSummaryMonthButton");
     const popup = document.getElementById("employeeSummaryMonthPopup");
