@@ -57,7 +57,7 @@
     .employee-slip .slip-profile{display:grid;grid-template-columns:1fr 1fr;gap:2mm 8mm;padding:3mm 4mm;margin-bottom:3mm;border:1px solid #d5dde8;border-left:3px solid #c9a84a;background:#f6f8fb}
     .employee-slip .slip-field span{display:block;color:#6b7a8c;font-size:6.8pt;font-weight:800;text-transform:uppercase}
     .employee-slip .slip-field strong{display:block;margin-top:.5mm;font-size:9.5pt;color:#2a3544}
-    .employee-slip .slip-summary{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:2mm;margin-bottom:4mm}
+    .employee-slip .slip-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5mm;margin-bottom:4mm}
     .employee-slip .slip-total{padding:3mm;border:1px solid #d5dde8;border-top:2px solid #c9a84a;background:#fff}
     .employee-slip .slip-total span{display:block;color:#6b7a8c;font-size:7pt;font-weight:800;text-transform:uppercase}
     .employee-slip .slip-total strong{display:block;margin-top:1mm;color:#243b55;font-size:12pt;white-space:nowrap}
@@ -113,6 +113,10 @@
 
   function employeeSlipHtml(slip,printedAt){
     const rows=(Array.isArray(slip.daily)?slip.daily:[]).map(r=>`<tr><td>${esc(r.tanggal)}</td><td class="num">${esc(r.share)}</td><td class="num">${esc(r.denda)}</td><td class="num">${esc(r.net)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">Belum ada data untuk periode ini.</td></tr>';
+    const payrollDetails=Array.isArray(slip.payrollDetails)&&slip.payrollDetails.length
+      ? slip.payrollDetails
+      : [{label:'Share Bruto',value:slip.share},{label:'Total Denda',value:slip.denda},{label:'Net Diterima',value:slip.net}];
+    const payrollCards=payrollDetails.map(item=>`<div class="slip-total${/pendapatan bersih|hak dibayar|net diterima/i.test(item.label)?' is-net':''}"><span>${esc(item.label)}</span><strong>${esc(item.value)}</strong></div>`).join('');
     const attendance=slip.attendance;
     const attendanceItems=attendance
       ? [['Hadir tepat waktu',attendance.masuk],['Terlambat',attendance.terlambat],['Izin',attendance.izin],['Sakit',attendance.sakit],['Libur',attendance.libur]]
@@ -122,8 +126,7 @@
       <section class="slip-profile"><div class="slip-field"><span>Nama</span><strong>${esc(slip.nama)}</strong></div><div class="slip-field"><span>Periode</span><strong>${esc(slip.periode)}</strong></div>
       <div class="slip-field"><span>Jabatan</span><strong>${esc(slip.jabatan)}</strong></div><div class="slip-field"><span>Tanggal Cetak</span><strong>${esc(printedAt)} WIB</strong></div>
       <div class="slip-field"><span>Cabang</span><strong>${esc(slip.cabang)}</strong></div></section>
-      <section class="slip-summary"><div class="slip-total"><span>Share Bruto</span><strong>${esc(slip.share)}</strong></div><div class="slip-total"><span>Total Denda</span><strong>${esc(slip.denda)}</strong></div>
-      <div class="slip-total is-net"><span>Net Diterima</span><strong>${esc(slip.net)}</strong></div></section>
+      <section class="slip-summary">${payrollCards}</section>
       <h3 class="slip-section-title">Rincian Harian</h3><table class="slip-daily"><thead><tr><th>Tanggal</th><th class="num">Share Bruto</th><th class="num">Denda</th><th class="num">Net Harian</th></tr></thead><tbody>${rows}</tbody></table>
       <section class="slip-attendance"><h3 class="slip-section-title">Ringkasan Kehadiran · ${esc(slip.periode)}</h3><div class="slip-attendance-grid">${attendanceItems}</div></section>
       <p class="slip-note">Nilai slip mengikuti data penghasilan dan denda yang tercatat di ERP untuk karyawan pemegang akun.</p></div>`;
