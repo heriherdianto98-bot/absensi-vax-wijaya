@@ -88,7 +88,7 @@
   logout?.addEventListener('click', async () => {
     if (logout.disabled) return;
     logout.disabled = true;
-    logout.textContent = 'Keluar…';
+    logout.setAttribute('aria-label', 'Sedang keluar…');
     try {
       await KaryawanSession.logout();
     } catch (_) {
