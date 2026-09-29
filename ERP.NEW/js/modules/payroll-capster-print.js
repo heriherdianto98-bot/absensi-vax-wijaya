@@ -114,7 +114,7 @@
   }
 
   function employeeSlipHtml(slip,printedAt){
-    const rows=(Array.isArray(slip.daily)?slip.daily:[]).map(r=>`<tr><td>${esc(r.tanggal)}</td><td class="num">${esc(r.share)}</td><td class="num">${esc(r.denda)}</td><td class="num">${esc(r.net)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">Belum ada data untuk periode ini.</td></tr>';
+    const rows=(Array.isArray(slip.dailyRows)?slip.dailyRows:[]).map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td class="num">${esc(r[2])}</td><td class="num">${esc(r[3])}</td><td class="num">${esc(r[4])}</td><td class="num">${esc(r[5])}</td><td class="num">${esc(r[6])}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">Belum ada data untuk periode ini.</td></tr>';
     const payrollDetails=Array.isArray(slip.payrollDetails)&&slip.payrollDetails.length
       ? slip.payrollDetails
       : [{label:'Share Bruto',value:slip.share},{label:'Total Denda',value:slip.denda},{label:'Net Diterima',value:slip.net}];
@@ -129,7 +129,7 @@
       <div class="slip-field"><span>Jabatan</span><strong>${esc(slip.jabatan)}</strong></div><div class="slip-field"><span>Tanggal Cetak</span><strong>${esc(printedAt)} WIB</strong></div>
       <div class="slip-field"><span>Cabang</span><strong>${esc(slip.cabang)}</strong></div></section>
       <section class="slip-summary">${payrollCards}</section>
-      <h3 class="slip-section-title">Rincian Harian</h3><table class="slip-daily"><thead><tr><th>Tanggal</th><th class="num">Share Bruto</th><th class="num">Denda</th><th class="num">Net Harian</th></tr></thead><tbody>${rows}</tbody></table>
+      <h3 class="slip-section-title">Rincian Harian</h3><table class="slip-daily"><colgroup><col style="width:16%"><col style="width:23%"><col style="width:8%"><col style="width:15%"><col style="width:12%"><col style="width:12%"><col style="width:14%"></colgroup><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th class="num">Service</th><th class="num">Gaji Pokok</th><th class="num">Denda</th><th class="num">Kasbon</th><th class="num">Share Produk</th></tr></thead><tbody>${rows}</tbody></table>
       <section class="slip-attendance"><h3 class="slip-section-title">Ringkasan Kehadiran · ${esc(slip.periode)}</h3><div class="slip-attendance-grid">${attendanceItems}</div></section>
       <p class="slip-note">Nilai slip mengikuti data penghasilan dan denda yang tercatat di ERP untuk karyawan pemegang akun.</p></div>`;
   }
