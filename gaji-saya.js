@@ -485,6 +485,18 @@ async function loadGaji(dari, sampai){
             console.warn("Perbandingan bulan sebelumnya gagal dimuat:", compareError);
         }
 
+        payload.attendance = null;
+        try{
+            const month = calendarMonthRangeFromIso(payload?.periode?.dari);
+            if(month && typeof window.EmployeeMonthSummary?.readMonthForEmployee === "function"){
+                payload.attendance = await window.EmployeeMonthSummary.readMonthForEmployee(
+                    month.year, month.month, payload.employee.id
+                );
+            }
+        }catch(attendanceError){
+            console.warn("Ringkasan kehadiran slip tidak tersedia:", attendanceError);
+        }
+
         currentPayrollConsumer = payload;
         setPeriodMessage("");
         renderPayload(payload, previousPayload);
@@ -560,7 +572,8 @@ function collectSlipFromPayroll(){
             share: formatRupiahId(row.share_bruto),
             denda: formatRupiahId(row.denda),
             net: formatRupiahId(row.net_harian)
-        }))
+        })),
+        attendance: payload.attendance
     };
 }
 
