@@ -460,26 +460,26 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     .thc-page .thc-row-meta{font-size:10px!important;line-height:1.05!important;}
 
     .thc-page #thcTable{
-        font-size:11px!important;
+        font-size:9.5px!important;
     }
     .thc-page #thcTable thead th{
-        height:39px!important;
-        min-height:39px!important;
-        padding:7px 8px!important;
-        font-size:9.8px!important;
-        line-height:1.08!important;
+        height:28px!important;
+        min-height:28px!important;
+        padding:3px 6px!important;
+        font-size:8.8px!important;
+        line-height:1.02!important;
         white-space:nowrap!important;
     }
     .thc-page #thcTable tbody td{
-        height:36px!important;
-        min-height:36px!important;
-        padding:6px 8px!important;
-        font-size:11px!important;
-        line-height:1.08!important;
+        height:24px!important;
+        min-height:24px!important;
+        padding:2px 6px!important;
+        font-size:9.5px!important;
+        line-height:1!important;
         white-space:nowrap!important;
     }
-    .thc-page #thcTable tbody td:nth-child(1){font-size:10.5px!important;}
-    .thc-page #thcTable tbody td:nth-child(2){font-size:12.5px!important;}
+    .thc-page #thcTable tbody td:nth-child(1){font-size:9.2px!important;}
+    .thc-page #thcTable tbody td:nth-child(2){font-size:10.2px!important;}
 
     .thc-page #thcTable thead th:nth-child(1),
     .thc-page #thcTable tbody td:nth-child(1){
@@ -491,13 +491,13 @@ body.setoran-dark .erp-wrapper .thc-page .thc-page-head,
     }
     .thc-page #thcTable thead th:nth-child(n+3),
     .thc-page #thcTable tbody td:nth-child(n+3){
-        padding-left:7px!important;
-        padding-right:7px!important;
+        padding-left:5px!important;
+        padding-right:5px!important;
     }
     .thc-page #thcTable thead th.thc-bri-daily-head + th,
     .thc-page #thcTable tbody td.thc-bri-daily-cell + td{
         width:96px!important;min-width:96px!important;max-width:96px!important;
-        padding-left:7px!important;padding-right:7px!important;
+        padding-left:5px!important;padding-right:5px!important;
     }
     .thc-page #thcTable thead th:has(+ th.thc-bri-daily-head)::after{
         font-size:9.8px!important;

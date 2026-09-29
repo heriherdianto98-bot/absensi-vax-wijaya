@@ -82,3 +82,165 @@ UI ONLY.
         font-size:25px !important;
     }
 }
+
+/*
+=========================================================
+TOTAL PERIODE — KPI DASHBOARD SURFACE
+=========================================================
+UI ONLY.
+Mengikuti visual KPI Dashboard utama.
+Tidak mengubah isi popup/detail, urutan data, angka, engine, atau drilldown.
+=========================================================
+*/
+#thcTotals .thc-totals-grid,
+#thcTotals .thc-totals-grid.thc-grid-17{
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    grid-auto-flow:row !important;
+    gap:8px !important;
+    width:100% !important;
+    max-width:100% !important;
+    overflow:visible !important;
+}
+
+#thcTotals .thc-totals-grid > .thc-tot-item,
+#thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item,
+#thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item:nth-child(n+5):nth-child(-n+9){
+    position:relative !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:flex-start !important;
+    grid-column:auto !important;
+    grid-row:auto !important;
+    min-width:0 !important;
+    width:auto !important;
+    max-width:none !important;
+    height:74px !important;
+    min-height:74px !important;
+    max-height:74px !important;
+    margin:0 !important;
+    padding:9px 11px 8px !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+    border:1px solid color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 48%,rgba(255,255,255,.06)) !important;
+    border-radius:14px !important;
+    background:
+        radial-gradient(120% 90% at 100% 0%,rgba(255,255,255,.05) 0%,transparent 42%),
+        linear-gradient(180deg,#161C26 0%,#11161D 100%) !important;
+    color:#F8FAFC !important;
+    box-shadow:
+        inset 1px 0 0 color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 38%,transparent),
+        inset -1px 0 0 color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 38%,transparent),
+        inset 0 1px 0 color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 44%,transparent),
+        inset 0 -1px 0 color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 38%,transparent),
+        0 6px 16px rgba(0,0,0,.18) !important;
+    transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease !important;
+}
+
+#thcTotals .thc-totals-grid > .thc-tot-item::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    pointer-events:none;
+    background:
+        linear-gradient(90deg,transparent,color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 62%,transparent),transparent) top/100% 1px no-repeat,
+        linear-gradient(90deg,transparent,color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 48%,transparent),transparent) bottom/100% 1px no-repeat,
+        linear-gradient(180deg,transparent,color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 52%,transparent),transparent) left/1px 100% no-repeat,
+        linear-gradient(180deg,transparent,color-mix(in srgb,var(--thc-tot-accent,#D4AF37) 52%,transparent),transparent) right/1px 100% no-repeat;
+}
+
+#thcTotals .thc-totals-grid > .thc-tot-item:hover{
+    z-index:1;
+    transform:translateY(-2px) !important;
+    border-color:rgba(242,194,48,.30) !important;
+    box-shadow:
+        0 0 0 1px rgba(242,194,48,.10),
+        0 10px 24px rgba(0,0,0,.30) !important;
+}
+
+#thcTotals .thc-totals-grid > .thc-tot-item > span{
+    display:block !important;
+    margin:0 0 3px !important;
+    color:#9CA3AF;
+    font-size:9.5px !important;
+    font-weight:700 !important;
+    letter-spacing:.08em !important;
+    line-height:1.1 !important;
+    text-transform:uppercase !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+}
+
+#thcTotals .thc-totals-grid > .thc-tot-item > strong{
+    display:block !important;
+    margin:0 !important;
+    font-size:17px !important;
+    font-weight:800 !important;
+    line-height:1.06 !important;
+    letter-spacing:-.02em !important;
+    color:inherit;
+    text-shadow:0 1px 0 rgba(0,0,0,.35);
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+}
+
+#thcTotals .thc-totals-grid > .thc-tot-item .thc-tot-desc,
+#thcTotals .thc-totals-grid > .thc-tot-item .bri-card-desc{
+    display:-webkit-box !important;
+    margin-top:2px !important;
+    max-width:100% !important;
+    color:#8B93A0 !important;
+    font-size:9px !important;
+    font-weight:600 !important;
+    line-height:1.15 !important;
+    white-space:normal !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    -webkit-box-orient:vertical !important;
+    -webkit-line-clamp:2 !important;
+}
+
+#thcTotals .thc-totals-grid > .thc-tot-item .thc-tot-go,
+#thcTotals .thc-totals-grid > .thc-tot-item .bri-card-hint{
+    position:absolute !important;
+    top:10px !important;
+    right:10px !important;
+    transform:scale(.9);
+    opacity:.85;
+}
+
+@media(max-width:1400px){
+    #thcTotals .thc-totals-grid,
+    #thcTotals .thc-totals-grid.thc-grid-17{
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+}
+
+@media(max-width:980px){
+    #thcTotals .thc-totals-grid,
+    #thcTotals .thc-totals-grid.thc-grid-17{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    }
+}
+
+@media(max-width:680px){
+    #thcTotals .thc-totals-grid,
+    #thcTotals .thc-totals-grid.thc-grid-17{
+        grid-template-columns:minmax(0,1fr) !important;
+    }
+
+    #thcTotals .thc-totals-grid > .thc-tot-item,
+    #thcTotals .thc-totals-grid.thc-grid-17 > .thc-tot-item{
+        height:78px !important;
+        min-height:78px !important;
+        max-height:78px !important;
+        padding:10px 12px !important;
+    }
+
+    #thcTotals .thc-totals-grid > .thc-tot-item > strong{
+        font-size:17px !important;
+    }
+}
