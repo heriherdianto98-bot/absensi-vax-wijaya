@@ -689,6 +689,7 @@ function cetakSlipGaji(){
     }
     // Employee-only presentation: keep the canonical print frame and signatures.
     snap.presentation="employee-slip";
+    slip.payrollDetails=snap.cards[0].sums;
     snap.employeeSlip=slip;
     if(typeof PayrollCapsterPrint?.openSnapshot !== "function"){
         setPeriodMessage("Presenter Payroll belum siap.");
