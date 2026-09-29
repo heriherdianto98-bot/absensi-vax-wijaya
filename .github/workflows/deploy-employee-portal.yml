@@ -81,6 +81,7 @@ jobs:
             test -s /var/www/karyawan-vax/profil.html &&
             test -s /var/www/karyawan-vax/employee-app/index.html &&
             test -s /var/www/karyawan-vax/employee-app/manifest.json &&
+            test -s /var/www/karyawan-vax/employee-app/scroll-compat.css &&
             test -s /var/www/karyawan-vax/employee-app/icon-192-v2.png &&
             test -s /var/www/karyawan-vax/employee-app/icon-512-v2.png &&
             test -s /var/www/karyawan-vax/employee-device-readiness.js &&

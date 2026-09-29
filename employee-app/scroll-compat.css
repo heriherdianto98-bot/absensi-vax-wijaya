@@ -1,0 +1,27 @@
+/* Standalone PWA viewport scroll space. UI only; employee data and logic stay untouched. */
+@media (display-mode: standalone) and (max-width: 480px) {
+  html body .app:has(> .dash-body) {
+    overflow-y: auto !important;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  html body .app:has(> .absen-body) {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  html body .app .gaji-body {
+    padding-bottom: 28px !important;
+    overscroll-behavior-y: auto !important;
+  }
+  html body .app .daily-scroll {
+    overscroll-behavior-y: auto !important;
+  }
+  html body .shell .profile-body {
+    padding-bottom: 28px !important;
+    overscroll-behavior-y: auto !important;
+  }
+  body[data-inbox-mode="employee"] .inbox-list-view,
+  body[data-inbox-mode="employee"] .inbox-list {
+    padding-bottom: 28px !important;
+  }
+}
