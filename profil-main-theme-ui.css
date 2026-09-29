@@ -526,3 +526,25 @@ body{
   border-radius:10px!important;
   font-size:12px!important;
 }
+
+/* Logout stays visible in the fixed profile header. */
+.head .head-logout{
+  flex:0 0 32px!important;
+  width:32px!important;
+  height:32px!important;
+  margin-left:auto!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.45)!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.16)!important;
+  color:#fff!important;
+  font:inherit!important;
+  font-size:14px!important;
+  cursor:pointer!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2)!important;
+}
+.head .head-logout:focus-visible{outline:2px solid #fff!important;outline-offset:2px!important}
+.head .head-logout:disabled{opacity:.6!important;cursor:wait!important}
+.head strong{min-width:0!important;white-space:nowrap!important;font-size:clamp(11px,3.8vw,14px)!important;letter-spacing:.045em!important}
