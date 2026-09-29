@@ -53,6 +53,24 @@
     .supervisor-sign .who,.owner-sign .who{font-size:7.5pt;font-weight:700;color:#172233}.supervisor-sign .auth-role,.owner-sign .auth-role{margin-top:.5mm;font-size:6.5pt;font-weight:800;letter-spacing:.12em;color:#697481;text-transform:uppercase}
     .supervisor-sign .stage,.owner-sign .stage{height:14mm;width:100%;margin:.3mm auto .7mm;display:flex;align-items:center;justify-content:center;overflow:visible}.supervisor-sign .ttd img{display:block;width:30mm;height:11mm;object-fit:contain;object-position:center}.owner-sign .ttd img{max-width:38mm;max-height:13.5mm;object-fit:contain}
     .supervisor-sign .name,.owner-sign .name{font-size:8.5pt;font-weight:800;color:#172233}.supervisor-sign .supervisor-line,.owner-sign .owner-line{height:1px;background:#333;width:40mm;margin:.7mm auto .7mm}.supervisor-sign .job,.owner-sign .job{font-size:6.5pt;font-weight:900;letter-spacing:.16em;color:#697481}
+    /* Employee slip body only. Shared header, footer and approval signatures stay unchanged. */
+    .employee-slip .slip-profile{display:grid;grid-template-columns:1fr 1fr;gap:2mm 8mm;padding:3mm 4mm;margin-bottom:3mm;border:1px solid #d5dde8;border-left:3px solid #c9a84a;background:#f6f8fb}
+    .employee-slip .slip-field span{display:block;color:#6b7a8c;font-size:6.8pt;font-weight:800;text-transform:uppercase}
+    .employee-slip .slip-field strong{display:block;margin-top:.5mm;font-size:9.5pt;color:#2a3544}
+    .employee-slip .slip-summary{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:2mm;margin-bottom:4mm}
+    .employee-slip .slip-total{padding:3mm;border:1px solid #d5dde8;border-top:2px solid #c9a84a;background:#fff}
+    .employee-slip .slip-total span{display:block;color:#6b7a8c;font-size:7pt;font-weight:800;text-transform:uppercase}
+    .employee-slip .slip-total strong{display:block;margin-top:1mm;color:#243b55;font-size:12pt;white-space:nowrap}
+    .employee-slip .slip-total.is-net{background:#fcfaf3;border-color:#e2d4a8}
+    .employee-slip .slip-total.is-net strong{color:#8a6414}
+    .employee-slip .slip-section-title{margin:0 0 2mm;padding-bottom:1mm;border-bottom:1px solid #d5dde8;color:#243b55;font-size:10pt}
+    .employee-slip .slip-daily{width:100%;border-collapse:collapse;table-layout:fixed}
+    .employee-slip .slip-daily th{background:#2f4a68;color:#fff;text-align:left;font-size:7.5pt;text-transform:uppercase}
+    .employee-slip .slip-daily th,.employee-slip .slip-daily td{padding:1.4mm 2mm;border:1px solid #e2e8f0}
+    .employee-slip .slip-daily td{font-size:8.4pt;color:#2a3544}
+    .employee-slip .slip-daily .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .employee-slip .slip-daily tbody tr:nth-child(even){background:#f8fafc}
+    .employee-slip .slip-note{margin:3mm 0 0;padding:2mm 3mm;border:1px solid #e6ebf0;background:#fafbfc;color:#6b7a8c;font-size:7.5pt}
     @media print{
       .employee{break-inside:auto;page-break-inside:auto;margin-bottom:1mm}
       .report-title{margin-bottom:1.1mm}.report-title h2{font-size:11.8pt}.report-title p{margin-top:.2mm;font-size:6.4pt}
@@ -75,6 +93,18 @@
     return `<section class="employee"><div class="emp-head"><div><h3>${esc(c.name)}${employeeId}</h3><p>${esc(c.info)}${branchIdBadge}</p></div><div class="net"><span>Pendapatan Bersih</span><strong>${esc(net)}</strong></div></div><table class="tbl"><thead><tr><th>Tanggal</th><th>Cabang Kerja</th><th class="num">Service</th><th class="num">Gaji Pokok</th><th class="num">Denda</th><th class="num">Kasbon</th><th class="num">Share Produk</th></tr></thead><tbody>${rows}</tbody></table><div class="summary">${sums}</div>${note}</section>`;
   }
 
+  function employeeSlipHtml(slip,printedAt){
+    const rows=(Array.isArray(slip.daily)?slip.daily:[]).map(r=>`<tr><td>${esc(r.tanggal)}</td><td class="num">${esc(r.share)}</td><td class="num">${esc(r.denda)}</td><td class="num">${esc(r.net)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">Belum ada data untuk periode ini.</td></tr>';
+    return `<div class="employee-slip"><section class="report-title"><h2>SLIP GAJI KARYAWAN</h2><p>Bukti penghasilan sesuai periode aktif pada Gaji Saya.</p></section>
+      <section class="slip-profile"><div class="slip-field"><span>Nama</span><strong>${esc(slip.nama)}</strong></div><div class="slip-field"><span>Periode</span><strong>${esc(slip.periode)}</strong></div>
+      <div class="slip-field"><span>Jabatan</span><strong>${esc(slip.jabatan)}</strong></div><div class="slip-field"><span>Tanggal Cetak</span><strong>${esc(printedAt)} WIB</strong></div>
+      <div class="slip-field"><span>Cabang</span><strong>${esc(slip.cabang)}</strong></div></section>
+      <section class="slip-summary"><div class="slip-total"><span>Share Bruto</span><strong>${esc(slip.share)}</strong></div><div class="slip-total"><span>Total Denda</span><strong>${esc(slip.denda)}</strong></div>
+      <div class="slip-total is-net"><span>Net Diterima</span><strong>${esc(slip.net)}</strong></div></section>
+      <h3 class="slip-section-title">Rincian Harian</h3><table class="slip-daily"><thead><tr><th>Tanggal</th><th class="num">Share Bruto</th><th class="num">Denda</th><th class="num">Net Harian</th></tr></thead><tbody>${rows}</tbody></table>
+      <p class="slip-note">Nilai slip mengikuti data penghasilan dan denda yang tercatat di ERP untuk karyawan pemegang akun.</p></div>`;
+  }
+
   function openSnapshot(snap,assets={}){
     if(!snap?.cards?.length){alert('Tidak ada data payroll untuk dicetak.');return;}
     const w=window.open('','_blank');if(!w){alert('Popup print diblokir browser.');return;}
@@ -84,11 +114,12 @@
     const printedAt=nowWib();
     const header=`<header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">PAYROLL KARYAWAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN OPERASIONAL</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>`;
     const footer=`<footer class="master-foot"><div><strong>ERP VAX WIJAYA</strong><br>Payroll Karyawan</div><div class="foot-center">${esc(snap.month)} · ${esc(snap.branchLabel)}</div><div class="foot-right">Dicetak ${esc(printedAt)} WIB<br>Dokumen Internal</div></footer>`;
+    const reportContent=snap.presentation==='employee-slip'&&snap.employeeSlip?employeeSlipHtml(snap.employeeSlip,printedAt):`        <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Pendapatan Kotor − Denda − Kasbon + Bonus Insentif + Bonus KPI + Share Produk</p></section>
+        <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
+        ${snap.cards.map(c=>cardHtml(c,snap.branchId)).join('')}`;
     const html=`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Payroll Karyawan ${esc(snap.month)}</title><style>${css()}</style></head><body>
       <table class="page-frame"><thead><tr><td><div class="head-space">${header}</div></td></tr></thead><tfoot><tr><td><div class="foot-space">${footer}</div></td></tr></tfoot><tbody><tr><td><main class="content">
-        <section class="report-title"><h2>MASTER GAJI KARYAWAN</h2><p>Pendapatan Kotor − Denda − Kasbon + Bonus Insentif + Bonus KPI + Share Produk</p></section>
-        <section class="meta"><div class="item"><span class="lbl">Periode</span><span class="val">${esc(snap.month)}</span></div><div class="item"><span class="lbl">Cabang</span><span class="val">${esc(snap.branchLabel)}</span></div><div class="item"><span class="lbl">Karyawan</span><span class="val">${esc(snap.employeeLabel)}</span></div><div class="item"><span class="lbl">Tanggal Cetak</span><span class="val">${esc(printedAt)} WIB</span></div></section>
-        ${snap.cards.map(c=>cardHtml(c,snap.branchId)).join('')}
+        ${reportContent}
         <section class="sign"><div class="box supervisor-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Supervisor</div><div class="stage"><div class="ttd"><img src="${supervisorSignatureUrl}" alt="Tanda tangan Supervisor" onerror="this.style.display='none'"></div></div><div class="name">Rangga Putra Pratama</div><div class="supervisor-line"></div><div class="job">SUPERVISOR</div></div><div class="box owner-sign"><div class="who">Disetujui / Mengetahui,</div><div class="auth-role">Otorisasi Owner</div><div class="stage"><div class="ttd"><img src="${ownerSignatureUrl}" alt="Tanda tangan Owner" onerror="this.style.display='none'"></div></div><div class="name">Heri Herdianto</div><div class="owner-line"></div><div class="job">OWNER</div></div></section>
       </main></td></tr></tbody></table>
       <script>window.addEventListener('load',async()=>{await Promise.all([...document.images].map(i=>i.complete?Promise.resolve():new Promise(resolve=>{i.addEventListener('load',resolve,{once:true});i.addEventListener('error',resolve,{once:true});})));setTimeout(()=>window.print(),120);});<\/script></body></html>`;
