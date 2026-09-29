@@ -669,10 +669,14 @@ function buildCanonicalPayrollPrintSnapshot(){
 
 function cetakSlipGaji(){
     const snap=buildCanonicalPayrollPrintSnapshot();
-    if(!snap){
+    const slip=collectSlipFromPayroll();
+    if(!snap || !slip){
         setPeriodMessage("Data Payroll belum siap dicetak.");
         return;
     }
+    // Employee-only presentation: keep the canonical print frame and signatures.
+    snap.presentation="employee-slip";
+    snap.employeeSlip=slip;
     if(typeof PayrollCapsterPrint?.openSnapshot !== "function"){
         setPeriodMessage("Presenter Payroll belum siap.");
         return;
