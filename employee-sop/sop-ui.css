@@ -1,0 +1,55 @@
+#vaxSopCard{min-height:54px;margin:0 0 4px;padding:10px 12px;border:1px solid rgba(20,141,123,.42);border-radius:16px;background:linear-gradient(135deg,#35cdb7 0%,#29bea9 48%,#20ad9a 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 -2px 0 rgba(8,95,83,.08),0 10px 20px rgba(26,125,111,.18);color:#fff;cursor:pointer}
+#vaxSopCard .sop-card-head{display:flex;align-items:center;gap:9px;min-width:0}
+#vaxSopCard .sop-card-icon{display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;border-radius:10px;background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.38);font-size:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 9px rgba(8,88,77,.12)}
+#vaxSopCard .sop-card-copy{min-width:0;flex:1 1 auto}
+#vaxSopCard h3{margin:0;font-size:12.5px;line-height:1.15;color:#fff;text-shadow:0 1px 2px rgba(7,88,77,.12)}
+#vaxSopCard p{margin:2px 0 0;color:#eafffb;font-size:8.5px;line-height:1.15;white-space:nowrap;font-weight:750}
+#vaxSopCard .sop-card-status{margin-left:auto;min-height:31px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:9.5px;line-height:1.1;font-weight:850;color:#168f7c;border:1px solid rgba(255,255,255,.72);background:#fff;border-radius:10px;padding:6px 10px;white-space:nowrap;box-shadow:inset 0 1px 0 #fff,0 4px 9px rgba(8,88,77,.14)}
+.vax-sop-overlay{position:fixed;inset:0;z-index:10050;background:rgba(20,54,58,.34);backdrop-filter:blur(8px);display:grid;place-items:center;padding:14px}
+.vax-sop-overlay[hidden]{display:none!important}
+.vax-sop-modal{width:min(720px,100%);max-height:92dvh;display:flex;flex-direction:column;background:#f5fcfb;border:1px solid #b7e6e1;border-radius:22px;box-shadow:0 24px 70px rgba(27,112,105,.24);overflow:hidden;color:#285b61}
+.vax-sop-head{padding:18px 18px 14px;border-bottom:1px solid rgba(15,133,116,.42);display:flex;gap:12px;align-items:flex-start;background:linear-gradient(135deg,#39d0ba 0%,#2bc1ac 48%,#20ad9a 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.30),0 8px 18px rgba(21,126,112,.16)}
+.vax-sop-head strong{display:block;font-size:18px;color:#fff;text-shadow:0 1px 2px rgba(7,88,77,.16)}
+.vax-sop-head small{display:block;color:#eafffb;margin-top:4px;font-weight:800;letter-spacing:.04em}
+.vax-sop-close{margin-left:auto;border:1px solid rgba(255,255,255,.72);background:#fff;color:#168f7c;width:36px;height:36px;border-radius:10px;font-size:20px;cursor:pointer;box-shadow:inset 0 1px 0 #fff,0 4px 9px rgba(8,88,77,.14)}
+.vax-sop-body{overflow:auto;padding:18px;background:#f5fcfb;-webkit-overflow-scrolling:touch}
+.vax-sop-section{position:relative;padding:14px;border:1px solid rgba(11,108,96,.55);border-radius:16px;background:linear-gradient(145deg,#147e73 0%,#0f6d64 58%,#0a5b54 100%);margin-bottom:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -3px 0 rgba(1,45,41,.20),0 12px 24px rgba(7,72,66,.24),0 4px 8px rgba(7,72,66,.15);transform:translateZ(0)}
+.vax-sop-section::before{content:"";position:absolute;left:12px;right:12px;top:1px;height:2px;border-radius:999px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent)}
+.vax-sop-section:first-child{margin-top:0}
+.vax-sop-section h4{margin:0 0 10px;color:#fff;font-size:15px;text-shadow:0 1px 2px rgba(7,88,77,.14)}
+.vax-sop-section ul{margin:0;padding-left:19px;color:#ffffff;font-size:13px;line-height:1.62;text-shadow:0 1px 1px rgba(0,0,0,.12)}
+.vax-sop-general{position:relative;margin-top:16px;padding:14px;border-radius:16px;background:linear-gradient(145deg,#13796f 0%,#0e6961 58%,#09564f 100%);border:1px solid rgba(11,108,96,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -3px 0 rgba(1,45,41,.20),0 12px 24px rgba(7,72,66,.24),0 4px 8px rgba(7,72,66,.15)}
+.vax-sop-general h4{margin:0 0 9px;color:#fff;text-shadow:0 1px 2px rgba(7,88,77,.14)}
+.vax-sop-general ul{color:#ffffff;text-shadow:0 1px 1px rgba(0,0,0,.12)}
+.vax-sop-actions{padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid #cdece8;background:#fff}
+.vax-sop-checkline{display:flex;gap:10px;align-items:flex-start;color:#365f64;font-size:13px;line-height:1.5;margin-bottom:12px}
+.vax-sop-checkline input{width:19px;height:19px;margin-top:1px;accent-color:#24bfb1;flex:0 0 auto}
+.vax-sop-primary{width:100%;border:0;border-radius:12px;padding:13px 15px;background:linear-gradient(180deg,#45d2c5,#22b9ad);color:#fff;font-weight:900;font-size:14px;cursor:pointer;box-shadow:0 7px 15px rgba(34,185,173,.23)}
+.vax-sop-primary:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
+.vax-sop-daily-list{display:grid;gap:10px}
+.vax-sop-daily-item{position:relative;display:flex;gap:11px;align-items:flex-start;padding:12px;border:1px solid #c8e9e5;border-radius:15px;background:linear-gradient(145deg,#ffffff 0%,#f9fffe 65%,#eefaf8 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.96),inset 0 -2px 0 rgba(38,174,163,.07),0 10px 20px rgba(24,118,110,.11),0 2px 6px rgba(24,118,110,.07)}
+.vax-sop-daily-item::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(49,199,194,.28),transparent)}
+.vax-sop-daily-item input{width:20px;height:20px;margin-top:1px;accent-color:#24bfb1;flex:0 0 auto}
+.vax-sop-daily-item span{font-size:13px;line-height:1.45;color:#285b61}
+.vax-sop-warning{position:relative;margin:16px 0 12px;padding:13px;border-radius:15px;background:linear-gradient(145deg,#fffaf0,#fff4d6);border:1px solid #efcf7f;color:#745710;font-size:12px;line-height:1.55;box-shadow:inset 0 1px 0 #fff,0 10px 20px rgba(147,105,15,.10),0 2px 6px rgba(147,105,15,.07)}
+.vax-sop-warning strong{color:#5c440b}
+.vax-sop-meta{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 14px}
+.vax-sop-meta span{font-size:11px;padding:5px 8px;border-radius:999px;background:linear-gradient(145deg,#147e73 0%,#0f6d64 58%,#0a5b54 100%);color:#fff;border:1px solid rgba(11,108,96,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -2px 0 rgba(1,45,41,.18),0 6px 12px rgba(7,72,66,.18);text-shadow:0 1px 1px rgba(0,0,0,.14)}
+.vax-sop-local-note{padding:8px 10px;margin-bottom:12px;border-radius:10px;background:#eaf9f4;color:#2c7b62;font-size:11px;border:1px solid #cbe9dc}
+body.vax-sop-lock{overflow:hidden!important}
+html body .app .employee-date-toolbar + #vaxSopCard{margin-top:0!important}
+html body .app #vaxSopCard + .employee-monthly-kpi{margin-top:0!important}
+.vax-sop-body::-webkit-scrollbar{width:5px}
+.vax-sop-body::-webkit-scrollbar-track{background:#eaf5f3}
+.vax-sop-body::-webkit-scrollbar-thumb{background:linear-gradient(#45d2c5,#22b9ad);border-radius:999px}
+@media(max-width:480px){
+  #vaxSopCard{min-height:54px;margin:0 0 4px!important;padding:10px 12px;border-radius:16px}
+  html body .app .employee-date-toolbar + #vaxSopCard{margin-top:-2px!important}
+  #vaxSopCard .sop-card-icon{width:32px;height:32px;flex-basis:32px}
+  .vax-sop-overlay{padding:0;place-items:stretch}
+  .vax-sop-modal{width:100%;height:100dvh;max-height:none;border-radius:0;border:0}
+  .vax-sop-head{padding:16px 15px 13px}
+  .vax-sop-head strong{font-size:17px}
+  .vax-sop-body{padding:15px}
+  .vax-sop-actions{padding:12px 15px calc(12px + env(safe-area-inset-bottom,0px))}
+}

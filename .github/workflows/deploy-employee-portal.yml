@@ -42,6 +42,7 @@ jobs:
           cp ERP.NEW/js/modules/payroll-unified-engine.js _employee_stage/ERP.NEW/js/modules/
           cp ERP.NEW/js/modules/payroll-capster-print.js _employee_stage/ERP.NEW/js/modules/
           cp -R employee-app _employee_stage/
+          cp -R employee-sop _employee_stage/
 
       - name: Prepare SSH
         shell: bash
@@ -82,6 +83,10 @@ jobs:
             test -s /var/www/karyawan-vax/employee-app/index.html &&
             test -s /var/www/karyawan-vax/employee-app/manifest.json &&
             test -s /var/www/karyawan-vax/employee-app/scroll-compat.css &&
+            test -s /var/www/karyawan-vax/employee-sop/sop-bootstrap.js &&
+            test -s /var/www/karyawan-vax/employee-sop/sop-data.js &&
+            test -s /var/www/karyawan-vax/employee-sop/sop-module.js &&
+            test -s /var/www/karyawan-vax/employee-sop/sop-ui.css &&
             test -s /var/www/karyawan-vax/employee-app/icon-192-v2.png &&
             test -s /var/www/karyawan-vax/employee-app/icon-512-v2.png &&
             test -s /var/www/karyawan-vax/employee-device-readiness.js &&
