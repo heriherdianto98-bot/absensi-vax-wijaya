@@ -79,13 +79,15 @@
     .employee-slip .slip-note{margin:3mm 0 0;padding:2mm 3mm;border:1px solid #e6ebf0;background:#fafbfc;color:#6b7a8c;font-size:7.5pt}
     @media print{
       .employee-slip-print .foot-space{height:12mm}
-      .employee-slip-print .sign{position:static;left:auto;right:auto;bottom:auto;margin-top:5mm}
+      .employee-slip-print .sign{position:static;left:auto;right:auto;bottom:auto;margin-top:2mm}
+      .employee-slip-print .sign .box{min-height:20mm}
+      .employee-slip-print .supervisor-sign .stage,.employee-slip-print .owner-sign .stage{height:10mm}
       .employee-slip-print .slip-profile{padding:2mm 3mm;gap:1mm 7mm;margin-bottom:2mm}
       .employee-slip-print .slip-field strong{font-size:8pt;margin-top:.2mm}
       .employee-slip-print .slip-summary{margin-bottom:2mm}
       .employee-slip-print .slip-total{padding:1.5mm 2mm}
       .employee-slip-print .slip-total strong{font-size:9.5pt;margin-top:.4mm}
-      .employee-slip-print .slip-daily th,.employee-slip-print .slip-daily td{padding:.55mm 1.2mm;font-size:7pt;line-height:1.08}
+      .employee-slip-print .slip-daily th,.employee-slip-print .slip-daily td{padding:.2mm .8mm;font-size:6.5pt;line-height:1}
       .employee-slip-print .slip-attendance{margin-top:2mm}
       .employee-slip-print .slip-attendance-item{padding:1.5mm 1mm}
       .employee-slip-print .slip-attendance-item strong{font-size:9.5pt;margin-top:.5mm}
