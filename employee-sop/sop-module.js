@@ -95,11 +95,12 @@
   }
   function openDaily(questions){
     const m=modalShell("Checklist SOP Hari Ini",`${roleLabel()} · ${todayWib()} · wajib setelah Absen Masuk`,true);
-    m.body.innerHTML=`${isLocal?'<div class="vax-sop-local-note">MODE LOKAL · hasil checklist hanya disimpan di browser lokal.</div>':""}<div class="vax-sop-daily-list">${questions.map((q,i)=>`<label class="vax-sop-daily-item"><input type="checkbox" data-sop-q="${i}"><span>${q}</span></label>`).join("")}</div><div class="vax-sop-warning"><strong>Pernyataan Kepatuhan SOP</strong><br>${DATA.declaration}</div>`;
+    m.body.innerHTML=`${isLocal?'<div class="vax-sop-local-note">MODE LOKAL · hasil checklist hanya disimpan di browser lokal.</div>':""}<div class="vax-sop-daily-list">${questions.map((q,i)=>`<label class="vax-sop-daily-item ${i===0?"is-active":"is-pending"}"><input type="checkbox" data-sop-q="${i}"><span>${q}</span></label>`).join("")}</div><div class="vax-sop-warning"><strong>Pernyataan Kepatuhan SOP</strong><br>${DATA.declaration}</div>`;
     m.actions.innerHTML=`<label class="vax-sop-checkline"><input id="vaxSopTruth" type="checkbox"><span>${DATA.declarationCheck}</span></label><button id="vaxSopDailyBtn" class="vax-sop-primary" type="button" disabled>SETUJUI & MULAI KERJA</button>`;
-    const boxes=[...m.body.querySelectorAll("[data-sop-q]")],truth=$("#vaxSopTruth",m.actions),btn=$("#vaxSopDailyBtn",m.actions);
+    const items=[...m.body.querySelectorAll(".vax-sop-daily-item")],boxes=[...m.body.querySelectorAll("[data-sop-q]")],truth=$("#vaxSopTruth",m.actions),btn=$("#vaxSopDailyBtn",m.actions);
+    const revealNext=(index)=>{const next=items[index+1];if(!next)return;next.classList.remove("is-pending");next.classList.add("is-active");requestAnimationFrame(()=>next.scrollIntoView({behavior:"smooth",block:"nearest"}));};
     const sync=()=>btn.disabled=!(boxes.every(x=>x.checked)&&truth.checked);
-    boxes.forEach(x=>x.addEventListener("change",sync));truth.addEventListener("change",sync);
+    boxes.forEach((box,index)=>{box.addEventListener("change",()=>{if(box.checked){items[index]?.classList.remove("is-active");items[index]?.classList.add("is-done");revealNext(index);}else{items[index]?.classList.remove("is-done");items[index]?.classList.add("is-active");items.slice(index+1).forEach((item,j)=>{item.classList.remove("is-active","is-done");item.classList.add("is-pending");boxes[index+1+j].checked=false;});}sync();});items[index]?.addEventListener("click",(e)=>{if(!items[index]?.classList.contains("is-active")||box.checked)return;if(e.target===box)return;e.preventDefault();box.checked=true;box.dispatchEvent(new Event("change",{bubbles:true}));});});truth.addEventListener("change",sync);
     btn.onclick=async()=>{btn.disabled=true;btn.textContent="Menyimpan…";try{await submitDaily(boxes.map((x,i)=>({index:i,question:questions[i],checked:x.checked})));m.close();setStatus("Checklist hari ini selesai");}catch(e){btn.disabled=false;btn.textContent="SETUJUI & MULAI KERJA";alert(e.message||"Checklist gagal disimpan.");}};
   }
   async function boot(){
