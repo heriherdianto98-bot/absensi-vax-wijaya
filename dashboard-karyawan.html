@@ -28,13 +28,7 @@
     <link rel="stylesheet" href="dashboard-karyawan-kasbon-entry.css?v=20260926-1">
     <link rel="stylesheet" href="employee-device-readiness.css?v=20260929-1">
     <link rel="stylesheet" href="dashboard-karyawan-work-branch-local.css?v=20261003-1">
-    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging11">\n    <style id="kasir-ultimate-ranking-3d">
-html[data-home-kpi="kasir"] .kasir-ultimate-today-row{
-  border:1px solid #c6dfda!important;
-  background:linear-gradient(180deg,#ffffff 0%,#eef8f5 100%)!important;
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.95),inset 0 -2px 3px rgba(34,108,98,.12),0 10px 18px rgba(33,84,79,.18),0 3px 6px rgba(33,84,79,.12)!important;
-}
-</style>
+    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging12">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style id="employee-sync-header-ui">
       /* Employee-only UI. Status remains unknown until a verified owner read-only source is wired. */
@@ -52,6 +46,22 @@ html[data-home-kpi="kasir"] .kasir-ultimate-today-row{
       .app #bottomNav>a>i,.app #bottomNav>a>span{flex:0 0 auto!important;text-align:center!important}
     </style>
 <link rel="stylesheet" href="/employee-app/scroll-compat.css?v=20260929-1"><link rel="stylesheet" href="employee-mobile-performance.css?v=20261001-1">
+<style id="kasir-product-ranking-ui">
+html[data-home-kpi="kasir"] .kasir-product-ranking{padding:0!important;overflow:hidden!important;border:1px solid rgba(22,163,142,.34)!important;border-radius:11px!important;background:#f8fffd!important;box-shadow:0 5px 14px rgba(28,134,119,.10),inset 0 1px 0 #fff!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head{margin:0!important;padding:8px 10px!important;min-height:48px!important;display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:8px!important;background:linear-gradient(135deg,#28c4ae 0%,#18aa94 100%)!important;border-bottom:1px solid rgba(0,123,107,.20)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.28)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head>div,html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head>span{display:flex!important;flex-direction:column!important;gap:2px!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head>span{align-items:flex-end!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head small{color:rgba(255,255,255,.84)!important;font-size:7.5px!important;font-weight:950!important;letter-spacing:.07em!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head strong{color:#fff!important;font-size:16px!important;font-weight:950!important;line-height:1.05!important;text-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head>span strong{font-size:17px!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-list{margin:0!important;padding:6px!important;display:flex!important;flex-direction:column!important;gap:5px!important;background:linear-gradient(180deg,#f7fffd 0%,#eef9f6 100%)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row{position:relative!important;min-height:38px!important;padding:6px 8px 6px 36px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;border:1px solid #c6dfda!important;border-radius:11px!important;background:linear-gradient(180deg,#fff 0%,#eef8f5 100%)!important;box-shadow:inset 0 2px 0 rgba(255,255,255,.95),inset 0 -2px 3px rgba(34,108,98,.12),0 10px 18px rgba(33,84,79,.18),0 3px 6px rgba(33,84,79,.12)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-rank{position:absolute!important;left:8px!important;top:50%!important;transform:translateY(-50%)!important;display:grid!important;place-items:center!important;width:20px!important;height:20px!important;border-radius:50%!important;background:linear-gradient(145deg,#34ccb5,#159f8b)!important;color:#fff!important;font-size:8px!important;font-weight:950!important;box-shadow:inset 0 2px 2px rgba(255,255,255,.42),inset 0 -3px 5px rgba(0,104,90,.28),0 4px 8px rgba(20,126,111,.24),0 0 0 3px rgba(40,196,174,.08)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row>div{display:flex!important;flex-direction:column!important;gap:1px!important;min-width:0!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row b{color:#173f45!important;font-size:9.5px!important;font-weight:950!important;line-height:1.1!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row small{color:#7a9291!important;font-size:7px!important;font-weight:850!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row>strong{color:#119f89!important;font-size:10.5px!important;font-weight:950!important;white-space:nowrap!important}
+</style>
 </head>
 <body>
 <div class="app">
@@ -203,10 +213,10 @@ html[data-home-kpi="kasir"] .kasir-ultimate-today-row{
                             <div class="kasir-product-empty">Belum ada paket Ultimate terjual hari ini.</div>
                         </div>
                     </div>
-                    <div class="kasir-product-today">
+                    <div class="kasir-product-today kasir-product-ranking">
                         <div class="kasir-product-head">
                             <div><small>PRODUK HARI INI</small><strong id="kasirProdukHariIni">Rp0</strong></div>
-                            <span><small>SHARE KOMISI</small><strong id="kasirProdukShareHariIni">Rp0</strong></span>
+                            <span><small>PRODUK TERJUAL</small><strong id="kasirProdukHariIniCount">0</strong></span>
                         </div>
                         <div id="kasirProdukHariIniList" class="kasir-product-list">
                             <div class="kasir-product-empty">Belum ada produk terjual hari ini.</div>
@@ -289,7 +299,7 @@ html[data-home-kpi="kasir"] .kasir-ultimate-today-row{
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan.js"></script>
-<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging3"></script>
+<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging4"></script>
 <script src="izin-telat-dashboard-entry.js?v=20260924-2"></script>
 <script src="dashboard-karyawan-header-toolbar-ui.js?v=20260924-7"></script>
 <script src="ERP.NEW/js/modules/penugasan-backup-db-store.js?v=20261003-1"></script>
