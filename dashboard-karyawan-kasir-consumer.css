@@ -689,3 +689,13 @@ html[data-home-kpi="kasir"] body .app #vaxSopCard{
 html[data-home-kpi="kasir"] #kpiKasir{
   margin-top:0!important;
 }
+
+
+/* Kasir vertical rhythm · staging6
+   Match outer SOP→ops spacing to internal card spacing. */
+html[data-home-kpi="kasir"] body .app main.dash-body{
+  gap:5px!important;
+}
+html[data-home-kpi="kasir"] body .app #vaxSopCard{
+  margin:0!important;
+}
