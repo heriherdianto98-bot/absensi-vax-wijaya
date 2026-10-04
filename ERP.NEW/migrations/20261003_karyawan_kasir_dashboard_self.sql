@@ -33,6 +33,8 @@ DECLARE
   v_ultimate_target numeric := 0;
   v_ultimate_real numeric := 0;
   v_ultimate_count integer := 0;
+  v_ultimate_today_total numeric := 0;
+  v_ultimate_today_detail jsonb := '[]'::jsonb;
 
   v_customer_today numeric := 0;
   v_transaction_today numeric := 0;
@@ -109,6 +111,43 @@ BEGIN
       OR lower(s.service_package) ~ 'enakin[[:space:]]+kepala'
     );
 
+  SELECT coalesce(sum(s.price_with_discount),0)
+    INTO v_ultimate_today_total
+  FROM public.kpi_ultimate_sales_source s
+  WHERE s.cabang_id = v_cabang_id
+    AND s.activity_date = p_date
+    AND (
+      lower(s.service_package) ~ '(^|[^a-z])(max|relax|reguler|regular|plus)([^a-z]|$)'
+      OR lower(s.service_package) ~ 'enakin[[:space:]]+kepala'
+    );
+
+  SELECT coalesce(
+    jsonb_agg(
+      jsonb_build_object(
+        'package_name', x.service_package,
+        'qty', x.qty,
+        'total', x.total
+      )
+      ORDER BY x.total DESC, x.service_package
+    ),
+    '[]'::jsonb
+  )
+  INTO v_ultimate_today_detail
+  FROM (
+    SELECT
+      s.service_package,
+      count(*)::integer AS qty,
+      coalesce(sum(s.price_with_discount),0)::numeric AS total
+    FROM public.kpi_ultimate_sales_source s
+    WHERE s.cabang_id = v_cabang_id
+      AND s.activity_date = p_date
+      AND (
+        lower(s.service_package) ~ '(^|[^a-z])(max|relax|reguler|regular|plus)([^a-z]|$)'
+        OR lower(s.service_package) ~ 'enakin[[:space:]]+kepala'
+      )
+    GROUP BY s.service_package
+  ) x;
+
   SELECT
     coalesce(sum(case when d.activity_date = p_date then coalesce(d.product_price,0) else 0 end),0),
     coalesce(sum(coalesce(d.product_price,0)),0),
@@ -182,6 +221,8 @@ BEGIN
     'ultimate_target', v_ultimate_target,
     'ultimate_real', v_ultimate_real,
     'ultimate_count', v_ultimate_count,
+    'ultimate_today_total', v_ultimate_today_total,
+    'ultimate_today_detail', coalesce(v_ultimate_today_detail,'[]'::jsonb),
     'customer_today', v_customer_today,
     'transaction_today', v_transaction_today,
     'services_today', v_services_today,
