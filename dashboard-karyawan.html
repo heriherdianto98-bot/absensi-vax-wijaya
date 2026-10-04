@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="dashboard-karyawan-kasbon-entry.css?v=20260926-1">
     <link rel="stylesheet" href="employee-device-readiness.css?v=20260929-1">
     <link rel="stylesheet" href="dashboard-karyawan-work-branch-local.css?v=20261003-1">
-    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging1">
+    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style id="employee-sync-header-ui">
       /* Employee-only UI. Status remains unknown until a verified owner read-only source is wired. */
@@ -125,6 +125,13 @@
             <span id="closingStatus" class="sr-only"></span>
 
             <div id="kpiKasir" class="kasir-consumer" hidden>
+                <section class="kasir-ops-mini" aria-label="Operasional Harian Cabang">
+                    <article><small>CUST</small><strong id="kasirCustomerHariIni">0</strong></article>
+                    <article><small>TRX</small><strong id="kasirTransaksiHariIni">0</strong></article>
+                    <article><small>SVC</small><strong id="kasirServicesHariIni">0</strong></article>
+                    <span id="kasirCustomerDate" class="kasir-ops-date">Hari ini</span>
+                </section>
+
                 <section class="kasir-monthly-kpi" aria-label="Target Omzet Cabang">
                     <article class="kasir-monthly-kpi-card">
                         <div class="kasir-monthly-kpi-heading">
@@ -177,12 +184,6 @@
                         <span>Sisa Target</span>
                         <strong id="kasirUltimateSisa">Rp0</strong>
                     </div>
-                </section>
-
-                <section class="kasir-customer-card" aria-label="Customer Hari Ini">
-                    <span class="kasir-customer-icon"><i class="fa-solid fa-users"></i></span>
-                    <div><small>CUSTOMER HARI INI</small><strong id="kasirCustomerHariIni">0</strong></div>
-                    <span id="kasirCustomerDate">Hari ini</span>
                 </section>
 
                 <section class="kasir-performa-card" aria-label="Performa Kasir dari ERP">
@@ -273,7 +274,7 @@
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan.js"></script>
-<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging1"></script>
+<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging2"></script>
 <script src="izin-telat-dashboard-entry.js?v=20260924-2"></script>
 <script src="dashboard-karyawan-header-toolbar-ui.js?v=20260924-7"></script>
 <script src="ERP.NEW/js/modules/penugasan-backup-db-store.js?v=20261003-1"></script>
