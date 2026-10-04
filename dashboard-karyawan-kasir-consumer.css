@@ -934,3 +934,12 @@ html[data-home-kpi="kasir"] .kasir-ultimate-today-row::before{
 html[data-home-kpi="kasir"] #kpiKasir > .kasir-performa-card{
   margin-top:4px!important;
 }
+
+
+/* Performa Kasir outer border emphasis · staging14 · UI only */
+html[data-home-kpi="kasir"] .kasir-performa-card{
+  border:2px solid rgba(31,178,158,.42)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.90),
+    0 6px 16px rgba(27,123,110,.10)!important;
+}
