@@ -75,6 +75,23 @@
     }
     host.innerHTML=list.map(r=>`<div class="kasir-ultimate-today-row"><div><b>${String(r.package_name||"-")}</b><small>${num(r.qty)} paket</small></div><strong>${rp(r.total)}</strong></div>`).join("");
   }
+  function renderProductMonth(rows,date){
+    const host=$("kasirProdukBulanList");
+    const list=Array.isArray(rows)?rows:[];
+    const monthCount=list.reduce((s,r)=>s+num(r.qty),0);
+    if($("kasirProdukBulanIniCount"))$("kasirProdukBulanIniCount").textContent=String(Math.round(monthCount));
+    if($("kasirProdukBulanPeriode"))$("kasirProdukBulanPeriode").textContent=
+      new Intl.DateTimeFormat("id-ID",{month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(date+"T00:00:00Z"));
+    if(!list.length){
+      host.innerHTML='<div class="kasir-product-empty">Belum ada penjualan produk bulan ini.</div>';
+      return;
+    }
+    host.innerHTML=list.map((r,i)=>{
+      const d=String(r.activity_date||"").slice(0,10);
+      const labelDate=d?new Intl.DateTimeFormat("id-ID",{day:"2-digit",month:"short",timeZone:"UTC"}).format(new Date(d+"T00:00:00Z")):"-";
+      return `<div class="kasir-product-month-row"><span class="kasir-product-month-rank">${i+1}</span><div class="kasir-product-month-copy"><b>${productLabel(r)}</b><small>${labelDate} · ${num(r.qty)} item</small></div><strong>${rp(r.total)}</strong></div>`;
+    }).join("");
+  }
   function renderProducts(rows){
     const host=$("kasirProdukHariIniList");
     const list=Array.isArray(rows)?rows:[];
@@ -119,6 +136,7 @@
     renderUltimateToday(data.ultimateTodayRows,data.ultimateTodayTotal);
     $("kasirProdukHariIni").textContent=rp(data.produkToday);
     $("kasirProdukBulanIni").textContent=rp(data.produkMonth);
+    renderProductMonth(data.productMonthRows,date);
     $("kasirKasbonBulanIni").textContent=rp(data.kasbonMonth);
     $("kasirConsumerPeriod").textContent=new Intl.DateTimeFormat("id-ID",{month:"short",year:"numeric",timeZone:"UTC"}).format(new Date(date+"T00:00:00Z"));
     renderProducts(data.productRows);
@@ -147,7 +165,7 @@
       db.from("kpi_ultimate_monthly_target").select("target_amount,active").eq("cabang_id",branchId).eq("year",y).eq("month",m).eq("active",true).maybeSingle(),
       db.from("kpi_ultimate_sales_source").select("activity_date,service_package,price_with_discount").eq("cabang_id",branchId).gte("activity_date",monthStart).lte("activity_date",date),
       db.from("daily_recap_source").select("tanggal,service,produk,customer_minutes,transaction_minutes,services_minutes").eq("cabang_id",branchId).gte("tanggal",monthStart).lte("tanggal",date),
-      db.from("product_sales_daily_source").select("activity_date,product_name,qty_sold,product_price").eq("cabang_id",branchId).eq("activity_date",date),
+      db.from("product_sales_daily_source").select("activity_date,product_name,qty_sold,product_price").eq("cabang_id",branchId).gte("activity_date",monthStart).lte("activity_date",date),
       readKasbonMonth(date)
     ]);
     const error=omzetTargetRes.error||ultimateTargetRes.error||ultimateRes.error||recapRes.error||productRes.error;
@@ -161,12 +179,18 @@
       cur.qty+=1; cur.total+=num(r.price_with_discount); ultTodayMap.set(key,cur);
     });
     const productMap=new Map();
+    const productMonthMap=new Map();
     (productRes.data||[]).forEach(r=>{
-      const key=String(r.product_name||"-").trim()||"-";
-      const cur=productMap.get(key)||{product_name:key,qty:0,total:0};
-      cur.qty+=num(r.qty_sold||1);
-      cur.total+=num(r.product_price);
-      productMap.set(key,cur);
+      const name=String(r.product_name||"-").trim()||"-";
+      const d=String(r.activity_date||"").slice(0,10);
+      const qty=num(r.qty_sold||1), total=num(r.product_price);
+      if(d===date){
+        const cur=productMap.get(name)||{product_name:name,qty:0,total:0};
+        cur.qty+=qty; cur.total+=total; productMap.set(name,cur);
+      }
+      const monthKey=d+"|"+name;
+      const mcur=productMonthMap.get(monthKey)||{activity_date:d,product_name:name,qty:0,total:0};
+      mcur.qty+=qty; mcur.total+=total; productMonthMap.set(monthKey,mcur);
     });
     const recap=recapRes.data||[];
     const todayRow=recap.find(r=>String(r.tanggal).slice(0,10)===date)||{};
@@ -181,10 +205,11 @@
       customerToday:num(todayRow.customer_minutes),
       trxToday:num(todayRow.transaction_minutes),
       servicesToday:num(todayRow.services_minutes),
-      produkToday:num(todayRow.produk),
-      produkMonth:recap.reduce((s,r)=>s+num(r.produk),0),
+      produkToday:[...productMap.values()].reduce((s,r)=>s+num(r.total),0),
+      produkMonth:[...productMonthMap.values()].reduce((s,r)=>s+num(r.total),0),
       kasbonMonth:num(kasbonMonth),
-      productRows:[...productMap.values()].sort((a,b)=>b.total-a.total||a.product_name.localeCompare(b.product_name))
+      productRows:[...productMap.values()].sort((a,b)=>b.total-a.total||a.product_name.localeCompare(b.product_name)),
+      productMonthRows:[...productMonthMap.values()].sort((a,b)=>String(b.activity_date).localeCompare(String(a.activity_date))||b.total-a.total||a.product_name.localeCompare(b.product_name))
     };
   }
 
@@ -213,6 +238,7 @@
       produkMonth:num(payload.product_month),
       kasbonMonth:num(payload.kasbon_month),
       productRows:Array.isArray(payload.product_detail)?payload.product_detail:[],
+      productMonthRows:Array.isArray(payload.product_month_detail)?payload.product_month_detail:[],
       canonicalLastSync:payload.last_sync||null
     };
   }
