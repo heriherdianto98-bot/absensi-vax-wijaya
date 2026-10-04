@@ -36,6 +36,7 @@ DECLARE
 
   v_customer_today numeric := 0;
   v_transaction_today numeric := 0;
+  v_services_today numeric := 0;
 
   v_product_today numeric := 0;
   v_product_month numeric := 0;
@@ -81,8 +82,9 @@ BEGIN
     coalesce(sum(coalesce(r.service,0) + coalesce(r.produk,0)),0),
     coalesce(max(r.customer_minutes) filter (where r.tanggal = p_date),0),
     coalesce(max(r.transaction_minutes) filter (where r.tanggal = p_date),0),
+    coalesce(max(r.services_minutes) filter (where r.tanggal = p_date),0),
     max(r.synced_at)
-  INTO v_omzet_real, v_customer_today, v_transaction_today, v_last_sync
+  INTO v_omzet_real, v_customer_today, v_transaction_today, v_services_today, v_last_sync
   FROM public.daily_recap_source r
   WHERE r.cabang_id = v_cabang_id
     AND r.tanggal BETWEEN v_month_start AND p_date;
@@ -182,6 +184,7 @@ BEGIN
     'ultimate_count', v_ultimate_count,
     'customer_today', v_customer_today,
     'transaction_today', v_transaction_today,
+    'services_today', v_services_today,
     'product_today', v_product_today,
     'product_month', v_product_month,
     'product_detail', coalesce(v_product_detail,'[]'::jsonb),
