@@ -799,3 +799,89 @@ html[data-home-kpi="kasir"] .kasir-ultimate-today-row>strong{
   font-weight:950!important;
   white-space:nowrap!important;
 }
+
+
+/* Performa Kasir · Ultimate Hari Ini ranking UI · staging10 */
+html[data-home-kpi="kasir"] .kasir-ultimate-today{
+  padding:0!important;
+  overflow:hidden!important;
+  border:1px solid rgba(22,163,142,.34)!important;
+  border-radius:11px!important;
+  background:#f8fffd!important;
+  box-shadow:0 5px 14px rgba(28,134,119,.10),inset 0 1px 0 #fff!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head{
+  margin:0!important;
+  padding:8px 10px!important;
+  min-height:48px!important;
+  background:linear-gradient(135deg,#28c4ae 0%,#18aa94 100%)!important;
+  border-bottom:1px solid rgba(0,123,107,.20)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head small{
+  color:rgba(255,255,255,.84)!important;
+  font-size:7.5px!important;
+  font-weight:950!important;
+  letter-spacing:.07em!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head strong{
+  color:#fff!important;
+  font-size:16px!important;
+  font-weight:950!important;
+  line-height:1.05!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.08)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head>span strong{
+  font-size:17px!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-list{
+  counter-reset:kasirUltimateRank!important;
+  margin:0!important;
+  padding:6px!important;
+  gap:5px!important;
+  background:linear-gradient(180deg,#f7fffd 0%,#eef9f6 100%)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row{
+  counter-increment:kasirUltimateRank!important;
+  position:relative!important;
+  min-height:38px!important;
+  padding:6px 8px 6px 36px!important;
+  border:1px solid #d8ece8!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:0 3px 8px rgba(32,109,98,.07),inset 0 1px 0 #fff!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row::before{
+  content:counter(kasirUltimateRank)!important;
+  position:absolute!important;
+  left:8px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  display:grid!important;
+  place-items:center!important;
+  width:20px!important;
+  height:20px!important;
+  border-radius:50%!important;
+  background:linear-gradient(145deg,#34ccb5,#159f8b)!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  box-shadow:0 3px 7px rgba(26,153,135,.20),inset 0 1px 0 rgba(255,255,255,.35)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row b{
+  color:#173f45!important;
+  font-size:9.5px!important;
+  font-weight:950!important;
+  line-height:1.1!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row small{
+  color:#7a9291!important;
+  font-size:7px!important;
+  font-weight:850!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row>strong{
+  color:#119f89!important;
+  font-size:10.5px!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+}
