@@ -102,10 +102,11 @@
     }
 
     $("kasirCustomerHariIni").textContent=String(Math.round(num(data.customerToday)));
+    $("kasirTransaksiHariIni").textContent=String(Math.round(num(data.trxToday)));
+    $("kasirServicesHariIni").textContent=String(Math.round(num(data.servicesToday)));
     $("kasirCustomerDate").textContent=new Intl.DateTimeFormat("id-ID",{day:"numeric",month:"short",timeZone:"UTC"}).format(new Date(date+"T00:00:00Z"));
     $("kasirProdukHariIni").textContent=rp(data.produkToday);
     $("kasirProdukBulanIni").textContent=rp(data.produkMonth);
-    $("kasirTransaksiHariIni").textContent=String(Math.round(num(data.trxToday)));
     $("kasirKasbonBulanIni").textContent=rp(data.kasbonMonth);
     $("kasirConsumerPeriod").textContent=new Intl.DateTimeFormat("id-ID",{month:"short",year:"numeric",timeZone:"UTC"}).format(new Date(date+"T00:00:00Z"));
     renderProducts(data.productRows);
@@ -133,7 +134,7 @@
       db.from("target_bulanan").select("target").eq("cabang_id",branchId).eq("tahun",y).eq("bulan",m).maybeSingle(),
       db.from("kpi_ultimate_monthly_target").select("target_amount,active").eq("cabang_id",branchId).eq("year",y).eq("month",m).eq("active",true).maybeSingle(),
       db.from("kpi_ultimate_sales_source").select("service_package,price_with_discount").eq("cabang_id",branchId).gte("activity_date",monthStart).lte("activity_date",date),
-      db.from("daily_recap_source").select("tanggal,service,produk,customer_minutes,transaction_minutes").eq("cabang_id",branchId).gte("tanggal",monthStart).lte("tanggal",date),
+      db.from("daily_recap_source").select("tanggal,service,produk,customer_minutes,transaction_minutes,services_minutes").eq("cabang_id",branchId).gte("tanggal",monthStart).lte("tanggal",date),
       db.from("product_sales_source").select("product_name,provider_name_raw,employee_id,mapping_status,qty,revenue_share,period_start,period_end").eq("cabang_id",branchId).eq("employee_id",employeeId).eq("mapping_status","MATCHED").eq("period_start",date).eq("period_end",date),
       readKasbonMonth(date)
     ]);
@@ -149,9 +150,10 @@
       ultimateCount:ult.length,
       ultimateReal:ult.reduce((s,r)=>s+num(r.price_with_discount),0),
       customerToday:num(todayRow.customer_minutes),
+      trxToday:num(todayRow.transaction_minutes),
+      servicesToday:num(todayRow.services_minutes),
       produkToday:num(todayRow.produk),
       produkMonth:recap.reduce((s,r)=>s+num(r.produk),0),
-      trxToday:num(todayRow.transaction_minutes),
       kasbonMonth:num(kasbonMonth),
       productRows:productRes.data||[]
     };
@@ -174,9 +176,10 @@
       ultimateCount:num(payload.ultimate_count),
       ultimateReal:num(payload.ultimate_real),
       customerToday:num(payload.customer_today),
+      trxToday:num(payload.transaction_today),
+      servicesToday:num(payload.services_today),
       produkToday:num(payload.product_today),
       produkMonth:num(payload.product_month),
-      trxToday:num(payload.transaction_today),
       kasbonMonth:num(payload.kasbon_month),
       productRows:Array.isArray(payload.employee_product_detail)?payload.employee_product_detail:[],
       canonicalLastSync:payload.last_sync||null
