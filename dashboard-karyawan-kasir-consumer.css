@@ -1030,3 +1030,17 @@ html[data-home-kpi="kasir"] .kasir-lower-stack>.kasir-kasbon-outside,
 html[data-home-kpi="kasir"] .kasir-lower-stack>.employee-kasbon-entry{
   margin:0!important;
 }
+
+
+/* Kasir lower stack canonical spacing FINAL · staging18 · UI only */
+html[data-home-kpi="kasir"] .kasir-lower-stack{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  margin:4px 0 0!important;
+}
+html[data-home-kpi="kasir"] .kasir-lower-stack>.comm-row,
+html[data-home-kpi="kasir"] .kasir-lower-stack>.kasir-kasbon-outside,
+html[data-home-kpi="kasir"] .kasir-lower-stack>.employee-kasbon-entry{
+  margin:0!important;
+}
