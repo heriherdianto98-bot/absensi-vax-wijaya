@@ -943,3 +943,63 @@ html[data-home-kpi="kasir"] .kasir-performa-card{
     inset 0 1px 0 rgba(255,255,255,.90),
     0 6px 16px rgba(27,123,110,.10)!important;
 }
+
+
+/* Kasir communication cards = canonical Capster sizing · staging15 · UI only */
+html[data-home-kpi="kasir"] .comm-row{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+  margin:7px 0!important;
+  min-height:0!important;
+  max-height:none!important;
+}
+html[data-home-kpi="kasir"] .comm-row .comm-card,
+html[data-home-kpi="kasir"] .comm-row .comm-announce,
+html[data-home-kpi="kasir"] .comm-row .comm-ticket{
+  width:100%!important;
+  min-width:0!important;
+  height:110px!important;
+  min-height:110px!important;
+  max-height:110px!important;
+  padding:10px!important;
+  border-radius:14px!important;
+  box-sizing:border-box!important;
+}
+html[data-home-kpi="kasir"] .comm-row .comm-head,
+html[data-home-kpi="kasir"] .comm-row .comm-announce .comm-head{
+  gap:7px!important;
+}
+html[data-home-kpi="kasir"] .comm-row .comm-icon{
+  width:26px!important;
+  height:26px!important;
+  flex:0 0 26px!important;
+  font-size:11px!important;
+}
+html[data-home-kpi="kasir"] .comm-row .comm-card h3{
+  font-size:13px!important;
+  line-height:1.18!important;
+  font-weight:850!important;
+}
+html[data-home-kpi="kasir"] .comm-row .comm-card p,
+html[data-home-kpi="kasir"] .comm-row .comm-announce #pengumumanPreview,
+html[data-home-kpi="kasir"] .comm-row .comm-ticket #pengaduanPreview{
+  margin:8px 0 0!important;
+  font-size:10.5px!important;
+  line-height:1.42!important;
+  font-weight:600!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+html[data-home-kpi="kasir"] .comm-row .comm-card .comm-link{
+  margin-top:auto!important;
+  padding-top:5px!important;
+  font-size:11.5px!important;
+  line-height:1.3!important;
+  font-weight:750!important;
+}
+html[data-home-kpi="kasir"] .comm-row .comm-card .comm-link i{
+  font-size:9.5px!important;
+}
