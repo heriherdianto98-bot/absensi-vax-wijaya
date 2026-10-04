@@ -724,3 +724,78 @@ html[data-home-kpi="kasir"] body .app #vaxSopCard{
 html[data-home-kpi="kasir"] body .app #vaxSopCard{
   margin-bottom:1px!important;
 }
+
+
+/* Performa Kasir · Ultimate Hari Ini · staging9 */
+html[data-home-kpi="kasir"] .kasir-ultimate-today{
+  margin-top:7px!important;
+  padding:8px!important;
+  border:1px solid rgba(38,190,168,.24)!important;
+  border-radius:10px!important;
+  background:linear-gradient(145deg,#f8fffd 0%,#eefaf7 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head>div,
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head>span{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head>span{
+  align-items:flex-end!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head small{
+  color:#60777a!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:.055em!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-head strong{
+  color:#1fb49f!important;
+  font-size:14px!important;
+  font-weight:950!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-list{
+  margin-top:6px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  padding:6px 7px!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.72)!important;
+  border:1px solid rgba(38,190,168,.12)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row>div{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:1px!important;
+  min-width:0!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row b{
+  color:#234b50!important;
+  font-size:9px!important;
+  font-weight:950!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row small{
+  color:#7c8f91!important;
+  font-size:7px!important;
+  font-weight:800!important;
+}
+html[data-home-kpi="kasir"] .kasir-ultimate-today-row>strong{
+  color:#1a9f8e!important;
+  font-size:10px!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+}
