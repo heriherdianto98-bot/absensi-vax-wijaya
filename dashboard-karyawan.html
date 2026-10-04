@@ -204,6 +204,42 @@ html[data-home-kpi="kasir"] .kasir-product-summary-grid>article strong{
   text-shadow:0 1px 0 rgba(0,0,0,.10)!important;
 }
 </style>
+<style id="kasir-product-month-head-green-ui">
+html[data-home-kpi="kasir"] .kasir-product-month-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  padding:9px 10px 8px!important;
+  min-height:46px!important;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(255,255,255,.18),transparent 42%),
+    linear-gradient(135deg,#2ac6b0 0%,#1db49e 55%,#159e8a 100%)!important;
+  border-bottom:1px solid rgba(0,112,98,.24)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 -4px 8px rgba(0,92,80,.10)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head>div{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head small{
+  color:rgba(255,255,255,.94)!important;
+  font-size:8.5px!important;
+  line-height:1.1!important;
+  font-weight:950!important;
+  letter-spacing:.055em!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head strong{
+  color:#fff!important;
+  font-size:13px!important;
+  line-height:1.1!important;
+  font-weight:950!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.08)!important;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -382,7 +418,6 @@ html[data-home-kpi="kasir"] .kasir-product-summary-grid>article strong{
                                 <small>RINCIAN PRODUK BULAN INI</small>
                                 <strong id="kasirProdukBulanPeriode">-</strong>
                             </div>
-                            <span>Scroll untuk lihat semua</span>
                         </div>
                         <div id="kasirProdukBulanList" class="kasir-product-month-list">
                             <div class="kasir-product-empty">Belum ada penjualan produk bulan ini.</div>
