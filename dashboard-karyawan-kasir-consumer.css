@@ -699,3 +699,21 @@ html[data-home-kpi="kasir"] body .app main.dash-body{
 html[data-home-kpi="kasir"] body .app #vaxSopCard{
   margin:0!important;
 }
+
+
+/* Kasir vertical rhythm · staging7
+   Canonical parity with Dashboard Capster UI POLISH 37. */
+html[data-home-kpi="kasir"] body .app .dash-body{
+  gap:3px!important;
+}
+html[data-home-kpi="kasir"] body .app .today-section{
+  margin:0 0 2px!important;
+  padding-bottom:0!important;
+}
+html[data-home-kpi="kasir"] body .app #kpiKasir{
+  margin-bottom:0!important;
+  padding-bottom:0!important;
+}
+html[data-home-kpi="kasir"] body .app #vaxSopCard{
+  margin:0 0 4px!important;
+}
