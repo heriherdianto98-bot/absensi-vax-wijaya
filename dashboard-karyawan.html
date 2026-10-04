@@ -62,6 +62,69 @@ html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row b{color:#1
 html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row small{color:#7a9291!important;font-size:7px!important;font-weight:850!important}
 html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row>strong{color:#119f89!important;font-size:10.5px!important;font-weight:950!important;white-space:nowrap!important}
 </style>
+<style id="kasir-product-month-scroll-ui">
+html[data-home-kpi="kasir"] .kasir-product-month-detail{
+  margin-top:7px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(22,163,142,.28)!important;
+  border-radius:11px!important;
+  background:#f8fffd!important;
+  box-shadow:0 5px 14px rgba(28,134,119,.08),inset 0 1px 0 #fff!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  padding:8px 9px 7px!important;
+  background:linear-gradient(135deg,#eefaf7 0%,#e2f6f1 100%)!important;
+  border-bottom:1px solid rgba(22,163,142,.16)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head>div{display:flex!important;flex-direction:column!important;gap:1px!important}
+html[data-home-kpi="kasir"] .kasir-product-month-head small{color:#178d7d!important;font-size:7px!important;font-weight:950!important;letter-spacing:.055em!important}
+html[data-home-kpi="kasir"] .kasir-product-month-head strong{color:#244d50!important;font-size:10px!important;font-weight:950!important}
+html[data-home-kpi="kasir"] .kasir-product-month-head>span{color:#77908f!important;font-size:6.5px!important;font-weight:850!important;white-space:nowrap!important}
+html[data-home-kpi="kasir"] .kasir-product-month-list{
+  max-height:170px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding:6px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#32bda9 #e8f6f3!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-list::-webkit-scrollbar{width:5px!important}
+html[data-home-kpi="kasir"] .kasir-product-month-list::-webkit-scrollbar-track{background:#e8f6f3!important;border-radius:99px!important}
+html[data-home-kpi="kasir"] .kasir-product-month-list::-webkit-scrollbar-thumb{background:#32bda9!important;border-radius:99px!important}
+html[data-home-kpi="kasir"] .kasir-product-month-row{
+  position:relative!important;
+  flex:0 0 auto!important;
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  padding:6px 8px 6px 36px!important;
+  border:1px solid #cfe5e1!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#fff 0%,#f0f9f7 100%)!important;
+  box-shadow:inset 0 1px 0 #fff,0 4px 9px rgba(33,84,79,.10)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-rank{
+  position:absolute!important;left:8px!important;top:50%!important;transform:translateY(-50%)!important;
+  display:grid!important;place-items:center!important;width:20px!important;height:20px!important;border-radius:50%!important;
+  background:linear-gradient(145deg,#34ccb5,#159f8b)!important;color:#fff!important;font-size:8px!important;font-weight:950!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.45),0 3px 7px rgba(20,126,111,.22)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-copy{display:flex!important;flex-direction:column!important;gap:1px!important;min-width:0!important}
+html[data-home-kpi="kasir"] .kasir-product-month-copy b{color:#173f45!important;font-size:9px!important;font-weight:950!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+html[data-home-kpi="kasir"] .kasir-product-month-copy small{color:#79908f!important;font-size:7px!important;font-weight:800!important}
+html[data-home-kpi="kasir"] .kasir-product-month-row>strong{color:#119f89!important;font-size:10px!important;font-weight:950!important;white-space:nowrap!important}
+</style>
 </head>
 <body>
 <div class="app">
@@ -229,15 +292,27 @@ html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row>strong{col
                             <strong id="kasirProdukBulanIni">Rp0</strong>
                         </article>
                         <article>
-                            <span class="kasir-kpi-icon"><i class="fa-solid fa-receipt"></i></span>
-                            <small>Transaksi Hari Ini</small>
-                            <strong id="kasirTransaksiHariIni">0</strong>
+                            <span class="kasir-kpi-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+                            <small>Total Produk Bulan Ini</small>
+                            <strong id="kasirProdukBulanIniCount">0</strong>
                         </article>
                         <article class="kasir-kasbon-card">
                             <span class="kasir-kpi-icon"><i class="fa-solid fa-wallet"></i></span>
                             <small>Kasbon Bulan Ini</small>
                             <strong id="kasirKasbonBulanIni">Rp0</strong>
                         </article>
+                    </div>
+                    <div class="kasir-product-month-detail">
+                        <div class="kasir-product-month-head">
+                            <div>
+                                <small>RINCIAN PRODUK BULAN INI</small>
+                                <strong id="kasirProdukBulanPeriode">-</strong>
+                            </div>
+                            <span>Scroll untuk lihat semua</span>
+                        </div>
+                        <div id="kasirProdukBulanList" class="kasir-product-month-list">
+                            <div class="kasir-product-empty">Belum ada penjualan produk bulan ini.</div>
+                        </div>
                     </div>
                     <div id="kasirConsumerState" class="kasir-consumer-state">Membaca data ERP...</div>
                 </section>
@@ -299,7 +374,7 @@ html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row>strong{col
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan.js"></script>
-<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging4"></script>
+<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging5"></script>
 <script src="izin-telat-dashboard-entry.js?v=20260924-2"></script>
 <script src="dashboard-karyawan-header-toolbar-ui.js?v=20260924-7"></script>
 <script src="ERP.NEW/js/modules/penugasan-backup-db-store.js?v=20261003-1"></script>
