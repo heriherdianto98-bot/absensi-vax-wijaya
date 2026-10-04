@@ -717,3 +717,10 @@ html[data-home-kpi="kasir"] body .app #kpiKasir{
 html[data-home-kpi="kasir"] body .app #vaxSopCard{
   margin:0 0 4px!important;
 }
+
+
+/* Kasir vertical rhythm · staging8
+   Final micro-adjustment: pull CUST/TRX/SVC slightly closer to SOP card. */
+html[data-home-kpi="kasir"] body .app #vaxSopCard{
+  margin-bottom:1px!important;
+}
