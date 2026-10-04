@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="dashboard-karyawan-kasbon-entry.css?v=20260926-1">
     <link rel="stylesheet" href="employee-device-readiness.css?v=20260929-1">
     <link rel="stylesheet" href="dashboard-karyawan-work-branch-local.css?v=20261003-1">
-    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging8">
+    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging9">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style id="employee-sync-header-ui">
       /* Employee-only UI. Status remains unknown until a verified owner read-only source is wired. */
@@ -188,6 +188,15 @@
 
                 <section class="kasir-performa-card" aria-label="Performa Kasir dari ERP">
                     <div class="kasir-section-title"><h3>Performa Kasir</h3><span id="kasirConsumerPeriod">Bulan ini</span></div>
+                    <div class="kasir-ultimate-today">
+                        <div class="kasir-ultimate-today-head">
+                            <div><small>ULTIMATE HARI INI</small><strong id="kasirUltimateHariIni">Rp0</strong></div>
+                            <span><small>PAKET TERJUAL</small><strong id="kasirUltimateHariIniCount">0</strong></span>
+                        </div>
+                        <div id="kasirUltimateHariIniList" class="kasir-ultimate-today-list">
+                            <div class="kasir-product-empty">Belum ada paket Ultimate terjual hari ini.</div>
+                        </div>
+                    </div>
                     <div class="kasir-product-today">
                         <div class="kasir-product-head">
                             <div><small>PRODUK HARI INI</small><strong id="kasirProdukHariIni">Rp0</strong></div>
@@ -274,7 +283,7 @@
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan.js"></script>
-<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging2"></script>
+<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging3"></script>
 <script src="izin-telat-dashboard-entry.js?v=20260924-2"></script>
 <script src="dashboard-karyawan-header-toolbar-ui.js?v=20260924-7"></script>
 <script src="ERP.NEW/js/modules/penugasan-backup-db-store.js?v=20261003-1"></script>
