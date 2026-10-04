@@ -663,3 +663,14 @@ html[data-home-kpi="kasir"] .kasir-ops-date{
   bottom:1px!important;
   font-size:6px!important;
 }
+
+
+/* Kasir vertical rhythm · staging4 */
+html[data-home-kpi="kasir"] body .app .today-section{
+  margin-top:4px!important;
+  margin-bottom:0!important;
+  padding-top:0!important;
+}
+html[data-home-kpi="kasir"] #kpiKasir{
+  margin-top:0!important;
+}
