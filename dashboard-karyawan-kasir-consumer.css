@@ -674,3 +674,18 @@ html[data-home-kpi="kasir"] body .app .today-section{
 html[data-home-kpi="kasir"] #kpiKasir{
   margin-top:0!important;
 }
+
+
+/* Kasir vertical rhythm · staging5
+   One spacing source only: dash-body gap. */
+html[data-home-kpi="kasir"] body .app .today-section{
+  margin-top:0!important;
+  margin-bottom:0!important;
+  padding-top:0!important;
+}
+html[data-home-kpi="kasir"] body .app #vaxSopCard{
+  margin-bottom:0!important;
+}
+html[data-home-kpi="kasir"] #kpiKasir{
+  margin-top:0!important;
+}
