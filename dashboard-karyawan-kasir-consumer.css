@@ -627,3 +627,39 @@ html[data-home-kpi="kasir"] .kasir-ops-date{
   font-size:5.5px!important;
   font-weight:800!important;
 }
+
+
+/* Kasir ops mini visual refinement · staging3 */
+html[data-home-kpi="kasir"] #kpiKasir{
+  gap:4px!important;
+  margin-top:-2px!important;
+}
+html[data-home-kpi="kasir"] .kasir-ops-mini{
+  padding:6px 7px!important;
+  border:1px solid rgba(20,151,132,.34)!important;
+  border-radius:10px!important;
+  background:linear-gradient(135deg,#31c8b3 0%,#23b69f 100%)!important;
+  box-shadow:0 5px 12px rgba(28,134,119,.15),inset 0 1px 0 rgba(255,255,255,.30)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ops-mini article{
+  padding:5px 4px!important;
+  border-right:1px solid rgba(255,255,255,.28)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ops-mini small{
+  color:#ffffff!important;
+  font-size:9px!important;
+  font-weight:950!important;
+  letter-spacing:.055em!important;
+}
+html[data-home-kpi="kasir"] .kasir-ops-mini strong{
+  color:#ffffff!important;
+  font-size:16px!important;
+  font-weight:950!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.06)!important;
+}
+html[data-home-kpi="kasir"] .kasir-ops-date{
+  color:rgba(255,255,255,.82)!important;
+  right:6px!important;
+  bottom:1px!important;
+  font-size:6px!important;
+}
