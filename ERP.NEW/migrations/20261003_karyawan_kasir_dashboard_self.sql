@@ -42,7 +42,9 @@ DECLARE
 
   v_product_today numeric := 0;
   v_product_month numeric := 0;
+  v_product_month_count numeric := 0;
   v_product_detail jsonb := '[]'::jsonb;
+  v_product_month_detail jsonb := '[]'::jsonb;
   v_product_share_today numeric := 0;
   v_employee_product_detail jsonb := '[]'::jsonb;
 
@@ -181,6 +183,38 @@ BEGIN
   ) x;
 
   SELECT
+    coalesce(sum(coalesce(d.qty_sold,1)),0)::numeric
+  INTO v_product_month_count
+  FROM public.product_sales_daily_source d
+  WHERE d.cabang_id = v_cabang_id
+    AND d.activity_date BETWEEN v_month_start AND p_date;
+
+  SELECT coalesce(
+    jsonb_agg(
+      jsonb_build_object(
+        'activity_date', x.activity_date,
+        'product_name', x.product_name,
+        'qty', x.qty,
+        'total', x.total
+      )
+      ORDER BY x.activity_date DESC, x.total DESC, x.product_name
+    ),
+    '[]'::jsonb
+  )
+  INTO v_product_month_detail
+  FROM (
+    SELECT
+      d.activity_date,
+      d.product_name,
+      coalesce(sum(coalesce(d.qty_sold,1)),0)::numeric AS qty,
+      coalesce(sum(coalesce(d.product_price,0)),0)::numeric AS total
+    FROM public.product_sales_daily_source d
+    WHERE d.cabang_id = v_cabang_id
+      AND d.activity_date BETWEEN v_month_start AND p_date
+    GROUP BY d.activity_date, d.product_name
+  ) x;
+
+  SELECT
     coalesce(sum(coalesce(p.revenue_share,0)),0),
     coalesce(
       jsonb_agg(
@@ -228,7 +262,9 @@ BEGIN
     'services_today', v_services_today,
     'product_today', v_product_today,
     'product_month', v_product_month,
+    'product_month_count', v_product_month_count,
     'product_detail', coalesce(v_product_detail,'[]'::jsonb),
+    'product_month_detail', coalesce(v_product_month_detail,'[]'::jsonb),
     'product_share_today', v_product_share_today,
     'employee_product_detail', coalesce(v_employee_product_detail,'[]'::jsonb),
     'kasbon_month', v_kasbon_month,
