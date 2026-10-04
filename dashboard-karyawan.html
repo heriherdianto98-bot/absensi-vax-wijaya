@@ -1,238 +1,299 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dashboard Karyawan</title>
-
-<link rel="stylesheet" href="dashboard-karyawan.css">
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Dashboard Karyawan | VAX WIJAYA</title>
+    <link rel="stylesheet" href="dashboard-karyawan.css">
+    <link rel="stylesheet" href="dashboard-karyawan-premium-ui.css?v=20260922-1">
+    <link rel="stylesheet" href="dashboard-karyawan-refined-ui.css?v=20260922-2">
+    <link rel="stylesheet" href="dashboard-karyawan-mockup-v2.css?v=20260922-3">
+    <link rel="stylesheet" href="dashboard-karyawan-card-depth-ui.css?v=20260922-4">
+    <link rel="stylesheet" href="dashboard-karyawan-header-toolbar-ui.css?v=20260922-5">
+    <link rel="stylesheet" href="dashboard-karyawan-calendar-theme.css?v=20260922-6">
+    <link rel="stylesheet" href="dashboard-karyawan-kpi-tidy-ui.css?v=20260922-7">
+    <link rel="stylesheet" href="dashboard-karyawan-ranking-barber.css?v=20260923-1">
+    <link rel="stylesheet" href="dashboard-karyawan-target-anda.css?v=20260924-1">
+    <link rel="stylesheet" href="dashboard-karyawan-absensi-theme.css?v=20260924-1">
+    <link rel="stylesheet" href="dashboard-karyawan-light-premium-3d.css?v=20260924-1">
+    <link rel="stylesheet" href="dashboard-karyawan-step12-clean-ui.css?v=20260924-1">
+    <link rel="stylesheet" href="dashboard-karyawan-clean-colors-final-ui.css?v=20260925-20">
+    <link rel="stylesheet" href="dashboard-karyawan-green-final.css?v=20260925-62">
+    <link rel="stylesheet" href="dashboard-karyawan-profile-date-fix.css?v=20260926-2">
+    <link rel="stylesheet" href="dashboard-karyawan-mobile-header-fix.css?v=20260926-3">
+    <link rel="stylesheet" href="dashboard-karyawan-target-omzet-final-ui.css?v=20260926-2">
+    <link rel="stylesheet" href="dashboard-karyawan-header-edge-ui.css?v=20260926-1">
+    <link rel="stylesheet" href="dashboard-karyawan-bottomnav-edge-theme-ui.css?v=20260926-1">
+    <link rel="stylesheet" href="dashboard-karyawan-mobile-pwa-compat.css?v=20260929-7">
+    <link rel="stylesheet" href="dashboard-karyawan-kasbon-entry.css?v=20260926-1">
+    <link rel="stylesheet" href="employee-device-readiness.css?v=20260929-1">
+    <link rel="stylesheet" href="dashboard-karyawan-work-branch-local.css?v=20261003-1">
+    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style id="employee-sync-header-ui">
+      /* Employee-only UI. Status remains unknown until a verified owner read-only source is wired. */
+      .employee-sync-indicators{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;margin:0 0 9px;min-width:0}
+      .employee-sync-indicator{display:flex;align-items:center;gap:7px;min-width:0;padding:7px 8px;border:1px solid rgba(212,175,55,.23);border-radius:9px;background:linear-gradient(145deg,#232422,#151716);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);color:#f1ede4}
+      .employee-sync-indicator>i{flex:0 0 auto;color:#e0bc6b;font-size:12px}
+      .employee-sync-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+      .employee-sync-copy small{color:#b8b2a4;font-size:9px;letter-spacing:.075em;font-weight:700;line-height:1.2}
+      .employee-sync-copy strong{color:#e8d4a4;font-size:10px;line-height:1.3;font-weight:650;overflow-wrap:anywhere}
+      @media(max-width:340px){.employee-sync-indicator{padding:6px;gap:5px}.employee-sync-copy strong{font-size:9px}}
+      /* UI only: center fixed nav on the scrollable viewport (exclude scrollbar width),
+         match the 430px app's 15px content inset and give each tab the same column. */
+      .app #bottomNav{left:calc(50% - (100vw - 100%)/2)!important;width:min(calc(100% - 30px),400px)!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;align-items:center!important;justify-content:stretch!important;gap:0!important;box-sizing:border-box!important}
+      .app #bottomNav>a{box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;min-width:0!important;width:100%!important;margin:0!important;padding:3px 1px!important;text-align:center!important}
+      .app #bottomNav>a>i,.app #bottomNav>a>span{flex:0 0 auto!important;text-align:center!important}
+    </style>
+<link rel="stylesheet" href="/employee-app/scroll-compat.css?v=20260929-1"><link rel="stylesheet" href="employee-mobile-performance.css?v=20261001-1">
 </head>
-
 <body>
-
 <div class="app">
-
-<!-- ================= HEADER ================= -->
-
-<header>
-
-    <div>
-
-        <small>Selamat Datang</small>
-
-        <h2 id="namaKaryawan">
-
-            Loading...
-
-        </h2>
-        <p id="jabatanKaryawan"></p>
-        <p id="cabangKaryawan"></p>
+    <div class="topbar">
+        <div class="topbar-brand"><img class="employee-erp-logo" src="ERP.NEW/assets/brand/erp-vax-wijaya.png" alt="ERP VAX WIJAYA" width="42" height="36" decoding="async"><strong>VAX WIJAYA</strong></div>
+        <div class="topbar-meta"><small>EMPLOYEE</small><b>ONLINE</b></div>
+    </div>
+    <div class="employee-sync-indicators" aria-label="Informasi sinkronisasi provider">
+        <div class="employee-sync-indicator employee-sync-provider" title="Provider sinkronisasi">
+            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+            <span class="employee-sync-copy"><small>PROVIDER</small><strong id="employeeProviderStatus">Status belum tersedia</strong></span>
+        </div>
+        <div class="employee-sync-indicator employee-sync-last" title="Sinkronisasi terakhir">
+            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+            <span class="employee-sync-copy"><small>LAST SYNC</small><strong id="employeeProviderLastSync">—</strong></span>
+        </div>
     </div>
 
-    <img
-        id="fotoKaryawan"
-        src="img/default-profile.png"
-        alt="Foto">
-
-</header>
-
-
-
-<!-- ================= GREETING ================= -->
-
-<section class="card greeting">
-
-    <h2 id="greetingTitle">
-
-        Selamat Pagi ☀️
-
-    </h2>
-
-    <p id="greetingMessage">
-
-        Semoga hari ini penuh semangat.
-
-    </p>
-
-</section>
-
-
-
-<!-- ================= STATUS ================= -->
-
-<section class="card">
-
-    <small>Status Hari Ini</small>
-
-    <h2 id="statusAbsen">
-
-        BELUM ABSEN
-
-    </h2>
-
-    <p>
-
-        Jam Kerja :
-        <span id="jamKerja">
-
-            10:00 - 22:00
-
-        </span>
-
-    </p>
-
-    <button id="btnAbsen">
-
-        ABSEN SEKARANG
-
-    </button>
-
-</section>
-
-
-
-<!-- ================= RINGKASAN ================= -->
-
-<section class="card">
-
-<!-- ================= RINGKASAN ================= -->
-
-<section class="card">
-
-    <h3>Ringkasan Bulan Ini</h3>
-
-    <div class="grid">
-
-        <div class="item">
-            <h2 id="totalMasuk">0</h2>
-            <span>Masuk</span>
+    <section class="profile-card">
+        <span class="employee-profile-photo-wrap"><img id="fotoKaryawan" alt="Foto Karyawan"></span>
+        <div class="profile-copy">
+            <div id="greetingTitle" class="home-greet">Selamat Datang,</div>
+            <h1 id="namaKaryawan">Loading...</h1>
+            <div class="profile-line"><i class="fa-solid fa-user-tie"></i><span id="jabatanKaryawan"></span></div>
+            <div class="profile-line"><i class="fa-solid fa-location-dot"></i><span id="cabangKaryawan"></span></div>
+            <span id="greetingMessage" class="sr-only">Semoga hari ini penuh semangat.</span>
         </div>
+    </section>
 
-        <div class="item">
-            <h2 id="totalLibur">0</h2>
-            <span>Libur</span>
+    <section id="employeeWorkBranchContext" class="employee-work-branch-context" hidden>
+        <div class="employee-work-branch-copy">
+            <small>CABANG KERJA</small>
+            <strong id="employeeWorkBranchName">—</strong>
+            <span id="employeeWorkBranchMeta">—</span>
         </div>
+        <span id="employeeWorkBranchBadge" class="employee-work-branch-badge">NORMAL</span>
+    </section>
 
-        <div class="item">
-            <h2 id="totalTerlambat">0</h2>
-            <span>Terlambat</span>
+    <section id="tutupOperasionalBanner" class="profile-card tutup-ops-banner" hidden>
+        <div>
+            <small id="tutupOpsJenis">LIBUR NASIONAL</small>
+            <h2 id="tutupOpsJudul"></h2>
+            <p id="tutupOpsTeks"></p>
         </div>
+    </section>
 
-        <div class="item">
-            <h2 id="totalDenda">Rp0</h2>
-            <span>Denda</span>
-        </div>
+    <main class="dash-body">
+        <section class="today-section">
+            <h2 class="today-title">Hari Ini</h2>
 
-    </div>
+            <div id="kpiCapster" class="today-grid" hidden>
+                <article class="today-item kpi-customer">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-users"></i></span><span class="kpi-label">Customer Hari Ini</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-users"></i></span>
+                    <strong id="todayCustomer" class="kpi-main-value">…</strong>
+                </article>
+                <article class="today-item kpi-service" id="kpiHariIni">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-scissors"></i></span><span class="kpi-label">Service Hari Ini</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-scissors"></i></span>
+                    <div id="todayService" class="service-detail-list"></div>
+                </article>
+                <article class="today-item kpi-share">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-coins"></i></span><span class="kpi-label">Share Bruto</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-coins"></i></span>
+                    <strong id="todayShare" class="kpi-main-value">…</strong>
+                </article>
+                <article class="today-item kpi-pay">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-wallet"></i></span><span class="kpi-label">Hak Dibayar</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-wallet"></i></span>
+                    <strong id="todayPayable" class="kpi-main-value">—</strong>
+                </article>
+                <article class="today-item kpi-fine">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-clock"></i></span><span class="kpi-label">Denda Hari Ini</span></div>
+                    <strong id="todayFine" class="kpi-main-value">—</strong>
+                </article>
+            </div>
+            <span id="closingStatus" class="sr-only"></span>
 
-</section>
+            <div id="kpiKasir" class="kasir-consumer" hidden>
+                <section class="kasir-monthly-kpi" aria-label="Target Omzet Cabang">
+                    <article class="kasir-monthly-kpi-card">
+                        <div class="kasir-monthly-kpi-heading">
+                            <span>TARGET OMZET · <span id="kasirOmzetBranch">CABANG</span></span>
+                            <span class="kasir-monthly-kpi-icon"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="kasir-monthly-kpi-value-row">
+                            <strong class="kasir-monthly-kpi-value" id="kasirOmzetProgress">0%</strong>
+                            <span class="kasir-monthly-kpi-remaining">Sisa target <b id="kasirOmzetSisa">Rp0</b></span>
+                        </div>
+                        <div class="kasir-omzet-track-wrap">
+                            <div class="kasir-monthly-kpi-track" role="progressbar" aria-label="Pencapaian target omzet" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <span class="kasir-monthly-kpi-fill" id="kasirOmzetProgressBar"></span>
+                                <span class="kasir-track-star" id="kasirOmzetMarker" aria-hidden="true"><i class="fa-solid fa-star"></i></span>
+                            </div>
+                            <span class="kasir-omzet-goal-bonus" aria-label="Bonus omzet Rp100.000 jika target tercapai">
+                                <span class="kasir-bonus-banknote" aria-hidden="true">100</span>
+                            </span>
+                        </div>
+                        <div class="kasir-monthly-kpi-detail"><span id="kasirOmzetRealisasi">Rp0</span> / <span id="kasirOmzetTarget">Rp0</span></div>
+                        <div id="kasirOmzetBonus" class="kasir-omzet-bonus" hidden>
+                            <span class="kasir-omzet-bonus-icon"><i class="fa-solid fa-gift" aria-hidden="true"></i></span>
+                            <span><small>TARGET TERCAPAI</small><strong>Bonus Omzet Rp100.000</strong></span>
+                        </div>
+                    </article>
+                </section>
 
+                <section class="kasir-target-card" aria-label="Target Ultimate Kasir">
+                    <div class="kasir-section-head">
+                        <div>
+                            <small>KPI KASIR - CONSUMER ERP</small>
+                            <h3>KPI Paket Ultimate</h3>
+                        </div>
+                        <span id="kasirUltimateProgressRing" class="kasir-progress-ring"><b id="kasirUltimateProgress">0%</b><small>Progress</small></span>
+                    </div>
+                    <div class="kasir-target-grid">
+                        <article><small>REALISASI ULTIMATE</small><strong id="kasirUltimateRealisasi">Rp0</strong><span id="kasirUltimateCount">0 paket</span></article>
+                        <article><small>TARGET ULTIMATE</small><strong id="kasirUltimateTarget">Rp0</strong><span>Bulan berjalan</span></article>
+                    </div>
+                    <div class="kasir-kpi-track-wrap">
+                        <div class="kasir-progress-track">
+                            <i id="kasirUltimateProgressBar"></i>
+                            <span class="kasir-track-star is-kpi" id="kasirUltimateMarker" aria-hidden="true"><i class="fa-solid fa-star"></i></span>
+                        </div>
+                        <span class="kasir-kpi-goal-bonus" aria-label="Bonus KPI Rp150.000 jika target tercapai">
+                            <span class="kasir-bonus-banknote is-kpi" aria-hidden="true">150</span>
+                        </span>
+                    </div>
+                    <div class="kasir-target-footer">
+                        <span>Sisa Target</span>
+                        <strong id="kasirUltimateSisa">Rp0</strong>
+                    </div>
+                </section>
 
-<!-- ================= MENU CEPAT ================= -->
+                <section class="kasir-customer-card" aria-label="Customer Hari Ini">
+                    <span class="kasir-customer-icon"><i class="fa-solid fa-users"></i></span>
+                    <div><small>CUSTOMER HARI INI</small><strong id="kasirCustomerHariIni">0</strong></div>
+                    <span id="kasirCustomerDate">Hari ini</span>
+                </section>
 
-<section class="card">
+                <section class="kasir-performa-card" aria-label="Performa Kasir dari ERP">
+                    <div class="kasir-section-title"><h3>Performa Kasir</h3><span id="kasirConsumerPeriod">Bulan ini</span></div>
+                    <div class="kasir-product-today">
+                        <div class="kasir-product-head">
+                            <div><small>PRODUK HARI INI</small><strong id="kasirProdukHariIni">Rp0</strong></div>
+                            <span><small>SHARE KOMISI</small><strong id="kasirProdukShareHariIni">Rp0</strong></span>
+                        </div>
+                        <div id="kasirProdukHariIniList" class="kasir-product-list">
+                            <div class="kasir-product-empty">Belum ada produk terjual hari ini.</div>
+                        </div>
+                    </div>
+                    <div class="kasir-kpi-grid">
+                        <article>
+                            <span class="kasir-kpi-icon"><i class="fa-solid fa-chart-column"></i></span>
+                            <small>Produk Bulan Ini</small>
+                            <strong id="kasirProdukBulanIni">Rp0</strong>
+                        </article>
+                        <article>
+                            <span class="kasir-kpi-icon"><i class="fa-solid fa-receipt"></i></span>
+                            <small>Transaksi Hari Ini</small>
+                            <strong id="kasirTransaksiHariIni">0</strong>
+                        </article>
+                        <article class="kasir-kasbon-card">
+                            <span class="kasir-kpi-icon"><i class="fa-solid fa-wallet"></i></span>
+                            <small>Kasbon Bulan Ini</small>
+                            <strong id="kasirKasbonBulanIni">Rp0</strong>
+                        </article>
+                    </div>
+                    <div id="kasirConsumerState" class="kasir-consumer-state">Membaca data ERP...</div>
+                </section>
+            </div>
+        </section>
 
-<h3>Menu Cepat</h3>
+        <section class="comm-row" aria-label="Pengumuman dan Riwayat">
+            <article class="comm-card comm-announce" id="cardPengumuman" role="link" tabindex="0" aria-label="Buka Pengumuman">
+                <span id="pengumumanBadge" class="comm-new" hidden>0</span>
+                <div class="comm-announce-inner">
+                    <div class="comm-head">
+                        <span class="comm-icon"><i class="fa-solid fa-bullhorn"></i></span>
+                        <h3>Pengumuman</h3>
+                    </div>
+                    <p id="pengumumanPreview">Tidak ada pengumuman baru.</p>
+                    <span class="comm-link">Buka pengumuman <i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <span class="comm-art"><i class="fa-solid fa-bullhorn"></i></span>
+            </article>
 
-<div class="menu-grid">
+            <article class="comm-card comm-ticket" id="cardPengaduan" tabindex="0">
+                <span id="pengaduanBadge" class="comm-new" hidden>0</span>
+                <div class="comm-head"><span class="comm-icon"><i class="fa-solid fa-headset"></i></span><h3>Pengaduan</h3></div>
+                <p id="pengaduanPreview">Laporkan masalah kerja dan pantau penanganannya.</p>
+                <span class="comm-link">Buka pengaduan <i class="fa-solid fa-chevron-right"></i></span>
+                <span class="comm-art"><i class="fa-solid fa-comments"></i></span>
+            </article>
+        </section>
 
-<a href="absensi.html">
+        <a class="employee-kasbon-entry" href="kasbon-karyawan.html" aria-label="Buka Pengajuan Kasbon">
+            <span class="employee-kasbon-entry-icon"><i class="fa-solid fa-wallet"></i></span>
+            <span class="employee-kasbon-entry-copy">
+                <small>FINANCE KARYAWAN</small>
+                <strong>Pengajuan Kasbon</strong>
+                <span>Ajukan ke SVP dan pantau status pengajuan.</span>
+            </span>
+            <span class="employee-kasbon-entry-go"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
 
-<i class="fas fa-fingerprint"></i>
+        <button type="button" id="btnAbsen" class="ai-hero" aria-label="Buka Absensi">
+            <span class="ai-hero-avatar"><i class="fa-solid fa-fingerprint"></i></span>
+            <span class="ai-hero-copy"><strong>Absensi Sekarang</strong><small>Masuk, pulang, izin atau libur</small></span>
+            <span class="ai-hero-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="ai-hero-mic"><i class="fa-solid fa-chevron-right"></i></span>
+        </button>
 
-<span>Absensi</span>
+        <p id="pengumuman" class="home-legacy">Belum ada pengumuman.</p>
+    </main>
 
-</a>
-
-<a href="riwayat.html">
-
-<i class="fas fa-clock-rotate-left"></i>
-
-<span>Riwayat</span>
-
-</a>
-
-<a href="profil.html">
-
-<i class="fas fa-user"></i>
-
-<span>Profil</span>
-
-</a>
-
+    <nav id="bottomNav" aria-label="Navigasi Karyawan">
+        <a href="dashboard-karyawan.html" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a href="absensi.html"><i class="fa-solid fa-fingerprint"></i><span>Absensi</span></a>
+        <a href="gaji-saya.html"><i class="fa-solid fa-file-invoice"></i><span>Gaji Saya</span></a>
+        <a href="profil.html?v=20260929-headerlogout1"><i class="fa-solid fa-user"></i><span>Profil</span></a>
+    </nav>
 </div>
 
-</section>
-
-
-
-<!-- ================= PENGUMUMAN ================= -->
-
-<section class="card">
-
-<h3>Pengumuman</h3>
-
-<p id="pengumuman">
-
-Belum ada pengumuman.
-
-</p>
-
-</section>
-
-
-
-<!-- ================= BOTTOM MENU ================= -->
-
-<nav id="bottomNav">
-
-<a class="active">
-
-<i class="fas fa-house"></i>
-
-<span>Dashboard</span>
-
-</a>
-
-<a href="absensi.html">
-
-<i class="fas fa-fingerprint"></i>
-
-<span>Absensi</span>
-
-</a>
-
-<a href="riwayat.html">
-
-<i class="fas fa-clock-rotate-left"></i>
-
-<span>Riwayat</span>
-
-</a>
-
-<a href="profil.html">
-
-<i class="fas fa-user"></i>
-
-<span>Profil</span>
-
-</a>
-
-</nav>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-
+<script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan.js"></script>
+<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging1"></script>
+<script src="izin-telat-dashboard-entry.js?v=20260924-2"></script>
+<script src="dashboard-karyawan-header-toolbar-ui.js?v=20260924-7"></script>
+<script src="ERP.NEW/js/modules/penugasan-backup-db-store.js?v=20261003-1"></script>
+<script src="ERP.NEW/js/modules/work-branch-resolver-local.js?v=20261003-2"></script>
+<script src="ERP.NEW/js/modules/backup-kpi-local-store.js?v=20261003-1"></script>
+<script src="dashboard-karyawan-work-branch-local.js?v=20261003-3"></script>
+<script src="dashboard-karyawan-calendar-theme.js?v=20260929-3"></script>
+<script src="dashboard-karyawan-kpi-tidy-ui.js?v=20260924-3"></script>
+<script src="dashboard-karyawan-performa-ui.js?v=20260922-8"></script>
+<script src="dashboard-karyawan-ranking-barber.js?v=20260923-1"></script>
+<script src="dashboard-karyawan-target-anda.js?v=20260924-1"></script>
+<script src="dashboard-karyawan-pengaduan-ui.js?v=20260924-1"></script>
+<script src="dashboard-karyawan-motivation-ui.js?v=20260924-1"></script>
 
+<script src="employee-device-readiness.js?v=20261001-2"></script>
+<script src="employee-haptic-canonical.js?v=20260929-1"></script>
+<script src="employee-sop/sop-bootstrap.js?v=20260929-12"></script>
+<script src="dashboard-karyawan-bottomnav-feedback.js?v=20261001-1"></script>
+<script src="employee-navigation-performance.js?v=20261001-1"></script>
+<script src="dashboard-karyawan-backup-kpi-local.js?v=20261003-4"></script>
 </body>
 </html>
+
