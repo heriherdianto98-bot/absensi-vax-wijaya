@@ -1003,3 +1003,15 @@ html[data-home-kpi="kasir"] .comm-row .comm-card .comm-link{
 html[data-home-kpi="kasir"] .comm-row .comm-card .comm-link i{
   font-size:9.5px!important;
 }
+
+
+/* Kasir lower-card spacing normalize · staging16 · UI only */
+html[data-home-kpi="kasir"] .comm-row{
+  margin:7px 0 0!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside{
+  margin:7px 0 0!important;
+}
+html[data-home-kpi="kasir"] .employee-kasbon-entry{
+  margin:7px 0 0!important;
+}
