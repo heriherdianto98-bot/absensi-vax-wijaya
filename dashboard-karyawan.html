@@ -240,6 +240,50 @@ html[data-home-kpi="kasir"] .kasir-product-month-head strong{
   text-shadow:0 1px 0 rgba(0,0,0,.08)!important;
 }
 </style>
+<style id="kasir-kasbon-outside-ui">
+.kasir-kasbon-outside{display:none}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside{
+  display:block!important;
+  margin:8px 0 7px!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kasbon-card{
+  position:relative!important;
+  min-height:58px!important;
+  padding:9px 10px 8px 42px!important;
+  border:1px solid rgba(22,163,142,.26)!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f4fbf9 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 5px 12px rgba(31,104,95,.09)!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kpi-icon{
+  position:absolute!important;
+  left:10px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:25px!important;
+  height:25px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  color:#fff!important;
+  background:linear-gradient(145deg,#31cbb5,#18a991)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.30),0 3px 7px rgba(20,126,111,.18)!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside small{
+  display:block!important;
+  margin:0 0 2px!important;
+  color:#5d7775!important;
+  font-size:8.5px!important;
+  font-weight:900!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside strong{
+  display:block!important;
+  color:#d99a16!important;
+  font-size:16px!important;
+  line-height:1!important;
+  font-weight:950!important;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -423,14 +467,7 @@ html[data-home-kpi="kasir"] .kasir-product-month-head strong{
                             <div class="kasir-product-empty">Belum ada penjualan produk bulan ini.</div>
                         </div>
                     </div>
-                    <div class="kasir-kpi-grid kasir-kasbon-grid">
-                        <article class="kasir-kasbon-card">
-                            <span class="kasir-kpi-icon"><i class="fa-solid fa-wallet"></i></span>
-                            <small>Kasbon Bulan Ini</small>
-                            <strong id="kasirKasbonBulanIni">Rp0</strong>
-                        </article>
-                    </div>
-                    <div id="kasirConsumerState" class="kasir-consumer-state">Membaca data ERP...</div>
+                    <div id="kasirConsumerState" class="kasir-consumer-state" hidden></div>
                 </section>
             </div>
         </section>
@@ -455,6 +492,14 @@ html[data-home-kpi="kasir"] .kasir-product-month-head strong{
                 <p id="pengaduanPreview">Laporkan masalah kerja dan pantau penanganannya.</p>
                 <span class="comm-link">Buka pengaduan <i class="fa-solid fa-chevron-right"></i></span>
                 <span class="comm-art"><i class="fa-solid fa-comments"></i></span>
+            </article>
+        </section>
+
+        <section class="kasir-kasbon-outside" aria-label="Kasbon Bulan Ini">
+            <article class="kasir-kasbon-card">
+                <span class="kasir-kpi-icon"><i class="fa-solid fa-wallet"></i></span>
+                <small>Kasbon Bulan Ini</small>
+                <strong id="kasirKasbonBulanIni">Rp0</strong>
             </article>
         </section>
 
