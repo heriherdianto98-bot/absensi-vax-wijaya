@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="dashboard-karyawan-kasbon-entry.css?v=20260926-1">
     <link rel="stylesheet" href="employee-device-readiness.css?v=20260929-1">
     <link rel="stylesheet" href="dashboard-karyawan-work-branch-local.css?v=20261003-1">
-    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging17">
+    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging18">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style id="employee-sync-header-ui">
       /* Employee-only UI. Status remains unknown until a verified owner read-only source is wired. */
@@ -472,6 +472,7 @@ html[data-home-kpi="kasir"] .kasir-kasbon-outside strong{
             </div>
         </section>
 
+        <div class="kasir-lower-stack">
         <section class="comm-row" aria-label="Pengumuman dan Riwayat">
             <article class="comm-card comm-announce" id="cardPengumuman" role="link" tabindex="0" aria-label="Buka Pengumuman">
                 <span id="pengumumanBadge" class="comm-new" hidden>0</span>
@@ -512,6 +513,7 @@ html[data-home-kpi="kasir"] .kasir-kasbon-outside strong{
             </span>
             <span class="employee-kasbon-entry-go"><i class="fa-solid fa-chevron-right"></i></span>
         </a>
+        </div>
 
         <button type="button" id="btnAbsen" class="ai-hero" aria-label="Buka Absensi">
             <span class="ai-hero-avatar"><i class="fa-solid fa-fingerprint"></i></span>
