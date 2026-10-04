@@ -125,6 +125,15 @@ html[data-home-kpi="kasir"] .kasir-product-month-copy b{color:#173f45!important;
 html[data-home-kpi="kasir"] .kasir-product-month-copy small{color:#79908f!important;font-size:7px!important;font-weight:800!important}
 html[data-home-kpi="kasir"] .kasir-product-month-row>strong{color:#119f89!important;font-size:10px!important;font-weight:950!important;white-space:nowrap!important}
 </style>
+<style id="kasir-kasbon-order-ui">
+html[data-home-kpi="kasir"] .kasir-kasbon-grid{
+  grid-template-columns:1fr!important;
+  margin-top:7px!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-grid .kasir-kasbon-card{
+  grid-column:1/-1!important;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -296,11 +305,6 @@ html[data-home-kpi="kasir"] .kasir-product-month-row>strong{color:#119f89!import
                             <small>Total Produk Bulan Ini</small>
                             <strong id="kasirProdukBulanIniCount">0</strong>
                         </article>
-                        <article class="kasir-kasbon-card">
-                            <span class="kasir-kpi-icon"><i class="fa-solid fa-wallet"></i></span>
-                            <small>Kasbon Bulan Ini</small>
-                            <strong id="kasirKasbonBulanIni">Rp0</strong>
-                        </article>
                     </div>
                     <div class="kasir-product-month-detail">
                         <div class="kasir-product-month-head">
@@ -313,6 +317,13 @@ html[data-home-kpi="kasir"] .kasir-product-month-row>strong{color:#119f89!import
                         <div id="kasirProdukBulanList" class="kasir-product-month-list">
                             <div class="kasir-product-empty">Belum ada penjualan produk bulan ini.</div>
                         </div>
+                    </div>
+                    <div class="kasir-kpi-grid kasir-kasbon-grid">
+                        <article class="kasir-kasbon-card">
+                            <span class="kasir-kpi-icon"><i class="fa-solid fa-wallet"></i></span>
+                            <small>Kasbon Bulan Ini</small>
+                            <strong id="kasirKasbonBulanIni">Rp0</strong>
+                        </article>
                     </div>
                     <div id="kasirConsumerState" class="kasir-consumer-state">Membaca data ERP...</div>
                 </section>
