@@ -134,6 +134,76 @@ html[data-home-kpi="kasir"] .kasir-kasbon-grid .kasir-kasbon-card{
   grid-column:1/-1!important;
 }
 </style>
+<style id="kasir-product-summary-3d-ui">
+html[data-home-kpi="kasir"] .kasir-product-summary-grid{
+  grid-template-columns:1fr 1fr!important;
+  gap:7px!important;
+  margin-top:7px!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid>article{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:62px!important;
+  padding:9px 10px 8px!important;
+  border:1px solid rgba(12,137,120,.34)!important;
+  border-radius:12px!important;
+  background:
+    radial-gradient(circle at 14% 4%,rgba(255,255,255,.20),transparent 38%),
+    linear-gradient(145deg,#31cbb5 0%,#20bda7 52%,#15a891 100%)!important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.24),
+    inset 0 -5px 10px rgba(0,100,87,.14),
+    0 7px 14px rgba(24,132,116,.16),
+    0 2px 5px rgba(20,96,86,.10)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid>article::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:linear-gradient(120deg,rgba(255,255,255,.16),transparent 38%)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid .kasir-kpi-icon{
+  position:absolute!important;
+  right:8px!important;
+  top:8px!important;
+  width:24px!important;
+  height:24px!important;
+  margin:0!important;
+  border-radius:8px!important;
+  display:grid!important;
+  place-items:center!important;
+  color:#fff!important;
+  background:rgba(255,255,255,.16)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 3px 7px rgba(0,90,78,.14)!important;
+  z-index:1!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid>article small{
+  position:relative!important;
+  z-index:1!important;
+  display:block!important;
+  max-width:calc(100% - 27px)!important;
+  margin:0 0 5px!important;
+  color:rgba(255,255,255,.93)!important;
+  font-size:9.5px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+  letter-spacing:.025em!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid>article strong{
+  position:relative!important;
+  z-index:1!important;
+  display:block!important;
+  margin:0!important;
+  color:#fff!important;
+  font-size:17px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-.02em!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.10)!important;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -294,7 +364,7 @@ html[data-home-kpi="kasir"] .kasir-kasbon-grid .kasir-kasbon-card{
                             <div class="kasir-product-empty">Belum ada produk terjual hari ini.</div>
                         </div>
                     </div>
-                    <div class="kasir-kpi-grid">
+                    <div class="kasir-kpi-grid kasir-product-summary-grid">
                         <article>
                             <span class="kasir-kpi-icon"><i class="fa-solid fa-chart-column"></i></span>
                             <small>Produk Bulan Ini</small>
