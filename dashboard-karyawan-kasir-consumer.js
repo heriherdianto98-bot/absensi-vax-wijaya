@@ -78,13 +78,13 @@
   function renderProducts(rows){
     const host=$("kasirProdukHariIniList");
     const list=Array.isArray(rows)?rows:[];
-    const totalShare=list.reduce((s,r)=>s+num(r.revenue_share),0);
-    $("kasirProdukShareHariIni").textContent=rp(totalShare);
+    const count=list.reduce((sum,r)=>sum+num(r.qty),0);
+    if($("kasirProdukHariIniCount"))$("kasirProdukHariIniCount").textContent=String(Math.round(count));
     if(!list.length){
       host.innerHTML='<div class="kasir-product-empty">Belum ada produk terjual hari ini.</div>';
       return;
     }
-    host.innerHTML=list.map(r=>`<div class="kasir-product-row"><div><b>${productLabel(r)}</b><small>${num(r.qty)} item</small></div><strong>Share ${rp(r.revenue_share)}</strong></div>`).join("");
+    host.innerHTML=list.map((r,i)=>`<div class="kasir-product-row"><span class="kasir-product-rank">${i+1}</span><div><b>${productLabel(r)}</b><small>${num(r.qty)} item</small></div><strong>${rp(r.total)}</strong></div>`).join("");
   }
   function render(data,date,source){
     const ut=num(data.ultimateTarget),ur=num(data.ultimateReal);
@@ -147,7 +147,7 @@
       db.from("kpi_ultimate_monthly_target").select("target_amount,active").eq("cabang_id",branchId).eq("year",y).eq("month",m).eq("active",true).maybeSingle(),
       db.from("kpi_ultimate_sales_source").select("activity_date,service_package,price_with_discount").eq("cabang_id",branchId).gte("activity_date",monthStart).lte("activity_date",date),
       db.from("daily_recap_source").select("tanggal,service,produk,customer_minutes,transaction_minutes,services_minutes").eq("cabang_id",branchId).gte("tanggal",monthStart).lte("tanggal",date),
-      db.from("product_sales_source").select("product_name,provider_name_raw,employee_id,mapping_status,qty,revenue_share,period_start,period_end").eq("cabang_id",branchId).eq("employee_id",employeeId).eq("mapping_status","MATCHED").eq("period_start",date).eq("period_end",date),
+      db.from("product_sales_daily_source").select("activity_date,product_name,qty_sold,product_price").eq("cabang_id",branchId).eq("activity_date",date),
       readKasbonMonth(date)
     ]);
     const error=omzetTargetRes.error||ultimateTargetRes.error||ultimateRes.error||recapRes.error||productRes.error;
@@ -159,6 +159,14 @@
       const key=String(r.service_package||"-").trim()||"-";
       const cur=ultTodayMap.get(key)||{package_name:key,qty:0,total:0};
       cur.qty+=1; cur.total+=num(r.price_with_discount); ultTodayMap.set(key,cur);
+    });
+    const productMap=new Map();
+    (productRes.data||[]).forEach(r=>{
+      const key=String(r.product_name||"-").trim()||"-";
+      const cur=productMap.get(key)||{product_name:key,qty:0,total:0};
+      cur.qty+=num(r.qty_sold||1);
+      cur.total+=num(r.product_price);
+      productMap.set(key,cur);
     });
     const recap=recapRes.data||[];
     const todayRow=recap.find(r=>String(r.tanggal).slice(0,10)===date)||{};
@@ -176,7 +184,7 @@
       produkToday:num(todayRow.produk),
       produkMonth:recap.reduce((s,r)=>s+num(r.produk),0),
       kasbonMonth:num(kasbonMonth),
-      productRows:productRes.data||[]
+      productRows:[...productMap.values()].sort((a,b)=>b.total-a.total||a.product_name.localeCompare(b.product_name))
     };
   }
 
@@ -204,7 +212,7 @@
       produkToday:num(payload.product_today),
       produkMonth:num(payload.product_month),
       kasbonMonth:num(payload.kasbon_month),
-      productRows:Array.isArray(payload.employee_product_detail)?payload.employee_product_detail:[],
+      productRows:Array.isArray(payload.product_detail)?payload.product_detail:[],
       canonicalLastSync:payload.last_sync||null
     };
   }
