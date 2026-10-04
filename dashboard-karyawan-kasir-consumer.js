@@ -64,6 +64,17 @@
     if(!raw||/^provider product recap$/i.test(raw)) return "Detail nama produk belum tersedia";
     return raw;
   }
+  function renderUltimateToday(rows,total){
+    const host=$("kasirUltimateHariIniList");
+    const list=Array.isArray(rows)?rows:[];
+    $("kasirUltimateHariIni").textContent=rp(total);
+    $("kasirUltimateHariIniCount").textContent=String(list.reduce((s,r)=>s+num(r.qty),0));
+    if(!list.length){
+      host.innerHTML='<div class="kasir-product-empty">Belum ada paket Ultimate terjual hari ini.</div>';
+      return;
+    }
+    host.innerHTML=list.map(r=>`<div class="kasir-ultimate-today-row"><div><b>${String(r.package_name||"-")}</b><small>${num(r.qty)} paket</small></div><strong>${rp(r.total)}</strong></div>`).join("");
+  }
   function renderProducts(rows){
     const host=$("kasirProdukHariIniList");
     const list=Array.isArray(rows)?rows:[];
@@ -105,6 +116,7 @@
     $("kasirTransaksiHariIni").textContent=String(Math.round(num(data.trxToday)));
     $("kasirServicesHariIni").textContent=String(Math.round(num(data.servicesToday)));
     $("kasirCustomerDate").textContent=new Intl.DateTimeFormat("id-ID",{day:"numeric",month:"short",timeZone:"UTC"}).format(new Date(date+"T00:00:00Z"));
+    renderUltimateToday(data.ultimateTodayRows,data.ultimateTodayTotal);
     $("kasirProdukHariIni").textContent=rp(data.produkToday);
     $("kasirProdukBulanIni").textContent=rp(data.produkMonth);
     $("kasirKasbonBulanIni").textContent=rp(data.kasbonMonth);
@@ -133,7 +145,7 @@
     const [omzetTargetRes,ultimateTargetRes,ultimateRes,recapRes,productRes,kasbonMonth]=await Promise.all([
       db.from("target_bulanan").select("target").eq("cabang_id",branchId).eq("tahun",y).eq("bulan",m).maybeSingle(),
       db.from("kpi_ultimate_monthly_target").select("target_amount,active").eq("cabang_id",branchId).eq("year",y).eq("month",m).eq("active",true).maybeSingle(),
-      db.from("kpi_ultimate_sales_source").select("service_package,price_with_discount").eq("cabang_id",branchId).gte("activity_date",monthStart).lte("activity_date",date),
+      db.from("kpi_ultimate_sales_source").select("activity_date,service_package,price_with_discount").eq("cabang_id",branchId).gte("activity_date",monthStart).lte("activity_date",date),
       db.from("daily_recap_source").select("tanggal,service,produk,customer_minutes,transaction_minutes,services_minutes").eq("cabang_id",branchId).gte("tanggal",monthStart).lte("tanggal",date),
       db.from("product_sales_source").select("product_name,provider_name_raw,employee_id,mapping_status,qty,revenue_share,period_start,period_end").eq("cabang_id",branchId).eq("employee_id",employeeId).eq("mapping_status","MATCHED").eq("period_start",date).eq("period_end",date),
       readKasbonMonth(date)
@@ -141,6 +153,13 @@
     const error=omzetTargetRes.error||ultimateTargetRes.error||ultimateRes.error||recapRes.error||productRes.error;
     if(error)throw error;
     const ult=(ultimateRes.data||[]).filter(r=>isUltimate(r.service_package));
+    const ultToday=ult.filter(r=>String(r.activity_date||"").slice(0,10)===date);
+    const ultTodayMap=new Map();
+    ultToday.forEach(r=>{
+      const key=String(r.service_package||"-").trim()||"-";
+      const cur=ultTodayMap.get(key)||{package_name:key,qty:0,total:0};
+      cur.qty+=1; cur.total+=num(r.price_with_discount); ultTodayMap.set(key,cur);
+    });
     const recap=recapRes.data||[];
     const todayRow=recap.find(r=>String(r.tanggal).slice(0,10)===date)||{};
     return {
@@ -149,6 +168,8 @@
       ultimateTarget:num(ultimateTargetRes.data?.target_amount),
       ultimateCount:ult.length,
       ultimateReal:ult.reduce((s,r)=>s+num(r.price_with_discount),0),
+      ultimateTodayTotal:ultToday.reduce((s,r)=>s+num(r.price_with_discount),0),
+      ultimateTodayRows:[...ultTodayMap.values()].sort((a,b)=>b.total-a.total||a.package_name.localeCompare(b.package_name)),
       customerToday:num(todayRow.customer_minutes),
       trxToday:num(todayRow.transaction_minutes),
       servicesToday:num(todayRow.services_minutes),
@@ -175,6 +196,8 @@
       ultimateTarget:num(payload.ultimate_target),
       ultimateCount:num(payload.ultimate_count),
       ultimateReal:num(payload.ultimate_real),
+      ultimateTodayTotal:num(payload.ultimate_today_total),
+      ultimateTodayRows:Array.isArray(payload.ultimate_today_detail)?payload.ultimate_today_detail:[],
       customerToday:num(payload.customer_today),
       trxToday:num(payload.transaction_today),
       servicesToday:num(payload.services_today),
