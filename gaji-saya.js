@@ -418,7 +418,6 @@ function renderDaily(rows){
     list.innerHTML = daily.map((row) => `
         <article class="daily-card">
             <div class="daily-date">${escapeHtml(formatTanggalPanjang(row.tanggal))}</div>
-            <div class="daily-branch">${escapeHtml(row.cabang)}</div>
             <div class="daily-row payroll-daily-row">
                 <div>
                     <small>Gaji Pokok</small>
