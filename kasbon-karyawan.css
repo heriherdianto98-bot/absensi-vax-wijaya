@@ -1,0 +1,183 @@
+:root{
+  --ek-green:#2fc8b4;--ek-green2:#21b39f;--ek-text:#183f47;--ek-muted:#6c858b;
+  --ek-line:#cfe9e5;--ek-bg:#eef9f7;--ek-card:#fff;--ek-danger:#d94b5c;--ek-gold:#d8b24f;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;font-family:Arial,sans-serif;background:#e9f4f2;color:var(--ek-text)}
+body{display:flex;justify-content:center}
+.app{
+  position:relative;width:100%;max-width:430px;height:100dvh;min-height:100dvh;
+  overflow-y:auto;overflow-x:hidden;background:linear-gradient(180deg,#f7fcfb 0%,#eef8f6 100%);
+  padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));
+}
+.ek-head{
+  position:sticky;top:0;z-index:200;display:grid;grid-template-columns:34px 1fr 34px;align-items:center;
+  gap:10px;min-height:58px;padding:8px 12px;background:linear-gradient(135deg,#1f2e32,#162329);
+  color:#fff;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 8px 22px rgba(20,55,60,.13)
+}
+.ek-head>div{display:flex;flex-direction:column;align-items:center;gap:1px}
+.ek-head strong{font-size:14px;letter-spacing:.08em}.ek-head small{font-size:8px;color:#9fded5;letter-spacing:.15em}
+.ek-back,.ek-head button{
+  width:32px;height:32px;border-radius:10px;border:1px solid rgba(255,255,255,.13);
+  background:rgba(255,255,255,.06);color:#fff;display:grid;place-items:center;text-decoration:none
+}
+.ek-main{padding:12px}
+.ek-profile,.ek-form-card,.ek-history-card{
+  border:1px solid var(--ek-line);border-radius:18px;background:var(--ek-card);
+  box-shadow:0 10px 26px rgba(63,108,105,.09)
+}
+.ek-profile{display:flex;align-items:center;gap:11px;padding:12px 13px;margin-bottom:10px}
+.ek-profile-icon{
+  flex:0 0 44px;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#36d2bd,#20aa97);color:#fff;font-size:19px;
+  box-shadow:0 8px 18px rgba(47,200,180,.22)
+}
+.ek-profile>div{display:flex;flex-direction:column;min-width:0}.ek-profile small{font-size:8px;font-weight:900;color:#55a99e;letter-spacing:.12em}
+.ek-profile strong{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ek-profile span{font-size:10px;color:var(--ek-muted)}
+.ek-form-card,.ek-history-card{padding:14px;margin-bottom:11px}
+.ek-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.ek-section-head small{display:block;font-size:8px;color:#49a89b;font-weight:900;letter-spacing:.13em}
+.ek-section-head h1,.ek-section-head h2{margin:2px 0 0;font-size:20px;line-height:1.1}
+.ek-section-head h2{font-size:17px}
+.ek-route,#ekCount{
+  flex:0 0 auto;border-radius:999px;padding:6px 9px;background:#e6f8f4;color:#168f7e;
+  border:1px solid #bce8e0;font-size:9px;font-weight:900
+}
+#ekForm{display:grid;gap:10px}
+#ekForm label{display:grid;gap:5px}
+#ekForm label>span{font-size:10px;font-weight:900;color:#315e66}
+#ekForm em{font-style:normal;color:#91a3a8;font-weight:700}
+#ekForm input,#ekForm textarea{
+  width:100%;border:1px solid #b9dcd6;border-radius:11px;background:#fff;color:#244950;
+  padding:10px 11px;font:inherit;font-size:13px;outline:none;resize:vertical
+}
+#ekForm input:focus,#ekForm textarea:focus{border-color:var(--ek-green);box-shadow:0 0 0 3px rgba(47,200,180,.13)}
+#ekNominal{font-weight:900;font-size:17px!important}
+.ek-info{display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border-radius:11px;background:#eff9f7;border:1px solid #d2ebe6}
+.ek-info i{margin-top:2px;color:#28aa98}.ek-info p{margin:0;font-size:10px;line-height:1.45;color:#58757b}
+#ekSubmit{
+  min-height:44px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--ek-green),var(--ek-green2));
+  color:#fff;font-size:12px;font-weight:900;letter-spacing:.02em;box-shadow:0 8px 18px rgba(47,200,180,.2)
+}
+#ekSubmit:disabled{opacity:.5}
+.ek-message{margin:0;padding:8px 10px;border-radius:9px;font-size:10px;font-weight:800}
+.ek-message.ok{background:#e9f9f3;color:#15845f}.ek-message.err{background:#fff0f2;color:#b83245}
+.ek-list{display:grid;gap:8px}
+.ek-item{padding:10px 11px;border:1px solid #d7ebe7;border-radius:13px;background:#fbfefd}
+.ek-item-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ek-item strong{font-size:14px}.ek-item small{font-size:9px;color:#7f9499}
+.ek-status{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:8px;font-weight:900;white-space:nowrap}
+.ek-status.wait{background:#fff6d8;color:#95710b}.ek-status.forward{background:#e3f8f1;color:#11775d}
+.ek-status.reject{background:#ffedef;color:#ad3343}.ek-status.cancel{background:#eef1f2;color:#68777b}
+.ek-item p{margin:6px 0 0;font-size:10px;color:#526d73;line-height:1.4}
+.ek-item-note{margin-top:7px;padding-top:7px;border-top:1px dashed #d7ebe7}
+.ek-item-actions{display:flex;justify-content:flex-end;margin-top:8px}
+.ek-cancel{border:1px solid #e0c5c8;background:#fff7f8;color:#b34251;border-radius:9px;padding:6px 9px;font-size:9px;font-weight:900}
+.ek-empty{text-align:center;padding:18px;color:#87999d;font-size:11px}
+html body .app #bottomNav{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:0!important;
+  width:min(100%,430px)!important;
+  max-width:430px!important;
+  transform:translateX(-50%)!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  gap:0!important;
+  box-sizing:border-box!important;
+}
+html body .app #bottomNav>a{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:0!important;
+  width:100%!important;
+  margin:0!important;
+  padding:3px 1px!important;
+  text-align:center!important;
+  text-decoration:none!important;
+}
+html body .app #bottomNav>a>i,
+html body .app #bottomNav>a>span{
+  flex:0 0 auto!important;
+  text-align:center!important;
+}
+@media(max-width:360px){.ek-main{padding:9px}.ek-form-card,.ek-history-card{padding:12px}.ek-section-head h1{font-size:18px}}
+
+
+/* 2026-09-26 — Employee Kasbon mobile UI refinement.
+   UI ONLY: frozen header, scrollable page content, larger white wallet icon. */
+html body .app{
+  height:100dvh!important;
+  min-height:100dvh!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-y:contain!important;
+}
+html body .app .ek-head{
+  position:sticky!important;
+  top:0!important;
+  z-index:240!important;
+}
+html body .app .ek-profile-icon{
+  font-size:24px!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+html body .app .ek-profile-icon i{
+  font-size:24px!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  opacity:1!important;
+}
+
+/* 2026-10-05 — Kasbon header canonical green theme · UI ONLY */
+html body .app .ek-head{
+  min-height:58px!important;
+  padding:8px 11px!important;
+  background:linear-gradient(135deg,#3fd4c0 0%,#27bda8 58%,#1ba28f 100%)!important;
+  border-bottom:1px solid rgba(255,255,255,.34)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    0 7px 16px rgba(24,151,132,.18)!important;
+  color:#fff!important;
+}
+html body .app .ek-head>div{
+  gap:1px!important;
+}
+html body .app .ek-head strong{
+  color:#fff!important;
+  font-size:14px!important;
+  font-weight:950!important;
+  letter-spacing:.075em!important;
+  text-shadow:0 1px 0 rgba(0,91,79,.16)!important;
+}
+html body .app .ek-head small{
+  color:rgba(255,255,255,.90)!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  letter-spacing:.14em!important;
+}
+html body .app .ek-back,
+html body .app .ek-head button{
+  width:32px!important;
+  height:32px!important;
+  border-radius:10px!important;
+  border:1px solid rgba(255,255,255,.25)!important;
+  background:rgba(255,255,255,.12)!important;
+  color:#fff!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    0 4px 9px rgba(0,108,93,.12)!important;
+}
+html body .app .ek-back i,
+html body .app .ek-head button i{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
