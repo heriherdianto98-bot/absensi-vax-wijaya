@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Izin Telat Masuk | VAX WIJAYA</title>
+<link rel="stylesheet" href="izin.css?v=20260817-fill">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+/* UI ONLY: compact single-screen late-arrival form; no session, upload or decision changes. */
+.app{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
+.topbar{grid-template-columns:minmax(65px,1fr) minmax(130px,2fr) minmax(65px,1fr)}
+.back-btn{width:auto;max-width:75px;padding:0 5px;white-space:nowrap;font-size:12px}
+.izin-body{min-height:0;overflow:hidden}
+.izin-telat-card{display:flex;flex-direction:column;gap:7px;box-sizing:border-box;width:100%;max-width:430px;min-height:0;max-height:100%;margin:3px auto;padding:14px;border:1px solid #b58b3b;border-radius:13px;background:#19222d;color:#fff;overflow-y:auto;overscroll-behavior:contain}
+.izin-telat-card h1{color:#f3cd77;font-size:19px;line-height:1.2;margin:0}
+.izin-telat-card p{line-height:1.35;color:#d1dae4;font-size:12px;margin:0}
+.izin-telat-card label{display:block;margin:3px 0 0;font-weight:750;font-size:13px}
+.izin-telat-card textarea,.izin-telat-card input[type=file]{width:100%;min-width:0;box-sizing:border-box;padding:9px;background:#111923;border:1px solid #69798b;border-radius:9px;color:#fff;font-size:13px}
+.izin-telat-card textarea{height:75px;min-height:65px;max-height:105px;resize:vertical;line-height:1.35}
+.izin-telat-card input[type=file]{padding:7px}
+.izin-telat-card button{flex:0 0 auto;margin-top:4px;width:100%;min-height:43px;padding:9px;background:#dfb445;border:0;border-radius:9px;font-weight:850;font-size:14px;color:#17140c}
+.izin-telat-card button:disabled{opacity:.55}
+#izinTelatNama{font-weight:700;color:#f3cd77}
+#izinTelatState{white-space:pre-wrap;font-weight:700;font-size:12px}
+#izinTelatState:empty{display:none}
+#izinTelatPreview{display:block;width:auto;max-width:100%;height:auto;max-height:82px;object-fit:contain;margin:1px auto;border-radius:7px}
+#izinTelatPreview[hidden]{display:none}
+@media(max-height:680px){.izin-telat-card{gap:5px;padding:10px}.izin-telat-card h1{font-size:17px}.izin-telat-card p{font-size:11px}.izin-telat-card textarea{height:60px;min-height:55px}#izinTelatPreview{max-height:55px}}
+
+/* Employee portal theme for the late arrival form; UI only. */
+html body .app .izin-telat-card{
+  border:1px solid #c5e7e1;
+  border-top:3px solid #2fc8b4;
+  border-radius:17px;
+  background:linear-gradient(145deg,#fff 0%,#f4fbf9 100%);
+  box-shadow:0 10px 24px rgba(27,111,101,.13),inset 0 1px 0 #fff;
+  color:#244b52;
+}
+html body .app .izin-telat-card h1{color:#168f7e}
+html body .app .izin-telat-card p{color:#547278}
+html body .app .izin-telat-card label{color:#244b52}
+html body .app .izin-telat-card textarea,
+html body .app .izin-telat-card input[type=file]{
+  background:#fff;
+  border:1px solid #b9ded8;
+  color:#244b52;
+}
+html body .app .izin-telat-card textarea::placeholder{color:#829b9b}
+html body .app .izin-telat-card textarea:focus-visible,
+html body .app .izin-telat-card input[type=file]:focus-visible{
+  outline:2px solid #2fc8b4;
+  outline-offset:2px;
+}
+html body .app .izin-telat-card input[type=file]::file-selector-button{
+  margin-right:8px;padding:6px 9px;border:1px solid #a8dcd3;
+  border-radius:7px;background:#eaf8f5;color:#168f7e;font:inherit;font-weight:750;
+}
+html body .app .izin-telat-card button{
+  border:1px solid #159d8b;
+  background:linear-gradient(135deg,#44cfbd,#20ae9a);
+  color:#fff;
+  box-shadow:0 5px 12px rgba(25,157,139,.22);
+}
+html body .app #izinTelatNama{color:#168f7e}
+html body .app #izinTelatState{color:#244b52}
+html body .app .topbar .back-btn{
+  width:32px;max-width:32px;height:32px;padding:0;
+  display:grid;place-items:center;font-size:14px;
+}
+</style>
+</head>
+<body><div class="app">
+<header class="topbar"><a href="dashboard-karyawan.html" class="back-btn" aria-label="Kembali"><i class="fas fa-chevron-left" aria-hidden="true"></i></a><div class="topbar-title"><strong>IZIN TELAT MASUK</strong><small>VAX WIJAYA</small></div></header>
+<main class="izin-body"><form id="izinTelatForm" class="izin-telat-card" novalidate>
+<h1>Izin Telat Masuk</h1><p>Pengajuan untuk <strong id="izinTelatTanggal">hari ini</strong>. Foto dan alasan dikirim langsung dari akun karyawan kepada SPV dan Owner. Pengajuan ini <strong>bukan izin tidak masuk</strong> dan tidak mengubah status kehadiran. SPV tetap memutus denda.</p>
+<p id="izinTelatNama">Memeriksa sesi karyawan…</p>
+<label for="izinTelatReason">Alasan terlambat (wajib)</label><textarea id="izinTelatReason" maxlength="1000" placeholder="Jelaskan alasan keterlambatan…" required></textarea>
+<label for="izinTelatPhoto">Foto bukti dari karyawan (wajib)</label><input id="izinTelatPhoto" type="file" accept="image/jpeg,image/png,image/webp" required><img id="izinTelatPreview" alt="Pratinjau foto bukti" hidden>
+<p id="izinTelatState" role="status" aria-live="polite"></p><button id="izinTelatSend" type="submit" disabled>Kirim ke SPV &amp; Owner</button>
+</form></main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="karyawan-session.js"></script><script src="izin-telat.js?v=20260921-1"></script>
+<script src="employee-haptic-canonical.js?v=20260929-1"></script>
+</body></html>
