@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="dashboard-karyawan-kasbon-entry.css?v=20260926-1">
     <link rel="stylesheet" href="employee-device-readiness.css?v=20260929-1">
     <link rel="stylesheet" href="dashboard-karyawan-work-branch-local.css?v=20261003-1">
-    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging19">
+    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging20">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style id="employee-sync-header-ui">
       /* Employee-only UI. Status remains unknown until a verified owner read-only source is wired. */
@@ -282,6 +282,22 @@ html[data-home-kpi="kasir"] .kasir-kasbon-outside strong{
   font-size:16px!important;
   line-height:1!important;
   font-weight:950!important;
+}
+</style>
+<style id="kasir-kasbon-green-inline-staging20">
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kasbon-card{
+  background:linear-gradient(145deg,#31cbb5 0%,#20bda7 54%,#16a78f 100%)!important;
+  border:1px solid rgba(10,132,114,.34)!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.24),inset 0 -5px 10px rgba(0,95,82,.14),0 7px 14px rgba(24,132,116,.16)!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kasbon-card small,
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kasbon-card strong{
+  color:#fff!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kpi-icon{
+  color:#fff!important;
+  background:rgba(255,255,255,.18)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
 }
 </style>
 </head>
