@@ -1174,9 +1174,11 @@ html[data-home-kpi="kasir"] .employee-kasbon-entry-go{
 
 /* Match Capster-like last-card clearance: close to fixed nav but never hidden behind it. */
 html[data-home-kpi="kasir"] body .app{
-  padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))!important;
+  /* bottom nav is ~58px high; keep a small 6px breathing space above it */
+  padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))!important;
 }
 html[data-home-kpi="kasir"] .kasir-lower-stack>.employee-kasbon-entry{
   margin-top:0!important;
-  margin-bottom:0!important;
+  margin-bottom:2px!important;
 }
