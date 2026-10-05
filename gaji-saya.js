@@ -149,13 +149,19 @@ function payrollSourceToConsumer(payload){
         absensiRows: Array.isArray(data.absensi) ? data.absensi : [],
         kasbonRows: Array.isArray(data.employee_cash_advances) ? data.employee_cash_advances : [],
         backupAssignments: { assigned: [], pending: [], fuelAllowances: [], backups: [] },
-        salaryData: {
-            rows: (Array.isArray(data.payroll_salary_master) ? data.payroll_salary_master : [])
+        salaryData: (() => {
+            const salaryRows = (Array.isArray(data.payroll_salary_master) ? data.payroll_salary_master : [])
                 .map((item) => window.PayrollSalaryMasterStore?.normalizeRow
                     ? window.PayrollSalaryMasterStore.normalizeRow(item)
-                    : item),
-            byEmployee: {}
-        },
+                    : item);
+            const byEmployee = {};
+            salaryRows.forEach((item) => {
+                const key = String(item.employeeId ?? item.employee_id ?? "");
+                if(!key) return;
+                (byEmployee[key] ||= []).push(item);
+            });
+            return { rows: salaryRows, byEmployee };
+        })(),
         adjustments
     };
 
@@ -187,10 +193,21 @@ function payrollSourceToConsumer(payload){
             summary.ultimateActual = Number(autoBonus.ultimate_actual || 0);
         }
     }
+    const pendapatanBersih = Number(summary.gajiPokok || 0)
+        - Number(summary.denda || 0)
+        - Number(summary.kasbon || 0)
+        + Number(summary.bonusInsentif || 0)
+        + Number(summary.bonusKpi || 0);
+    const gajiDicairkan = pendapatanBersih + Number(summary.bonusProduk || 0);
+
     const daily = (row?.daily || []).map((item) => ({
         tanggal: item.tanggal,
-        share_bruto: Number(item.gajiPokok || 0),
+        cabang: item.cabang || row.homeCabang || "—",
+        service: item.service,
+        gaji_pokok: Number(item.gajiPokok || 0),
         denda: Number(item.denda || 0),
+        kasbon: Number(item.kasbon || 0),
+        share_produk: Number(item.bonusProduk || 0),
         net_harian: Number(item.gajiPokok || 0)
             - Number(item.denda || 0)
             - Number(item.kasbon || 0)
@@ -208,9 +225,16 @@ function payrollSourceToConsumer(payload){
         },
         periode: payload.periode,
         summary: {
-            share_bruto: Number(summary.gajiPokok || 0),
+            pendapatan_kotor: Number(summary.gajiPokok || 0),
+            gaji_pokok: Number(summary.gajiPokok || 0),
             total_denda: Number(summary.denda || 0),
-            net_diterima: Number(summary.gajiBersih || 0)
+            kasbon: Number(summary.kasbon || 0),
+            bonus_insentif: Number(summary.bonusInsentif || 0),
+            bonus_kpi: Number(summary.bonusKpi || 0),
+            share_produk: Number(summary.bonusProduk || 0),
+            pendapatan_bersih: pendapatanBersih,
+            net_diterima: gajiDicairkan,
+            gaji_dicairkan: gajiDicairkan
         },
         payroll_summary: summary,
         payroll_row: row,
@@ -279,10 +303,15 @@ function resetPrevCellLayout(){
     }
 }
 
-function renderSummary(share, denda, net){
-    setText("valShareBruto", share);
-    setText("valTotalDenda", denda);
-    setText("valNetDiterima", net);
+function renderSummary(summary = {}){
+    setText("valPendapatanKotor", formatRupiahId(summary.pendapatan_kotor));
+    setText("valTotalDenda", formatRupiahId(summary.total_denda));
+    setText("valKasbon", formatRupiahId(summary.kasbon));
+    setText("valBonusInsentif", formatRupiahId(summary.bonus_insentif));
+    setText("valBonusKpi", formatRupiahId(summary.bonus_kpi));
+    setText("valShareProduk", formatRupiahId(summary.share_produk));
+    setText("valPendapatanBersih", formatRupiahId(summary.pendapatan_bersih));
+    setText("valGajiDicairkan", formatRupiahId(summary.gaji_dicairkan ?? summary.net_diterima));
 }
 
 function renderComparisonEmptyPrev(periodeIni){
@@ -355,16 +384,17 @@ function normalizeDailyRow(item){
     const tanggal = String(
         item?.tanggal || item?.activity_date || item?.date || ""
     ).slice(0, 10);
-    const share = Number(item?.share_bruto ?? item?.share ?? 0);
+    const gajiPokok = Number(item?.gaji_pokok ?? item?.share_bruto ?? item?.share ?? 0);
     const denda = Number(item?.denda ?? item?.total_denda ?? 0);
-    const net = Number(
-        item?.net_harian ?? item?.net_diterima ?? item?.net ?? (share - denda)
-    );
+    const kasbon = Number(item?.kasbon ?? 0);
+    const shareProduk = Number(item?.share_produk ?? 0);
     return {
         tanggal,
-        share: Number.isFinite(share) ? share : 0,
+        cabang: String(item?.cabang || "—"),
+        gajiPokok: Number.isFinite(gajiPokok) ? gajiPokok : 0,
         denda: Number.isFinite(denda) ? denda : 0,
-        net: Number.isFinite(net) ? net : 0
+        kasbon: Number.isFinite(kasbon) ? kasbon : 0,
+        shareProduk: Number.isFinite(shareProduk) ? shareProduk : 0
     };
 }
 
@@ -388,25 +418,30 @@ function renderDaily(rows){
     list.innerHTML = daily.map((row) => `
         <article class="daily-card">
             <div class="daily-date">${escapeHtml(formatTanggalPanjang(row.tanggal))}</div>
-            <div class="daily-row">
+            <div class="daily-branch">${escapeHtml(row.cabang)}</div>
+            <div class="daily-row payroll-daily-row">
                 <div>
-                    <small>Share Bruto</small>
-                    <b>${escapeHtml(formatRupiahId(row.share))}</b>
+                    <small>Gaji Pokok</small>
+                    <b>${escapeHtml(formatRupiahId(row.gajiPokok))}</b>
                 </div>
                 <div>
                     <small>Denda</small>
                     <b>${escapeHtml(formatRupiahId(row.denda))}</b>
                 </div>
                 <div>
-                    <small>Net Harian</small>
-                    <b>${escapeHtml(formatRupiahId(row.net))}</b>
+                    <small>Kasbon</small>
+                    <b>${escapeHtml(formatRupiahId(row.kasbon))}</b>
+                </div>
+                <div>
+                    <small>Share Produk</small>
+                    <b>${escapeHtml(formatRupiahId(row.shareProduk))}</b>
                 </div>
             </div>
         </article>`).join("");
 }
 
 function renderBlockedPayrollRole(){
-    renderSummary("—", "—", "—");
+    renderSummary({});
     resetPrevCellLayout();
     setText("cmpPeriodeIni", "—");
     setText("cmpPeriodePrev", "—");
@@ -418,7 +453,7 @@ function renderBlockedPayrollRole(){
 }
 
 function renderUnavailable(){
-    renderSummary("—", "—", "—");
+    renderSummary({});
     renderComparisonEmptyPrev("—");
     renderDailyEmpty(MSG_NO_DAILY);
 }
@@ -427,11 +462,9 @@ function renderPayload(payload, previousPayload){
     const summary = payload.summary && typeof payload.summary === "object"
         ? payload.summary
         : payload;
-    const share = formatRupiahId(summary.share_bruto);
-    const denda = formatRupiahId(summary.total_denda);
-    const net = formatRupiahId(summary.net_diterima);
-    renderSummary(share, denda, net);
-    renderComparison(net, previousPayload);
+    renderSummary(summary);
+    const payout = formatRupiahId(summary.gaji_dicairkan ?? summary.net_diterima);
+    renderComparison(payout, previousPayload);
     renderDaily(payload.daily || payload.days || payload.rincian || []);
 }
 
@@ -737,14 +770,14 @@ function collectSlipFromPayroll(){
         jabatan: employee.jabatan || screenText("jabatanGaji"),
         cabang: employee.cabang || screenText("cabangGaji"),
         periode: formatMonthLabelFromIso(payload?.periode?.dari),
-        share: formatRupiahId(summary.share_bruto),
+        share: formatRupiahId(summary.pendapatan_kotor),
         denda: formatRupiahId(summary.total_denda),
-        net: formatRupiahId(summary.net_diterima),
+        net: formatRupiahId(summary.pendapatan_bersih),
         daily: (payload.daily || []).map((row) => ({
             tanggal: formatTanggalPanjang(row.tanggal),
-            share: formatRupiahId(row.share_bruto),
+            share: formatRupiahId(row.gaji_pokok),
             denda: formatRupiahId(row.denda),
-            net: formatRupiahId(row.net_harian)
+            net: formatRupiahId(row.gaji_pokok - row.denda - row.kasbon + row.share_produk)
         })),
         attendance: payload.attendance
     };
@@ -825,6 +858,8 @@ function buildCanonicalPayrollPrintSnapshot(){
         money(item.bonusProduk)
     ]);
 
+    const pendapatanBersih=Number(sm.gajiPokok||0)-Number(sm.denda||0)-Number(sm.kasbon||0)+Number(sm.bonusInsentif||0)+Number(sm.bonusKpi||0);
+    const payoutNet=pendapatanBersih+Number(sm.bonusProduk||0);
     const sums=[
         {label:"Pendapatan Kotor",value:money(sm.gajiKotor ?? sm.gajiPokok)},
         {label:"Denda",value:money(sm.denda)},
@@ -832,8 +867,7 @@ function buildCanonicalPayrollPrintSnapshot(){
         {label:"Bonus Insentif",value:money(sm.bonusInsentif)},
         {label:"Bonus KPI",value:money(sm.bonusKpi)},
         {label:"Share Produk",value:money(sm.bonusProduk)},
-        {label:"Pendapatan Bersih",value:money(sm.gajiBersih)},
-        {label:"Hak Dibayar",value:money(sm.gajiBersih)}
+        {label:"Pendapatan Bersih",value:money(pendapatanBersih)}
     ];
 
     return {
@@ -847,8 +881,8 @@ function buildCanonicalPayrollPrintSnapshot(){
             info:`${row.homeCabang || "—"} · ${row.jabatan || "—"}`,
             rows:daily,
             sums,
-            payoutNet:Number(sm.gajiBersih || 0),
-            displayNet:money(sm.gajiBersih)
+            payoutNet,
+            displayNet:money(pendapatanBersih)
         }]
     };
 }
