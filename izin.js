@@ -642,7 +642,13 @@
     }
 
     function choose(btn){
-        select.value = String(btn.dataset.value || "IZIN").toUpperCase();
+        const next = String(btn.dataset.value || "IZIN").toUpperCase();
+        if(next === "TELAT_MASUK"){
+            closeMenu(false);
+            window.location.assign(new URL("izin-telat.html", window.location.href).href);
+            return;
+        }
+        select.value = next;
         select.dispatchEvent(new Event("change",{bubbles:true}));
         sync();
         closeMenu(true);
@@ -758,23 +764,6 @@
     document.addEventListener("click", function(event){
         if(!custom.contains(event.target)) closeMenu(false);
     });
-
-    /* Explicit late-arrival route for Capster/Kasir */
-    const telatLink = document.querySelector(".jenis-telat-link");
-    if(telatLink){
-        telatLink.addEventListener("click", function(event){
-            event.preventDefault();
-            event.stopPropagation();
-            window.location.assign(new URL("izin-telat.html", window.location.href).href);
-        });
-        telatLink.addEventListener("keydown", function(event){
-            if(event.key === "Enter" || event.key === " "){
-                event.preventDefault();
-                event.stopPropagation();
-                window.location.assign(new URL("izin-telat.html", window.location.href).href);
-            }
-        });
-    }
 
     select.addEventListener("change", sync);
     sync();
