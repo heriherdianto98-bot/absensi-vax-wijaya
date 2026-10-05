@@ -1,130 +1,201 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Pengajuan Izin / Libur Karyawan</title>
-<link rel="stylesheet" href="izin.css?v=20260816-1441">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-<style>
-.jenis-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
-.jenis-custom{position:relative;width:100%;}
-.jenis-trigger{width:100%;height:46px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0;border:0;background:transparent;color:#fff;font-size:14px;cursor:pointer;text-align:left;}
-.jenis-trigger .jenis-value{flex:1;color:#fff;font-weight:600;}
-.jenis-trigger .jenis-chevron{color:#ffe066;font-size:12px;transition:transform .18s ease;}
-.jenis-custom.open .jenis-chevron{transform:rotate(180deg);}
-.jenis-menu{position:absolute;left:-12px;right:-12px;top:calc(100% + 8px);z-index:60;padding:6px;background:#090909;border:1px solid rgba(255,224,102,.72);border-radius:14px;box-shadow:0 16px 34px rgba(0,0,0,.72),0 0 18px rgba(255,224,102,.12);}
-.jenis-option{width:100%;min-height:42px;display:flex;align-items:center;gap:10px;padding:0 12px;border:0;border-radius:10px;background:#090909;color:#eee;font-size:14px;text-align:left;cursor:pointer;}
-.jenis-option + .jenis-option{margin-top:4px;}
-.jenis-option:hover,.jenis-option:focus{background:#15120a;color:#ffe066;outline:none;}
-.jenis-option.is-selected{background:linear-gradient(90deg,rgba(255,224,102,.18),rgba(255,224,102,.06));color:#ffe066;border:1px solid rgba(255,224,102,.32);}
-.jenis-option i{width:18px;text-align:center;color:#ffe066;}
-
-/* MOBILE FINAL FIT — isi layar lebih penuh, tetap 1 viewport */
-@media(max-width:600px){
-  html,body{height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;}
-  @supports(height:100svh){html,body{height:100svh!important;max-height:100svh!important;}}
-  body{display:flex!important;justify-content:center!important;}
-  .app{width:100%!important;max-width:430px!important;height:100%!important;max-height:100%!important;min-height:0!important;overflow:hidden!important;padding:6px 14px calc(58px + env(safe-area-inset-bottom,0px) + 8px)!important;display:flex!important;flex-direction:column!important;}
-  .topbar{min-height:42px!important;height:42px!important;margin-bottom:5px!important;flex:0 0 42px!important;}
-  .back-btn{width:34px!important;height:34px!important;}
-  .topbar-title strong{font-size:14px!important;}
-  .topbar-title small{font-size:8px!important;}
-  .izin-body{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;display:grid!important;grid-template-rows:auto auto minmax(0,1fr)!important;gap:6px!important;}
-  .intro-card{padding:10px 11px!important;gap:10px!important;border-radius:17px!important;min-height:66px!important;}
-  .intro-icon{width:42px!important;height:42px!important;flex-basis:42px!important;border-radius:12px!important;font-size:18px!important;}
-  .intro-card h1{font-size:18px!important;margin:0!important;line-height:1.08!important;}
-  .intro-card p{font-size:10px!important;line-height:1.25!important;margin-top:3px!important;}
-  .status-flow{padding:3px 10px!important;min-height:44px!important;}
-  .flow-step{gap:2px!important;min-width:50px!important;}
-  .flow-step span{width:24px!important;height:24px!important;font-size:10px!important;}
-  .flow-step small{font-size:9px!important;}
-  .flow-line{margin-top:12px!important;}
-  .form-card{height:100%!important;min-height:0!important;overflow:hidden!important;padding:10px 11px!important;border-radius:17px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;gap:5px!important;}
-  .field{margin:0!important;}
-  .field > label{margin-bottom:4px!important;font-size:11px!important;line-height:1.05!important;}
-  .input-wrap{height:41px!important;min-height:41px!important;padding:0 11px!important;border-radius:12px!important;gap:8px!important;}
-  .input-wrap input,.input-wrap select{height:39px!important;font-size:13px!important;}
-  .input-wrap i{width:16px!important;font-size:13px!important;}
-  .jenis-trigger{height:39px!important;font-size:13px!important;}
-  .jenis-menu{top:calc(100% + 5px)!important;left:-11px!important;right:-11px!important;}
-  .jenis-option{min-height:38px!important;font-size:13px!important;}
-  textarea{height:66px!important;min-height:66px!important;padding:9px 11px!important;border-radius:12px!important;font-size:13px!important;line-height:1.25!important;}
-  .field-meta{margin-top:2px!important;font-size:9px!important;}
-  .upload-box{height:92px!important;min-height:92px!important;border-radius:13px!important;}
-  .upload-empty{gap:3px!important;}
-  .upload-icon{width:34px!important;height:34px!important;font-size:13px!important;}
-  .upload-empty strong{font-size:12px!important;}
-  .upload-empty small{font-size:9px!important;}
-  #previewBukti{height:90px!important;max-height:90px!important;object-fit:cover!important;}
-  .remove-photo{margin-top:3px!important;padding:4px 7px!important;font-size:9px!important;}
-  .info-box{margin:0!important;padding:7px 9px!important;gap:7px!important;border-radius:11px!important;}
-  .info-box i{font-size:11px!important;}
-  .info-box p{font-size:10px!important;line-height:1.25!important;}
-  .submit-btn{height:46px!important;min-height:46px!important;border-radius:24px!important;font-size:13px!important;}
-  .form-message{min-height:11px!important;margin:0!important;font-size:9px!important;line-height:1.1!important;}
-  #bottomNav{height:52px!important;bottom:calc(5px + env(safe-area-inset-bottom,0px))!important;border-radius:19px!important;}
-  #bottomNav a{min-height:36px!important;gap:1px!important;}
-  #bottomNav i{font-size:15px!important;}
-  #bottomNav span{font-size:9px!important;}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Pengajuan Izin / Libur Karyawan</title>
+    <link rel="stylesheet" href="izin.css?v=20260817-fill">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <style>
+      /* UI only: link to the existing, separate late-arrival flow; never submit as a full-day IZIN. */
+      #jenisMenu .jenis-telat-link{display:flex;align-items:center;gap:10px;min-height:40px;margin-top:4px;padding:0 11px;border-radius:10px;background:#090909;color:#eee;font-size:14px;text-decoration:none}
+      #jenisMenu .jenis-telat-link i{width:18px;text-align:center;color:#ffe066}
+      #jenisMenu .jenis-telat-link:hover,#jenisMenu .jenis-telat-link:focus-visible{background:#15120a;color:#ffe066;outline:2px solid rgba(255,224,102,.45);outline-offset:-2px}
+    </style>
 </head>
 <body>
 <div class="app">
 <header class="topbar">
     <a href="dashboard-karyawan.html" class="back-btn" aria-label="Kembali"><i class="fas fa-chevron-left"></i></a>
-    <div class="topbar-title"><strong>PENGAJUAN IZIN / LIBUR</strong><small>VAX WIJAYA</small></div>
+    <div class="topbar-title"><strong>PENGAJUAN IZIN / LIBUR / SAKIT</strong><small>VAX WIJAYA</small></div>
     <span class="topbar-spacer"></span>
 </header>
+
 <main class="izin-body">
-<section class="intro-card"><div class="intro-icon"><i class="fas fa-file-signature"></i></div><div><h1>Ajukan Izin / Libur</h1><p>Pengajuan akan diperiksa SPV terlebih dahulu sebelum diteruskan ke Owner.</p></div></section>
-<section class="status-flow" aria-label="Alur persetujuan"><div class="flow-step active"><span>1</span><small>Karyawan</small></div><div class="flow-line"></div><div class="flow-step"><span>2</span><small>SPV</small></div><div class="flow-line"></div><div class="flow-step"><span>3</span><small>Owner</small></div></section>
+<section class="intro-card">
+    <div class="intro-icon"><i class="fas fa-file-signature"></i></div>
+    <div>
+        <h1>Ajukan Izin / Libur / Sakit</h1>
+        <p>Sistem mengarahkan otomatis ke SPV. Jika SPV tidak tersedia, Owner yang memutuskan.</p>
+    </div>
+</section>
+
+<section class="status-flow" aria-label="Alur persetujuan">
+    <div class="flow-step active"><span>1</span><small>Karyawan</small></div>
+    <div class="flow-line"></div>
+    <div class="flow-step"><span>2</span><small>SPV / Owner</small></div>
+</section>
+
 <form id="izinForm" class="form-card" novalidate>
-<div class="field"><label for="tanggalIzin">Tanggal Pengajuan</label><div class="input-wrap"><i class="fas fa-calendar-day"></i><input id="tanggalIzin" name="tanggalIzin" type="date" required></div></div>
-<div class="field"><label for="jenisIzin">Jenis Pengajuan</label><div class="input-wrap"><i class="fas fa-circle-info"></i><select id="jenisIzin" name="jenisIzin" class="jenis-native" required><option value="IZIN">Izin</option><option value="LIBUR">Libur</option></select><div class="jenis-custom" id="jenisCustom"><button type="button" class="jenis-trigger" id="jenisTrigger" aria-haspopup="listbox" aria-expanded="false"><span class="jenis-value" id="jenisValue">Izin</span><i class="fas fa-chevron-down jenis-chevron" aria-hidden="true"></i></button><div class="jenis-menu" id="jenisMenu" role="listbox" hidden><button type="button" class="jenis-option is-selected" data-value="IZIN" role="option" aria-selected="true"><i class="fas fa-user-clock"></i><span>Izin</span></button><button type="button" class="jenis-option" data-value="LIBUR" role="option" aria-selected="false"><i class="fas fa-calendar-check"></i><span>Libur</span></button></div></div></div></div>
-<div class="field"><label for="alasanIzin">Alasan</label><textarea id="alasanIzin" name="alasanIzin" rows="4" maxlength="300" placeholder="Tulis alasan secara jelas..." required></textarea><div class="field-meta"><span>Wajib diisi</span><span id="alasanCounter">0/300</span></div></div>
-<div class="field"><label id="buktiLabel">Bukti / Foto</label><label class="upload-box" for="buktiIzin"><input id="buktiIzin" name="buktiIzin" type="file" accept="image/*" capture="environment"><div id="uploadEmpty" class="upload-empty"><span class="upload-icon"><i class="fas fa-camera"></i></span><strong>Ambil / Pilih Foto</strong><small id="buktiHint">Foto bukti wajib untuk pengajuan Izin</small></div><img id="previewBukti" alt="Preview bukti pengajuan" hidden></label><button id="btnHapusFoto" class="remove-photo" type="button" hidden><i class="fas fa-trash"></i> Hapus Foto</button></div>
-<section class="info-box"><i class="fas fa-shield-halved"></i><p>Status belum dianggap final sebelum disetujui Owner. Pengajuan pertama akan masuk sebagai <b>Menunggu SPV</b>.</p></section>
-<button id="btnKirimIzin" class="submit-btn" type="submit"><i class="fas fa-paper-plane"></i><span>Kirim Pengajuan</span></button><p id="formMessage" class="form-message" aria-live="polite"></p>
+    <div class="form-fields">
+    <div class="date-grid">
+        <div class="field">
+            <label for="tanggalIzin">Tanggal Mulai</label>
+            <button type="button" class="input-wrap date-trigger" id="tanggalIzinTrigger">
+                <i class="fas fa-calendar-day"></i>
+                <span id="tanggalIzinLabel">Pilih tanggal</span>
+                <i class="fas fa-chevron-down date-chevron"></i>
+            </button>
+            <input id="tanggalIzin" name="tanggalIzin" type="date" class="date-native" required>
+        </div>
+
+        <div class="field" id="fieldTanggalSelesai" hidden>
+            <label for="tanggalSelesaiIzin">Tanggal Selesai</label>
+            <button type="button" class="input-wrap date-trigger" id="tanggalSelesaiIzinTrigger">
+                <i class="fas fa-calendar-check"></i>
+                <span id="tanggalSelesaiIzinLabel">Pilih tanggal</span>
+                <i class="fas fa-chevron-down date-chevron"></i>
+            </button>
+            <input id="tanggalSelesaiIzin" name="tanggalSelesaiIzin" type="date" class="date-native">
+        </div>
+    </div>
+
+    <div class="field">
+        <label for="jenisIzin">Jenis Pengajuan</label>
+        <div class="input-wrap">
+            <i class="fas fa-circle-info"></i>
+            <select id="jenisIzin" name="jenisIzin" class="jenis-native" required>
+                <option value="IZIN">Izin</option>
+                <option value="LIBUR">Libur</option>
+                <option value="SAKIT">Sakit</option>
+                <option value="PULANG_AWAL">Pulang Lebih Awal</option>
+            </select>
+            <div class="jenis-custom" id="jenisCustom">
+                <button type="button" class="jenis-trigger" id="jenisTrigger" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="jenis-value" id="jenisValue">Izin</span>
+                    <i class="fas fa-chevron-down jenis-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="jenis-menu" id="jenisMenu" role="listbox" hidden>
+                    <button type="button" class="jenis-option is-selected" data-value="IZIN" role="option" aria-selected="true"><i class="fas fa-user-clock"></i><span>Izin</span></button>
+                    <button type="button" class="jenis-option" data-value="LIBUR" role="option" aria-selected="false"><i class="fas fa-calendar-check"></i><span>Libur</span></button>
+                    <button type="button" class="jenis-option" data-value="SAKIT" role="option" aria-selected="false"><i class="fas fa-briefcase-medical"></i><span>Sakit</span></button>
+                    <button type="button" class="jenis-option jenis-pulang-awal" data-value="PULANG_AWAL" role="option" aria-selected="false"><i class="fas fa-person-walking-arrow-right"></i><span>Pulang Lebih Awal</span></button>
+                    <a class="jenis-telat-link" href="izin-telat.html" role="option" aria-label="Izin Telat Masuk, buka formulir khusus"><i class="fas fa-clock" aria-hidden="true"></i><span>Izin Telat Masuk</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="field pulang-awal-kind" id="fieldPulangAwalKind" hidden>
+        <label>Status Setelah SPV ACC</label>
+        <div class="pulang-awal-kind-grid" role="group" aria-label="Status setelah SPV ACC">
+            <button type="button" class="pulang-awal-kind-btn active" data-pulang-kind="IZIN"><i class="fas fa-circle-info"></i><span>Izin</span></button>
+            <button type="button" class="pulang-awal-kind-btn" data-pulang-kind="SAKIT"><i class="fas fa-briefcase-medical"></i><span>Sakit</span></button>
+            <button type="button" class="pulang-awal-kind-btn" data-pulang-kind="LIBUR"><i class="fas fa-calendar-day"></i><span>Libur</span></button>
+        </div>
+        <input id="pulangAwalKind" type="hidden" value="IZIN">
+        <p class="pulang-awal-help">Hanya tersedia jika Anda sudah Absen Masuk hari ini. Setelah SPV ACC, status absensi otomatis berubah sesuai pilihan ini.</p>
+    </div>
+
+    <div class="field">
+        <label for="alasanIzin">Alasan</label>
+        <textarea id="alasanIzin" name="alasanIzin" rows="3" maxlength="300" placeholder="Tulis alasan secara jelas..." required></textarea>
+        <div class="field-meta"><span>Wajib diisi</span><span id="alasanCounter">0/300</span></div>
+    </div>
+
+    <div class="field" id="fieldBukti">
+        <label id="buktiLabel">Bukti / Foto</label>
+        <label class="upload-box" for="buktiIzin">
+            <input id="buktiIzin" name="buktiIzin" type="file" accept="image/*" capture="environment">
+            <div id="uploadEmpty" class="upload-empty">
+                <span class="upload-icon"><i class="fas fa-camera"></i></span>
+                <strong>Ambil / Pilih Foto</strong>
+                <small id="buktiHint">Foto bukti wajib untuk pengajuan Izin</small>
+            </div>
+            <img id="previewBukti" alt="Preview bukti pengajuan" hidden>
+        </label>
+        <button id="btnHapusFoto" class="remove-photo" type="button" hidden><i class="fas fa-trash"></i> Hapus Foto</button>
+    </div>
+
+    <section class="info-box">
+        <i class="fas fa-shield-halved"></i>
+        <p id="izinInfoText">Setelah reviewer <b>ACC</b>, status langsung final. Capster: max 14 hari, max 2 orang/cabang/tanggal. Kasir: wajib ada coverage.</p>
+    </section>
+
+    <p id="izinBentrokWarn" class="izin-bentrok-warn" hidden></p>
+
+    <section id="hasilPengajuanCard" class="hasil-pengajuan-card" hidden aria-live="polite">
+        <div class="hasil-pengajuan-head">
+            <span class="hasil-pengajuan-icon"><i class="fas fa-paper-plane"></i></span>
+            <div>
+                <small>PENGAJUAN TERKIRIM</small>
+                <h3 id="hasilPengajuanTitle">Pengajuan berhasil dikirim</h3>
+            </div>
+            <span id="hasilPengajuanBadge" class="hasil-pengajuan-badge">MENUNGGU SPV</span>
+        </div>
+
+        <div class="hasil-pengajuan-main">
+            <div class="hasil-pengajuan-copy">
+                <strong id="hasilPengajuanJenis">—</strong>
+                <span id="hasilPengajuanTanggal">—</span>
+                <p id="hasilPengajuanAlasan">—</p>
+            </div>
+            <div id="hasilPengajuanFotoWrap" class="hasil-pengajuan-foto" hidden>
+                <img id="hasilPengajuanFoto" alt="Bukti pengajuan">
+            </div>
+        </div>
+
+        <div class="hasil-pengajuan-foot">
+            <i class="fas fa-clock"></i>
+            <span id="hasilPengajuanFlow">Menunggu review SPV</span>
+        </div>
+    </section>
+    </div>
+
+    <div class="form-end">
+        <p id="formMessage" class="form-message" aria-live="polite"></p>
+        <button id="btnKirimIzin" class="submit-btn" type="submit">
+            <i class="fas fa-paper-plane"></i><span>Kirim Pengajuan</span>
+        </button>
+    </div>
 </form>
 </main>
-<nav id="bottomNav" aria-label="Navigasi utama"><a href="dashboard-karyawan.html"><i class="fas fa-house"></i><span>Dashboard</span></a><a href="absensi.html"><i class="fas fa-clock"></i><span>Absensi</span></a><a href="riwayat.html"><i class="fas fa-list"></i><span>Riwayat</span></a><a href="profil.html"><i class="fas fa-user"></i><span>Profil</span></a></nav>
+
+<nav id="bottomNav" aria-label="Navigasi utama">
+    <a href="dashboard-karyawan.html"><i class="fas fa-house"></i><span>Dashboard</span></a>
+    <a href="absensi.html"><i class="fas fa-clock"></i><span>Absensi</span></a>
+    <a href="gaji-saya.html"><i class="fas fa-file-invoice"></i><span>Gaji Saya</span></a>
+    <a href="profil.html"><i class="fas fa-user"></i><span>Profil</span></a>
+</nav>
 </div>
+
+<!-- CUSTOM CALENDAR -->
+<div id="datePickerModal" class="date-modal" hidden>
+    <div class="date-modal-backdrop" data-date-close></div>
+    <section class="date-card" role="dialog" aria-modal="true" aria-labelledby="datePickerTitle">
+        <div class="date-head">
+            <button type="button" class="date-nav-btn" id="datePrevMonth" aria-label="Bulan sebelumnya"><i class="fas fa-chevron-left"></i></button>
+            <div>
+                <small id="datePickerTitle">PILIH TANGGAL</small>
+                <strong id="dateMonthTitle">Agustus 2026</strong>
+            </div>
+            <button type="button" class="date-nav-btn" id="dateNextMonth" aria-label="Bulan berikutnya"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="date-weekdays">
+            <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+        </div>
+        <div id="dateCalendarGrid" class="date-grid-days"></div>
+        <div class="date-actions">
+            <button type="button" class="date-today-btn" id="dateTodayBtn">Hari Ini</button>
+            <button type="button" class="date-close-btn" data-date-close>Tutup</button>
+        </div>
+    </section>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="karyawan-session.js"></script>
-<script src="izin.js?v=20260816-1441"></script>
-<script>
-(function(){
-    const select=document.getElementById('jenisIzin');
-    const custom=document.getElementById('jenisCustom');
-    const trigger=document.getElementById('jenisTrigger');
-    const menu=document.getElementById('jenisMenu');
-    const value=document.getElementById('jenisValue');
-    const options=Array.from(document.querySelectorAll('.jenis-option'));
-    if(select&&custom&&trigger&&menu){
-        function closeMenu(){custom.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
-        function openMenu(){custom.classList.add('open');menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
-        function syncFromSelect(){const current=String(select.value||'IZIN').toUpperCase();value.textContent=current==='LIBUR'?'Libur':'Izin';options.forEach((btn)=>{const selected=btn.dataset.value===current;btn.classList.toggle('is-selected',selected);btn.setAttribute('aria-selected',selected?'true':'false');});}
-        trigger.addEventListener('click',function(){menu.hidden?openMenu():closeMenu();});
-        options.forEach((btn)=>{btn.addEventListener('click',function(){select.value=btn.dataset.value;select.dispatchEvent(new Event('change',{bubbles:true}));syncFromSelect();closeMenu();});});
-        select.addEventListener('change',syncFromSelect);
-        document.addEventListener('click',function(e){if(!custom.contains(e.target))closeMenu();});
-        syncFromSelect();
-    }
-
-    /* HAPTIC — Android/Chrome: getar ringan tiap sentuh kontrol */
-    function vibrate(ms){
-        try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
-    }
-    const hapticTargets='button,a,input,textarea,.upload-box,.jenis-option';
-    document.addEventListener('touchstart',function(e){
-        const target=e.target.closest(hapticTargets);
-        if(!target) return;
-        vibrate(target.id==='btnKirimIzin' ? 22 : 10);
-    },{passive:true});
-})();
-</script>
+<script src="izin.js?v=20261005-kasirtelat1"></script>
+<script src="employee-haptic-canonical.js?v=20260929-1"></script>
 </body>
 </html>
