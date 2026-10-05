@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="gaji-saya-canonical-header.css?v=20260927-1">
     <link rel="stylesheet" href="dashboard-karyawan-mobile-header-fix.css?v=20260926-3">
     <link rel="stylesheet" href="employee-bottomnav-canonical-ui.css?v=20260927-1">
-    <link rel="stylesheet" href="gaji-saya-main-theme-ui.css?v=20260928-bottomgap1">
+    <link rel="stylesheet" href="gaji-saya-main-theme-ui.css?v=20261005-payrollsummary1">
     <link rel="stylesheet" href="absensi-employee-month-summary-consumer.css?v=20260927-1">
     <link rel="stylesheet" href="gaji-saya-month-period-ui.css?v=20260928-titleiconsmall1">
     <link rel="stylesheet" href="employee-profile-canonical-ui.css?v=20260927-1">
@@ -94,22 +94,42 @@
             <p id="periodMessage" class="period-msg" hidden></p>
         </section>
 
-        <section class="ringkasan" aria-label="Ringkasan Pendapatan">
-            <div class="sum-grid">
+        <section class="ringkasan payroll-self-summary" aria-label="Ringkasan Payroll">
+            <div class="sum-grid payroll-self-grid">
                 <article class="sum-card sum-bruto">
-                    <small>SHARE BRUTO</small>
-                    <strong id="valShareBruto">Rp0</strong>
+                    <small>PENDAPATAN KOTOR</small>
+                    <strong id="valPendapatanKotor">Rp0</strong>
                 </article>
                 <article class="sum-card sum-denda">
-                    <small>TOTAL DENDA</small>
+                    <small>DENDA</small>
                     <strong id="valTotalDenda">Rp0</strong>
+                </article>
+                <article class="sum-card">
+                    <small>KASBON</small>
+                    <strong id="valKasbon">Rp0</strong>
+                </article>
+                <article class="sum-card">
+                    <small>BONUS INSENTIF</small>
+                    <strong id="valBonusInsentif">Rp0</strong>
+                </article>
+                <article class="sum-card">
+                    <small>BONUS KPI</small>
+                    <strong id="valBonusKpi">Rp0</strong>
+                </article>
+                <article class="sum-card sum-product">
+                    <small>SHARE PRODUK</small>
+                    <strong id="valShareProduk">Rp0</strong>
                 </article>
             </div>
             <article class="sum-card sum-net">
-                <small>NET DITERIMA</small>
-                <strong id="valNetDiterima">Rp0</strong>
+                <small>PENDAPATAN BERSIH</small>
+                <strong id="valPendapatanBersih">Rp0</strong>
                 <span class="sum-ghost" aria-hidden="true"><i class="fa-solid fa-wallet"></i></span>
             </article>
+            <div class="payroll-self-payout">
+                <span>Gaji dicairkan</span>
+                <strong id="valGajiDicairkan">Rp0</strong>
+            </div>
         </section>
 
         <section class="panel cmp-panel" aria-label="Perbandingan Periode">
@@ -246,7 +266,7 @@
 <script src="ERP.NEW/js/modules/payroll-unified-engine.js?v=20260903-unified3"></script>
 <script src="absensi-employee-month-summary-consumer.js?v=20260929-slip-attendance1"></script>
 <script src="ERP.NEW/js/modules/payroll-capster-print.js?v=20260929-slip-table4"></script>
-<script src="gaji-saya.js?v=20261005-kasir-payroll1"></script>
+<script src="gaji-saya.js?v=20261005-kasir-payroll2"></script>
 
 <script src="employee-haptic-canonical.js?v=20260929-1"></script>
 <script src="employee-navigation-performance.js?v=20261001-1"></script>
