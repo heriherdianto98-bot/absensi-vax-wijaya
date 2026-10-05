@@ -88,7 +88,10 @@ html[data-home-kpi="kasir"] .kasir-product-month-list{
   max-height:170px!important;
   overflow-y:auto!important;
   overflow-x:hidden!important;
-  overscroll-behavior:contain!important;
+  /* Allow the swipe to continue naturally into the main dashboard when this inner list reaches an edge. */
+  overscroll-behavior-y:auto!important;
+  overscroll-behavior-x:none!important;
+  touch-action:pan-y!important;
   -webkit-overflow-scrolling:touch!important;
   padding:6px!important;
   display:flex!important;
@@ -298,6 +301,22 @@ html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kpi-icon{
   color:#fff!important;
   background:rgba(255,255,255,.18)!important;
   border:1px solid rgba(255,255,255,.22)!important;
+}
+</style>
+<style id="kasir-scroll-chain-fix-20261005">
+/* Kasir mobile scroll chain fix — UI ONLY. Keep native vertical scrolling light and do not trap edge swipes. */
+html[data-home-kpi="kasir"] .kasir-product-month-detail,
+html[data-home-kpi="kasir"] .kasir-product-month-list,
+html[data-home-kpi="kasir"] .kasir-product-month-row{
+  touch-action:pan-y!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-list{
+  overscroll-behavior-y:auto!important;
+  scroll-behavior:auto!important;
+}
+html[data-home-kpi="kasir"] .app{
+  scroll-behavior:auto!important;
+  -webkit-overflow-scrolling:touch!important;
 }
 </style>
 </head>
