@@ -14,3 +14,6 @@ izin-telat.js
 gaji-saya.html
 gaji-saya.js
 gaji-saya-main-theme-ui.css
+ERP.NEW/js/modules/payroll-salary-master-store.js
+ERP.NEW/js/modules/payroll-unified-engine.js
+ERP.NEW/js/modules/payroll-capster-print.js
