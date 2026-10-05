@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Izin Telat Masuk | VAX WIJAYA</title>
 <link rel="stylesheet" href="izin.css?v=20260817-fill">
+<link rel="stylesheet" href="dashboard-karyawan-bottomnav-edge-theme-ui.css?v=20260926-1">
+<link rel="stylesheet" href="employee-bottomnav-canonical-ui.css?v=20260927-1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 /* UI ONLY: compact single-screen late-arrival form; no session, upload or decision changes. */
-.app{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
+.app{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 72px)}
 .topbar{grid-template-columns:minmax(65px,1fr) minmax(130px,2fr) minmax(65px,1fr)}
 .back-btn{width:auto;max-width:75px;padding:0 5px;white-space:nowrap;font-size:12px}
 .izin-body{min-height:0;overflow:hidden}
@@ -79,6 +81,25 @@ html body .app .topbar .back-btn{
 <label for="izinTelatPhoto">Foto bukti dari karyawan (wajib)</label><input id="izinTelatPhoto" type="file" accept="image/jpeg,image/png,image/webp" required><img id="izinTelatPreview" alt="Pratinjau foto bukti" hidden>
 <p id="izinTelatState" role="status" aria-live="polite"></p><button id="izinTelatSend" type="submit" disabled>Kirim ke SPV &amp; Owner</button>
 </form></main>
+
+<nav id="bottomNav" aria-label="Navigasi utama">
+    <a href="dashboard-karyawan.html">
+        <i class="fas fa-house" aria-hidden="true"></i>
+        <span>Dashboard</span>
+    </a>
+    <a href="absensi.html" class="active" aria-current="page">
+        <i class="fas fa-clock" aria-hidden="true"></i>
+        <span>Absensi</span>
+    </a>
+    <a href="gaji-saya.html">
+        <i class="fas fa-file-invoice" aria-hidden="true"></i>
+        <span>Gaji Saya</span>
+    </a>
+    <a href="profil.html?v=20260929-headerlogout1">
+        <i class="fas fa-user" aria-hidden="true"></i>
+        <span>Profil</span>
+    </a>
+</nav>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="karyawan-session.js"></script><script src="izin-telat.js?v=20260921-1"></script>
 <script src="employee-haptic-canonical.js?v=20260929-1"></script>
