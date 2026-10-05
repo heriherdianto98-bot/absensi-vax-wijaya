@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Pengajuan Kasbon | VAX WIJAYA</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="kasbon-karyawan.css?v=20261005-staging1">
+<link rel="stylesheet" href="dashboard-karyawan-bottomnav-edge-theme-ui.css?v=20260926-1">
+</head>
+<body>
+<div class="app">
+  <header class="ek-head">
+    <a class="ek-back" href="dashboard-karyawan.html" aria-label="Kembali"><i class="fa-solid fa-chevron-left"></i></a>
+    <div><strong>PENGAJUAN KASBON</strong><small>Karyawan → SVP</small></div>
+    <button type="button" id="ekRefresh" aria-label="Refresh"><i class="fa-solid fa-rotate"></i></button>
+  </header>
+
+  <main class="ek-main">
+    <section class="ek-profile">
+      <span class="ek-profile-icon"><i class="fa-solid fa-wallet"></i></span>
+      <div><small>PEMOHON</small><strong id="ekNama">Memuat...</strong><span id="ekMeta">—</span></div>
+    </section>
+
+    <section class="ek-form-card">
+      <div class="ek-section-head"><div><small>PENGAJUAN BARU</small><h1>Ajukan Kasbon</h1></div><span class="ek-route">Review SVP</span></div>
+      <form id="ekForm" autocomplete="off">
+        <label><span>Nominal Kasbon</span><input id="ekNominal" inputmode="numeric" placeholder="Rp0" required></label>
+        <label><span>Alasan / Kebutuhan</span><textarea id="ekReason" rows="3" maxlength="500" placeholder="Jelaskan kebutuhan kasbon..." required></textarea></label>
+        <label><span>Keterangan Tambahan <em>opsional</em></span><textarea id="ekDesc" rows="2" maxlength="600" placeholder="Tambahkan informasi bila perlu"></textarea></label>
+        <div class="ek-info"><i class="fa-solid fa-circle-info"></i><p>Pengajuan dikirim ke SVP terlebih dahulu. Jika SVP meneruskan, pengajuan masuk ke approval Owner.</p></div>
+        <button type="submit" id="ekSubmit"><i class="fa-solid fa-paper-plane"></i> Kirim ke SVP</button>
+        <p id="ekMessage" class="ek-message" hidden></p>
+      </form>
+    </section>
+
+    <section class="ek-history-card">
+      <div class="ek-section-head"><div><small>RIWAYAT</small><h2>Pengajuan Saya</h2></div><span id="ekCount">0</span></div>
+      <div id="ekList" class="ek-list"><div class="ek-empty">Memuat riwayat...</div></div>
+    </section>
+  </main>
+
+  <nav id="bottomNav" aria-label="Navigasi Karyawan">
+    <a href="dashboard-karyawan.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+    <a href="absensi.html"><i class="fa-solid fa-fingerprint"></i><span>Absensi</span></a>
+    <a href="gaji-saya.html"><i class="fa-solid fa-file-invoice"></i><span>Gaji Saya</span></a>
+    <a href="profil.html"><i class="fa-solid fa-user"></i><span>Profil</span></a>
+  </nav>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="karyawan-session.js"></script>
+<script src="kasbon-karyawan.js?v=20260926-2"></script>
+<script src="employee-haptic-canonical.js?v=20260929-1"></script>
+</body>
+</html>
