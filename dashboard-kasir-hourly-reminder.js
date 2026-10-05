@@ -14,7 +14,10 @@
   const ALERT_PREFIX='vax_kasir_hourly_alerted_v1';
   const SW_URL='kasir-reminder-sw.js?v=20261005-1';
   const PANEL_ID='vaxKasirHourlyReminder';
+  const IS_STAGING=/^erp-test\./i.test(location.hostname);
+  const STAGING_TEST_KEY='vax_kasir_hourly_reminder_staging_demo_20261005_2';
   let mounted=false;
+  let attendanceCache={at:0,eligible:false,reason:'BELUM_DICEK'};
   let audioCtx=null;
   let swRegistration=null;
   let lastRole='';
@@ -28,8 +31,21 @@
   ).trim()||'device';
 
   function pad(v){return String(v).padStart(2,'0');}
-  function hourKey(d=new Date()){
-    return [d.getFullYear(),pad(d.getMonth()+1),pad(d.getDate()),pad(d.getHours())].join('-');
+  function wibParts(){
+    const parts=new Intl.DateTimeFormat('en-CA',{
+      timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'
+    }).formatToParts(new Date());
+    const get=t=>parts.find(p=>p.type===t)?.value||'';
+    return {date:get('year')+'-'+get('month')+'-'+get('day'),hour:Number(get('hour')),minute:Number(get('minute'))};
+  }
+  function inOperationalHours(){
+    const p=wibParts();
+    return p.hour>=10 && p.hour<22;
+  }
+  function hourKey(){
+    const p=wibParts();
+    return p.date+'-'+pad(p.hour);
   }
   function stateKey(key=hourKey()){return STORAGE_PREFIX+':'+employeeKey()+':'+key;}
   function alertKey(key=hourKey()){return ALERT_PREFIX+':'+employeeKey()+':'+key;}
@@ -256,18 +272,100 @@
     }catch(_){}
   }
 
+  async function loadAttendanceEligibility(force=false){
+    const now=Date.now();
+    if(!force && now-attendanceCache.at<45000)return attendanceCache;
+    const result={at:now,eligible:false,reason:'BELUM_HADIR'};
+    try{
+      if(typeof db==='undefined')throw new Error('DB_NOT_READY');
+      const employeeId=Number(localStorage.getItem('karyawan_id')||localStorage.getItem('user_id')||0);
+      if(!Number.isSafeInteger(employeeId)||employeeId<=0)throw new Error('EMPLOYEE_ID_INVALID');
+      const today=wibParts().date;
+
+      const [{data:leaveRows,error:leaveErr},{data:attendanceRows,error:attendanceErr}]=await Promise.all([
+        db.from('jadwal_libur')
+          .select('status,status_canonical')
+          .eq('karyawan_id',employeeId)
+          .eq('tanggal',today)
+          .limit(10),
+        db.from('absensi')
+          .select('jam_masuk,jam_pulang,status')
+          .eq('karyawan_id',employeeId)
+          .eq('tanggal',today)
+          .order('id',{ascending:true})
+          .limit(1)
+      ]);
+      if(leaveErr)throw leaveErr;
+      if(attendanceErr)throw attendanceErr;
+
+      const blocked=(Array.isArray(leaveRows)?leaveRows:[]).some(row=>{
+        const c=String(row?.status_canonical||'').trim().toUpperCase();
+        const s=String(row?.status||'').trim().toUpperCase();
+        return ['L','I','S','O'].includes(c)||['LIBUR','IZIN','SAKIT','OFF'].includes(s);
+      });
+      if(blocked){
+        result.reason='LIBUR_IZIN_SAKIT';
+      }else{
+        const attendance=Array.isArray(attendanceRows)?attendanceRows[0]:null;
+        if(!attendance?.jam_masuk){
+          result.reason='BELUM_ABSEN_MASUK';
+        }else if(attendance?.jam_pulang){
+          result.reason='SUDAH_ABSEN_PULANG';
+        }else{
+          result.eligible=true;
+          result.reason='HADIR';
+        }
+      }
+    }catch(error){
+      console.warn('[Kasir Reminder] Status kehadiran belum dapat diverifikasi:',error);
+      result.reason='VERIFIKASI_GAGAL';
+    }
+    attendanceCache=result;
+    return result;
+  }
+
+  function stagingDemoDue(){
+    if(!IS_STAGING)return false;
+    try{
+      if(localStorage.getItem(STAGING_TEST_KEY)==='1')return false;
+      localStorage.setItem(STAGING_TEST_KEY,'1');
+      return true;
+    }catch(_){return true;}
+  }
+
   async function alertDue(force=false){
     if(!isKasir())return;
     mount();
-    const key=hourKey();
+
+    const demo=force===true || stagingDemoDue();
+    if(!demo){
+      if(!inOperationalHours()){
+        const panel=document.getElementById(PANEL_ID);
+        if(panel)panel.hidden=true;
+        return;
+      }
+      const attendance=await loadAttendanceEligibility(false);
+      if(!attendance.eligible){
+        const panel=document.getElementById(PANEL_ID);
+        if(panel)panel.hidden=true;
+        return;
+      }
+    }
+
+    const key=demo ? 'TEST-'+hourKey() : hourKey();
     const state=readState(key);
     if(state.complete){
       document.getElementById(PANEL_ID).hidden=true;
       return;
     }
+
     renderCurrent();
-    if(!force&&wasAlerted(key))return;
-    markAlerted(key);
+    if(demo){
+      const panel=document.getElementById(PANEL_ID);
+      panel?.querySelector('.vax-routine-head small')?.replaceChildren(document.createTextNode('MODE TES STAGING · 3 CHECKLIST'));
+    }
+    if(!demo&&wasAlerted(key))return;
+    if(!demo)markAlerted(key);
     try{
       if(typeof navigator.vibrate==='function')navigator.vibrate([300,120,300,120,500]);
       else window.EmployeeHaptic?.strong?.();
@@ -299,8 +397,8 @@
     document.addEventListener('keydown',unlockAudio,{capture:true});
     new MutationObserver(roleChanged).observe(document.documentElement,{attributes:true,attributeFilter:['data-home-kpi']});
     roleChanged();
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden)void alertDue(false);});
-    window.addEventListener('focus',()=>void alertDue(false));
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden){attendanceCache.at=0;void alertDue(false);}});
+    window.addEventListener('focus',()=>{attendanceCache.at=0;void alertDue(false);});
     setInterval(tick,60000);
     void ensureServiceWorker();
   }
