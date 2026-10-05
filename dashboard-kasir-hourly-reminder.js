@@ -14,8 +14,6 @@
   const ALERT_PREFIX='vax_kasir_hourly_alerted_v1';
   const SW_URL='kasir-reminder-sw.js?v=20261005-1';
   const PANEL_ID='vaxKasirHourlyReminder';
-  const IS_STAGING=/^erp-test\./i.test(location.hostname);
-  const STAGING_TEST_KEY='vax_kasir_hourly_reminder_staging_demo_20261005_2';
   let mounted=false;
   let attendanceCache={at:0,eligible:false,reason:'BELUM_DICEK'};
   let audioCtx=null;
@@ -324,48 +322,35 @@
     return result;
   }
 
-  function stagingDemoDue(){
-    if(!IS_STAGING)return false;
-    try{
-      if(localStorage.getItem(STAGING_TEST_KEY)==='1')return false;
-      localStorage.setItem(STAGING_TEST_KEY,'1');
-      return true;
-    }catch(_){return true;}
-  }
-
   async function alertDue(force=false){
     if(!isKasir())return;
     mount();
 
-    const demo=force===true || stagingDemoDue();
-    if(!demo){
-      if(!inOperationalHours()){
-        const panel=document.getElementById(PANEL_ID);
-        if(panel)panel.hidden=true;
-        return;
-      }
-      const attendance=await loadAttendanceEligibility(false);
-      if(!attendance.eligible){
-        const panel=document.getElementById(PANEL_ID);
-        if(panel)panel.hidden=true;
-        return;
-      }
+    if(!inOperationalHours()){
+      const panel=document.getElementById(PANEL_ID);
+      if(panel)panel.hidden=true;
+      return;
     }
 
-    const key=demo ? 'TEST-'+hourKey() : hourKey();
+    const attendance=await loadAttendanceEligibility(force===true);
+    if(!attendance.eligible){
+      const panel=document.getElementById(PANEL_ID);
+      if(panel)panel.hidden=true;
+      return;
+    }
+
+    const key=hourKey();
     const state=readState(key);
     if(state.complete){
-      document.getElementById(PANEL_ID).hidden=true;
+      const panel=document.getElementById(PANEL_ID);
+      if(panel)panel.hidden=true;
       return;
     }
 
     renderCurrent();
-    if(demo){
-      const panel=document.getElementById(PANEL_ID);
-      panel?.querySelector('.vax-routine-head small')?.replaceChildren(document.createTextNode('MODE TES STAGING · 3 CHECKLIST'));
-    }
-    if(!demo&&wasAlerted(key))return;
-    if(!demo)markAlerted(key);
+    if(!force&&wasAlerted(key))return;
+    markAlerted(key);
+
     try{
       if(typeof navigator.vibrate==='function')navigator.vibrate([300,120,300,120,500]);
       else window.EmployeeHaptic?.strong?.();
