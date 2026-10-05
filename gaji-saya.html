@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gaji Saya | VAX WIJAYA</title>
+    <link rel="stylesheet" href="gaji-saya.css">
+    <link rel="stylesheet" href="gaji-saya-canonical-header.css?v=20260927-1">
+    <link rel="stylesheet" href="dashboard-karyawan-mobile-header-fix.css?v=20260926-3">
+    <link rel="stylesheet" href="employee-bottomnav-canonical-ui.css?v=20260927-1">
+    <link rel="stylesheet" href="gaji-saya-main-theme-ui.css?v=20261005-payoutmatch1">
+    <link rel="stylesheet" href="absensi-employee-month-summary-consumer.css?v=20260927-1">
+    <link rel="stylesheet" href="gaji-saya-month-period-ui.css?v=20260928-titleiconsmall1">
+    <link rel="stylesheet" href="employee-profile-canonical-ui.css?v=20260927-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="/employee-app/scroll-compat.css?v=20260929-1"><link rel="stylesheet" href="employee-mobile-performance.css?v=20261001-1">
+</head>
+<body>
+<div class="app">
+    <header class="page-head">
+        <div class="topbar employee-canonical-header">
+            <div class="topbar-brand">
+                <img class="employee-erp-logo" src="ERP.NEW/assets/brand/erp-vax-wijaya.png" alt="ERP VAX WIJAYA" width="42" height="36" decoding="async">
+                <strong>VAX WIJAYA</strong>
+                <span class="brand-subtitle">ENTERPRISE MANAGEMENT SYSTEM</span>
+                <span class="brand-powered">Powered by Heri Herdianto</span>
+            </div>
+            <a class="vax-inbox-shortcut" href="pesan-karyawan.html" aria-label="Buka Inbox">
+                <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            </a>
+        </div>
+        <h1 class="gaji-page-title">Gaji Saya</h1>
+        <section class="profile-card employee-profile-canonical gaji-profile-card" aria-label="Profil karyawan">
+            <span class="employee-profile-photo-wrap">
+                <img id="fotoGaji"
+                    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23e5f5f2'/%3E%3Ccircle cx='32' cy='24' r='10' fill='%232fc8b4'/%3E%3Cpath d='M14 56c2.4-12 12.2-18 18-18s15.6 6 18 18' fill='%232fc8b4'/%3E%3C/svg%3E"
+                    alt="Foto profil karyawan">
+            </span>
+            <div class="profile-copy">
+                <p class="home-greet" id="gajiGreetingTitle">Selamat Datang,</p>
+                <p class="profile-greeting-message" id="gajiGreetingMessage">Semoga hari ini penuh semangat.</p>
+                <h1 id="namaGaji">Loading...</h1>
+                <p class="profile-line"><i class="fas fa-briefcase" aria-hidden="true"></i><span id="jabatanGaji">—</span></p>
+                <p class="profile-line"><i class="fas fa-location-dot" aria-hidden="true"></i><span id="gajiProfileLocationLine">—</span></p>
+            </div>
+            <div class="profile-branch">
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <div>
+                    <span class="profile-branch-name" id="cabangGaji">—</span>
+                    <span class="profile-branch-address" id="gajiCabangAddress">Memuat alamat cabang…</span>
+                </div>
+            </div>
+        </section>
+    </header>
+
+    <main class="gaji-body">
+        <section class="panel period-panel gaji-month-period-panel" aria-label="Pilih Bulan">
+            <div class="period-head gaji-month-period-head">
+                <h2 class="gaji-period-title"><span class="gaji-period-title-icon" aria-hidden="true"><i class="fa-solid fa-calendar-days"></i></span><span>Pilih Bulan</span></h2>
+            </div>
+
+            <p class="period-range gaji-period-range-sr" id="periodRangeLabel">—</p>
+
+            <div id="gajiQuickMonthGrid" class="gaji-quick-month-grid" aria-label="Bulan cepat">
+                <button type="button" class="gaji-quick-month-card" data-gaji-quick-index="0"><span>—</span><small>Terbaru</small></button>
+                <button type="button" class="gaji-quick-month-card" data-gaji-quick-index="1"><span>—</span><small>1 bulan lalu</small></button>
+                <button type="button" class="gaji-quick-month-card" data-gaji-quick-index="2"><span>—</span><small>2 bulan lalu</small></button>
+
+                <div class="employee-summary-calendar-wrap gaji-month-picker-wrap">
+                    <button type="button" id="gajiMonthButton" class="gaji-quick-month-card gaji-other-month-card" aria-haspopup="dialog" aria-expanded="false">
+                        <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                        <span id="gajiMonthButtonLabel">Lainnya</span>
+                    </button>
+                    <div id="gajiMonthPopup" class="employee-summary-month-popup" hidden>
+                        <div class="employee-summary-month-popup-head">
+                            <button type="button" id="gajiMonthYearPrev" class="employee-summary-year-nav" aria-label="Tahun sebelumnya">‹</button>
+                            <strong id="gajiMonthYearLabel"></strong>
+                            <button type="button" id="gajiMonthYearNext" class="employee-summary-year-nav" aria-label="Tahun berikutnya">›</button>
+                        </div>
+                        <div id="gajiMonthGrid" class="employee-summary-month-grid" aria-label="Pilih bulan"></div>
+                    </div>
+                </div>
+            </div>
+
+            <input id="periodeDari" type="hidden">
+            <input id="periodeSampai" type="hidden">
+
+            <div class="period-actions gaji-month-actions">
+                <button type="button" id="btnCetakSlip" class="btn-print">
+                    <i class="fa-solid fa-print" aria-hidden="true"></i>
+                    <span>Cetak Slip Gaji</span>
+                </button>
+            </div>
+            <p id="periodMessage" class="period-msg" hidden></p>
+        </section>
+
+        <section class="ringkasan payroll-self-summary" aria-label="Ringkasan Payroll">
+            <div class="sum-grid payroll-self-grid">
+                <article class="sum-card sum-bruto">
+                    <small>PENDAPATAN KOTOR</small>
+                    <strong id="valPendapatanKotor">Rp0</strong>
+                </article>
+                <article class="sum-card sum-denda">
+                    <small>DENDA</small>
+                    <strong id="valTotalDenda">Rp0</strong>
+                </article>
+                <article class="sum-card">
+                    <small>KASBON</small>
+                    <strong id="valKasbon">Rp0</strong>
+                </article>
+                <article class="sum-card">
+                    <small>BONUS INSENTIF</small>
+                    <strong id="valBonusInsentif">Rp0</strong>
+                </article>
+                <article class="sum-card">
+                    <small>BONUS KPI</small>
+                    <strong id="valBonusKpi">Rp0</strong>
+                </article>
+                <article class="sum-card sum-product">
+                    <small>SHARE PRODUK</small>
+                    <strong id="valShareProduk">Rp0</strong>
+                </article>
+            </div>
+            <article class="sum-card sum-net">
+                <small>PENDAPATAN BERSIH</small>
+                <strong id="valPendapatanBersih">Rp0</strong>
+                <span class="sum-ghost" aria-hidden="true"><i class="fa-solid fa-wallet"></i></span>
+            </article>
+            <article class="sum-card sum-net payroll-self-payout">
+                <small>GAJI DICAIRKAN</small>
+                <strong id="valGajiDicairkan">Rp0</strong>
+                <span class="sum-ghost" aria-hidden="true"><i class="fa-solid fa-money-bill-wave"></i></span>
+            </article>
+        </section>
+
+        <section class="panel cmp-panel" aria-label="Perbandingan Periode">
+            <h2 class="cmp-title"><span class="cmp-title-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span><span>Perbandingan Periode</span></h2>
+            <ul class="cmp-list">
+                <li>
+                    <span>Bulan Dipilih</span>
+                    <b id="cmpPeriodeIni">Rp0</b>
+                </li>
+                <li>
+                    <span>Bulan Sebelumnya</span>
+                    <b id="cmpPeriodePrev">Rp0</b>
+                </li>
+                <li>
+                    <span>Selisih</span>
+                    <b id="cmpSelisih">Rp0</b>
+                </li>
+                <li>
+                    <span>Perubahan</span>
+                    <b class="cmp-change">
+                        <span class="cmp-trend is-flat" aria-hidden="true"><i class="fa-solid fa-minus"></i></span>
+                        <span id="cmpPerubahan">0%</span>
+                    </b>
+                </li>
+            </ul>
+        </section>
+
+        <section class="panel daily-panel" aria-label="Rincian Harian">
+            <div class="daily-head">
+                <h2>Rincian Harian</h2>
+                <p class="gaji-note">Nilai pada halaman ini akan mengikuti data penghasilan dan denda yang tercatat di ERP.</p>
+            </div>
+            <div class="daily-scroll">
+                <div id="listHarian" class="daily-list" hidden></div>
+                <div id="harianEmpty" class="daily-empty">
+                    <i class="fa-solid fa-receipt"></i>
+                    <p>Belum ada data untuk periode ini.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav id="bottomNav" aria-label="Navigasi Karyawan">
+        <a href="dashboard-karyawan.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a href="absensi.html"><i class="fa-solid fa-fingerprint"></i><span>Absensi</span></a>
+        <a href="gaji-saya.html" class="active" aria-current="page"><i class="fa-solid fa-file-invoice"></i><span>Gaji Saya</span></a>
+        <a href="profil.html?v=20260929-headerlogout1"><i class="fa-solid fa-user"></i><span>Profil</span></a>
+    </nav>
+</div>
+
+<div id="slipPrint" hidden>
+    <footer class="foot" aria-hidden="true">
+        <div><b>ERP VAX WIJAYA</b>SLIP GAJI</div>
+        <div class="c">INTERNAL / CONFIDENTIAL<br>Dokumen self-service karyawan</div>
+        <div class="r"><span id="slipFootDate">—</span><br><span id="slipFootTime">—</span></div>
+    </footer>
+    <div class="sheet">
+        <header class="head">
+            <div class="brand">
+                <img src="ERP.NEW/assets/brand/erp-vax-wijaya.png" alt="ERP VAX WIJAYA" onerror="this.style.display='none'">
+                <div class="copy">
+                    <h1>ERP VAX WIJAYA</h1>
+                    <div class="doc">VAX WIJAYA</div>
+                    <div class="sys">Enterprise Management System</div>
+                </div>
+            </div>
+            <div class="head-right">
+                <div class="mark">Dokumen Karyawan<em>Internal</em></div>
+            </div>
+        </header>
+        <div class="rule"></div>
+        <div class="title-wrap">
+            <div class="t1">SLIP GAJI KARYAWAN</div>
+            <p class="sub">Bukti penghasilan sesuai periode aktif pada Gaji Saya.</p>
+        </div>
+        <section class="meta">
+            <div>
+                <div class="item"><span class="lbl">Nama</span><span class="val" id="slipNama">—</span></div>
+                <div class="item"><span class="lbl">Jabatan</span><span class="val" id="slipJabatan">—</span></div>
+                <div class="item"><span class="lbl">Cabang</span><span class="val" id="slipCabang">—</span></div>
+            </div>
+            <div>
+                <div class="item"><span class="lbl">Periode</span><span class="val" id="slipPeriode">—</span></div>
+                <div class="item"><span class="lbl">Tanggal Cetak</span><span class="val" id="slipPrintDate">—</span></div>
+                <div class="item"><span class="lbl">Waktu Cetak</span><span class="val" id="slipPrintTime">—</span></div>
+            </div>
+        </section>
+        <section class="summary keep">
+            <div class="sum"><span class="lbl">Share Bruto</span><span class="val sm" id="slipShare">Rp0</span></div>
+            <div class="sum"><span class="lbl">Total Denda</span><span class="val sm" id="slipDenda">Rp0</span></div>
+            <div class="sum is-main"><span class="lbl">Net Diterima</span><span class="val sm" id="slipNet">Rp0</span></div>
+        </section>
+        <table class="rpt">
+            <thead>
+                <tr>
+                    <th class="col-date">Tanggal</th>
+                    <th class="num">Share Bruto</th>
+                    <th class="num">Denda</th>
+                    <th class="num">Net Harian</th>
+                </tr>
+            </thead>
+            <tbody id="slipDailyBody">
+                <tr><td colspan="4" class="empty">Belum ada data untuk periode ini.</td></tr>
+            </tbody>
+        </table>
+        <p class="audit-note keep">Nilai pada slip ini mengikuti data penghasilan dan denda yang tercatat di ERP untuk karyawan pemegang akun.</p>
+        <section class="sign keep">
+            <div class="box">
+                <div class="who">Disiapkan oleh,</div>
+                <div class="role">Karyawan</div>
+                <div class="space"></div>
+                <div class="name" id="slipSignName">—</div>
+                <div class="line"></div>
+            </div>
+            <div class="box">
+                <div class="who">Mengetahui,</div>
+                <div class="role">Owner</div>
+                <div class="space"></div>
+                <div class="name">Heri Herdianto</div>
+                <div class="line"></div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="karyawan-session.js"></script>
+<script src="dashboard-karyawan-notifikasi-ui.js?v=20260926-1"></script>
+<script src="gaji-saya-profile-ui.js?v=20260927-1"></script>
+<script src="employee-profile-canonical-ui.js?v=20260927-1"></script>
+<script src="gaji-saya-month-period-ui.js?v=20260927-2"></script>
+<script src="ERP.NEW/js/modules/payroll-salary-master-store.js?v=20260903-unified3"></script>
+<script src="ERP.NEW/js/modules/payroll-unified-engine.js?v=20260903-unified3"></script>
+<script src="absensi-employee-month-summary-consumer.js?v=20260929-slip-attendance1"></script>
+<script src="ERP.NEW/js/modules/payroll-capster-print.js?v=20260929-slip-table4"></script>
+<script src="gaji-saya.js?v=20261005-dailyclean1"></script>
+
+<script src="employee-haptic-canonical.js?v=20260929-1"></script>
+<script src="employee-navigation-performance.js?v=20261001-1"></script>
+</body>
+</html>

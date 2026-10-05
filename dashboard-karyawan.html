@@ -1,238 +1,598 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dashboard Karyawan</title>
-
-<link rel="stylesheet" href="dashboard-karyawan.css">
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Dashboard Karyawan | VAX WIJAYA</title>
+    <link rel="stylesheet" href="dashboard-karyawan.css">
+    <link rel="stylesheet" href="dashboard-karyawan-premium-ui.css?v=20260922-1">
+    <link rel="stylesheet" href="dashboard-karyawan-refined-ui.css?v=20260922-2">
+    <link rel="stylesheet" href="dashboard-karyawan-mockup-v2.css?v=20260922-3">
+    <link rel="stylesheet" href="dashboard-karyawan-card-depth-ui.css?v=20260922-4">
+    <link rel="stylesheet" href="dashboard-karyawan-header-toolbar-ui.css?v=20260922-5">
+    <link rel="stylesheet" href="dashboard-karyawan-calendar-theme.css?v=20260922-6">
+    <link rel="stylesheet" href="dashboard-karyawan-kpi-tidy-ui.css?v=20260922-7">
+    <link rel="stylesheet" href="dashboard-karyawan-ranking-barber.css?v=20260923-1">
+    <link rel="stylesheet" href="dashboard-karyawan-target-anda.css?v=20260924-1">
+    <link rel="stylesheet" href="dashboard-karyawan-absensi-theme.css?v=20260924-1">
+    <link rel="stylesheet" href="dashboard-karyawan-light-premium-3d.css?v=20260924-1">
+    <link rel="stylesheet" href="dashboard-karyawan-step12-clean-ui.css?v=20260924-1">
+    <link rel="stylesheet" href="dashboard-karyawan-clean-colors-final-ui.css?v=20260925-20">
+    <link rel="stylesheet" href="dashboard-karyawan-green-final.css?v=20260925-62">
+    <link rel="stylesheet" href="dashboard-karyawan-profile-date-fix.css?v=20260926-2">
+    <link rel="stylesheet" href="dashboard-karyawan-mobile-header-fix.css?v=20260926-3">
+    <link rel="stylesheet" href="dashboard-karyawan-target-omzet-final-ui.css?v=20260926-2">
+    <link rel="stylesheet" href="dashboard-karyawan-header-edge-ui.css?v=20260926-1">
+    <link rel="stylesheet" href="dashboard-karyawan-bottomnav-edge-theme-ui.css?v=20260926-1">
+    <link rel="stylesheet" href="dashboard-karyawan-mobile-pwa-compat.css?v=20260929-7">
+    <link rel="stylesheet" href="dashboard-karyawan-kasbon-entry.css?v=20260926-1">
+    <link rel="stylesheet" href="employee-device-readiness.css?v=20260929-1">
+    <link rel="stylesheet" href="dashboard-karyawan-work-branch-local.css?v=20261003-1">
+    <link rel="stylesheet" href="dashboard-karyawan-kasir-consumer.css?v=20261005-staging21">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style id="employee-sync-header-ui">
+      /* Employee-only UI. Status remains unknown until a verified owner read-only source is wired. */
+      .employee-sync-indicators{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;margin:0 0 9px;min-width:0}
+      .employee-sync-indicator{display:flex;align-items:center;gap:7px;min-width:0;padding:7px 8px;border:1px solid rgba(212,175,55,.23);border-radius:9px;background:linear-gradient(145deg,#232422,#151716);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);color:#f1ede4}
+      .employee-sync-indicator>i{flex:0 0 auto;color:#e0bc6b;font-size:12px}
+      .employee-sync-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+      .employee-sync-copy small{color:#b8b2a4;font-size:9px;letter-spacing:.075em;font-weight:700;line-height:1.2}
+      .employee-sync-copy strong{color:#e8d4a4;font-size:10px;line-height:1.3;font-weight:650;overflow-wrap:anywhere}
+      @media(max-width:340px){.employee-sync-indicator{padding:6px;gap:5px}.employee-sync-copy strong{font-size:9px}}
+      /* UI only: center fixed nav on the scrollable viewport (exclude scrollbar width),
+         match the 430px app's 15px content inset and give each tab the same column. */
+      .app #bottomNav{left:calc(50% - (100vw - 100%)/2)!important;width:min(calc(100% - 30px),400px)!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;align-items:center!important;justify-content:stretch!important;gap:0!important;box-sizing:border-box!important}
+      .app #bottomNav>a{box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;min-width:0!important;width:100%!important;margin:0!important;padding:3px 1px!important;text-align:center!important}
+      .app #bottomNav>a>i,.app #bottomNav>a>span{flex:0 0 auto!important;text-align:center!important}
+    </style>
+<link rel="stylesheet" href="/employee-app/scroll-compat.css?v=20260929-1"><link rel="stylesheet" href="employee-mobile-performance.css?v=20261001-1">
+<style id="kasir-product-ranking-ui">
+html[data-home-kpi="kasir"] .kasir-product-ranking{margin-top:6px!important;padding:0!important;overflow:hidden!important;border:1px solid rgba(22,163,142,.34)!important;border-radius:11px!important;background:#f8fffd!important;box-shadow:0 5px 14px rgba(28,134,119,.10),inset 0 1px 0 #fff!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head{margin:0!important;padding:8px 10px!important;min-height:48px!important;display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:8px!important;background:linear-gradient(135deg,#28c4ae 0%,#18aa94 100%)!important;border-bottom:1px solid rgba(0,123,107,.20)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.28)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head>div,html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head>span{display:flex!important;flex-direction:column!important;gap:2px!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head>span{align-items:flex-end!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head small{color:rgba(255,255,255,.84)!important;font-size:7.5px!important;font-weight:950!important;letter-spacing:.07em!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head strong{color:#fff!important;font-size:16px!important;font-weight:950!important;line-height:1.05!important;text-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-head>span strong{font-size:17px!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-list{margin:0!important;padding:6px!important;display:flex!important;flex-direction:column!important;gap:5px!important;background:linear-gradient(180deg,#f7fffd 0%,#eef9f6 100%)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row{position:relative!important;min-height:38px!important;padding:6px 8px 6px 36px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;border:1px solid #c6dfda!important;border-radius:11px!important;background:linear-gradient(180deg,#fff 0%,#eef8f5 100%)!important;box-shadow:inset 0 2px 0 rgba(255,255,255,.95),inset 0 -2px 3px rgba(34,108,98,.12),0 10px 18px rgba(33,84,79,.18),0 3px 6px rgba(33,84,79,.12)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-rank{position:absolute!important;left:8px!important;top:50%!important;transform:translateY(-50%)!important;display:grid!important;place-items:center!important;width:20px!important;height:20px!important;border-radius:50%!important;background:linear-gradient(145deg,#34ccb5,#159f8b)!important;color:#fff!important;font-size:8px!important;font-weight:950!important;box-shadow:inset 0 2px 2px rgba(255,255,255,.42),inset 0 -3px 5px rgba(0,104,90,.28),0 4px 8px rgba(20,126,111,.24),0 0 0 3px rgba(40,196,174,.08)!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row>div{display:flex!important;flex-direction:column!important;gap:1px!important;min-width:0!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row b{color:#173f45!important;font-size:9.5px!important;font-weight:950!important;line-height:1.1!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row small{color:#7a9291!important;font-size:7px!important;font-weight:850!important}
+html[data-home-kpi="kasir"] .kasir-product-ranking .kasir-product-row>strong{color:#119f89!important;font-size:10.5px!important;font-weight:950!important;white-space:nowrap!important}
+</style>
+<style id="kasir-product-month-scroll-ui">
+html[data-home-kpi="kasir"] .kasir-product-month-detail{
+  margin-top:7px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(22,163,142,.28)!important;
+  border-radius:11px!important;
+  background:#f8fffd!important;
+  box-shadow:0 5px 14px rgba(28,134,119,.08),inset 0 1px 0 #fff!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  padding:8px 9px 7px!important;
+  background:linear-gradient(135deg,#eefaf7 0%,#e2f6f1 100%)!important;
+  border-bottom:1px solid rgba(22,163,142,.16)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head>div{display:flex!important;flex-direction:column!important;gap:1px!important}
+html[data-home-kpi="kasir"] .kasir-product-month-head small{color:#178d7d!important;font-size:7px!important;font-weight:950!important;letter-spacing:.055em!important}
+html[data-home-kpi="kasir"] .kasir-product-month-head strong{color:#244d50!important;font-size:10px!important;font-weight:950!important}
+html[data-home-kpi="kasir"] .kasir-product-month-head>span{color:#77908f!important;font-size:6.5px!important;font-weight:850!important;white-space:nowrap!important}
+html[data-home-kpi="kasir"] .kasir-product-month-list{
+  max-height:170px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  /* Allow the swipe to continue naturally into the main dashboard when this inner list reaches an edge. */
+  overscroll-behavior-y:auto!important;
+  overscroll-behavior-x:none!important;
+  touch-action:pan-y!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding:6px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#32bda9 #e8f6f3!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-list::-webkit-scrollbar{width:5px!important}
+html[data-home-kpi="kasir"] .kasir-product-month-list::-webkit-scrollbar-track{background:#e8f6f3!important;border-radius:99px!important}
+html[data-home-kpi="kasir"] .kasir-product-month-list::-webkit-scrollbar-thumb{background:#32bda9!important;border-radius:99px!important}
+html[data-home-kpi="kasir"] .kasir-product-month-row{
+  position:relative!important;
+  flex:0 0 auto!important;
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  padding:6px 8px 6px 36px!important;
+  border:1px solid #cfe5e1!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#fff 0%,#f0f9f7 100%)!important;
+  box-shadow:inset 0 1px 0 #fff,0 4px 9px rgba(33,84,79,.10)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-rank{
+  position:absolute!important;left:8px!important;top:50%!important;transform:translateY(-50%)!important;
+  display:grid!important;place-items:center!important;width:20px!important;height:20px!important;border-radius:50%!important;
+  background:linear-gradient(145deg,#34ccb5,#159f8b)!important;color:#fff!important;font-size:8px!important;font-weight:950!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.45),0 3px 7px rgba(20,126,111,.22)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-copy{display:flex!important;flex-direction:column!important;gap:1px!important;min-width:0!important}
+html[data-home-kpi="kasir"] .kasir-product-month-copy b{color:#173f45!important;font-size:9px!important;font-weight:950!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+html[data-home-kpi="kasir"] .kasir-product-month-copy small{color:#79908f!important;font-size:7px!important;font-weight:800!important}
+html[data-home-kpi="kasir"] .kasir-product-month-row>strong{color:#119f89!important;font-size:10px!important;font-weight:950!important;white-space:nowrap!important}
+</style>
+<style id="kasir-kasbon-order-ui">
+html[data-home-kpi="kasir"] .kasir-kasbon-grid{
+  grid-template-columns:1fr!important;
+  margin-top:7px!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-grid .kasir-kasbon-card{
+  grid-column:1/-1!important;
+}
+</style>
+<style id="kasir-product-summary-3d-ui">
+html[data-home-kpi="kasir"] .kasir-product-summary-grid{
+  grid-template-columns:1fr 1fr!important;
+  gap:7px!important;
+  margin-top:7px!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid>article{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:62px!important;
+  padding:9px 10px 8px!important;
+  border:1px solid rgba(12,137,120,.34)!important;
+  border-radius:12px!important;
+  background:
+    radial-gradient(circle at 14% 4%,rgba(255,255,255,.20),transparent 38%),
+    linear-gradient(145deg,#31cbb5 0%,#20bda7 52%,#15a891 100%)!important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.24),
+    inset 0 -5px 10px rgba(0,100,87,.14),
+    0 7px 14px rgba(24,132,116,.16),
+    0 2px 5px rgba(20,96,86,.10)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid>article::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:linear-gradient(120deg,rgba(255,255,255,.16),transparent 38%)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid .kasir-kpi-icon{
+  position:absolute!important;
+  right:8px!important;
+  top:8px!important;
+  width:24px!important;
+  height:24px!important;
+  margin:0!important;
+  border-radius:8px!important;
+  display:grid!important;
+  place-items:center!important;
+  color:#fff!important;
+  background:rgba(255,255,255,.16)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 3px 7px rgba(0,90,78,.14)!important;
+  z-index:1!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid>article small{
+  position:relative!important;
+  z-index:1!important;
+  display:block!important;
+  max-width:calc(100% - 27px)!important;
+  margin:0 0 5px!important;
+  color:rgba(255,255,255,.93)!important;
+  font-size:9.5px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+  letter-spacing:.025em!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-summary-grid>article strong{
+  position:relative!important;
+  z-index:1!important;
+  display:block!important;
+  margin:0!important;
+  color:#fff!important;
+  font-size:17px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-.02em!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.10)!important;
+}
+</style>
+<style id="kasir-product-month-head-green-ui">
+html[data-home-kpi="kasir"] .kasir-product-month-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  padding:9px 10px 8px!important;
+  min-height:46px!important;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(255,255,255,.18),transparent 42%),
+    linear-gradient(135deg,#2ac6b0 0%,#1db49e 55%,#159e8a 100%)!important;
+  border-bottom:1px solid rgba(0,112,98,.24)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 -4px 8px rgba(0,92,80,.10)!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head>div{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head small{
+  color:rgba(255,255,255,.94)!important;
+  font-size:8.5px!important;
+  line-height:1.1!important;
+  font-weight:950!important;
+  letter-spacing:.055em!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-head strong{
+  color:#fff!important;
+  font-size:13px!important;
+  line-height:1.1!important;
+  font-weight:950!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.08)!important;
+}
+</style>
+<style id="kasir-kasbon-outside-ui">
+.kasir-kasbon-outside{display:none}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside{
+  display:block!important;
+  margin:8px 0 7px!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kasbon-card{
+  position:relative!important;
+  min-height:58px!important;
+  padding:9px 10px 8px 42px!important;
+  border:1px solid rgba(22,163,142,.26)!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f4fbf9 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 5px 12px rgba(31,104,95,.09)!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kpi-icon{
+  position:absolute!important;
+  left:10px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:25px!important;
+  height:25px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  color:#fff!important;
+  background:linear-gradient(145deg,#31cbb5,#18a991)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.30),0 3px 7px rgba(20,126,111,.18)!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside small{
+  display:block!important;
+  margin:0 0 2px!important;
+  color:#5d7775!important;
+  font-size:8.5px!important;
+  font-weight:900!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside strong{
+  display:block!important;
+  color:#d99a16!important;
+  font-size:16px!important;
+  line-height:1!important;
+  font-weight:950!important;
+}
+</style>
+<style id="kasir-kasbon-green-inline-staging20">
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kasbon-card{
+  background:linear-gradient(145deg,#31cbb5 0%,#20bda7 54%,#16a78f 100%)!important;
+  border:1px solid rgba(10,132,114,.34)!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.24),inset 0 -5px 10px rgba(0,95,82,.14),0 7px 14px rgba(24,132,116,.16)!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kasbon-card small,
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kasbon-card strong{
+  color:#fff!important;
+}
+html[data-home-kpi="kasir"] .kasir-kasbon-outside .kasir-kpi-icon{
+  color:#fff!important;
+  background:rgba(255,255,255,.18)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+}
+</style>
+<style id="kasir-scroll-chain-fix-20261005">
+/* Kasir mobile scroll chain fix — UI ONLY. Keep native vertical scrolling light and do not trap edge swipes. */
+html[data-home-kpi="kasir"] .kasir-product-month-detail,
+html[data-home-kpi="kasir"] .kasir-product-month-list,
+html[data-home-kpi="kasir"] .kasir-product-month-row{
+  touch-action:pan-y!important;
+}
+html[data-home-kpi="kasir"] .kasir-product-month-list{
+  overscroll-behavior-y:auto!important;
+  scroll-behavior:auto!important;
+}
+html[data-home-kpi="kasir"] .app{
+  scroll-behavior:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+</style>
 </head>
-
 <body>
-
 <div class="app">
-
-<!-- ================= HEADER ================= -->
-
-<header>
-
-    <div>
-
-        <small>Selamat Datang</small>
-
-        <h2 id="namaKaryawan">
-
-            Loading...
-
-        </h2>
-        <p id="jabatanKaryawan"></p>
-        <p id="cabangKaryawan"></p>
+    <div class="topbar">
+        <div class="topbar-brand"><img class="employee-erp-logo" src="ERP.NEW/assets/brand/erp-vax-wijaya.png" alt="ERP VAX WIJAYA" width="42" height="36" decoding="async"><strong>VAX WIJAYA</strong></div>
+        <div class="topbar-meta"><small>EMPLOYEE</small><b>ONLINE</b></div>
+    </div>
+    <div class="employee-sync-indicators" aria-label="Informasi sinkronisasi provider">
+        <div class="employee-sync-indicator employee-sync-provider" title="Provider sinkronisasi">
+            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+            <span class="employee-sync-copy"><small>PROVIDER</small><strong id="employeeProviderStatus">Status belum tersedia</strong></span>
+        </div>
+        <div class="employee-sync-indicator employee-sync-last" title="Sinkronisasi terakhir">
+            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+            <span class="employee-sync-copy"><small>LAST SYNC</small><strong id="employeeProviderLastSync">—</strong></span>
+        </div>
     </div>
 
-    <img
-        id="fotoKaryawan"
-        src="img/default-profile.png"
-        alt="Foto">
+    <section class="profile-card">
+        <span class="employee-profile-photo-wrap"><img id="fotoKaryawan" alt="Foto Karyawan"></span>
+        <div class="profile-copy">
+            <div id="greetingTitle" class="home-greet">Selamat Datang,</div>
+            <h1 id="namaKaryawan">Loading...</h1>
+            <div class="profile-line"><i class="fa-solid fa-user-tie"></i><span id="jabatanKaryawan"></span></div>
+            <div class="profile-line"><i class="fa-solid fa-location-dot"></i><span id="cabangKaryawan"></span></div>
+            <span id="greetingMessage" class="sr-only">Semoga hari ini penuh semangat.</span>
+        </div>
+    </section>
 
-</header>
+    <section id="employeeWorkBranchContext" class="employee-work-branch-context" hidden>
+        <div class="employee-work-branch-copy">
+            <small>CABANG KERJA</small>
+            <strong id="employeeWorkBranchName">—</strong>
+            <span id="employeeWorkBranchMeta">—</span>
+        </div>
+        <span id="employeeWorkBranchBadge" class="employee-work-branch-badge">NORMAL</span>
+    </section>
 
+    <section id="tutupOperasionalBanner" class="profile-card tutup-ops-banner" hidden>
+        <div>
+            <small id="tutupOpsJenis">LIBUR NASIONAL</small>
+            <h2 id="tutupOpsJudul"></h2>
+            <p id="tutupOpsTeks"></p>
+        </div>
+    </section>
 
+    <main class="dash-body">
+        <section class="today-section">
+            <h2 class="today-title">Hari Ini</h2>
 
-<!-- ================= GREETING ================= -->
+            <div id="kpiCapster" class="today-grid" hidden>
+                <article class="today-item kpi-customer">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-users"></i></span><span class="kpi-label">Customer Hari Ini</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-users"></i></span>
+                    <strong id="todayCustomer" class="kpi-main-value">…</strong>
+                </article>
+                <article class="today-item kpi-service" id="kpiHariIni">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-scissors"></i></span><span class="kpi-label">Service Hari Ini</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-scissors"></i></span>
+                    <div id="todayService" class="service-detail-list"></div>
+                </article>
+                <article class="today-item kpi-share">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-coins"></i></span><span class="kpi-label">Share Bruto</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-coins"></i></span>
+                    <strong id="todayShare" class="kpi-main-value">…</strong>
+                </article>
+                <article class="today-item kpi-pay">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-wallet"></i></span><span class="kpi-label">Hak Dibayar</span></div>
+                    <span class="kpi-ghost"><i class="fa-solid fa-wallet"></i></span>
+                    <strong id="todayPayable" class="kpi-main-value">—</strong>
+                </article>
+                <article class="today-item kpi-fine">
+                    <div class="kpi-head"><span class="kpi-ico"><i class="fa-solid fa-clock"></i></span><span class="kpi-label">Denda Hari Ini</span></div>
+                    <strong id="todayFine" class="kpi-main-value">—</strong>
+                </article>
+            </div>
+            <span id="closingStatus" class="sr-only"></span>
 
-<section class="card greeting">
+            <div id="kpiKasir" class="kasir-consumer" hidden>
+                <section class="kasir-ops-mini" aria-label="Operasional Harian Cabang">
+                    <article><small>CUST</small><strong id="kasirCustomerHariIni">0</strong></article>
+                    <article><small>TRX</small><strong id="kasirTransaksiHariIni">0</strong></article>
+                    <article><small>SVC</small><strong id="kasirServicesHariIni">0</strong></article>
+                    <span id="kasirCustomerDate" class="kasir-ops-date">Hari ini</span>
+                </section>
 
-    <h2 id="greetingTitle">
+                <section class="kasir-monthly-kpi" aria-label="Target Omzet Cabang">
+                    <article class="kasir-monthly-kpi-card">
+                        <div class="kasir-monthly-kpi-heading">
+                            <span>TARGET OMZET · <span id="kasirOmzetBranch">CABANG</span></span>
+                            <span class="kasir-monthly-kpi-icon"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="kasir-monthly-kpi-value-row">
+                            <strong class="kasir-monthly-kpi-value" id="kasirOmzetProgress">0%</strong>
+                            <span class="kasir-monthly-kpi-remaining">Sisa target <b id="kasirOmzetSisa">Rp0</b></span>
+                        </div>
+                        <div class="kasir-omzet-track-wrap">
+                            <div class="kasir-monthly-kpi-track" role="progressbar" aria-label="Pencapaian target omzet" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <span class="kasir-monthly-kpi-fill" id="kasirOmzetProgressBar"></span>
+                                <span class="kasir-track-star" id="kasirOmzetMarker" aria-hidden="true"><i class="fa-solid fa-star"></i></span>
+                            </div>
+                            <span class="kasir-omzet-goal-bonus" aria-label="Bonus omzet Rp100.000 jika target tercapai">
+                                <span class="kasir-bonus-banknote" aria-hidden="true">100</span>
+                            </span>
+                        </div>
+                        <div class="kasir-monthly-kpi-detail"><span id="kasirOmzetRealisasi">Rp0</span> / <span id="kasirOmzetTarget">Rp0</span></div>
+                        <div id="kasirOmzetBonus" class="kasir-omzet-bonus" hidden>
+                            <span class="kasir-omzet-bonus-icon"><i class="fa-solid fa-gift" aria-hidden="true"></i></span>
+                            <span><small>TARGET TERCAPAI</small><strong>Bonus Omzet Rp100.000</strong></span>
+                        </div>
+                    </article>
+                </section>
 
-        Selamat Pagi ☀️
+                <section class="kasir-target-card" aria-label="Target Ultimate Kasir">
+                    <div class="kasir-section-head">
+                        <div>
+                            <small>KPI KASIR - CONSUMER ERP</small>
+                            <h3>KPI Paket Ultimate</h3>
+                        </div>
+                        <span id="kasirUltimateProgressRing" class="kasir-progress-ring"><b id="kasirUltimateProgress">0%</b><small>Progress</small></span>
+                    </div>
+                    <div class="kasir-target-grid">
+                        <article><small>REALISASI ULTIMATE</small><strong id="kasirUltimateRealisasi">Rp0</strong><span id="kasirUltimateCount">0 paket</span></article>
+                        <article><small>TARGET ULTIMATE</small><strong id="kasirUltimateTarget">Rp0</strong><span>Bulan berjalan</span></article>
+                    </div>
+                    <div class="kasir-kpi-track-wrap">
+                        <div class="kasir-progress-track">
+                            <i id="kasirUltimateProgressBar"></i>
+                            <span class="kasir-track-star is-kpi" id="kasirUltimateMarker" aria-hidden="true"><i class="fa-solid fa-star"></i></span>
+                        </div>
+                        <span class="kasir-kpi-goal-bonus" aria-label="Bonus KPI Rp150.000 jika target tercapai">
+                            <span class="kasir-bonus-banknote is-kpi" aria-hidden="true">150</span>
+                        </span>
+                    </div>
+                    <div class="kasir-target-footer">
+                        <span>Sisa Target</span>
+                        <strong id="kasirUltimateSisa">Rp0</strong>
+                    </div>
+                </section>
 
-    </h2>
+                <section class="kasir-performa-card" aria-label="Performa Kasir dari ERP">
+                    <div class="kasir-section-title"><h3>Performa Kasir</h3><span id="kasirConsumerPeriod">Bulan ini</span></div>
+                    <div class="kasir-ultimate-today">
+                        <div class="kasir-ultimate-today-head">
+                            <div><small>ULTIMATE HARI INI</small><strong id="kasirUltimateHariIni">Rp0</strong></div>
+                            <span><small>PAKET TERJUAL</small><strong id="kasirUltimateHariIniCount">0</strong></span>
+                        </div>
+                        <div id="kasirUltimateHariIniList" class="kasir-ultimate-today-list">
+                            <div class="kasir-product-empty">Belum ada paket Ultimate terjual hari ini.</div>
+                        </div>
+                    </div>
+                    <div class="kasir-product-today kasir-product-ranking">
+                        <div class="kasir-product-head">
+                            <div><small>PRODUK HARI INI</small><strong id="kasirProdukHariIni">Rp0</strong></div>
+                            <span><small>PRODUK TERJUAL</small><strong id="kasirProdukHariIniCount">0</strong></span>
+                        </div>
+                        <div id="kasirProdukHariIniList" class="kasir-product-list">
+                            <div class="kasir-product-empty">Belum ada produk terjual hari ini.</div>
+                        </div>
+                    </div>
+                    <div class="kasir-kpi-grid kasir-product-summary-grid">
+                        <article>
+                            <span class="kasir-kpi-icon"><i class="fa-solid fa-chart-column"></i></span>
+                            <small>Produk Bulan Ini</small>
+                            <strong id="kasirProdukBulanIni">Rp0</strong>
+                        </article>
+                        <article>
+                            <span class="kasir-kpi-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+                            <small>Total Produk Bulan Ini</small>
+                            <strong id="kasirProdukBulanIniCount">0</strong>
+                        </article>
+                    </div>
+                    <div class="kasir-product-month-detail">
+                        <div class="kasir-product-month-head">
+                            <div>
+                                <small>RINCIAN PRODUK BULAN INI</small>
+                                <strong id="kasirProdukBulanPeriode">-</strong>
+                            </div>
+                        </div>
+                        <div id="kasirProdukBulanList" class="kasir-product-month-list">
+                            <div class="kasir-product-empty">Belum ada penjualan produk bulan ini.</div>
+                        </div>
+                    </div>
+                    <div id="kasirConsumerState" class="kasir-consumer-state" hidden></div>
+                </section>
+            </div>
+        </section>
 
-    <p id="greetingMessage">
+        <div class="kasir-lower-stack">
+        <section class="comm-row" aria-label="Pengumuman dan Riwayat">
+            <article class="comm-card comm-announce" id="cardPengumuman" role="link" tabindex="0" aria-label="Buka Pengumuman">
+                <span id="pengumumanBadge" class="comm-new" hidden>0</span>
+                <div class="comm-announce-inner">
+                    <div class="comm-head">
+                        <span class="comm-icon"><i class="fa-solid fa-bullhorn"></i></span>
+                        <h3>Pengumuman</h3>
+                    </div>
+                    <p id="pengumumanPreview">Tidak ada pengumuman baru.</p>
+                    <span class="comm-link">Buka pengumuman <i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <span class="comm-art"><i class="fa-solid fa-bullhorn"></i></span>
+            </article>
 
-        Semoga hari ini penuh semangat.
+            <article class="comm-card comm-ticket" id="cardPengaduan" tabindex="0">
+                <span id="pengaduanBadge" class="comm-new" hidden>0</span>
+                <div class="comm-head"><span class="comm-icon"><i class="fa-solid fa-headset"></i></span><h3>Pengaduan</h3></div>
+                <p id="pengaduanPreview">Laporkan masalah kerja dan pantau penanganannya.</p>
+                <span class="comm-link">Buka pengaduan <i class="fa-solid fa-chevron-right"></i></span>
+                <span class="comm-art"><i class="fa-solid fa-comments"></i></span>
+            </article>
+        </section>
 
-    </p>
+        <section class="kasir-kasbon-outside" aria-label="Kasbon Bulan Ini">
+            <article class="kasir-kasbon-card">
+                <span class="kasir-kpi-icon"><i class="fa-solid fa-wallet"></i></span>
+                <small>Kasbon Bulan Ini</small>
+                <strong id="kasirKasbonBulanIni">Rp0</strong>
+            </article>
+        </section>
 
-</section>
-
-
-
-<!-- ================= STATUS ================= -->
-
-<section class="card">
-
-    <small>Status Hari Ini</small>
-
-    <h2 id="statusAbsen">
-
-        BELUM ABSEN
-
-    </h2>
-
-    <p>
-
-        Jam Kerja :
-        <span id="jamKerja">
-
-            10:00 - 22:00
-
-        </span>
-
-    </p>
-
-    <button id="btnAbsen">
-
-        ABSEN SEKARANG
-
-    </button>
-
-</section>
-
-
-
-<!-- ================= RINGKASAN ================= -->
-
-<section class="card">
-
-<!-- ================= RINGKASAN ================= -->
-
-<section class="card">
-
-    <h3>Ringkasan Bulan Ini</h3>
-
-    <div class="grid">
-
-        <div class="item">
-            <h2 id="totalMasuk">0</h2>
-            <span>Masuk</span>
+        <a class="employee-kasbon-entry" href="kasbon-karyawan.html" aria-label="Buka Pengajuan Kasbon">
+            <span class="employee-kasbon-entry-icon"><i class="fa-solid fa-wallet"></i></span>
+            <span class="employee-kasbon-entry-copy">
+                <small>FINANCE KARYAWAN</small>
+                <strong>Pengajuan Kasbon</strong>
+                <span>Ajukan ke SVP dan pantau status pengajuan.</span>
+            </span>
+            <span class="employee-kasbon-entry-go"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
         </div>
 
-        <div class="item">
-            <h2 id="totalLibur">0</h2>
-            <span>Libur</span>
-        </div>
+        <button type="button" id="btnAbsen" class="ai-hero" aria-label="Buka Absensi">
+            <span class="ai-hero-avatar"><i class="fa-solid fa-fingerprint"></i></span>
+            <span class="ai-hero-copy"><strong>Absensi Sekarang</strong><small>Masuk, pulang, izin atau libur</small></span>
+            <span class="ai-hero-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="ai-hero-mic"><i class="fa-solid fa-chevron-right"></i></span>
+        </button>
 
-        <div class="item">
-            <h2 id="totalTerlambat">0</h2>
-            <span>Terlambat</span>
-        </div>
+        <p id="pengumuman" class="home-legacy">Belum ada pengumuman.</p>
+    </main>
 
-        <div class="item">
-            <h2 id="totalDenda">Rp0</h2>
-            <span>Denda</span>
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ================= MENU CEPAT ================= -->
-
-<section class="card">
-
-<h3>Menu Cepat</h3>
-
-<div class="menu-grid">
-
-<a href="absensi.html">
-
-<i class="fas fa-fingerprint"></i>
-
-<span>Absensi</span>
-
-</a>
-
-<a href="riwayat.html">
-
-<i class="fas fa-clock-rotate-left"></i>
-
-<span>Riwayat</span>
-
-</a>
-
-<a href="profil.html">
-
-<i class="fas fa-user"></i>
-
-<span>Profil</span>
-
-</a>
-
+    <nav id="bottomNav" aria-label="Navigasi Karyawan">
+        <a href="dashboard-karyawan.html" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a href="absensi.html"><i class="fa-solid fa-fingerprint"></i><span>Absensi</span></a>
+        <a href="gaji-saya.html"><i class="fa-solid fa-file-invoice"></i><span>Gaji Saya</span></a>
+        <a href="profil.html?v=20260929-headerlogout1"><i class="fa-solid fa-user"></i><span>Profil</span></a>
+    </nav>
 </div>
 
-</section>
-
-
-
-<!-- ================= PENGUMUMAN ================= -->
-
-<section class="card">
-
-<h3>Pengumuman</h3>
-
-<p id="pengumuman">
-
-Belum ada pengumuman.
-
-</p>
-
-</section>
-
-
-
-<!-- ================= BOTTOM MENU ================= -->
-
-<nav id="bottomNav">
-
-<a class="active">
-
-<i class="fas fa-house"></i>
-
-<span>Dashboard</span>
-
-</a>
-
-<a href="absensi.html">
-
-<i class="fas fa-fingerprint"></i>
-
-<span>Absensi</span>
-
-</a>
-
-<a href="riwayat.html">
-
-<i class="fas fa-clock-rotate-left"></i>
-
-<span>Riwayat</span>
-
-</a>
-
-<a href="profil.html">
-
-<i class="fas fa-user"></i>
-
-<span>Profil</span>
-
-</a>
-
-</nav>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-
+<script src="karyawan-session.js"></script>
 <script src="dashboard-karyawan.js"></script>
+<script src="dashboard-karyawan-kasir-consumer.js?v=20261005-staging5"></script>
+<script src="izin-telat-dashboard-entry.js?v=20260924-2"></script>
+<script src="dashboard-karyawan-header-toolbar-ui.js?v=20260924-7"></script>
+<script src="ERP.NEW/js/modules/penugasan-backup-db-store.js?v=20261003-1"></script>
+<script src="ERP.NEW/js/modules/work-branch-resolver-local.js?v=20261003-2"></script>
+<script src="ERP.NEW/js/modules/backup-kpi-local-store.js?v=20261003-1"></script>
+<script src="dashboard-karyawan-work-branch-local.js?v=20261003-3"></script>
+<script src="dashboard-karyawan-calendar-theme.js?v=20260929-3"></script>
+<script src="dashboard-karyawan-kpi-tidy-ui.js?v=20260924-3"></script>
+<script src="dashboard-karyawan-performa-ui.js?v=20260922-8"></script>
+<script src="dashboard-karyawan-ranking-barber.js?v=20260923-1"></script>
+<script src="dashboard-karyawan-target-anda.js?v=20260924-1"></script>
+<script src="dashboard-karyawan-pengaduan-ui.js?v=20260924-1"></script>
+<script src="dashboard-karyawan-motivation-ui.js?v=20260924-1"></script>
 
+<script src="employee-device-readiness.js?v=20261001-2"></script>
+<script src="employee-haptic-canonical.js?v=20260929-1"></script>\n<script src="dashboard-kasir-hourly-reminder.js?v=20261005-3"></script>
+<script src="employee-sop/sop-bootstrap.js?v=20260929-12"></script>
+<script src="dashboard-karyawan-bottomnav-feedback.js?v=20261001-1"></script>
+<script src="employee-navigation-performance.js?v=20261001-1"></script>
+<script src="dashboard-karyawan-backup-kpi-local.js?v=20261003-4"></script>
 </body>
 </html>
+
