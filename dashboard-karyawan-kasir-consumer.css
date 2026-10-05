@@ -1108,3 +1108,75 @@ html[data-home-kpi="kasir"] .kasir-kasbon-outside strong{
   letter-spacing:-.02em!important;
   text-shadow:0 1px 0 rgba(0,0,0,.10)!important;
 }
+
+
+/* Kasir Pengajuan Kasbon canonical accent + nav spacing · staging21 · UI only */
+html[data-home-kpi="kasir"] .employee-kasbon-entry{
+  position:relative!important;
+  margin:4px 0 2px!important;
+  padding:11px 12px 10px 13px!important;
+  border:1px solid rgba(43,196,174,.36)!important;
+  border-radius:15px!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.99) 0%,rgba(240,252,249,.99) 100%)!important;
+  box-shadow:
+    inset 4px 0 0 #23c7ae,
+    inset 0 3px 0 rgba(52,211,187,.72),
+    inset 0 -3px 0 rgba(20,169,147,.52),
+    0 7px 15px rgba(42,145,132,.10)!important;
+  overflow:hidden!important;
+}
+
+/* Soft themed corner light without adding animation or extra paint-heavy filters. */
+html[data-home-kpi="kasir"] .employee-kasbon-entry::after{
+  width:78px!important;
+  height:78px!important;
+  right:-30px!important;
+  top:-34px!important;
+  background:radial-gradient(circle,rgba(45,204,181,.18) 0%,rgba(45,204,181,.08) 44%,transparent 72%)!important;
+}
+
+html[data-home-kpi="kasir"] .employee-kasbon-entry-icon{
+  width:40px!important;
+  height:40px!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#36d3bd 0%,#18ad95 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 5px 11px rgba(25,165,143,.19)!important;
+}
+
+html[data-home-kpi="kasir"] .employee-kasbon-entry-copy small{
+  font-size:8.5px!important;
+  font-weight:900!important;
+  letter-spacing:.11em!important;
+  color:#149b87!important;
+}
+html[data-home-kpi="kasir"] .employee-kasbon-entry-copy strong{
+  font-size:13.5px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  color:#173f3a!important;
+}
+html[data-home-kpi="kasir"] .employee-kasbon-entry-copy span{
+  font-size:9px!important;
+  line-height:1.3!important;
+  color:#64827d!important;
+}
+
+html[data-home-kpi="kasir"] .employee-kasbon-entry-go{
+  width:28px!important;
+  height:28px!important;
+  border-radius:9px!important;
+  color:#118b79!important;
+  background:rgba(224,248,243,.96)!important;
+  border:1px solid rgba(39,184,163,.28)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+
+/* Match Capster-like last-card clearance: close to fixed nav but never hidden behind it. */
+html[data-home-kpi="kasir"] body .app{
+  padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))!important;
+}
+html[data-home-kpi="kasir"] .kasir-lower-stack>.employee-kasbon-entry{
+  margin-top:0!important;
+  margin-bottom:0!important;
+}
