@@ -1055,3 +1055,57 @@ html body .app .gaji-page-title{
     min-width:0!important;
   }
 }
+
+/* 2026-10-05 — Gaji Dicairkan canonical match Pendapatan Bersih */
+@media screen{
+  html body .app .payroll-self-payout{
+    position:relative!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:4px!important;
+    margin-top:1px!important;
+    min-height:65px!important;
+    padding:10px 12px!important;
+    border:1px solid #12a98f!important;
+    border-radius:11px!important;
+    background:
+      radial-gradient(95% 120% at 100% 100%,rgba(255,255,255,.16),transparent 58%),
+      linear-gradient(145deg,#34cfb8 0%,#1db89f 54%,#14a98f 100%)!important;
+    box-shadow:
+      0 13px 26px rgba(20,169,143,.24),
+      0 5px 10px rgba(20,169,143,.15),
+      inset 0 1px 0 rgba(255,255,255,.34),
+      inset 0 -2px 0 rgba(7,112,95,.16)!important;
+    overflow:hidden!important;
+    color:#fff!important;
+  }
+  html body .app .payroll-self-payout small,
+  html body .app .payroll-self-payout strong{
+    position:relative!important;
+    z-index:2!important;
+    color:#fff!important;
+    text-shadow:0 2px 6px rgba(3,83,70,.18)!important;
+  }
+  html body .app .payroll-self-payout small{
+    font-size:10px!important;
+    font-weight:900!important;
+    letter-spacing:.05em!important;
+  }
+  html body .app .payroll-self-payout strong{
+    font-size:27px!important;
+    line-height:1!important;
+    font-weight:950!important;
+  }
+  html body .app .payroll-self-payout .sum-ghost{
+    position:absolute!important;
+    right:12px!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    font-size:34px!important;
+    color:#fff!important;
+    opacity:.30!important;
+    pointer-events:none!important;
+  }
+}
