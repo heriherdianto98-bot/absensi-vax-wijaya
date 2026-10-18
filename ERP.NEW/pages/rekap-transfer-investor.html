@@ -1,13 +1,13 @@
 <!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rekap Transfer Investor | VAX ERP</title><link rel="icon" href="/favicon-vax-v1.png">
 <link rel="stylesheet" href="../styles/theme.css"><link rel="stylesheet" href="../styles/sidebar.css"><link rel="stylesheet" href="../styles/header.css"><link rel="stylesheet" href="../styles/erp.css"><link rel="stylesheet" href="../styles/owner-auth.css">
-<link rel="stylesheet" href="../styles/rekap-transfer-investor.css?v=20261018-v1">
+<link rel="stylesheet" href="../styles/rekap-transfer-investor.css?v=20261018-v3">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body class="rekap-transfer-page owner-auth-pending"><div class="app"><aside id="sidebar"></aside><main class="main"><div id="header"></div>
 <section class="rt-wrap"><div class="rt-heading"><div><p>LAPORAN INVESTOR</p><h1>Rekap Transfer Investor</h1><span>Rangkuman hak investor dari seluruh cabang pada periode pilihan.</span></div><a href="laporan-bulanan-investor.html">Laporan Bulanan Investor ↗</a></div>
-<div class="rt-toolbar"><label>Bulan<input type="month" id="lbMonth" aria-label="Bulan"></label><label class="rt-investor">Investor<select id="rtInvestor" aria-label="Investor"><option value="">Memuat investor…</option></select></label><button id="rtRefresh">Tampilkan</button><button id="rtPrint" disabled>Cetak</button><button id="rtPdf" disabled>PDF</button></div>
+<div class="rt-toolbar"><label>Bulan<input type="month" id="lbMonth" hidden><button type="button" id="rtMonthButton" aria-haspopup="dialog" aria-controls="rtMonthDialog">Pilih bulan ▣</button></label><label class="rt-investor">Investor<select id="rtInvestor" aria-label="Investor"><option value="">Memuat investor…</option></select></label><button id="rtRefresh">Tampilkan</button><button id="rtPrint" disabled>Cetak</button><button id="rtPdf" disabled>PDF</button></div>
 <p id="rtStatus" role="status">Memuat master investor…</p>
-<div id="rtResult" hidden><div class="rt-summary"><div><span id="rtPeriod"></span><h2 id="rtName"></h2><span id="rtCount"></span></div><div class="rt-total"><span>TOTAL TRANSFER INVESTOR</span><strong id="rtTotal"></strong><small id="rtFinal"></small></div></div><div id="rtTable"></div><p class="rt-note">Total merupakan penjumlahan Total Hak Investor per cabang, termasuk sewa dibayar sesuai laporan bulanan. Cabang BELUM FINAL tetap masuk rekap dan diberi keterangan.</p></div>
-<select id="lbBranch" hidden aria-hidden="true"></select></section></main></div>
+<div id="rtResult" hidden><div class="rt-summary"><div><h2 id="rtName"></h2><span id="rtCount"></span></div><div class="rt-total"><div id="rtPeriod"></div><span>TOTAL TRANSFER INVESTOR</span><strong id="rtTotal"></strong><div id="rtWords"></div><small id="rtFinal"></small></div></div><div id="rtTable"></div></div>
+<dialog id="rtMonthDialog" aria-labelledby="rtMonthTitle"><div class="rt-calendar-head"><button type="button" id="rtYearPrev" aria-label="Tahun sebelumnya">‹</button><h2 id="rtMonthTitle"></h2><button type="button" id="rtYearNext" aria-label="Tahun berikutnya">›</button></div><div id="rtMonthGrid"></div><button type="button" id="rtMonthClose">Tutup</button></dialog><select id="lbBranch" hidden aria-hidden="true"></select></section></main></div>
 <script src="../js/modules/connector.js"></script>
 <script src="../js/modules/owner-auth.js"></script>
 <script src="../js/loader.js"></script>
@@ -33,4 +33,4 @@
 <script src="../js/modules/laporan-bulanan-investor-share-bridge.js?v=20260913-v1"></script>
 <script src="../js/modules/laporan-investor-parahyangan-jul-2026-svp-bridge.js?v=20260917-v1"></script>
 <script src="../js/modules/laporan-bulanan-investor-revised-data-bridge.js?v=20260915-v1"></script>
-<script src="../js/modules/rekap-transfer-investor-print.js?v=20261018-v1"></script><script src="../js/modules/rekap-transfer-investor.js?v=20261018-v1"></script></body></html>
+<script src="../js/modules/rekap-transfer-investor-print.js?v=20261018-v3"></script><script src="../js/modules/rekap-transfer-investor.js?v=20261018-v3"></script></body></html>

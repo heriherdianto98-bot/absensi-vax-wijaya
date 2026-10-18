@@ -6,7 +6,7 @@ const key=v=>String(v||'').normalize('NFKC').trim().replace(/\s+/g,' ').toLocale
 let branches=[],master=[],groups=new Map(),busy=false,ready=null,masterSeq=0;
 function monthLabel(month){return new Date(month+'-15T12:00:00+07:00').toLocaleDateString('id-ID',{month:'long',year:'numeric',timeZone:'Asia/Jakarta'});}
 function invalidate(){ready=null;el('rtResult').hidden=true;el('rtPrint').disabled=true;el('rtPdf').disabled=true;}
-function locked(value){busy=value;['lbMonth','rtInvestor','rtRefresh'].forEach(id=>el(id).disabled=value);}
+function locked(value){busy=value;['lbMonth','rtMonthButton','rtInvestor','rtRefresh'].forEach(id=>el(id).disabled=value);}
 function status(s){el('rtStatus').textContent=s;}
 async function masters(){
  const seq=++masterSeq;invalidate();locked(true);
@@ -75,9 +75,9 @@ async function load(){
   const total=reports.reduce((sum,r)=>sum+Number(r.investor.totalHakBulanIni),0);
   const pending=reports.some(r=>r.readiness?.finalReady!==true);
   const period=monthLabel(month),markup=table(reports,total);
-  ready={name:group.name,month,period,total:money(total),pending,table:markup,reports};
+  ready={name:group.name,month,period,total:money(total),amount:total,pending,table:markup,reports};
   el('rtName').textContent=group.name;el('rtPeriod').textContent=period;
-  el('rtCount').textContent=reports.length+' cabang';el('rtTotal').textContent=money(total);
+  el('rtCount').textContent=reports.length+' cabang';el('rtTotal').textContent=money(total);el('rtWords').textContent=window.RekapTransferInvestorPrint.terbilang(total);
   el('rtFinal').textContent=pending?'TERDAPAT CABANG BELUM FINAL':'FINAL READY';
   el('rtTable').innerHTML=markup;el('rtResult').hidden=false;
   el('rtPrint').disabled=false;el('rtPdf').disabled=false;
@@ -88,6 +88,28 @@ async function load(){
 function print(){
  if(!ready||ready.month!==el('lbMonth').value||key(ready.name)!==el('rtInvestor').value)return;
  try{window.RekapTransferInvestorPrint.open(ready);}catch(e){status(e.message);}
+}
+
+function setupCalendar(){
+ const names=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+ const dialog=el('rtMonthDialog');let year=Number(el('lbMonth').value.slice(0,4));
+ const label=()=>el('rtMonthButton').textContent=monthLabel(el('lbMonth').value)+' ▣';
+ const render=()=>{
+  el('rtMonthTitle').textContent=String(year);
+  el('rtMonthGrid').innerHTML=names.map((n,i)=>'<button type="button" data-month="'+(i+1)+'" '+(el('lbMonth').value===year+'-'+String(i+1).padStart(2,'0')?'aria-pressed="true"':'aria-pressed="false"')+'>'+n+'</button>').join('');
+ };
+ label();
+ el('rtMonthButton').addEventListener('click',()=>{year=Number(el('lbMonth').value.slice(0,4));render();dialog.showModal();});
+ el('rtYearPrev').addEventListener('click',()=>{if(year>2000)year--;render();});
+ el('rtYearNext').addEventListener('click',()=>{if(year<2100)year++;render();});
+ el('rtMonthClose').addEventListener('click',()=>dialog.close());
+ el('rtMonthGrid').addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-month]');if(!b)return;
+  const value=year+'-'+String(b.dataset.month).padStart(2,'0');
+  dialog.close();if(value===el('lbMonth').value)return;
+  el('lbMonth').value=value;label();el('lbMonth').dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ dialog.addEventListener('click',ev=>{if(ev.target===dialog){const r=dialog.getBoundingClientRect();if(ev.clientX<r.left||ev.clientX>r.right||ev.clientY<r.top||ev.clientY>r.bottom)dialog.close();}});
 }
 async function init(){
  try{
@@ -101,6 +123,7 @@ async function init(){
   branches=(data||[]).filter(c=>!String(c.nama_cabang||'').toLowerCase().includes('floating'));
   const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).formatToParts(new Date());
   el('lbMonth').value=parts.find(p=>p.type==='year').value+'-'+parts.find(p=>p.type==='month').value;
+  setupCalendar();
   el('lbMonth').addEventListener('change',()=>void masters());
   el('rtInvestor').addEventListener('change',()=>void load());
   el('rtRefresh').addEventListener('click',()=>void load());

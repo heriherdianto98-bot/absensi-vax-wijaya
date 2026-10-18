@@ -21,7 +21,7 @@ const periodLabel=()=>period;
   `;}
 
   function masterHeader(){
-    const logo="../assets/logo-vax-wijaya.png";
+    const logo=new URL("../assets/brand/erp-vax-wijaya.png",location.href).href;
     return `<header class="master-head"><div class="master-head-inner"><div class="brand"><img class="logo" src="${logo}" onerror="this.style.display='none'" alt="VAX"><div class="brand-copy"><h1>ERP VAX WIJAYA</h1><div class="report-name">LAPORAN BULANAN</div><div class="system">Enterprise Management System</div></div></div><div class="head-right"><div class="doc">DOKUMEN KEUANGAN</div><strong>INTERNAL</strong></div></div><div class="gold-rule"></div></header>`;
   }
 
@@ -30,14 +30,51 @@ const periodLabel=()=>period;
   }
 
 
-window.RekapTransferInvestorPrint={build(data){
+
+function terbilang(value){
+ const n=Number(value);
+ if(!Number.isSafeInteger(n))throw new Error('Nominal terbilang tidak valid.');
+ const words=['','satu','dua','tiga','empat','lima','enam','tujuh','delapan','sembilan','sepuluh','sebelas'];
+ function say(v){
+  if(v<12)return words[v];
+  if(v<20)return say(v-10)+' belas';
+  if(v<100)return say(Math.floor(v/10))+' puluh '+say(v%10);
+  if(v<200)return 'seratus '+say(v-100);
+  if(v<1000)return say(Math.floor(v/100))+' ratus '+say(v%100);
+  if(v<2000)return 'seribu '+say(v-1000);
+  if(v<1000000)return say(Math.floor(v/1000))+' ribu '+say(v%1000);
+  if(v<1000000000)return say(Math.floor(v/1000000))+' juta '+say(v%1000000);
+  if(v<1000000000000)return say(Math.floor(v/1000000000))+' miliar '+say(v%1000000000);
+  return say(Math.floor(v/1000000000000))+' triliun '+say(v%1000000000000);
+ }
+ const text=(n<0?'minus ':'')+(n===0?'nol':say(Math.abs(n)).trim().replace(/\s+/g,' '))+' rupiah';
+ return text.charAt(0).toUpperCase()+text.slice(1);
+}
+window.RekapTransferInvestorPrint={terbilang,build(data){
 period=data.period;
 const printedAt=new Date().toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
-const base=new URL('../',location.href).href;
-return '<!doctype html><html lang="id"><head><meta charset="utf-8"><base href="'+base+'pages/"><title>'+esc('Rekap Transfer '+data.name+' '+data.period)+'</title><style>'+printCss()+'.rt-table{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:5mm}.rt-table th,.rt-table td{border-bottom:1px solid #ddd;padding:2.8mm 1.4mm;font-size:8pt;vertical-align:top}.rt-table th{background:#ebede8;text-align:left}.rt-table .num{text-align:right;white-space:nowrap}.rt-table small{display:block;font-size:6.4pt;color:#666;margin-top:1mm}.rt-table .badge{font-size:6pt;font-weight:bold}.rt-table .pending{color:#8a5800}.rt-table tfoot{background:#edf2ed;font-weight:bold}.rt-table tr{break-inside:avoid}.rt-table th:first-child{width:25%}.rt-table th:last-child{width:21%}.rt-table th:nth-child(2),.rt-table th:nth-child(3),.rt-table th:nth-child(4){width:18%}.rt-note{font-size:7pt;color:#666;line-height:1.5;margin-top:4mm}h2{font-size:16pt;margin:3mm 0} .rt-grand{font-size:16pt;padding:4mm 0;border-bottom:1mm solid #d4af37;margin-bottom:4mm}</style></head><body><table class="page-frame"><thead><tr><td><div class="head-space">'+masterHeader()+'</div></td></tr></thead><tfoot><tr><td><div class="foot-space">'+masterFooter(data.name,printedAt)+'</div></td></tr></tfoot><tbody><tr><td><main class="content"><section class="report-title"><h1>Rekap Transfer Investor</h1><p>'+esc(data.period)+'</p></section><h2>'+esc(data.name)+'</h2><div class="rt-grand">Total Transfer: <strong>'+esc(data.total)+'</strong></div>'+(data.pending?'<div class="warn">BELUM FINAL — terdapat cabang yang belum final; nominal mengikuti laporan bulanan investor.</div>':'')+data.table+'<p class="rt-note">Total merupakan penjumlahan Total Hak Investor per cabang. Sewa dibayar sudah termasuk sesuai laporan bulanan. Status BELUM FINAL mengikuti laporan sumber.</p></main></td></tr></tbody></table></body></html>';
+const amount=data.amount??Number(String(data.total).replace(/[^0-9-]/g,''));
+const words=terbilang(amount);
+const css=printCss()+`
+.rt-report-top{display:flex;justify-content:space-between;gap:7mm;align-items:flex-start;margin:2mm 0 7mm}
+.rt-report-title h1{font-size:17pt;line-height:1.2;margin:0 0 5mm;font-weight:800}
+.rt-investor-label,.rt-period-label,.rt-amount-label{font-size:6.7pt;letter-spacing:.1em;color:#6c7480;text-transform:uppercase;font-weight:700}
+.rt-report-title h2{font-size:13pt;margin:1.5mm 0 0;max-width:115mm}
+.rt-report-period{text-align:right;min-width:55mm}.rt-report-period strong{display:block;font-size:18pt;line-height:1.2;margin-top:2mm;color:#242b35}
+.rt-amount{padding:5mm 5mm 4mm;border:1px solid #d9d3c2;border-left:1.2mm solid #bd963b;background:#fbfaf5;margin-bottom:6mm;break-inside:avoid}
+.rt-amount strong{display:block;font-size:25pt;line-height:1.15;margin:2.5mm 0;color:#18212b}.rt-terbilang{font-size:9pt;line-height:1.5;color:#505866;font-style:italic;max-width:165mm}
+.rt-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.rt-table th,.rt-table td{border-bottom:1px solid #ddd;padding:3mm 1.5mm;font-size:8pt;vertical-align:top}
+.rt-table th{background:#f0f1ed;text-align:left;font-size:7pt;color:#3b424b}
+.rt-table .num{text-align:right;white-space:nowrap}.rt-table small{display:block;font-size:6.5pt;color:#666;line-height:1.5;margin-top:1mm}
+.rt-table .badge{font-size:6.3pt;font-weight:700}.rt-table .pending{color:#8a5800}.rt-table tfoot{background:#edf2ed;font-weight:bold}
+.rt-table tr{break-inside:avoid}.rt-table th:first-child{width:25%}.rt-table th:last-child{width:21%}.rt-table th:nth-child(2),.rt-table th:nth-child(3),.rt-table th:nth-child(4){width:18%}
+.warn{font-size:8pt;line-height:1.5}.master-head .logo{width:15mm;height:15mm}.rt-table-wrap{overflow:visible}.master-head .brand{flex-shrink:0}.master-head .brand-copy h1{white-space:nowrap}.master-head .logo{flex-shrink:0}
+`;
+return '<!doctype html><html lang="id"><head><meta charset="utf-8"><title>'+esc('Rekap Transfer '+data.name+' '+data.period)+'</title><style>'+css+'</style></head><body><table class="page-frame"><thead><tr><td><div class="head-space">'+masterHeader()+'</div></td></tr></thead><tfoot><tr><td><div class="foot-space">'+masterFooter(data.name,printedAt)+'</div></td></tr></tfoot><tbody><tr><td><main class="content"><section class="rt-report-top"><div class="rt-report-title"><h1>Rekap Transfer Investor</h1><div class="rt-investor-label">Investor</div><h2>'+esc(data.name)+'</h2></div><div class="rt-report-period"><span class="rt-period-label">Periode laporan</span><strong>'+esc(data.period)+'</strong></div></section><section class="rt-amount"><div class="rt-amount-label">Total transfer investor</div><strong>'+esc(data.total)+'</strong><div class="rt-terbilang">'+esc(words)+'</div></section>'+(data.pending?'<div class="warn">BELUM FINAL</div>':'')+data.table+'</main></td></tr></tbody></table></body></html>';
 },open(data){
-const w=window.open('','_blank');if(!w)throw new Error('Izinkan popup untuk cetak/PDF.');
-w.document.open();w.document.write(this.build(data));w.document.close();
-Promise.all([...w.document.images].map(i=>i.complete?Promise.resolve():new Promise(resolve=>{i.onload=resolve;i.onerror=resolve}))).then(()=>{w.focus();w.print()});
+ const w=window.open('','_blank');if(!w)throw new Error('Izinkan popup untuk cetak/PDF.');
+ w.document.open();w.document.write(this.build(data));w.document.close();
+ Promise.all([...w.document.images].map(i=>i.complete?Promise.resolve():new Promise(resolve=>{i.onload=resolve;i.onerror=resolve}))).then(()=>{w.focus();w.print()});
 }};
 })();
